@@ -1,12 +1,88 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Eduardo Araújo - Economista | Políticas Públicas | Oxford MPP</title>
-<meta content="Eduardo Araújo - Economista, Consultor do Tesouro Estadual do ES, Mestre em Políticas Públicas pela Universidade de Oxford, especialista em finanças públicas e inteligência artificial na gestão pública." name="description"/>
-<style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eduardo Araújo - Economista | Professor Fucape | Oxford MPP</title>
+    <meta name="description" content="Eduardo Araújo - Economista, Consultor do Tesouro Estadual do ES, Professor na Fucape Business School, Mestre em Políticas Públicas pela Universidade de Oxford. Especialista em desenvolvimento econômico, redução de desigualdades e políticas baseadas em evidências.">
+    <meta name="keywords" content="Eduardo Araújo, economista, Oxford, MPP, desenvolvimento econômico, desigualdade, políticas públicas, Fucape, Espírito Santo, transferência de renda, economia institucional, Stefan Dercon, Esther Duflo">
+    
+    <!-- SEO Meta Tags -->
+    <meta property="og:title" content="Eduardo Araújo - Economista | Políticas Públicas">
+    <meta property="og:description" content="Consultor do Tesouro Estadual, Professor Fucape, Oxford MPP, especialista em desenvolvimento econômico e redução de desigualdades">
+    <meta property="og:image" content="https://www.bsg.ox.ac.uk/sites/default/files/styles/square_image/public/eduardo-araujo-profile.jpg">
+    <meta property="og:url" content="https://eduardoaraujo.com.br">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- Educational Content Meta Tags -->
+    <meta property="og:type" content="profile">
+    <meta name="author" content="Eduardo Araújo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://eduardoaraujo.com.br">
+    
+    <!-- Google Analytics - SUBSTITUA G-XXXXXXXXXX pelo seu ID real -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX'); // SUBSTITUA pelo seu ID do Google Analytics
+    </script>
+    
+    <!-- 
+    NOTA IMPORTANTE SOBRE OS MATERIAIS:
+    Para os downloads funcionarem, você precisa:
+    1. Criar uma pasta chamada "materiais" na raiz do seu projeto
+    2. Adicionar os PDFs com os seguintes nomes:
+       - teoria-monopolios.pdf
+       - transferencia-renda.pdf
+       - economia-institucional.pdf
+       - avaliacao-politicas.pdf
+    -->
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Eduardo Araújo",
+        "jobTitle": "Economista e Consultor do Tesouro Estadual",
+        "url": "https://eduardoaraujo.com.br",
+        "sameAs": [
+            "https://www.linkedin.com/in/eduardoaraujompp",
+            "https://www.bsg.ox.ac.uk/people/eduardo-araujo"
+        ],
+        "alumniOf": {
+            "@type": "CollegeOrUniversity",
+            "name": "University of Oxford - Blavatnik School of Government"
+        },
+        "worksFor": {
+            "@type": "GovernmentOrganization",
+            "name": "Tesouro Estadual do Espírito Santo"
+        }
+    }
+    </script>
+    
+    <!-- 
+    ESTRUTURA DE PASTAS PARA O SITE:
+    /
+    ├── index.html (este arquivo)
+    ├── materiais/
+    │   ├── teoria-monopolios.pdf
+    │   ├── transferencia-renda.pdf
+    │   ├── economia-institucional.pdf
+    │   └── avaliacao-politicas.pdf
+    └── README.md (opcional)
+    
+    INSTRUÇÕES PARA DEPLOY:
+    1. Crie um repositório no GitHub com esta estrutura
+    2. Faça upload dos arquivos
+    3. Conecte com Vercel
+    4. Configure seu domínio personalizado
+    5. Substitua o ID do Google Analytics
+    -->
+    
+    <style>
         * {
             margin: 0;
             padding: 0;
@@ -155,13 +231,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .profile-photo-placeholder {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            text-align: center;
-            padding: 1rem;
         }
 
         .hero h1 {
@@ -373,55 +442,38 @@
         }
 
         /* Publications Section */
-        .publications-filters {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
+        .publications-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Publication Years */
+        .publication-year {
             margin-bottom: 3rem;
-            flex-wrap: wrap;
         }
 
-        .filter-btn {
-            padding: 0.5rem 1.5rem;
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-radius: 25px;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .filter-btn.active {
-            background: var(--accent);
-            color: var(--bg-dark);
-            border-color: var(--accent);
-        }
-
-        .filter-btn:hover {
-            border-color: var(--accent);
+        .year-header {
+            font-size: 1.8rem;
             color: var(--accent);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
         }
 
         .publications-grid {
             display: grid;
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
         .publication-card {
             background: var(--bg-section);
-            padding: 2.5rem;
+            padding: 2rem;
             border-radius: 10px;
             border: 1px solid var(--border);
             transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            display: flex;
-            align-items: start;
-            gap: 2rem;
         }
 
         .publication-card:hover {
@@ -430,55 +482,41 @@
             box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
         }
 
-        .publication-date {
-            min-width: 120px;
-            text-align: center;
-            padding: 1rem;
-            background: rgba(212, 175, 55, 0.1);
-            border-radius: 8px;
-            border: 1px solid var(--accent);
+        .publication-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
         }
 
-        .publication-date .month {
-            color: var(--accent);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .publication-date .year {
+        .publication-info h3 {
             color: var(--text-primary);
-            font-size: 1.8rem;
-            font-weight: 300;
-        }
-
-        .publication-content {
-            flex: 1;
-        }
-
-        .publication-content h3 {
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
             font-weight: 400;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             line-height: 1.4;
         }
 
-        .publication-content .source {
+        .publication-info .source {
             color: var(--accent);
             font-size: 0.9rem;
-            margin-bottom: 1rem;
             font-style: italic;
         }
 
-        .publication-content p {
+        .publication-date {
             color: var(--text-secondary);
-            font-size: 1rem;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .publication-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
             line-height: 1.6;
             margin-bottom: 1rem;
         }
 
-        .publication-content .read-more {
+        .publication-card .read-more {
             color: var(--accent);
             text-decoration: none;
             font-weight: 400;
@@ -489,9 +527,56 @@
             font-size: 0.95rem;
         }
 
-        .publication-content .read-more:hover {
+        .publication-card .read-more:hover {
             color: var(--accent-hover);
             gap: 0.8rem;
+        }
+
+        /* Highlights Section */
+        .highlights-section {
+            background: var(--bg-section);
+            padding: 3rem;
+            border-radius: 15px;
+            margin-top: 3rem;
+            border: 1px solid var(--border);
+        }
+
+        .highlights-section h3 {
+            color: var(--accent);
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .highlight-card {
+            background: var(--bg-dark);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .highlight-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+        }
+
+        .highlight-card .metric {
+            font-size: 2rem;
+            color: var(--accent);
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-card .description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
 
         /* Media Section */
@@ -549,25 +634,230 @@
         .philosophy-content {
             max-width: 800px;
             margin: 0 auto;
-            text-align: center;
+            text-align: left;
             background: var(--bg-section);
             padding: 3rem;
             border-radius: 15px;
             border: 1px solid var(--border);
         }
 
-        .philosophy-content .quote {
-            font-size: 1.8rem;
+        .philosophy-content h3 {
             color: var(--accent);
-            font-style: italic;
-            margin-bottom: 2rem;
-            line-height: 1.4;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+            text-align: center;
         }
 
         .philosophy-content p {
             color: var(--text-secondary);
             font-size: 1.1rem;
             line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .philosophy-values {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .value-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--bg-dark);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .value-item .icon {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .value-item h4 {
+            color: var(--text-primary);
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+
+        .value-item p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Philosophy Section */
+        .philosophy-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: left;
+            background: var(--bg-section);
+            padding: 3rem;
+            border-radius: 15px;
+            border: 1px solid var(--border);
+        }
+
+        .philosophy-content h3 {
+            color: var(--accent);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        .philosophy-content p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .philosophy-values {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .value-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--bg-dark);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .value-item .icon {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .value-item h4 {
+            color: var(--text-primary);
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+
+        .value-item p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Resources Section */
+        .resources {
+            background: rgba(20, 20, 20, 0.5);
+            padding: 5rem 2rem;
+        }
+
+        .resources-intro {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        .resources-intro p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .resource-card {
+            background: var(--bg-section);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .resource-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .resource-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+        }
+
+        .resource-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .resource-card h3 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-weight: 400;
+            font-size: 1.3rem;
+        }
+
+        .resource-meta {
+            color: var(--accent);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .resource-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+
+        .resource-actions {
+            margin-top: auto;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 0.6rem 1.5rem;
+            background: var(--accent);
+            color: var(--bg-dark);
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            width: 100%;
+            text-align: center;
+        }
+
+        .download-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
         }
 
         /* Contact Section */
@@ -638,6 +928,40 @@
             }
         }
 
+        /* Loading Animation */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
             .nav-links {
@@ -666,13 +990,9 @@
                 font-size: 2.5rem;
             }
 
-            .publication-card {
+            .publication-header {
                 flex-direction: column;
-                gap: 1rem;
-            }
-
-            .publication-date {
-                width: 100%;
+                gap: 0.5rem;
             }
 
             .areas-grid {
@@ -698,272 +1018,486 @@
             .philosophy-content {
                 padding: 2rem;
             }
+
+            .highlights-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-<!-- Header -->
-<header>
-<nav>
-<div class="logo">Eduardo Araújo</div>
-<ul class="nav-links" id="navLinks">
-<li><a href="#sobre">Sobre</a></li>
-<li><a href="#areas">Áreas</a></li>
-<li><a href="#publicacoes">Publicações</a></li>
-<li><a href="#midia">Mídia</a></li>
-<li><a href="#filosofia">Filosofia</a></li>
-<li><a href="#contato">Contato</a></li>
-</ul>
-<div class="mobile-menu-toggle" id="menuToggle">
-<span></span>
-<span></span>
-<span></span>
-</div>
-</nav>
-</header>
-<!-- Hero Section -->
-<section class="hero">
-<div class="hero-content">
-<div class="profile-photo-container"><img alt="Eduardo Araújo - Blavatnik School" src="https://www.bsg.ox.ac.uk/sites/default/files/styles/square_image/public/eduardo-araujo-profile.jpg?h=42d271fe&amp;itok=Jp5BR2gs" style="width: 100%; height: 100%; object-fit: cover;"/></div>
-<h1>Eduardo Araújo</h1>
-<p class="subtitle">Economista | Consultor do Tesouro Estadual | Oxford MPP</p>
-<div class="credentials">
-<div class="credential-badge">
-<span>🎓</span>
-<span>Blavatnik School of Government</span>
-</div>
-<div class="credential-badge">
-<span>🏆</span>
-<span>Lemann Scholar</span>
-</div>
-<div class="credential-badge">
-<span>🏅</span>
-<span>Finalista Prêmio Liderança Pública</span>
-</div>
-</div>
-</div>
-</section>
-<!-- About Section -->
-<section class="about" id="sobre">
-<h2 class="section-title">Sobre</h2>
-<div class="about-content">
-<div class="about-text">
-<p>
+    <!-- Loading Screen -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">Eduardo Araújo</div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#areas">Áreas</a></li>
+                <li><a href="#publicacoes">Publicações</a></li>
+                <li><a href="#recursos">Materiais</a></li>
+                <li><a href="#midia">Mídia</a></li>
+                <li><a href="#filosofia">Visão</a></li>
+                <li><a href="#contato">Contato</a></li>
+            </ul>
+            <div class="mobile-menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="profile-photo-container">
+                <img src="https://www.bsg.ox.ac.uk/sites/default/files/styles/square_image/public/eduardo-araujo-profile.jpg?h=42d271fe&itok=Jp5BR2gs" 
+                     alt="Eduardo Araújo - Economista e Consultor" 
+                     style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <h1>Eduardo Araújo</h1>
+            <p class="subtitle">Economista | Consultor do Tesouro Estadual | Professor Fucape | Oxford MPP</p>
+            <div class="credentials">
+                <div class="credential-badge">
+                    <span>🎓</span>
+                    <span>Blavatnik School of Government</span>
+                </div>
+                <div class="credential-badge">
+                    <span>🏆</span>
+                    <span>Lemann Scholar</span>
+                </div>
+                <div class="credential-badge">
+                    <span>🏅</span>
+                    <span>Finalista Prêmio Liderança Pública</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="sobre" class="about">
+        <h2 class="section-title">Sobre</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <p>
                     Eduardo Araújo é economista com sólida experiência em finanças públicas, atuando como Consultor do Tesouro Estadual do Espírito Santo. É mestre em Economia pela Universidade Federal do Espírito Santo (UFES) e mestre em Políticas Públicas pela Blavatnik School of Government da Universidade de Oxford, onde foi bolsista Lemann Scholar.
                 </p>
-<p>
-                    Sua atuação profissional é marcada pela busca por soluções inovadoras para desafios fiscais, com ênfase em transparência, responsabilidade e uso de tecnologias emergentes. Foi presidente do Conselho Regional de Economia do Espírito Santo e atuou como Conselheiro do Conselho Federal de Economia até 2024.
+                <p>
+                    Sua atuação profissional é marcada pela busca por soluções inovadoras para desafios fiscais, com ênfase em transparência, responsabilidade e desenvolvimento econômico sustentável. Foi presidente do Conselho Regional de Economia do Espírito Santo e atuou como Conselheiro do Conselho Federal de Economia até 2024.
                 </p>
-<p>
+                <p>
                     Como reconhecimento por seu trabalho, foi finalista do Prêmio Brasileiro de Liderança Pública do CLP (Centro de Liderança Pública) em 2021, após liderar a criação de uma rede colaborativa de liderança pública que capacitou quase 5.000 servidores públicos e resultou em um aumento de 17% nas receitas de financiamento para governos locais no Espírito Santo em 2020.
                 </p>
-<div class="highlight-quote">
-                    "Seja a mudança que você espera do mundo"
-                </div>
-<p>
-                    Acredita no poder transformador de políticas públicas bem estruturadas para promover o desenvolvimento socioeconômico sustentável, com foco especial no papel do Estado na redução das desigualdades e no combate à pobreza através de programas de transferência de renda e educação infantil.
+                <p>
+                    Atualmente, leciona economia do desenvolvimento e políticas públicas na Fucape Business School, onde forma a próxima geração de economistas e empreendedores. Mantém ativa produção intelectual através de artigos em veículos de comunicação e pesquisa aplicada sobre redução de desigualdades e avaliação de impacto de programas sociais.
                 </p>
-</div>
-<div class="achievements">
-<div class="achievement-card">
-<div class="icon">🌐</div>
-<h3>Rede de Liderança</h3>
-<p>Criou rede colaborativa que capacitou 5.000 servidores públicos no Brasil</p>
-</div>
-<div class="achievement-card">
-<div class="icon">📈</div>
-<h3>Impacto Fiscal</h3>
-<p>17% de aumento nas receitas de financiamento para governos locais do ES</p>
-</div>
-<div class="achievement-card">
-<div class="icon">🤖</div>
-<h3>Inovação Pública</h3>
-<p>Pioneiro no uso de IA para otimização de recursos públicos</p>
-</div>
-</div>
-</div>
-</section>
-<!-- Areas Section -->
-<section class="areas" id="areas">
-<h2 class="section-title">Áreas de Atuação</h2>
-<div class="areas-grid">
-<div class="area-card">
-<h3>Finanças Públicas e Responsabilidade Fiscal</h3>
-<p>Desenvolvimento e implementação de estratégias para equilíbrio fiscal e otimização de recursos públicos, com foco em transparência e sustentabilidade.</p>
-</div>
-<div class="area-card">
-<h3>Políticas de Transferência de Renda</h3>
-<p>Análise e avaliação de programas sociais visando à redução da pobreza e promoção da equidade, com ênfase em impactos de longo prazo.</p>
-</div>
-<div class="area-card">
-<h3>Inteligência Artificial na Gestão Pública</h3>
-<p>Exploração de ferramentas de IA para aprimorar a eficiência e a transparência na administração pública, incluindo projeções fiscais e análise de dados.</p>
-</div>
-<div class="area-card">
-<h3>Educação e Formação de Líderes Públicos</h3>
-<p>Atuação como docente e mentor em programas de capacitação de gestores públicos, compartilhando conhecimento e experiências práticas.</p>
-</div>
-</div>
-</section>
-<!-- Publications Section -->
-<section class="publications" id="publicacoes">
-<h2 class="section-title">Publicações Recentes</h2>
-<div class="publications-filters">
-<button class="filter-btn active" onclick="filterPublications('all')">Todas</button>
-<button class="filter-btn" onclick="filterPublications('gazeta')">A Gazeta</button>
-<button class="filter-btn" onclick="filterPublications('esbrasil')">ES Brasil</button>
-</div>
-<div class="publications-grid" id="publicationsGrid">
-<!-- A Gazeta -->
-<div class="publication-card" data-source="gazeta">
-<div class="publication-date">
-<div class="month">JUN</div>
-<div class="year">2025</div>
-</div>
-<div class="publication-content">
-<h3>Crise do IOF é o preço da pressa fiscal?</h3>
-<p class="source">Jornal A Gazeta</p>
-<p>O artigo discute as novas alíquotas do IOF e os riscos de um ajuste fiscal mal planejado, analisando impactos na economia e na confiança dos investidores.</p>
-<a class="read-more" href="https://www.agazeta.com.br/economia/crise-do-iof-e-o-preco-da-pressa-fiscal-0624" target="_blank">Ler artigo completo →</a>
-</div>
-</div>
-<div class="publication-card" data-source="gazeta">
-<div class="publication-date">
-<div class="month">ABR</div>
-<div class="year">2025</div>
-</div>
-<div class="publication-content">
-<h3>Reforma tributária e o novo paradigma da gestão fiscal das cidades</h3>
-<p class="source">Jornal A Gazeta</p>
-<p>Reflexões sobre os desafios e oportunidades para os municípios na reforma tributária, com foco em autonomia fiscal e eficiência administrativa.</p>
-<a class="read-more" href="https://www.agazeta.com.br/economia/reforma-tributaria-e-o-novo-paradigma-da-gestao-fiscal-das-cidades-0424" target="_blank">Ler artigo completo →</a>
-</div>
-</div>
-<div class="publication-card" data-source="gazeta">
-<div class="publication-date">
-<div class="month">ABR</div>
-<div class="year">2025</div>
-</div>
-<div class="publication-content">
-<h3>Banco Master: como blindar seu dinheiro do risco de quebra de um banco</h3>
-<p class="source">Jornal A Gazeta</p>
-<p>Análise de estratégias de proteção patrimonial frente à instabilidade bancária, incluindo diversificação e instrumentos de garantia.</p>
-<a class="read-more" href="https://www.agazeta.com.br/economia/como-blindar-seu-dinheiro-do-risco-de-quebra-de-um-banco-0424" target="_blank">Ler artigo completo →</a>
-</div>
-</div>
-<!-- ES Brasil -->
-<div class="publication-card" data-source="esbrasil">
-<div class="publication-date">
-<div class="month">MAR</div>
-<div class="year">2025</div>
-</div>
-<div class="publication-content">
-<h3>A Reforma Tributária e os Municípios</h3>
-<p class="source">Revista ES Brasil</p>
-<p>Análise aprofundada dos impactos da reforma tributária nas finanças municipais e a importância de uma gestão fiscal eficiente para enfrentar os novos desafios.</p>
-<a class="read-more" href="https://esbrasil.com.br/a-reforma-tributaria-e-os-municipios/" target="_blank">Ler artigo completo →</a>
-</div>
-</div>
-<div class="publication-card" data-source="esbrasil">
-<div class="publication-date">
-<div class="month">FEV</div>
-<div class="year">2025</div>
-</div>
-<div class="publication-content">
-<h3>Inteligência Artificial e a Gestão Pública</h3>
-<p class="source">Revista ES Brasil</p>
-<p>Discussão sobre como a IA pode ser utilizada para melhorar a eficiência e a transparência na administração pública, com casos práticos e perspectivas futuras.</p>
-<a class="read-more" href="https://esbrasil.com.br/inteligencia-artificial-e-a-gestao-publica/" target="_blank">Ler artigo completo →</a>
-</div>
-</div>
-<div class="publication-card" data-source="esbrasil">
-<div class="publication-date">
-<div class="month">JAN</div>
-<div class="year">2025</div>
-</div>
-<div class="publication-content">
-<h3>Desafios Fiscais no Brasil Contemporâneo</h3>
-<p class="source">Revista ES Brasil</p>
-<p>Análise dos principais desafios enfrentados pelo Brasil em relação à política fiscal e propostas para superar obstáculos estruturais.</p>
-<a class="read-more" href="https://esbrasil.com.br/desafios-fiscais-no-brasil-contemporaneo/" target="_blank">Ler artigo completo →</a>
-</div>
-</div>
-</div>
-</section>
-<!-- Media Section -->
-<section class="media" id="midia">
-<h2 class="section-title">Participações em Mídia e Eventos</h2>
-<div class="media-grid">
-<div class="media-card">
-<span class="type">Podcast</span>
-<h3>Economistas - Cofecon</h3>
-<p class="event-info">Episódio especial sobre IA nas finanças públicas</p>
-<p>Discussão sobre o uso da inteligência artificial nas finanças públicas e a importância de regulação tecnológica no setor público.</p>
-</div>
-<div class="media-card">
-<span class="type">Seminário</span>
-<h3>Transparência Fiscal e Desigualdade</h3>
-<p class="event-info">Corecon-ES - 2024</p>
-<p>Palestra sobre experiências de Estados com nota A e lições para políticas redistributivas.</p>
-</div>
-<div class="media-card">
-<span class="type">Workshop</span>
-<h3>IA para Economistas</h3>
-<p class="event-info">UFBA, Salvador - 2024</p>
-<p>Oficina prática sobre uso de LLMs e inteligência artificial para projeções fiscais e análise de dados orçamentários.</p>
-</div>
-<div class="media-card">
-<span class="type">Painel</span>
-<h3>Reforma Tributária e Gestão Municipal</h3>
-<p class="event-info">SEFAZ-ES - 2024</p>
-<p>Participação como debatedor sobre critérios de repartição de receitas na nova estrutura tributária.</p>
-</div>
-<div class="media-card">
-<span class="type">Conferência</span>
-<h3>Economia Pública no Pós-100 Dias</h3>
-<p class="event-info">Fucape - 2025</p>
-<p>Mediação de painel com gestores públicos e pesquisadores sobre os desafios dos primeiros meses de governo.</p>
-</div>
-</div>
-</section>
-<!-- Philosophy Section -->
-<section class="philosophy" id="filosofia">
-<h2 class="section-title">Filosofia e Legado</h2>
-<div class="philosophy-content">
-<p class="quote">"Seja a mudança que você espera do mundo"</p>
-<p>
-                Inspirado por esta máxima, direciono minha carreira para o fortalecimento de instituições públicas sólidas, éticas e centradas em resultados. Meu propósito é deixar um legado de contribuição técnica e intelectual na construção de políticas públicas que promovam justiça social, eficiência econômica e desenvolvimento sustentável — com foco especial no papel do Estado na redução das desigualdades.
+            </div>
+            <div class="achievements">
+                <div class="achievement-card">
+                    <div class="icon">🌐</div>
+                    <h3>Impacto em Políticas Públicas</h3>
+                    <p>Criou rede colaborativa que capacitou 5.000 servidores públicos no Brasil</p>
+                </div>
+                <div class="achievement-card">
+                    <div class="icon">📈</div>
+                    <h3>Desenvolvimento Local</h3>
+                    <p>17% de aumento nas receitas de financiamento para governos locais do ES</p>
+                </div>
+                <div class="achievement-card">
+                    <div class="icon">🎓</div>
+                    <h3>Formação Acadêmica</h3>
+                    <p>Oxford MPP com foco em políticas de redução de desigualdades</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Areas Section -->
+    <section id="areas" class="areas">
+        <h2 class="section-title">Áreas de Pesquisa e Atuação</h2>
+        <div class="areas-grid">
+            <div class="area-card">
+                <h3>Desenvolvimento Econômico e Instituições</h3>
+                <p>Pesquisa sobre o papel das instituições na promoção do desenvolvimento econômico sustentável, com foco em capacidades estatais e governança.</p>
+            </div>
+            <div class="area-card">
+                <h3>Políticas de Redução da Desigualdade</h3>
+                <p>Análise e avaliação de programas de transferência de renda e políticas sociais, inspirado nos trabalhos de Esther Duflo sobre combate à pobreza.</p>
+            </div>
+            <div class="area-card">
+                <h3>Finanças Públicas e Desenvolvimento Local</h3>
+                <p>Estratégias fiscais que promovem desenvolvimento regional, com ênfase em municípios de menor porte e redução de disparidades regionais.</p>
+            </div>
+            <div class="area-card">
+                <h3>Educação e Formação Acadêmica</h3>
+                <p>Docente na Fucape Business School, lecionando economia do desenvolvimento e políticas públicas para futuros economistas, gestores e empreendedores.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Publications Section -->
+    <section id="publicacoes" class="publications">
+        <h2 class="section-title">Publicações Recentes</h2>
+        <div class="publications-container">
+            <!-- Publicações organizadas por ano -->
+            <div class="publication-year">
+                <h3 class="year-header">2025</h3>
+                <div class="publications-grid">
+                    <!-- ARTIGOS DA GAZETA - Link padrão: https://www.agazeta.com.br/artigos/[titulo-do-artigo]-[mes][ano] -->
+                    <div class="publication-card">
+                        <div class="publication-header">
+                            <div class="publication-info">
+                                <h3>Crise do IOF é o preço da pressa fiscal?</h3>
+                                <p class="source">Jornal A Gazeta</p>
+                            </div>
+                            <span class="publication-date">Junho 2025</span>
+                        </div>
+                        <p>O artigo discute as novas alíquotas do IOF e os riscos de um ajuste fiscal mal planejado, analisando impactos na economia e na confiança dos investidores.</p>
+                        <a href="https://www.agazeta.com.br/artigos/crise-do-iof-e-o-preco-da-pressa-fiscal-0625" target="_blank" class="read-more">Ler artigo completo →</a>
+                    </div>
+                    
+                    <div class="publication-card">
+                        <div class="publication-header">
+                            <div class="publication-info">
+                                <h3>Reforma tributária e o novo paradigma da gestão fiscal das cidades</h3>
+                                <p class="source">Jornal A Gazeta</p>
+                            </div>
+                            <span class="publication-date">Abril 2025</span>
+                        </div>
+                        <p>Reflexões sobre os desafios e oportunidades para os municípios na reforma tributária, com foco em autonomia fiscal e eficiência administrativa.</p>
+                        <a href="https://www.agazeta.com.br/artigos/reforma-tributaria-e-o-novo-paradigma-da-gestao-fiscal-das-cidades-0425" target="_blank" class="read-more">Ler artigo completo →</a>
+                    </div>
+                    
+                    <div class="publication-card">
+                        <div class="publication-header">
+                            <div class="publication-info">
+                                <h3>Banco Master: como blindar seu dinheiro do risco de quebra de um banco</h3>
+                                <p class="source">Jornal A Gazeta</p>
+                            </div>
+                            <span class="publication-date">Abril 2025</span>
+                        </div>
+                        <p>Análise de estratégias de proteção patrimonial frente à instabilidade bancária, incluindo diversificação e instrumentos de garantia.</p>
+                        <a href="https://www.agazeta.com.br/artigos/banco-master-como-blindar-seu-dinheiro-do-risco-de-quebra-de-um-banco-0425" target="_blank" class="read-more">Ler artigo completo →</a>
+                    </div>
+                    
+                    <div class="publication-card">
+                        <div class="publication-header">
+                            <div class="publication-info">
+                                <h3>O Impacto da Reforma Tributária nas Finanças Municipais</h3>
+                                <p class="source">Revista ES Brasil</p>
+                            </div>
+                            <span class="publication-date">Março 2025</span>
+                        </div>
+                        <p>Análise aprofundada dos impactos da reforma tributária nas finanças municipais e a importância de uma gestão fiscal eficiente para enfrentar os novos desafios.</p>
+                        <a href="https://esbrasil.com.br/o-impacto-da-reforma-tributaria-nas-financas-municipais/" target="_blank" class="read-more">Ler artigo completo →</a>
+                    </div>
+                    
+                    <div class="publication-card">
+                        <div class="publication-header">
+                            <div class="publication-info">
+                                <h3>Inteligência Artificial e a Gestão Pública</h3>
+                                <p class="source">Revista ES Brasil</p>
+                            </div>
+                            <span class="publication-date">Fevereiro 2025</span>
+                        </div>
+                        <p>Discussão sobre como a IA pode ser utilizada para melhorar a eficiência e a transparência na administração pública, com casos práticos e perspectivas futuras.</p>
+                        <a href="https://esbrasil.com.br/inteligencia-artificial-e-a-gestao-publica/" target="_blank" class="read-more">Ler artigo completo →</a>
+                    </div>
+                    
+                    <div class="publication-card">
+                        <div class="publication-header">
+                            <div class="publication-info">
+                                <h3>Desafios Fiscais no Brasil Contemporâneo</h3>
+                                <p class="source">Revista ES Brasil</p>
+                            </div>
+                            <span class="publication-date">Janeiro 2025</span>
+                        </div>
+                        <p>Análise dos principais desafios enfrentados pelo Brasil em relação à política fiscal e propostas para superar obstáculos estruturais.</p>
+                        <a href="https://esbrasil.com.br/desafios-fiscais-no-brasil-contemporaneo/" target="_blank" class="read-more">Ler artigo completo →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Highlights Section -->
+            <div class="highlights-section">
+                <h3>Destaques e Repercussões</h3>
+                <div class="highlights-grid">
+                    <div class="highlight-card">
+                        <div class="metric">50k+</div>
+                        <div class="description">Visualizações no LinkedIn em artigos sobre IA e gestão pública</div>
+                    </div>
+                    <div class="highlight-card">
+                        <div class="metric">15+</div>
+                        <div class="description">Entrevistas concedidas para veículos de comunicação em 2024</div>
+                    </div>
+                    <div class="highlight-card">
+                        <div class="metric">3</div>
+                        <div class="description">Artigos citados em trabalhos acadêmicos sobre finanças públicas</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources Section -->
+    <section id="recursos" class="resources">
+        <h2 class="section-title">Materiais Acadêmicos</h2>
+        <div class="resources-intro">
+            <p>Materiais desenvolvidos para disciplinas na Fucape Business School, disponíveis para consulta acadêmica.</p>
+        </div>
+        <div class="resources-grid">
+            <div class="resource-card">
+                <div class="resource-icon">📊</div>
+                <h3>Teoria dos Monopólios</h3>
+                <p class="resource-meta">Microeconomia • Material Didático</p>
+                <p>Análise sobre estruturas de mercado monopolistas, com foco em implicações para desenvolvimento econômico.</p>
+                <div class="resource-actions">
+                    <a href="/materiais/teoria-monopolios.pdf" class="download-btn" target="_blank">Download PDF</a>
+                </div>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">💰</div>
+                <h3>Programas de Transferência de Renda</h3>
+                <p class="resource-meta">Desenvolvimento Econômico • Pesquisa</p>
+                <p>Estudo sobre impactos de programas sociais na redução da pobreza e desenvolvimento local.</p>
+                <div class="resource-actions">
+                    <a href="/materiais/transferencia-renda.pdf" class="download-btn" target="_blank">Download PDF</a>
+                </div>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">🌍</div>
+                <h3>Economia Institucional e Desenvolvimento</h3>
+                <p class="resource-meta">Economia do Desenvolvimento • Revisão</p>
+                <p>Revisão de literatura sobre o papel das instituições no desenvolvimento econômico regional.</p>
+                <div class="resource-actions">
+                    <a href="/materiais/economia-institucional.pdf" class="download-btn" target="_blank">Download PDF</a>
+                </div>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">📈</div>
+                <h3>Avaliação de Políticas Públicas</h3>
+                <p class="resource-meta">Métodos Quantitativos • Tutorial</p>
+                <p>Guia prático sobre métodos de avaliação de impacto inspirado em trabalhos de Esther Duflo.</p>
+                <div class="resource-actions">
+                    <a href="/materiais/avaliacao-politicas.pdf" class="download-btn" target="_blank">Download PDF</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Media Section -->
+    <section id="midia" class="media">
+        <h2 class="section-title">Participações em Mídia e Eventos</h2>
+        <div class="media-grid">
+            <div class="media-card">
+                <span class="type">Podcast</span>
+                <h3>Economistas - Cofecon</h3>
+                <p class="event-info">Episódio especial sobre IA nas finanças públicas</p>
+                <p>Discussão sobre o uso da inteligência artificial nas finanças públicas e a importância de regulação tecnológica no setor público.</p>
+            </div>
+            <div class="media-card">
+                <span class="type">Seminário</span>
+                <h3>Transparência Fiscal e Desigualdade</h3>
+                <p class="event-info">Corecon-ES - 2024</p>
+                <p>Palestra sobre experiências de Estados com nota A e lições para políticas redistributivas.</p>
+            </div>
+            <div class="media-card">
+                <span class="type">Workshop</span>
+                <h3>IA para Economistas</h3>
+                <p class="event-info">UFBA, Salvador - 2024</p>
+                <p>Oficina prática sobre uso de LLMs e inteligência artificial para projeções fiscais e análise de dados orçamentários.</p>
+            </div>
+            <div class="media-card">
+                <span class="type">Painel</span>
+                <h3>Reforma Tributária e Gestão Municipal</h3>
+                <p class="event-info">SEFAZ-ES - 2024</p>
+                <p>Participação como debatedor sobre critérios de repartição de receitas na nova estrutura tributária.</p>
+            </div>
+            <div class="media-card">
+                <span class="type">Conferência</span>
+                <h3>Economia Pública no Pós-100 Dias</h3>
+                <p class="event-info">Fucape - 2025</p>
+                <p>Mediação de painel com gestores públicos e pesquisadores sobre os desafios dos primeiros meses de governo.</p>
+            </div>
+            <div class="media-card">
+                <span class="type">Entrevista</span>
+                <h3>Programa Tribuna Livre</h3>
+                <p class="event-info">TV Gazeta - 2024</p>
+                <p>Entrevista sobre perspectivas econômicas para o Espírito Santo e o papel da inovação na gestão pública estadual.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Philosophy Section -->
+    <section id="filosofia" class="philosophy">
+        <h2 class="section-title">Visão e Propósito</h2>
+        <div class="philosophy-content">
+            <h3>Desenvolvimento Econômico com Justiça Social</h3>
+            <p>
+                O Brasil é um dos países mais desiguais do mundo. Com um índice de Gini de 0,52, ocupamos a 9ª posição no ranking global de desigualdade de renda. Os 10% mais ricos concentram mais de 50% da renda nacional, enquanto a metade mais pobre da população detém apenas 10%. Essa realidade torna o desenvolvimento econômico inclusivo não apenas uma escolha moral, mas uma necessidade estrutural para o país.
             </p>
-</div>
-</section>
-<!-- Contact Section -->
-<section class="contact" id="contato">
-<h2 class="section-title">Contato</h2>
-<div class="contact-content">
-<div class="contact-info">
-<p>Para colaborações acadêmicas, palestras, consultorias ou discussões sobre políticas públicas, entre em contato.</p>
-<div class="contact-links">
-<a class="contact-link" href="mailto:economista.araujo@gmail.com">
-<span>📧</span>
-<span>Email</span>
-</a>
-<a class="contact-link" href="https://www.linkedin.com/in/eduardo-araujo">
-<span>💼</span>
-<span>LinkedIn</span>
-</a>
-<a class="contact-link" href="https://www.bsg.ox.ac.uk/people/eduardo-araujo">
-<span>🎓</span>
-<span>Oxford Profile</span>
-</a>
-</div>
-</div>
-</div>
-</section>
-<!-- Footer -->
-<footer>
-<p>© 2025 Eduardo Araújo. Todos os direitos reservados.</p>
-</footer>
-<script>
+            <p>
+                Minha trajetória acadêmica e profissional é guiada pela convicção de que políticas públicas baseadas em evidências podem transformar essa realidade. A experiência em Oxford, estudando casos de sucesso global em redução da pobreza, reforçou minha crença de que o Brasil tem potencial para implementar programas de transferência de renda e fortalecimento institucional que promovam mobilidade social e desenvolvimento sustentável.
+            </p>
+            <p>
+                Na Fucape Business School, trabalho com futuros empreendedores e gestores públicos, compartilhando não apenas conhecimento técnico, mas também a visão de que negócios e políticas públicas podem – e devem – ser instrumentos de transformação social. Acredito que essa nova geração de líderes tem o potencial de criar soluções inovadoras para nossos desafios históricos de desigualdade.
+            </p>
+            
+            <div class="philosophy-values">
+                <div class="value-item">
+                    <div class="icon">📊</div>
+                    <h4>Evidências</h4>
+                    <p>Políticas baseadas em dados e avaliação rigorosa de impacto</p>
+                </div>
+                <div class="value-item">
+                    <div class="icon">🎯</div>
+                    <h4>Equidade</h4>
+                    <p>Foco em redução de desigualdades e inclusão social</p>
+                </div>
+                <div class="value-item">
+                    <div class="icon">🌱</div>
+                    <h4>Sustentabilidade</h4>
+                    <p>Desenvolvimento que perdura e transforma comunidades</p>
+                </div>
+                <div class="value-item">
+                    <div class="icon">🤝</div>
+                    <h4>Colaboração</h4>
+                    <p>Construção coletiva de soluções com a sociedade</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contato" class="contact">
+        <h2 class="section-title">Contato</h2>
+        <div class="contact-content">
+            <div class="contact-info">
+                <p>Para colaborações acadêmicas, palestras, consultorias ou discussões sobre políticas públicas, entre em contato.</p>
+                <div class="contact-links">
+                    <a href="mailto:economista.araujo@gmail.com" class="contact-link">
+                        <span>📧</span>
+                        <span>Email</span>
+                    </a>
+                    <a href="https://www.linkedin.com/in/eduardoaraujompp" class="contact-link" target="_blank" rel="noopener noreferrer">
+                        <span>💼</span>
+                        <span>LinkedIn</span>
+                    </a>
+                    <a href="https://www.bsg.ox.ac.uk/people/eduardo-araujo" class="contact-link" target="_blank" rel="noopener noreferrer">
+                        <span>🎓</span>
+                        <span>Oxford Profile</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Eduardo Araújo. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Structured Data for Articles -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": [
+            {
+                "@type": "Article",
+                "headline": "Crise do IOF é o preço da pressa fiscal?",
+                "author": {
+                    "@type": "Person",
+                    "name": "Eduardo Araújo"
+                },
+                "publisher": {
+                    "@type": "Organization",
+                    "name": "Jornal A Gazeta"
+                },
+                "datePublished": "2025-06-01",
+                "url": "https://www.agazeta.com.br/artigos/crise-do-iof-e-o-preco-da-pressa-fiscal-0625"
+            },
+            {
+                "@type": "Article",
+                "headline": "Reforma tributária e o novo paradigma da gestão fiscal das cidades",
+                "author": {
+                    "@type": "Person",
+                    "name": "Eduardo Araújo"
+                },
+                "publisher": {
+                    "@type": "Organization",
+                    "name": "Jornal A Gazeta"
+                },
+                "datePublished": "2025-04-01",
+                "url": "https://www.agazeta.com.br/artigos/reforma-tributaria-e-o-novo-paradigma-da-gestao-fiscal-das-cidades-0425"
+            },
+            {
+                "@type": "Article",
+                "headline": "Banco Master: como blindar seu dinheiro do risco de quebra de um banco",
+                "author": {
+                    "@type": "Person",
+                    "name": "Eduardo Araújo"
+                },
+                "publisher": {
+                    "@type": "Organization",
+                    "name": "Jornal A Gazeta"
+                },
+                "datePublished": "2025-04-15",
+                "url": "https://www.agazeta.com.br/artigos/banco-master-como-blindar-seu-dinheiro-do-risco-de-quebra-de-um-banco-0425"
+            }
+        ]
+    }
+    </script>
+
+    <!-- Structured Data for Educational Resources -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "EducationalResource",
+        "educationalLevel": "Graduate",
+        "provider": {
+            "@type": "Person",
+            "name": "Eduardo Araújo",
+            "jobTitle": "Professor - Fucape Business School"
+        },
+        "about": [
+            {
+                "@type": "Thing",
+                "name": "Desenvolvimento Econômico"
+            },
+            {
+                "@type": "Thing",
+                "name": "Economia Institucional"
+            },
+            {
+                "@type": "Thing",
+                "name": "Políticas de Transferência de Renda"
+            },
+            {
+                "@type": "Thing",
+                "name": "Avaliação de Impacto"
+            }
+        ]
+    }
+    </script>
+
+    <script>
+        // Loading Screen
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+            }, 500);
+        });
+
         // Mobile Menu Toggle
         const menuToggle = document.getElementById('menuToggle');
         const navLinks = document.getElementById('navLinks');
@@ -1010,26 +1544,6 @@
             observer.observe(section);
         });
 
-        // Publications Filter
-        function filterPublications(source) {
-            const buttons = document.querySelectorAll('.filter-btn');
-            const cards = document.querySelectorAll('.publication-card');
-            
-            buttons.forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            event.target.classList.add('active');
-            
-            cards.forEach(card => {
-                if (source === 'all' || card.dataset.source === source) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-
         // Header scroll effect
         let lastScroll = 0;
         window.addEventListener('scroll', () => {
@@ -1046,6 +1560,32 @@
             
             lastScroll = currentScroll;
         });
+
+        // Auto-update year in footer
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearElement = document.querySelector('footer p');
+            const currentYear = new Date().getFullYear();
+            yearElement.textContent = `© ${currentYear} Eduardo Araújo. Todos os direitos reservados.`;
+        });
+
+        // Lazy loading for images
+        const images = document.querySelectorAll('img');
+        const imageOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px 50px 0px"
+        };
+
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src || img.src;
+                    observer.unobserve(img);
+                }
+            });
+        }, imageOptions);
+
+        images.forEach(img => imageObserver.observe(img));
     </script>
 </body>
 </html>
