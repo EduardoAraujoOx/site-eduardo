@@ -1,0 +1,47 @@
+# Workflow para deploy automatico no GitHub Pages
+name: Deploy to GitHub Pages
+
+on:
+  # Executa no push para a branch main
+  push:
+    branches: ["main"]
+
+  # Permite execucao manual
+  workflow_dispatch:
+
+# Permissoes para deploy no Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Evita deploys simultaneos
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Job de deploy
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload do diretorio raiz
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
