@@ -882,16 +882,251 @@ section.visible {
     box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
 }
 
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    border-radius: 30px;
+    font-weight: 500;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all var(--transition-normal);
+    cursor: pointer;
+    border: none;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: var(--bg-dark);
+}
+
+.btn-primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+}
+
+.btn-secondary:hover {
+    background: var(--accent);
+    color: var(--bg-dark);
+    transform: translateY(-3px);
+}
+
+.hero-cta {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+/* Contact Form */
+.contact-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.contact-info {
+    background: var(--bg-section);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+}
+
+.contact-info h3 {
+    color: var(--accent);
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-md);
+    font-weight: 400;
+}
+
+.contact-info .contact-links {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+}
+
+.contact-info .contact-link {
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.contact-form-wrapper {
+    background: var(--bg-section);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.8rem 1rem;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color var(--transition-normal);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.6;
+}
+
+.form-group select {
+    cursor: pointer;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.btn-submit {
+    width: 100%;
+    margin-top: var(--spacing-sm);
+}
+
 /* ==========================================================================
    13. Footer
    ========================================================================== */
 
 footer {
-    text-align: center;
-    padding: var(--spacing-xl) var(--spacing-lg);
     border-top: 1px solid var(--border);
     color: var(--text-secondary);
     font-size: 0.9rem;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-xl) var(--spacing-lg);
+    gap: var(--spacing-xl);
+}
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.footer-logo {
+    font-size: 1.4rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    color: var(--accent);
+    text-transform: uppercase;
+}
+
+.footer-brand p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.footer-links {
+    display: flex;
+    gap: var(--spacing-xxl);
+}
+
+.footer-nav h4,
+.footer-social h4 {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: var(--spacing-sm);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.footer-nav ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.footer-nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color var(--transition-normal);
+}
+
+.footer-nav a:hover {
+    color: var(--accent);
+}
+
+.social-icons {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.social-icons a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--accent);
+    transition: all var(--transition-normal);
+}
+
+.social-icons a:hover {
+    background: var(--accent);
+    color: var(--bg-dark);
+    transform: translateY(-3px);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-top: 1px solid var(--border);
+}
+
+.footer-bottom p {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
 }
 
 /* ==========================================================================
@@ -1074,7 +1309,11 @@ footer {
         transform: translateX(5px);
     }
 
-    /* Contact links */
+    /* Contact */
+    .contact-container {
+        grid-template-columns: 1fr;
+    }
+
     .contact-links {
         flex-direction: column;
         gap: var(--spacing-sm);
@@ -1082,6 +1321,43 @@ footer {
 
     .contact-link {
         justify-content: center;
+    }
+
+    /* Footer */
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-lg);
+    }
+
+    .footer-brand {
+        align-items: center;
+    }
+
+    .footer-links {
+        flex-direction: column;
+        gap: var(--spacing-lg);
+        width: 100%;
+    }
+
+    .footer-nav,
+    .footer-social {
+        text-align: center;
+    }
+
+    .social-icons {
+        justify-content: center;
+    }
+
+    /* Hero CTA */
+    .hero-cta {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero-cta .btn {
+        width: 100%;
+        max-width: 250px;
     }
 }
 
