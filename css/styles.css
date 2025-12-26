@@ -194,6 +194,39 @@ nav {
     transform: rotate(-45deg) translate(5px, -5px);
 }
 
+/* Language Toggle */
+.lang-toggle {
+    display: flex;
+    gap: 0;
+    background: var(--bg-section);
+    border-radius: var(--radius-md);
+    padding: 0.25rem;
+    border: 1px solid var(--border);
+}
+
+.lang-toggle button {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-normal);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.lang-toggle button:hover {
+    color: var(--text-primary);
+}
+
+.lang-toggle button.active {
+    background: var(--accent);
+    color: var(--bg-dark);
+}
+
 /* ==========================================================================
    4. Hero Section
    ========================================================================== */
@@ -546,52 +579,23 @@ section.visible {
     gap: 0.8rem;
 }
 
-/* Highlights Section */
-.highlights-section {
-    background: var(--bg-section);
-    padding: var(--spacing-xl);
-    border-radius: var(--radius-lg);
-    margin-top: var(--spacing-xl);
-    border: 1px solid var(--border);
-}
-
-.highlights-section h3 {
-    color: var(--accent);
-    margin-bottom: var(--spacing-lg);
-    font-size: 1.5rem;
-    text-align: center;
-}
-
-.highlights-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: var(--spacing-lg);
-}
-
-.highlight-card {
-    background: var(--bg-dark);
-    padding: var(--spacing-md);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border);
-    transition: all var(--transition-normal);
-    text-align: center;
-}
-
-.highlight-card:hover {
-    transform: translateY(-3px);
+/* Pinned Publication Badge */
+.publication-card.pinned {
     border-color: var(--accent);
+    background: linear-gradient(135deg, var(--bg-section) 0%, rgba(212, 175, 55, 0.05) 100%);
 }
 
-.highlight-card .metric {
-    font-size: 2rem;
-    color: var(--accent);
-    font-weight: 300;
-    margin-bottom: 0.5rem;
-}
-
-.highlight-card .description {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
+.pinned-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--bg-dark);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--spacing-sm);
 }
 
 /* ==========================================================================
@@ -1241,6 +1245,19 @@ footer {
 
     .mobile-menu-toggle {
         display: flex;
+    }
+
+    /* Language Toggle Mobile */
+    .lang-toggle {
+        position: absolute;
+        right: 60px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .lang-toggle button {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.7rem;
     }
 
     /* Hero */
