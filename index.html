@@ -74,11 +74,15 @@
         <nav aria-label="Navegação principal">
             <div class="logo">Eduardo Araujo</div>
             <ul class="nav-links" id="navLinks" role="menubar">
-                <li role="none"><a href="#sobre" role="menuitem">Sobre</a></li>
-                <li role="none"><a href="#publicacoes" role="menuitem">Publicações</a></li>
-                <li role="none"><a href="#recursos" role="menuitem">Materiais</a></li>
-                <li role="none"><a href="#contato" role="menuitem">Contato</a></li>
+                <li role="none"><a href="#sobre" role="menuitem" data-i18n="nav.about">Sobre</a></li>
+                <li role="none"><a href="#publicacoes" role="menuitem" data-i18n="nav.publications">Publicações</a></li>
+                <li role="none"><a href="#recursos" role="menuitem" data-i18n="nav.materials">Materiais</a></li>
+                <li role="none"><a href="#contato" role="menuitem" data-i18n="nav.contact">Contato</a></li>
             </ul>
+            <div class="lang-toggle" id="langToggle" role="group" aria-label="Selecionar idioma">
+                <button data-lang-switch="pt" data-value="pt" class="active" aria-label="Português">PT</button>
+                <button data-lang-switch="en" data-value="en" aria-label="English">EN</button>
+            </div>
             <button class="mobile-menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="navLinks">
                 <span></span>
                 <span></span>
@@ -241,25 +245,6 @@
                         </article>
                     </div>
                 </div>
-
-                <!-- Highlights Section -->
-                <aside class="highlights-section" aria-labelledby="highlights-title">
-                    <h3 id="highlights-title">Destaques e Repercussões</h3>
-                    <div class="highlights-grid">
-                        <div class="highlight-card">
-                            <div class="metric">50k+</div>
-                            <div class="description">Visualizações no LinkedIn em artigos sobre IA e gestão pública</div>
-                        </div>
-                        <div class="highlight-card">
-                            <div class="metric">15+</div>
-                            <div class="description">Entrevistas concedidas para veículos de comunicação em 2024</div>
-                        </div>
-                        <div class="highlight-card">
-                            <div class="metric">3</div>
-                            <div class="description">Artigos citados em trabalhos acadêmicos sobre finanças públicas</div>
-                        </div>
-                    </div>
-                </aside>
             </div>
         </section>
 
@@ -452,7 +437,9 @@
     }
     </script>
 
-    <!-- Main JavaScript -->
+    <!-- JavaScript -->
+    <script src="js/i18n.js"></script>
+    <script src="js/publications.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
