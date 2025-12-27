@@ -284,6 +284,68 @@
     }
 
     // ==========================================================================
+    // Contact Form (AJAX submission)
+    // ==========================================================================
+
+    function initContactForm() {
+        const form = document.querySelector('.contact-form');
+        if (!form) return;
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Enviando...';
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Success - show message
+                    showFormMessage(form, 'success', 'Mensagem enviada com sucesso! Entrarei em contato em breve.');
+                    form.reset();
+                } else {
+                    throw new Error('Erro no envio');
+                }
+            } catch (error) {
+                showFormMessage(form, 'error', 'Erro ao enviar mensagem. Tente novamente ou envie um email diretamente.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+    }
+
+    function showFormMessage(form, type, message) {
+        // Remove existing message
+        const existingMsg = form.querySelector('.form-message');
+        if (existingMsg) existingMsg.remove();
+
+        // Create message element
+        const msgEl = document.createElement('div');
+        msgEl.className = `form-message form-message-${type}`;
+        msgEl.textContent = message;
+
+        // Insert after submit button
+        form.appendChild(msgEl);
+
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            msgEl.remove();
+        }, 5000);
+    }
+
+    // ==========================================================================
     // Initialize
     // ==========================================================================
 
@@ -306,6 +368,7 @@
         updateFooterYear();
         initAccessibility();
         initImageErrorHandling();
+        initContactForm();
     }
 
     // Start the application
