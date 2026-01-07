@@ -31,7 +31,12 @@
 
     <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://www.googletagmanager.com">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
     <!-- Stylesheet -->
     <link rel="stylesheet" href="css/styles.css">
 
@@ -145,19 +150,39 @@
     <main id="main-content">
         <!-- Hero Section -->
         <section class="hero" aria-label="Introducao">
+            <!-- Foto de fundo -->
+            <div class="hero-photo">
+                <img src="images/profile2.jpg"
+                     alt="Eduardo Reis Araujo"
+                     loading="eager">
+            </div>
+
+            <!-- Gradientes de sobreposição -->
+            <div class="hero-gradient-horizontal"></div>
+            <div class="hero-gradient-bottom"></div>
+            <div class="hero-gradient-top"></div>
+
+            <!-- Conteúdo principal -->
             <div class="hero-content">
-                <div class="profile-photo-container">
-                    <img src="images/profile.jpg"
-                         alt="Eduardo Reis Araujo - Economista e Professor"
-                         loading="eager"
-                         width="320"
-                         height="320">
-                </div>
-                <h1>Eduardo Reis Araujo</h1>
-                <p class="subtitle" data-i18n="hero.subtitle">Economista • Tesouro ES • Professor Fucape • Oxford MPP</p>
+                <h1 class="hero-title" data-i18n="hero.title">Políticas públicas orientadas por evidências</h1>
+                <p class="hero-subtitle" data-i18n="hero.description">Artigos de opinião, análises e materiais sobre política fiscal e desenvolvimento econômico.</p>
+
                 <div class="hero-cta">
-                    <a href="#publicacoes" class="btn btn-primary" data-i18n="hero.viewPublications">Artigos & Análises</a>
-                    <a href="#contato" class="btn btn-secondary" data-i18n="hero.getInTouch">Contato Profissional</a>
+                    <a href="#publicacoes" class="btn btn-primary" data-i18n="hero.viewPublications">
+                        Ler Análises
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                        </svg>
+                    </a>
+                    <a href="#contato" class="btn btn-secondary" data-i18n="hero.getInTouch">Contato</a>
+                </div>
+
+                <div class="hero-meta">
+                    <span>Economista</span>
+                    <span class="meta-dot">•</span>
+                    <span>Setor Público</span>
+                    <span class="meta-dot">•</span>
+                    <span>Oxford</span>
                 </div>
             </div>
         </section>
