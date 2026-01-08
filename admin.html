@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Gerenciar Publicações | Eduardo Araujo</title>
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-section: #111111;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent: #d4af37;
+            --accent-hover: #e5c349;
+            --border: #222222;
+            --success: #22c55e;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .admin-header h1 {
+            font-size: 1.5rem;
+            font-weight: 400;
+        }
+
+        .admin-header a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-dark);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background: var(--bg-section);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        /* Publications Table */
+        .publications-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+
+        .publications-table th,
+        .publications-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .publications-table th {
+            background: var(--bg-section);
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .publications-table tr:hover {
+            background: var(--bg-section);
+        }
+
+        .pub-title {
+            font-weight: 500;
+            max-width: 300px;
+        }
+
+        .pinned-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--bg-dark);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 2rem;
+        }
+
+        .modal-content {
+            background: var(--bg-section);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 600px;
+            margin: 2rem 0;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h2 {
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-group input {
+            width: auto;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 1rem;
+            }
+
+            .publications-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        /* Drag handle */
+        .drag-handle {
+            cursor: grab;
+            color: var(--text-secondary);
+            padding: 0.5rem;
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        tr.dragging {
+            opacity: 0.5;
+        }
+
+        /* Instructions */
+        .instructions {
+            background: var(--bg-section);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .instructions h3 {
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .instructions ol {
+            margin-left: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+
+        .instructions code {
+            background: var(--bg-dark);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        /* Password Overlay */
+        .password-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .password-overlay.hidden {
+            display: none;
+        }
+
+        .password-box {
+            background: var(--bg-section);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .password-box h2 {
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+            font-weight: 400;
+        }
+
+        .password-box p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .password-box input {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .password-box input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .password-box .error-msg {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .password-box .error-msg.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Password Protection -->
+    <div class="password-overlay" id="passwordOverlay">
+        <div class="password-box">
+            <h2>Área Restrita</h2>
+            <p>Digite a senha para acessar o painel de administração</p>
+            <input type="password" id="adminPassword" placeholder="Senha" onkeypress="if(event.key==='Enter')checkPassword()">
+            <div class="error-msg" id="passwordError">Senha incorreta</div>
+            <button class="btn btn-primary" onclick="checkPassword()" style="width: 100%">Entrar</button>
+        </div>
+    </div>
+
+    <div class="admin-container">
+        <header class="admin-header">
+            <h1>Gerenciar Publicações</h1>
+            <a href="index.html">← Voltar ao site</a>
+        </header>
+
+        <div class="instructions">
+            <h3>Como usar</h3>
+            <ol>
+                <li>Adicione, edite ou exclua publicações usando os botões abaixo</li>
+                <li>Use o checkbox "Fixar" para destacar publicações importantes (aparecem primeiro)</li>
+                <li>Clique em "Exportar JSON" para baixar o arquivo atualizado</li>
+                <li>Substitua o arquivo <code>data/publications.json</code> pelo arquivo baixado</li>
+                <li>Faça commit e push das alterações para atualizar o site</li>
+            </ol>
+        </div>
+
+        <div class="admin-actions">
+            <button class="btn btn-primary" onclick="openAddModal()">
+                + Nova Publicação
+            </button>
+            <button class="btn btn-secondary" onclick="exportJSON()">
+                Exportar JSON
+            </button>
+            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">
+                Importar JSON
+            </button>
+            <input type="file" id="importFile" accept=".json" style="display: none" onchange="importJSON(event)">
+        </div>
+
+        <div id="publicationsList">
+            <!-- Publications will be rendered here -->
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal" id="publicationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Nova Publicação</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="publicationForm">
+                    <input type="hidden" id="pubId">
+
+                    <div class="form-group">
+                        <label for="pubTitle">Título (Português) *</label>
+                        <input type="text" id="pubTitle" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pubTitleEn">Título (English)</label>
+                        <input type="text" id="pubTitleEn">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="pubSource">Fonte *</label>
+                            <input type="text" id="pubSource" required placeholder="Ex: Jornal A Gazeta">
+                        </div>
+                        <div class="form-group">
+                            <label for="pubDate">Data *</label>
+                            <input type="month" id="pubDate" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pubUrl">URL do Artigo *</label>
+                        <input type="url" id="pubUrl" required placeholder="https://...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pubDesc">Descrição (Português) *</label>
+                        <textarea id="pubDesc" required placeholder="Breve descrição do artigo..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pubDescEn">Descrição (English)</label>
+                        <textarea id="pubDescEn" placeholder="Brief description of the article..."></textarea>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="pubPinned">
+                        <label for="pubPinned">Fixar publicação (aparece em destaque)</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="savePublication()">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let publications = [];
+        let editingId = null;
+
+        // Admin password - change this to your desired password
+        const ADMIN_PASSWORD = 'eduardo2025';
+
+        // Check if already authenticated
+        function checkAuth() {
+            return sessionStorage.getItem('admin_authenticated') === 'true';
+        }
+
+        // Password check function
+        function checkPassword() {
+            const input = document.getElementById('adminPassword');
+            const error = document.getElementById('passwordError');
+
+            if (input.value === ADMIN_PASSWORD) {
+                sessionStorage.setItem('admin_authenticated', 'true');
+                document.getElementById('passwordOverlay').classList.add('hidden');
+                loadPublications();
+            } else {
+                error.classList.add('show');
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        // On page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (checkAuth()) {
+                document.getElementById('passwordOverlay').classList.add('hidden');
+                loadPublications();
+            }
+        });
+
+        async function loadPublications() {
+            try {
+                // Try to load from localStorage first (for unsaved changes)
+                const saved = localStorage.getItem('publications_draft');
+                if (saved) {
+                    publications = JSON.parse(saved);
+                } else {
+                    // Load from file
+                    const response = await fetch('data/publications.json');
+                    const data = await response.json();
+                    publications = data.publications;
+                }
+                renderPublications();
+            } catch (error) {
+                console.error('Error loading publications:', error);
+                publications = [];
+                renderPublications();
+            }
+        }
+
+        function renderPublications() {
+            const container = document.getElementById('publicationsList');
+
+            if (publications.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>Nenhuma publicação</h3>
+                        <p>Clique em "Nova Publicação" para adicionar.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort: pinned first, then by date
+            const sorted = [...publications].sort((a, b) => {
+                if (a.pinned && !b.pinned) return -1;
+                if (!a.pinned && b.pinned) return 1;
+                return new Date(b.date) - new Date(a.date);
+            });
+
+            let html = `
+                <table class="publications-table">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Fonte</th>
+                            <th>Data</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            sorted.forEach(pub => {
+                const pinnedBadge = pub.pinned ? '<span class="pinned-badge">FIXADO</span>' : '';
+                html += `
+                    <tr>
+                        <td class="pub-title">${pub.title}${pinnedBadge}</td>
+                        <td>${pub.source}</td>
+                        <td>${formatDate(pub.date)}</td>
+                        <td class="actions-cell">
+                            <button class="btn btn-secondary btn-small" onclick="togglePin('${pub.id}')">
+                                ${pub.pinned ? 'Desafixar' : 'Fixar'}
+                            </button>
+                            <button class="btn btn-secondary btn-small" onclick="editPublication('${pub.id}')">
+                                Editar
+                            </button>
+                            <button class="btn btn-danger btn-small" onclick="deletePublication('${pub.id}')">
+                                Excluir
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function formatDate(dateStr) {
+            const [year, month] = dateStr.split('-');
+            const months = {
+                '01': 'Jan', '02': 'Fev', '03': 'Mar', '04': 'Abr',
+                '05': 'Mai', '06': 'Jun', '07': 'Jul', '08': 'Ago',
+                '09': 'Set', '10': 'Out', '11': 'Nov', '12': 'Dez'
+            };
+            return `${months[month]} ${year}`;
+        }
+
+        function openAddModal() {
+            editingId = null;
+            document.getElementById('modalTitle').textContent = 'Nova Publicação';
+            document.getElementById('publicationForm').reset();
+            document.getElementById('publicationModal').classList.add('active');
+        }
+
+        function editPublication(id) {
+            const pub = publications.find(p => p.id === id);
+            if (!pub) return;
+
+            editingId = id;
+            document.getElementById('modalTitle').textContent = 'Editar Publicação';
+            document.getElementById('pubId').value = pub.id;
+            document.getElementById('pubTitle').value = pub.title;
+            document.getElementById('pubTitleEn').value = pub.title_en || '';
+            document.getElementById('pubSource').value = pub.source;
+            document.getElementById('pubDate').value = pub.date;
+            document.getElementById('pubUrl').value = pub.url;
+            document.getElementById('pubDesc').value = pub.description;
+            document.getElementById('pubDescEn').value = pub.description_en || '';
+            document.getElementById('pubPinned').checked = pub.pinned;
+
+            document.getElementById('publicationModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('publicationModal').classList.remove('active');
+            editingId = null;
+        }
+
+        function savePublication() {
+            const form = document.getElementById('publicationForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const pub = {
+                id: editingId || Date.now().toString(),
+                title: document.getElementById('pubTitle').value,
+                title_en: document.getElementById('pubTitleEn').value || '',
+                source: document.getElementById('pubSource').value,
+                date: document.getElementById('pubDate').value,
+                year: parseInt(document.getElementById('pubDate').value.split('-')[0]),
+                description: document.getElementById('pubDesc').value,
+                description_en: document.getElementById('pubDescEn').value || '',
+                url: document.getElementById('pubUrl').value,
+                pinned: document.getElementById('pubPinned').checked
+            };
+
+            if (editingId) {
+                // Update existing
+                const index = publications.findIndex(p => p.id === editingId);
+                if (index !== -1) {
+                    publications[index] = pub;
+                }
+                showToast('Publicação atualizada!', 'success');
+            } else {
+                // Add new
+                publications.push(pub);
+                showToast('Publicação adicionada!', 'success');
+            }
+
+            saveToLocalStorage();
+            renderPublications();
+            closeModal();
+        }
+
+        function deletePublication(id) {
+            if (!confirm('Tem certeza que deseja excluir esta publicação?')) return;
+
+            publications = publications.filter(p => p.id !== id);
+            saveToLocalStorage();
+            renderPublications();
+            showToast('Publicação excluída!', 'success');
+        }
+
+        function togglePin(id) {
+            const pub = publications.find(p => p.id === id);
+            if (pub) {
+                pub.pinned = !pub.pinned;
+                saveToLocalStorage();
+                renderPublications();
+                showToast(pub.pinned ? 'Publicação fixada!' : 'Publicação desafixada!', 'success');
+            }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('publications_draft', JSON.stringify(publications));
+        }
+
+        function exportJSON() {
+            const data = { publications: publications };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'publications.json';
+            a.click();
+            URL.revokeObjectURL(url);
+
+            // Clear draft after export
+            localStorage.removeItem('publications_draft');
+            showToast('JSON exportado! Substitua o arquivo data/publications.json', 'success');
+        }
+
+        function importJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.publications && Array.isArray(data.publications)) {
+                        publications = data.publications;
+                        saveToLocalStorage();
+                        renderPublications();
+                        showToast('JSON importado com sucesso!', 'success');
+                    } else {
+                        throw new Error('Invalid format');
+                    }
+                } catch (error) {
+                    showToast('Erro ao importar JSON. Verifique o formato.', 'error');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Close modal on backdrop click
+        document.getElementById('publicationModal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) closeModal();
+        });
+    </script>
+</body>
+</html>
