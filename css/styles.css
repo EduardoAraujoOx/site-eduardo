@@ -41,6 +41,12 @@
     --border: rgba(255, 255, 255, 0.08);
     --oxford-blue: #002147;
 
+    /* Typography - Desktop */
+    --hero-title-size: 3rem;
+    --hero-subtitle-size: 1.1rem;
+    --hero-btn-size: 0.95rem;
+    --logo-size: 1.4rem;
+
     /* Spacing */
     --spacing-xs: 0.5rem;
     --spacing-sm: 1rem;
@@ -59,6 +65,25 @@
     --radius-md: 10px;
     --radius-lg: 15px;
     --radius-full: 50%;
+}
+
+/* Responsive Typography Variables */
+@media (max-width: 768px) {
+    :root {
+        --hero-title-size: 1.6rem;
+        --hero-subtitle-size: 0.9rem;
+        --hero-btn-size: 0.85rem;
+        --logo-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --hero-title-size: 1.4rem;
+        --hero-subtitle-size: 0.85rem;
+        --hero-btn-size: 0.8rem;
+        --logo-size: 0.9rem;
+    }
 }
 
 /* ==========================================================================
@@ -119,7 +144,7 @@ nav {
 }
 
 .logo {
-    font-size: 1.4rem;
+    font-size: var(--logo-size);
     font-weight: 300;
     letter-spacing: 1px;
     color: var(--accent);
@@ -321,8 +346,8 @@ nav {
     font-weight: 400;
     line-height: 1.2;
     color: #d4a855;
-    font-size: clamp(1.35rem, 2.8vw, 3rem);
-    margin-bottom: 1.5rem;
+    font-size: var(--hero-title-size);
+    margin-bottom: 1rem;
     margin-top: 0;
 }
 
@@ -330,9 +355,9 @@ nav {
 .hero-subtitle {
     font-weight: 300;
     color: #94a3b8;
-    line-height: 1.7;
-    font-size: clamp(0.8rem, 1.2vw, 1.1rem);
-    margin-bottom: 2.5rem;
+    line-height: 1.6;
+    font-size: var(--hero-subtitle-size);
+    margin-bottom: 1.5rem;
     margin-top: 0;
     max-width: 480px;
 }
@@ -1505,10 +1530,6 @@ footer {
 @media (max-width: 480px) {
     nav {
         padding: 1rem;
-    }
-
-    .logo {
-        font-size: 0.9rem;
     }
 
     /* Hero - Mobile (uses hero-bg2.png with built-in gradient) */
