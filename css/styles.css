@@ -1557,10 +1557,9 @@ footer {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        object-position: 70% 35%;
+        object-position: 65% 50%;
     }
 
-    /* Disable CSS gradients on mobile - image has built-in gradient */
     .hero-gradient-horizontal,
     .hero-gradient-bottom {
         display: none;
@@ -1576,29 +1575,35 @@ footer {
     .hero-content {
         position: relative;
         width: 100%;
-        max-width: 320px;
-        padding: clamp(88px, 14vh, 140px) 20px clamp(32px, 10vh, 120px) 20px;
-        padding-top: calc(clamp(88px, 14vh, 140px) + env(safe-area-inset-top, 0px));
-        padding-bottom: calc(clamp(32px, 10vh, 120px) + env(safe-area-inset-bottom, 0px));
+        max-width: 280px;
+        padding: 100px 24px 40px 24px;
+        padding-top: calc(100px + env(safe-area-inset-top, 0px));
+        padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
         justify-content: flex-start;
         min-height: auto;
         z-index: 10;
     }
 
     .hero-title {
-        line-height: 0.98;
-        letter-spacing: -0.015em;
+        font-size: clamp(32px, 8vw, 42px);
+        line-height: 1.05;
+        letter-spacing: -0.01em;
     }
 
     .hero-subtitle {
-        max-width: 280px;
-        margin-top: 14px;
-        padding: 10px 12px;
-        background: rgba(10, 14, 25, 0.35);
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
-        border-radius: 10px;
-        margin-left: -12px;
+        max-width: 260px;
+        margin-top: 20px;
+        margin-bottom: 28px;
+        padding: 0;
+        background: none;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        border-radius: 0;
+        margin-left: 0;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: rgba(148, 163, 184, 0.95);
+        text-shadow: 0 1px 3px rgba(0,0,0,0.5);
     }
 
     .hero-cta {
@@ -1608,14 +1613,18 @@ footer {
     }
 
     .hero-cta .btn {
-        width: min(260px, 78vw);
-        height: 48px;
-        padding: 0;
+        width: 200px;
+        height: 44px;
+        padding: 0 20px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 16px;
-        border-radius: 10px;
+        font-size: 15px;
+        border-radius: 6px;
+    }
+
+    .hero-cta .btn svg {
+        display: none;
     }
 
     .hero-meta {
