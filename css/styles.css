@@ -70,19 +70,19 @@
 /* Responsive Typography Variables */
 @media (max-width: 768px) {
     :root {
-        --hero-title-size: 1.6rem;
+        --hero-title-size: clamp(32px, 7vw, 44px);
         --hero-subtitle-size: 0.9rem;
-        --hero-btn-size: 0.85rem;
-        --logo-size: 1rem;
+        --hero-btn-size: 0.9rem;
+        --logo-size: 0.95rem;
     }
 }
 
 @media (max-width: 480px) {
     :root {
-        --hero-title-size: 1.4rem;
+        --hero-title-size: clamp(28px, 7.5vw, 38px);
         --hero-subtitle-size: 0.85rem;
-        --hero-btn-size: 0.8rem;
-        --logo-size: 0.9rem;
+        --hero-btn-size: 0.875rem;
+        --logo-size: 0.85rem;
     }
 }
 
@@ -344,22 +344,25 @@ nav {
 .hero-title {
     font-family: 'Libre Baskerville', Georgia, serif;
     font-weight: 400;
-    line-height: 1.2;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
     color: #d4a855;
     font-size: var(--hero-title-size);
-    margin-bottom: 1rem;
+    margin-bottom: 0.875rem;
     margin-top: 0;
 }
 
 /* Subtítulo / descrição */
 .hero-subtitle {
+    position: relative;
     font-weight: 300;
-    color: #94a3b8;
-    line-height: 1.6;
+    color: rgba(148, 163, 184, 0.95);
+    line-height: 1.5;
     font-size: var(--hero-subtitle-size);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
     margin-top: 0;
     max-width: 480px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
 
 /* Metadados - posicionados no rodapé do hero */
@@ -1534,38 +1537,27 @@ footer {
 
     /* Hero - Mobile (uses hero-bg2.png with built-in gradient) */
     .hero {
-        height: 100vh;
-        min-height: 650px;
+        min-height: 100svh;
         background: #080c18;
     }
 
     .hero-photo {
         position: absolute;
+        inset: 0;
         width: 100%;
         height: 100%;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        opacity: 1;
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;
     }
 
     .hero-photo picture {
         width: 100%;
         height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;
     }
 
     .hero-photo img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        object-position: center top;
+        object-position: 70% 35%;
     }
 
     /* Disable CSS gradients on mobile - image has built-in gradient */
@@ -1576,18 +1568,54 @@ footer {
 
     .hero-gradient-top {
         background: linear-gradient(to bottom,
-            rgba(8,12,24,0.9) 0%,
-            rgba(8,12,24,0.6) 60px,
-            transparent 120px);
+            rgba(8,12,24,0.95) 0%,
+            rgba(8,12,24,0.7) 70px,
+            transparent 140px);
     }
 
     .hero-content {
         position: relative;
         width: 100%;
-        padding: 80px 1.25rem 1rem 1.25rem;
+        max-width: 320px;
+        padding: clamp(88px, 14vh, 140px) 20px clamp(32px, 10vh, 120px) 20px;
+        padding-top: calc(clamp(88px, 14vh, 140px) + env(safe-area-inset-top, 0px));
+        padding-bottom: calc(clamp(32px, 10vh, 120px) + env(safe-area-inset-bottom, 0px));
         justify-content: flex-start;
         min-height: auto;
         z-index: 10;
+    }
+
+    .hero-title {
+        line-height: 0.98;
+        letter-spacing: -0.015em;
+    }
+
+    .hero-subtitle {
+        max-width: 280px;
+        margin-top: 14px;
+        padding: 10px 12px;
+        background: rgba(10, 14, 25, 0.35);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        border-radius: 10px;
+        margin-left: -12px;
+    }
+
+    .hero-cta {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .hero-cta .btn {
+        width: min(260px, 78vw);
+        height: 48px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        border-radius: 10px;
     }
 
     .hero-meta {
