@@ -32,8 +32,8 @@
 }
 
 :root {
-    --bg-dark: #0a0a0a;
-    --bg-section: #141414;
+    --bg-dark: #080c18;
+    --bg-section: #0d1220;
     --text-primary: #f0f0f0;
     --text-secondary: #b8b8b8;
     --accent: #d4af37;
@@ -96,7 +96,7 @@ header {
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(10, 10, 10, 0.95);
+    background: rgba(8, 12, 24, 0.95);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     z-index: 1000;
@@ -105,7 +105,7 @@ header {
 }
 
 header.scrolled {
-    background: rgba(10, 10, 10, 0.98);
+    background: rgba(8, 12, 24, 0.98);
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
 }
 
@@ -236,7 +236,7 @@ nav {
     position: relative;
     overflow: hidden;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(135deg, #0a0f18 0%, #111827 50%, #0f172a 100%);
+    background: linear-gradient(135deg, #080c18 0%, #0d1220 50%, #080c18 100%);
 }
 
 /* Foto de fundo - posicionada à direita */
@@ -265,13 +265,13 @@ nav {
     position: absolute;
     inset: 0;
     background: linear-gradient(to right,
-        #0d1321 0%,
-        #0d1321 35%,
-        rgba(13,19,33,0.98) 42%,
-        rgba(13,19,33,0.9) 50%,
-        rgba(13,19,33,0.7) 58%,
-        rgba(13,19,33,0.4) 68%,
-        rgba(13,19,33,0.1) 80%,
+        #080c18 0%,
+        #080c18 35%,
+        rgba(8,12,24,0.98) 42%,
+        rgba(8,12,24,0.9) 50%,
+        rgba(8,12,24,0.7) 58%,
+        rgba(8,12,24,0.4) 68%,
+        rgba(8,12,24,0.1) 80%,
         transparent 95%);
     pointer-events: none;
     z-index: 2;
@@ -282,8 +282,8 @@ nav {
     position: absolute;
     inset: 0;
     background: linear-gradient(to top,
-        rgba(13,19,33,0.98) 0%,
-        rgba(13,19,33,0.6) 10%,
+        rgba(8,12,24,0.98) 0%,
+        rgba(8,12,24,0.6) 10%,
         transparent 25%);
     pointer-events: none;
     z-index: 2;
@@ -294,8 +294,8 @@ nav {
     position: absolute;
     inset: 0;
     background: linear-gradient(to bottom,
-        rgba(13,19,33,0.8) 0%,
-        rgba(13,19,33,0.4) 8%,
+        rgba(8,12,24,0.8) 0%,
+        rgba(8,12,24,0.4) 8%,
         transparent 18%);
     pointer-events: none;
     z-index: 2;
@@ -1394,11 +1394,11 @@ footer {
 
     .hero-gradient-horizontal {
         background: linear-gradient(to right,
-            #0d1321 0%,
-            #0d1321 30%,
-            rgba(13,19,33,0.95) 45%,
-            rgba(13,19,33,0.7) 60%,
-            rgba(13,19,33,0.3) 80%,
+            #080c18 0%,
+            #080c18 30%,
+            rgba(8,12,24,0.95) 45%,
+            rgba(8,12,24,0.7) 60%,
+            rgba(8,12,24,0.3) 80%,
             transparent 100%);
     }
 
@@ -1579,46 +1579,42 @@ footer {
     .hero-content {
         position: relative;
         width: 100%;
-        padding: 100px 1.5rem 2rem 1.5rem;
+        padding: 90px 1.5rem 1rem 1.5rem;
         justify-content: flex-start;
         min-height: auto;
         z-index: 10;
     }
 
     .hero-title {
-        font-size: 2.2rem;
-        margin-bottom: 1rem;
-        line-height: 1.15;
+        font-size: 1.75rem;
+        margin-bottom: 0.75rem;
+        line-height: 1.2;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.5);
     }
 
     .hero-subtitle {
-        font-size: 0.95rem;
-        margin-bottom: 1.5rem;
-        max-width: 100%;
+        font-size: 0.85rem;
+        margin-bottom: 1.25rem;
+        max-width: 280px;
+        line-height: 1.5;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.4);
     }
 
     .hero-cta {
         flex-direction: column;
-        gap: 0.75rem;
-        margin-bottom: 1.5rem;
+        gap: 0.6rem;
+        margin-bottom: 0;
         align-items: flex-start;
     }
 
     .hero-cta .btn {
         width: auto;
-        padding: 0.875rem 2rem;
-        font-size: 0.9rem;
+        padding: 0.7rem 1.5rem;
+        font-size: 0.85rem;
     }
 
     .hero-meta {
-        position: relative;
-        left: auto;
-        bottom: auto;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        font-size: 0.8rem;
-        gap: 0.5rem;
-        margin-top: 2rem;
+        display: none;
     }
 
     .section-title {
