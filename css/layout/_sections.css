@@ -1,0 +1,67 @@
+/**
+ * Sections Layout
+ * General section styling and structure
+ */
+
+/* Base Section Styles */
+section {
+    padding: var(--spacing-xxl) var(--spacing-lg);
+    max-width: 1200px;
+    margin: 0 auto;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+}
+
+section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Section Title */
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+    letter-spacing: 1px;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: var(--accent);
+}
+
+/* Responsive - Tablet */
+@media (max-width: 992px) {
+    .section-title {
+        font-size: 2rem;
+    }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 768px) {
+    section {
+        padding: var(--spacing-xl) var(--spacing-md);
+    }
+
+    .section-title {
+        font-size: 1.75rem;
+        margin-bottom: var(--spacing-lg);
+    }
+}
+
+/* Responsive - Small phones */
+@media (max-width: 480px) {
+    .section-title {
+        font-size: 1.5rem;
+    }
+}

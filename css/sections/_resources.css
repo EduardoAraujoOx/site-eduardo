@@ -1,0 +1,125 @@
+/**
+ * Resources Section
+ * Downloadable resources and materials
+ */
+
+.resources {
+    background: rgba(20, 20, 20, 0.5);
+    padding: var(--spacing-xxl) var(--spacing-lg);
+    max-width: none;
+}
+
+.resources-intro {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto var(--spacing-xl);
+}
+
+.resources-intro p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Resource Card */
+.resource-card {
+    background: var(--bg-section);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.resource-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transition: transform var(--transition-normal);
+}
+
+.resource-card:hover::before {
+    transform: scaleX(1);
+}
+
+.resource-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+}
+
+.resource-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--accent);
+}
+
+.resource-card h3 {
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+    font-size: 1.3rem;
+}
+
+.resource-meta {
+    color: var(--accent);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.resource-card p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
+    flex: 1;
+}
+
+.resource-actions {
+    margin-top: auto;
+}
+
+/* Download Button */
+.download-btn {
+    display: inline-block;
+    padding: 0.6rem 1.5rem;
+    background: var(--accent);
+    color: var(--bg-dark);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    transition: all var(--transition-normal);
+    font-size: 0.9rem;
+    width: 100%;
+    text-align: center;
+}
+
+.download-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+}
+
+/* Responsive - Mobile */
+@media (max-width: 768px) {
+    .resources-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,37 @@
+/**
+ * Header & Navigation Layout
+ */
+
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(13, 19, 33, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 1000;
+    border-bottom: 1px solid var(--border);
+    transition: all var(--transition-normal);
+}
+
+header.scrolled {
+    background: rgba(13, 19, 33, 0.98);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+}
+
+nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.25rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: var(--logo-size);
+    font-weight: 300;
+    letter-spacing: 1px;
+    color: var(--accent);
+    text-transform: uppercase;
+}

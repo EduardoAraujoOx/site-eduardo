@@ -1,0 +1,212 @@
+/**
+ * About Section
+ * Includes about content, achievements, areas, philosophy
+ */
+
+/* About Content */
+.about-content {
+    display: grid;
+    gap: var(--spacing-xl);
+}
+
+.about-text {
+    background: var(--bg-section);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border);
+}
+
+.about-text p {
+    margin-bottom: var(--spacing-md);
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.about-text p:last-child {
+    margin-bottom: 0;
+}
+
+.highlight-quote {
+    font-style: italic;
+    color: var(--accent);
+    font-size: 1.2rem;
+    text-align: center;
+    margin: var(--spacing-lg) 0;
+    padding: var(--spacing-md);
+    border-left: 3px solid var(--accent);
+    background: rgba(212, 175, 55, 0.05);
+}
+
+/* Achievements */
+.achievements {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-xl);
+}
+
+.achievement-card {
+    background: var(--bg-section);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    transition: all var(--transition-normal);
+    text-align: center;
+}
+
+.achievement-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+}
+
+.achievement-card .icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--accent);
+}
+
+.achievement-card h3 {
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+}
+
+.achievement-card p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* Areas Grid */
+.areas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.area-card {
+    background: var(--bg-section);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    transition: all var(--transition-normal);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.area-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--accent);
+    transform: translateX(-100%);
+    transition: transform var(--transition-normal);
+}
+
+.area-card:hover::before {
+    transform: translateX(0);
+}
+
+.area-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+}
+
+.area-card h3 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+    font-weight: 400;
+    font-size: 1.2rem;
+}
+
+.area-card p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Philosophy */
+.philosophy-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: left;
+    background: var(--bg-section);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+}
+
+.philosophy-content h3 {
+    color: var(--accent);
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-md);
+    font-weight: 400;
+    text-align: center;
+}
+
+.philosophy-content p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: var(--spacing-md);
+}
+
+.philosophy-values {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+}
+
+.value-item {
+    text-align: center;
+    padding: var(--spacing-md);
+    background: var(--bg-dark);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    transition: all var(--transition-normal);
+}
+
+.value-item:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+}
+
+.value-item .icon {
+    font-size: 2rem;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+}
+
+.value-item h4 {
+    color: var(--text-primary);
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+}
+
+.value-item p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Responsive - Mobile */
+@media (max-width: 768px) {
+    .areas-grid,
+    .achievements,
+    .philosophy-values {
+        grid-template-columns: 1fr;
+    }
+
+    .about-text,
+    .philosophy-content {
+        padding: var(--spacing-lg);
+    }
+}
