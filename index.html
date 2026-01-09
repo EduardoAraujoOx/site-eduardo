@@ -1,46 +1,57 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <!-- =====================================================================
+         1. BASIC META TAGS
+         ===================================================================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eduardo Reis Araujo | Economista | Fucape | Tesouro ES | Oxford MPP</title>
     <meta name="description" content="Site oficial de Eduardo Reis Araujo, economista, gestor público no Tesouro do ES (SEFAZ-ES) e professor na Fucape Business School. Mestre em Políticas Públicas pela Universidade de Oxford. Artigos, entrevistas e materiais acadêmicos.">
     <meta name="keywords" content="Eduardo Reis Araujo, economista, Oxford MPP, Tesouro ES, SEFAZ-ES, Fucape, políticas públicas, finanças públicas, IA generativa, desenvolvimento econômico, Espírito Santo">
-
-    <!-- SEO Meta Tags -->
-    <meta property="og:title" content="Eduardo Reis Araujo | Economista | Fucape | Tesouro ES | Oxford MPP">
-    <meta property="og:description" content="Economista | Professor na Fucape | Auditor de Finanças na SEFAZ-ES | Mestre pela Universidade de Oxford">
-    <meta property="og:image" content="https://www.eduardoreisaraujo.com.br/images/profile.jpg">
-    <meta property="og:image:width" content="800">
-    <meta property="og:image:height" content="800">
-    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br">
-    <meta property="og:type" content="profile">
-    <meta property="og:locale" content="pt_BR">
-    <meta property="og:site_name" content="Eduardo Reis Araujo">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Eduardo Reis Araujo | Economista | Oxford MPP">
-    <meta name="twitter:description" content="Economista | Professor na Fucape | Auditor de Finanças na SEFAZ-ES | Mestre pela Universidade de Oxford">
-    <meta name="twitter:image" content="https://www.eduardoreisaraujo.com.br/images/profile.jpg">
-    <meta property="og:image:alt" content="Eduardo Reis Araujo - Economista e Professor">
-
-    <!-- Additional Meta Tags -->
     <meta name="author" content="Eduardo Reis Araujo">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#0a0a0a">
     <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/">
 
-    <!-- Preconnect for performance -->
+    <!-- =====================================================================
+         2. OPEN GRAPH (Facebook, LinkedIn, WhatsApp)
+         ===================================================================== -->
+    <meta property="og:title" content="Eduardo Reis Araujo | Economista | Fucape | Tesouro ES | Oxford MPP">
+    <meta property="og:description" content="Economista | Professor na Fucape | Auditor de Finanças na SEFAZ-ES | Mestre pela Universidade de Oxford">
+    <meta property="og:image" content="https://www.eduardoreisaraujo.com.br/images/profile.jpg">
+    <meta property="og:image:width" content="800">
+    <meta property="og:image:height" content="800">
+    <meta property="og:image:alt" content="Eduardo Reis Araujo - Economista e Professor">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br">
+    <meta property="og:type" content="profile">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araujo">
+
+    <!-- =====================================================================
+         3. TWITTER CARD
+         ===================================================================== -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Eduardo Reis Araujo | Economista | Oxford MPP">
+    <meta name="twitter:description" content="Economista | Professor na Fucape | Auditor de Finanças na SEFAZ-ES | Mestre pela Universidade de Oxford">
+    <meta name="twitter:image" content="https://www.eduardoreisaraujo.com.br/images/profile.jpg">
+
+    <!-- =====================================================================
+         4. PERFORMANCE & FONTS
+         ===================================================================== -->
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="css/styles.css?v=9">
+    <!-- =====================================================================
+         5. STYLESHEETS
+         ===================================================================== -->
+    <link rel="stylesheet" href="css/styles.css?v=10">
 
-    <!-- Google Analytics - Replace G-XXXXXXXXXX with your actual ID -->
+    <!-- =====================================================================
+         6. ANALYTICS (Google Analytics)
+         ===================================================================== -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -49,7 +60,9 @@
         gtag('config', 'G-XXXXXXXXXX');
     </script>
 
-    <!-- Structured Data for SEO (Schema.org Person) -->
+    <!-- =====================================================================
+         7. STRUCTURED DATA - Person (Schema.org)
+         ===================================================================== -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -115,30 +128,45 @@
     }
     </script>
 </head>
+
 <body>
-    <!-- Skip Link for Accessibility -->
+    <!-- =================================================================
+         ACCESSIBILITY: Skip Link
+         ================================================================= -->
     <a href="#main-content" class="skip-link">Pular para o conteudo principal</a>
 
-    <!-- Loading Screen -->
+    <!-- =================================================================
+         LOADING SCREEN
+         ================================================================= -->
     <div class="loading" id="loading" aria-hidden="true">
         <div class="loading-spinner"></div>
     </div>
 
-    <!-- Header -->
+    <!-- =================================================================
+         HEADER & NAVIGATION
+         ================================================================= -->
     <header role="banner">
         <nav aria-label="Navegação principal">
+            <!-- Logo -->
             <a href="#main-content" class="logo" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Eduardo Reis Araujo</a>
+
+            <!-- Navigation Links -->
             <ul class="nav-links" id="navLinks" role="menubar">
                 <li role="none"><a href="#sobre" role="menuitem" data-i18n="nav.about">Sobre</a></li>
                 <li role="none"><a href="#publicacoes" role="menuitem" data-i18n="nav.publications">Publicações</a></li>
                 <li role="none"><a href="#recursos" role="menuitem" data-i18n="nav.materials">Materiais</a></li>
                 <li role="none"><a href="#contato" role="menuitem" data-i18n="nav.contact">Contato</a></li>
             </ul>
+
+            <!-- Language Toggle -->
             <div class="lang-toggle" id="langToggle" role="group" aria-label="Selecionar idioma">
                 <button data-lang-switch="pt" data-value="pt" class="active" aria-label="Português">PT</button>
                 <button data-lang-switch="en" data-value="en" aria-label="English">EN</button>
             </div>
-            <button class="mobile-menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="navLinks">
+
+            <!-- Mobile Menu Button -->
+            <button class="mobile-menu-toggle" id="menuToggle" type="button"
+                    aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="navLinks">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -146,30 +174,34 @@
         </nav>
     </header>
 
-    <!-- Main Content -->
+    <!-- =================================================================
+         MAIN CONTENT
+         ================================================================= -->
     <main id="main-content">
-        <!-- Hero Section -->
+
+        <!-- =============================================================
+             SECTION: Hero
+             ============================================================= -->
         <section class="hero" aria-label="Introducao">
-            <!-- Foto de fundo -->
+            <!-- Background Photo -->
             <div class="hero-photo">
                 <picture>
                     <source media="(max-width: 480px)" srcset="images/hero-bg2.png">
-                    <img src="images/hero-bg.png"
-                         alt="Eduardo Reis Araujo"
-                         loading="eager">
+                    <img src="images/hero-bg.png" alt="Eduardo Reis Araujo" loading="eager">
                 </picture>
             </div>
 
-            <!-- Gradientes de sobreposição -->
+            <!-- Overlay Gradients -->
             <div class="hero-gradient-horizontal"></div>
             <div class="hero-gradient-bottom"></div>
             <div class="hero-gradient-top"></div>
 
-            <!-- Conteúdo principal -->
+            <!-- Hero Content -->
             <div class="hero-content">
                 <h1 class="hero-title" data-i18n="hero.title">Políticas públicas orientadas por evidências</h1>
                 <p class="hero-subtitle" data-i18n="hero.description">Artigos de opinião, análises e materiais sobre política fiscal e desenvolvimento econômico.</p>
 
+                <!-- Call to Action -->
                 <div class="hero-cta">
                     <a href="#publicacoes" class="btn btn-primary" data-i18n="hero.viewPublications">
                         Ler Análises
@@ -180,6 +212,7 @@
                     <a href="#contato" class="btn btn-secondary" data-i18n="hero.getInTouch">Contato</a>
                 </div>
 
+                <!-- Meta Info -->
                 <div class="hero-meta">
                     <span>Economista</span>
                     <span class="meta-dot">•</span>
@@ -190,10 +223,14 @@
             </div>
         </section>
 
-        <!-- About Section -->
+        <!-- =============================================================
+             SECTION: About
+             ============================================================= -->
         <section id="sobre" class="about" aria-labelledby="about-title">
             <h2 class="section-title" id="about-title" data-i18n="about.title">Sobre</h2>
+
             <div class="about-content">
+                <!-- Biography -->
                 <div class="about-text">
                     <p data-i18n="about.bio1">
                         Sou Economista e Auditor de Finanças na Secretaria de Fazenda do Espírito Santo, onde atuo na Assessoria do Tesouro Estadual. Na Fucape Business School, leciono disciplinas de Economia.
@@ -205,17 +242,21 @@
                         Meus interesses de pesquisa têm se voltado ao papel das instituições na prosperidade econômica e na inclusão social. Além disso, tenho investigado o potencial e riscos do uso de IA generativa em finanças públicas e no desenvolvimento de startups.
                     </p>
                 </div>
+
+                <!-- Achievement Cards -->
                 <div class="achievements">
                     <article class="achievement-card">
                         <div class="icon" aria-hidden="true">&#127891;</div>
                         <h3 data-i18n="about.oxfordTitle">Oxford MPP</h3>
                         <p data-i18n="about.oxfordDesc">Mestre em Políticas Públicas pela Blavatnik School of Government</p>
                     </article>
+
                     <article class="achievement-card">
                         <div class="icon" aria-hidden="true">&#129302;</div>
                         <h3 data-i18n="about.aiTitle">IA Generativa</h3>
                         <p data-i18n="about.aiDesc">Pesquisa em aplicações de IA no setor público e finanças</p>
                     </article>
+
                     <article class="achievement-card">
                         <div class="icon" aria-hidden="true">&#128200;</div>
                         <h3 data-i18n="about.financeTitle">Finanças Públicas</h3>
@@ -225,13 +266,19 @@
             </div>
         </section>
 
-        <!-- Publications Section -->
+        <!-- =============================================================
+             SECTION: Publications
+             ============================================================= -->
         <section id="publicacoes" class="publications" aria-labelledby="publications-title">
             <h2 class="section-title" id="publications-title" data-i18n="publications.title">Publicações Recentes</h2>
+
             <div class="publications-container">
+                <!-- Year: 2025 -->
                 <div class="publication-year">
                     <h3 class="year-header">2025</h3>
                     <div class="publications-grid">
+
+                        <!-- Publication 1 -->
                         <article class="publication-card">
                             <div class="publication-header">
                                 <div class="publication-info">
@@ -241,9 +288,12 @@
                                 <span class="publication-date">Junho 2025</span>
                             </div>
                             <p>O artigo discute as novas alíquotas do IOF e os riscos de um ajuste fiscal mal planejado, analisando impactos na economia e na confiança dos investidores.</p>
-                            <a href="https://www.agazeta.com.br/artigos/crise-do-iof-e-o-preco-da-pressa-fiscal-0625" target="_blank" rel="noopener noreferrer" class="read-more">Ler artigo completo <span aria-hidden="true">&#8594;</span></a>
+                            <a href="https://www.agazeta.com.br/artigos/crise-do-iof-e-o-preco-da-pressa-fiscal-0625" target="_blank" rel="noopener noreferrer" class="read-more">
+                                Ler artigo completo <span aria-hidden="true">&#8594;</span>
+                            </a>
                         </article>
 
+                        <!-- Publication 2 -->
                         <article class="publication-card">
                             <div class="publication-header">
                                 <div class="publication-info">
@@ -253,9 +303,12 @@
                                 <span class="publication-date">Abril 2025</span>
                             </div>
                             <p>Reflexões sobre os desafios e oportunidades para os municípios na reforma tributária, com foco em autonomia fiscal e eficiência administrativa.</p>
-                            <a href="https://www.agazeta.com.br/artigos/reforma-tributaria-e-o-novo-paradigma-da-gestao-fiscal-das-cidades-0425" target="_blank" rel="noopener noreferrer" class="read-more">Ler artigo completo <span aria-hidden="true">&#8594;</span></a>
+                            <a href="https://www.agazeta.com.br/artigos/reforma-tributaria-e-o-novo-paradigma-da-gestao-fiscal-das-cidades-0425" target="_blank" rel="noopener noreferrer" class="read-more">
+                                Ler artigo completo <span aria-hidden="true">&#8594;</span>
+                            </a>
                         </article>
 
+                        <!-- Publication 3 -->
                         <article class="publication-card">
                             <div class="publication-header">
                                 <div class="publication-info">
@@ -265,9 +318,12 @@
                                 <span class="publication-date">Abril 2025</span>
                             </div>
                             <p>Análise de estratégias de proteção patrimonial frente à instabilidade bancária, incluindo diversificação e instrumentos de garantia.</p>
-                            <a href="https://www.agazeta.com.br/artigos/banco-master-como-blindar-seu-dinheiro-do-risco-de-quebra-de-um-banco-0425" target="_blank" rel="noopener noreferrer" class="read-more">Ler artigo completo <span aria-hidden="true">&#8594;</span></a>
+                            <a href="https://www.agazeta.com.br/artigos/banco-master-como-blindar-seu-dinheiro-do-risco-de-quebra-de-um-banco-0425" target="_blank" rel="noopener noreferrer" class="read-more">
+                                Ler artigo completo <span aria-hidden="true">&#8594;</span>
+                            </a>
                         </article>
 
+                        <!-- Publication 4 -->
                         <article class="publication-card">
                             <div class="publication-header">
                                 <div class="publication-info">
@@ -277,9 +333,12 @@
                                 <span class="publication-date">Março 2025</span>
                             </div>
                             <p>Análise aprofundada dos impactos da reforma tributária nas finanças municipais e a importância de uma gestão fiscal eficiente para enfrentar os novos desafios.</p>
-                            <a href="https://esbrasil.com.br/o-impacto-da-reforma-tributaria-nas-financas-municipais/" target="_blank" rel="noopener noreferrer" class="read-more">Ler artigo completo <span aria-hidden="true">&#8594;</span></a>
+                            <a href="https://esbrasil.com.br/o-impacto-da-reforma-tributaria-nas-financas-municipais/" target="_blank" rel="noopener noreferrer" class="read-more">
+                                Ler artigo completo <span aria-hidden="true">&#8594;</span>
+                            </a>
                         </article>
 
+                        <!-- Publication 5 -->
                         <article class="publication-card">
                             <div class="publication-header">
                                 <div class="publication-info">
@@ -289,9 +348,12 @@
                                 <span class="publication-date">Fevereiro 2025</span>
                             </div>
                             <p>Discussão sobre como a IA pode ser utilizada para melhorar a eficiência e a transparência na administração pública, com casos práticos e perspectivas futuras.</p>
-                            <a href="https://esbrasil.com.br/inteligencia-artificial-e-a-gestao-publica/" target="_blank" rel="noopener noreferrer" class="read-more">Ler artigo completo <span aria-hidden="true">&#8594;</span></a>
+                            <a href="https://esbrasil.com.br/inteligencia-artificial-e-a-gestao-publica/" target="_blank" rel="noopener noreferrer" class="read-more">
+                                Ler artigo completo <span aria-hidden="true">&#8594;</span>
+                            </a>
                         </article>
 
+                        <!-- Publication 6 -->
                         <article class="publication-card">
                             <div class="publication-header">
                                 <div class="publication-info">
@@ -301,20 +363,28 @@
                                 <span class="publication-date">Janeiro 2025</span>
                             </div>
                             <p>Análise dos principais desafios enfrentados pelo Brasil em relação à política fiscal e propostas para superar obstáculos estruturais.</p>
-                            <a href="https://esbrasil.com.br/desafios-fiscais-no-brasil-contemporaneo/" target="_blank" rel="noopener noreferrer" class="read-more">Ler artigo completo <span aria-hidden="true">&#8594;</span></a>
+                            <a href="https://esbrasil.com.br/desafios-fiscais-no-brasil-contemporaneo/" target="_blank" rel="noopener noreferrer" class="read-more">
+                                Ler artigo completo <span aria-hidden="true">&#8594;</span>
+                            </a>
                         </article>
+
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Resources Section -->
+        <!-- =============================================================
+             SECTION: Resources (Academic Materials)
+             ============================================================= -->
         <section id="recursos" class="resources" aria-labelledby="resources-title">
             <h2 class="section-title" id="resources-title" data-i18n="materials.title">Materiais Acadêmicos</h2>
+
             <div class="resources-intro">
                 <p data-i18n="materials.intro">Materiais desenvolvidos para disciplinas na Fucape Business School, disponíveis para consulta acadêmica.</p>
             </div>
+
             <div class="resources-grid">
+                <!-- Resource 1 -->
                 <article class="resource-card">
                     <div class="resource-icon" aria-hidden="true">&#128202;</div>
                     <h3>Teoria dos Monopólios</h3>
@@ -324,6 +394,8 @@
                         <a href="materiais/teoria-monopolios.pdf" class="download-btn" target="_blank" rel="noopener">Download PDF</a>
                     </div>
                 </article>
+
+                <!-- Resource 2 -->
                 <article class="resource-card">
                     <div class="resource-icon" aria-hidden="true">&#128176;</div>
                     <h3>Programas de Transferência de Renda</h3>
@@ -333,6 +405,8 @@
                         <a href="materiais/transferencia-renda.pdf" class="download-btn" target="_blank" rel="noopener">Download PDF</a>
                     </div>
                 </article>
+
+                <!-- Resource 3 -->
                 <article class="resource-card">
                     <div class="resource-icon" aria-hidden="true">&#127757;</div>
                     <h3>Economia Institucional e Desenvolvimento</h3>
@@ -342,6 +416,8 @@
                         <a href="materiais/economia-institucional.pdf" class="download-btn" target="_blank" rel="noopener">Download PDF</a>
                     </div>
                 </article>
+
+                <!-- Resource 4 -->
                 <article class="resource-card">
                     <div class="resource-icon" aria-hidden="true">&#128200;</div>
                     <h3>Avaliação de Políticas Públicas</h3>
@@ -354,13 +430,18 @@
             </div>
         </section>
 
-        <!-- Contact Section -->
+        <!-- =============================================================
+             SECTION: Contact
+             ============================================================= -->
         <section id="contato" class="contact" aria-labelledby="contact-title">
             <h2 class="section-title" id="contact-title" data-i18n="contact.title">Contato</h2>
+
             <div class="contact-container">
+                <!-- Contact Info -->
                 <div class="contact-info">
                     <h3 data-i18n="contact.subtitle">Vamos conversar</h3>
                     <p data-i18n="contact.description">Para colaborações acadêmicas, palestras, consultorias ou discussões sobre políticas públicas, entre em contato.</p>
+
                     <div class="contact-links">
                         <a href="mailto:eduardoaraujo@fucape.br" class="contact-link" aria-label="Email acadêmico">
                             <span aria-hidden="true">&#127891;</span>
@@ -376,16 +457,21 @@
                         </a>
                     </div>
                 </div>
+
+                <!-- Contact Form -->
                 <div class="contact-form-wrapper">
                     <form class="contact-form" action="https://formspree.io/f/mlgedwvp" method="POST">
                         <div class="form-group">
                             <label for="name" data-i18n="contact.name">Nome</label>
-                            <input type="text" id="name" name="name" required placeholder="Seu nome" data-i18n-placeholder="contact.namePlaceholder">
+                            <input type="text" id="name" name="name" required
+                                   placeholder="Seu nome" data-i18n-placeholder="contact.namePlaceholder">
                         </div>
+
                         <div class="form-group">
                             <label for="email" data-i18n="contact.email">Email</label>
                             <input type="email" id="email" name="email" required placeholder="seu@email.com">
                         </div>
+
                         <div class="form-group">
                             <label for="subject" data-i18n="contact.subject">Assunto</label>
                             <select id="subject" name="subject" required data-i18n-options="contact.subjects">
@@ -397,25 +483,37 @@
                                 <option value="outro">Outro</option>
                             </select>
                         </div>
+
                         <div class="form-group">
                             <label for="message" data-i18n="contact.message">Mensagem</label>
-                            <textarea id="message" name="message" rows="4" required placeholder="Sua mensagem..." data-i18n-placeholder="contact.messagePlaceholder"></textarea>
+                            <textarea id="message" name="message" rows="4" required
+                                      placeholder="Sua mensagem..." data-i18n-placeholder="contact.messagePlaceholder"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-submit" data-i18n="contact.send">Enviar Mensagem</button>
+
+                        <button type="submit" class="btn btn-primary btn-submit" data-i18n="contact.send">
+                            Enviar Mensagem
+                        </button>
                     </form>
                 </div>
             </div>
         </section>
+
     </main>
 
-    <!-- Footer -->
+    <!-- =================================================================
+         FOOTER
+         ================================================================= -->
     <footer role="contentinfo">
         <div class="footer-content">
+            <!-- Brand -->
             <div class="footer-brand">
                 <span class="footer-logo">Eduardo Reis Araujo</span>
                 <p data-i18n="footer.role">Economista | Professor | Pesquisador</p>
             </div>
+
+            <!-- Footer Links -->
             <div class="footer-links">
+                <!-- Navigation -->
                 <div class="footer-nav">
                     <h4 data-i18n="footer.navigation">Navegação</h4>
                     <ul>
@@ -425,26 +523,38 @@
                         <li><a href="#contato" data-i18n="nav.contact">Contato</a></li>
                     </ul>
                 </div>
+
+                <!-- Social -->
                 <div class="footer-social">
                     <h4 data-i18n="footer.contact">Contato</h4>
                     <div class="social-icons">
                         <a href="https://linkedin.com/in/eduardoaraujos" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
                         </a>
                         <a href="mailto:eduardoaraujo@fucape.br" aria-label="Email Fucape">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            </svg>
                         </a>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Copyright -->
         <div class="footer-bottom">
             <p>&copy; 2025 Eduardo Reis Araujo. Todos os direitos reservados.</p>
-            <p style="margin-top: 0.5rem; font-size: 0.8rem;"><a href="/homonimos.html" style="color: var(--text-secondary);">Procurando outro Eduardo Araujo?</a></p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem;">
+                <a href="/homonimos.html" style="color: var(--text-secondary);">Procurando outro Eduardo Araujo?</a>
+            </p>
         </div>
     </footer>
 
-    <!-- Structured Data for Articles -->
+    <!-- =================================================================
+         STRUCTURED DATA - Articles (Schema.org)
+         ================================================================= -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -478,7 +588,9 @@
     }
     </script>
 
-    <!-- Structured Data for Educational Resources -->
+    <!-- =================================================================
+         STRUCTURED DATA - Educational Resources (Schema.org)
+         ================================================================= -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -498,9 +610,12 @@
     }
     </script>
 
-    <!-- JavaScript -->
+    <!-- =================================================================
+         JAVASCRIPT
+         ================================================================= -->
     <script src="js/i18n.js"></script>
     <script src="js/publications.js"></script>
     <script src="js/main.js"></script>
+
 </body>
 </html>
