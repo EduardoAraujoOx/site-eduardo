@@ -79,7 +79,7 @@
 
 @media (max-width: 480px) {
     :root {
-        --hero-title-size: clamp(24px, 6.1vw, 34px);
+        --hero-title-size: clamp(28px, 7.5vw, 38px);
         --hero-subtitle-size: 0.85rem;
         --hero-btn-size: 0.875rem;
         --logo-size: 0.85rem;
@@ -1535,44 +1535,10 @@ footer {
         padding: 1rem;
     }
 
-    /* Hero - Mobile */
+    /* Hero - Mobile (uses hero-bg2.png with built-in gradient) */
     .hero {
         min-height: 100svh;
         background: #080c18;
-        position: relative;
-    }
-
-    /* Mobile overlay: controle fino de contraste (substitui gradientes soltos) */
-    .hero::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        z-index: 3;
-        background: linear-gradient(
-            to bottom,
-            rgba(8,12,24,0.96) 0%,
-            rgba(8,12,24,0.90) 26%,
-            rgba(8,12,24,0.70) 50%,
-            rgba(8,12,24,0.38) 72%,
-            rgba(8,12,24,0.00) 100%
-        );
-    }
-
-    /* Vignette leve para reforçar leitura */
-    .hero::after {
-        content: "";
-        position: absolute;
-        inset: -10% -10% -10% -10%;
-        pointer-events: none;
-        z-index: 3;
-        opacity: 0.55;
-        background: radial-gradient(
-            65% 55% at 55% 35%,
-            rgba(0,0,0,0) 0%,
-            rgba(0,0,0,0.25) 55%,
-            rgba(0,0,0,0.45) 100%
-        );
     }
 
     .hero-photo {
@@ -1580,7 +1546,6 @@ footer {
         inset: 0;
         width: 100%;
         height: 100%;
-        z-index: 1;
     }
 
     .hero-photo picture {
@@ -1592,70 +1557,70 @@ footer {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        object-position: 70% 55%;
+        object-position: 65% 50%;
     }
 
-    /* No mobile, overlays via pseudo-element. Desliga gradientes antigos. */
     .hero-gradient-horizontal,
-    .hero-gradient-bottom,
-    .hero-gradient-top {
+    .hero-gradient-bottom {
         display: none;
+    }
+
+    .hero-gradient-top {
+        background: linear-gradient(to bottom,
+            rgba(8,12,24,0.95) 0%,
+            rgba(8,12,24,0.7) 70px,
+            transparent 140px);
     }
 
     .hero-content {
         position: relative;
         width: 100%;
-        max-width: 420px;
-        padding: 0 24px;
-        padding-top: clamp(84px, calc(9vh + 72px), 140px);
-        padding-top: calc(clamp(84px, calc(9vh + 72px), 140px) + env(safe-area-inset-top, 0px));
-        padding-bottom: calc(44px + env(safe-area-inset-bottom, 0px));
+        max-width: 280px;
+        padding: 100px 24px 40px 24px;
+        padding-top: calc(100px + env(safe-area-inset-top, 0px));
+        padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
         justify-content: flex-start;
         min-height: auto;
         z-index: 10;
     }
 
     .hero-title {
-        font-size: clamp(24px, 6.1vw, 34px);
-        line-height: 1.15;
-        letter-spacing: -0.02em;
-        margin-bottom: 16px;
+        font-size: clamp(26px, 7vw, 36px);
+        line-height: 1.05;
+        letter-spacing: -0.01em;
     }
 
     .hero-subtitle {
-        max-width: 36ch;
-        margin-top: 0;
-        margin-bottom: 26px;
+        max-width: 260px;
+        margin-top: 20px;
+        margin-bottom: 28px;
         padding: 0;
         background: none;
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
         border-radius: 0;
         margin-left: 0;
-        font-size: clamp(1rem, 2.8vw, 1.08rem);
-        line-height: 1.45;
-        color: rgba(255,255,255,0.85);
-        text-shadow: none;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: rgba(148, 163, 184, 0.95);
+        text-shadow: 0 1px 3px rgba(0,0,0,0.5);
     }
 
     .hero-cta {
         flex-direction: column;
         gap: 12px;
         align-items: flex-start;
-        margin-bottom: 0;
     }
 
     .hero-cta .btn {
-        width: 240px;
-        max-width: 100%;
-        height: auto;
-        padding: 14px 24px;
-        display: inline-flex;
+        width: 200px;
+        height: 44px;
+        padding: 0 20px;
+        display: flex;
         align-items: center;
-        justify-content: flex-start;
+        justify-content: center;
         font-size: 15px;
-        font-weight: 500;
-        border-radius: 8px;
+        border-radius: 6px;
     }
 
     .hero-cta .btn svg {
