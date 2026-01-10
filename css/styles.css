@@ -779,7 +779,16 @@ footer {
         object-position: 65% 50%;
     }
 
-    .hero-gradient-horizontal, .hero-gradient-bottom { display: none; }
+    .hero-gradient-bottom { display: none; }
+
+    /* Gradiente horizontal - transição suave da foto para o fundo */
+    .hero-gradient-horizontal {
+        background: linear-gradient(to right,
+            #080c18 0%,
+            rgba(8,12,24,0.85) 25%,
+            rgba(8,12,24,0.4) 50%,
+            transparent 75%);
+    }
 
     .hero-gradient-top {
         background: linear-gradient(to bottom,
@@ -791,15 +800,15 @@ footer {
     .hero-content {
         position: relative;
         width: 100%;
-        max-width: 280px;
-        padding: 100px 24px 40px;
+        max-width: 320px; /* Aumentado para evitar quebra de linha */
+        padding: 100px 20px 40px;
         padding-top: calc(100px + env(safe-area-inset-top, 0px));
         justify-content: flex-start;
     }
 
     .hero-title {
-        font-size: clamp(24px, 6.5vw, 34px) !important;
-        line-height: 1.05;
+        font-size: clamp(26px, 7vw, 36px) !important;
+        line-height: 1.1;
     }
 
     .hero-subtitle { font-size: 0.9rem; margin: 20px 0 28px; }
