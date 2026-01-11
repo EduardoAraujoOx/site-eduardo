@@ -42,12 +42,12 @@
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@300;400;500&family=Playfair+Display:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
 
     <!-- =====================================================================
          5. STYLESHEETS
          ===================================================================== -->
-    <link rel="stylesheet" href="css/styles.css?v=10">
+    <link rel="stylesheet" href="css/styles.css?v=11">
 
     <!-- =====================================================================
          6. ANALYTICS (Google Analytics)
@@ -219,6 +219,49 @@
                     <span>Setor Público</span>
                     <span class="meta-dot">•</span>
                     <span>Oxford</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================================================
+             SECTION: Publicações (NYT Style)
+             ============================================================= -->
+        <section id="publicacoes" class="nyt-publications" aria-labelledby="publications-heading">
+            <div class="nyt-container">
+                <!-- Header -->
+                <header class="nyt-header">
+                    <h2 id="publications-heading" class="nyt-section-title">Publicações</h2>
+                    <p class="nyt-section-subtitle">Artigos, análises e reflexões sobre economia, finanças públicas e políticas governamentais</p>
+                    <div class="nyt-share-container">
+                        <button type="button" class="nyt-share-btn" id="btn-compartilhar" aria-label="Compartilhar publicações">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                                <polyline points="16 6 12 2 8 6" />
+                                <line x1="12" y1="2" x2="12" y2="15" />
+                            </svg>
+                            Compartilhar
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Featured Article -->
+                <article class="nyt-featured" id="artigo-destaque">
+                    <!-- Populated by JavaScript -->
+                </article>
+
+                <!-- Divider -->
+                <hr class="nyt-divider">
+
+                <!-- Articles Grid -->
+                <div class="nyt-articles-grid" id="artigos-lista">
+                    <!-- Populated by JavaScript -->
+                </div>
+
+                <!-- Load More Button -->
+                <div class="nyt-load-more">
+                    <button type="button" class="nyt-btn-load" id="btn-carregar-mais">
+                        Carregar mais artigos
+                    </button>
                 </div>
             </div>
         </section>
@@ -615,6 +658,7 @@
          ================================================================= -->
     <script src="js/i18n.js"></script>
     <script src="js/publications.js"></script>
+    <script src="js/artigos.js"></script>
     <script src="js/main.js"></script>
 
 </body>
