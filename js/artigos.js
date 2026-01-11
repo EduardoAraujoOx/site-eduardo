@@ -22,6 +22,7 @@
     const featuredContainer = document.getElementById('artigo-destaque');
     const articlesGrid = document.getElementById('artigos-lista');
     const loadMoreBtn = document.getElementById('btn-carregar-mais');
+    const shareBtn = document.getElementById('btn-compartilhar');
 
     /**
      * Initialize the articles section
@@ -50,6 +51,11 @@
             if (loadMoreBtn) {
                 loadMoreBtn.addEventListener('click', loadMoreArticles);
                 updateLoadMoreButton();
+            }
+
+            // Setup share button
+            if (shareBtn) {
+                shareBtn.addEventListener('click', handleShare);
             }
 
         } catch (error) {
@@ -140,6 +146,50 @@
         `;
 
         return div;
+    }
+
+    /**
+     * Handle share button click
+     */
+    async function handleShare() {
+        const shareData = {
+            title: 'Publicações de Eduardo Reis Araujo',
+            text: 'Artigos sobre economia, finanças públicas e políticas governamentais',
+            url: window.location.origin + '/#publicacoes'
+        };
+
+        try {
+            if (navigator.share) {
+                // Use native share on mobile
+                await navigator.share(shareData);
+            } else {
+                // Fallback: copy to clipboard
+                await navigator.clipboard.writeText(shareData.url);
+                showShareFeedback('Link copiado!');
+            }
+        } catch (err) {
+            if (err.name !== 'AbortError') {
+                // User didn't cancel, try clipboard
+                try {
+                    await navigator.clipboard.writeText(shareData.url);
+                    showShareFeedback('Link copiado!');
+                } catch {
+                    showShareFeedback('Erro ao compartilhar');
+                }
+            }
+        }
+    }
+
+    /**
+     * Show temporary feedback message
+     */
+    function showShareFeedback(message) {
+        if (!shareBtn) return;
+        const originalText = shareBtn.innerHTML;
+        shareBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg> ${message}`;
+        setTimeout(() => {
+            shareBtn.innerHTML = originalText;
+        }, 2000);
     }
 
     /**

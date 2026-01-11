@@ -124,7 +124,7 @@
             font-family: 'Source Serif 4', Georgia, serif;
             font-size: 1.15rem;
             color: #333;
-            line-height: 1.8;
+            line-height: 1.85;
         }
 
         .article-content p {
@@ -238,6 +238,85 @@
 
         .article-back a:hover {
             text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        /* Action buttons (share) */
+        .article-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .article-action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            background: transparent;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .article-action-btn:hover {
+            color: #326891;
+            border-color: #326891;
+            background: rgba(50, 104, 145, 0.05);
+        }
+
+        .article-action-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Author block */
+        .article-author {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem 0;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 1.5rem;
+        }
+
+        .article-author-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #e8e8e8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .article-author-avatar span {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .article-author-info {
+            flex: 1;
+        }
+
+        .article-author-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #121212;
+            margin-bottom: 0.25rem;
+        }
+
+        .article-author-role {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.4;
         }
 
         /* External link notice */
@@ -357,13 +436,19 @@
                 <span class="article-category">{{CATEGORIA}}</span>
                 <h1 class="article-title">{{TITULO}}</h1>
                 <p class="article-subtitle">{{SUBTITULO}}</p>
-                <div class="article-meta">
-                    <span class="article-meta-item">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+
+                <!-- Action buttons -->
+                <div class="article-actions">
+                    <button type="button" class="article-action-btn" id="btn-share" title="Compartilhar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                            <polyline points="16 6 12 2 8 6" />
+                            <line x1="12" y1="2" x2="12" y2="15" />
                         </svg>
-                        {{AUTOR}}
-                    </span>
+                    </button>
+                </div>
+
+                <div class="article-meta">
                     <span class="article-meta-item">
                         <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -376,6 +461,17 @@
                         </svg>
                         {{TEMPO_LEITURA}} de leitura
                     </span>
+                </div>
+
+                <!-- Author block -->
+                <div class="article-author">
+                    <div class="article-author-avatar">
+                        <span>E</span>
+                    </div>
+                    <div class="article-author-info">
+                        <p class="article-author-name">{{AUTOR}}</p>
+                        <p class="article-author-role">{{AUTOR_CARGO}}</p>
+                    </div>
                 </div>
             </header>
 
@@ -425,5 +521,33 @@
     </footer>
 
     <script src="../js/main.js"></script>
+    <script>
+        // Share functionality
+        document.getElementById('btn-share')?.addEventListener('click', async function() {
+            const shareData = {
+                title: document.querySelector('.article-title').textContent,
+                text: document.querySelector('.article-subtitle').textContent,
+                url: window.location.href
+            };
+
+            try {
+                if (navigator.share) {
+                    await navigator.share(shareData);
+                } else {
+                    await navigator.clipboard.writeText(shareData.url);
+                    alert('Link copiado!');
+                }
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    try {
+                        await navigator.clipboard.writeText(shareData.url);
+                        alert('Link copiado!');
+                    } catch {
+                        console.error('Erro ao compartilhar');
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
