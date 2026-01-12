@@ -67,10 +67,10 @@
         if (!featuredContainer) return;
 
         const imageUrl = article.imagem || CONFIG.placeholderImage;
-        const articleUrl = article.linkExterno || `publicacoes/${article.slug}.html`;
+        const articleUrl = `publicacoes/${article.slug}.html`;
 
         featuredContainer.innerHTML = `
-            <a href="${articleUrl}" class="nyt-featured-link" target="${article.linkExterno ? '_blank' : '_self'}" rel="${article.linkExterno ? 'noopener noreferrer' : ''}">
+            <a href="${articleUrl}" class="nyt-featured-link">
                 <div class="nyt-featured-image">
                     <img src="${imageUrl}" alt="${article.imagemAlt || article.titulo}" loading="lazy"
                          onerror="this.src='${CONFIG.placeholderImage}'">
@@ -78,7 +78,7 @@
             </a>
             <div class="nyt-featured-content">
                 <span class="nyt-category">${article.categoria}</span>
-                <a href="${articleUrl}" class="nyt-featured-link" target="${article.linkExterno ? '_blank' : '_self'}" rel="${article.linkExterno ? 'noopener noreferrer' : ''}">
+                <a href="${articleUrl}" class="nyt-featured-link">
                     <h3 class="nyt-featured-title">${article.titulo}</h3>
                 </a>
                 <p class="nyt-featured-excerpt">${article.resumo}</p>
@@ -116,14 +116,12 @@
         div.className = 'nyt-article';
 
         const imageUrl = article.imagem || CONFIG.placeholderImage;
-        const articleUrl = article.linkExterno || `publicacoes/${article.slug}.html`;
-        const target = article.linkExterno ? '_blank' : '_self';
-        const rel = article.linkExterno ? 'noopener noreferrer' : '';
+        const articleUrl = `publicacoes/${article.slug}.html`;
 
         div.innerHTML = `
             <div class="nyt-article-content">
                 <span class="nyt-category">${article.categoria}</span>
-                <a href="${articleUrl}" target="${target}" rel="${rel}" class="nyt-article-link">
+                <a href="${articleUrl}" class="nyt-article-link">
                     <h4 class="nyt-article-title">${article.titulo}</h4>
                 </a>
                 <p class="nyt-article-excerpt">${article.resumo}</p>
@@ -133,7 +131,7 @@
                     <span>${article.tempoLeitura}</span>
                 </div>
             </div>
-            <a href="${articleUrl}" target="${target}" rel="${rel}" class="nyt-article-thumb">
+            <a href="${articleUrl}" class="nyt-article-thumb">
                 <img src="${imageUrl}" alt="${article.imagemAlt || article.titulo}" loading="lazy"
                      onerror="this.src='${CONFIG.placeholderImage}'">
             </a>
