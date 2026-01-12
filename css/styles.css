@@ -835,7 +835,7 @@ footer {
    NYT-Style Publications Section
    ========================================================================== */
 .nyt-publications {
-    background: #fafafa;
+    background: transparent;
     padding: 4rem 0;
     max-width: none;
     opacity: 1;
@@ -855,18 +855,20 @@ footer {
     padding: 0;
     border: none;
     background: none;
+    position: static;
 }
 
 .nyt-section-title {
     font-family: 'Playfair Display', Georgia, serif;
     font-size: 1.5rem;
     font-weight: 400;
-    color: #333;
+    color: #999;
     margin-bottom: 0;
     letter-spacing: 0;
     background: none;
     padding: 0;
     border: none;
+    position: static;
 }
 
 .nyt-section-subtitle {
@@ -879,8 +881,10 @@ footer {
     grid-template-columns: 1.2fr 1fr;
     gap: 2.5rem;
     margin-bottom: 2.5rem;
-    padding-bottom: 2.5rem;
-    border-bottom: 1px solid #e0e0e0;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .nyt-featured-image {
@@ -973,12 +977,11 @@ footer {
     display: grid;
     grid-template-columns: 1fr 140px;
     gap: 1.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.nyt-article:last-child {
-    border-bottom: none;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .nyt-article-content {
