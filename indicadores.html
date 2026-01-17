@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indicadores | Eduardo Reis Araújo</title>
+
+    <meta property="og:title" content="Indicadores Internacionais | Eduardo Reis Araújo">
+    <meta property="og:description" content="Comparações internacionais para análise de política econômica. Brasil como referência.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://eduardoreisaraujo.com.br/indicadores.html">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --font-serif: 'Playfair Display', Georgia, serif;
+            --font-sans: 'Source Sans 3', -apple-system, sans-serif;
+            --color-ink: #1a1a1a;
+            --color-ink-light: #444;
+            --color-ink-muted: #888;
+            --color-paper-warm: #f8f8f6;
+            --color-rule: #e5e5e5;
+            --color-brazil: #009c3b;
+            --color-comparison-light: #9ca3af;
+            --max-width: 1200px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: 16px; -webkit-font-smoothing: antialiased; background: #fff !important; color-scheme: light only; scroll-behavior: smooth; }
+        body { font-family: var(--font-sans); font-size: 1rem; line-height: 1.5; color: var(--color-ink); background: #fff; }
+
+        /* Header - matching site structure */
+        .header {
+            border-bottom: 1px solid var(--color-rule);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+        @media (min-width: 768px) {
+            .header-inner { padding: 1rem 1.5rem; }
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            flex: 0 0 auto;
+        }
+        .search-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            color: #666;
+            font-size: 0.8125rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            margin: -0.5rem;
+            transition: color 0.2s;
+        }
+        .search-btn:hover { color: var(--color-ink); }
+        .search-text { display: none; }
+        @media (min-width: 768px) {
+            .search-text { display: inline; }
+        }
+        .site-title {
+            font-family: var(--font-serif);
+            font-size: 1.25rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            color: var(--color-ink);
+            text-transform: uppercase;
+            white-space: nowrap;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            text-decoration: none;
+        }
+        @media (min-width: 768px) {
+            .site-title { font-size: 1.5rem; letter-spacing: 0.02em; }
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 0 0 auto;
+        }
+        .lang-switch {
+            display: none;
+            align-items: center;
+            font-size: 0.8125rem;
+            gap: 0.25rem;
+        }
+        @media (min-width: 768px) {
+            .lang-switch { display: flex; }
+        }
+        .lang-switch a {
+            padding: 0.25rem 0.5rem;
+            color: #999;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .lang-switch a:hover { color: var(--color-ink); }
+        .lang-switch a.active { color: var(--color-ink); font-weight: 600; }
+        .lang-divider { color: #ddd; }
+
+        /* Mobile nav toggle */
+        .mobile-nav-toggle {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            margin: -0.5rem;
+        }
+        .mobile-nav-toggle span {
+            width: 22px;
+            height: 2px;
+            background: var(--color-ink);
+            transition: all 0.2s;
+        }
+        @media (min-width: 768px) {
+            .mobile-nav-toggle { display: none; }
+        }
+
+        /* Navigation */
+        .nav {
+            border-bottom: 1px solid var(--color-rule);
+            display: none;
+        }
+        @media (min-width: 768px) {
+            .nav { display: block; }
+        }
+        .nav-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+        }
+        .nav a {
+            display: block;
+            padding: 0.875rem 0;
+            font-size: 0.9375rem;
+            color: var(--color-ink-light);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .nav a:hover { color: var(--color-ink); }
+        .nav a.active { color: var(--color-ink); border-bottom-color: var(--color-ink); }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #fff;
+            z-index: 200;
+            padding: 1.5rem;
+        }
+        .mobile-menu.active { display: block; }
+        .mobile-menu-header {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 2rem;
+        }
+        .mobile-menu-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            color: var(--color-ink);
+            line-height: 1;
+        }
+        .mobile-menu-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        .mobile-menu-nav a {
+            padding: 1rem 0;
+            font-size: 1.25rem;
+            font-family: var(--font-serif);
+            border-bottom: 1px solid var(--color-rule);
+            color: var(--color-ink);
+            text-decoration: none;
+        }
+
+        /* Page header */
+        .page-header {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 3rem 1.5rem 1.5rem;
+        }
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .page-intro {
+            font-size: 1rem;
+            color: var(--color-ink-light);
+            max-width: 720px;
+            line-height: 1.6;
+        }
+
+        /* Index nav */
+        .index-nav {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            background: var(--color-paper-warm);
+            border-top: 1px solid var(--color-rule);
+            border-bottom: 1px solid var(--color-rule);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .index-nav-label {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--color-ink-muted);
+            margin-right: 0.5rem;
+        }
+        .index-nav a {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--color-ink-light);
+            text-decoration: none;
+            padding: 0.25rem 0.5rem;
+            border: 1px solid var(--color-rule);
+            background: #fff;
+            transition: all 0.15s;
+        }
+        .index-nav a:hover {
+            border-color: var(--color-ink-muted);
+            color: var(--color-ink);
+        }
+
+        /* Main content */
+        .main-content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        .category-section { margin-bottom: 4rem; }
+        .category-header {
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--color-ink);
+        }
+        .category-title {
+            font-family: var(--font-serif);
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .indicator-grid { display: grid; gap: 3rem; }
+
+        /* Indicator cards */
+        .indicator-card {
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--color-rule);
+        }
+        .indicator-card:last-child { border-bottom: none; padding-bottom: 0; }
+        .indicator-header { margin-bottom: 1rem; }
+        .indicator-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+        .indicator-title-left {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .indicator-title {
+            font-family: var(--font-serif);
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .indicator-year {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            color: var(--color-ink-muted);
+            background: var(--color-paper-warm);
+            padding: 2px 8px;
+            border-radius: 2px;
+        }
+        .indicator-subtitle {
+            font-size: 0.875rem;
+            color: var(--color-ink-muted);
+            line-height: 1.5;
+        }
+
+        /* Share button */
+        .share-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: var(--color-ink-muted);
+            transition: color 0.15s;
+        }
+        .share-btn:hover { color: var(--color-ink); }
+        .share-btn svg { width: 18px; height: 18px; }
+        .share-btn.sharing { opacity: 0.5; pointer-events: none; }
+
+        /* Chart */
+        .chart-container {
+            background: var(--color-paper-warm);
+            border: 1px solid var(--color-rule);
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .chart-capture-area {
+            background: #fff;
+            padding: 1rem;
+        }
+        .capture-title, .capture-subtitle, .capture-footer { display: none; }
+        .capture-title {
+            font-family: var(--font-serif);
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        .capture-subtitle {
+            font-size: 0.75rem;
+            color: var(--color-ink-muted);
+            margin-bottom: 0.5rem;
+        }
+        .capture-footer {
+            font-size: 0.625rem;
+            color: var(--color-ink-muted);
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--color-rule);
+        }
+
+        /* Bar chart */
+        .bar-chart { display: flex; flex-direction: column; gap: 5px; }
+        .bar-row {
+            display: grid;
+            grid-template-columns: 52px 105px 1fr 72px;
+            align-items: center;
+            gap: 0.5rem;
+            height: 24px;
+        }
+        .bar-rank {
+            font-size: 0.625rem;
+            color: var(--color-ink-muted);
+            text-align: right;
+            white-space: nowrap;
+        }
+        .bar-rank.hl { color: var(--color-brazil); font-weight: 600; }
+        .bar-label {
+            font-size: 0.75rem;
+            color: var(--color-ink-light);
+            text-align: right;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .bar-label.hl { font-weight: 700; color: var(--color-ink); }
+        .bar-track { height: 16px; }
+        .bar-fill {
+            height: 100%;
+            background: var(--color-comparison-light);
+            transition: width 0.5s ease-out;
+        }
+        .bar-fill.hl { background: var(--color-brazil); }
+        .bar-value { font-size: 0.75rem; font-weight: 600; text-align: right; }
+        .bar-value.hl { color: var(--color-brazil); }
+
+        /* Indicator footer */
+        .indicator-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .indicator-source { font-size: 0.625rem; color: var(--color-ink-muted); }
+        .indicator-source a {
+            color: var(--color-ink-muted);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+        .methodology-link {
+            font-size: 0.625rem;
+            color: var(--color-ink-muted);
+            text-decoration: none;
+        }
+        .methodology-link::after { content: " →"; }
+
+        /* Update info */
+        .update-info {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--color-rule);
+            font-size: 0.6875rem;
+            color: var(--color-ink-muted);
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid var(--color-rule);
+            margin-top: 0;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            background: #fff;
+        }
+        .footer-content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+        .footer-name {
+            font-family: var(--font-serif);
+            font-size: 1.125rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            color: var(--color-ink);
+            margin-bottom: 0.5rem;
+        }
+        .footer-tagline {
+            font-size: 0.875rem;
+            color: var(--color-ink-muted);
+            margin-bottom: 1rem;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            font-size: 0.875rem;
+            flex-wrap: wrap;
+        }
+        .footer-links a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: var(--color-ink); }
+
+        .svg-symbols { display: none; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title { font-size: 1.75rem; }
+            .index-nav { justify-content: center; }
+            .bar-row { grid-template-columns: 44px 80px 1fr 58px; }
+            .bar-label, .bar-value, .bar-rank { font-size: 0.6875rem; }
+            .indicator-footer { flex-direction: column; align-items: flex-start; }
+        }
+        @media (max-width: 420px) {
+            .site-title { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <svg class="svg-symbols">
+        <symbol id="icon-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v12M12 3l4 4M12 3L8 7"/><path d="M4 15v4a2 2 0 002 2h12a2 2 0 002-2v-4"/>
+        </symbol>
+    </svg>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-left">
+                <button class="search-btn" aria-label="Buscar" id="searchBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <span class="search-text">Buscar</span>
+                </button>
+            </div>
+
+            <a href="/" class="site-title">Eduardo Reis Araújo</a>
+
+            <div class="header-right">
+                <div class="lang-switch" id="langSwitch">
+                    <a href="#" class="active" data-lang="pt">PT</a>
+                    <span class="lang-divider">|</span>
+                    <a href="#" data-lang="en">EN</a>
+                </div>
+
+                <button class="mobile-nav-toggle" aria-label="Menu" id="mobileMenuToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/#publicacoes">Publicações</a>
+            <a href="/#temas">Temas</a>
+            <a href="/indicadores.html" class="active">Indicadores</a>
+            <a href="/#contato">Contato</a>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <button class="mobile-menu-close" id="mobileMenuClose">×</button>
+        </div>
+        <nav class="mobile-menu-nav">
+            <a href="/#publicacoes">Publicações</a>
+            <a href="/#temas">Temas</a>
+            <a href="/indicadores.html">Indicadores</a>
+            <a href="/#contato">Contato</a>
+        </nav>
+    </div>
+
+    <header class="page-header">
+        <h1 class="page-title">Indicadores</h1>
+        <p class="page-intro">Esta seção apresenta indicadores socioeconômicos e institucionais que permitem situar o Brasil no contexto internacional. Os dados comparam o país com economias da América Latina, potências desenvolvidas e emergentes de grande escala. Cada indicador mostra a posição do Brasil no ranking mundial completo. Fontes: Our World in Data, com dados primários do Banco Mundial, ONU, FMI e instituições especializadas.</p>
+    </header>
+
+    <nav class="index-nav">
+        <span class="index-nav-label">Ir para:</span>
+        <a href="#desenvolvimento-humano">Desenvolvimento Humano</a>
+        <a href="#economia">Economia</a>
+        <a href="#governanca">Governança</a>
+    </nav>
+
+    <main class="main-content">
+        <section class="category-section" id="desenvolvimento-humano">
+            <header class="category-header"><h2 class="category-title">Desenvolvimento Humano</h2></header>
+            <div class="indicator-grid" id="grid-dh"></div>
+        </section>
+        <section class="category-section" id="economia">
+            <header class="category-header"><h2 class="category-title">Economia</h2></header>
+            <div class="indicator-grid" id="grid-ec"></div>
+        </section>
+        <section class="category-section" id="governanca">
+            <header class="category-header"><h2 class="category-title">Governança</h2></header>
+            <div class="indicator-grid" id="grid-gv"></div>
+        </section>
+        <div class="update-info" id="ts"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-name">Eduardo Reis Araújo</div>
+            <p class="footer-tagline">Políticas públicas orientadas por evidências</p>
+            <div class="footer-links">
+                <a href="/#contato">Contato</a>
+                <a href="https://linkedin.com/in/eduardoaraujos" target="_blank" rel="noopener">LinkedIn</a>
+                <a href="/homonimos.html">Procurando outro Eduardo Araujo?</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    (() => {
+        const C = { Brazil:'Brasil', Argentina:'Argentina', Chile:'Chile', Mexico:'México', Colombia:'Colômbia', 'United States':'EUA', Germany:'Alemanha', 'South Korea':'Coreia do Sul', China:'China', India:'Índia', 'South Africa':'África do Sul', Turkey:'Turquia' };
+
+        const I = {
+            idh: { cat:'dh', title:'Índice de Desenvolvimento Humano', year:'2022', sub:'Índice composto que combina expectativa de vida, escolaridade e renda per capita. Varia de 0 a 1. Valores mais altos indicam maior desenvolvimento humano; acima de 0,8 é considerado "muito alto".', capSub:'Valores mais altos indicam maior desenvolvimento', src:'UNDP', srcUrl:'https://ourworldindata.org/human-development-index', metUrl:'https://ourworldindata.org/grapher/human-development-index', fmt:v=>v.toFixed(3), sfx:'', tot:191, hib:true,
+                d:[{c:'Germany',v:0.950,r:7},{c:'South Korea',v:0.929,r:19},{c:'United States',v:0.927,r:20},{c:'Chile',v:0.860,r:44},{c:'Argentina',v:0.849,r:48},{c:'Turkey',v:0.838,r:55},{c:'China',v:0.788,r:75},{c:'Mexico',v:0.781,r:77},{c:'Brazil',v:0.760,r:89},{c:'Colombia',v:0.758,r:91},{c:'South Africa',v:0.717,r:109},{c:'India',v:0.644,r:134}]},
+
+            expVida: { cat:'dh', title:'Expectativa de Vida ao Nascer', year:'2023', sub:'Número médio de anos que uma pessoa nascida em determinado ano pode esperar viver. Valores mais altos indicam melhores condições de saúde e qualidade de vida.', capSub:'Anos · Valores mais altos indicam melhor desempenho', src:'UN WPP', srcUrl:'https://ourworldindata.org/life-expectancy', metUrl:'https://ourworldindata.org/grapher/life-expectancy', fmt:v=>v.toFixed(1), sfx:' anos', tot:195, hib:true,
+                d:[{c:'South Korea',v:83.8,r:8},{c:'Germany',v:81.2,r:24},{c:'Chile',v:80.2,r:32},{c:'United States',v:78.5,r:46},{c:'China',v:78.2,r:48},{c:'Argentina',v:76.7,r:62},{c:'Turkey',v:76.0,r:68},{c:'Colombia',v:75.8,r:72},{c:'Brazil',v:75.3,r:78},{c:'Mexico',v:75.1,r:80},{c:'India',v:70.8,r:125},{c:'South Africa',v:62.3,r:165}]},
+
+            escola: { cat:'dh', title:'Anos de Escolaridade', year:'2021', sub:'Média de anos de educação formal completados pela população adulta (25 anos ou mais). Valores mais altos indicam maior acumulação de capital humano. O Brasil está abaixo da média latino-americana.', capSub:'Média da população adulta · Valores mais altos indicam melhor desempenho', src:'UNDP', srcUrl:'https://ourworldindata.org/global-education', metUrl:'https://ourworldindata.org/grapher/mean-years-of-schooling-long-run', fmt:v=>v.toFixed(1), sfx:' anos', tot:185, hib:true,
+                d:[{c:'Germany',v:14.1,r:6},{c:'United States',v:13.7,r:10},{c:'South Korea',v:12.5,r:22},{c:'Chile',v:10.8,r:45},{c:'Argentina',v:10.6,r:49},{c:'South Africa',v:10.2,r:56},{c:'Mexico',v:8.8,r:82},{c:'Turkey',v:8.6,r:86},{c:'Colombia',v:8.4,r:90},{c:'Brazil',v:8.1,r:97},{c:'China',v:7.6,r:105},{c:'India',v:6.6,r:123}]},
+
+            homic: { cat:'dh', title:'Taxa de Homicídios', year:'2021', sub:'Homicídios intencionais por 100 mil habitantes. Valores mais baixos indicam maior segurança pública. O Brasil figura entre os países mais violentos do mundo neste indicador.', capSub:'Por 100 mil · Valores mais baixos indicam melhor desempenho', src:'UNODC', srcUrl:'https://ourworldindata.org/homicides', metUrl:'https://ourworldindata.org/grapher/homicide-rate', fmt:v=>v.toFixed(1), sfx:'/100k', tot:195, hib:false,
+                d:[{c:'South Africa',v:41.9,r:190},{c:'Mexico',v:28.4,r:183},{c:'Colombia',v:26.1,r:181},{c:'Brazil',v:22.4,r:178},{c:'United States',v:6.8,r:145},{c:'Argentina',v:4.6,r:128},{c:'Chile',v:4.6,r:127},{c:'India',v:2.9,r:108},{c:'Turkey',v:2.5,r:98},{c:'Germany',v:0.8,r:42},{c:'China',v:0.5,r:28},{c:'South Korea',v:0.5,r:27}]},
+
+            mortInf: { cat:'dh', title:'Mortalidade Infantil', year:'2022', sub:'Óbitos de crianças menores de 5 anos por 1.000 nascidos vivos. Valores mais baixos indicam melhores condições de saúde materno-infantil e saneamento. Indicador clássico de desenvolvimento.', capSub:'Por 1.000 nascidos vivos · Valores mais baixos indicam melhor desempenho', src:'UN IGME', srcUrl:'https://ourworldindata.org/child-mortality', metUrl:'https://ourworldindata.org/grapher/child-mortality', fmt:v=>v.toFixed(1), sfx:'/1k', tot:195, hib:false,
+                d:[{c:'South Africa',v:31.4,r:157},{c:'India',v:31.1,r:156},{c:'Brazil',v:14.1,r:118},{c:'Mexico',v:12.7,r:112},{c:'Colombia',v:12.3,r:110},{c:'Argentina',v:8.8,r:91},{c:'Turkey',v:8.4,r:88},{c:'China',v:6.8,r:76},{c:'United States',v:6.4,r:73},{c:'Chile',v:6.3,r:72},{c:'Germany',v:3.3,r:38},{c:'South Korea',v:2.8,r:30}]},
+
+            pib: { cat:'ec', title:'PIB per capita', year:'2023', sub:'Produto interno bruto dividido pela população, em dólares internacionais (PPP), ajustado por inflação e diferenças no custo de vida. Valores mais altos indicam maior renda média.', capSub:'US$ PPP · Valores mais altos indicam melhor desempenho', src:'World Bank', srcUrl:'https://ourworldindata.org/economic-growth', metUrl:'https://ourworldindata.org/grapher/gdp-per-capita-worldbank', fmt:v=>'US$ '+v.toLocaleString('pt-BR'), sfx:'', tot:186, hib:true,
+                d:[{c:'United States',v:76330,r:8},{c:'Germany',v:63150,r:18},{c:'South Korea',v:53050,r:29},{c:'Turkey',v:37480,r:45},{c:'Chile',v:28520,r:56},{c:'Argentina',v:24810,r:65},{c:'China',v:23310,r:68},{c:'Mexico',v:21550,r:74},{c:'Brazil',v:19870,r:84},{c:'Colombia',v:18330,r:88},{c:'South Africa',v:15910,r:96},{c:'India',v:9180,r:125}]},
+
+            gini: { cat:'ec', title:'Desigualdade de Renda', year:'2022', sub:'Coeficiente de Gini: mede concentração de renda de 0 (igualdade perfeita) a 1 (desigualdade máxima). Valores mais baixos indicam distribuição de renda mais equitativa. O Brasil é um dos países mais desiguais do mundo.', capSub:'Escala 0–1 · Valores mais baixos indicam menor desigualdade', src:'World Bank', srcUrl:'https://ourworldindata.org/economic-inequality', metUrl:'https://ourworldindata.org/grapher/economic-inequality-gini-index', fmt:v=>v.toFixed(2), sfx:'', tot:164, hib:false,
+                d:[{c:'South Africa',v:0.63,r:164},{c:'Brazil',v:0.52,r:156},{c:'Colombia',v:0.51,r:154},{c:'Chile',v:0.44,r:140},{c:'Mexico',v:0.43,r:138},{c:'Argentina',v:0.42,r:134},{c:'Turkey',v:0.41,r:130},{c:'United States',v:0.40,r:126},{c:'China',v:0.38,r:118},{c:'India',v:0.35,r:102},{c:'South Korea',v:0.32,r:78},{c:'Germany',v:0.30,r:62}]},
+
+            prod: { cat:'ec', title:'Produtividade do Trabalho', year:'2022', sub:'PIB por hora trabalhada, em dólares internacionais (PPP). Valores mais altos indicam maior eficiência produtiva. A baixa produtividade é apontada como causa central da estagnação econômica brasileira.', capSub:'US$ PPP por hora · Valores mais altos indicam melhor desempenho', src:'Penn World Table', srcUrl:'https://ourworldindata.org/economic-growth', metUrl:'https://ourworldindata.org/grapher/labor-productivity-per-hour-pennworldtable', fmt:v=>'US$ '+v.toFixed(1), sfx:'', tot:140, hib:true,
+                d:[{c:'United States',v:85.2,r:6},{c:'Germany',v:76.8,r:12},{c:'South Korea',v:52.1,r:32},{c:'Turkey',v:45.8,r:42},{c:'Chile',v:32.4,r:56},{c:'Argentina',v:28.6,r:64},{c:'Mexico',v:24.2,r:72},{c:'Brazil',v:21.8,r:78},{c:'China',v:19.5,r:84},{c:'Colombia',v:18.9,r:86},{c:'South Africa',v:17.2,r:92},{c:'India',v:11.4,r:108}]},
+
+            pd: { cat:'ec', title:'Investimento em P&D', year:'2021', sub:'Gastos com pesquisa e desenvolvimento como percentual do PIB. Valores mais altos indicam maior esforço de inovação. O Brasil investe pouco comparado a economias de renda similar.', capSub:'% do PIB · Valores mais altos indicam maior inovação', src:'UNESCO', srcUrl:'https://ourworldindata.org/research-and-development', metUrl:'https://ourworldindata.org/grapher/research-spending-gdp', fmt:v=>v.toFixed(2), sfx:'% PIB', tot:130, hib:true,
+                d:[{c:'South Korea',v:4.93,r:2},{c:'United States',v:3.45,r:10},{c:'Germany',v:3.13,r:14},{c:'China',v:2.43,r:24},{c:'Turkey',v:1.40,r:42},{c:'Brazil',v:1.16,r:52},{c:'India',v:0.65,r:72},{c:'South Africa',v:0.62,r:74},{c:'Argentina',v:0.52,r:80},{c:'Chile',v:0.35,r:90},{c:'Mexico',v:0.29,r:96},{c:'Colombia',v:0.29,r:97}]},
+
+            divida: { cat:'ec', title:'Dívida Pública / PIB', year:'2023', sub:'Dívida bruta do governo geral como percentual do PIB. Não há valor "ideal" universal; a sustentabilidade depende de juros, crescimento e composição. Países desenvolvidos frequentemente sustentam dívidas maiores que emergentes.', capSub:'% do PIB · Interpretação depende do contexto', src:'IMF', srcUrl:'https://ourworldindata.org/government-spending', metUrl:'https://ourworldindata.org/grapher/public-debt-to-gdp-ratio', fmt:v=>v.toFixed(0), sfx:'% PIB', tot:180, hib:null,
+                d:[{c:'United States',v:123,r:172},{c:'Argentina',v:89,r:158},{c:'Brazil',v:87,r:155},{c:'China',v:83,r:150},{c:'India',v:82,r:148},{c:'South Africa',v:73,r:138},{c:'Germany',v:64,r:124},{c:'South Korea',v:54,r:108},{c:'Mexico',v:53,r:106},{c:'Colombia',v:52,r:104},{c:'Chile',v:38,r:78},{c:'Turkey',v:34,r:68}]},
+
+            trib: { cat:'ec', title:'Carga Tributária / PIB', year:'2021', sub:'Receitas tributárias totais como percentual do PIB. Não indica automaticamente melhor ou pior desempenho; depende da qualidade do gasto público. O Brasil tributa como país rico, mas entrega serviços de país de renda média.', capSub:'% do PIB · Interpretação depende da qualidade do gasto', src:'OECD', srcUrl:'https://ourworldindata.org/government-spending', metUrl:'https://ourworldindata.org/grapher/tax-revenues-as-a-share-of-gdp-unu-wider', fmt:v=>v.toFixed(1), sfx:'% PIB', tot:150, hib:null,
+                d:[{c:'Germany',v:39.5,r:12},{c:'Brazil',v:33.9,r:24},{c:'South Korea',v:29.9,r:38},{c:'Argentina',v:29.6,r:40},{c:'Turkey',v:27.9,r:48},{c:'United States',v:27.1,r:52},{c:'South Africa',v:26.2,r:56},{c:'Chile',v:23.0,r:72},{c:'Colombia',v:19.7,r:90},{c:'China',v:17.9,r:98},{c:'India',v:17.5,r:102},{c:'Mexico',v:16.9,r:106}]},
+
+            co2: { cat:'ec', title:'Emissões de CO₂ per capita', year:'2022', sub:'Toneladas de CO₂ emitidas por habitante ao ano (emissões territoriais, excluindo mudança de uso da terra). Valores mais baixos indicam menor pegada de carbono. A matriz energética limpa dá ao Brasil posição relativamente favorável.', capSub:'Toneladas/ano · Valores mais baixos indicam menor pegada', src:'Global Carbon Budget', srcUrl:'https://ourworldindata.org/co2-emissions', metUrl:'https://ourworldindata.org/grapher/co-emissions-per-capita', fmt:v=>v.toFixed(1), sfx:' t', tot:195, hib:false,
+                d:[{c:'United States',v:14.9,r:178},{c:'South Korea',v:11.6,r:170},{c:'Germany',v:8.1,r:152},{c:'China',v:8.0,r:150},{c:'South Africa',v:7.3,r:145},{c:'Turkey',v:5.1,r:125},{c:'Chile',v:4.3,r:115},{c:'Argentina',v:3.8,r:108},{c:'Mexico',v:3.5,r:102},{c:'Brazil',v:2.2,r:78},{c:'India',v:1.9,r:72},{c:'Colombia',v:1.8,r:68}]},
+
+            corrup: { cat:'gv', title:'Percepção de Corrupção', year:'2023', sub:'Índice de Percepção de Corrupção da Transparency International, de 0 (muito corrupto) a 100 (muito íntegro). Valores mais altos indicam menor percepção de corrupção no setor público.', capSub:'Escala 0–100 · Valores mais altos indicam menos corrupção', src:'Transparency International', srcUrl:'https://ourworldindata.org/corruption', metUrl:'https://ourworldindata.org/grapher/corruption-perception-index', fmt:v=>v.toFixed(0), sfx:'/100', tot:180, hib:true,
+                d:[{c:'Germany',v:78,r:9},{c:'United States',v:69,r:24},{c:'Chile',v:66,r:29},{c:'South Korea',v:63,r:32},{c:'China',v:42,r:76},{c:'South Africa',v:41,r:83},{c:'Colombia',v:40,r:87},{c:'India',v:39,r:93},{c:'Argentina',v:37,r:98},{c:'Brazil',v:36,r:104},{c:'Turkey',v:34,r:115},{c:'Mexico',v:31,r:126}]},
+
+            rol: { cat:'gv', title:'Estado de Direito', year:'2023', sub:'Índice do World Justice Project que avalia restrições ao poder governamental, ausência de corrupção, direitos fundamentais, ordem e segurança, cumprimento regulatório e acesso à justiça. Escala de 0 a 1; valores mais altos indicam instituições mais sólidas.', capSub:'Escala 0–1 · Valores mais altos indicam instituições mais sólidas', src:'World Justice Project', srcUrl:'https://ourworldindata.org/corruption', metUrl:'https://ourworldindata.org/grapher/rule-of-law-index', fmt:v=>v.toFixed(2), sfx:'', tot:142, hib:true,
+                d:[{c:'Germany',v:0.84,r:5},{c:'South Korea',v:0.74,r:19},{c:'United States',v:0.70,r:26},{c:'Chile',v:0.66,r:32},{c:'Argentina',v:0.52,r:62},{c:'South Africa',v:0.52,r:63},{c:'Brazil',v:0.50,r:68},{c:'India',v:0.50,r:70},{c:'Colombia',v:0.50,r:71},{c:'China',v:0.47,r:82},{c:'Mexico',v:0.42,r:98},{c:'Turkey',v:0.42,r:99}]}
+        };
+
+        const bar = ind => {
+            const s = [...ind.d].sort((a,b)=>ind.hib===false?a.v-b.v:b.v-a.v);
+            const m = Math.max(...s.map(x=>x.v));
+            return '<div class="bar-chart">'+s.map(x=>{
+                const h=x.c==='Brazil'?' hl':'';
+                return `<div class="bar-row"><span class="bar-rank${h}">${x.r}º/${ind.tot}</span><span class="bar-label${h}">${C[x.c]}</span><div class="bar-track"><div class="bar-fill${h}" style="width:${x.v/m*100}%"></div></div><span class="bar-value${h}">${ind.fmt(x.v)}${ind.sfx}</span></div>`;
+            }).join('')+'</div>';
+        };
+
+        const card = (id,ind) => `<article class="indicator-card" id="${id}">
+            <header class="indicator-header">
+                <div class="indicator-title-row">
+                    <div class="indicator-title-left"><h3 class="indicator-title">${ind.title}</h3><span class="indicator-year">${ind.year}</span></div>
+                    <button class="share-btn" data-i="${id}" title="Compartilhar"><svg><use href="#icon-share"/></svg></button>
+                </div>
+                <p class="indicator-subtitle">${ind.sub}</p>
+            </header>
+            <div class="chart-container">
+                <div class="chart-capture-area" id="${id}-cap">
+                    <div class="capture-title">${ind.title} (${ind.year})</div>
+                    <div class="capture-subtitle">${ind.capSub}</div>
+                    ${bar(ind)}
+                    <div class="capture-footer">eduardoreisaraujo.com.br/indicadores · Fonte: ${ind.src} via Our World in Data</div>
+                </div>
+            </div>
+            <footer class="indicator-footer">
+                <span class="indicator-source">Fonte: <a href="${ind.srcUrl}" target="_blank">Our World in Data</a> · ${ind.src}</span>
+                <a href="${ind.metUrl}" class="methodology-link" target="_blank">Dados e metodologia</a>
+            </footer>
+        </article>`;
+
+        async function share(id) {
+            const area = document.getElementById(`${id}-cap`);
+            const btn = document.querySelector(`[data-i="${id}"]`);
+            if (!area||!btn) return;
+            btn.classList.add('sharing');
+            area.querySelectorAll('.capture-title,.capture-subtitle,.capture-footer').forEach(e=>e.style.display='block');
+            try {
+                const canvas = await html2canvas(area,{backgroundColor:'#fff',scale:2,logging:false});
+                const blob = await new Promise(r=>canvas.toBlob(r,'image/png'));
+                const file = new File([blob],`indicador-${id}.png`,{type:'image/png'});
+                if (navigator.canShare?.({files:[file]})) await navigator.share({files:[file],title:'Indicadores',text:'eduardoreisaraujo.com.br/indicadores'});
+                else { const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=file.name;a.click();URL.revokeObjectURL(u); }
+            } catch(e){ if(e.name!=='AbortError')console.error(e); }
+            finally { area.querySelectorAll('.capture-title,.capture-subtitle,.capture-footer').forEach(e=>e.style.display='none'); btn.classList.remove('sharing'); }
+        }
+
+        document.addEventListener('DOMContentLoaded',()=>{
+            const grids = {dh:document.getElementById('grid-dh'),ec:document.getElementById('grid-ec'),gv:document.getElementById('grid-gv')};
+            for (const [id,ind] of Object.entries(I)) grids[ind.cat].innerHTML += card(id,ind);
+            document.addEventListener('click',e=>{ const b=e.target.closest('.share-btn'); if(b)share(b.dataset.i); });
+            document.getElementById('ts').innerHTML = `Última visualização: ${new Date().toLocaleDateString('pt-BR',{day:'numeric',month:'short',year:'numeric'})}<br><span style="font-size:0.625rem">Fontes: World Bank, UNDP, UN, IMF, UNODC, UNESCO, OECD, Transparency International, World Justice Project, Global Carbon Budget — via Our World in Data.</span>`;
+
+            // Mobile menu functionality
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileMenuClose = document.getElementById('mobileMenuClose');
+
+            if (mobileMenuToggle && mobileMenu && mobileMenuClose) {
+                mobileMenuToggle.addEventListener('click', () => mobileMenu.classList.add('active'));
+                mobileMenuClose.addEventListener('click', () => mobileMenu.classList.remove('active'));
+                mobileMenu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => mobileMenu.classList.remove('active'));
+                });
+            }
+        });
+    })();
+    </script>
+</body>
+</html>
