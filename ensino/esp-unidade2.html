@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Falhas de Governo — Notas de Aula | Eduardo Reis Araújo</title>
+    <meta name="description" content="Se economistas sabem o que torna uma política pública eficiente, por que é tão difícil aprová-la? Notas sobre Public Choice, Eleitor Mediano, Arrow, rent-seeking e regras fiscais.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/ensino/esp-unidade2.html">
+    <meta property="og:title" content="Falhas de Governo — Notas de Aula | Eduardo Reis Araújo">
+    <meta property="og:description" content="Se economistas sabem o que torna uma política pública eficiente, por que é tão difícil aprová-la?">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/ensino/esp-unidade2.html">
+    <meta property="og:image" content="https://www.eduardoreisaraujo.com.br/images/profile.jpg">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Falhas de Governo — Notas de Aula | Eduardo Reis Araújo">
+    <meta name="twitter:description" content="Se economistas sabem o que torna uma política pública eficiente, por que é tão difícil aprová-la?">
+    <meta name="twitter:image" content="https://www.eduardoreisaraujo.com.br/images/profile.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/notas.css">
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <nav class="header-nav">
+                <a href="/#publicacoes">Publicações</a>
+                <a href="/ensino/" class="active">Ensino</a>
+                <a href="/indicadores.html">Indicadores</a>
+                <a href="/#contato">Contato</a>
+            </nav>
+        </div>
+    </header>
+    <section class="article-hero">
+        <a href="/ensino/" class="back-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Voltar às notas
+        </a>
+        <div class="unit-label">Economia do Setor Público · Unidade 2</div>
+        <h1>Falhas de Governo</h1>
+        <p class="lead">Se economistas sabem o que torna uma política pública eficiente, por que é tão difícil aprová-la, implementá-la e mantê-la?</p>
+        <div class="article-meta">
+            <span>Prof. Eduardo Araujo</span>
+            <span class="divider"></span>
+            <span>Rosen &amp; Gayer, Cap. 6</span>
+            <span class="divider"></span>
+            <span>~35 min de leitura</span>
+            <div class="share-buttons">
+                <a href="#" class="share-btn" id="shareWhatsApp" aria-label="Compartilhar no WhatsApp">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    WhatsApp
+                </a>
+                <button class="share-btn" id="copyLink" aria-label="Copiar link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                    Copiar link
+                </button>
+            </div>
+        </div>
+    </section>
+    <div class="article-layout">
+        <div class="article-spacer"></div>
+        <article class="article-content">
+            <p>Pense na Reforma Tributária brasileira. Desde pelo menos os anos 1990, havia razoável consenso entre economistas de que o sistema tributário nacional era disfuncional: tributos cumulativos sobre consumo, guerra fiscal entre estados, uma legislação tão complexa que criou uma indústria inteira dedicada apenas a interpretá-la. O diagnóstico estava posto. Ainda assim, foram necessários mais de trinta anos para que uma reforma fosse aprovada, e mesmo após a aprovação, a regulamentação segue sendo disputada setor a setor, exceção a exceção.</p>
+            <p>Por que isso acontece? O que faz com que políticas reconhecidamente boas demorem tanto para sair do papel, ou saiam desconfiguradas? Essa é a pergunta que organiza toda esta Unidade. Para respondê-la, vamos aplicar ao processo político as mesmas ferramentas que a economia usa para analisar mercados: incentivos, racionalidade, custos e benefícios.</p>
+            <h2 id="s1">1. Da falha de mercado à falha de governo</h2>
+            <p>Na Unidade 1, você estudou situações em que o mercado, deixado a si mesmo, produz resultados ineficientes. Bens públicos não são ofertados em quantidade adequada porque ninguém quer pagar voluntariamente por algo de que pode usufruir de graça. Externalidades fazem com que poluir saia barato para quem polui e caro para quem respira. Nesses casos, a intervenção do governo aparece como solução natural: se o mercado falha, o Estado corrige.</p>
+            <p>Mas essa narrativa pressupõe algo importante, quase sempre deixado implícito: que o governo, ao intervir, vai de fato buscar o interesse público. A teoria da <em>Public Choice</em> questiona essa premissa: e se políticos, burocratas e eleitores agirem exatamente como consumidores e empresários, perseguindo seus próprios interesses?</p>
+            <p>Essa é a contribuição central de James Buchanan e Gordon Tullock, que nos anos 1960 fundaram o campo da <em>Public Choice</em>. A ideia é direta: não faz sentido usar um modelo em que agentes privados são egoístas e racionais, e depois assumir que, ao entrar no serviço público ou ao ser eleito, esse mesmo indivíduo passa a agir de forma altruísta. O que Buchanan e Tullock propõem é tratar a política com as mesmas ferramentas analíticas que usamos para estudar mercados. Um deputado responde a incentivos, assim como um empresário. Um burocrata tem interesses próprios, assim como um gerente de banco. Um eleitor faz cálculos de custo e benefício, assim como um consumidor.</p>
+            <p>Isso não significa dizer que todo político é corrupto ou que todo burocrata é incompetente. Significa reconhecer que o processo político tem uma lógica própria, e que essa lógica pode produzir resultados sistematicamente diferentes do que seria eficiente para a sociedade. Essas são as chamadas <em>falhas de governo</em>: situações em que a ação pública, mesmo bem-intencionada, gera ineficiências, desperdício ou favorecimento de grupos específicos em detrimento do interesse coletivo.</p>
+            <p>Na prática, essa perspectiva importa para quem opera no mercado. Toda empresa funciona dentro de um ambiente regulatório moldado por decisões políticas. Entender por que certas regulações existem, por que persistem mesmo sendo ineficientes, e por que reformas prometidas demoram a sair do papel é o que separa quem é surpreendido por uma mudança regulatória de quem consegue antecipar como o processo político tende a se mover.</p>
+            <div class="concept-box">
+                <div class="concept-label">Conceito-chave — Public Choice</div>
+                <p>Campo da economia que aplica o método econômico (racionalidade, incentivos, custos e benefícios) à análise do processo político. Trata políticos, burocratas e eleitores como agentes racionais que respondem a incentivos, assim como consumidores e firmas. <strong>Resultado:</strong> o governo pode falhar sistematicamente, não por má-fé individual, mas pela lógica dos incentivos que o processo político cria.</p>
+            </div>
+            <h2 id="s2">2. Votação por maioria e o Teorema do Eleitor Mediano</h2>
+            <p class="opening-question">Se colocássemos todas as decisões de política pública em votação direta, chegaríamos a resultados eficientes?</p>
+            <p>Imagine um município que precisa decidir quanto investir em iluminação pública. Todos concordam que alguma iluminação é necessária, mas discordam sobre o quanto gastar. Moradores do centro, que já têm boa infraestrutura, preferem um investimento modesto. Moradores da periferia, onde ruas escuras são um problema de segurança, querem investimento alto. Comerciantes querem iluminação nas áreas comerciais, mas não querem pagar impostos altos. Como chegar a uma decisão coletiva?</p>
+            <h3 id="s2-1">2.1 A precificação de Lindahl</h3>
+            <p>A solução teoricamente perfeita foi proposta pelo economista sueco Erik Lindahl. A ideia é elegante: cada cidadão pagaria pelo bem público uma parcela proporcional ao benefício que dele obtém. Quem valoriza muito a iluminação paga mais; quem valoriza pouco paga menos. Se fosse possível implementar esse esquema, chegaríamos a uma quantidade eficiente do bem público, a mesma que um mercado perfeitamente competitivo produziria para bens privados.</p>
+            <p>O problema é que a precificação de Lindahl exige algo que não existe na prática: que cada pessoa revele honestamente o quanto valoriza o bem público. Pense no seu próprio comportamento. Se alguém lhe perguntasse quanto você está disposto a pagar pela iluminação da sua rua, e a sua resposta determinasse a sua contribuição, você teria um incentivo forte para subestimar o valor. Afinal, a iluminação vai ser instalada de qualquer forma, e quanto menos você disser que valoriza, menos vai pagar. Esse é o problema do carona (<em>free rider</em>) que você já conhece da Unidade 1, agora aparecendo em um novo contexto.</p>
+            <div class="concept-box">
+                <div class="concept-label">Conceito-chave — Precificação de Lindahl</div>
+                <p>Sistema teórico em que cada indivíduo paga pelo bem público uma parcela igual ao seu benefício marginal. Levaria à provisão eficiente, mas depende da revelação honesta de preferências, o que o problema do carona inviabiliza na prática. <strong>Resultado:</strong> precisamos de mecanismos de decisão coletiva como a votação, que são necessariamente imperfeitos.</p>
+            </div>
+            <h3 id="s2-2">2.2 Votação por maioria e resultado estável</h3>
+            <p>Se a precificação ideal não funciona, que tal simplesmente votar? A regra de maioria simples é o mecanismo de decisão coletiva mais utilizado em democracias, e parece intuitivo. Mas será que produz bons resultados?</p>
+            <p>Voltemos ao exemplo da iluminação pública. Suponha que existam três propostas em discussão: investimento baixo (R$ 1 milhão), médio (R$ 3 milhões) e alto (R$ 5 milhões). Há três grupos de moradores com preferências distintas. O grupo A prefere o investimento baixo, depois o médio, depois o alto. O grupo B prefere o médio, depois o alto, depois o baixo. O grupo C prefere o alto, depois o médio, depois o baixo.</p>
+            <p>Se colocarmos "baixo contra médio" em votação, o investimento médio vence (B e C votam nele). Se colocarmos "médio contra alto", o médio vence novamente (A e B votam nele). O investimento médio vence qualquer alternativa. Perceba que o médio é exatamente a preferência do grupo B, que está "no meio" da distribuição de preferências. Esse resultado não é coincidência.</p>
+            <p>O <em>Teorema do Eleitor Mediano</em> afirma que, sob votação por maioria, o resultado tende a refletir a preferência do eleitor que está no ponto mediano da distribuição de preferências. Não é a média das preferências, é a mediana. Se você enfileirar todos os eleitores da preferência mais baixa à mais alta, o eleitor que estiver bem no meio é quem efetivamente decide.</p>
+            <p>Esse teorema tem implicações profundas. Ele explica, por exemplo, por que a regulamentação da Reforma Tributária brasileira tende a convergir para posições intermediárias. Economistas gostariam de um IVA puro, sem exceções, o mais eficiente possível. Setores beneficiados pelo sistema antigo gostariam de manter todas as suas exceções. O resultado legislativo tende a ficar no meio: nem o IVA puro dos economistas, nem a manutenção plena das exceções. Não porque legisladores sejam sábios moderados, mas porque a lógica da votação por maioria empurra o resultado para o centro.</p>
+            <div class="concept-box">
+                <div class="concept-label">Conceito-chave — Teorema do Eleitor Mediano</div>
+                <p>Sob votação por maioria, quando as preferências são de pico único, o resultado reflete a preferência do eleitor mediano — aquele que está no ponto central da distribuição de preferências. Não é a média, é a mediana. <strong>Implicação:</strong> o eleitor do "meio" funciona como um ditador involuntário da escolha coletiva.</p>
+            </div>
+            <h3 id="s2-3">2.3 Múltiplos picos e o poder de quem controla a pauta</h3>
+            <p>Nem sempre as preferências são tão bem comportadas. Pense em uma decisão mais complexa: um município precisa decidir o que fazer com um terreno público. As opções são construir um hospital, construir um estádio ou manter como área verde. É perfeitamente possível que um eleitor prefira o hospital em primeiro lugar, a área verde em segundo (por razões ambientais) e o estádio em último. Outro eleitor pode preferir o estádio, depois o hospital, depois a área verde. Um terceiro pode preferir a área verde, depois o estádio, depois o hospital.</p>
+            <p>Quando as preferências têm essa configuração, a votação por maioria pode gerar ciclos. Hospital vence estádio. Estádio vence área verde. Área verde vence hospital. Não existe vencedor estável, e o resultado final depende inteiramente da ordem em que as alternativas são colocadas em votação.</p>
+            <p>Esse fenômeno é conhecido como <em>ciclicidade</em> ou paradoxo de Condorcet, e tem uma implicação prática que vai muito além da teoria. Se o resultado da votação depende da ordem das alternativas, então quem controla a pauta legislativa tem um poder enorme. Não é preciso ter maioria de votos se você pode determinar quais opções serão votadas e em que sequência.</p>
+            <p>Pense no Congresso Nacional. O presidente da Câmara decide a ordem de votação dos destaques de um projeto de lei. Essa decisão, aparentemente burocrática, pode determinar o conteúdo final da legislação. Durante a tramitação da Reforma Tributária, a ordem em que exceções setoriais foram votadas influenciou diretamente quais sobreviveram e quais foram derrubadas. Quem controla a agenda controla, em boa medida, o resultado.</p>
+            <div class="concept-box">
+                <div class="concept-label">Conceito-chave — Ciclicidade e poder de agenda</div>
+                <p>Quando as preferências não são de pico único, a votação por maioria pode gerar ciclos sem vencedor estável. Nesse caso, o resultado depende da ordem de votação, o que confere enorme poder a quem controla a pauta legislativa. <strong>A agenda não é neutra: ela é um instrumento político.</strong></p>
+            </div>
+            <h2 id="s3">3. Logrolling e o Teorema da Impossibilidade de Arrow</h2>
+            <p class="opening-question">Trocar votos melhora ou piora as decisões coletivas?</p>
+            <h3 id="s3-1">3.1 Logrolling</h3>
+            <p>A votação por maioria simples tem uma limitação importante: ela trata todos os votos como iguais, independentemente de quão intensamente cada eleitor se importa com o resultado. Considere duas propostas legislativas tramitando simultaneamente no Congresso: uma reforma da previdência e um projeto de ampliação de rodovias no interior do Nordeste. Um deputado do Sudeste pode ser moderadamente favorável à reforma da previdência e indiferente às rodovias. Um deputado do Nordeste pode ser indiferente à previdência, mas profundamente interessado nas rodovias para sua base eleitoral.</p>
+            <p>Se cada proposta for votada separadamente, é possível que ambas percam por falta de maioria. Mas se os dois deputados fizerem um acordo — "eu voto na sua reforma se você vota nas minhas rodovias" — ambos podem ser aprovados. Essa prática de troca de votos entre legisladores é o que chamamos de <em>logrolling</em>.</p>
+            <p>O logrolling permite que parlamentares expressem a intensidade de suas preferências, algo que a votação simples não consegue captar. Em princípio, isso pode melhorar a eficiência: se o benefício das rodovias para o Nordeste é genuinamente maior do que o custo para o Sudeste, e vice-versa para a reforma da previdência, a troca pode gerar ganho líquido para a sociedade.</p>
+            <p>O problema aparece quando o logrolling é levado ao extremo. Imagine que cada deputado tenha um projeto paroquial de interesse apenas da sua base: uma ponte aqui, um hospital ali, uma isenção fiscal para determinado setor. Nenhum desses projetos teria maioria sozinho. Mas se dezenas de deputados empacotarem todos esses projetos em um único "pacotão" legislativo, cada um vota a favor do pacote para garantir que o seu projeto específico passe. O resultado é um orçamento inflado com dezenas de projetos cujo custo total excede em muito o benefício agregado.</p>
+            <p>O mecanismo das emendas parlamentares no Brasil funciona exatamente dessa forma. Emendas individuais, de bancada e de relator funcionam como moeda de troca para garantir a aprovação de projetos do governo no Congresso. A aprovação da própria Reforma Tributária envolveu negociações intensas em que a liberação de emendas foi usada para compor a maioria necessária. O resultado é que reformas importantes saem do Congresso acompanhadas de um custo fiscal adicional que ninguém planejou originalmente.</p>
+            <div class="concept-box">
+                <div class="concept-label">Conceito-chave — Logrolling</div>
+                <p>Prática de troca de votos entre legisladores, que permite expressar intensidade de preferências. Pode ser eficiente quando viabiliza acordos genuínos, mas pode ser ineficiente quando resulta na aprovação de pacotes de gasto cujo custo total supera o benefício agregado. <strong>Mecanismo central para entender a dinâmica das emendas parlamentares e a composição de maiorias legislativas.</strong></p>
+            </div>
+            <h3 id="s3-2">3.2 O Teorema de Arrow</h3>
+            <p>Diante dos problemas da votação por maioria (ciclicidade, dependência da agenda), seria natural perguntar: não existe um sistema melhor? E se usássemos votação proporcional, voto em dois turnos, voto por aprovação, ou algum outro mecanismo?</p>
+            <p>Em 1951, o economista Kenneth Arrow demonstrou um resultado com implicações profundas. Arrow provou que <em>nenhum</em> sistema de votação, por mais engenhoso que seja, consegue satisfazer simultaneamente um conjunto mínimo de critérios que parecem razoáveis. Esses critérios são:</p>
+            <p>Primeiro, o sistema deve funcionar para qualquer configuração possível de preferências dos eleitores, não apenas para casos especiais. Segundo, se todos os eleitores preferem A a B, o resultado coletivo deve refletir essa preferência (unanimidade). Terceiro, a escolha coletiva entre A e B deve depender apenas das preferências dos eleitores sobre A e B, e não sobre alternativas irrelevantes como C. Quarto, nenhum indivíduo deve ter o poder de determinar sozinho o resultado coletivo (não ditadura).</p>
+            <p>Arrow provou que é matematicamente impossível atender a todos esses critérios ao mesmo tempo. Qualquer sistema de votação que satisfaça os três primeiros critérios será, em alguma situação, uma ditadura. E qualquer sistema que não seja uma ditadura violará pelo menos um dos outros critérios.</p>
+            <p>A implicação não é que a democracia é inútil. A implicação é que toda regra de decisão coletiva envolve compromissos. Não existe sistema "perfeito" de agregação de preferências. Para o debate de políticas públicas, o teorema de Arrow é um convite à humildade institucional. Quando alguém propõe que determinada decisão "deveria ser resolvida pela vontade popular", vale perguntar: por qual mecanismo, exatamente? Porque o mecanismo escolhido pode determinar o resultado tanto quanto as preferências dos eleitores.</p>
+            <div class="concept-box">
+                <div class="concept-label">Conceito-chave — Teorema da Impossibilidade de Arrow</div>
+                <p>Nenhum sistema de votação é capaz de satisfazer simultaneamente critérios mínimos de racionalidade coletiva (domínio irrestrito, unanimidade, independência das alternativas irrelevantes, não ditadura). <strong>Implicação:</strong> toda regra de decisão coletiva envolve trade-offs; não existe processo democrático "perfeito".</p>
+            </div>
+            <h2 id="s4">4. Eleitos, burocratas e grupos de interesse</h2>
+            <p class="opening-question">Se cidadãos não decidem diretamente, quem decide por eles — e com quais incentivos?</p>
+            <p>Até aqui discutimos democracia direta, um cenário em que cidadãos votam diretamente nas políticas. Na prática, a maioria das decisões de política pública é tomada por representantes eleitos, implementada por burocratas e influenciada por grupos organizados. Cada um desses atores responde a incentivos próprios, e compreender esses incentivos é essencial para entender por que o resultado político frequentemente diverge do que seria eficiente.</p>
+            <h3 id="s4-1">4.1 Competição eleitoral e convergência ao centro</h3>
+            <p>Em uma eleição entre dois candidatos, algo interessante acontece: ambos tendem a convergir para posições próximas ao eleitor mediano. A lógica é simples. Se um candidato adota uma plataforma mais à esquerda do eleitor mediano e o outro adota uma posição mais ao centro, o candidato de centro captura todos os eleitores à sua direita mais parte dos eleitores entre ele e o rival. Vence. O candidato derrotado, percebendo isso, ajusta sua plataforma para o centro na eleição seguinte. No equilíbrio, ambos acabam oferecendo plataformas semelhantes.</p>
+            <p>Esse modelo, desenvolvido por Anthony Downs nos anos 1950, explica por que campanhas eleitorais em sistemas bipartidários frequentemente parecem tão parecidas. Também ajuda a entender por que, apesar das diferenças retóricas, a política econômica efetivamente implementada costuma variar menos do que os discursos de campanha sugerem.</p>
+            <p>Porém, o modelo tem limitações importantes. Ele assume que eleitores são bem informados sobre as plataformas e seus efeitos. Na prática, a maioria dos eleitores tem pouco incentivo para se informar profundamente sobre política econômica, um fenômeno que o próprio Downs chamou de <em>ignorância racional</em>. Se o seu voto individual tem probabilidade praticamente nula de alterar o resultado de uma eleição, por que dedicar horas a estudar os detalhes de uma reforma tributária? É perfeitamente racional, do ponto de vista individual, permanecer desinformado. O problema é que, quando a maioria dos eleitores é racionalmente ignorante, políticos têm menos incentivo para propor políticas eficientes e mais incentivo para propor políticas que <em>pareçam</em> boas no curto prazo, independentemente de suas consequências de longo prazo.</p>
+            <h3 id="s4-2">4.2 Burocratas e o modelo de Niskanen</h3>
+            <p>Mesmo quando uma política eficiente é aprovada pelo Legislativo, ela precisa ser implementada por órgãos públicos. E aqui entra um problema adicional. O economista William Niskanen, nos anos 1970, propôs um modelo em que burocratas não são agentes passivos que executam fielmente as decisões políticas. São agentes racionais com objetivos próprios: prestígio, poder, estabilidade no emprego, e sobretudo a manutenção e expansão do orçamento de suas agências.</p>
+            <p>No modelo de Niskanen, o burocrata tem uma vantagem informacional sobre o legislador. Ele conhece os custos reais de produzir os serviços de sua agência; o legislador, não. Essa assimetria de informação permite que o burocrata apresente orçamentos inflados, argumentando que determinado nível de recursos é "o mínimo necessário" para manter o serviço. O resultado é uma tendência sistemática à oferta excessiva de serviços públicos: gasta-se mais do que seria eficiente, e a agência cresce além do necessário.</p>
+            <p>Pense na dificuldade de extinguir ou fundir órgãos públicos no Brasil. Mesmo quando a função original de um órgão se torna obsoleta, seus servidores, diretores e toda a estrutura organizacional resistem ao fechamento. Há incentivos concretos para isso: cargos de chefia, gratificações, influência sobre regulamentação setorial. Nenhum burocrata tem incentivo individual para propor a extinção do próprio órgão. O resultado é um acúmulo progressivo de estruturas administrativas que raramente são revisadas.</p>
+            <div class="concept-box">
+                <div class="concept-label">Conceito-chave — Modelo de Niskanen</div>
+                <p>Burocratas são agentes racionais que tendem a maximizar o orçamento de suas agências, aproveitando-se da assimetria de informação em relação ao legislador. <strong>Resultado:</strong> tendência sistemática à oferta excessiva de serviços públicos e à resistência institucional ao enxugamento da máquina estatal.</p>
+            </div>
+            <h3 id="s4-3">4.3 A lógica da ação coletiva</h3>
+            <p>Além de políticos e burocratas, um terceiro ator exerce influência decisiva sobre o processo político: os grupos de interesse.</p>
+            <p>O economista Mancur Olson, em <em>A Lógica da Ação Coletiva</em> (1965), demonstrou um paradoxo fundamental. Em princípio, a maioria deveria prevalecer em uma democracia. Se uma política prejudica milhões e beneficia poucos, a maioria prejudicada deveria se organizar para derrotá-la. Mas na prática, frequentemente acontece o contrário: grupos pequenos e bem organizados conseguem obter e manter privilégios às custas de uma maioria ampla e dispersa.</p>
+            <p>A explicação é uma questão de incentivos e custos de organização. Imagine um setor econômico que obtém uma exceção tributária que lhe economiza R$ 500 milhões por ano, distribuídos entre 50 empresas. Cada empresa se beneficia em R$ 10 milhões. Esse benefício é concentrado e visível: cada empresa sabe exatamente quanto ganha e tem forte incentivo para investir tempo, dinheiro e esforço político na manutenção desse privilégio. Agora considere o outro lado: o custo dessa exceção é financiado por 200 milhões de contribuintes, o que representa cerca de R$ 2,50 por pessoa ao ano. Nenhum contribuinte individual tem incentivo para gastar tempo e energia combatendo um custo de R$ 2,50. O benefício de se organizar é irrisório comparado ao custo de participar da ação política.</p>
+            <p>Essa assimetria explica por que, durante a regulamentação da Reforma Tributária, setores específicos conseguiram alíquotas reduzidas e regimes especiais. Os setores beneficiados estavam presentes em Brasília, com lobbyistas, associações organizadas e argumentos técnicos preparados. O contribuinte que pagará a conta na forma de uma alíquota geral mais alta sequer sabe que isso está acontecendo.</p>
+            <div class="concept-box">
+                <div class="concept-label">Conceito-chave — Lógica da Ação Coletiva (Olson)</div>
+                <p>Grupos pequenos com benefícios concentrados têm mais facilidade para se organizar politicamente do que grupos grandes com custos dispersos. <strong>Resultado:</strong> minorias organizadas frequentemente obtêm e mantêm privilégios às custas de maiorias dispersas, mesmo em democracias. Explica a persistência de políticas ineficientes como subsídios setoriais, exceções tributárias e regulações protecionistas.</p>
+            </div>
+            <h2 id="s5">5. Rent-Seeking</h2>
+            <p class="opening-question">Quanto a sociedade perde quando empresas investem mais em influência política do que em produtividade?</p>
+            <p>O conceito de <em>rent-seeking</em>, desenvolvido por Gordon Tullock e depois nomeado por Anne Krueger nos anos 1970, captura algo que a análise tradicional de políticas públicas frequentemente ignora. Quando o governo cria uma regulação que beneficia um grupo específico — como uma barreira à entrada em determinado mercado, uma exceção tributária ou uma reserva de mercado — esse benefício funciona como uma "renda" artificial. A análise convencional calcula o custo dessa política em termos de peso morto: a perda de eficiência que o privilégio gera no mercado.</p>
+            <p>Mas Tullock percebeu que o custo real é maior. Para obter esse privilégio, os grupos interessados investem recursos reais: contratam lobbyistas, financiam campanhas, mantêm escritórios em Brasília, elaboram estudos técnicos favoráveis à sua posição, cultivam relações com parlamentares e reguladores. Todos esses recursos — tempo, dinheiro e talento humano — são desviados de atividades produtivas. Um advogado tributarista brilhante que dedica sua carreira a encontrar brechas na legislação para seu cliente é um talento que poderia estar sendo usado para criar valor em vez de redistribuí-lo.</p>
+            <p>Há um aspecto adicional que torna o problema mais grave. O rent-seeking é autorreforçante. Quanto mais complexa a regulação, maiores as oportunidades de obter privilégios, e mais recursos são dedicados a buscá-los. Isso cria um ciclo: a complexidade regulatória gera rent-seeking, que por sua vez gera mais complexidade, à medida que novas exceções e regimes especiais são adicionados ao sistema.</p>
+            <p>Vale pensar num caso concreto. Um grande escritório de contabilidade tributária prospera justamente porque o sistema tributário é enormemente complexo. Seus lucros dependem dessa complexidade. Esse escritório tem incentivo para apoiar uma simplificação radical do sistema tributário? A resposta é instrutiva: a complexidade regulatória cria seus próprios defensores, mesmo entre aqueles que não são diretamente beneficiados pelos privilégios que ela abriga.</p>
+            <div class="concept-box">
+                <div class="concept-label">Conceito-chave — Rent-Seeking</div>
+                <p>Uso de recursos reais (tempo, dinheiro, talento) para obter ou manter transferências de renda via governo. O custo social inclui não apenas a distorção gerada pela política em si (peso morto convencional), mas também todos os recursos consumidos na atividade de busca e defesa de privilégios. <strong>O fenômeno é autorreforçante:</strong> quanto mais complexa a regulação, maiores as oportunidades de rent-seeking, e mais recursos são desperdiçados.</p>
+            </div>
+            <h2 id="s6">6. Por que o gasto público só cresce</h2>
+            <p class="opening-question">Se todo político promete eficiência, por que o gasto público como proporção do PIB tende a subir ao longo do tempo?</p>
+            <p>Em praticamente todos os países democráticos, a participação do governo na economia cresceu de forma significativa ao longo do último século. Nos Estados Unidos, os gastos do governo federal representavam menos de 3% do PIB no início do século XX; hoje ultrapassam 20%. No Brasil, o gasto primário do governo federal saiu de cerca de 14% do PIB nos anos 1990 para mais de 19% nas últimas décadas. Esse padrão é robusto demais para ser coincidência. Quais mecanismos explicam o crescimento persistente do Estado?</p>
+            <p>A primeira explicação vem pelo lado da demanda. O economista alemão Adolph Wagner, ainda no século XIX, observou que à medida que a renda de uma sociedade cresce, os cidadãos demandam proporcionalmente mais serviços públicos: educação de melhor qualidade, saúde mais abrangente, infraestrutura mais sofisticada. Em termos econômicos, bens públicos teriam elasticidade-renda superior a um — seriam "bens de luxo" coletivos. Essa relação ficou conhecida como <em>Lei de Wagner</em>.</p>
+            <p>A segunda explicação vem pelo lado da oferta e conecta-se ao modelo de Niskanen. Se burocratas tendem a maximizar os orçamentos de suas agências, e se o Legislativo tem dificuldade em monitorar os custos reais dos serviços públicos, então o setor público tende a absorver recursos crescentes independentemente de haver demanda genuína por mais serviços.</p>
+            <p>A terceira explicação é o <em>efeito catraca</em>. Eventos extraordinários — como guerras, pandemias ou crises econômicas profundas — provocam saltos abruptos no gasto público. O governo expande sua atuação para lidar com a emergência: cria programas, contrata pessoal, amplia transferências. O problema é que, quando a emergência passa, o gasto não retorna ao patamar anterior. Os programas criados desenvolvem <em>constituencies</em> próprias — grupos que dependem deles e que se organizarão para impedi-los de ser descontinuados. A catraca gira em uma só direção.</p>
+            <p>O caso brasileiro recente ilustra bem esse mecanismo. O Auxílio Emergencial, criado durante a pandemia de Covid-19 como medida temporária, foi encerrado formalmente, mas a pressão política por transferências de renda permaneceu e contribuiu para a reformulação e expansão do Bolsa Família. O gasto com transferências, uma vez ampliado, criou uma nova base de beneficiários cujos votos passaram a ser disputados. Reverter essa expansão tornou-se politicamente inviável.</p>
+            <p>Há ainda uma quarta explicação: a <em>ilusão fiscal</em>. Eleitores tendem a perceber os benefícios das políticas públicas de forma mais clara do que seus custos. Um hospital construído é visível e tangível; o aumento de impostos que o financia é diluído entre milhões de contribuintes e distribuído ao longo de vários anos. Políticos racionais exploram essa assimetria: propõem benefícios visíveis hoje e empurram os custos para o futuro, na forma de dívida pública.</p>
+            <p>Por fim, há a explicação pela redistribuição. Grupos organizados usam o processo político para transferir renda em seu favor, como vimos na discussão sobre ação coletiva e rent-seeking. À medida que mais grupos conseguem seus privilégios, o gasto total cresce de forma cumulativa, sem que nenhum ator individual se sinta responsável pelo resultado agregado.</p>
+            <div class="concept-box">
+                <div class="concept-label">Conceito-chave — Por que o governo cresce</div>
+                <p>Cinco explicações complementares: (i) demanda crescente por serviços públicos à medida que a renda sobe (Lei de Wagner); (ii) burocratas que maximizam orçamentos (Niskanen); (iii) efeito catraca — gastos emergenciais nunca voltam ao patamar anterior; (iv) ilusão fiscal — benefícios visíveis, custos difusos; (v) redistribuição cumulativa via ação de grupos organizados.</p>
+            </div>
+            <h2 id="s7">7. Regras fiscais e seus limites</h2>
+            <p class="opening-question">Que mecanismos institucionais podem limitar as falhas de governo sem eliminar a democracia?</p>
+            <p>Se o processo político tem uma tendência estrutural a gerar gasto excessivo e políticas capturadas por grupos organizados, resta perguntar o que pode ser feito. Os economistas identificam três grandes categorias de resposta: competição com o setor privado, reforma do processo orçamentário e regras fiscais constitucionais.</p>
+            <p>A primeira estratégia é introduzir pressão competitiva na provisão de serviços públicos. Concessões de rodovias, parcerias público-privadas em saneamento, vouchers educacionais: todos esses mecanismos buscam criar algum grau de concorrência, forçando o setor público a entregar mais valor com menos recursos. Os limites dessa abordagem são igualmente importantes — nem todo serviço público é passível de competição privada, e privatizar sem regular adequadamente pode simplesmente substituir um monopólio público por um monopólio privado.</p>
+            <p>A segunda estratégia ataca o problema pelo lado da informação e dos procedimentos. O <em>orçamento base-zero</em> exigiria que cada agência justificasse seu orçamento inteiro a cada ciclo, em vez de tomar o ano anterior como ponto de partida. As <em>sunset clauses</em> (cláusulas de caducidade) dariam uma data de expiração automática a cada programa governamental. Mas mesmo aqui os incentivos políticos trabalham contra: os beneficiários do programa se organizarão para garantir a renovação, enquanto os contribuintes que o financiam têm pouco incentivo para se opor.</p>
+            <p>A terceira estratégia, e provavelmente a mais debatida, envolve regras fiscais que limitem a capacidade do governo de gastar ou se endividar. A lógica dessas regras é paradoxal à primeira vista: por que políticos concordariam em limitar sua própria capacidade de gastar? A resposta está na teoria dos jogos e na lógica do compromisso crível. Individualmente, cada político tem incentivo para gastar. Mas se todos gastarem, o resultado coletivo é insustentabilidade fiscal, crise de credibilidade e ajuste forçado muito mais doloroso. Uma regra fiscal funciona como um mecanismo pelo qual os políticos "atam as próprias mãos".</p>
+            <p>O caso brasileiro é instrutivo. Em 2016, a Emenda Constitucional 95 instituiu o teto de gastos, limitando o crescimento das despesas primárias do governo federal à inflação do ano anterior. A regra era simples e crível. Mas, ao longo dos anos seguintes, foi progressivamente flexibilizada por meio de emendas constitucionais que excluíam determinadas despesas do teto, até ser substituída pelo novo arcabouço fiscal (Lei Complementar 200/2023). A necessidade de trocar a regra apenas sete anos depois de sua criação ilustra perfeitamente a tensão central deste capítulo: as mesmas forças políticas que geram falhas de governo atuam sobre as próprias regras, erodindo-as ou substituindo-as quando se tornam restritivas demais.</p>
+            <div class="concept-box">
+                <div class="concept-label">Conceito-chave — Regras fiscais como mecanismo de compromisso</div>
+                <p>Regras fiscais funcionam como dispositivos pelos quais o processo político tenta limitar a si mesmo, reconhecendo que os incentivos de curto prazo levam a resultados insustentáveis no longo prazo. Sua eficácia depende do equilíbrio entre rigidez (para ser crível) e flexibilidade (para acomodar choques), <strong>e está sempre sujeita à erosão pelas mesmas forças políticas que motivaram sua criação.</strong></p>
+            </div>
+            <h2 id="s8">8. Falhas de governo não são argumento contra o governo</h2>
+            <p>Voltemos à pergunta que abriu esta Unidade: se economistas sabem o que torna uma política pública eficiente, por que é tão difícil aprová-la, implementá-la e mantê-la?</p>
+            <p>As seções anteriores oferecem um repertório de respostas. A precificação ideal (Lindahl) esbarra no problema do carona. A votação por maioria funciona sob certas condições, mas gera ciclos quando as preferências são complexas e confere poder a quem controla a pauta. O logrolling permite expressar intensidade de preferências, mas também permite inflar orçamentos. Arrow demonstra que nenhum sistema de votação é perfeito. A ignorância racional dos eleitores enfraquece a pressão por boas políticas. Burocratas maximizam orçamentos. Grupos organizados capturam privilégios. O rent-seeking consome recursos produtivos. E todas essas forças empurram o gasto público para cima, num movimento que regras fiscais tentam, com sucesso parcial, conter.</p>
+            <p>Diante desse quadro, seria apressado concluir que o governo é o problema e que menos Estado é sempre a resposta. Reconhecer que o governo falha não é argumento para eliminá-lo, da mesma forma que reconhecer falhas de mercado não é argumento para abolir mercados. A questão relevante é desenhar arranjos institucionais que alinhem incentivos da melhor forma possível.</p>
+            <p>Essa é a mensagem final de Rosen e Gayer: apontar que o sistema de finanças públicas é ineficiente ou inequitativo não equivale a dizer que o governo como instituição é "ruim". Quem prefere soluções de mercado pode buscar melhorar os mercados. Quem prefere soluções governamentais pode buscar melhorar o governo. Em ambos os casos, o ponto de partida é entender como os incentivos funcionam.</p>
+            <p>Na prática, isso significa que políticas públicas não são desenhadas por um planejador benevolente. São o resultado de um processo em que agentes racionais, com interesses frequentemente divergentes, negociam, fazem concessões e buscam vantagens. Antecipar como esse processo se desenrola — quais reformas têm chance real de implementação, quais regras fiscais são críveis, quais setores conseguirão tratamento diferenciado — é uma competência tão importante quanto saber ler um balanço ou projetar um fluxo de caixa.</p>
+            <p class="article-reference">Referência: Rosen, H. & Gayer, T. <em>Public Finance</em>, 8ª ed., Capítulo 6 — Political Economy.</p>
+            <nav class="unit-nav">
+                <a href="#" class="prev disabled">
+                    <span class="nav-label">← Anterior</span>
+                    <span class="nav-title">Unidade 1: Fundamentos</span>
+                </a>
+                <a href="#" class="next disabled">
+                    <span class="nav-label">Próxima →</span>
+                    <span class="nav-title">Unidade 3: Tributação</span>
+                </a>
+            </nav>
+        </article>
+        <aside class="toc" id="toc">
+            <div class="toc-title">Nesta nota</div>
+            <button class="toc-toggle" id="tocToggle" aria-expanded="false">
+                Nesta nota
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="toc-links" id="tocLinks">
+                <a href="#s1" data-section="s1">1. Da falha de mercado à falha de governo</a>
+                <a href="#s2" data-section="s2">2. Votação e Eleitor Mediano</a>
+                <a href="#s3" data-section="s3">3. Logrolling e Arrow</a>
+                <a href="#s4" data-section="s4">4. Eleitos, burocratas e grupos</a>
+                <a href="#s5" data-section="s5">5. Rent-Seeking</a>
+                <a href="#s6" data-section="s6">6. Por que o gasto cresce</a>
+                <a href="#s7" data-section="s7">7. Regras fiscais</a>
+                <a href="#s8" data-section="s8">8. Conclusão</a>
+            </div>
+        </aside>
+    </div>
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+    <script>
+        var progressBar = document.getElementById('progressBar');
+        function updateProgress() {
+            var scrollTop = window.scrollY;
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            progressBar.style.width = progress + '%';
+        }
+        var tocLinkEls = document.querySelectorAll('.toc a');
+        var sects = [];
+        tocLinkEls.forEach(function(link) {
+            var id = link.getAttribute('data-section');
+            var el = document.getElementById(id);
+            if (el) sects.push({ el: el, link: link });
+        });
+        function updateToc() {
+            var current = sects[0];
+            var scrollPos = window.scrollY + 130;
+            for (var i = 0; i < sects.length; i++) {
+                if (sects[i].el.offsetTop <= scrollPos) current = sects[i];
+            }
+            tocLinkEls.forEach(function(l) { l.classList.remove('active'); });
+            if (current) current.link.classList.add('active');
+        }
+        window.addEventListener('scroll', function() { updateProgress(); updateToc(); });
+        updateProgress(); updateToc();
+        var tocToggle = document.getElementById('tocToggle');
+        var tocLinksContainer = document.getElementById('tocLinks');
+        if (tocToggle && tocLinksContainer) {
+            tocToggle.addEventListener('click', function() {
+                var isOpen = tocToggle.classList.toggle('open');
+                tocLinksContainer.classList.toggle('open');
+                tocToggle.setAttribute('aria-expanded', isOpen);
+            });
+        }
+        var shareWA = document.getElementById('shareWhatsApp');
+        if (shareWA) {
+            shareWA.addEventListener('click', function(e) {
+                e.preventDefault();
+                var text = document.title + ' ' + window.location.href;
+                window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+            });
+        }
+        var copyBtn = document.getElementById('copyLink');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', function() {
+                navigator.clipboard.writeText(window.location.href).then(function() {
+                    copyBtn.classList.add('copied');
+                    var svgEl = copyBtn.querySelector('svg').outerHTML;
+                    copyBtn.innerHTML = svgEl + ' Copiado!';
+                    setTimeout(function() {
+                        copyBtn.innerHTML = svgEl + ' Copiar link';
+                        copyBtn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
