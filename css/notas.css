@@ -178,8 +178,6 @@ img { max-width: 100%; height: auto; display: block; }
     padding: 1.4rem 1.6rem;
     margin-bottom: 0.75rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
 }
 .unit-card:hover {
     border-color: #ccc;
@@ -195,6 +193,10 @@ img { max-width: 100%; height: auto; display: block; }
     align-items: flex-start;
     justify-content: space-between;
     gap: 1rem;
+}
+.unit-card-top > div:first-child {
+    flex: 1;
+    min-width: 0;
 }
 .unit-card-number {
     font-family: var(--mono);
@@ -225,6 +227,11 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .unit-card-arrow {
     flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
     margin-top: 0.2rem;
     opacity: 0.4;
     transition: all 0.3s ease;
@@ -648,8 +655,13 @@ img { max-width: 100%; height: auto; display: block; }
 @media (max-width: 640px) {
     .index-hero { padding: 3rem 1.2rem 1.5rem; }
     .index-hero h1 { font-size: 2rem; }
+    .index-hero .intro { font-size: 1rem; }
     .courses-container { padding: 1.5rem 1.2rem 4rem; }
+    .course-block-header { gap: 0.75rem; }
+    .course-icon { width: 36px; height: 36px; }
+    .course-block-header h2 { font-size: 1.25rem; }
     .unit-card { padding: 1.1rem 1.2rem; }
+    .unit-card h3 { font-size: 1.05rem; }
 
     .article-hero { padding: 3rem 1.2rem 2rem; }
     .article-hero h1 { font-size: 2rem; }
