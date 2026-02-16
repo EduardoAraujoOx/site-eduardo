@@ -101,24 +101,24 @@ img { max-width: 100%; height: auto; display: block; }
 .index-hero {
     max-width: 680px;
     margin: 0 auto;
-    padding: 4.5rem 2rem 2rem;
+    padding: 4.5rem 2rem 2.5rem;
     text-align: left;
 }
 .index-hero .label {
     font-family: var(--mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--text-muted);
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
 }
 .index-hero h1 {
     font-family: var(--display);
-    font-size: 2.6rem;
+    font-size: 2.8rem;
     font-weight: 700;
-    line-height: 1.15;
+    line-height: 1.12;
     letter-spacing: -0.03em;
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
 }
 .index-hero .intro {
     font-size: 1.1rem;
@@ -175,21 +175,29 @@ img { max-width: 100%; height: auto; display: block; }
     color: var(--text);
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.4rem 1.6rem;
-    margin-bottom: 0.75rem;
+    border-radius: 14px;
+    padding: 1.8rem 2rem;
+    margin-bottom: 1rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
 }
 .unit-card:hover {
     border-color: #ccc;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.08);
     transform: translateY(-2px);
 }
 .unit-card:hover .unit-card-arrow {
     transform: translateX(4px);
     opacity: 1;
+}
+.unit-card-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    border-radius: 14px 0 0 14px;
 }
 .unit-card-top {
     display: flex;
@@ -199,35 +207,36 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .unit-card-number {
     font-family: var(--mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.5rem;
 }
 .unit-card h3 {
     font-family: var(--display);
-    font-size: 1.15rem;
-    font-weight: 600;
-    line-height: 1.35;
-    letter-spacing: -0.01em;
-    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    margin-bottom: 0.6rem;
 }
 .unit-card .unit-card-desc {
-    font-size: 0.92rem;
-    line-height: 1.65;
+    font-size: 0.95rem;
+    line-height: 1.7;
     color: var(--text-secondary);
 }
 .unit-card .unit-card-question {
     font-style: italic;
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     color: var(--gold);
-    margin-top: 0.6rem;
+    margin-top: 0.8rem;
     line-height: 1.55;
 }
 .unit-card-arrow {
     flex-shrink: 0;
     margin-top: 0.2rem;
-    opacity: 0.4;
+    opacity: 0.35;
     transition: all 0.3s ease;
     color: var(--text-secondary);
 }
@@ -648,9 +657,10 @@ img { max-width: 100%; height: auto; display: block; }
 /* ===== RESPONSIVE — MOBILE ===== */
 @media (max-width: 640px) {
     .index-hero { padding: 3rem 1.2rem 1.5rem; }
-    .index-hero h1 { font-size: 2rem; }
+    .index-hero h1 { font-size: 2.2rem; }
     .courses-container { padding: 1.5rem 1.2rem 4rem; }
-    .unit-card { padding: 1.1rem 1.2rem; }
+    .unit-card { padding: 1.4rem 1.3rem; }
+    .unit-card h3 { font-size: 1.15rem; }
 
     .article-hero { padding: 3rem 1.2rem 2rem; }
     .article-hero h1 { font-size: 2rem; }
