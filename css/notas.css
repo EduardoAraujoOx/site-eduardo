@@ -106,12 +106,11 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .index-hero .label {
     font-family: var(--mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.14em;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 500;
-    margin-bottom: 0.6rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
 }
 .index-hero h1 {
     font-family: var(--display);
@@ -119,10 +118,10 @@ img { max-width: 100%; height: auto; display: block; }
     font-weight: 700;
     line-height: 1.15;
     letter-spacing: -0.03em;
-    margin-bottom: 1.2rem;
+    margin-bottom: 1rem;
 }
 .index-hero .intro {
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     line-height: 1.75;
     color: var(--text-secondary);
 }
@@ -177,14 +176,15 @@ img { max-width: 100%; height: auto; display: block; }
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 1.5rem 1.8rem;
-    margin-bottom: 1rem;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 0.75rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    position: relative;
+    overflow: hidden;
 }
 .unit-card:hover {
     border-color: #ccc;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.07);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
     transform: translateY(-2px);
 }
 .unit-card:hover .unit-card-arrow {
@@ -197,25 +197,20 @@ img { max-width: 100%; height: auto; display: block; }
     justify-content: space-between;
     gap: 1rem;
 }
-.unit-card-top > div:first-child {
-    flex: 1;
-    min-width: 0;
-}
 .unit-card-number {
     font-family: var(--mono);
     font-size: 0.68rem;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
 }
 .unit-card h3 {
     font-family: var(--display);
-    font-size: 1.18rem;
-    font-weight: 700;
+    font-size: 1.15rem;
+    font-weight: 600;
     line-height: 1.35;
     letter-spacing: -0.01em;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.5rem;
 }
 .unit-card .unit-card-desc {
     font-size: 0.92rem;
@@ -226,16 +221,11 @@ img { max-width: 100%; height: auto; display: block; }
     font-style: italic;
     font-size: 0.88rem;
     color: var(--gold);
-    margin-top: 0.8rem;
+    margin-top: 0.6rem;
     line-height: 1.55;
 }
 .unit-card-arrow {
     flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
     margin-top: 0.2rem;
     opacity: 0.4;
     transition: all 0.3s ease;
@@ -246,20 +236,20 @@ img { max-width: 100%; height: auto; display: block; }
     height: 20px;
 }
 .unit-card.coming-soon {
-    opacity: 0.55;
+    opacity: 0.5;
     pointer-events: none;
 }
 .unit-card.coming-soon .coming-badge {
     font-family: var(--mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.08em;
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    background: var(--border);
+    background: var(--border-light);
     color: var(--text-muted);
-    padding: 0.25rem 0.7rem;
-    border-radius: 20px;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
     display: inline-block;
-    margin-top: 0.6rem;
+    margin-top: 0.4rem;
 }
 
 /* ===== ARTICLE HERO ===== */
@@ -659,15 +649,8 @@ img { max-width: 100%; height: auto; display: block; }
 @media (max-width: 640px) {
     .index-hero { padding: 3rem 1.2rem 1.5rem; }
     .index-hero h1 { font-size: 2rem; }
-    .index-hero .intro { font-size: 0.95rem; }
     .courses-container { padding: 1.5rem 1.2rem 4rem; }
-    .course-block-header { gap: 0.75rem; }
-    .course-icon { width: 36px; height: 36px; }
-    .course-block-header h2 { font-size: 1.2rem; }
-    .course-block-header .course-meta { font-size: 0.65rem; }
-    .unit-card { padding: 1.2rem 1.3rem; }
-    .unit-card h3 { font-size: 1.05rem; }
-    .unit-card .unit-card-desc { font-size: 0.88rem; }
+    .unit-card { padding: 1.1rem 1.2rem; }
 
     .article-hero { padding: 3rem 1.2rem 2rem; }
     .article-hero h1 { font-size: 2rem; }
@@ -678,7 +661,7 @@ img { max-width: 100%; height: auto; display: block; }
     .unit-nav { flex-direction: column; }
     .unit-nav a { max-width: 100%; }
     .header-inner { padding: 0.7rem 1rem; }
-    .header-nav a { font-size: 0.72rem; padding: 0.3rem 0.4rem; }
+    .header-nav a { font-size: 0.75rem; padding: 0.35rem 0.5rem; }
 
     .share-buttons { margin-left: 0; margin-top: 0.5rem; width: 100%; }
     .article-meta { gap: 0.8rem; }
