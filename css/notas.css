@@ -244,6 +244,102 @@ img { max-width: 100%; height: auto; display: block; }
     width: 20px;
     height: 20px;
 }
+/* Unit card expanded (with chapter sub-items) */
+.unit-card.unit-expanded {
+    cursor: default;
+}
+.unit-card.unit-expanded:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: var(--border);
+}
+
+/* Chapter list inside expanded unit */
+.chapter-list {
+    margin-top: 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-light);
+}
+.chapter-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-light);
+    text-decoration: none;
+    color: var(--text);
+    transition: var(--transition);
+}
+.chapter-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+a.chapter-item:hover .chapter-title {
+    color: var(--c, var(--unit1));
+}
+.chapter-info {
+    flex: 1;
+    min-width: 0;
+}
+.chapter-number {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.63rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+}
+.chapter-title {
+    display: block;
+    font-family: var(--display);
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.35;
+    transition: color var(--transition);
+}
+.chapter-topics {
+    display: block;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+.chapter-arrow {
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+    opacity: 0.4;
+    transition: all 0.3s ease;
+    color: var(--text-secondary);
+}
+.chapter-arrow svg {
+    width: 16px;
+    height: 16px;
+}
+a.chapter-item:hover .chapter-arrow {
+    opacity: 1;
+    transform: translateX(3px);
+    color: var(--c, var(--unit1));
+}
+.chapter-item.chapter-soon {
+    opacity: 0.5;
+}
+.chapter-item.chapter-soon .coming-badge {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--border-light);
+    color: var(--text-muted);
+    padding: 0.15rem 0.45rem;
+    border-radius: 3px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+}
+
 .unit-card.coming-soon {
     opacity: 0.5;
     pointer-events: none;
@@ -674,4 +770,7 @@ img { max-width: 100%; height: auto; display: block; }
 
     .share-buttons { margin-left: 0; margin-top: 0.5rem; width: 100%; }
     .article-meta { gap: 0.8rem; }
+
+    .chapter-title { font-size: 0.88rem; }
+    .chapter-topics { font-size: 0.78rem; }
 }
