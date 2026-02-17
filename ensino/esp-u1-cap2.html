@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferramentas da Análise Positiva — Notas de Aula | Eduardo Reis Araújo</title>
+    <meta name="description" content="Capítulo 2 da Unidade 1 de Economia do Setor Público: análise positiva, correlação vs causalidade, contrafactual, experimentos, econometria e quase-experimentos.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/ensino/esp-u1-cap2.html">
+    <meta property="og:title" content="Ferramentas da Análise Positiva — Notas de Aula | Eduardo Reis Araújo">
+    <meta property="og:description" content="Quando o governo cria uma política e um indicador melhora, como saber se a melhora foi causada pela política e não por outros fatores?">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/ensino/esp-u1-cap2.html">
+    <meta property="og:image" content="https://www.eduardoreisaraujo.com.br/images/og-share.jpg">
+    <meta property="og:image:width" content="850">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Ferramentas da Análise Positiva — Notas de Aula | Eduardo Reis Araújo">
+    <meta name="twitter:description" content="Quando o governo cria uma política e um indicador melhora, como saber se a melhora foi causada pela política e não por outros fatores?">
+    <meta name="twitter:image" content="https://www.eduardoreisaraujo.com.br/images/og-share.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/notas.css?v=3">
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <nav class="header-nav">
+                <a href="/#publicacoes">Publicações</a>
+                <a href="/#temas">Temas</a>
+                <a href="/ensino/" class="active">Ensino</a>
+                <a href="/indicadores.html">Indicadores</a>
+                <a href="/#contato">Contato</a>
+            </nav>
+        </div>
+    </header>
+    <section class="article-hero">
+        <a href="/ensino/" class="back-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Voltar às notas
+        </a>
+        <div class="unit-label" style="color: var(--unit1);">Economia do Setor Público · Unidade 1 · Capítulo 2</div>
+        <h1>Ferramentas da Análise Positiva em Políticas Públicas</h1>
+        <p class="lead" style="border-left-color: var(--unit1);">Quando o governo cria uma política e um indicador melhora, como saber se a melhora foi causada pela política e não por outros fatores que estavam acontecendo ao mesmo tempo?</p>
+        <div class="article-meta">
+            <span>Prof. Eduardo Araujo</span>
+            <span class="divider"></span>
+            <span>Rosen &amp; Gayer, Cap. 2</span>
+            <span class="divider"></span>
+            <span>~14 min de leitura</span>
+            <div class="share-buttons">
+                <a href="#" class="share-btn" id="shareWhatsApp" aria-label="Compartilhar no WhatsApp">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    WhatsApp
+                </a>
+                <button class="share-btn" id="copyLink" aria-label="Copiar link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                    Copiar link
+                </button>
+            </div>
+        </div>
+    </section>
+    <div class="article-layout">
+        <div class="article-spacer"></div>
+        <article class="article-content">
+
+            <p>A economia do setor público convive com um problema curioso. Quase todo mundo tem opinião forte sobre impostos, programas sociais, gasto público e subsídios. Mas, quando alguém afirma que "essa política funciona" ou que "essa política fracassou", raramente fica claro de onde vem essa certeza.</p>
+            <p>É justamente aí que entra o tema deste capítulo: <strong>análise positiva</strong>. Em economia, chamamos de análise positiva o esforço de descrever e medir o que acontece no mundo real, a partir de dados e evidências, sem começar pela pergunta "o que deveria ser feito". Essa é a diferença em relação à análise normativa, que discute o que é desejável, justo ou eficiente. Em outras palavras, a análise positiva tenta responder "o que acontece quando o governo faz X?", enquanto a normativa tenta responder "o governo deveria fazer X?".</p>
+            <p>O nome pode soar estranho para um estudante de negócios, porque "positivo" não significa "bom". Significa apenas "baseado em fatos observáveis". É uma tentativa de transformar o debate público, que muitas vezes é movido por impressões, em um debate mais disciplinado.</p>
+            <p>A pergunta que organiza todo o capítulo é simples: quando o governo cria uma política e um indicador melhora, como saber se a melhora foi causada pela política e não por outros fatores que estavam acontecendo ao mesmo tempo? Esse desafio atravessa toda avaliação séria de políticas públicas, desde mudanças tributárias até programas sociais.</p>
+
+            <h2 id="s1">2.1 Teoria econômica</h2>
+            <p>O primeiro passo da análise positiva não é abrir uma planilha, e sim organizar o raciocínio. Em finanças públicas, políticas raramente produzem um único efeito direto. Elas alteram incentivos, mudam comportamentos e podem gerar reações inesperadas. A teoria econômica serve exatamente para mapear esses mecanismos.</p>
+            <p>Quando um governo cria um imposto, reduz uma alíquota ou oferece um benefício, a teoria ajuda a formular hipóteses: quem muda de comportamento? Qual decisão pode ser afetada? Consumo, poupança, investimento, informalidade, migração? A teoria não entrega a resposta final, mas fornece um roteiro para saber o que observar.</p>
+            <p>Um exemplo simples deixa isso claro. Imagine um imposto sobre cigarro. O senso comum diria que, se o imposto sobe, o consumo cai. A teoria concorda, mas vai além: ela mostra que a arrecadação pode subir ou cair dependendo da elasticidade da demanda. Um estudante que entende isso passa a enxergar o debate com mais precisão. Ele percebe que não basta dizer "o imposto funcionou" ou "não funcionou". É preciso perguntar qual era o objetivo da política e qual comportamento se queria alterar.</p>
+            <p>Sem esse tipo de raciocínio, a análise empírica vira uma coleção de números desconectados. Com teoria, os dados passam a ser interpretados como evidência sobre mecanismos, e não apenas como estatísticas isoladas.</p>
+
+            <h2 id="s2">2.2 Correlação e causalidade</h2>
+            <p>Se teoria ajuda a organizar hipóteses, o passo seguinte é entender como testar essas hipóteses sem cair na armadilha mais comum do debate público: confundir correlação com causalidade.</p>
+            <p>Correlação significa que duas variáveis se movem juntas. Causalidade significa que uma mudança provoca a outra. Em economia, essa distinção é decisiva porque quase tudo está interligado. Crescimento econômico afeta arrecadação, mas arrecadação também afeta capacidade de gasto. Juros afetam investimento, mas investimento também afeta condições macroeconômicas. Políticas públicas não acontecem em um mundo parado.</p>
+            <p>Um exemplo típico aparece quando alguém observa que municípios que gastam mais em educação tendem a ter melhores indicadores sociais. Isso pode ser verdade, mas a interpretação é delicada. Municípios mais ricos podem gastar mais e, ao mesmo tempo, já ter condições melhores por outros motivos. Nesse caso, gasto e indicador caminham juntos, mas não fica claro se um está causando o outro.</p>
+            <p>É por isso que Rosen e Gayer insistem que o desafio da análise positiva é identificar relações causais. E, para isso, o economista precisa sempre responder a uma pergunta difícil: o que teria acontecido se aquela política não existisse?</p>
+            <p>Essa pergunta leva diretamente ao conceito mais importante do capítulo.</p>
+
+            <div class="concept-box" style="border-left-color: var(--unit1);">
+                <div class="concept-label" style="color: var(--unit1);">Conceito-chave — Contrafactual</div>
+                <p>Contrafactual é a descrição do que teria acontecido com o mesmo grupo na ausência da política. Ele é indispensável porque medir impacto significa comparar o que ocorreu com aquilo que teria ocorrido sem a intervenção. <strong>Sem um contrafactual plausível, a análise não consegue separar efeito real de coincidência.</strong></p>
+            </div>
+
+            <p>Esse ponto é especialmente relevante no Brasil, onde mudanças econômicas costumam ocorrer em ondas. Quando a economia entra em expansão, o emprego cresce, a arrecadação sobe e a pobreza pode cair mesmo sem nenhuma política nova. Quando o ciclo vira, esses mesmos indicadores pioram rapidamente. Sem contrafactual, o analista pode atribuir ao governo méritos ou culpas que pertencem, na verdade, ao ciclo econômico.</p>
+            <p>Esse tipo de confusão não é apenas um detalhe acadêmico. Ele muda decisões reais. Um programa pode ser expandido por parecer eficaz, quando na verdade apenas coincidiu com um período favorável. Ou pode ser abandonado por parecer ineficaz, quando na verdade evitou um resultado pior.</p>
+
+            <h2 id="s3">2.3 Estudos experimentais</h2>
+            <p>Se o grande desafio é construir um contrafactual, os estudos experimentais oferecem o caminho mais direto. Quando indivíduos são selecionados aleatoriamente para participar de um programa, cria-se um grupo de controle comparável ao grupo tratado. O grupo de controle funciona como uma aproximação do que teria acontecido sem a política.</p>
+            <p>É por isso que os chamados <em>randomized controlled trials</em> (RCTs) ganharam tanto destaque nas últimas décadas. Eles se tornaram referência em áreas como educação, saúde e combate à pobreza, porque permitem avaliar impactos com maior segurança.</p>
+            <p>Para um aluno brasileiro, esse ponto é particularmente importante porque muitos programas sociais são discutidos mais com base em intuição do que em evidência. O Bolsa Família é um exemplo claro. Há quem diga que transferências desestimulam o trabalho e geram dependência. Há quem diga que transferências reduzem pobreza e aumentam oportunidades. A contribuição do método experimental é mudar a pergunta: em vez de discutir o programa em abstrato, ele permite investigar se houve impacto mensurável em frequência escolar, vacinação, nutrição infantil ou renda futura.</p>
+            <p>O fato de pesquisadores associados a essa abordagem terem recebido o Nobel em 2019 não significa que experimentos resolvem todos os dilemas. Mas indica que a economia moderna passou a tratar políticas sociais como hipóteses empíricas testáveis, e não apenas como disputas ideológicas.</p>
+            <p>Ainda assim, Rosen e Gayer fazem uma ressalva importante: experimentos são difíceis de implementar, nem sempre são viáveis e seus resultados nem sempre podem ser generalizados para outros lugares. Uma política que funciona em pequena escala pode perder eficiência quando vira programa nacional. Além disso, contextos institucionais importam. O método ajuda a medir impacto, mas não substitui a necessidade de interpretar o ambiente onde a política opera.</p>
+
+            <h2 id="s4">2.4 Estudos observacionais e econometria</h2>
+            <p>Na prática, a maioria das políticas públicas não pode ser testada com sorteio. Reformas tributárias, mudanças de gasto e programas de crédito são decisões tomadas em contextos políticos e econômicos específicos. Por isso, grande parte da análise em finanças públicas depende de estudos observacionais, ou seja, análises baseadas em dados do mundo real.</p>
+            <p>O problema é que, no mundo real, muitas coisas mudam ao mesmo tempo. Quando um governo reduz imposto e o emprego cresce, isso pode ser efeito da política, mas pode ser também consequência de uma queda de juros, de uma expansão de crédito ou de um choque externo favorável. O analista precisa de ferramentas para tentar separar esses fatores.</p>
+            <p>É aqui que entra a econometria, não como um conjunto de fórmulas abstratas, mas como um esforço sistemático para isolar relações. A regressão é o instrumento mais conhecido: ela busca estimar o efeito de uma variável sobre outra enquanto controla outras influências relevantes.</p>
+            <p>Esse tipo de raciocínio é familiar para o aluno que já fez econometria. Mas, em finanças públicas, ele ganha uma dimensão mais prática. Regressões são tentativas de construir comparações mais justas quando não existe um grupo de controle natural. Elas não eliminam o risco de erro, mas reduzem a chance de interpretar coincidências como causalidade.</p>
+            <p>Rosen e Gayer também destacam que o tipo de dado influencia o tipo de inferência possível. <strong>Dados de corte transversal</strong> comparam unidades em um mesmo momento. <strong>Séries temporais</strong> acompanham a evolução de um lugar ao longo do tempo. <strong>Dados em painel</strong> combinam as duas coisas, permitindo observar diferentes unidades em diferentes momentos. Em políticas públicas, painéis são particularmente valiosos porque ajudam a controlar características permanentes de municípios e estados, como estrutura produtiva e capacidade administrativa.</p>
+            <p>Ainda assim, o capítulo deixa claro que estudos observacionais carregam um risco inevitável: fatores não observados podem estar influenciando simultaneamente a política e o resultado. Por isso, a análise positiva exige mais do que rodar um modelo. Ela exige interpretar o desenho da comparação e reconhecer limites.</p>
+
+            <h2 id="s5">2.5 Quase-experimentos</h2>
+            <p>Se experimentos são raros e estudos observacionais são frágeis, surge um caminho intermediário que se tornou central na economia aplicada moderna: os <strong>quase-experimentos</strong>.</p>
+            <p>A ideia é explorar situações em que regras, choques ou mudanças institucionais criam comparações próximas do que um experimento produziria. Em vez de depender apenas de correlações gerais, o pesquisador busca variações que funcionem como um "quase sorteio".</p>
+            <p><strong>Diferenças em diferenças</strong> é um exemplo clássico. Suponha que um estado adote uma política tributária nova e outro estado semelhante não adote. O método compara a evolução dos dois antes e depois da mudança. O ponto não é saber se o estado tratado melhorou, mas se ele se desviou da trajetória que teria seguido caso continuasse parecido com o grupo de comparação.</p>
+            <p><strong>Regressão descontínua</strong> explora cortes em regras. Se um programa atende famílias com renda abaixo de um limite, famílias logo abaixo e logo acima desse limite tendem a ser muito parecidas. Comparar esses grupos próximos ao corte permite estimar impacto com maior credibilidade.</p>
+            <p><strong>Variáveis instrumentais</strong> são úteis quando existe o risco de causalidade reversa. Um exemplo comum em políticas sociais é que o governo tende a direcionar recursos para regiões mais vulneráveis. Se essas regiões continuam vulneráveis, alguém pode concluir que a política falhou, quando na verdade ela pode ter evitado uma piora. O instrumento busca uma fonte externa de variação que permita separar efeito da política de características do grupo.</p>
+            <p>O valor desses métodos não está em sua sofisticação matemática, mas na lógica de identificação. Eles tentam responder, de forma mais convincente, qual seria o contrafactual. Por isso, quase-experimentos são hoje um dos pilares da avaliação de políticas públicas.</p>
+
+            <h2 id="s6">2.6 Fechamento</h2>
+            <p>O objetivo deste capítulo é mostrar que a análise positiva em finanças públicas depende de um tipo de disciplina intelectual que não é intuitiva. Em um mundo onde muitas variáveis mudam simultaneamente, o desafio não é encontrar números, mas construir comparações plausíveis.</p>
+            <p>A teoria econômica organiza mecanismos e hipóteses. Os dados testam essas hipóteses. Mas a pergunta que sustenta todo o capítulo é sempre a mesma: qual é o contrafactual?</p>
+            <p>Experimentos aleatórios oferecem uma forma especialmente confiável de responder a essa pergunta, mas nem sempre são viáveis ou generalizáveis. Estudos observacionais são inevitáveis, mas exigem cuidado ao interpretar relações. Quase-experimentos se tornam fundamentais porque permitem aproximar a lógica do experimento usando regras e variações reais.</p>
+            <p>Ao final, o estudante percebe que políticas públicas não devem ser julgadas apenas por discursos ou intuições. Elas devem ser avaliadas pelo esforço de separar o que foi causado pela intervenção do que teria acontecido mesmo sem ela.</p>
+
+            <p class="article-reference">Referência: Rosen, H. & Gayer, T. <em>Public Finance</em>, 8ª ed., Capítulo 2 — Tools of Positive Analysis.</p>
+
+            <nav class="unit-nav">
+                <a href="/ensino/esp-u1-cap1.html" class="prev">
+                    <span class="nav-label">← Anterior</span>
+                    <span class="nav-title">Cap. 1: Por que o Estado existe?</span>
+                </a>
+                <a href="#" class="next disabled">
+                    <span class="nav-label">Próximo →</span>
+                    <span class="nav-title">Cap. 3: Análise normativa</span>
+                </a>
+            </nav>
+        </article>
+        <aside class="toc" id="toc">
+            <div class="toc-title">Neste capítulo</div>
+            <button class="toc-toggle" id="tocToggle" aria-expanded="false">
+                Neste capítulo
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="toc-links" id="tocLinks">
+                <a href="#s1" data-section="s1">2.1 Teoria econômica</a>
+                <a href="#s2" data-section="s2">2.2 Correlação e causalidade</a>
+                <a href="#s3" data-section="s3">2.3 Estudos experimentais</a>
+                <a href="#s4" data-section="s4">2.4 Observacionais e econometria</a>
+                <a href="#s5" data-section="s5">2.5 Quase-experimentos</a>
+                <a href="#s6" data-section="s6">2.6 Fechamento</a>
+            </div>
+        </aside>
+    </div>
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+    <script>
+        var progressBar = document.getElementById('progressBar');
+        function updateProgress() {
+            var scrollTop = window.scrollY;
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            progressBar.style.width = progress + '%';
+        }
+        var tocLinkEls = document.querySelectorAll('.toc a');
+        var sects = [];
+        tocLinkEls.forEach(function(link) {
+            var id = link.getAttribute('data-section');
+            var el = document.getElementById(id);
+            if (el) sects.push({ el: el, link: link });
+        });
+        function updateToc() {
+            var current = sects[0];
+            var scrollPos = window.scrollY + 130;
+            for (var i = 0; i < sects.length; i++) {
+                if (sects[i].el.offsetTop <= scrollPos) current = sects[i];
+            }
+            tocLinkEls.forEach(function(l) { l.classList.remove('active'); });
+            if (current) current.link.classList.add('active');
+        }
+        window.addEventListener('scroll', function() { updateProgress(); updateToc(); });
+        updateProgress(); updateToc();
+        var tocToggle = document.getElementById('tocToggle');
+        var tocLinksContainer = document.getElementById('tocLinks');
+        if (tocToggle && tocLinksContainer) {
+            tocToggle.addEventListener('click', function() {
+                var isOpen = tocToggle.classList.toggle('open');
+                tocLinksContainer.classList.toggle('open');
+                tocToggle.setAttribute('aria-expanded', isOpen);
+            });
+        }
+        var shareWA = document.getElementById('shareWhatsApp');
+        if (shareWA) {
+            shareWA.addEventListener('click', function(e) {
+                e.preventDefault();
+                var text = document.title + ' ' + window.location.href;
+                window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+            });
+        }
+        var copyBtn = document.getElementById('copyLink');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', function() {
+                navigator.clipboard.writeText(window.location.href).then(function() {
+                    copyBtn.classList.add('copied');
+                    var svgEl = copyBtn.querySelector('svg').outerHTML;
+                    copyBtn.innerHTML = svgEl + ' Copiado!';
+                    setTimeout(function() {
+                        copyBtn.innerHTML = svgEl + ' Copiar link';
+                        copyBtn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
