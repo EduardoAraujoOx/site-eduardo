@@ -244,89 +244,131 @@ img { max-width: 100%; height: auto; display: block; }
     width: 20px;
     height: 20px;
 }
-/* Unit card expanded (with chapter sub-items) */
-.unit-card.unit-expanded {
-    cursor: default;
+/* Expandable unit card (accordion trigger) */
+.unit-toggle {
+    cursor: pointer;
+    user-select: none;
 }
-.unit-card.unit-expanded:hover {
+.unit-toggle .unit-card-arrow {
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+.unit-toggle:hover .unit-card-arrow {
     transform: none;
-    box-shadow: none;
-    border-color: var(--border);
+}
+.unit-toggle.is-open .unit-card-arrow {
+    transform: rotate(180deg);
+    opacity: 0.7;
+}
+.unit-card-count {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
 }
 
-/* Chapter list inside expanded unit */
-.chapter-list {
-    margin-top: 1.2rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border-light);
+/* Chapter drawer (accordion panel) */
+.chapter-drawer {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.chapter-item {
+.chapter-drawer.is-open {
+    grid-template-rows: 1fr;
+}
+.chapter-drawer-inner {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding-top: 0.4rem;
+    padding-bottom: 0.75rem;
+}
+
+/* Individual chapter card */
+.chapter-card {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border-light);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1.3rem;
     text-decoration: none;
     color: var(--text);
-    transition: var(--transition);
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
 }
-.chapter-item:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
+.chapter-card-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--c);
+    opacity: 0.35;
+    border-radius: 10px 0 0 10px;
 }
-a.chapter-item:hover .chapter-title {
-    color: var(--c, var(--unit1));
+a.chapter-card:hover {
+    border-color: #ccc;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    transform: translateY(-1px);
 }
-.chapter-info {
+a.chapter-card:hover .chapter-card-bar {
+    opacity: 1;
+}
+a.chapter-card:hover .chapter-card-title {
+    color: var(--c);
+}
+.chapter-card-body {
     flex: 1;
     min-width: 0;
 }
-.chapter-number {
-    display: block;
+.chapter-card-number {
     font-family: var(--mono);
-    font-size: 0.63rem;
+    font-size: 0.62rem;
     font-weight: 500;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-muted);
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.15rem;
 }
-.chapter-title {
-    display: block;
+.chapter-card-title {
     font-family: var(--display);
     font-size: 0.95rem;
     font-weight: 600;
     line-height: 1.35;
-    transition: color var(--transition);
+    transition: color 0.25s ease;
 }
-.chapter-topics {
-    display: block;
+.chapter-card-desc {
     font-size: 0.82rem;
     line-height: 1.55;
     color: var(--text-muted);
-    margin-top: 0.25rem;
+    margin-top: 0.2rem;
 }
-.chapter-arrow {
+.chapter-card-arrow {
     flex-shrink: 0;
-    margin-top: 0.15rem;
-    opacity: 0.4;
+    opacity: 0.3;
     transition: all 0.3s ease;
     color: var(--text-secondary);
+    margin-top: 0.1rem;
 }
-.chapter-arrow svg {
+.chapter-card-arrow svg {
     width: 16px;
     height: 16px;
 }
-a.chapter-item:hover .chapter-arrow {
+a.chapter-card:hover .chapter-card-arrow {
     opacity: 1;
     transform: translateX(3px);
-    color: var(--c, var(--unit1));
+    color: var(--c);
 }
-.chapter-item.chapter-soon {
+.chapter-card--soon {
     opacity: 0.5;
+    pointer-events: none;
 }
-.chapter-item.chapter-soon .coming-badge {
+.chapter-card--soon .coming-badge {
     font-family: var(--mono);
     font-size: 0.6rem;
     letter-spacing: 0.06em;
@@ -337,7 +379,7 @@ a.chapter-item:hover .chapter-arrow {
     border-radius: 3px;
     white-space: nowrap;
     flex-shrink: 0;
-    margin-top: 0.15rem;
+    margin-top: 0.1rem;
 }
 
 .unit-card.coming-soon {
@@ -771,6 +813,7 @@ a.chapter-item:hover .chapter-arrow {
     .share-buttons { margin-left: 0; margin-top: 0.5rem; width: 100%; }
     .article-meta { gap: 0.8rem; }
 
-    .chapter-title { font-size: 0.88rem; }
-    .chapter-topics { font-size: 0.78rem; }
+    .chapter-card { padding: 0.75rem 1rem; }
+    .chapter-card-title { font-size: 0.88rem; }
+    .chapter-card-desc { font-size: 0.78rem; }
 }
