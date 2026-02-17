@@ -278,11 +278,16 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .chapter-drawer-inner {
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    padding-top: 0.4rem;
-    padding-bottom: 0.75rem;
+    min-height: 0;
+}
+.chapter-drawer-inner > .chapter-card {
+    margin-bottom: 0.4rem;
+}
+.chapter-drawer-inner > .chapter-card:first-child {
+    margin-top: 0.4rem;
+}
+.chapter-drawer-inner > .chapter-card:last-child {
+    margin-bottom: 0.75rem;
 }
 
 /* Individual chapter card */
