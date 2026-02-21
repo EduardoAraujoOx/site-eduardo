@@ -97,13 +97,6 @@
             });
         });
 
-        // Search button (placeholder)
-        if (searchBtn) {
-            searchBtn.addEventListener('click', () => {
-                alert('Funcionalidade de busca em desenvolvimento');
-            });
-        }
-
         // Language switch
         if (langSwitch) {
             const langLinks = langSwitch.querySelectorAll('a[data-lang]');
