@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Professor — Estado, Tributação e Economia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #0D0D0D;
+      --bg-card:     #111111;
+      --gold:        #C9A84C;
+      --gold-dim:    rgba(201,168,76,0.10);
+      --gold-mid:    rgba(201,168,76,0.35);
+      --gold-border: rgba(201,168,76,0.25);
+      --text:        #FFFFFF;
+      --muted:       #555555;
+      --muted2:      #333333;
+      --danger:      rgba(255,80,80,0.6);
+      --ff-serif:    'Cormorant Garamond', Georgia, serif;
+      --ff-sans:     'DM Sans', system-ui, sans-serif;
+      --ff-mono:     'DM Mono', 'Courier New', monospace;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--ff-sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── SETUP OVERLAY ──────────────────────────────────────────────── */
+    #setup-overlay {
+      position: fixed; inset: 0; z-index: 999;
+      background: var(--bg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 40px; text-align: center; gap: 24px;
+    }
+    #setup-overlay h2 {
+      font-family: var(--ff-serif); font-size: 32px; color: var(--gold);
+    }
+    #setup-overlay p { color: var(--muted); font-size: 14px; max-width: 600px; line-height: 1.7; }
+    #setup-overlay pre {
+      background: #111; border: 1px solid var(--gold-border);
+      border-radius: 8px; padding: 20px 28px;
+      font-family: var(--ff-mono); font-size: 12px;
+      color: #aaa; text-align: left; max-width: 680px;
+      white-space: pre-wrap; line-height: 1.6;
+    }
+    #setup-overlay .btn-setup {
+      background: var(--gold); color: var(--bg);
+      border: none; padding: 12px 36px; border-radius: 6px;
+      cursor: pointer; font-family: var(--ff-mono);
+      font-size: 12px; letter-spacing: 2px; font-weight: 500;
+    }
+
+    /* ─── ANIMATIONS ─────────────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(0.88); }
+    }
+    @keyframes barGrow { from { width: 0%; } }
+
+    /* ─── APP SHELL ──────────────────────────────────────────────────── */
+    #app { min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ─── TOP BAR ────────────────────────────────────────────────────── */
+    #topbar {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 18px 48px;
+      border-bottom: 1px solid #1c1c1c;
+      flex-shrink: 0;
+    }
+    .topbar-title {
+      font-family: var(--ff-serif); font-size: 18px;
+      color: var(--gold); letter-spacing: 0.5px;
+    }
+    .topbar-right {
+      display: flex; align-items: center; gap: 20px;
+    }
+    .status-chip {
+      font-family: var(--ff-mono); font-size: 12px; color: var(--muted2);
+      letter-spacing: 1px;
+    }
+    #btn-reset {
+      background: none;
+      border: 1px solid #1e1e1e;
+      color: var(--muted2);
+      padding: 4px 14px; border-radius: 4px;
+      cursor: pointer; font-family: var(--ff-mono);
+      font-size: 11px; letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+    #btn-reset:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* ─── MAIN ───────────────────────────────────────────────────────── */
+    #main {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 40px 80px;
+    }
+
+    /* ─── WELCOME SCREEN ─────────────────────────────────────────────── */
+    #screen-welcome {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 52px;
+      animation: fadeUp 0.6s ease both;
+    }
+    .welcome-title {
+      text-align: center;
+    }
+    .welcome-title .line1 {
+      font-family: var(--ff-serif); font-size: clamp(48px, 6vw, 72px);
+      color: #fff; font-weight: 600; line-height: 1.05;
+      display: block;
+    }
+    .welcome-title .line2 {
+      font-family: var(--ff-serif); font-size: clamp(48px, 6vw, 72px);
+      color: var(--gold); font-weight: 600; line-height: 1.05;
+      display: block;
+    }
+    .welcome-meta {
+      margin-top: 20px; color: var(--muted2);
+      font-family: var(--ff-mono); font-size: 12px;
+      letter-spacing: 3px; text-transform: uppercase;
+    }
+    .qr-box {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 16px;
+    }
+    .qr-frame {
+      width: 200px; height: 200px; background: #fff;
+      border-radius: 16px; padding: 14px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 60px rgba(201,168,76,0.13), 0 0 120px rgba(201,168,76,0.06);
+    }
+    .qr-frame img {
+      width: 172px; height: 172px; display: block; border-radius: 4px;
+    }
+    .qr-url {
+      font-family: var(--ff-mono); font-size: 12px;
+      color: var(--muted); text-align: center; letter-spacing: 0.3px;
+    }
+    .welcome-hint {
+      color: var(--muted2); font-size: 14px;
+      font-family: var(--ff-sans); text-align: center;
+    }
+
+    /* ─── QUESTION SCREEN ────────────────────────────────────────────── */
+    #screen-question {
+      width: 100%; max-width: 960px;
+      display: flex; flex-direction: column; gap: 36px;
+      animation: fadeUp 0.5s ease both;
+    }
+    .q-heading {
+      display: flex; align-items: baseline; gap: 24px;
+    }
+    .q-index {
+      font-family: var(--ff-mono); font-size: 13px;
+      color: var(--gold); letter-spacing: 3px;
+      text-transform: uppercase; flex-shrink: 0;
+      border-right: 1px solid rgba(201,168,76,0.3);
+      padding-right: 24px; line-height: 1;
+    }
+    .q-text {
+      font-family: var(--ff-serif);
+      font-size: clamp(32px, 3.6vw, 48px);
+      color: #fff; font-weight: 600; line-height: 1.25;
+    }
+
+    /* ─── BAR CHART ──────────────────────────────────────────────────── */
+    .bars { display: flex; flex-direction: column; gap: 18px; width: 100%; }
+
+    .bar-row {
+      display: flex; align-items: center; gap: 20px;
+    }
+    .bar-badge {
+      width: 44px; height: 44px; border-radius: 8px;
+      flex-shrink: 0;
+      background: var(--gold-dim);
+      border: 1.5px solid var(--gold-border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--ff-mono); font-size: 15px;
+      color: var(--gold); font-weight: 500;
+      transition: all 0.4s;
+    }
+    .bar-row.winner .bar-badge {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--bg);
+    }
+
+    .bar-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+    .bar-label {
+      font-size: 17px; color: #777;
+      font-family: var(--ff-sans); font-weight: 400;
+      transition: color 0.4s;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .bar-row.winner .bar-label { color: #fff; font-weight: 600; }
+
+    .bar-track {
+      height: 36px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 6px; overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, rgba(201,168,76,0.35), rgba(201,168,76,0.55));
+      border-radius: 6px;
+      transition: width 0.9s cubic-bezier(0.4,0,0.2,1);
+    }
+    .bar-row.winner .bar-fill {
+      background: linear-gradient(90deg, rgba(201,168,76,0.75), var(--gold));
+    }
+    /* When hidden, bars stay at 0 */
+    .bars.hidden .bar-fill { width: 0% !important; transition: none; }
+
+    .bar-pct {
+      width: 68px; text-align: right; flex-shrink: 0;
+      font-family: var(--ff-mono); font-size: 22px;
+      color: rgba(201,168,76,0.4);
+      transition: opacity 0.5s 0.3s, font-size 0.3s, color 0.4s;
+    }
+    .bar-row.winner .bar-pct { font-size: 28px; color: var(--gold); }
+    .bars.hidden .bar-pct { opacity: 0; }
+
+    .vote-total {
+      text-align: right;
+      font-family: var(--ff-mono); font-size: 13px;
+      color: var(--muted2); margin-top: 4px;
+    }
+
+    /* ─── BOTTOM NAV ─────────────────────────────────────────────────── */
+    #bottomnav {
+      padding: 20px 48px;
+      border-top: 1px solid #1c1c1c;
+      display: flex; justify-content: space-between;
+      align-items: center; flex-shrink: 0;
+    }
+    .btn-nav {
+      background: none;
+      border: 1px solid #1e1e1e;
+      color: var(--muted);
+      padding: 12px 28px; border-radius: 6px;
+      cursor: pointer; font-family: var(--ff-mono);
+      font-size: 13px; letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+    .btn-nav:hover:not(:disabled) {
+      border-color: #333; color: #aaa;
+    }
+    .btn-nav:disabled { opacity: 0.22; cursor: default; }
+
+    #btn-reveal {
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.35);
+      color: var(--gold);
+      padding: 12px 36px; border-radius: 6px;
+      cursor: pointer; font-family: var(--ff-mono);
+      font-size: 13px; letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+    #btn-reveal:hover { background: rgba(201,168,76,0.14); }
+    #btn-reveal.done {
+      background: none;
+      border-color: #1e1e1e; color: var(--muted2);
+      cursor: default; pointer-events: none;
+    }
+
+    .btn-next {
+      background: var(--gold);
+      border: 1px solid var(--gold);
+      color: var(--bg);
+      padding: 12px 32px; border-radius: 6px;
+      cursor: pointer; font-family: var(--ff-mono);
+      font-size: 13px; letter-spacing: 1px; font-weight: 700;
+      transition: all 0.2s;
+    }
+    .btn-next:hover { opacity: 0.85; }
+    .btn-next.ghost {
+      background: none;
+      border-color: #1e1e1e; color: var(--muted2);
+      cursor: default; pointer-events: none; font-weight: 400;
+    }
+    .btn-next.start {
+      background: var(--gold); color: var(--bg);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── SETUP OVERLAY (shown if tables missing) ────────────────────────────── -->
+<div id="setup-overlay" style="display:none">
+  <h2>Configuração necessária</h2>
+  <p>As tabelas do Supabase ainda não foram criadas. Execute o SQL abaixo no painel do Supabase<br>
+  (<strong>Dashboard → SQL Editor → New query</strong>) e recarregue a página.</p>
+  <pre id="setup-sql"></pre>
+  <button class="btn-setup" onclick="document.getElementById('setup-overlay').style.display='none';init()">
+    Já executei — continuar
+  </button>
+</div>
+
+<!-- ── APP ────────────────────────────────────────────────────────────────── -->
+<div id="app">
+
+  <!-- Top bar -->
+  <header id="topbar">
+    <span class="topbar-title">Estado, Tributação e Economia</span>
+    <div class="topbar-right">
+      <span class="status-chip" id="status-chip">aguardando</span>
+      <span class="status-chip" id="vote-chip" style="display:none"></span>
+      <button id="btn-reset">reset</button>
+    </div>
+  </header>
+
+  <!-- Main area -->
+  <main id="main">
+
+    <!-- Welcome screen -->
+    <div id="screen-welcome">
+      <div class="welcome-title">
+        <span class="line1">Estado, Tributação</span>
+        <span class="line2">e Economia</span>
+        <div class="welcome-meta">5 perguntas · anônimo · votação única</div>
+      </div>
+
+      <div class="qr-box">
+        <div class="qr-frame">
+          <img id="qr-img" src="" alt="QR Code para alunos">
+        </div>
+        <div class="qr-url" id="qr-url"></div>
+      </div>
+
+      <div class="welcome-hint">Escaneie o QR code ou acesse o link pelo celular</div>
+    </div>
+
+    <!-- Question screen -->
+    <div id="screen-question" style="display:none">
+      <div class="q-heading">
+        <div class="q-index" id="q-index">1 / 5</div>
+        <div class="q-text" id="q-text"></div>
+      </div>
+      <div class="bars" id="bars"></div>
+      <div class="vote-total" id="vote-total">0 respostas</div>
+    </div>
+
+  </main>
+
+  <!-- Bottom nav -->
+  <nav id="bottomnav">
+    <button class="btn-nav" id="btn-back" disabled>← voltar</button>
+    <div>
+      <button id="btn-reveal" style="display:none">revelar resultados</button>
+    </div>
+    <button class="btn-next start" id="btn-next">iniciar →</button>
+  </nav>
+
+</div>
+
+<!-- ── SUPABASE SDK ────────────────────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://ecjeuwadpmtvbkcvrxoc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjamV1d2FkcG10dmJrY3ZyeG9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMDMyNTIsImV4cCI6MjA4NzU3OTI1Mn0.Lr7FQq4Wg5JJMXurSDxaCsAd5TgeoEXnby9BNBDX5pU';
+const SESSAO      = 'setor-publico-aula01';
+
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ─── PERGUNTAS ────────────────────────────────────────────────────────────────
+const PERGUNTAS = [
+  {
+    texto: 'Você acha que uma carga tributária em torno de 32% do PIB é:',
+    opcoes: ['Muito alta', 'Alta', 'Adequada', 'Baixa', 'Muito baixa'],
+  },
+  {
+    texto: 'Considerando países desenvolvidos com carga semelhante, o Brasil entrega serviços públicos no mesmo nível?',
+    opcoes: ['Sim, no mesmo nível', 'Um pouco abaixo', 'Muito abaixo', 'Não sei avaliar'],
+  },
+  {
+    texto: 'Se fosse necessário reduzir a carga tributária no Brasil, onde você priorizaria cortes?',
+    opcoes: ['Programas sociais e transferências', 'Investimentos públicos', 'Funcionalismo público e salários', 'Previdência', 'Subsídios e incentivos fiscais', 'Não reduziria'],
+  },
+  {
+    texto: 'Na sua opinião, qual é o principal obstáculo para reduzir o tamanho do Estado?',
+    opcoes: ['Rigidez constitucional e regras legais', 'Pressão de grupos organizados', 'Desigualdade social elevada', 'Baixa eficiência da gestão pública', 'Falta de vontade política'],
+  },
+  {
+    texto: 'Uma redução do tamanho do Estado tornaria a economia brasileira:',
+    opcoes: ['Muito melhor', 'Um pouco melhor', 'Não mudaria muito', 'Um pouco pior', 'Muito pior'],
+  },
+];
+
+const LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let questaoAtiva = 0;   // 0 = tela inicial
+let revelada     = false;
+let pollTimer    = null;
+
+// ─── DOM ──────────────────────────────────────────────────────────────────────
+const screenWelcome  = document.getElementById('screen-welcome');
+const screenQuestion = document.getElementById('screen-question');
+const qIndex         = document.getElementById('q-index');
+const qText          = document.getElementById('q-text');
+const barsEl         = document.getElementById('bars');
+const voteTotal      = document.getElementById('vote-total');
+const statusChip     = document.getElementById('status-chip');
+const voteChip       = document.getElementById('vote-chip');
+const btnBack        = document.getElementById('btn-back');
+const btnReveal      = document.getElementById('btn-reveal');
+const btnNext        = document.getElementById('btn-next');
+const btnReset       = document.getElementById('btn-reset');
+
+// ─── QR ───────────────────────────────────────────────────────────────────────
+function buildStudentUrl() {
+  return new URL('responder.html', window.location.href).href;
+}
+
+function setupQR() {
+  const url  = buildStudentUrl();
+  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=172x172&data=${encodeURIComponent(url)}&color=0D0D0D&bgcolor=ffffff`;
+  document.getElementById('qr-img').src = qrSrc;
+  document.getElementById('qr-url').textContent = url;
+}
+
+// ─── SUPABASE OPERATIONS ──────────────────────────────────────────────────────
+async function getEstado() {
+  const { data, error } = await sb
+    .from('enquete_estado')
+    .select('*')
+    .eq('sessao', SESSAO)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+async function setEstado(questao_ativa, revelada) {
+  const { error } = await sb
+    .from('enquete_estado')
+    .upsert({ sessao: SESSAO, questao_ativa, revelada }, { onConflict: 'sessao' });
+  if (error) throw error;
+}
+
+async function getVotos(questao) {
+  const { data, error } = await sb
+    .from('enquete_respostas')
+    .select('opcao')
+    .eq('sessao', SESSAO)
+    .eq('questao', questao);
+  if (error) throw error;
+  return data || [];
+}
+
+async function resetVotos() {
+  const { error } = await sb
+    .from('enquete_respostas')
+    .delete()
+    .eq('sessao', SESSAO);
+  if (error) throw error;
+}
+
+// ─── RENDER BARS ─────────────────────────────────────────────────────────────
+function renderBars(questao, votos, isRevealed) {
+  const pergunta = PERGUNTAS[questao - 1];
+  const total = votos.length;
+
+  // Count votes per option (1-indexed)
+  const counts = {};
+  votos.forEach(v => { counts[v.opcao] = (counts[v.opcao] || 0) + 1; });
+
+  // Find max votes (winner)
+  const maxVotes = total > 0 ? Math.max(...Object.values(counts)) : 0;
+
+  voteTotal.textContent = total === 1 ? '1 resposta' : `${total} respostas`;
+  voteChip.textContent  = `${total} resposta${total !== 1 ? 's' : ''}`;
+  voteChip.style.display = '';
+
+  barsEl.innerHTML = '';
+  barsEl.classList.toggle('hidden', !isRevealed);
+
+  pergunta.opcoes.forEach((opt, i) => {
+    const idx   = i + 1;
+    const count = counts[idx] || 0;
+    const pct   = total > 0 ? Math.round((count / total) * 100) : 0;
+    const barW  = maxVotes > 0 ? (count / maxVotes) * 100 : 0;
+    const isWinner = isRevealed && maxVotes > 0 && count === maxVotes;
+
+    const row = document.createElement('div');
+    row.className = 'bar-row' + (isWinner ? ' winner' : '');
+    row.style.animation = isRevealed ? `fadeUp 0.4s ease ${i * 0.07}s both` : 'none';
+
+    row.innerHTML = `
+      <div class="bar-badge">${LABELS[i]}</div>
+      <div class="bar-col">
+        <div class="bar-label">${escHtml(opt)}</div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${isRevealed ? barW : 0}%"></div>
+        </div>
+      </div>
+      <div class="bar-pct">${isRevealed ? pct + '%' : ''}</div>
+    `;
+    barsEl.appendChild(row);
+  });
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ─── RENDER QUESTION ─────────────────────────────────────────────────────────
+function renderQuestion(questao) {
+  const isLast  = questao === PERGUNTAS.length;
+  const isFirst = questao === 1;
+
+  qIndex.textContent = `${questao} / ${PERGUNTAS.length}`;
+  qText.textContent  = PERGUNTAS[questao - 1].texto;
+
+  statusChip.textContent = `${questao} / ${PERGUNTAS.length}`;
+
+  btnBack.disabled = isFirst;
+
+  btnNext.className = 'btn-next' + (isLast ? ' ghost' : '');
+  btnNext.textContent = isLast ? 'encerrada' : 'próxima →';
+
+  if (revelada) {
+    btnReveal.textContent = 'revelado ✓';
+    btnReveal.classList.add('done');
+    btnReveal.style.display = '';
+  } else {
+    btnReveal.textContent = 'revelar resultados';
+    btnReveal.classList.remove('done');
+    btnReveal.style.display = '';
+  }
+}
+
+// ─── POLL LOOP ────────────────────────────────────────────────────────────────
+async function pollVotos() {
+  if (questaoAtiva === 0) return;
+  try {
+    const votos = await getVotos(questaoAtiva);
+    renderBars(questaoAtiva, votos, revelada);
+  } catch (err) { console.warn('poll error', err); }
+}
+
+function startPolling() {
+  stopPolling();
+  pollVotos();
+  pollTimer = setInterval(pollVotos, 2000);
+}
+
+function stopPolling() {
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+}
+
+// ─── NAVIGATION ──────────────────────────────────────────────────────────────
+function showScreen(s) {
+  screenWelcome.style.display  = s === 'welcome'  ? 'flex' : 'none';
+  screenQuestion.style.display = s === 'question' ? 'flex' : 'none';
+}
+
+async function goTo(n) {
+  questaoAtiva = n;
+  revelada     = false;
+  await setEstado(n, false);
+
+  if (n === 0) {
+    stopPolling();
+    statusChip.textContent = 'aguardando';
+    voteChip.style.display = 'none';
+    btnReveal.style.display = 'none';
+    btnNext.className = 'btn-next start';
+    btnNext.textContent = 'iniciar →';
+    btnBack.disabled = true;
+    showScreen('welcome');
+  } else {
+    renderQuestion(n);
+    showScreen('question');
+    startPolling();
+  }
+}
+
+// ─── EVENT LISTENERS ─────────────────────────────────────────────────────────
+btnNext.addEventListener('click', async () => {
+  if (questaoAtiva === 0) {
+    // Start
+    await goTo(1);
+    return;
+  }
+  if (questaoAtiva >= PERGUNTAS.length) return;
+  await goTo(questaoAtiva + 1);
+});
+
+btnBack.addEventListener('click', async () => {
+  if (questaoAtiva <= 1) return;
+  await goTo(questaoAtiva - 1);
+});
+
+btnReveal.addEventListener('click', async () => {
+  if (revelada) return;
+  revelada = true;
+  await setEstado(questaoAtiva, true);
+  renderQuestion(questaoAtiva);
+  const votos = await getVotos(questaoAtiva);
+  renderBars(questaoAtiva, votos, true);
+});
+
+btnReset.addEventListener('click', async () => {
+  if (!confirm('Resetar a enquete? Todos os votos serão apagados.')) return;
+  stopPolling();
+  await Promise.all([resetVotos(), setEstado(0, false)]);
+  await goTo(0);
+});
+
+// ─── SETUP CHECK ─────────────────────────────────────────────────────────────
+const SETUP_SQL = `-- Execute no Supabase Dashboard > SQL Editor
+
+CREATE TABLE IF NOT EXISTS enquete_respostas (
+  id         uuid        DEFAULT gen_random_uuid() PRIMARY KEY,
+  sessao     text        NOT NULL,
+  questao    integer     NOT NULL,
+  opcao      integer     NOT NULL,
+  criado_em  timestamptz DEFAULT now()
+);
+
+ALTER TABLE enquete_respostas ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "anon_insert" ON enquete_respostas
+  FOR INSERT TO anon WITH CHECK (true);
+CREATE POLICY "anon_select" ON enquete_respostas
+  FOR SELECT TO anon USING (true);
+
+-- ──────────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS enquete_estado (
+  sessao        text    PRIMARY KEY,
+  questao_ativa integer NOT NULL DEFAULT 0,
+  revelada      boolean NOT NULL DEFAULT false
+);
+
+ALTER TABLE enquete_estado ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "anon_all" ON enquete_estado
+  FOR ALL TO anon USING (true) WITH CHECK (true);`;
+
+async function checkTables() {
+  // Quick probe — if table missing, PostgREST returns PGRST205
+  const { error } = await sb
+    .from('enquete_respostas')
+    .select('id', { count: 'exact', head: true });
+  return !(error && error.code === 'PGRST205');
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+async function init() {
+  setupQR();
+
+  const ok = await checkTables();
+  if (!ok) {
+    document.getElementById('setup-sql').textContent = SETUP_SQL;
+    document.getElementById('setup-overlay').style.display = 'flex';
+    return;
+  }
+
+  // Restore active session if any
+  try {
+    const estado = await getEstado();
+    if (estado && estado.questao_ativa > 0) {
+      questaoAtiva = estado.questao_ativa;
+      revelada     = estado.revelada;
+      renderQuestion(questaoAtiva);
+      showScreen('question');
+      startPolling();
+      return;
+    }
+  } catch (err) { console.warn(err); }
+
+  showScreen('welcome');
+}
+
+init();
+</script>
+</body>
+</html>
