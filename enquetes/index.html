@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Painel de Enquetes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #0D0D0D;
+      --bg-card:     #111111;
+      --bg-card2:    #131313;
+      --gold:        #C9A84C;
+      --gold-dim:    rgba(201,168,76,0.08);
+      --gold-border: rgba(201,168,76,0.22);
+      --text:        #FFFFFF;
+      --muted:       #444444;
+      --muted2:      #2a2a2a;
+      --green:       #4caf7d;
+      --green-dim:   rgba(76,175,125,0.12);
+      --amber:       #e8a838;
+      --amber-dim:   rgba(232,168,56,0.12);
+      --ff-serif:    'Cormorant Garamond', Georgia, serif;
+      --ff-sans:     'DM Sans', system-ui, sans-serif;
+      --ff-mono:     'DM Mono', 'Courier New', monospace;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg); color: var(--text);
+      font-family: var(--ff-sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ─── TOPBAR ─────────────────────────────────────────────────────── */
+    #topbar {
+      padding: 20px 48px;
+      border-bottom: 1px solid #181818;
+      display: flex; align-items: center;
+      justify-content: space-between;
+    }
+    .topbar-left { display: flex; flex-direction: column; gap: 4px; }
+    .topbar-title {
+      font-family: var(--ff-serif); font-size: 22px; color: var(--gold);
+    }
+    .topbar-sub {
+      font-family: var(--ff-mono); font-size: 11px;
+      color: var(--muted); letter-spacing: 2px;
+    }
+    #btn-refresh {
+      background: none; border: 1px solid #1e1e1e; color: var(--muted);
+      padding: 8px 20px; border-radius: 5px; cursor: pointer;
+      font-family: var(--ff-mono); font-size: 11px; letter-spacing: 1px;
+      transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+    }
+    #btn-refresh:hover { border-color: #333; color: #888; }
+    #btn-refresh.loading .spin { animation: spin 0.7s linear infinite; }
+    .spin { display: inline-block; }
+
+    /* ─── MAIN ───────────────────────────────────────────────────────── */
+    #main {
+      max-width: 960px; margin: 0 auto;
+      padding: 48px 48px 80px;
+      display: flex; flex-direction: column; gap: 48px;
+    }
+
+    /* ─── DISCIPLINE GROUP ───────────────────────────────────────────── */
+    .group { display: flex; flex-direction: column; gap: 16px; }
+    .group-label {
+      font-family: var(--ff-mono); font-size: 11px;
+      color: var(--muted); letter-spacing: 3px; text-transform: uppercase;
+      padding-bottom: 12px; border-bottom: 1px solid #181818;
+    }
+
+    /* ─── ENQUETE CARD ───────────────────────────────────────────────── */
+    .card {
+      background: var(--bg-card); border: 1px solid #1a1a1a;
+      border-radius: 12px; padding: 24px 28px;
+      display: flex; flex-direction: column; gap: 18px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .card-top {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 20px;
+    }
+    .card-info { display: flex; flex-direction: column; gap: 6px; }
+    .card-titulo {
+      font-family: var(--ff-serif); font-size: 22px;
+      color: var(--text); font-weight: 600; line-height: 1.2;
+    }
+    .card-meta {
+      font-family: var(--ff-mono); font-size: 11px;
+      color: var(--muted); letter-spacing: 1px;
+    }
+
+    /* Status chip */
+    .status-chip {
+      flex-shrink: 0;
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 20px;
+      font-family: var(--ff-mono); font-size: 11px; letter-spacing: 1px;
+      white-space: nowrap;
+    }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .status-chip.waiting {
+      background: var(--muted2); color: var(--muted); border: 1px solid #222;
+    }
+    .status-chip.waiting .status-dot { background: var(--muted); }
+    .status-chip.active {
+      background: var(--green-dim); color: var(--green); border: 1px solid rgba(76,175,125,0.25);
+    }
+    .status-chip.active .status-dot { background: var(--green); }
+    .status-chip.revealed {
+      background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(232,168,56,0.25);
+    }
+    .status-chip.revealed .status-dot { background: var(--amber); }
+    .status-chip.finished {
+      background: var(--gold-dim); color: var(--gold); border: 1px solid var(--gold-border);
+    }
+    .status-chip.finished .status-dot { background: var(--gold); }
+    .status-chip.loading {
+      background: var(--muted2); color: #333; border: 1px solid #1e1e1e;
+    }
+    .status-chip.loading .status-dot { background: #333; }
+
+    /* Vote count */
+    .card-votes {
+      font-family: var(--ff-mono); font-size: 12px; color: var(--muted);
+    }
+
+    /* ─── LINKS ROW ──────────────────────────────────────────────────── */
+    .card-links {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      padding-top: 16px; border-top: 1px solid #181818;
+    }
+    .link-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 9px 18px; border-radius: 7px;
+      font-family: var(--ff-mono); font-size: 12px; letter-spacing: 0.5px;
+      cursor: pointer; transition: all 0.18s; text-decoration: none;
+      border: 1px solid transparent;
+    }
+    .link-btn.primary {
+      background: var(--gold); color: var(--bg); border-color: var(--gold);
+      font-weight: 700;
+    }
+    .link-btn.primary:hover { opacity: 0.85; }
+    .link-btn.secondary {
+      background: none; color: #666; border-color: #1e1e1e;
+    }
+    .link-btn.secondary:hover { border-color: #333; color: #aaa; }
+    .link-btn.copy {
+      background: none; color: var(--muted); border-color: #1e1e1e;
+    }
+    .link-btn.copy:hover { border-color: #333; color: #888; }
+    .link-btn.copy.copied {
+      color: var(--green); border-color: rgba(76,175,125,0.3);
+    }
+
+    /* ─── EMPTY ──────────────────────────────────────────────────────── */
+    .empty {
+      text-align: center; color: var(--muted);
+      font-family: var(--ff-mono); font-size: 13px;
+      padding: 60px 0;
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────────────────── */
+    #footer {
+      border-top: 1px solid #181818; padding: 20px 48px;
+      font-family: var(--ff-mono); font-size: 11px; color: #222;
+      display: flex; justify-content: space-between;
+    }
+    #last-update { color: #2a2a2a; }
+  </style>
+</head>
+<body>
+
+<header id="topbar">
+  <div class="topbar-left">
+    <div class="topbar-title">Painel de Enquetes</div>
+    <div class="topbar-sub">acesso restrito · não indexado</div>
+  </div>
+  <button id="btn-refresh">
+    <span class="spin">↻</span> atualizar
+  </button>
+</header>
+
+<main id="main">
+  <!-- cards rendered by JS -->
+</main>
+
+<footer id="footer">
+  <span>eduardoreisaraujo.com.br/enquetes/</span>
+  <span id="last-update">—</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+// ─── SUPABASE ──────────────────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://ecjeuwadpmtvbkcvrxoc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjamV1d2FkcG10dmJrY3ZyeG9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMDMyNTIsImV4cCI6MjA4NzU3OTI1Mn0.Lr7FQq4Wg5JJMXurSDxaCsAd5TgeoEXnby9BNBDX5pU';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ─── CATÁLOGO DE ENQUETES ──────────────────────────────────────────────────────
+// Para adicionar uma nova enquete, basta incluir um objeto neste array.
+const ENQUETES = [
+  {
+    disciplina: 'Setor Público',
+    titulo:     'Estado, Tributação e Economia',
+    aula:       'Aula 1',
+    sessao:     'setor-publico-aula01',
+    perguntas:  5,
+    pasta:      'setor-publico/aula01',
+  },
+  {
+    disciplina: 'Macroeconomia',
+    titulo:     'Macroeconomia — Aula 1',
+    aula:       'Aula 1',
+    sessao:     'macro-aula01',
+    perguntas:  3,
+    pasta:      'macro/aula01',
+  },
+];
+
+// ─── URL HELPERS ───────────────────────────────────────────────────────────────
+function baseUrl() {
+  // Resolve relative to this file's directory (enquetes/)
+  return new URL('./', window.location.href).href;
+}
+function panelUrl(pasta)  { return baseUrl() + pasta + '/'; }
+function studentUrl(pasta) { return baseUrl() + pasta + '/responder.html'; }
+
+// ─── SUPABASE QUERIES ──────────────────────────────────────────────────────────
+async function getEstados() {
+  const sessoes = ENQUETES.map(e => e.sessao);
+  const { data, error } = await sb
+    .from('enquete_estado')
+    .select('sessao, questao_ativa, revelada')
+    .in('sessao', sessoes);
+  if (error) throw error;
+  const map = {};
+  (data || []).forEach(row => { map[row.sessao] = row; });
+  return map;
+}
+
+async function getVoteCounts() {
+  const sessoes = ENQUETES.map(e => e.sessao);
+  const { data, error } = await sb
+    .from('enquete_respostas')
+    .select('sessao')
+    .in('sessao', sessoes);
+  if (error) throw error;
+  const counts = {};
+  (data || []).forEach(row => {
+    counts[row.sessao] = (counts[row.sessao] || 0) + 1;
+  });
+  return counts;
+}
+
+// ─── STATUS ───────────────────────────────────────────────────────────────────
+function buildStatus(estado, perguntas) {
+  if (!estado || estado.questao_ativa === 0) {
+    return { cls: 'waiting', label: 'aguardando' };
+  }
+  const summaryState = perguntas + 1;
+  if (estado.questao_ativa >= summaryState) {
+    return { cls: 'finished', label: 'encerrada' };
+  }
+  if (estado.revelada) {
+    return { cls: 'revealed', label: `revelada · Q${estado.questao_ativa}/${perguntas}` };
+  }
+  return { cls: 'active', label: `em andamento · Q${estado.questao_ativa}/${perguntas}` };
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function groupBy(arr, key) {
+  const map = {};
+  arr.forEach(item => {
+    const k = item[key];
+    if (!map[k]) map[k] = [];
+    map[k].push(item);
+  });
+  return map;
+}
+
+function renderCards(estados, counts) {
+  const main   = document.getElementById('main');
+  main.innerHTML = '';
+
+  const groups = groupBy(ENQUETES, 'disciplina');
+
+  Object.entries(groups).forEach(([disciplina, enquetes], gi) => {
+    const group = document.createElement('div');
+    group.className = 'group';
+
+    const label = document.createElement('div');
+    label.className   = 'group-label';
+    label.textContent = disciplina;
+    group.appendChild(label);
+
+    enquetes.forEach((e, i) => {
+      const estado  = estados[e.sessao] || null;
+      const count   = counts[e.sessao]  || 0;
+      const status  = buildStatus(estado, e.perguntas);
+      const pUrl    = panelUrl(e.pasta);
+      const sUrl    = studentUrl(e.pasta);
+
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.animationDelay = `${(gi * 4 + i) * 0.07}s`;
+
+      card.innerHTML = `
+        <div class="card-top">
+          <div class="card-info">
+            <div class="card-titulo">${escHtml(e.titulo)}</div>
+            <div class="card-meta">${escHtml(e.aula)} · ${e.perguntas} perguntas · <span style="color:#333">${escHtml(e.sessao)}</span></div>
+          </div>
+          <div class="status-chip ${status.cls}">
+            <span class="status-dot"></span>
+            ${escHtml(status.label)}
+          </div>
+        </div>
+        <div class="card-votes">${count === 0 ? 'sem votos registrados' : `${count} resposta${count !== 1 ? 's' : ''} no total`}</div>
+        <div class="card-links">
+          <a class="link-btn primary" href="${escHtml(pUrl)}" target="_blank">
+            Abrir painel →
+          </a>
+          <a class="link-btn secondary" href="${escHtml(sUrl)}" target="_blank">
+            Link alunos ↗
+          </a>
+          <button class="link-btn copy" data-url="${escHtml(sUrl)}">
+            copiar link alunos
+          </button>
+        </div>
+      `;
+
+      // Copy button logic
+      const copyBtn = card.querySelector('.link-btn.copy');
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(copyBtn.dataset.url).then(() => {
+          copyBtn.classList.add('copied');
+          copyBtn.textContent = 'copiado ✓';
+          setTimeout(() => {
+            copyBtn.classList.remove('copied');
+            copyBtn.textContent = 'copiar link alunos';
+          }, 2000);
+        });
+      });
+
+      group.appendChild(card);
+    });
+
+    main.appendChild(group);
+  });
+
+  if (ENQUETES.length === 0) {
+    main.innerHTML = '<div class="empty">nenhuma enquete cadastrada</div>';
+  }
+}
+
+// ─── LOAD ─────────────────────────────────────────────────────────────────────
+async function load() {
+  const btn = document.getElementById('btn-refresh');
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  try {
+    const [estados, counts] = await Promise.all([getEstados(), getVoteCounts()]);
+    renderCards(estados, counts);
+    document.getElementById('last-update').textContent =
+      'atualizado ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  } catch (err) {
+    console.error(err);
+    document.getElementById('main').innerHTML =
+      '<div class="empty">erro ao carregar dados do Supabase</div>';
+  } finally {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+  }
+}
+
+document.getElementById('btn-refresh').addEventListener('click', load);
+
+load();
+</script>
+</body>
+</html>
