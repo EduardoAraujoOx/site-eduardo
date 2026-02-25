@@ -241,6 +241,59 @@
       color: var(--muted2); margin-top: 4px;
     }
 
+    /* ─── SUMMARY SCREEN ─────────────────────────────────────────────── */
+    #screen-summary {
+      width: 100%; max-width: 960px;
+      display: flex; flex-direction: column; gap: 32px;
+      animation: fadeUp 0.6s ease both;
+    }
+    .sum-header { text-align: center; }
+    .sum-title {
+      font-family: var(--ff-serif); font-size: clamp(36px, 4vw, 52px);
+      color: var(--gold); font-weight: 600;
+    }
+    .sum-meta {
+      margin-top: 8px; color: var(--muted2);
+      font-family: var(--ff-mono); font-size: 12px; letter-spacing: 2px;
+    }
+    .sum-grid { display: flex; flex-direction: column; gap: 14px; }
+    .sum-card {
+      background: var(--bg-card);
+      border: 1px solid #1c1c1c; border-radius: 10px;
+      padding: 20px 24px; display: flex; gap: 20px; align-items: flex-start;
+      animation: fadeUp 0.4s ease both;
+    }
+    .sum-qnum {
+      font-family: var(--ff-mono); font-size: 12px; color: var(--gold);
+      letter-spacing: 2px; flex-shrink: 0; width: 28px; padding-top: 3px;
+    }
+    .sum-body { flex: 1; min-width: 0; }
+    .sum-qtext {
+      font-size: 13px; color: #666; font-family: var(--ff-sans);
+      margin-bottom: 10px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .sum-winner-row { display: flex; align-items: center; gap: 12px; }
+    .sum-badge {
+      width: 32px; height: 32px; border-radius: 6px; flex-shrink: 0;
+      background: var(--gold); color: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--ff-mono); font-size: 13px; font-weight: 700;
+    }
+    .sum-winner-text {
+      font-size: 15px; color: #fff; font-weight: 600; font-family: var(--ff-sans);
+      flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .sum-winner-pct {
+      font-family: var(--ff-mono); font-size: 20px; color: var(--gold); flex-shrink: 0;
+    }
+    .sum-votes {
+      margin-top: 6px; font-family: var(--ff-mono); font-size: 11px; color: var(--muted2);
+    }
+    .sum-empty {
+      font-size: 13px; color: var(--muted); font-family: var(--ff-mono); font-style: italic;
+    }
+
     /* ─── BOTTOM NAV ─────────────────────────────────────────────────── */
     #bottomnav {
       padding: 20px 48px;
@@ -288,14 +341,15 @@
       transition: all 0.2s;
     }
     .btn-next:hover { opacity: 0.85; }
-    .btn-next.ghost {
-      background: none;
-      border-color: #1e1e1e; color: var(--muted2);
-      cursor: default; pointer-events: none; font-weight: 400;
-    }
     .btn-next.start {
       background: var(--gold); color: var(--bg);
     }
+    .btn-next.turma {
+      background: none;
+      border-color: var(--gold-border);
+      color: var(--gold); font-weight: 400;
+    }
+    .btn-next.turma:hover { background: var(--gold-dim); border-color: var(--gold); }
   </style>
 </head>
 <body>
@@ -355,6 +409,15 @@
       <div class="vote-total" id="vote-total">0 respostas</div>
     </div>
 
+    <!-- Summary screen -->
+    <div id="screen-summary" style="display:none">
+      <div class="sum-header">
+        <div class="sum-title">Enquete encerrada</div>
+        <div class="sum-meta" id="sum-meta">carregando resultados…</div>
+      </div>
+      <div class="sum-grid" id="sum-grid"></div>
+    </div>
+
   </main>
 
   <!-- Bottom nav -->
@@ -403,16 +466,18 @@ const PERGUNTAS = [
   },
 ];
 
-const LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
+const LABELS       = ['A', 'B', 'C', 'D', 'E', 'F'];
+const SUMMARY_STATE = PERGUNTAS.length + 1; // estado especial: tela de resumo
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
-let questaoAtiva = 0;   // 0 = tela inicial
+let questaoAtiva = 0;   // 0 = tela inicial, 1-5 = questões, 6 = resumo
 let revelada     = false;
 let pollTimer    = null;
 
 // ─── DOM ──────────────────────────────────────────────────────────────────────
 const screenWelcome  = document.getElementById('screen-welcome');
 const screenQuestion = document.getElementById('screen-question');
+const screenSummary  = document.getElementById('screen-summary');
 const qIndex         = document.getElementById('q-index');
 const qText          = document.getElementById('q-text');
 const barsEl         = document.getElementById('bars');
@@ -520,6 +585,70 @@ function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+// ─── RENDER SUMMARY ───────────────────────────────────────────────────────────
+async function renderSummary() {
+  const grid = document.getElementById('sum-grid');
+  const meta = document.getElementById('sum-meta');
+  grid.innerHTML = '';
+  meta.textContent = 'carregando resultados…';
+
+  // Fetch votes for all questions in parallel
+  const allVotos = await Promise.all(
+    PERGUNTAS.map((_, i) => getVotos(i + 1))
+  );
+
+  const totalGeral = allVotos.reduce((s, v) => s + v.length, 0);
+  meta.textContent = `${totalGeral} respostas totais · ${PERGUNTAS.length} questões`;
+
+  allVotos.forEach((votos, i) => {
+    const pergunta = PERGUNTAS[i];
+    const total    = votos.length;
+
+    const counts = {};
+    votos.forEach(v => { counts[v.opcao] = (counts[v.opcao] || 0) + 1; });
+
+    // Find winner (highest vote count)
+    let winnerIdx = null, winnerCount = 0;
+    pergunta.opcoes.forEach((_, j) => {
+      const c = counts[j + 1] || 0;
+      if (c > winnerCount) { winnerCount = c; winnerIdx = j; }
+    });
+
+    const pct = (total > 0 && winnerIdx !== null)
+      ? Math.round((winnerCount / total) * 100)
+      : 0;
+
+    const card = document.createElement('div');
+    card.className = 'sum-card';
+    card.style.animationDelay = `${i * 0.08}s`;
+
+    if (winnerIdx !== null && total > 0) {
+      card.innerHTML = `
+        <div class="sum-qnum">Q${i + 1}</div>
+        <div class="sum-body">
+          <div class="sum-qtext">${escHtml(pergunta.texto)}</div>
+          <div class="sum-winner-row">
+            <div class="sum-badge">${LABELS[winnerIdx]}</div>
+            <div class="sum-winner-text">${escHtml(pergunta.opcoes[winnerIdx])}</div>
+            <div class="sum-winner-pct">${pct}%</div>
+          </div>
+          <div class="sum-votes">${total} resposta${total !== 1 ? 's' : ''}</div>
+        </div>
+      `;
+    } else {
+      card.innerHTML = `
+        <div class="sum-qnum">Q${i + 1}</div>
+        <div class="sum-body">
+          <div class="sum-qtext">${escHtml(pergunta.texto)}</div>
+          <div class="sum-empty">sem respostas registradas</div>
+        </div>
+      `;
+    }
+
+    grid.appendChild(card);
+  });
+}
+
 // ─── RENDER QUESTION ─────────────────────────────────────────────────────────
 function renderQuestion(questao) {
   const isLast  = questao === PERGUNTAS.length;
@@ -532,8 +661,9 @@ function renderQuestion(questao) {
 
   btnBack.disabled = isFirst;
 
-  btnNext.className = 'btn-next' + (isLast ? ' ghost' : '');
-  btnNext.textContent = isLast ? 'encerrada' : 'próxima →';
+  // Last question shows "encerrar →" (enabled) instead of locking the button
+  btnNext.className   = 'btn-next';
+  btnNext.textContent = isLast ? 'encerrar →' : 'próxima →';
 
   if (revelada) {
     btnReveal.textContent = 'revelado ✓';
@@ -548,7 +678,7 @@ function renderQuestion(questao) {
 
 // ─── POLL LOOP ────────────────────────────────────────────────────────────────
 async function pollVotos() {
-  if (questaoAtiva === 0) return;
+  if (questaoAtiva === 0 || questaoAtiva === SUMMARY_STATE) return;
   try {
     const votos = await getVotos(questaoAtiva);
     renderBars(questaoAtiva, votos, revelada);
@@ -569,6 +699,7 @@ function stopPolling() {
 function showScreen(s) {
   screenWelcome.style.display  = s === 'welcome'  ? 'flex' : 'none';
   screenQuestion.style.display = s === 'question' ? 'flex' : 'none';
+  screenSummary.style.display  = s === 'summary'  ? 'flex' : 'none';
 }
 
 async function goTo(n) {
@@ -577,15 +708,30 @@ async function goTo(n) {
   await setEstado(n, false);
 
   if (n === 0) {
+    // ── Welcome ──────────────────────────────────────────────────────
     stopPolling();
     statusChip.textContent = 'aguardando';
     voteChip.style.display = 'none';
     btnReveal.style.display = 'none';
-    btnNext.className = 'btn-next start';
+    btnNext.className   = 'btn-next start';
     btnNext.textContent = 'iniciar →';
     btnBack.disabled = true;
     showScreen('welcome');
+
+  } else if (n === SUMMARY_STATE) {
+    // ── Summary ──────────────────────────────────────────────────────
+    stopPolling();
+    statusChip.textContent = 'encerrada';
+    voteChip.style.display = 'none';
+    btnReveal.style.display = 'none';
+    btnBack.disabled = false;
+    btnNext.className   = 'btn-next turma';
+    btnNext.textContent = 'nova turma →';
+    showScreen('summary');
+    renderSummary();
+
   } else {
+    // ── Question ─────────────────────────────────────────────────────
     renderQuestion(n);
     showScreen('question');
     startPolling();
@@ -594,16 +740,34 @@ async function goTo(n) {
 
 // ─── EVENT LISTENERS ─────────────────────────────────────────────────────────
 btnNext.addEventListener('click', async () => {
+  // Welcome → first question
   if (questaoAtiva === 0) {
-    // Start
     await goTo(1);
     return;
   }
-  if (questaoAtiva >= PERGUNTAS.length) return;
+  // Summary → "nova turma" reset
+  if (questaoAtiva === SUMMARY_STATE) {
+    if (!confirm('Iniciar nova turma? Os votos desta sessão serão apagados.')) return;
+    stopPolling();
+    await Promise.all([resetVotos(), setEstado(0, false)]);
+    await goTo(0);
+    return;
+  }
+  // Last question → go to summary
+  if (questaoAtiva === PERGUNTAS.length) {
+    await goTo(SUMMARY_STATE);
+    return;
+  }
+  // Normal advance
   await goTo(questaoAtiva + 1);
 });
 
 btnBack.addEventListener('click', async () => {
+  // From summary → go back to last question
+  if (questaoAtiva === SUMMARY_STATE) {
+    await goTo(PERGUNTAS.length);
+    return;
+  }
   if (questaoAtiva <= 1) return;
   await goTo(questaoAtiva - 1);
 });
@@ -678,11 +842,24 @@ async function init() {
   try {
     const estado = await getEstado();
     if (estado && estado.questao_ativa > 0) {
-      questaoAtiva = estado.questao_ativa;
-      revelada     = estado.revelada;
-      renderQuestion(questaoAtiva);
-      showScreen('question');
-      startPolling();
+      if (estado.questao_ativa === SUMMARY_STATE) {
+        // Restore summary screen without writing back to DB
+        questaoAtiva = SUMMARY_STATE;
+        statusChip.textContent = 'encerrada';
+        voteChip.style.display = 'none';
+        btnReveal.style.display = 'none';
+        btnBack.disabled = false;
+        btnNext.className   = 'btn-next turma';
+        btnNext.textContent = 'nova turma →';
+        showScreen('summary');
+        renderSummary();
+      } else {
+        questaoAtiva = estado.questao_ativa;
+        revelada     = estado.revelada;
+        renderQuestion(questaoAtiva);
+        showScreen('question');
+        startPolling();
+      }
       return;
     }
   } catch (err) { console.warn(err); }
