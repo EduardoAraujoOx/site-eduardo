@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Responder — Estado, Tributação e Economia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #0A0A0A;
+      --gold:        #C9A84C;
+      --gold-dim:    rgba(201,168,76,0.10);
+      --gold-border: rgba(201,168,76,0.28);
+      --gold-mid:    rgba(201,168,76,0.45);
+      --text:        #FFFFFF;
+      --muted:       #555555;
+      --muted2:      #2A2A2A;
+      --ff-serif:    'Cormorant Garamond', Georgia, serif;
+      --ff-sans:     'DM Sans', system-ui, sans-serif;
+      --ff-mono:     'DM Mono', 'Courier New', monospace;
+    }
+
+    html, body {
+      min-height: 100%; min-height: 100dvh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--ff-sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── ANIMATIONS ───────────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.35; transform: scale(0.88); }
+    }
+
+    /* ─── LAYOUT ───────────────────────────────────────────────────── */
+    #app {
+      min-height: 100vh; min-height: 100dvh;
+      display: flex; flex-direction: column;
+    }
+
+    header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #141414;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .header-title {
+      font-family: var(--ff-serif);
+      font-size: 15px; color: var(--muted);
+    }
+    .header-counter {
+      font-family: var(--ff-mono);
+      font-size: 11px; color: var(--muted2);
+    }
+
+    main {
+      flex: 1;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 28px 20px;
+      gap: 24px;
+      max-width: 520px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* ─── SCREENS ──────────────────────────────────────────────────── */
+    .screen { display: none; }
+    .screen.active { display: flex; flex-direction: column; gap: 24px; }
+
+    /* ── Waiting ─────────────────────────────────────────────────── */
+    #screen-waiting {
+      align-items: center; justify-content: center;
+      text-align: center; gap: 20px;
+      animation: fadeUp 0.5s ease both;
+    }
+    .pulse-dot-wrap {
+      width: 52px; height: 52px; border-radius: 50%;
+      border: 1.5px solid var(--gold-border);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .pulse-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--gold);
+      animation: pulse 2s infinite;
+    }
+    .waiting-title {
+      font-family: var(--ff-serif);
+      font-size: 26px; color: var(--text);
+    }
+    .waiting-hint {
+      color: var(--muted); font-family: var(--ff-mono);
+      font-size: 12px; letter-spacing: 0.5px;
+    }
+
+    /* ── Question ────────────────────────────────────────────────── */
+    .q-tag {
+      font-family: var(--ff-mono); font-size: 11px;
+      color: var(--gold); letter-spacing: 3px;
+      text-transform: uppercase; margin-bottom: 2px;
+    }
+    .q-title {
+      font-family: var(--ff-serif);
+      font-size: clamp(20px, 5vw, 26px);
+      color: var(--text); line-height: 1.45;
+      font-weight: 600;
+    }
+
+    /* Option buttons */
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .opt-btn {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid #1e1e1e;
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex; align-items: center; gap: 14px;
+      cursor: pointer;
+      transition: all 0.18s;
+      text-align: left; width: 100%;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .opt-btn:active { transform: scale(0.985); }
+    .opt-btn.selected {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+    }
+    .opt-badge {
+      width: 34px; height: 34px; border-radius: 6px;
+      flex-shrink: 0;
+      background: transparent;
+      border: 1px solid #2a2a2a;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--ff-mono); font-size: 13px;
+      color: #444; font-weight: 500;
+      transition: all 0.18s;
+    }
+    .opt-btn.selected .opt-badge {
+      background: var(--gold); border-color: var(--gold); color: var(--bg);
+    }
+    .opt-btn .opt-label {
+      color: #777; font-size: 15px;
+      font-family: var(--ff-sans); line-height: 1.35;
+      transition: color 0.18s;
+    }
+    .opt-btn.selected .opt-label { color: #fff; }
+
+    /* Confirm button */
+    #btn-confirm {
+      background: #111; border: none;
+      border-radius: 10px; padding: 16px;
+      color: var(--muted2);
+      font-size: 13px; font-weight: 700;
+      font-family: var(--ff-mono); letter-spacing: 2px;
+      cursor: default; transition: all 0.3s; width: 100%;
+    }
+    #btn-confirm.ready {
+      background: var(--gold); color: var(--bg); cursor: pointer;
+    }
+    #btn-confirm.ready:active { opacity: 0.85; }
+
+    /* ── Voted / waiting reveal ──────────────────────────────────── */
+    #screen-voted {
+      align-items: center; justify-content: center;
+      text-align: center; gap: 18px;
+      animation: fadeUp 0.4s ease both;
+    }
+    .check-circle {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: var(--gold-dim);
+      border: 1.5px solid rgba(201,168,76,0.5);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px; color: var(--gold);
+    }
+    .voted-title {
+      font-family: var(--ff-serif);
+      font-size: 26px; color: var(--text);
+    }
+    .voted-hint {
+      color: var(--muted); font-family: var(--ff-mono);
+      font-size: 11px; letter-spacing: 1px;
+    }
+
+    /* ── Results ─────────────────────────────────────────────────── */
+    #screen-results {
+      animation: fadeUp 0.4s ease both;
+    }
+    .res-tag {
+      font-family: var(--ff-mono); font-size: 11px;
+      color: var(--gold); letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .res-q {
+      font-family: var(--ff-serif);
+      font-size: clamp(18px, 4.5vw, 22px);
+      color: var(--text); line-height: 1.45;
+    }
+    .res-bars { display: flex; flex-direction: column; gap: 14px; }
+
+    .res-row {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .res-badge {
+      width: 36px; height: 36px; border-radius: 6px;
+      flex-shrink: 0;
+      background: var(--gold-dim);
+      border: 1.5px solid var(--gold-border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--ff-mono); font-size: 13px;
+      color: var(--gold); font-weight: 500;
+      transition: all 0.4s;
+    }
+    .res-row.winner .res-badge {
+      background: var(--gold); border-color: var(--gold); color: var(--bg);
+    }
+    .res-col { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+    .res-label {
+      font-size: 14px; color: #666;
+      font-family: var(--ff-sans); transition: color 0.4s;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .res-row.winner .res-label { color: #fff; font-weight: 500; }
+    .res-track {
+      height: 36px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 5px; overflow: hidden;
+    }
+    .res-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, rgba(201,168,76,0.35), rgba(201,168,76,0.55));
+      border-radius: 5px;
+      transition: width 0.9s cubic-bezier(0.4,0,0.2,1);
+    }
+    .res-row.winner .res-fill {
+      background: linear-gradient(90deg, rgba(201,168,76,0.7), var(--gold));
+    }
+    .res-pct {
+      width: 48px; text-align: right; flex-shrink: 0;
+      font-family: var(--ff-mono); font-size: 16px;
+      color: rgba(201,168,76,0.4); transition: all 0.4s;
+    }
+    .res-row.winner .res-pct { font-size: 20px; color: var(--gold); }
+
+    .res-total {
+      text-align: right; font-family: var(--ff-mono);
+      font-size: 12px; color: var(--muted2); margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <span class="header-title">Estado, Tributação e Economia</span>
+    <span class="header-counter" id="header-counter"></span>
+  </header>
+
+  <main>
+    <!-- Waiting for professor to start -->
+    <div id="screen-waiting" class="screen active">
+      <div class="pulse-dot-wrap"><div class="pulse-dot"></div></div>
+      <div class="waiting-title">Aguardando início</div>
+      <div class="waiting-hint">o professor iniciará em breve</div>
+    </div>
+
+    <!-- Active question -->
+    <div id="screen-question" class="screen">
+      <div>
+        <div class="q-tag" id="q-tag">Pergunta 1</div>
+        <div class="q-title" id="q-title"></div>
+      </div>
+      <div class="options" id="options"></div>
+      <button id="btn-confirm">CONFIRMAR</button>
+    </div>
+
+    <!-- Voted, waiting reveal -->
+    <div id="screen-voted" class="screen">
+      <div class="check-circle">✓</div>
+      <div class="voted-title">Resposta registrada</div>
+      <div class="voted-hint">aguardando revelação</div>
+    </div>
+
+    <!-- Results -->
+    <div id="screen-results" class="screen">
+      <div class="res-tag">Resultados</div>
+      <div class="res-q" id="res-q"></div>
+      <div class="res-bars" id="res-bars"></div>
+      <div class="res-total" id="res-total"></div>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://ecjeuwadpmtvbkcvrxoc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjamV1d2FkcG10dmJrY3ZyeG9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMDMyNTIsImV4cCI6MjA4NzU3OTI1Mn0.Lr7FQq4Wg5JJMXurSDxaCsAd5TgeoEXnby9BNBDX5pU';
+const SESSAO      = 'setor-publico-aula01';
+
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ─── PERGUNTAS ────────────────────────────────────────────────────────────────
+const PERGUNTAS = [
+  {
+    texto: 'Você acha que uma carga tributária em torno de 32% do PIB é:',
+    opcoes: ['Muito alta', 'Alta', 'Adequada', 'Baixa', 'Muito baixa'],
+  },
+  {
+    texto: 'Considerando países desenvolvidos com carga semelhante, o Brasil entrega serviços públicos no mesmo nível?',
+    opcoes: ['Sim, no mesmo nível', 'Um pouco abaixo', 'Muito abaixo', 'Não sei avaliar'],
+  },
+  {
+    texto: 'Se fosse necessário reduzir a carga tributária no Brasil, onde você priorizaria cortes?',
+    opcoes: ['Programas sociais e transferências', 'Investimentos públicos', 'Funcionalismo público e salários', 'Previdência', 'Subsídios e incentivos fiscais', 'Não reduziria'],
+  },
+  {
+    texto: 'Na sua opinião, qual é o principal obstáculo para reduzir o tamanho do Estado?',
+    opcoes: ['Rigidez constitucional e regras legais', 'Pressão de grupos organizados', 'Desigualdade social elevada', 'Baixa eficiência da gestão pública', 'Falta de vontade política'],
+  },
+  {
+    texto: 'Uma redução do tamanho do Estado tornaria a economia brasileira:',
+    opcoes: ['Muito melhor', 'Um pouco melhor', 'Não mudaria muito', 'Um pouco pior', 'Muito pior'],
+  },
+];
+
+const LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+// ─── LOCAL STATE ──────────────────────────────────────────────────────────────
+let currentQ    = 0;    // current questao_ativa from server
+let revealed    = false;
+let selectedOpt = null; // index (0-based) of selected option, or null
+let pollTimer   = null;
+let prevQ       = 0;
+
+function votedKey(q) { return `votou_${SESSAO}_${q}`; }
+function hasVoted(q) { return !!localStorage.getItem(votedKey(q)); }
+function markVoted(q) { localStorage.setItem(votedKey(q), '1'); }
+
+// ─── DOM ──────────────────────────────────────────────────────────────────────
+const screens = {
+  waiting:  document.getElementById('screen-waiting'),
+  question: document.getElementById('screen-question'),
+  voted:    document.getElementById('screen-voted'),
+  results:  document.getElementById('screen-results'),
+};
+const headerCounter = document.getElementById('header-counter');
+const qTag          = document.getElementById('q-tag');
+const qTitle        = document.getElementById('q-title');
+const optionsEl     = document.getElementById('options');
+const btnConfirm    = document.getElementById('btn-confirm');
+const resQ          = document.getElementById('res-q');
+const resBars       = document.getElementById('res-bars');
+const resTotal      = document.getElementById('res-total');
+
+// ─── SCREEN SWITCHER ─────────────────────────────────────────────────────────
+function show(name) {
+  Object.entries(screens).forEach(([k, el]) => {
+    el.classList.toggle('active', k === name);
+  });
+}
+
+// ─── RENDER QUESTION ─────────────────────────────────────────────────────────
+function renderQuestion(qNum) {
+  const pergunta = PERGUNTAS[qNum - 1];
+  qTag.textContent   = `Pergunta ${qNum}`;
+  qTitle.textContent = pergunta.texto;
+  headerCounter.textContent = `${qNum} / ${PERGUNTAS.length}`;
+
+  selectedOpt = null;
+  optionsEl.innerHTML = '';
+
+  pergunta.opcoes.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = `
+      <span class="opt-badge">${LABELS[i]}</span>
+      <span class="opt-label">${escHtml(opt)}</span>
+    `;
+    btn.addEventListener('click', () => selectOption(btn, i));
+    optionsEl.appendChild(btn);
+  });
+
+  btnConfirm.className = 'btn-confirm'; // not ready
+  btnConfirm.disabled  = true;
+  show('question');
+}
+
+function selectOption(btn, idx) {
+  // Deselect all
+  optionsEl.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedOpt = idx;
+  btnConfirm.className = '';
+  btnConfirm.id = 'btn-confirm';
+  btnConfirm.classList.add('ready');
+  btnConfirm.disabled = false;
+}
+
+// ─── RENDER RESULTS ──────────────────────────────────────────────────────────
+async function renderResults(qNum) {
+  const pergunta = PERGUNTAS[qNum - 1];
+  resQ.textContent = pergunta.texto;
+
+  const votos = await getVotos(qNum);
+  const total = votos.length;
+
+  const counts = {};
+  votos.forEach(v => { counts[v.opcao] = (counts[v.opcao] || 0) + 1; });
+  const maxVotes = total > 0 ? Math.max(...Object.values(counts)) : 0;
+
+  resBars.innerHTML = '';
+  resTotal.textContent = total === 1 ? '1 resposta' : `${total} respostas`;
+
+  pergunta.opcoes.forEach((opt, i) => {
+    const idx      = i + 1;
+    const count    = counts[idx] || 0;
+    const pct      = total > 0 ? Math.round((count / total) * 100) : 0;
+    const barW     = maxVotes > 0 ? (count / maxVotes) * 100 : 0;
+    const isWinner = maxVotes > 0 && count === maxVotes;
+
+    const row = document.createElement('div');
+    row.className = 'res-row' + (isWinner ? ' winner' : '');
+    row.style.animation = `fadeUp 0.4s ease ${i * 0.07}s both`;
+    row.innerHTML = `
+      <div class="res-badge">${LABELS[i]}</div>
+      <div class="res-col">
+        <div class="res-label">${escHtml(opt)}</div>
+        <div class="res-track">
+          <div class="res-fill" style="width:${barW}%"></div>
+        </div>
+      </div>
+      <div class="res-pct">${pct}%</div>
+    `;
+    resBars.appendChild(row);
+  });
+
+  headerCounter.textContent = `${qNum} / ${PERGUNTAS.length}`;
+  show('results');
+}
+
+// ─── SUPABASE ─────────────────────────────────────────────────────────────────
+async function getEstado() {
+  const { data, error } = await sb
+    .from('enquete_estado')
+    .select('questao_ativa, revelada')
+    .eq('sessao', SESSAO)
+    .maybeSingle();
+  if (error) { console.warn(error); return null; }
+  return data;
+}
+
+async function insertVoto(questao, opcao) {
+  const { error } = await sb
+    .from('enquete_respostas')
+    .insert({ sessao: SESSAO, questao, opcao });
+  if (error) throw error;
+}
+
+async function getVotos(questao) {
+  const { data, error } = await sb
+    .from('enquete_respostas')
+    .select('opcao')
+    .eq('sessao', SESSAO)
+    .eq('questao', questao);
+  if (error) { console.warn(error); return []; }
+  return data || [];
+}
+
+// ─── POLL LOOP ────────────────────────────────────────────────────────────────
+async function tick() {
+  const estado = await getEstado();
+  if (!estado) return;
+
+  const q = estado.questao_ativa;
+  const r = estado.revelada;
+
+  // Question changed — reset local selection
+  if (q !== prevQ) {
+    prevQ = q;
+    selectedOpt = null;
+  }
+
+  currentQ  = q;
+  revealed  = r;
+
+  if (q === 0) {
+    headerCounter.textContent = '';
+    show('waiting');
+    return;
+  }
+
+  const voted = hasVoted(q);
+
+  if (r) {
+    // Revealed — show results
+    await renderResults(q);
+    return;
+  }
+
+  if (voted) {
+    // Voted but not revealed yet
+    headerCounter.textContent = `${q} / ${PERGUNTAS.length}`;
+    show('voted');
+    return;
+  }
+
+  // Active question, not voted, not revealed
+  // Re-render only if question changed to avoid wiping mid-selection
+  if (q !== parseInt(qTag.textContent.replace('Pergunta ', '')) || !screens.question.classList.contains('active')) {
+    renderQuestion(q);
+  }
+}
+
+// ─── CONFIRM VOTE ─────────────────────────────────────────────────────────────
+btnConfirm.addEventListener('click', async () => {
+  if (selectedOpt === null || !btnConfirm.classList.contains('ready')) return;
+  if (hasVoted(currentQ)) { show('voted'); return; }
+
+  btnConfirm.disabled = true;
+  btnConfirm.textContent = 'ENVIANDO…';
+
+  try {
+    await insertVoto(currentQ, selectedOpt + 1); // store 1-indexed
+    markVoted(currentQ);
+    show('voted');
+  } catch (err) {
+    console.error(err);
+    btnConfirm.textContent = 'ERRO — TENTE NOVAMENTE';
+    btnConfirm.disabled = false;
+  }
+});
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+async function init() {
+  await tick();
+  pollTimer = setInterval(tick, 2000);
+}
+
+init();
+</script>
+</body>
+</html>
