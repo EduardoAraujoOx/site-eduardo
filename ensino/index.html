@@ -29,7 +29,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/notas.css?v=3">
+    <link rel="stylesheet" href="/css/notas.css?v=4">
     <link rel="stylesheet" href="/css/search.css">
 </head>
 <body>
@@ -186,19 +186,136 @@
                 </div>
             </div>
 
-            <div class="download-card" onclick="openDownloadModal('/materiais/setor-publico/leituras-setor-publico.zip', 'Economia do Setor Público')">
-                <div class="download-card-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <div class="material-toggle" data-target="espMateriais" onclick="toggleMateriais(this, 'espMateriais')">
+                <div class="material-toggle-bar"></div>
+                <div class="material-toggle-top">
+                    <div class="material-toggle-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h6"/></svg>
+                    </div>
+                    <div>
+                        <div class="material-toggle-label">Material de Leitura</div>
+                        <h3>Leituras Obrigatórias</h3>
+                        <p class="material-toggle-desc">11 arquivos PDF · Rosen, <em>Public Finance</em> (8ª ed.) + programa</p>
+                    </div>
+                    <span class="material-toggle-arrow">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                    </span>
                 </div>
-                <div class="download-card-body">
-                    <div class="download-card-label">Material de Apoio</div>
-                    <div class="download-card-title">Leituras da Disciplina</div>
-                    <div class="download-card-desc">Coletânea de textos e artigos selecionados para a disciplina.</div>
+            </div>
+
+            <div class="material-drawer" id="espMateriais">
+                <div class="material-drawer-inner">
+                    <a href="/materiais/setor-publico/Programa%20da%20disciplina_Economia%20do%20Setor%20P%C3%BAblico.pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Programa da Disciplina</div>
+                            <div class="material-item-meta">Economia do Setor Público</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/setor-publico/Cap%201_Public%20Finance%20(Rosen%208th%20ed).pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Cap. 1 — Introduction</div>
+                            <div class="material-item-meta">Rosen, <em>Public Finance</em>, 8ª ed.</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/setor-publico/Cap%202_Public%20Finance%20(Rosen%208th%20ed)-23-30.pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Cap. 2 — Tools of Positive Analysis</div>
+                            <div class="material-item-meta">Rosen, pp. 23–30</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/setor-publico/Cap%203_Public%20Finance%20(Rosen%208th%20ed).pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Cap. 3 — Tools of Normative Analysis</div>
+                            <div class="material-item-meta">Rosen, <em>Public Finance</em>, 8ª ed.</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/setor-publico/Cap%204_Public%20Finance%20(Rosen%208th%20ed)-41-50.pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Cap. 4 — Public Goods</div>
+                            <div class="material-item-meta">Rosen, pp. 41–50</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/setor-publico/Cap%205_Public%20Finance%20(Rosen%208th%20ed).pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Cap. 5 — Externalities</div>
+                            <div class="material-item-meta">Rosen, <em>Public Finance</em>, 8ª ed.</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/setor-publico/Cap%206_Public%20Finance%20(Rosen%208th%20ed).pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Cap. 6 — Political Economy</div>
+                            <div class="material-item-meta">Rosen, <em>Public Finance</em>, 8ª ed.</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/setor-publico/Cap%207_Public%20Finance%20(Rosen%208th%20ed).pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Cap. 7 — Education</div>
+                            <div class="material-item-meta">Rosen, <em>Public Finance</em>, 8ª ed.</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/setor-publico/Cap%208_Public%20Finance%20(Rosen%208th%20ed).pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Cap. 8 — Cost-Benefit Analysis</div>
+                            <div class="material-item-meta">Rosen, <em>Public Finance</em>, 8ª ed.</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/setor-publico/Caps%2014%20e%2015_%20Public%20Finance%20(Rosen%208th%20ed).pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Caps. 14–15 — Taxation of Income</div>
+                            <div class="material-item-meta">Rosen, <em>Public Finance</em>, 8ª ed.</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/setor-publico/Cap16_Public%20Finance%20(Rosen%208th%20ed).pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Cap. 16 — Taxation and Efficiency</div>
+                            <div class="material-item-meta">Rosen, <em>Public Finance</em>, 8ª ed.</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
                 </div>
-                <span class="download-card-btn">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    Baixar .zip
-                </span>
             </div>
         </div>
 
@@ -296,19 +413,126 @@
                 </div>
             </div>
 
-            <div class="download-card" onclick="openDownloadModal('/materiais/macro/leituras-macro.zip', 'Macroeconomia')">
-                <div class="download-card-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <div class="material-toggle" data-target="macroMateriais" onclick="toggleMateriais(this, 'macroMateriais')">
+                <div class="material-toggle-bar"></div>
+                <div class="material-toggle-top">
+                    <div class="material-toggle-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h6"/></svg>
+                    </div>
+                    <div>
+                        <div class="material-toggle-label">Material de Leitura</div>
+                        <h3>Leituras Obrigatórias</h3>
+                        <p class="material-toggle-desc">10 arquivos PDF · Blanchard + Feijó, <em>Contabilidade Social</em></p>
+                    </div>
+                    <span class="material-toggle-arrow">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                    </span>
                 </div>
-                <div class="download-card-body">
-                    <div class="download-card-label">Material de Apoio</div>
-                    <div class="download-card-title">Leituras da Disciplina</div>
-                    <div class="download-card-desc">Coletânea de textos e artigos selecionados para a disciplina.</div>
+            </div>
+
+            <div class="material-drawer" id="macroMateriais">
+                <div class="material-drawer-inner">
+                    <a href="/materiais/macro/Aula%201_Capitulo%201_blanchardpdf%20pg24_42.pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Aula 1 — Cap. 1, Blanchard</div>
+                            <div class="material-item-meta">Macroeconomia, pp. 24–42</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/macro/Aula%202_Capitulo%202_blanchardpdf%20pg44_66.pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Aula 2 — Cap. 2, Blanchard</div>
+                            <div class="material-item-meta">Macroeconomia, pp. 44–66</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/macro/Aula%203_Capitulo%204_blanchardpdf_pag90_107.pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Aula 3 — Cap. 4, Blanchard</div>
+                            <div class="material-item-meta">Macroeconomia, pp. 90–107</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/macro/Aula%204%20e%205_Feijo_Cap%201_Contabilidade_Social_pag15_33.pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Aulas 4–5 — Cap. 1, Feijó</div>
+                            <div class="material-item-meta">Contabilidade Social, pp. 15–33</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/macro/Aula%206%20e%207_Feijo_Cap%202_Contabilidade_Social_pag34_83.pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Aulas 6–7 — Cap. 2, Feijó</div>
+                            <div class="material-item-meta">Contabilidade Social, pp. 34–83</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/macro/Aula%209_Feijo_Cap%207_Contabilidade_Social_Pag_253-306.pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Aula 9 — Cap. 7, Feijó</div>
+                            <div class="material-item-meta">Contabilidade Social, pp. 253–306</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/macro/Aulas%2010%20e%2011_Capitulo%205_blanchardpdf_%20pag112_133.pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Aulas 10–11 — Cap. 5, Blanchard</div>
+                            <div class="material-item-meta">Macroeconomia, pp. 112–133</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/macro/Aulas%2012_Capitulo%203_blanchardpdf%20pag68_89.pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Aula 12 — Cap. 3, Blanchard</div>
+                            <div class="material-item-meta">Macroeconomia, pp. 68–89</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/macro/Aulas%2013_Capitulo%204_item%2041%20e%2042_blanchardpdf_pag90_99.pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Aula 13 — Cap. 4 (itens 4.1–4.2), Blanchard</div>
+                            <div class="material-item-meta">Macroeconomia, pp. 90–99</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
+                    <a href="/materiais/macro/Aulas%2014_Feijo_Cap%205_Contabilidade_Social_pag_178_205.pdf" class="material-item" target="_blank">
+                        <div class="material-item-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        </div>
+                        <div class="material-item-body">
+                            <div class="material-item-title">Aula 14 — Cap. 5, Feijó</div>
+                            <div class="material-item-meta">Contabilidade Social, pp. 178–205</div>
+                        </div>
+                        <span class="material-item-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    </a>
                 </div>
-                <span class="download-card-btn">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    Baixar .zip
-                </span>
             </div>
         </div>
 
@@ -318,15 +542,15 @@
         Eduardo Reis Araújo · Políticas públicas orientadas por evidências
     </footer>
 
-    <!-- Download Modal -->
+    <!-- Password Modal -->
     <div class="download-modal-overlay" id="downloadModal" role="dialog" aria-modal="true" aria-labelledby="downloadModalTitle">
         <div class="download-modal">
             <button class="download-modal-close" onclick="closeDownloadModal()" aria-label="Fechar">&#x2715;</button>
             <div class="download-modal-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>
             </div>
-            <h3 id="downloadModalTitle">Material de Leitura</h3>
-            <p class="download-modal-subtitle">Digite a senha para baixar os materiais de <strong id="downloadModalDisciplina"></strong>.</p>
+            <h3 id="downloadModalTitle">Acesso restrito</h3>
+            <p class="download-modal-subtitle">Os materiais de leitura estão disponíveis apenas para alunos. Digite a senha fornecida em sala de aula.</p>
             <input
                 type="password"
                 id="downloadPassword"
@@ -336,13 +560,14 @@
             >
             <div class="download-modal-error" id="downloadError" role="alert"></div>
             <button class="download-modal-submit" onclick="confirmDownload()">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Baixar arquivo
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Desbloquear materiais
             </button>
         </div>
     </div>
 
     <script>
+        // ===== UNIT TOGGLE =====
         document.querySelectorAll('.unit-toggle').forEach(function(card) {
             card.addEventListener('click', function() {
                 var drawer = document.getElementById(card.getAttribute('data-target'));
@@ -352,37 +577,48 @@
             });
         });
 
-        // ===== DOWNLOAD MODAL =====
-        var DOWNLOAD_PASSWORD = '123123';
-        var pendingDownloadUrl = '';
+        // ===== MATERIAL TOGGLE (password-gated) =====
+        var MATERIAL_PASSWORD = '123123';
+        var materiaisUnlocked = false;
+        var pendingToggle = null;
+        var pendingDrawerId = null;
 
-        function openDownloadModal(url, disciplina) {
-            pendingDownloadUrl = url;
-            document.getElementById('downloadModalDisciplina').textContent = disciplina;
-            var input = document.getElementById('downloadPassword');
-            input.value = '';
-            input.classList.remove('has-error');
-            document.getElementById('downloadError').textContent = '';
-            document.getElementById('downloadModal').classList.add('is-open');
-            setTimeout(function() { input.focus(); }, 150);
+        function toggleMateriais(el, drawerId) {
+            if (materiaisUnlocked) {
+                var drawer = document.getElementById(drawerId);
+                if (!drawer) return;
+                el.classList.toggle('is-open');
+                drawer.classList.toggle('is-open');
+            } else {
+                pendingToggle = el;
+                pendingDrawerId = drawerId;
+                document.getElementById('downloadPassword').value = '';
+                document.getElementById('downloadPassword').classList.remove('has-error');
+                document.getElementById('downloadError').textContent = '';
+                document.getElementById('downloadModal').classList.add('is-open');
+                setTimeout(function() { document.getElementById('downloadPassword').focus(); }, 150);
+            }
         }
 
         function closeDownloadModal() {
             document.getElementById('downloadModal').classList.remove('is-open');
-            pendingDownloadUrl = '';
+            pendingToggle = null;
+            pendingDrawerId = null;
         }
 
         function confirmDownload() {
             var input = document.getElementById('downloadPassword');
             var errorEl = document.getElementById('downloadError');
-            if (input.value === DOWNLOAD_PASSWORD) {
-                var link = document.createElement('a');
-                link.href = pendingDownloadUrl;
-                link.download = pendingDownloadUrl.split('/').pop();
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+            if (input.value === MATERIAL_PASSWORD) {
+                materiaisUnlocked = true;
                 closeDownloadModal();
+                if (pendingToggle && pendingDrawerId) {
+                    var drawer = document.getElementById(pendingDrawerId);
+                    if (drawer) {
+                        pendingToggle.classList.add('is-open');
+                        drawer.classList.add('is-open');
+                    }
+                }
             } else {
                 errorEl.textContent = 'Senha incorreta. Tente novamente.';
                 input.classList.add('has-error');
@@ -401,6 +637,12 @@
             } else {
                 this.classList.remove('has-error');
                 document.getElementById('downloadError').textContent = '';
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('downloadModal').classList.contains('is-open')) {
+                closeDownloadModal();
             }
         });
     </script>
