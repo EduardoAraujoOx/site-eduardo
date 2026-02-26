@@ -185,6 +185,21 @@
                     </div>
                 </div>
             </div>
+
+            <div class="download-card" onclick="openDownloadModal('/materiais/setor-publico/leituras-setor-publico.zip', 'Economia do Setor Público')">
+                <div class="download-card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </div>
+                <div class="download-card-body">
+                    <div class="download-card-label">Material de Apoio</div>
+                    <div class="download-card-title">Leituras da Disciplina</div>
+                    <div class="download-card-desc">Coletânea de textos e artigos selecionados para a disciplina.</div>
+                </div>
+                <span class="download-card-btn">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Baixar .zip
+                </span>
+            </div>
         </div>
 
         <!-- MACROECONOMIA -->
@@ -280,6 +295,21 @@
                     </div>
                 </div>
             </div>
+
+            <div class="download-card" onclick="openDownloadModal('/materiais/macro/leituras-macro.zip', 'Macroeconomia')">
+                <div class="download-card-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </div>
+                <div class="download-card-body">
+                    <div class="download-card-label">Material de Apoio</div>
+                    <div class="download-card-title">Leituras da Disciplina</div>
+                    <div class="download-card-desc">Coletânea de textos e artigos selecionados para a disciplina.</div>
+                </div>
+                <span class="download-card-btn">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Baixar .zip
+                </span>
+            </div>
         </div>
 
     </section>
@@ -287,6 +317,30 @@
     <footer class="footer">
         Eduardo Reis Araújo · Políticas públicas orientadas por evidências
     </footer>
+
+    <!-- Download Modal -->
+    <div class="download-modal-overlay" id="downloadModal" role="dialog" aria-modal="true" aria-labelledby="downloadModalTitle">
+        <div class="download-modal">
+            <button class="download-modal-close" onclick="closeDownloadModal()" aria-label="Fechar">&#x2715;</button>
+            <div class="download-modal-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </div>
+            <h3 id="downloadModalTitle">Material de Leitura</h3>
+            <p class="download-modal-subtitle">Digite a senha para baixar os materiais de <strong id="downloadModalDisciplina"></strong>.</p>
+            <input
+                type="password"
+                id="downloadPassword"
+                class="download-modal-input"
+                placeholder="Senha"
+                autocomplete="off"
+            >
+            <div class="download-modal-error" id="downloadError" role="alert"></div>
+            <button class="download-modal-submit" onclick="confirmDownload()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Baixar arquivo
+            </button>
+        </div>
+    </div>
 
     <script>
         document.querySelectorAll('.unit-toggle').forEach(function(card) {
@@ -296,6 +350,58 @@
                 card.classList.toggle('is-open');
                 drawer.classList.toggle('is-open');
             });
+        });
+
+        // ===== DOWNLOAD MODAL =====
+        var DOWNLOAD_PASSWORD = '123123';
+        var pendingDownloadUrl = '';
+
+        function openDownloadModal(url, disciplina) {
+            pendingDownloadUrl = url;
+            document.getElementById('downloadModalDisciplina').textContent = disciplina;
+            var input = document.getElementById('downloadPassword');
+            input.value = '';
+            input.classList.remove('has-error');
+            document.getElementById('downloadError').textContent = '';
+            document.getElementById('downloadModal').classList.add('is-open');
+            setTimeout(function() { input.focus(); }, 150);
+        }
+
+        function closeDownloadModal() {
+            document.getElementById('downloadModal').classList.remove('is-open');
+            pendingDownloadUrl = '';
+        }
+
+        function confirmDownload() {
+            var input = document.getElementById('downloadPassword');
+            var errorEl = document.getElementById('downloadError');
+            if (input.value === DOWNLOAD_PASSWORD) {
+                var link = document.createElement('a');
+                link.href = pendingDownloadUrl;
+                link.download = pendingDownloadUrl.split('/').pop();
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                closeDownloadModal();
+            } else {
+                errorEl.textContent = 'Senha incorreta. Tente novamente.';
+                input.classList.add('has-error');
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        document.getElementById('downloadModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDownloadModal();
+        });
+
+        document.getElementById('downloadPassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                confirmDownload();
+            } else {
+                this.classList.remove('has-error');
+                document.getElementById('downloadError').textContent = '';
+            }
         });
     </script>
     <script src="/js/search.js"></script>
