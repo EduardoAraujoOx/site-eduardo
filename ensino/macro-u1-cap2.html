@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produto, Desemprego e Inflação — Notas de Aula | Eduardo Reis Araújo</title>
+    <meta name="description" content="Nota de leitura do Capítulo 2 de Blanchard: PIB e suas três óticas, nominal vs real, taxa de desemprego, inflação, Lei de Okun e Curva de Phillips.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/ensino/macro-u1-cap2.html">
+    <meta property="og:title" content="Produto, Desemprego e Inflação — Notas de Aula | Eduardo Reis Araújo">
+    <meta property="og:description" content="As três variáveis centrais da macroeconomia: como são definidas, como são medidas e por que se comportam da forma que se comportam.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/ensino/macro-u1-cap2.html">
+    <meta property="og:image" content="https://www.eduardoreisaraujo.com.br/images/og-share.jpg">
+    <meta property="og:image:width" content="850">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Produto, Desemprego e Inflação — Notas de Aula | Eduardo Reis Araújo">
+    <meta name="twitter:description" content="As três variáveis centrais da macroeconomia: como são definidas, como são medidas e por que se comportam da forma que se comportam.">
+    <meta name="twitter:image" content="https://www.eduardoreisaraujo.com.br/images/og-share.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/notas.css?v=3">
+    <link rel="stylesheet" href="/css/search.css">
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <div class="header-right-group">
+                <nav class="header-nav">
+                    <a href="/#publicacoes">Publicações</a>
+                    <a href="/ensino/" class="active">Ensino</a>
+                    <a href="/indicadores.html">Indicadores</a>
+                    <a href="/#contato">Contato</a>
+                </nav>
+                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <section class="article-hero">
+        <a href="/ensino/" class="back-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Voltar às notas
+        </a>
+        <div class="unit-label" style="color: var(--macro-u1);">Macroeconomia · Unidade 1 · Capítulo 2</div>
+        <h1>Produto, Desemprego e Inflação</h1>
+        <p class="lead" style="border-left-color: var(--macro-u1);">Em 2 de abril de 2025, tarifas americanas trouxeram três palavras ao centro do noticiário: crescimento, emprego e preços. Esta nota define cada uma com rigor, mostra como são medidas e revela que as relações entre elas não são acidentais.</p>
+        <div class="article-meta">
+            <span>Prof. Eduardo Araujo</span>
+            <span class="divider"></span>
+            <span>Blanchard, Cap. 2</span>
+            <span class="divider"></span>
+            <span>~25 min de leitura</span>
+            <div class="share-buttons">
+                <a href="#" class="share-btn" id="shareWhatsApp" aria-label="Compartilhar no WhatsApp">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    WhatsApp
+                </a>
+                <button class="share-btn" id="copyLink" aria-label="Copiar link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                    Copiar link
+                </button>
+            </div>
+        </div>
+    </section>
+    <div class="article-layout">
+        <div class="article-spacer"></div>
+        <article class="article-content">
+
+            <h2 id="s1">1. Introdução</h2>
+            <p>Em 2 de abril de 2025, o governo dos Estados Unidos anunciou uma nova rodada de tarifas sobre importações. Nos dias seguintes, o S&amp;P 500 acumulou queda de cerca de 10%, o real se desvalorizou frente ao dólar, e analistas de mercado começaram a revisar para baixo as projeções de crescimento para o Brasil. Três palavras apareceram ao mesmo tempo nos títulos dos jornais: crescimento, emprego e preços.</p>
+            <p>Esta aula tem um objetivo preciso: dar significado técnico a cada uma dessas palavras e mostrar que as relações entre elas não são coincidência. Para isso, vamos definir cada variável com rigor, entender como ela é medida, e por fim examinar duas regularidades empíricas que as conectam.</p>
+
+            <h2 id="s2">2. O PIB</h2>
+
+            <h3 id="s2-1">2.1 O problema da dupla contagem</h3>
+            <p>Considere uma economia com apenas duas firmas. A primeira produz aço, paga $80 em salários e vende sua produção por $100 para a segunda firma. A segunda usa o aço como insumo, paga $70 em salários e vende carros por $200. Qual é o produto agregado dessa economia?</p>
+            <p>A resposta intuitiva é $300, a soma das receitas das duas firmas. Mas esse número está errado, e entender por que é o primeiro passo para entender o PIB.</p>
+            <p>O aço já está embutido no preço do carro. Ao somar $100 mais $200, estamos contando o valor do aço duas vezes: uma quando ele é produzido pela primeira firma, outra quando ele entra no carro vendido pela segunda. O produto agregado correto é $200, o valor do bem final que saiu da economia. Bens intermediários, aqueles usados na produção de outros bens, não entram na conta.</p>
+            <p>Essa intuição motiva as três definições equivalentes do PIB.</p>
+
+            <h3 id="s2-2">2.2 As três óticas</h3>
+            <p>O PIB pode ser calculado de três formas diferentes que, por construção, chegam ao mesmo resultado.</p>
+            <p>Pela <strong>ótica do produto final</strong>, o PIB é o valor de mercado de todos os bens e serviços finais produzidos numa economia durante um dado período. Bens finais são os adquiridos pelo usuário definitivo. O carro é bem final; o aço usado para fabricá-lo, não.</p>
+            <p>Pela <strong>ótica do valor adicionado</strong>, o PIB é a soma do valor que cada firma acrescenta à produção. O valor adicionado de uma firma é a diferença entre o valor de sua produção e o custo dos insumos intermediários que ela comprou de terceiros. No exemplo acima, a usina de aço adiciona $100 (não usa insumos intermediários) e a montadora adiciona $100 ($200 menos os $100 do aço). O PIB é $200. Esse método evita a dupla contagem por construção, pois cada etapa contabiliza apenas o que foi criado ali.</p>
+            <p>Pela <strong>ótica da renda</strong>, o PIB é a soma de todas as rendas geradas na economia durante o período: salários pagos aos trabalhadores (renda do trabalho) e lucros, juros e aluguéis apropriados pelos proprietários do capital (renda do capital). No exemplo, os salários totalizam $150 e os lucros $50, somando $200. Toda produção gera necessariamente renda equivalente em algum ponto da cadeia, o que torna essa identidade inevitável: produto agregado e renda agregada são sempre iguais.</p>
+            <div class="concept-box" style="border-left-color: var(--macro-u1);">
+                <div class="concept-label" style="color: var(--macro-u1);">Conceito-chave — Equivalência das três óticas</div>
+                <p>A equivalência entre as três óticas não é resultado contábil acidental. Ela reflete uma identidade econômica fundamental: <strong>o que a economia produz é exatamente igual ao que ela distribui como renda.</strong> Voltaremos a essa identidade com mais formalidade na Aula 4.</p>
+            </div>
+
+            <h3 id="s2-3">2.3 Nominal versus real</h3>
+            <p>O PIB nominal do Brasil cresceu cerca de 14% em 2022. O PIB real cresceu 2,9%. O que explica a diferença? E qual das duas medidas diz algo sobre se a população ficou mais rica?</p>
+            <p>O <strong>PIB nominal</strong> é a soma das quantidades de bens e serviços finais produzidos, multiplicadas pelos preços correntes do próprio ano. Ele sobe tanto quando a produção física aumenta quanto quando os preços sobem. Por isso, o crescimento de 14% em 2022 não indica que a economia produziu 14% mais bens e serviços: boa parte desse crescimento nominal foi inflação.</p>
+            <p>O <strong>PIB real</strong> é a soma das mesmas quantidades, multiplicadas pelos preços de um ano-base fixo. Ao congelar os preços, eliminamos o efeito da variação de preços e medimos apenas a variação da produção física. É o PIB real que importa para avaliar se a sociedade efetivamente produz mais.</p>
+            <p>A relação formal entre os dois é direta:</p>
+            <div class="formula">PIB Nominal = Deflator do PIB × PIB Real</div>
+            <p>O <strong>deflator do PIB</strong> é, portanto, a razão entre o PIB nominal e o PIB real. Ele mede o preço médio dos bens e serviços que a economia produz. Quando o PIB nominal cresce mais rápido do que o PIB real, a diferença é capturada pelo deflator. Não é um conceito separado dos anteriores: é a consequência direta de definir os dois PIBs de formas distintas.</p>
+            <p>A taxa de crescimento do PIB real é o indicador central dos ciclos econômicos. Períodos de crescimento positivo são chamados de <strong>expansões</strong>; períodos de crescimento negativo, convencionalmente por dois trimestres consecutivos, são chamados de <strong>recessões</strong>.</p>
+            <div class="concept-box" style="border-left-color: var(--macro-u3);">
+                <div class="concept-label" style="color: var(--macro-u3);">Dado — IBGE, 2024</div>
+                <p>O PIB brasileiro cresceu 3,4% em termos reais em 2024, acima das expectativas do início do ano. A agropecuária liderou com alta de 15,1%, seguida pela indústria (+3,3%) e pelos serviços (+3,0%). Em valores correntes, o PIB superou R$ 11 trilhões. <strong>É o crescimento real, não o nominal, que confirma se o país produziu mais.</strong></p>
+            </div>
+
+            <h2 id="s3">3. Desemprego</h2>
+
+            <h3 id="s3-1">3.1 Definições formais</h3>
+            <p><strong>Emprego</strong> é o número de pessoas que têm trabalho. <strong>Desemprego</strong> é o número de pessoas que não têm trabalho e estão procurando ativamente. A <strong>força de trabalho</strong> é a soma dos dois:</p>
+            <div class="formula">L = N + U</div>
+            <p>A <strong>taxa de desemprego</strong> é a razão entre o número de desempregados e o tamanho da força de trabalho:</p>
+            <div class="formula">u = U / L</div>
+            <p>A segunda condição na definição de desempregado, estar procurando ativamente, é mais difícil de verificar do que a primeira. No Brasil, a PNAD Contínua do IBGE classifica como desempregada a pessoa que não trabalhou na semana de referência mas tomou alguma providência efetiva para conseguir trabalho nos últimos 30 dias. Quem não tomou essa providência, mesmo que queira trabalhar, está fora da força de trabalho e, portanto, fora do cálculo da taxa.</p>
+
+            <h3 id="s3-2">3.2 O paradoxo dos desalentados</h3>
+            <p>Suponha que todos os desempregados do Brasil decidissem, numa mesma semana, parar de procurar emprego. O que aconteceria com a taxa de desemprego? Ela cairia para zero. Seria isso uma boa notícia?</p>
+            <p>O exercício é absurdo por construção, mas ilustra um problema real de mensuração. Na crise de 2015 e 2016, por exemplo, parte do aumento do desemprego foi atenuado nas estatísticas pelo crescimento do número de <strong>trabalhadores desalentados</strong>: pessoas que gostariam de trabalhar mas desistiram de procurar por acreditar que não encontrariam vagas. Como não estão buscando ativamente, saem do numerador e do denominador de <em>u</em> ao mesmo tempo. A taxa pode cair enquanto a situação piora.</p>
+            <p>Por isso, analistas de mercado de trabalho raramente olham a taxa de desemprego isoladamente. A <strong>taxa de participação</strong>, definida como a razão entre a força de trabalho e a população em idade ativa, funciona como termômetro complementar indispensável. Uma queda simultânea na taxa de desemprego e na taxa de participação é sinal de alerta, não de celebração.</p>
+
+            <h3 id="s3-3">3.3 Por que o desemprego importa</h3>
+            <p>Economistas se preocupam com o desemprego por dois motivos distintos.</p>
+            <p>O primeiro é de <strong>eficiência</strong>: quando o desemprego é alto, a economia está desperdiçando trabalho humano. Recursos que poderiam estar sendo usados produtivamente estão ociosos. O segundo motivo é direto sobre <strong>bem-estar</strong>, e um estudo de longo prazo com cerca de 11 mil famílias alemãs acompanhadas desde 1984 deixa isso em números. Os pesquisadores mediram o índice de satisfação com a vida em escala de zero a dez e acompanharam o que acontecia quando alguém ficava desempregado. A queda na satisfação é da mesma ordem de magnitude que a causada por um divórcio. Mais revelador ainda: mesmo quatro anos depois de o emprego ter sido retomado, a satisfação não havia se recuperado completamente. O desemprego deixa marcas que o novo emprego não apaga inteiramente.</p>
+            <p>Isso tem uma implicação que vai além do modelo: quando falamos em taxa de desemprego, estamos falando em trajetórias de vida, não apenas em índices de utilização de recursos.</p>
+            <div class="concept-box" style="border-left-color: var(--macro-u3);">
+                <div class="concept-label" style="color: var(--macro-u3);">Dado — PNAD Contínua, IBGE, 2024</div>
+                <p>A taxa de desemprego média anual recuou para 6,2% em 2024, o menor nível da série histórica iniciada em 2012. A população ocupada superou 101 milhões de pessoas. <strong>A taxa de subutilização da força de trabalho, que inclui desalentados e subocupados, permaneceu acima de 16%</strong>, o que indica que a melhora do desemprego convive com uma reserva considerável de trabalho precário.</p>
+            </div>
+
+            <h2 id="s4">4. Inflação</h2>
+
+            <h3 id="s4-1">4.1 Definição e os dois índices</h3>
+            <p>Inflação é um aumento sustentado e generalizado no nível geral de preços. "Sustentado" porque a alta pontual de um único produto não configura inflação. "Generalizado" porque precisa afetar uma cesta representativa de bens e serviços.</p>
+            <p>Para medir esse fenômeno, macroeconomistas recorrem a dois índices com lógicas distintas.</p>
+            <p>O <strong>deflator do PIB</strong> já foi introduzido na seção anterior: é a razão entre o PIB nominal e o PIB real, e mede o preço médio dos bens e serviços que a economia produz internamente. Por definição, só entra no deflator o que é produzido em território nacional.</p>
+            <p>O <strong>Índice de Preços ao Consumidor</strong> (CPI, ou IPCA no Brasil) mede o custo de vida de uma família típica a partir de uma cesta de bens e serviços que ela efetivamente consome, incluindo produtos importados. No Brasil, o IBGE coleta preços mensalmente em diversas cidades para calcular o IPCA, que é o índice de referência da política monetária do Banco Central.</p>
+            <p>Os dois índices medem coisas diferentes: o deflator mede o preço da produção doméstica; o IPCA mede o custo de vida, que inclui importações e exclui bens produzidos aqui mas exportados. Na maior parte do tempo, os dois caminham juntos. Mas há situações em que divergem de forma significativa, e entender quando e por que é o ponto central desta seção.</p>
+
+            <h3 id="s4-2">4.2 Quando os dois divergem</h3>
+            <p>Em 1979, o preço do petróleo no mercado internacional dobrou. Os Estados Unidos produzem petróleo, mas consomem mais do que produzem: são importadores líquidos. O que aconteceu com os dois índices naquele ano?</p>
+            <p>O deflator subiu, mas moderadamente: o petróleo produzido internamente entrou no cálculo, mas os EUA produziram apenas parte do que consumiram. O CPI subiu muito mais, porque a cesta de consumo das famílias americanas incluía gasolina, aquecimento e outros produtos cujo custo dependia do petróleo importado, que havia dobrado de preço.</p>
+            <p>O mesmo mecanismo aparece no Brasil em 2025, pela via cambial. Quando o real se desvalorizou após o anúncio das tarifas americanas, os bens importados ficaram mais caros em reais. Isso pressionou o IPCA, que inclui bens importados na cesta de consumo, mais do que o deflator do PIB, que mede apenas o que produzimos internamente. Deflator e IPCA apontam para direções parecidas, mas magnitudes diferentes, e a diferença conta uma história específica sobre de onde vem a pressão sobre os preços.</p>
+
+            <h3 id="s4-3">4.3 Por que importa</h3>
+            <p>Se a inflação fosse um aumento proporcional e simultâneo em todos os preços e salários, seria pouco mais do que uma inconveniência contábil: os preços relativos permaneceriam inalterados e ninguém ficaria mais rico nem mais pobre em termos reais. O problema é que inflação real nunca funciona assim.</p>
+            <p>O primeiro argumento é de <strong>distribuição</strong>: durante períodos inflacionários, nem todos os preços e salários sobem no mesmo ritmo. Quem tem ativos reais, imóveis, ações, estoques, se protege melhor do que quem guarda dinheiro em espécie ou recebe renda fixa nominal. Nos anos 1990, a hiperinflação russa corroeu as aposentadorias de forma tão severa que muitos idosos foram levados à miséria, enquanto quem tinha acesso a dólares ou ativos físicos preservou o patrimônio. A inflação redistribui riqueza sem que ninguém tenha deliberado essa redistribuição.</p>
+            <p>O segundo argumento é de <strong>eficiência</strong>: inflação alta cria incerteza sobre preços futuros, o que complica decisões de investimento de longo prazo. Uma empresa que não sabe se os custos de daqui a três anos serão 5% ou 25% maiores tende a postergar ou reduzir seus investimentos. A incerteza tem custo real sobre a capacidade produtiva da economia.</p>
+            <div class="concept-box" style="border-left-color: var(--macro-u3);">
+                <div class="concept-label" style="color: var(--macro-u3);">Dado — IBGE / Banco Central, 2024</div>
+                <p>O IPCA acumulou 4,83% em 2024, dentro do intervalo de tolerância da meta estabelecida pelo Conselho Monetário Nacional (3,0% &plusmn; 1,5 p.p.). A pressão foi concentrada em alimentação no domicílio e serviços. <strong>O Banco Central manteve a Selic em patamar elevado para ancorar as expectativas, ao custo de juros reais entre os mais altos do mundo.</strong></p>
+            </div>
+
+            <h2 id="s5">5. Okun e Phillips</h2>
+
+            <h3 id="s5-1">5.1 Lei de Okun</h3>
+            <p>Produto, desemprego e inflação não são variáveis independentes. As duas relações seguintes mostram como elas se conectam de forma sistemática.</p>
+            <p>Antes de examinar a relação entre crescimento e desemprego, vale uma pergunta que surpreende quem a encontra pela primeira vez: qual é a taxa de crescimento do PIB real necessária apenas para manter o desemprego onde está, sem que ele suba nem caia?</p>
+            <p>A resposta intuitiva seria zero, mas está errada. A força de trabalho cresce ao longo do tempo porque a população em idade ativa cresce. Se a economia crescer 0%, mas 1% mais pessoas entrarem no mercado de trabalho, haverá mais pessoas procurando emprego sem que haja mais vagas: o desemprego sobe. Além disso, a produtividade por trabalhador também cresce com o tempo, o que significa que para produzir a mesma quantidade de bens, menos trabalhadores são necessários. Combinando os dois efeitos, Blanchard estima que a economia americana precisava crescer cerca de 3% ao ano apenas para manter o desemprego estável: 1% para absorver o crescimento da força de trabalho e 2% para compensar o crescimento da produtividade.</p>
+            <p>A implicação é contraintuitiva e importante: crescimento abaixo do potencial gera desemprego mesmo sem recessão formal. Uma economia que cresce 1,5% quando sua taxa natural é 3% não está em recessão, mas está gerando desemprego.</p>
+            <div class="concept-box" style="border-left-color: var(--macro-u1);">
+                <div class="concept-label" style="color: var(--macro-u1);">Conceito-chave — Lei de Okun</div>
+                <p>Há uma correlação negativa robusta entre a taxa de crescimento do PIB real e a variação da taxa de desemprego. Alto crescimento, acima da taxa natural, reduz o desemprego; crescimento abaixo da taxa natural, o eleva. <strong>A economia precisa crescer acima de um piso apenas para manter o desemprego estável.</strong></p>
+            </div>
+            <p class="opening-question">Questão para reflexão: Em 2023, o Brasil cresceu 2,9% em termos reais. Se a taxa de crescimento necessária para manter o desemprego estável no Brasil for próxima de 2,5%, o que esse número sugere sobre a trajetória do mercado de trabalho naquele ano?</p>
+
+            <h3 id="s5-2">5.2 Curva de Phillips</h3>
+            <p>A segunda relação conecta desemprego e inflação. Quando o desemprego está muito baixo, o mercado de trabalho está aquecido: trabalhadores têm mais poder de barganha, os salários sobem, os custos das empresas aumentam, e essas pressões se traduzem em preços mais altos. Quando o desemprego está alto, o processo se inverte: pressão salarial cede, e a inflação tende a recuar. Essa relação foi observada pelo economista neozelandês A. W. Phillips em 1958 e ficou conhecida como <strong>Curva de Phillips</strong>.</p>
+            <p>É importante ser preciso sobre o que a curva descreve. Ela descreve bem situações em que a inflação é gerada pelo lado da <strong>demanda</strong>: a economia aquece, o desemprego cai, e os preços sobem como consequência. O que ela descreve mal são choques pelo lado da <strong>oferta</strong>, situações em que os custos de produção sobem independentemente do estado do mercado de trabalho.</p>
+            <p>O caso das tarifas americanas de 2025 é um exemplo direto. As tarifas encareceram insumos importados para empresas americanas, aumentando seus custos de produção. Ao mesmo tempo, a incerteza sobre o comércio internacional reduziu a atividade econômica e as perspectivas de emprego. O resultado foi uma pressão simultânea sobre a inflação e sobre o desemprego, o que os economistas chamam de <strong>estagflação</strong>. A Curva de Phillips habitual, que prevê que inflação alta vem acompanhada de desemprego baixo, não descreve esse cenário porque o choque não veio da demanda.</p>
+            <div class="concept-box" style="border-left-color: var(--macro-u1);">
+                <div class="concept-label" style="color: var(--macro-u1);">Conceito-chave — Curva de Phillips e seus limites</div>
+                <p>A Curva de Phillips descreve uma correlação negativa entre desemprego e inflação em ciclos de demanda. <strong>Ela não se aplica a choques de oferta</strong>, como tarifas comerciais ou depreciação cambial, que podem gerar inflação e desemprego simultaneamente. Antes de aplicar a relação, vale perguntar de onde vem o choque.</p>
+            </div>
+
+            <h2 id="s6">6. Curto, médio e longo prazo</h2>
+            <p class="opening-question">Quando um ministro da Fazenda diz que o ajuste fiscal vai "desaquecer a economia agora para crescer mais no futuro", e um economista responde que "no longo prazo, só o capital humano e a tecnologia importam", eles estão se contradizendo? Ou simplesmente falando de coisas diferentes?</p>
+            <p>Uma das fontes mais frequentes de confusão nos debates de política econômica é misturar diagnósticos que se referem a horizontes temporais distintos. Blanchard organiza a análise em três escalas de tempo, cada uma com sua lógica dominante.</p>
+            <p>No <strong>curto prazo</strong>, que se conta em meses a poucos anos, as flutuações do produto são determinadas principalmente pela demanda agregada: o quanto consumidores, empresas e governo estão dispostos a gastar. A capacidade produtiva da economia, o estoque de capital, a tecnologia disponível e o tamanho da força de trabalho, é relativamente fixa nesse horizonte. É aqui que as políticas fiscal e monetária têm maior efeito imediato sobre o produto e o desemprego. As relações de Okun e Phillips operam nesse horizonte.</p>
+            <p>No <strong>médio prazo</strong>, ao longo de uma década, a economia tende a convergir para o nível de produto que seus fatores de oferta permitem. Os estímulos de demanda perdem eficácia progressivamente, e os efeitos sobre a inflação ficam mais evidentes. O produto não é mais determinado pelo quanto se gasta, mas pelo quanto se consegue produzir com o capital, a tecnologia e o trabalho disponíveis.</p>
+            <p>No <strong>longo prazo</strong>, ao longo de décadas, o que determina o nível de vida de uma sociedade são fatores estruturais: a qualidade do sistema educacional, a taxa de poupança e acumulação de capital, o ritmo de inovação tecnológica e a qualidade das instituições. Para entender por que a China cresceu a taxas superiores a 8% ao ano por três décadas, não basta olhar para a demanda de um ano específico. É preciso examinar a reorganização das instituições, a abertura ao investimento externo, a acumulação acelerada de capital físico e humano. O paralelo inverso também serve: para entender por que o Brasil cresce sistematicamente abaixo de seu potencial desde os anos 1980, a resposta não está num ciclo de demanda específico.</p>
+            <p>Voltando à questão de reflexão: o ministro e o economista não estão se contradizendo. Estão certos, cada um no seu horizonte. O problema ocorre quando as políticas de curto prazo são apresentadas como solução para problemas estruturais de longo prazo, ou quando reformas de longo prazo são avaliadas pelos seus efeitos imediatos sobre o PIB do próximo trimestre.</p>
+
+            <h2 id="s7">7. Síntese</h2>
+            <div class="table-wrapper">
+                <table class="note-table">
+                    <thead>
+                        <tr>
+                            <th>Conceito</th>
+                            <th>Núcleo</th>
+                            <th>Armadilha principal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>PIB</td>
+                            <td>Valor dos bens finais produzidos internamente; equivalente pelas óticas do produto, do valor adicionado e da renda</td>
+                            <td>Crescimento nominal não é crescimento real</td>
+                        </tr>
+                        <tr>
+                            <td>Deflator do PIB</td>
+                            <td>Razão entre PIB nominal e PIB real; mede o preço médio da produção doméstica</td>
+                            <td>Confundir com o IPCA, que mede o custo de vida incluindo importados</td>
+                        </tr>
+                        <tr>
+                            <td>Desemprego</td>
+                            <td>Fração da força de trabalho sem emprego e buscando ativamente</td>
+                            <td>Ignorar desalentados e a taxa de participação</td>
+                        </tr>
+                        <tr>
+                            <td>Inflação</td>
+                            <td>Aumento sustentado e generalizado do nível de preços</td>
+                            <td>Tratar como problema uniforme; ela redistribui riqueza de forma assimétrica</td>
+                        </tr>
+                        <tr>
+                            <td>Lei de Okun</td>
+                            <td>Correlação negativa entre crescimento do produto e variação do desemprego</td>
+                            <td>Esperar estabilidade do desemprego com crescimento zero; o piso é a taxa natural</td>
+                        </tr>
+                        <tr>
+                            <td>Curva de Phillips</td>
+                            <td>Correlação negativa entre desemprego e inflação em choques de demanda</td>
+                            <td>Aplicá-la a choques de oferta, como tarifas ou depreciação cambial</td>
+                        </tr>
+                        <tr>
+                            <td>Horizontes</td>
+                            <td>Curto prazo: demanda; médio prazo: oferta; longo prazo: estrutura</td>
+                            <td>Misturar diagnósticos de horizontes diferentes</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2 id="s8">8. Questões para revisão</h2>
+            <p><strong>1.</strong> O PIB nominal do Brasil cresceu cerca de 14% em 2022, mas o PIB real cresceu 2,9%. Usando a identidade PIB Nominal = Deflator × PIB Real, calcule a variação implícita do deflator no período. O que esse número representa?</p>
+            <p><strong>2.</strong> Suponha que, num dado trimestre, a taxa de desemprego caia de 8% para 7,5%, mas a taxa de participação da força de trabalho também caia de 62% para 61%. Podemos concluir que o mercado de trabalho melhorou? Justifique com base nas definições formais.</p>
+            <p><strong>3.</strong> Em 1979, o preço do petróleo dobrou nos EUA. O CPI subiu significativamente mais do que o deflator do PIB naquele ano. Explique por que, usando a distinção entre o que cada índice mede. Como uma depreciação cambial no Brasil produz efeito análogo?</p>
+            <p><strong>4.</strong> Pelo raciocínio da Lei de Okun, uma economia precisa crescer acima de determinada taxa só para manter o desemprego estável. O que determina essa taxa? Se a produtividade por trabalhador cresce mais rápido por conta de adoção de inteligência artificial, como isso afeta o crescimento necessário para estabilizar o desemprego?</p>
+            <p><strong>5.</strong> As tarifas americanas de 2025 criaram pressão simultânea sobre a inflação e o desemprego nos EUA. Por que esse cenário é problemático para a política monetária? Em que sentido ele viola a lógica habitual da Curva de Phillips?</p>
+
+            <p class="article-reference">Referência principal: Blanchard, O. J. <em>Macroeconomia</em> (5ª ed., Cap. 2). Editora Pearson.<br>Dados: IBGE — PNAD Contínua e Contas Nacionais Trimestrais (2024); Banco Central do Brasil — Relatório de Inflação (2024).</p>
+
+            <nav class="unit-nav">
+                <a href="/ensino/macro-u1-cap1.html" class="prev">
+                    <span class="nav-label">&larr; Anterior</span>
+                    <span class="nav-title">Cap. 1: Um Panorama da Macroeconomia</span>
+                </a>
+                <a href="#" class="next disabled">
+                    <span class="nav-label">Próximo &rarr;</span>
+                    <span class="nav-title">Cap. 3: O papel do Banco Central</span>
+                </a>
+            </nav>
+        </article>
+        <aside class="toc" id="toc">
+            <div class="toc-title">Nesta nota</div>
+            <button class="toc-toggle" id="tocToggle" aria-expanded="false">
+                Nesta nota
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="toc-links" id="tocLinks">
+                <a href="#s1" data-section="s1">1. Introdução</a>
+                <a href="#s2" data-section="s2">2. O PIB</a>
+                <a href="#s3" data-section="s3">3. Desemprego</a>
+                <a href="#s4" data-section="s4">4. Inflação</a>
+                <a href="#s5" data-section="s5">5. Okun e Phillips</a>
+                <a href="#s6" data-section="s6">6. Horizontes temporais</a>
+                <a href="#s7" data-section="s7">7. Síntese</a>
+                <a href="#s8" data-section="s8">8. Questões</a>
+            </div>
+        </aside>
+    </div>
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+    <script>
+        var progressBar = document.getElementById('progressBar');
+        function updateProgress() {
+            var scrollTop = window.scrollY;
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            progressBar.style.width = progress + '%';
+        }
+        var tocLinkEls = document.querySelectorAll('.toc a');
+        var sects = [];
+        tocLinkEls.forEach(function(link) {
+            var id = link.getAttribute('data-section');
+            var el = document.getElementById(id);
+            if (el) sects.push({ el: el, link: link });
+        });
+        function updateToc() {
+            var current = sects[0];
+            var scrollPos = window.scrollY + 130;
+            for (var i = 0; i < sects.length; i++) {
+                if (sects[i].el.offsetTop <= scrollPos) current = sects[i];
+            }
+            tocLinkEls.forEach(function(l) { l.classList.remove('active'); });
+            if (current) current.link.classList.add('active');
+        }
+        window.addEventListener('scroll', function() { updateProgress(); updateToc(); });
+        updateProgress(); updateToc();
+        var tocToggle = document.getElementById('tocToggle');
+        var tocLinksContainer = document.getElementById('tocLinks');
+        if (tocToggle && tocLinksContainer) {
+            tocToggle.addEventListener('click', function() {
+                var isOpen = tocToggle.classList.toggle('open');
+                tocLinksContainer.classList.toggle('open');
+                tocToggle.setAttribute('aria-expanded', isOpen);
+            });
+        }
+        var shareWA = document.getElementById('shareWhatsApp');
+        if (shareWA) {
+            shareWA.addEventListener('click', function(e) {
+                e.preventDefault();
+                var text = document.title + ' ' + window.location.href;
+                window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+            });
+        }
+        var copyBtn = document.getElementById('copyLink');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', function() {
+                navigator.clipboard.writeText(window.location.href).then(function() {
+                    copyBtn.classList.add('copied');
+                    var svgEl = copyBtn.querySelector('svg').outerHTML;
+                    copyBtn.innerHTML = svgEl + ' Copiado!';
+                    setTimeout(function() {
+                        copyBtn.innerHTML = svgEl + ' Copiar link';
+                        copyBtn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        }
+    </script>
+    <script src="/js/search.js"></script>
+</body>
+</html>
