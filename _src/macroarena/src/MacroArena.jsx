@@ -7,7 +7,7 @@ import {
 // ─────────────────────────────────────────────
 // CONSTANTS
 // ─────────────────────────────────────────────
-const PROFESSOR_PASSWORD = "arena2026";
+const PROFESSOR_PASSWORD = "123123";
 const INITIAL_CASH = 10000;
 const INITIAL_PRICE = 100;
 const AMM_FACTOR = 0.0001;
