@@ -3,7 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
   "https://ecjeuwadpmtvbkcvrxoc.supabase.co",
-  "sb_publishable_SjoKIuN8ZngRjIWLwg9YWQ_jiF2IZ2T"
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjamV1d2FkcG10dmJrY3ZyeG9jIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjAwMzI1MiwiZXhwIjoyMDg3NTc5MjUyfQ.aj3mC2Cgcen4TViejwU_St0sLD0SdrqlSenB66SuA1s"
 );
 import {
   AreaChart, Area, LineChart, Line,
@@ -185,6 +185,8 @@ async function sGet(key) {
 async function sSet(key, value) {
   try {
     await supabase.from("game_kv").upsert({ key, value, updated_at: new Date().toISOString() });
+    // Notifica todos os clientes via Broadcast (não requer configuração DDL)
+    await supabase.channel("game_bus").send({ type: "broadcast", event: "kv_change", payload: { key } });
   } catch {}
 }
 
@@ -869,20 +871,22 @@ export default function MacroArena() {
     };
     fetchAll();
 
-    // Realtime — atualiza todos os dispositivos em tempo real
+    // Realtime via Broadcast — funciona sem configuração DDL (REPLICA IDENTITY etc.)
     const channel = supabase
-      .channel("game_changes")
-      .on("postgres_changes", { event: "*", schema: "public", table: "game_kv" }, (payload) => {
-        const key = payload.new?.key || payload.old?.key;
+      .channel("game_bus")
+      .on("broadcast", { event: "kv_change" }, async ({ payload }) => {
+        const key = payload?.key;
         if (key === "game:state") {
-          const state = payload.new?.value;
+          const state = await sGet("game:state");
           if (state) { setGameState(state); if (state.prices) setPrices(state.prices); if (state.priceHistory) setPriceHistory(state.priceHistory); }
         } else if (key?.startsWith("game:player:")) {
           const name = key.replace("game:player:", "");
           if (mode === "professor") {
-            if (payload.new?.value) setPlayers(prev => ({ ...prev, [name]: payload.new.value }));
-          } else if (name === playerName && payload.new?.value) {
-            setPlayer(payload.new.value);
+            const p = await sGet(key);
+            if (p) setPlayers(prev => ({ ...prev, [name]: p }));
+          } else if (name === playerName) {
+            const p = await sGet(key);
+            if (p) setPlayer(p);
           }
         }
       })
