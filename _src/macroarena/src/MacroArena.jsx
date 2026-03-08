@@ -351,76 +351,121 @@ function ExplanationSteps({ steps }) {
 function TradeModal({ asset, price, cash, position, onClose, onStage, existingOrder }) {
   const [side, setSide] = useState(existingOrder?.side ?? null);
   const [qty, setQty] = useState(existingOrder?.qty ?? 10);
+
+  const maxBuy = Math.max(1, Math.floor(cash / price));
+  const maxSell = position;
+
+  const handleSetSide = (newSide) => {
+    setSide(newSide);
+    if (newSide === "buy") setQty(q => Math.min(q, maxBuy));
+    else if (newSide === "sell") setQty(q => Math.min(Math.max(q, 1), maxSell || 1));
+  };
+
   const total = qty * price;
-  const canAdd = side === "buy" ? total <= cash : side === "sell" ? qty <= position : false;
+  const canAdd = side === "buy" ? total <= cash : side === "sell" ? qty <= position && position > 0 : false;
   const noPosition = side === "sell" && position === 0;
+  const saldoApos = side === "buy" ? cash - total : side === "sell" ? cash + total : cash;
+
   return (
     <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,.88)", display: "flex", alignItems: "flex-end", zIndex: 300 }} onClick={onClose}>
       <div onClick={e => e.stopPropagation()} style={{
         width: "100%", maxWidth: 500, margin: "0 auto",
         backgroundColor: "#0C0C0C", borderRadius: "20px 20px 0 0",
-        padding: "22px 20px 44px", border: `1px solid ${C.border}`,
+        padding: "20px 20px 44px", border: `1px solid ${C.border}`,
         animation: "slideIn .25s ease-out",
       }}>
         {/* Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
           <div>
             <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, color: C.gold, textTransform: "uppercase", marginBottom: 4 }}>MONTAR ORDEM</div>
             <div style={{ fontSize: 18, fontWeight: 800 }}>{asset.icon} {asset.name}</div>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 18, fontWeight: 700 }}>{fmtBRL(price)}</div>
-            <button onClick={onClose} style={{ background: "none", border: "none", color: C.muted, fontSize: 22, cursor: "pointer" }}>×</button>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2 }}>
+            <button onClick={onClose} style={{ background: "none", border: "none", color: C.muted, fontSize: 22, cursor: "pointer", lineHeight: 1 }}>×</button>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 15, fontWeight: 700, color: C.muted }}>{fmtBRL(price)}/unid.</div>
           </div>
         </div>
 
-        {/* Side picker: VENDER | COMPRAR */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
-          <button onClick={() => setSide("sell")} style={{
-            padding: "14px 10px", borderRadius: 12, fontWeight: 800, fontSize: 14, cursor: "pointer",
+        {/* Contexto: Financeiro + Estoque */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
+          <div style={{ backgroundColor: "#071410", border: `1px solid ${C.green}33`, borderRadius: 10, padding: "9px 12px" }}>
+            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: C.green, textTransform: "uppercase", marginBottom: 3 }}>Financeiro</div>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 13, fontWeight: 700 }}>{fmtBRL(cash)}</div>
+            <div style={{ fontSize: 10, color: C.muted, marginTop: 1 }}>disponível · máx. {maxBuy} unid.</div>
+          </div>
+          <div style={{ backgroundColor: "#0D0D07", border: `1px solid ${C.gold}33`, borderRadius: 10, padding: "9px 12px" }}>
+            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: C.gold, textTransform: "uppercase", marginBottom: 3 }}>Estoque</div>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 13, fontWeight: 700 }}>{position} unid.</div>
+            <div style={{ fontSize: 10, color: C.muted, marginTop: 1 }}>em carteira · {fmtBRL(position * price)}</div>
+          </div>
+        </div>
+
+        {/* Side picker */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
+          <button onClick={() => handleSetSide("sell")} disabled={position === 0} style={{
+            padding: "12px 10px", borderRadius: 12, fontWeight: 800, fontSize: 14,
+            cursor: position === 0 ? "not-allowed" : "pointer",
             backgroundColor: side === "sell" ? "#1C1400" : C.card,
             border: `2px solid ${side === "sell" ? C.gold : C.border}`,
-            color: side === "sell" ? C.gold : C.muted,
+            color: side === "sell" ? C.gold : position === 0 ? "#333" : C.muted,
+            opacity: position === 0 ? 0.45 : 1,
           }}>
             <div>VENDER</div>
-            <div style={{ fontSize: 11, fontWeight: 400, marginTop: 3 }}>Posição: {position} unid.</div>
+            <div style={{ fontSize: 10, fontWeight: 400, marginTop: 2, color: side === "sell" ? C.gold + "99" : C.muted }}>
+              máx. {position} unid.
+            </div>
           </button>
-          <button onClick={() => setSide("buy")} style={{
-            padding: "14px 10px", borderRadius: 12, fontWeight: 800, fontSize: 14, cursor: "pointer",
+          <button onClick={() => handleSetSide("buy")} style={{
+            padding: "12px 10px", borderRadius: 12, fontWeight: 800, fontSize: 14, cursor: "pointer",
             backgroundColor: side === "buy" ? C.gold : C.card,
             border: side === "buy" ? "none" : `2px solid ${C.border}`,
             color: side === "buy" ? "#000" : C.muted,
           }}>
             <div>COMPRAR</div>
-            <div style={{ fontSize: 11, fontWeight: 400, marginTop: 3, color: side === "buy" ? "#444" : C.muted }}>{fmtBRL(cash)}</div>
+            <div style={{ fontSize: 10, fontWeight: 400, marginTop: 2, color: side === "buy" ? "#555" : C.muted }}>
+              máx. {maxBuy} unid.
+            </div>
           </button>
         </div>
 
         {/* Quantidade */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12, border: `1px solid ${C.border}`, borderRadius: 12, padding: "10px 16px", backgroundColor: C.card, marginBottom: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, border: `1px solid ${C.border}`, borderRadius: 12, padding: "10px 16px", backgroundColor: C.card, marginBottom: 10 }}>
           <button onClick={() => setQty(q => Math.max(1, q - 10))} style={{ width: 36, height: 36, borderRadius: 8, border: `1px solid ${C.border}`, backgroundColor: "#1e1e1e", color: C.gold, fontSize: 22, cursor: "pointer" }}>−</button>
           <div style={{ flex: 1, textAlign: "center" }}>
             <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 24, fontWeight: 700 }}>{qty}</div>
             <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>unidades</div>
           </div>
-          <button onClick={() => setQty(q => q + 10)} style={{ width: 36, height: 36, borderRadius: 8, border: `1px solid ${C.border}`, backgroundColor: "#1e1e1e", color: C.gold, fontSize: 22, cursor: "pointer" }}>+</button>
+          <button
+            onClick={() => {
+              const max = side === "buy" ? maxBuy : side === "sell" ? maxSell : 999;
+              setQty(q => Math.min(q + 10, max));
+            }}
+            style={{ width: 36, height: 36, borderRadius: 8, border: `1px solid ${C.border}`, backgroundColor: "#1e1e1e", color: C.gold, fontSize: 22, cursor: "pointer" }}
+          >+</button>
         </div>
 
-        {/* Valor total */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", backgroundColor: C.card2, borderRadius: 10, marginBottom: 14 }}>
-          <span style={{ color: C.muted, fontSize: 13 }}>Valor total</span>
-          <span style={{ fontFamily: "'Space Mono', monospace", fontWeight: 700 }}>{fmtBRL(total)}</span>
+        {/* Valor da ordem + financeiro após */}
+        <div style={{ backgroundColor: C.card2, borderRadius: 10, padding: "10px 14px", marginBottom: 12 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ color: C.muted, fontSize: 12 }}>Valor da ordem</span>
+            <span style={{ fontFamily: "'Space Mono', monospace", fontWeight: 700, fontSize: 13 }}>{fmtBRL(total)}</span>
+          </div>
+          {side && (
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px solid ${C.border}`, paddingTop: 7, marginTop: 7 }}>
+              <span style={{ color: C.muted, fontSize: 12 }}>Financeiro após ordem</span>
+              <span style={{ fontFamily: "'Space Mono', monospace", fontWeight: 700, fontSize: 13, color: saldoApos < 0 ? C.red : C.green }}>
+                {fmtBRL(Math.max(0, saldoApos))}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Validação */}
-        {side === "buy" && !canAdd && (
-          <div style={{ color: C.red, fontSize: 12, marginBottom: 10, textAlign: "center" }}>Saldo insuficiente — você tem {fmtBRL(cash)}</div>
-        )}
         {noPosition && (
-          <div style={{ color: C.red, fontSize: 12, marginBottom: 10, textAlign: "center" }}>Você não possui este ativo para vender</div>
+          <div style={{ color: C.red, fontSize: 12, marginBottom: 10, textAlign: "center" }}>Você não tem este ativo em carteira para vender</div>
         )}
         {side === "sell" && !noPosition && !canAdd && (
-          <div style={{ color: C.red, fontSize: 12, marginBottom: 10, textAlign: "center" }}>Quantidade maior que sua posição ({position} unid.)</div>
+          <div style={{ color: C.red, fontSize: 12, marginBottom: 10, textAlign: "center" }}>Quantidade maior que o estoque ({position} unid.)</div>
         )}
 
         {/* Botão principal */}
@@ -438,10 +483,10 @@ function TradeModal({ asset, price, cash, position, onClose, onStage, existingOr
           {!side
             ? "Selecione compra ou venda"
             : !canAdd
-              ? "Ajuste a quantidade"
+              ? (side === "buy" ? `Limite: máx. ${maxBuy} unid. (${fmtBRL(cash)})` : "Sem estoque para vender")
               : side === "buy"
-                ? `Comprar ${qty} unid. por ${fmtBRL(total)}`
-                : `Vender ${qty} unid.`}
+                ? `Comprar ${qty} unid. · ${fmtBRL(total)}`
+                : `Vender ${qty} unid. · receber ${fmtBRL(total)}`}
         </button>
       </div>
     </div>
@@ -479,17 +524,31 @@ function AssetCard({ asset, price, history, position, cash, pendingOrder, onStag
           </div>
         )}
         {open && (
-          <button onClick={() => setModal(true)} style={{
-            width: "100%", marginTop: 10, padding: "12px 0",
-            backgroundColor: pendingOrder ? "transparent" : C.gold,
-            border: pendingOrder ? `1.5px solid ${C.gold}` : "none",
-            borderRadius: 10, fontWeight: 800, fontSize: 13,
-            color: pendingOrder ? C.gold : "#000", cursor: "pointer",
-          }}>
-            {pendingOrder
-              ? `✏ ${pendingOrder.side === "buy" ? "COMPRA" : "VENDA"} · ${pendingOrder.qty} unid. — Editar`
-              : "Montar Ordem"}
-          </button>
+          pendingOrder ? (
+            <button onClick={() => setModal(true)} style={{
+              width: "100%", marginTop: 10, padding: "11px 14px",
+              backgroundColor: "transparent",
+              border: `1.5px solid ${pendingOrder.side === "buy" ? C.gold : C.gold + "99"}`,
+              borderRadius: 10, fontWeight: 700, fontSize: 13,
+              color: C.gold, cursor: "pointer",
+              display: "flex", justifyContent: "space-between", alignItems: "center",
+            }}>
+              <span style={{ fontSize: 10, backgroundColor: pendingOrder.side === "buy" ? C.gold : "#1C1400", color: pendingOrder.side === "buy" ? "#000" : C.gold, borderRadius: 5, padding: "2px 7px", fontWeight: 800 }}>
+                {pendingOrder.side === "buy" ? "COMPRA" : "VENDA"}
+              </span>
+              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 12 }}>{pendingOrder.qty} unid.</span>
+              <span style={{ fontSize: 11, color: C.muted }}>✏ editar</span>
+            </button>
+          ) : (
+            <button onClick={() => setModal(true)} style={{
+              width: "100%", marginTop: 10, padding: "12px 0",
+              backgroundColor: C.gold, border: "none",
+              borderRadius: 10, fontWeight: 800, fontSize: 13,
+              color: "#000", cursor: "pointer",
+            }}>
+              Montar Ordem
+            </button>
+          )
         )}
       </div>
       {modal && (
@@ -505,29 +564,63 @@ function AssetCard({ asset, price, history, position, cash, pendingOrder, onStag
 // ─────────────────────────────────────────────
 // ORDER BASKET — cesta de ordens antes de enviar
 // ─────────────────────────────────────────────
-function OrderBasket({ orders, prices, onSubmit }) {
+function OrderBasket({ orders, prices, cash, positions, onSubmit }) {
   const [confirming, setConfirming] = useState(false);
   const entries = ASSETS.map(a => ({ asset: a, order: orders[a.id], price: prices[a.id] || INITIAL_PRICE }))
     .filter(e => e.order);
   if (entries.length === 0) return null;
+
+  const totalBuy = entries.filter(e => e.order.side === "buy").reduce((s, e) => s + e.order.qty * e.price, 0);
+  const totalSell = entries.filter(e => e.order.side === "sell").reduce((s, e) => s + e.order.qty * e.price, 0);
+  const cashAfter = cash - totalBuy + totalSell;
 
   const handleConfirm = () => { onSubmit(); setConfirming(false); };
 
   return (
     <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 200 }}>
       {confirming ? (
-        <div onClick={() => setConfirming(false)} style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,.7)", display: "flex", alignItems: "flex-end" }}>
+        <div onClick={() => setConfirming(false)} style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,.75)", display: "flex", alignItems: "flex-end" }}>
           <div onClick={e => e.stopPropagation()} style={{
             width: "100%", maxWidth: 500, margin: "0 auto",
             backgroundColor: "#0C0C0C", borderRadius: "20px 20px 0 0",
             padding: "22px 20px 44px", border: `1px solid ${C.border}`,
             animation: "slideIn .25s ease-out",
           }}>
-            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: 2, color: C.gold, textTransform: "uppercase", marginBottom: 16 }}>Confirmar e enviar ordens</div>
+            <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: 2, color: C.gold, textTransform: "uppercase", marginBottom: 16 }}>Confirmar e enviar ordens</div>
+
+            {/* Resumo financeiro + estoque */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
+              <div style={{ backgroundColor: "#071410", border: `1px solid ${C.green}33`, borderRadius: 10, padding: "9px 12px" }}>
+                <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: C.green, textTransform: "uppercase", marginBottom: 3 }}>Financeiro atual</div>
+                <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 13, fontWeight: 700 }}>{fmtBRL(cash)}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 5, paddingTop: 5, borderTop: `1px solid ${C.green}22` }}>
+                  <span style={{ fontSize: 10, color: C.muted }}>após ordens</span>
+                  <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, fontWeight: 700, color: cashAfter >= 0 ? C.green : C.red, marginLeft: "auto" }}>{fmtBRL(cashAfter)}</span>
+                </div>
+              </div>
+              <div style={{ backgroundColor: "#0D0D07", border: `1px solid ${C.gold}33`, borderRadius: 10, padding: "9px 12px" }}>
+                <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: C.gold, textTransform: "uppercase", marginBottom: 4 }}>Estoque em carteira</div>
+                {ASSETS.map(a => {
+                  const pos = positions?.[a.id] || 0;
+                  const order = orders[a.id];
+                  const posAfter = pos + (order ? (order.side === "buy" ? order.qty : -order.qty) : 0);
+                  return (
+                    <div key={a.id} style={{ display: "flex", justifyContent: "space-between", fontSize: 10, marginBottom: 2, color: pos > 0 || posAfter > 0 ? C.text : C.muted }}>
+                      <span>{a.icon} {a.name.replace("Ação ", "")}</span>
+                      <span style={{ fontFamily: "'Space Mono', monospace" }}>
+                        {pos}{order ? <span style={{ color: order.side === "buy" ? C.green : C.red }}>→{posAfter}</span> : ""}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Lista de ordens */}
             {entries.map(({ asset, order, price }) => {
               const isBuy = order.side === "buy";
               return (
-                <div key={asset.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${C.border}` }}>
+                <div key={asset.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "11px 0", borderBottom: `1px solid ${C.border}` }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <span style={{
                       fontSize: 10, fontWeight: 800, padding: "3px 8px", borderRadius: 6,
@@ -539,17 +632,20 @@ function OrderBasket({ orders, prices, onSubmit }) {
                   </div>
                   <div style={{ textAlign: "right" }}>
                     <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 13, fontWeight: 700 }}>{order.qty} unid.</div>
-                    <div style={{ color: C.muted, fontSize: 11 }}>{fmtBRL(order.qty * price)}</div>
+                    <div style={{ color: isBuy ? C.red : C.green, fontSize: 11, fontWeight: 700 }}>
+                      {isBuy ? "−" : "+"}{fmtBRL(order.qty * price)}
+                    </div>
                   </div>
                 </div>
               );
             })}
+
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 18 }}>
               <button onClick={() => setConfirming(false)} style={{
                 padding: "14px", borderRadius: 12, fontWeight: 700, fontSize: 14,
                 backgroundColor: "transparent", border: `1px solid ${C.border}`,
                 color: C.muted, cursor: "pointer",
-              }}>Editar</button>
+              }}>← Editar</button>
               <button onClick={handleConfirm} style={{
                 padding: "14px", borderRadius: 12, fontWeight: 800, fontSize: 14,
                 backgroundColor: C.gold, border: "none", color: "#000", cursor: "pointer",
@@ -567,12 +663,14 @@ function OrderBasket({ orders, prices, onSubmit }) {
               <div style={{ fontSize: 13, fontWeight: 800 }}>
                 {entries.length} {entries.length === 1 ? "ordem montada" : "ordens montadas"}
               </div>
-              <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>Revise antes de enviar</div>
+              <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>
+                Financeiro após: <span style={{ color: cashAfter >= 0 ? C.green : C.red, fontWeight: 700 }}>{fmtBRL(cashAfter)}</span>
+              </div>
             </div>
             <button onClick={() => setConfirming(true)} style={{
               padding: "12px 20px", backgroundColor: C.gold, border: "none",
               borderRadius: 12, fontWeight: 800, fontSize: 14, color: "#000", cursor: "pointer",
-            }}>Enviar Ordens →</button>
+            }}>Revisar e Enviar →</button>
           </div>
         </div>
       )}
@@ -647,21 +745,30 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
         <div style={{
           position: "sticky", top: 0, zIndex: 100,
           backgroundColor: "rgba(0,0,0,.95)", backdropFilter: "blur(12px)",
-          borderBottom: `1px solid ${C.border}`, padding: "10px 16px",
-          display: "flex", justifyContent: "space-between", alignItems: "center",
+          borderBottom: `1px solid ${C.border}`, padding: "8px 16px",
         }}>
-          <div>
-            <div style={{ fontSize: 10, color: C.muted, letterSpacing: 1.5, textTransform: "uppercase" }}>
-              🏟️ MacroArena · R{gameState.round}/10
-              {sc.mode === "treino" && <span style={{ color: C.gold, marginLeft: 6 }}>· TREINO</span>}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: 500, margin: "0 auto" }}>
+            <div style={{ fontSize: 10, color: C.muted, letterSpacing: 1, textTransform: "uppercase" }}>
+              🏟️ R{gameState.round}/10
+              {sc.mode === "treino" && <span style={{ color: C.gold, marginLeft: 5 }}>treino</span>}
             </div>
-            <div style={{ fontSize: 13, marginTop: 2 }}>
-              <span style={{ color: C.muted }}>Patrimônio </span>
-              <span style={{ fontFamily: "'Space Mono', monospace", fontWeight: 700 }}>{fmtBRL(totalWealth)}</span>
+            <div style={{ backgroundColor: "#0A0A14", border: `1px solid ${C.gold}44`, borderRadius: 20, padding: "4px 11px", fontSize: 10, fontWeight: 700, color: C.gold }}>
+              📖 Leia o cenário
             </div>
           </div>
-          <div style={{ backgroundColor: "#0A0A14", border: `1px solid ${C.gold}44`, borderRadius: 20, padding: "5px 12px", fontSize: 11, fontWeight: 700, color: C.gold }}>
-            📖 Leia o cenário
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6, maxWidth: 500, margin: "6px auto 0" }}>
+            <div style={{ backgroundColor: C.card2, borderRadius: 8, padding: "6px 10px" }}>
+              <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 }}>Caixa</div>
+              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, fontWeight: 700 }}>{fmtBRL(player?.cash ?? INITIAL_CASH)}</div>
+            </div>
+            <div style={{ backgroundColor: C.card2, borderRadius: 8, padding: "6px 10px" }}>
+              <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 }}>Patrimônio</div>
+              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, fontWeight: 700 }}>{fmtBRL(totalWealth)}</div>
+            </div>
+            <div style={{ backgroundColor: C.card2, borderRadius: 8, padding: "6px 10px", textAlign: "right" }}>
+              <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 }}>Retorno</div>
+              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, fontWeight: 700, color: col(ret) }}>{ret >= 0 ? "+" : ""}{(ret * 100).toFixed(2)}%</div>
+            </div>
           </div>
         </div>
 
@@ -717,23 +824,28 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
       <div style={{
         position: "sticky", top: 0, zIndex: 100,
         backgroundColor: "rgba(0,0,0,.95)", backdropFilter: "blur(12px)",
-        borderBottom: `1px solid ${C.border}`, padding: "10px 16px",
-        display: "flex", justifyContent: "space-between", alignItems: "center",
+        borderBottom: `1px solid ${C.border}`, padding: "8px 16px",
       }}>
-        <div>
-          <div style={{ fontSize: 10, color: C.muted, letterSpacing: 1.5, textTransform: "uppercase" }}>
-            🏟️ MacroArena · R{gameState.round}/10
-            {sc?.mode === "treino" && <span style={{ color: C.gold, marginLeft: 6 }}>· TREINO</span>}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: 500, margin: "0 auto" }}>
+          <div style={{ fontSize: 10, color: C.muted, letterSpacing: 1, textTransform: "uppercase" }}>
+            🏟️ R{gameState.round}/10
+            {sc?.mode === "treino" && <span style={{ color: C.gold, marginLeft: 5 }}>treino</span>}
           </div>
-          <div style={{ fontSize: 13, marginTop: 2 }}>
-            <span style={{ color: C.muted }}>Cash </span>
-            <span style={{ fontFamily: "'Space Mono', monospace", fontWeight: 700 }}>{fmtBRL(player?.cash ?? INITIAL_CASH)}</span>
-          </div>
+          <div style={{ fontSize: 11, color: C.muted, fontWeight: 600 }}>{name}</div>
         </div>
-        <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: 10, color: C.muted, letterSpacing: 1.5, textTransform: "uppercase" }}>Patrimônio</div>
-          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 16, fontWeight: 700 }}>{fmtBRL(totalWealth)}</div>
-          <div style={{ fontSize: 11, fontWeight: 700, color: col(ret) }}>{ret >= 0 ? "▲" : "▼"} {Math.abs(ret * 100).toFixed(2)}%</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6, maxWidth: 500, margin: "6px auto 0" }}>
+          <div style={{ backgroundColor: C.card2, borderRadius: 8, padding: "6px 10px" }}>
+            <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 }}>Caixa</div>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, fontWeight: 700 }}>{fmtBRL(player?.cash ?? INITIAL_CASH)}</div>
+          </div>
+          <div style={{ backgroundColor: C.card2, borderRadius: 8, padding: "6px 10px" }}>
+            <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 }}>Patrimônio</div>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, fontWeight: 700 }}>{fmtBRL(totalWealth)}</div>
+          </div>
+          <div style={{ backgroundColor: C.card2, borderRadius: 8, padding: "6px 10px", textAlign: "right" }}>
+            <div style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 }}>Retorno</div>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, fontWeight: 700, color: col(ret) }}>{ret >= 0 ? "+" : ""}{(ret * 100).toFixed(2)}%</div>
+          </div>
         </div>
       </div>
 
@@ -798,7 +910,7 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
                 onStage={handleStageOrder}
                 open={open} />
             ))}
-            {open && <OrderBasket orders={pendingOrders} prices={prices} onSubmit={handleSubmitOrders} />}
+            {open && <OrderBasket orders={pendingOrders} prices={prices} cash={player?.cash ?? INITIAL_CASH} positions={player?.positions ?? {}} onSubmit={handleSubmitOrders} />}
           </>
         )}
       </div>
