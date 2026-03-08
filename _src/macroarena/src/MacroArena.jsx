@@ -346,60 +346,103 @@ function ExplanationSteps({ steps }) {
 }
 
 // ─────────────────────────────────────────────
-// TRADE MODAL
+// TRADE MODAL — monta ordem (não executa ainda)
 // ─────────────────────────────────────────────
-function TradeModal({ asset, price, cash, position, onClose, onTrade }) {
-  const [qty, setQty] = useState(10);
+function TradeModal({ asset, price, cash, position, onClose, onStage, existingOrder }) {
+  const [side, setSide] = useState(existingOrder?.side ?? null);
+  const [qty, setQty] = useState(existingOrder?.qty ?? 10);
   const total = qty * price;
-  const canBuy = total <= cash;
-  const canSell = qty <= position;
+  const canAdd = side === "buy" ? total <= cash : side === "sell" ? qty <= position : false;
+  const noPosition = side === "sell" && position === 0;
   return (
     <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,.88)", display: "flex", alignItems: "flex-end", zIndex: 300 }} onClick={onClose}>
       <div onClick={e => e.stopPropagation()} style={{
         width: "100%", maxWidth: 500, margin: "0 auto",
         backgroundColor: "#0C0C0C", borderRadius: "20px 20px 0 0",
-        padding: "24px 20px 44px", border: `1px solid ${C.border}`,
+        padding: "22px 20px 44px", border: `1px solid ${C.border}`,
         animation: "slideIn .25s ease-out",
       }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 22 }}>
+        {/* Header */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
           <div>
-            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, color: C.gold, textTransform: "uppercase", marginBottom: 4 }}>NEGOCIAR</div>
-            <div style={{ fontSize: 19, fontWeight: 800 }}>{asset.icon} {asset.name}</div>
+            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, color: C.gold, textTransform: "uppercase", marginBottom: 4 }}>MONTAR ORDEM</div>
+            <div style={{ fontSize: 18, fontWeight: 800 }}>{asset.icon} {asset.name}</div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 20, fontWeight: 700 }}>{fmtBRL(price)}</div>
-            <button onClick={onClose} style={{ background: "none", border: "none", color: C.muted, fontSize: 22, cursor: "pointer", marginTop: 4 }}>×</button>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 18, fontWeight: 700 }}>{fmtBRL(price)}</div>
+            <button onClick={onClose} style={{ background: "none", border: "none", color: C.muted, fontSize: 22, cursor: "pointer" }}>×</button>
           </div>
         </div>
-        <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 11, color: C.muted, marginBottom: 8, letterSpacing: 1 }}>QUANTIDADE</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, border: `1px solid ${C.border}`, borderRadius: 12, padding: "12px 16px", backgroundColor: C.card }}>
-            <button onClick={() => setQty(q => Math.max(1, q - 10))} style={{ width: 38, height: 38, borderRadius: 8, border: `1px solid ${C.border}`, backgroundColor: "#1e1e1e", color: C.gold, fontSize: 22, cursor: "pointer" }}>−</button>
-            <div style={{ flex: 1, textAlign: "center", fontFamily: "'Space Mono', monospace", fontSize: 26, fontWeight: 700 }}>{qty}</div>
-            <button onClick={() => setQty(q => q + 10)} style={{ width: 38, height: 38, borderRadius: 8, border: `1px solid ${C.border}`, backgroundColor: "#1e1e1e", color: C.gold, fontSize: 22, cursor: "pointer" }}>+</button>
+
+        {/* Side picker: VENDER | COMPRAR */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
+          <button onClick={() => setSide("sell")} style={{
+            padding: "14px 10px", borderRadius: 12, fontWeight: 800, fontSize: 14, cursor: "pointer",
+            backgroundColor: side === "sell" ? "#1C1400" : C.card,
+            border: `2px solid ${side === "sell" ? C.gold : C.border}`,
+            color: side === "sell" ? C.gold : C.muted,
+          }}>
+            <div>VENDER</div>
+            <div style={{ fontSize: 11, fontWeight: 400, marginTop: 3 }}>Posição: {position} unid.</div>
+          </button>
+          <button onClick={() => setSide("buy")} style={{
+            padding: "14px 10px", borderRadius: 12, fontWeight: 800, fontSize: 14, cursor: "pointer",
+            backgroundColor: side === "buy" ? C.gold : C.card,
+            border: side === "buy" ? "none" : `2px solid ${C.border}`,
+            color: side === "buy" ? "#000" : C.muted,
+          }}>
+            <div>COMPRAR</div>
+            <div style={{ fontSize: 11, fontWeight: 400, marginTop: 3, color: side === "buy" ? "#444" : C.muted }}>{fmtBRL(cash)}</div>
+          </button>
+        </div>
+
+        {/* Quantidade */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, border: `1px solid ${C.border}`, borderRadius: 12, padding: "10px 16px", backgroundColor: C.card, marginBottom: 12 }}>
+          <button onClick={() => setQty(q => Math.max(1, q - 10))} style={{ width: 36, height: 36, borderRadius: 8, border: `1px solid ${C.border}`, backgroundColor: "#1e1e1e", color: C.gold, fontSize: 22, cursor: "pointer" }}>−</button>
+          <div style={{ flex: 1, textAlign: "center" }}>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 24, fontWeight: 700 }}>{qty}</div>
+            <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>unidades</div>
           </div>
+          <button onClick={() => setQty(q => q + 10)} style={{ width: 36, height: 36, borderRadius: 8, border: `1px solid ${C.border}`, backgroundColor: "#1e1e1e", color: C.gold, fontSize: 22, cursor: "pointer" }}>+</button>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 22 }}>
-          {[["Preço unitário", fmtBRL(price)], ["Valor da ordem", fmtBRL(total)], ["Saldo disponível", fmtBRL(cash)], ["Posição atual", `${position} unid.`]].map(([label, val]) => (
-            <div key={label} style={{ backgroundColor: C.card, borderRadius: 10, padding: "10px 12px" }}>
-              <div style={{ color: C.muted, fontSize: 11, marginBottom: 3 }}>{label}</div>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 13, fontWeight: 700 }}>{val}</div>
-            </div>
-          ))}
+
+        {/* Valor total */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", backgroundColor: C.card2, borderRadius: 10, marginBottom: 14 }}>
+          <span style={{ color: C.muted, fontSize: 13 }}>Valor total</span>
+          <span style={{ fontFamily: "'Space Mono', monospace", fontWeight: 700 }}>{fmtBRL(total)}</span>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          <button disabled={!canSell} onClick={() => canSell && onTrade("sell", qty)} style={{
-            padding: "16px", borderRadius: 14, fontWeight: 800, fontSize: 16,
-            backgroundColor: canSell ? "#1C1400" : "#1a1a1a",
-            border: `1.5px solid ${canSell ? C.gold : C.border}`,
-            color: canSell ? C.gold : C.muted, cursor: canSell ? "pointer" : "not-allowed",
-          }}>Vender</button>
-          <button disabled={!canBuy} onClick={() => canBuy && onTrade("buy", qty)} style={{
-            padding: "16px", borderRadius: 14, fontWeight: 800, fontSize: 16,
-            backgroundColor: canBuy ? C.gold : "#2a2a2a", border: "none",
-            color: canBuy ? "#000" : C.muted, cursor: canBuy ? "pointer" : "not-allowed",
-          }}>Comprar</button>
-        </div>
+
+        {/* Validação */}
+        {side === "buy" && !canAdd && (
+          <div style={{ color: C.red, fontSize: 12, marginBottom: 10, textAlign: "center" }}>Saldo insuficiente — você tem {fmtBRL(cash)}</div>
+        )}
+        {noPosition && (
+          <div style={{ color: C.red, fontSize: 12, marginBottom: 10, textAlign: "center" }}>Você não possui este ativo para vender</div>
+        )}
+        {side === "sell" && !noPosition && !canAdd && (
+          <div style={{ color: C.red, fontSize: 12, marginBottom: 10, textAlign: "center" }}>Quantidade maior que sua posição ({position} unid.)</div>
+        )}
+
+        {/* Botão principal */}
+        <button
+          disabled={!side || !canAdd}
+          onClick={() => { if (side && canAdd) onStage(side, qty); }}
+          style={{
+            width: "100%", padding: "15px", borderRadius: 14, fontWeight: 800, fontSize: 15,
+            backgroundColor: !side || !canAdd ? "#1a1a1a" : side === "buy" ? C.gold : "#1C1400",
+            border: !side || !canAdd ? "none" : side === "buy" ? "none" : `1.5px solid ${C.gold}`,
+            color: !side || !canAdd ? C.muted : side === "buy" ? "#000" : C.gold,
+            cursor: !side || !canAdd ? "not-allowed" : "pointer",
+          }}
+        >
+          {!side
+            ? "Selecione compra ou venda"
+            : !canAdd
+              ? "Ajuste a quantidade"
+              : side === "buy"
+                ? `Comprar ${qty} unid. por ${fmtBRL(total)}`
+                : `Vender ${qty} unid.`}
+        </button>
       </div>
     </div>
   );
@@ -408,14 +451,14 @@ function TradeModal({ asset, price, cash, position, onClose, onTrade }) {
 // ─────────────────────────────────────────────
 // ASSET CARD
 // ─────────────────────────────────────────────
-function AssetCard({ asset, price, history, position, cash, onTrade, open }) {
+function AssetCard({ asset, price, history, position, cash, pendingOrder, onStage, open }) {
   const [modal, setModal] = useState(false);
   const start = history?.[0] || INITIAL_PRICE;
   const change = (price - start) / start;
   const chartCol = change >= 0 ? C.green : C.red;
   return (
     <>
-      <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${C.border}`, marginBottom: 10, animation: "fadeUp .3s ease-out" }}>
+      <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${pendingOrder ? C.gold + "55" : C.border}`, marginBottom: 10, animation: "fadeUp .3s ease-out" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
           <div>
             <div style={{ fontSize: 16, fontWeight: 800 }}>{asset.icon} {asset.name}</div>
@@ -438,17 +481,102 @@ function AssetCard({ asset, price, history, position, cash, onTrade, open }) {
         {open && (
           <button onClick={() => setModal(true)} style={{
             width: "100%", marginTop: 10, padding: "12px 0",
-            backgroundColor: C.gold, border: "none", borderRadius: 10,
-            fontWeight: 800, fontSize: 14, color: "#000", cursor: "pointer",
-          }}>Negociar</button>
+            backgroundColor: pendingOrder ? "transparent" : C.gold,
+            border: pendingOrder ? `1.5px solid ${C.gold}` : "none",
+            borderRadius: 10, fontWeight: 800, fontSize: 13,
+            color: pendingOrder ? C.gold : "#000", cursor: "pointer",
+          }}>
+            {pendingOrder
+              ? `✏ ${pendingOrder.side === "buy" ? "COMPRA" : "VENDA"} · ${pendingOrder.qty} unid. — Editar`
+              : "Montar Ordem"}
+          </button>
         )}
       </div>
       {modal && (
         <TradeModal asset={asset} price={price} cash={cash} position={position}
+          existingOrder={pendingOrder}
           onClose={() => setModal(false)}
-          onTrade={(side, qty) => { onTrade(asset.id, side, qty, price); setModal(false); }} />
+          onStage={(side, qty) => { onStage(asset.id, side, qty); setModal(false); }} />
       )}
     </>
+  );
+}
+
+// ─────────────────────────────────────────────
+// ORDER BASKET — cesta de ordens antes de enviar
+// ─────────────────────────────────────────────
+function OrderBasket({ orders, prices, onSubmit }) {
+  const [confirming, setConfirming] = useState(false);
+  const entries = ASSETS.map(a => ({ asset: a, order: orders[a.id], price: prices[a.id] || INITIAL_PRICE }))
+    .filter(e => e.order);
+  if (entries.length === 0) return null;
+
+  const handleConfirm = () => { onSubmit(); setConfirming(false); };
+
+  return (
+    <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 200 }}>
+      {confirming ? (
+        <div onClick={() => setConfirming(false)} style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,.7)", display: "flex", alignItems: "flex-end" }}>
+          <div onClick={e => e.stopPropagation()} style={{
+            width: "100%", maxWidth: 500, margin: "0 auto",
+            backgroundColor: "#0C0C0C", borderRadius: "20px 20px 0 0",
+            padding: "22px 20px 44px", border: `1px solid ${C.border}`,
+            animation: "slideIn .25s ease-out",
+          }}>
+            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: 2, color: C.gold, textTransform: "uppercase", marginBottom: 16 }}>Confirmar e enviar ordens</div>
+            {entries.map(({ asset, order, price }) => {
+              const isBuy = order.side === "buy";
+              return (
+                <div key={asset.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${C.border}` }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{
+                      fontSize: 10, fontWeight: 800, padding: "3px 8px", borderRadius: 6,
+                      backgroundColor: isBuy ? C.gold : "#1C1400",
+                      color: isBuy ? "#000" : C.gold,
+                      border: isBuy ? "none" : `1px solid ${C.gold}`,
+                    }}>{isBuy ? "COMPRA" : "VENDA"}</span>
+                    <span style={{ fontWeight: 700, fontSize: 14 }}>{asset.icon} {asset.name.replace("Ação ", "")}</span>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 13, fontWeight: 700 }}>{order.qty} unid.</div>
+                    <div style={{ color: C.muted, fontSize: 11 }}>{fmtBRL(order.qty * price)}</div>
+                  </div>
+                </div>
+              );
+            })}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 18 }}>
+              <button onClick={() => setConfirming(false)} style={{
+                padding: "14px", borderRadius: 12, fontWeight: 700, fontSize: 14,
+                backgroundColor: "transparent", border: `1px solid ${C.border}`,
+                color: C.muted, cursor: "pointer",
+              }}>Editar</button>
+              <button onClick={handleConfirm} style={{
+                padding: "14px", borderRadius: 12, fontWeight: 800, fontSize: 14,
+                backgroundColor: C.gold, border: "none", color: "#000", cursor: "pointer",
+              }}>Confirmar →</button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div style={{
+          backgroundColor: "rgba(0,0,0,.96)", borderTop: `1px solid ${C.gold}55`,
+          padding: "12px 16px", backdropFilter: "blur(12px)",
+        }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: 500, margin: "0 auto" }}>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 800 }}>
+                {entries.length} {entries.length === 1 ? "ordem montada" : "ordens montadas"}
+              </div>
+              <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>Revise antes de enviar</div>
+            </div>
+            <button onClick={() => setConfirming(true)} style={{
+              padding: "12px 20px", backgroundColor: C.gold, border: "none",
+              borderRadius: 12, fontWeight: 800, fontSize: 14, color: "#000", cursor: "pointer",
+            }}>Enviar Ordens →</button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -458,6 +586,7 @@ function AssetCard({ asset, price, history, position, cash, onTrade, open }) {
 function StudentView({ name, gameState, prices, priceHistory, player, onTrade }) {
   const [confetti, setConfetti] = useState(false);
   const [shake, setShake] = useState(false);
+  const [pendingOrders, setPendingOrders] = useState({ pib: null, emprego: null, inflacao: null });
   const prevPhase = useRef(null);
   const prevWealth = useRef(INITIAL_CASH);
 
@@ -472,13 +601,28 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
       else if (totalWealth < prevWealth.current - 1) { setShake(true); setTimeout(() => setShake(false), 700); }
       prevWealth.current = totalWealth;
     }
-    if (gameState?.phase === "scenario") prevWealth.current = totalWealth;
+    if (gameState?.phase === "reading") prevWealth.current = totalWealth;
+    if (gameState?.phase !== "scenario") setPendingOrders({ pib: null, emprego: null, inflacao: null });
     prevPhase.current = gameState?.phase;
   }, [gameState?.phase]);
 
   const sc = gameState?.round ? SCENARIOS[gameState.round - 1] : null;
-  const open = gameState?.phase === "scenario";
+  const phase = gameState?.phase;
+  const open = phase === "scenario";
+  const reading = phase === "reading";
   const timerDuration = sc ? ROUND_TIMER(sc.round) : 0;
+
+  const handleStageOrder = (assetId, side, qty) => {
+    setPendingOrders(prev => ({ ...prev, [assetId]: { side, qty } }));
+  };
+
+  const handleSubmitOrders = async () => {
+    for (const a of ASSETS) {
+      const order = pendingOrders[a.id];
+      if (order) await onTrade(a.id, order.side, order.qty, prices[a.id] || INITIAL_PRICE);
+    }
+    setPendingOrders({ pib: null, emprego: null, inflacao: null });
+  };
 
   if (!gameState?.gameStarted) {
     return (
@@ -490,6 +634,77 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
         <div style={{ backgroundColor: C.card, borderRadius: 40, padding: "10px 20px", fontSize: 14, fontWeight: 700, display: "flex", alignItems: "center", gap: 8 }}>
           <div style={{ width: 7, height: 7, borderRadius: "50%", backgroundColor: C.green, animation: "pulse 2s infinite" }} />
           {name}
+        </div>
+      </div>
+    );
+  }
+
+  // ── FASE DE LEITURA: cenário + carteira, sem negociação ──
+  if (reading && sc) {
+    return (
+      <div style={{ minHeight: "100vh", backgroundColor: C.bg, fontFamily: "'DM Sans', sans-serif" }}>
+        <GlobalStyles />
+        <div style={{
+          position: "sticky", top: 0, zIndex: 100,
+          backgroundColor: "rgba(0,0,0,.95)", backdropFilter: "blur(12px)",
+          borderBottom: `1px solid ${C.border}`, padding: "10px 16px",
+          display: "flex", justifyContent: "space-between", alignItems: "center",
+        }}>
+          <div>
+            <div style={{ fontSize: 10, color: C.muted, letterSpacing: 1.5, textTransform: "uppercase" }}>
+              🏟️ MacroArena · R{gameState.round}/10
+              {sc.mode === "treino" && <span style={{ color: C.gold, marginLeft: 6 }}>· TREINO</span>}
+            </div>
+            <div style={{ fontSize: 13, marginTop: 2 }}>
+              <span style={{ color: C.muted }}>Patrimônio </span>
+              <span style={{ fontFamily: "'Space Mono', monospace", fontWeight: 700 }}>{fmtBRL(totalWealth)}</span>
+            </div>
+          </div>
+          <div style={{ backgroundColor: "#0A0A14", border: `1px solid ${C.gold}44`, borderRadius: 20, padding: "5px 12px", fontSize: 11, fontWeight: 700, color: C.gold }}>
+            📖 Leia o cenário
+          </div>
+        </div>
+
+        <div style={{ padding: "16px 16px 32px", maxWidth: 500, margin: "0 auto" }}>
+          <div style={{ backgroundColor: C.card2, borderRadius: 20, padding: "4px 12px", fontSize: 11, color: C.muted, display: "inline-block", marginBottom: 12 }}>{sc.theme}</div>
+
+          {/* Cenário */}
+          <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 20, border: `1px solid ${C.gold}33`, marginBottom: 14 }}>
+            <div style={{ color: C.gold, fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: 2, marginBottom: 10 }}>
+              Cenário · Rodada {gameState.round}
+              {sc.mode === "treino" && <span style={{ marginLeft: 8, backgroundColor: C.gold + "22", padding: "1px 7px", borderRadius: 10, fontSize: 10 }}>treino</span>}
+            </div>
+            <div style={{ fontSize: 17, fontWeight: 800, marginBottom: 12, lineHeight: 1.3 }}>{sc.title}</div>
+            <div style={{ color: "#bbb", fontSize: 14, lineHeight: 1.7 }}>{sc.text}</div>
+          </div>
+
+          {/* Carteira atual */}
+          <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${C.border}` }}>
+            <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: C.muted, marginBottom: 12, textTransform: "uppercase" }}>Sua Carteira Atual</div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <span style={{ color: C.muted, fontSize: 13 }}>Caixa disponível</span>
+              <span style={{ fontFamily: "'Space Mono', monospace", fontWeight: 700 }}>{fmtBRL(player?.cash ?? INITIAL_CASH)}</span>
+            </div>
+            {ASSETS.map(a => {
+              const pos = player?.positions[a.id] || 0;
+              const val = pos * (prices[a.id] || INITIAL_PRICE);
+              return (
+                <div key={a.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderTop: `1px solid ${C.border}` }}>
+                  <span style={{ fontSize: 13, color: pos > 0 ? C.text : C.muted }}>{a.icon} {a.name.replace("Ação ", "")}: {pos > 0 ? `${pos} unid.` : "—"}</span>
+                  {pos > 0 && <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 12 }}>{fmtBRL(val)}</span>}
+                </div>
+              );
+            })}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px solid ${C.gold}33`, paddingTop: 10, marginTop: 4 }}>
+              <span style={{ fontSize: 13, fontWeight: 800, color: C.gold }}>Total</span>
+              <span style={{ fontFamily: "'Space Mono', monospace", fontWeight: 800, color: C.gold }}>{fmtBRL(totalWealth)}</span>
+            </div>
+          </div>
+
+          <div style={{ marginTop: 18, textAlign: "center", color: C.muted, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+            <div style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: C.muted, animation: "pulse 2s infinite" }} />
+            Aguardando abertura do mercado
+          </div>
         </div>
       </div>
     );
@@ -522,7 +737,7 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
         </div>
       </div>
 
-      <div style={{ padding: "14px 16px", maxWidth: 500, margin: "0 auto" }}>
+      <div style={{ padding: "14px 16px", maxWidth: 500, margin: "0 auto", paddingBottom: open ? 100 : 24 }}>
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
           <div style={{ backgroundColor: C.card2, borderRadius: 20, padding: "4px 12px", fontSize: 11, color: C.muted }}>{sc?.theme}</div>
           <div style={{
@@ -579,8 +794,11 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
                 history={priceHistory[a.id] || [INITIAL_PRICE]}
                 position={player?.positions[a.id] || 0}
                 cash={player?.cash || INITIAL_CASH}
-                onTrade={onTrade} open={open} />
+                pendingOrder={pendingOrders[a.id]}
+                onStage={handleStageOrder}
+                open={open} />
             ))}
+            {open && <OrderBasket orders={pendingOrders} prices={prices} onSubmit={handleSubmitOrders} />}
           </>
         )}
       </div>
@@ -632,13 +850,14 @@ function ProfessorView({ gameState, prices, priceHistory, players, onControl }) 
                 {sc?.mode === "treino" && <span style={{ color: "#777", marginLeft: 5 }}>· treino</span>}
               </div>
               <div style={{
-                backgroundColor: phase === "scenario" ? "#001A08" : "#1a1a0a",
-                border: `1px solid ${phase === "scenario" ? C.green + "55" : C.border}`,
+                backgroundColor: phase === "scenario" ? "#001A08" : phase === "reading" ? "#0A0A14" : "#1a1a0a",
+                border: `1px solid ${phase === "scenario" ? C.green + "55" : phase === "reading" ? C.gold + "55" : C.border}`,
                 borderRadius: 20, padding: "5px 14px", fontSize: 12, fontWeight: 700,
-                color: phase === "scenario" ? C.green : C.muted,
+                color: phase === "scenario" ? C.green : phase === "reading" ? C.gold : C.muted,
               }}>
                 {phase === "scenario"
                   ? (timerDuration === 0 ? "● Treino — sem timer" : "● Mercado Aberto")
+                  : phase === "reading" ? "📖 Lendo o Cenário"
                   : phase === "closed" ? "🔒 Encerrado" : "⏸ Aguardando"}
               </div>
             </>
@@ -706,7 +925,8 @@ function ProfessorView({ gameState, prices, priceHistory, players, onControl }) 
             <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${C.border}` }}>
               <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: C.muted, marginBottom: 12, textTransform: "uppercase" }}>Controles</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {(phase === "lobby" || !phase) && <button onClick={() => onControl("openMarket")} style={{ padding: "12px", backgroundColor: C.gold, border: "none", borderRadius: 10, fontWeight: 800, color: "#000", cursor: "pointer", fontSize: 14 }}>▶ Abrir Mercado</button>}
+                {(phase === "lobby" || !phase) && <button onClick={() => onControl("showScenario")} style={{ padding: "12px", backgroundColor: C.gold, border: "none", borderRadius: 10, fontWeight: 800, color: "#000", cursor: "pointer", fontSize: 14 }}>📖 Mostrar Cenário</button>}
+                {phase === "reading" && <button onClick={() => onControl("openMarket")} style={{ padding: "12px", backgroundColor: C.green, border: "none", borderRadius: 10, fontWeight: 800, color: "#000", cursor: "pointer", fontSize: 14 }}>▶ Abrir Mercado</button>}
                 {phase === "scenario" && <button onClick={() => onControl("closeMarket")} style={{ padding: "12px", backgroundColor: C.red, border: "none", borderRadius: 10, fontWeight: 800, color: "#fff", cursor: "pointer", fontSize: 14 }}>🔒 Fechar Mercado</button>}
                 {phase === "closed" && gameState.round < 10 && <button onClick={() => onControl("nextRound")} style={{ padding: "12px", backgroundColor: C.green, border: "none", borderRadius: 10, fontWeight: 800, color: "#000", cursor: "pointer", fontSize: 14 }}>⏭ Próxima Rodada</button>}
                 {phase === "closed" && gameState.round >= 10 && <div style={{ backgroundColor: "#0D1A0D", border: `1px solid ${C.green}44`, borderRadius: 10, padding: 12, textAlign: "center", fontSize: 13, color: C.green, fontWeight: 800 }}>🏆 Jogo Encerrado!</div>}
@@ -922,6 +1142,10 @@ export default function MacroArena() {
     switch (action) {
       case "startGame": {
         const ns = { gameStarted: true, round: 1, phase: "lobby", prices: { pib: INITIAL_PRICE, emprego: INITIAL_PRICE, inflacao: INITIAL_PRICE }, priceHistory: { pib: [INITIAL_PRICE], emprego: [INITIAL_PRICE], inflacao: [INITIAL_PRICE] }, timerStart: null };
+        await sSet("game:state", ns); setGameState(ns); break;
+      }
+      case "showScenario": {
+        const ns = { ...state, phase: "reading" };
         await sSet("game:state", ns); setGameState(ns); break;
       }
       case "openMarket": {
