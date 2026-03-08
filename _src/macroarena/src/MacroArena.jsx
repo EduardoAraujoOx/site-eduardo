@@ -1,4 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  "https://ecjeuwadpmtvbkcvrxoc.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjamV1d2FkcG10dmJrY3ZyeG9jIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjAwMzI1MiwiZXhwIjoyMDg3NTc5MjUyfQ.aj3mC2Cgcen4TViejwU_St0sLD0SdrqlSenB66SuA1s"
+);
 import {
   AreaChart, Area, LineChart, Line,
   XAxis, YAxis, ResponsiveContainer, Tooltip
@@ -167,34 +173,28 @@ const SCENARIOS = [
 ];
 
 // ─────────────────────────────────────────────
-// STORAGE HELPERS
-// Adaptado para localStorage (site estático).
-// localStorage é compartilhado entre todas as abas do mesmo domínio,
-// mas NÃO entre dispositivos diferentes.
-// Para uso multi-dispositivo em sala (professor + alunos em PCs separados),
-// substitua por Firebase Realtime Database ou Supabase Realtime.
+// STORAGE HELPERS — Supabase Realtime
 // ─────────────────────────────────────────────
 async function sGet(key) {
   try {
-    const val = localStorage.getItem(key);
-    return val ? JSON.parse(val) : null;
-  } catch {
-    return null;
-  }
+    const { data } = await supabase.from("game_kv").select("value").eq("key", key).single();
+    return data?.value ?? null;
+  } catch { return null; }
 }
 
 async function sSet(key, value) {
   try {
-    localStorage.setItem(key, JSON.stringify(value));
+    await supabase.from("game_kv").upsert({ key, value, updated_at: new Date().toISOString() });
+    // Notifica todos os clientes via Broadcast (não requer configuração DDL)
+    await supabase.channel("game_bus").send({ type: "broadcast", event: "kv_change", payload: { key } });
   } catch {}
 }
 
 async function sList(prefix) {
   try {
-    return Object.keys(localStorage).filter(k => k.startsWith(prefix));
-  } catch {
-    return [];
-  }
+    const { data } = await supabase.from("game_kv").select("key").like("key", `${prefix}%`);
+    return data?.map(r => r.key) ?? [];
+  } catch { return []; }
 }
 
 const fmtBRL = v => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
@@ -209,7 +209,7 @@ const GlobalStyles = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600;700;800;900&display=swap');
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #000; color: #fff; font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+    body { background: #000; color: #fff; font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; font-size: 15px; }
     input { outline: none; font-family: inherit; }
     button { font-family: inherit; transition: opacity .15s, transform .1s; }
     button:active { transform: scale(0.97); }
@@ -669,7 +669,7 @@ function ProfessorView({ gameState, prices, priceHistory, players, onControl }) 
           </div>
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "300px 1fr 260px", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "320px 1fr 280px", gap: 18 }}>
           {/* LEFT */}
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {sc && (
@@ -855,7 +855,9 @@ export default function MacroArena() {
 
   useEffect(() => {
     if (!mode) return;
-    const poll = async () => {
+
+    // Busca inicial
+    const fetchAll = async () => {
       const state = await sGet("game:state");
       if (state) { setGameState(state); if (state.prices) setPrices(state.prices); if (state.priceHistory) setPriceHistory(state.priceHistory); }
       if (mode === "professor") {
@@ -867,9 +869,30 @@ export default function MacroArena() {
         const p = await sGet(`game:player:${playerName}`); if (p) setPlayer(p);
       }
     };
-    poll();
-    const iv = setInterval(poll, 2000);
-    return () => clearInterval(iv);
+    fetchAll();
+
+    // Realtime via Broadcast — funciona sem configuração DDL (REPLICA IDENTITY etc.)
+    const channel = supabase
+      .channel("game_bus")
+      .on("broadcast", { event: "kv_change" }, async ({ payload }) => {
+        const key = payload?.key;
+        if (key === "game:state") {
+          const state = await sGet("game:state");
+          if (state) { setGameState(state); if (state.prices) setPrices(state.prices); if (state.priceHistory) setPriceHistory(state.priceHistory); }
+        } else if (key?.startsWith("game:player:")) {
+          const name = key.replace("game:player:", "");
+          if (mode === "professor") {
+            const p = await sGet(key);
+            if (p) setPlayers(prev => ({ ...prev, [name]: p }));
+          } else if (name === playerName) {
+            const p = await sGet(key);
+            if (p) setPlayer(p);
+          }
+        }
+      })
+      .subscribe();
+
+    return () => supabase.removeChannel(channel);
   }, [mode, playerName]);
 
   const handleTrade = useCallback(async (assetId, side, qty, price) => {
