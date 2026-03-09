@@ -893,7 +893,7 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
               const pnl = totalWealth - prevWealth.current;
               return (
                 <>
-                  {/* Resultado da rodada em destaque — aparece ANTES da explicação */}
+                  {/* Resultado da rodada em destaque */}
                   <div style={{
                     backgroundColor: pnl >= 0 ? "#061208" : "#120608",
                     borderRadius: 16, padding: "18px 20px",
@@ -911,14 +911,52 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
                     </div>
                   </div>
 
-                  {/* O que aconteceu */}
-                  <div style={{ marginBottom: 12, animation: "fadeUp .4s ease-out" }}>
-                    <div style={{ color: C.green, fontWeight: 800, fontSize: 13, marginBottom: 10 }}>🔍 O que aconteceu</div>
-                    <ExplanationSteps steps={sc.explanationSteps} />
-                    <div style={{ marginTop: 10, backgroundColor: "#0D0D18", borderRadius: 10, padding: "10px 14px", border: `1px solid ${C.gold}22` }}>
-                      <div style={{ fontSize: 11, color: C.gold, fontWeight: 700, marginBottom: 3 }}>💡 Sobre a magnitude</div>
-                      <div style={{ fontSize: 11, color: "#888", lineHeight: 1.6 }}>
-                        A <b style={{ color: "#aaa" }}>direção</b> você previu com a análise. A <b style={{ color: "#aaa" }}>magnitude</b> foi sorteada — como no mercado real, onde economistas acertam o sinal mas raramente o tamanho exato do impacto.
+                  {/* O que aconteceu — texto direto, sem esquema de setas */}
+                  <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${C.border}`, marginBottom: 12, animation: "fadeUp .4s ease-out" }}>
+                    <div style={{ color: C.green, fontWeight: 800, fontSize: 13, marginBottom: 14 }}>🔍 O que aconteceu</div>
+                    {sc.explanationSteps.map((step, si) => {
+                      const asset = ASSETS.find(a => a.id === step.asset);
+                      const price = prices[step.asset] || INITIAL_PRICE;
+                      const chg = (price - INITIAL_PRICE) / INITIAL_PRICE;
+                      const accent = step.direction > 0 ? C.green : C.red;
+                      const isLast = si === sc.explanationSteps.length - 1;
+                      return (
+                        <div key={si} style={{ marginBottom: isLast ? 0 : 12, paddingBottom: isLast ? 0 : 12, borderBottom: isLast ? "none" : `1px solid ${C.border}` }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
+                            <span style={{ fontWeight: 800, fontSize: 13 }}>{asset.icon} {asset.name.replace("Ação ", "")}</span>
+                            <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, fontWeight: 700, color: accent }}>
+                                {chg >= 0 ? "+" : ""}{(chg * 100).toFixed(1)}%
+                              </span>
+                              <span style={{ fontSize: 10, fontWeight: 800, color: accent, backgroundColor: `${accent}18`, padding: "2px 7px", borderRadius: 6 }}>
+                                {step.direction > 0 ? "▲ SOBE" : "▼ CAI"}
+                              </span>
+                            </div>
+                          </div>
+                          <p style={{ fontSize: 12, color: "#999", lineHeight: 1.6, margin: 0 }}>
+                            {step.chain.slice(0, -1).join(". ") + "."}
+                          </p>
+                        </div>
+                      );
+                    })}
+                    {/* Posição final do jogador */}
+                    <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${C.border}` }}>
+                      <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 8, fontWeight: 700 }}>Sua posição</div>
+                      {ASSETS.map(a => {
+                        const pos = player.positions[a.id] || 0;
+                        const val = pos * (prices[a.id] || INITIAL_PRICE);
+                        return (
+                          <div key={a.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: pos > 0 ? C.text : C.muted, marginBottom: 4 }}>
+                            <span>{a.icon} {a.name.replace("Ação ", "")}</span>
+                            <span style={{ fontFamily: "'Space Mono', monospace" }}>
+                              {pos > 0 ? `${pos} unid. · ${fmtBRL(val)}` : "—"}
+                            </span>
+                          </div>
+                        );
+                      })}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, paddingTop: 6, marginTop: 4, borderTop: `1px solid ${C.border}` }}>
+                        <span style={{ color: C.muted }}>Caixa</span>
+                        <span style={{ fontFamily: "'Space Mono', monospace", color: C.text }}>{fmtBRL(player.cash ?? INITIAL_CASH)}</span>
                       </div>
                     </div>
                   </div>
@@ -926,7 +964,8 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
               );
             })()}
 
-            {ASSETS.map(a => (
+            {/* AssetCards apenas durante o trading */}
+            {open && ASSETS.map(a => (
               <AssetCard key={a.id} asset={a}
                 price={prices[a.id] || INITIAL_PRICE}
                 history={priceHistory[a.id] || [INITIAL_PRICE]}
@@ -936,6 +975,32 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
                 onStage={handleStageOrder}
                 open={open} />
             ))}
+
+            {/* Fase de espera (lobby): carteira resumida, sem cotações */}
+            {!open && gameState.phase !== "closed" && (
+              <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${C.border}` }}>
+                <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: C.muted, marginBottom: 12, textTransform: "uppercase" }}>Sua Carteira Atual</div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                  <span style={{ color: C.muted, fontSize: 13 }}>Caixa disponível</span>
+                  <span style={{ fontFamily: "'Space Mono', monospace", fontWeight: 700 }}>{fmtBRL(player?.cash ?? INITIAL_CASH)}</span>
+                </div>
+                {ASSETS.map(a => {
+                  const pos = player?.positions[a.id] || 0;
+                  const val = pos * (prices[a.id] || INITIAL_PRICE);
+                  return (
+                    <div key={a.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderTop: `1px solid ${C.border}` }}>
+                      <span style={{ fontSize: 13, color: pos > 0 ? C.text : C.muted }}>{a.icon} {a.name.replace("Ação ", "")}: {pos > 0 ? `${pos} unid.` : "—"}</span>
+                      {pos > 0 && <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 12 }}>{fmtBRL(val)}</span>}
+                    </div>
+                  );
+                })}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px solid ${C.gold}33`, paddingTop: 10, marginTop: 4 }}>
+                  <span style={{ fontSize: 13, fontWeight: 800, color: C.gold }}>Total</span>
+                  <span style={{ fontFamily: "'Space Mono', monospace", fontWeight: 800, color: C.gold }}>{fmtBRL(totalWealth)}</span>
+                </div>
+              </div>
+            )}
+
             {open && <OrderBasket orders={pendingOrders} prices={prices} cash={player?.cash ?? INITIAL_CASH} positions={player?.positions ?? {}} onSubmit={handleSubmitOrders} />}
           </>
         )}
