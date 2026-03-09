@@ -688,8 +688,11 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
   const [confetti, setConfetti] = useState(false);
   const [shake, setShake] = useState(false);
   const [pendingOrders, setPendingOrders] = useState({ pib: null, emprego: null, inflacao: null });
+  const [roundTrades, setRoundTrades] = useState([]);
   const prevPhase = useRef(null);
   const prevWealth = useRef(INITIAL_CASH);
+  const prevPlayer = useRef({ cash: INITIAL_CASH, positions: { pib: 0, emprego: 0, inflacao: 0 } });
+  const prevPrices = useRef({ pib: INITIAL_PRICE, emprego: INITIAL_PRICE, inflacao: INITIAL_PRICE });
 
   const totalWealth = player
     ? player.cash + ASSETS.reduce((s, a) => s + (player.positions[a.id] || 0) * (prices[a.id] || INITIAL_PRICE), 0)
@@ -703,10 +706,17 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
       // NÃO atualizar prevWealth.current aqui — ele é usado para calcular o pnl
       // da rodada durante toda a fase "closed". O baseline correto foi salvo em "reading".
     }
-    if (gameState?.phase === "reading") prevWealth.current = totalWealth;
+    if (gameState?.phase === "reading") {
+      prevWealth.current = totalWealth;
+      prevPlayer.current = player
+        ? { cash: player.cash, positions: { ...player.positions } }
+        : { cash: INITIAL_CASH, positions: { pib: 0, emprego: 0, inflacao: 0 } };
+      prevPrices.current = { ...prices };
+    }
+    if (gameState?.phase === "scenario") setRoundTrades([]);
     if (gameState?.phase !== "scenario") setPendingOrders({ pib: null, emprego: null, inflacao: null });
     prevPhase.current = gameState?.phase;
-  }, [gameState?.phase]);
+  }, [gameState?.phase]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const sc = gameState?.round ? SCENARIOS[gameState.round - 1] : null;
   const phase = gameState?.phase;
@@ -719,10 +729,16 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
   };
 
   const handleSubmitOrders = async () => {
+    const executed = [];
     for (const a of ASSETS) {
       const order = pendingOrders[a.id];
-      if (order) await onTrade(a.id, order.side, order.qty, prices[a.id] || INITIAL_PRICE);
+      if (order) {
+        const price = prices[a.id] || INITIAL_PRICE;
+        await onTrade(a.id, order.side, order.qty, price);
+        executed.push({ assetId: a.id, side: order.side, qty: order.qty, price });
+      }
     }
+    setRoundTrades(executed);
     setPendingOrders({ pib: null, emprego: null, inflacao: null });
   };
 
@@ -918,54 +934,115 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
                     </div>
                   </div>
 
-                  {/* O que aconteceu — texto direto, sem esquema de setas */}
-                  <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${C.border}`, marginBottom: 12, animation: "fadeUp .4s ease-out" }}>
-                    <div style={{ color: C.green, fontWeight: 800, fontSize: 13, marginBottom: 14 }}>🔍 O que aconteceu</div>
-                    {sc.explanationSteps.map((step, si) => {
-                      const asset = ASSETS.find(a => a.id === step.asset);
-                      const price = prices[step.asset] || INITIAL_PRICE;
-                      const chg = (price - INITIAL_PRICE) / INITIAL_PRICE;
-                      const accent = step.direction > 0 ? C.green : C.red;
-                      const isLast = si === sc.explanationSteps.length - 1;
-                      return (
-                        <div key={si} style={{ marginBottom: isLast ? 0 : 12, paddingBottom: isLast ? 0 : 12, borderBottom: isLast ? "none" : `1px solid ${C.border}` }}>
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
-                            <span style={{ fontWeight: 800, fontSize: 13 }}>{asset.icon} {asset.name.replace("Ação ", "")}</span>
-                            <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, fontWeight: 700, color: accent }}>
-                                {chg >= 0 ? "+" : ""}{(chg * 100).toFixed(1)}%
-                              </span>
-                              <span style={{ fontSize: 10, fontWeight: 800, color: accent, backgroundColor: `${accent}18`, padding: "2px 7px", borderRadius: 6 }}>
-                                {step.direction > 0 ? "▲ SOBE" : "▼ CAI"}
-                              </span>
-                            </div>
-                          </div>
-                          <p style={{ fontSize: 12, color: "#999", lineHeight: 1.6, margin: 0 }}>
-                            {step.chain.slice(0, -1).join(". ") + "."}
-                          </p>
-                        </div>
-                      );
-                    })}
-                    {/* Posição final do jogador */}
-                    <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${C.border}` }}>
-                      <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 8, fontWeight: 700 }}>Sua posição</div>
+                  {/* Extrato auditável: antes → operações → mercado → final */}
+                  <div style={{ backgroundColor: C.card, borderRadius: 16, border: `1px solid ${C.border}`, marginBottom: 12, animation: "fadeUp .4s ease-out", overflow: "hidden" }}>
+
+                    {/* ① Antes desta rodada */}
+                    <div style={{ padding: "12px 16px", borderBottom: `1px solid ${C.border}` }}>
+                      <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: 2, color: C.muted, textTransform: "uppercase", marginBottom: 8 }}>① Antes desta rodada</div>
                       {ASSETS.map(a => {
-                        const pos = player.positions[a.id] || 0;
-                        const val = pos * (prices[a.id] || INITIAL_PRICE);
+                        const pos = prevPlayer.current.positions[a.id] || 0;
+                        const pp = prevPrices.current[a.id] || INITIAL_PRICE;
+                        if (pos === 0) return null;
                         return (
-                          <div key={a.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: pos > 0 ? C.text : C.muted, marginBottom: 4 }}>
-                            <span>{a.icon} {a.name.replace("Ação ", "")}</span>
-                            <span style={{ fontFamily: "'Space Mono', monospace" }}>
-                              {pos > 0 ? `${pos} unid. · ${fmtBRL(val)}` : "—"}
+                          <div key={a.id} style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: C.text, marginBottom: 3 }}>
+                            <span>{a.icon} {pos} unid. × {fmtBRL(pp)}</span>
+                            <span style={{ fontFamily: "'Space Mono', monospace" }}>{fmtBRL(pos * pp)}</span>
+                          </div>
+                        );
+                      })}
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: C.muted, marginBottom: 6 }}>
+                        <span>Caixa</span>
+                        <span style={{ fontFamily: "'Space Mono', monospace" }}>{fmtBRL(prevPlayer.current.cash)}</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 800, color: C.gold, borderTop: `1px solid ${C.border}`, paddingTop: 6 }}>
+                        <span>Patrimônio inicial</span>
+                        <span style={{ fontFamily: "'Space Mono', monospace" }}>{fmtBRL(prevWealth.current)}</span>
+                      </div>
+                    </div>
+
+                    {/* ② Suas operações */}
+                    <div style={{ padding: "12px 16px", borderBottom: `1px solid ${C.border}` }}>
+                      <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: 2, color: C.muted, textTransform: "uppercase", marginBottom: 8 }}>② Suas operações</div>
+                      {roundTrades.length === 0 ? (
+                        <div style={{ fontSize: 12, color: C.muted, fontStyle: "italic" }}>Você não fez operações nesta rodada</div>
+                      ) : roundTrades.map((t, i) => {
+                        const asset = ASSETS.find(a => a.id === t.assetId);
+                        const isBuy = t.side === "buy";
+                        return (
+                          <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, marginBottom: 3 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                              <span style={{ fontSize: 9, fontWeight: 800, padding: "1px 6px", borderRadius: 4, backgroundColor: isBuy ? C.gold : "transparent", border: isBuy ? "none" : `1px solid ${C.gold}`, color: isBuy ? "#000" : C.gold }}>
+                                {isBuy ? "COMPRA" : "VENDA"}
+                              </span>
+                              <span>{asset.icon} {t.qty} unid.</span>
+                            </div>
+                            <span style={{ fontFamily: "'Space Mono', monospace", color: isBuy ? C.red : C.green }}>
+                              {isBuy ? "−" : "+"}{fmtBRL(t.qty * t.price)}
                             </span>
                           </div>
                         );
                       })}
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, paddingTop: 6, marginTop: 4, borderTop: `1px solid ${C.border}` }}>
-                        <span style={{ color: C.muted }}>Caixa</span>
-                        <span style={{ fontFamily: "'Space Mono', monospace", color: C.text }}>{fmtBRL(player.cash ?? INITIAL_CASH)}</span>
+                    </div>
+
+                    {/* ③ Mercado reagiu */}
+                    <div style={{ padding: "12px 16px", borderBottom: `1px solid ${C.border}` }}>
+                      <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: 2, color: C.muted, textTransform: "uppercase", marginBottom: 8 }}>③ Mercado reagiu</div>
+                      {sc.explanationSteps.map((step, si) => {
+                        const asset = ASSETS.find(a => a.id === step.asset);
+                        const pp = prevPrices.current[step.asset] || INITIAL_PRICE;
+                        const cp = prices[step.asset] || INITIAL_PRICE;
+                        const chg = (cp - pp) / pp;
+                        const accent = step.direction > 0 ? C.green : C.red;
+                        return (
+                          <div key={si} style={{ marginBottom: si < sc.explanationSteps.length - 1 ? 10 : 0 }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
+                              <span style={{ fontWeight: 700, fontSize: 12 }}>{asset.icon} {asset.name.replace("Ação ", "")}</span>
+                              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: C.muted }}>
+                                  {fmtBRL(pp)} → <span style={{ color: accent, fontWeight: 700 }}>{fmtBRL(cp)}</span>
+                                </span>
+                                <span style={{ fontSize: 9, fontWeight: 800, color: accent, backgroundColor: `${accent}18`, padding: "2px 6px", borderRadius: 5 }}>
+                                  {chg >= 0 ? "+" : ""}{(chg * 100).toFixed(1)}%
+                                </span>
+                              </div>
+                            </div>
+                            <p style={{ fontSize: 11, color: "#777", lineHeight: 1.5, margin: 0 }}>
+                              {step.chain.slice(0, -1).join(". ") + "."}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* ④ Ao final da rodada */}
+                    <div style={{ padding: "12px 16px" }}>
+                      <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: 2, color: C.muted, textTransform: "uppercase", marginBottom: 8 }}>④ Ao final da rodada</div>
+                      {ASSETS.map(a => {
+                        const pos = player.positions[a.id] || 0;
+                        const cp = prices[a.id] || INITIAL_PRICE;
+                        if (pos === 0) return null;
+                        return (
+                          <div key={a.id} style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: C.text, marginBottom: 3 }}>
+                            <span>{a.icon} {pos} unid. × {fmtBRL(cp)}</span>
+                            <span style={{ fontFamily: "'Space Mono', monospace" }}>{fmtBRL(pos * cp)}</span>
+                          </div>
+                        );
+                      })}
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: C.muted, marginBottom: 6 }}>
+                        <span>Caixa</span>
+                        <span style={{ fontFamily: "'Space Mono', monospace" }}>{fmtBRL(player.cash ?? INITIAL_CASH)}</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 800, borderTop: `1px solid ${C.border}`, paddingTop: 6 }}>
+                        <span style={{ color: C.gold }}>Patrimônio final</span>
+                        <span style={{ fontFamily: "'Space Mono', monospace", color: C.gold }}>{fmtBRL(totalWealth)}</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, marginTop: 5, color: col(pnl) }}>
+                        <span>Variação da rodada</span>
+                        <span style={{ fontFamily: "'Space Mono', monospace", fontWeight: 700 }}>{pnl >= 0 ? "+" : ""}{fmtBRL(pnl)}</span>
                       </div>
                     </div>
+
                   </div>
                 </>
               );
@@ -1263,6 +1340,8 @@ export default function MacroArena() {
   const [priceHistory, setPriceHistory] = useState({ pib: [INITIAL_PRICE], emprego: [INITIAL_PRICE], inflacao: [INITIAL_PRICE] });
   const [player, setPlayer] = useState(null);
   const [players, setPlayers] = useState({});
+  const playerRef = useRef(null);
+  useEffect(() => { playerRef.current = player; }, [player]);
 
   useEffect(() => {
     if (mode !== "student" || !playerName) return;
@@ -1318,17 +1397,21 @@ export default function MacroArena() {
   }, [mode, playerName]);
 
   const handleTrade = useCallback(async (assetId, side, qty, price) => {
-    if (!player || !playerName) return;
+    // Usa playerRef (atualizado sincronamente) para evitar race condition
+    // quando múltiplas ordens são enviadas em sequência com await.
+    const cur = playerRef.current;
+    if (!cur || !playerName) return;
     const buy = side === "buy";
     const cost = qty * price;
-    if (buy && cost > player.cash) return;
-    if (!buy && qty > (player.positions[assetId] || 0)) return;
+    if (buy && cost > cur.cash) return;
+    if (!buy && qty > (cur.positions[assetId] || 0)) return;
     const np = newPrice(price, qty, buy);
     const updated = {
-      ...player,
-      cash: buy ? player.cash - cost : player.cash + qty * price,
-      positions: { ...player.positions, [assetId]: (player.positions[assetId] || 0) + (buy ? qty : -qty) },
+      ...cur,
+      cash: buy ? cur.cash - cost : cur.cash + qty * price,
+      positions: { ...cur.positions, [assetId]: (cur.positions[assetId] || 0) + (buy ? qty : -qty) },
     };
+    playerRef.current = updated; // atualiza ref antes do await para o próximo call
     setPlayer(updated);
     await sSet(`game:player:${playerName}`, updated);
     const state = await sGet("game:state");
@@ -1337,7 +1420,7 @@ export default function MacroArena() {
       const newHist = { ...state.priceHistory, [assetId]: [...(state.priceHistory[assetId] || [INITIAL_PRICE]), np] };
       await sSet("game:state", { ...state, prices: newPrices, priceHistory: newHist });
     }
-  }, [player, playerName]);
+  }, [playerName]);
 
   const handleControl = useCallback(async (action) => {
     const state = await sGet("game:state") || {};
