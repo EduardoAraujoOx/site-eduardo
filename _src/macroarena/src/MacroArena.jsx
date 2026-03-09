@@ -705,17 +705,17 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
       if (totalWealth > prevW + 1) { setConfetti(true); setTimeout(() => setConfetti(false), 3500); }
       else if (totalWealth < prevW - 1) { setShake(true); setTimeout(() => setShake(false), 700); }
     }
-    if (gameState?.phase === "reading") snapshotDone.current = false;
+    if (gameState?.phase === "lobby") snapshotDone.current = false;
     if (gameState?.phase === "scenario") setRoundTrades([]);
     if (gameState?.phase !== "scenario") setPendingOrders({ pib: null, emprego: null, inflacao: null });
     prevPhase.current = gameState?.phase;
   }, [gameState?.phase]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Salva snapshot de posições e preços ao início de cada rodada (fase "reading"),
+  // Salva snapshot de posições e preços ao início de cada rodada (fase "lobby"),
   // aguardando o player estar carregado antes de salvar — evita race condition onde
   // o efeito de fase disparava com player=null, salvando o valor padrão em vez do saldo real.
   useEffect(() => {
-    if (gameState?.phase === "reading" && player && !snapshotDone.current) {
+    if (gameState?.phase === "lobby" && player && !snapshotDone.current) {
       snapshotDone.current = true;
       prevPlayer.current = { cash: player.cash, positions: { ...player.positions } };
       prevPrices.current = { ...prices };
@@ -725,7 +725,6 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
   const sc = gameState?.round ? SCENARIOS[gameState.round - 1] : null;
   const phase = gameState?.phase;
   const open = phase === "scenario";
-  const reading = phase === "reading";
   const timerDuration = sc ? ROUND_TIMER(sc.round) : 0;
 
   const handleStageOrder = (assetId, side, qty) => {
@@ -761,8 +760,8 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
     );
   }
 
-  // ── FASE DE LEITURA: cenário + carteira, sem negociação ──
-  if (reading && sc) {
+  // ── LOBBY: cenário + carteira, aguardando abertura do mercado ──
+  if (phase === "lobby" && sc) {
     return (
       <div style={{ minHeight: "100vh", backgroundColor: C.bg, fontFamily: "'DM Sans', sans-serif" }}>
         <GlobalStyles />
@@ -1142,14 +1141,13 @@ function ProfessorView({ gameState, prices, priceHistory, players, onControl }) 
                 {sc?.mode === "treino" && <span style={{ color: "#777", marginLeft: 5 }}>· treino</span>}
               </div>
               <div style={{
-                backgroundColor: phase === "scenario" ? "#001A08" : phase === "reading" ? "#0A0A14" : "#1a1a0a",
-                border: `1px solid ${phase === "scenario" ? C.green + "55" : phase === "reading" ? C.gold + "55" : C.border}`,
+                backgroundColor: phase === "scenario" ? "#001A08" : "#1a1a0a",
+                border: `1px solid ${phase === "scenario" ? C.green + "55" : C.border}`,
                 borderRadius: 20, padding: "5px 14px", fontSize: 12, fontWeight: 700,
-                color: phase === "scenario" ? C.green : phase === "reading" ? C.gold : C.muted,
+                color: phase === "scenario" ? C.green : C.muted,
               }}>
                 {phase === "scenario"
                   ? (timerDuration === 0 ? "● Treino — sem timer" : "● Mercado Aberto")
-                  : phase === "reading" ? "📖 Lendo o Cenário"
                   : phase === "closed" ? "🔒 Encerrado" : "⏸ Aguardando"}
               </div>
             </>
@@ -1242,8 +1240,7 @@ function ProfessorView({ gameState, prices, priceHistory, players, onControl }) 
             <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${C.border}` }}>
               <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: C.muted, marginBottom: 12, textTransform: "uppercase" }}>Controles</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {(phase === "lobby" || !phase) && <button onClick={() => onControl("showScenario")} style={{ padding: "12px", backgroundColor: C.gold, border: "none", borderRadius: 10, fontWeight: 800, color: "#000", cursor: "pointer", fontSize: 14 }}>📖 Mostrar Cenário</button>}
-                {phase === "reading" && <button onClick={() => onControl("openMarket")} style={{ padding: "12px", backgroundColor: C.green, border: "none", borderRadius: 10, fontWeight: 800, color: "#000", cursor: "pointer", fontSize: 14 }}>▶ Abrir Mercado</button>}
+                {(phase === "lobby" || !phase) && <button onClick={() => onControl("openMarket")} style={{ padding: "12px", backgroundColor: C.green, border: "none", borderRadius: 10, fontWeight: 800, color: "#000", cursor: "pointer", fontSize: 14 }}>▶ Abrir Mercado</button>}
                 {phase === "scenario" && <button onClick={() => onControl("closeMarket")} style={{ padding: "12px", backgroundColor: C.red, border: "none", borderRadius: 10, fontWeight: 800, color: "#fff", cursor: "pointer", fontSize: 14 }}>🔒 Fechar Mercado</button>}
                 {phase === "closed" && gameState.round < 10 && <button onClick={() => onControl("nextRound")} style={{ padding: "12px", backgroundColor: C.green, border: "none", borderRadius: 10, fontWeight: 800, color: "#000", cursor: "pointer", fontSize: 14 }}>⏭ Próxima Rodada</button>}
                 {phase === "closed" && gameState.round >= 10 && <div style={{ backgroundColor: "#0D1A0D", border: `1px solid ${C.green}44`, borderRadius: 10, padding: 12, textAlign: "center", fontSize: 13, color: C.green, fontWeight: 800 }}>🏆 Jogo Encerrado!</div>}
@@ -1435,10 +1432,6 @@ export default function MacroArena() {
     switch (action) {
       case "startGame": {
         const ns = { gameId: Date.now(), gameStarted: true, round: 1, phase: "lobby", prices: { pib: INITIAL_PRICE, emprego: INITIAL_PRICE, inflacao: INITIAL_PRICE }, priceHistory: { pib: [INITIAL_PRICE], emprego: [INITIAL_PRICE], inflacao: [INITIAL_PRICE] }, timerStart: null };
-        await sSet("game:state", ns); setGameState(ns); break;
-      }
-      case "showScenario": {
-        const ns = { ...state, phase: "reading" };
         await sSet("game:state", ns); setGameState(ns); break;
       }
       case "openMarket": {
