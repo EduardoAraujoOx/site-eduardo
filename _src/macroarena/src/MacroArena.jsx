@@ -209,7 +209,8 @@ const GlobalStyles = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600;700;800;900&display=swap');
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #000; color: #fff; font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; font-size: 15px; }
+    html { overflow-x: hidden; }
+    body { background: #000; color: #fff; font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; font-size: 15px; overflow-x: hidden; padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
     input { outline: none; font-family: inherit; }
     button { font-family: inherit; transition: opacity .15s, transform .1s; }
     button:active { transform: scale(0.97); }
@@ -656,7 +657,9 @@ function OrderBasket({ orders, prices, cash, positions, onSubmit }) {
       ) : (
         <div style={{
           backgroundColor: "rgba(0,0,0,.96)", borderTop: `1px solid ${C.gold}55`,
-          padding: "12px 16px", backdropFilter: "blur(12px)",
+          padding: "12px 16px",
+          paddingBottom: "max(12px, env(safe-area-inset-bottom))",
+          backdropFilter: "blur(12px)",
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: 500, margin: "0 auto" }}>
             <div>
@@ -746,7 +749,9 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
         <div style={{
           position: "sticky", top: 0, zIndex: 100,
           backgroundColor: "rgba(0,0,0,.95)", backdropFilter: "blur(12px)",
-          borderBottom: `1px solid ${C.border}`, padding: "8px 16px",
+          borderBottom: `1px solid ${C.border}`,
+          padding: "8px 16px",
+          paddingTop: "max(8px, env(safe-area-inset-top))",
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: 500, margin: "0 auto" }}>
             <div style={{ fontSize: 10, color: C.muted, letterSpacing: 1, textTransform: "uppercase" }}>
@@ -825,7 +830,9 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
       <div style={{
         position: "sticky", top: 0, zIndex: 100,
         backgroundColor: "rgba(0,0,0,.95)", backdropFilter: "blur(12px)",
-        borderBottom: `1px solid ${C.border}`, padding: "8px 16px",
+        borderBottom: `1px solid ${C.border}`,
+        padding: "8px 16px",
+        paddingTop: "max(8px, env(safe-area-inset-top))",
       }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: 500, margin: "0 auto" }}>
           <div style={{ fontSize: 10, color: C.muted, letterSpacing: 1, textTransform: "uppercase" }}>
@@ -1364,6 +1371,10 @@ export default function MacroArena() {
         await sSet("game:state", ns); setGameState(ns); break;
       }
       case "reset": {
+        // Resetar saldo de todos os jogadores para o estado inicial
+        const playerKeys = await sList("game:player:");
+        const initialPlayer = { cash: INITIAL_CASH, positions: { pib: 0, emprego: 0, inflacao: 0 } };
+        await Promise.all(playerKeys.map(k => sSet(k, initialPlayer)));
         const ns = { gameStarted: false, round: 1, phase: null, prices: { pib: INITIAL_PRICE, emprego: INITIAL_PRICE, inflacao: INITIAL_PRICE }, priceHistory: { pib: [INITIAL_PRICE], emprego: [INITIAL_PRICE], inflacao: [INITIAL_PRICE] } };
         await sSet("game:state", ns); setGameState(ns); setPlayers({});
         setPrices({ pib: INITIAL_PRICE, emprego: INITIAL_PRICE, inflacao: INITIAL_PRICE });
