@@ -697,7 +697,8 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
     if (prevPhase.current === "scenario" && gameState?.phase === "closed") {
       if (totalWealth > prevWealth.current + 1) { setConfetti(true); setTimeout(() => setConfetti(false), 3500); }
       else if (totalWealth < prevWealth.current - 1) { setShake(true); setTimeout(() => setShake(false), 700); }
-      prevWealth.current = totalWealth;
+      // NÃO atualizar prevWealth.current aqui — ele é usado para calcular o pnl
+      // da rodada durante toda a fase "closed". O baseline correto foi salvo em "reading".
     }
     if (gameState?.phase === "reading") prevWealth.current = totalWealth;
     if (gameState?.phase !== "scenario") setPendingOrders({ pib: null, emprego: null, inflacao: null });
@@ -810,7 +811,7 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
 
           <div style={{ marginTop: 18, textAlign: "center", color: C.muted, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
             <div style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: C.muted, animation: "pulse 2s infinite" }} />
-            Aguardando abertura do mercado
+            Aguarde o professor abrir o mercado
           </div>
         </div>
       </div>
@@ -864,39 +865,64 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
 
         {sc && (
           <>
-            <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${C.border}`, marginBottom: 12 }}>
-              <div style={{ color: C.gold, fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: 2, marginBottom: 8 }}>
-                Cenário · Rodada {gameState.round}
-                {sc.mode === "treino" && <span style={{ marginLeft: 8, backgroundColor: C.gold + "22", padding: "1px 7px", borderRadius: 10, fontSize: 10 }}>treino</span>}
+            {/* Cenário: colapsado durante trading, completo nos demais */}
+            {open ? (
+              <div style={{ backgroundColor: C.card, borderRadius: 12, padding: "10px 14px", border: `1px solid ${C.gold}33`, marginBottom: 12 }}>
+                <div style={{ color: C.gold, fontSize: 9, fontWeight: 800, textTransform: "uppercase", letterSpacing: 2, marginBottom: 4 }}>
+                  Cenário · Rodada {gameState.round}
+                  {sc.mode === "treino" && <span style={{ marginLeft: 8, backgroundColor: C.gold + "22", padding: "1px 6px", borderRadius: 8, fontSize: 9 }}>treino</span>}
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 800, lineHeight: 1.3 }}>{sc.title}</div>
               </div>
-              <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 8, lineHeight: 1.3 }}>{sc.title}</div>
-              <div style={{ color: "#bbb", fontSize: 13, lineHeight: 1.6 }}>{sc.text}</div>
-            </div>
+            ) : (
+              <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${C.border}`, marginBottom: 12 }}>
+                <div style={{ color: C.gold, fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: 2, marginBottom: 8 }}>
+                  Cenário · Rodada {gameState.round}
+                  {sc.mode === "treino" && <span style={{ marginLeft: 8, backgroundColor: C.gold + "22", padding: "1px 7px", borderRadius: 10, fontSize: 10 }}>treino</span>}
+                </div>
+                <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 8, lineHeight: 1.3 }}>{sc.title}</div>
+                <div style={{ color: "#bbb", fontSize: 13, lineHeight: 1.6 }}>{sc.text}</div>
+              </div>
+            )}
 
             {open && timerDuration > 0 && gameState.timerStart && (
               <TimerBar timerStart={gameState.timerStart} duration={timerDuration} />
             )}
 
-            {gameState.phase === "closed" && (
-              <div style={{ marginBottom: 12, animation: "fadeUp .4s ease-out" }}>
-                <div style={{ color: C.green, fontWeight: 800, fontSize: 13, marginBottom: 10 }}>📋 Mecanismo de transmissão</div>
-                <ExplanationSteps steps={sc.explanationSteps} />
-                <div style={{ marginTop: 10, backgroundColor: "#0D0D18", borderRadius: 10, padding: "10px 14px", border: `1px solid ${C.gold}22` }}>
-                  <div style={{ fontSize: 11, color: C.gold, fontWeight: 700, marginBottom: 3 }}>💡 Sobre a magnitude</div>
-                  <div style={{ fontSize: 11, color: "#888", lineHeight: 1.6 }}>
-                    A <b style={{ color: "#aaa" }}>direção</b> você previu com a análise. A <b style={{ color: "#aaa" }}>magnitude</b> foi sorteada — como no mercado real, onde economistas acertam o sinal mas raramente o tamanho exato do impacto.
-                  </div>
-                </div>
-              </div>
-            )}
-
             {gameState.phase === "closed" && player && (() => {
               const pnl = totalWealth - prevWealth.current;
               return (
-                <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 14, border: `1px solid ${col(pnl)}44`, marginBottom: 12, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div style={{ fontSize: 13, color: C.muted }}>Resultado da rodada</div>
-                  <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 16, fontWeight: 700, color: col(pnl) }}>{pnl >= 0 ? "+" : ""}{fmtBRL(pnl)}</div>
-                </div>
+                <>
+                  {/* Resultado da rodada em destaque — aparece ANTES da explicação */}
+                  <div style={{
+                    backgroundColor: pnl >= 0 ? "#061208" : "#120608",
+                    borderRadius: 16, padding: "18px 20px",
+                    border: `2px solid ${col(pnl)}55`,
+                    marginBottom: 14, animation: "fadeUp .4s ease-out",
+                  }}>
+                    <div style={{ fontSize: 10, color: C.muted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 8 }}>
+                      Resultado desta rodada
+                    </div>
+                    <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 28, fontWeight: 700, color: col(pnl) }}>
+                      {pnl >= 0 ? "+" : ""}{fmtBRL(pnl)}
+                    </div>
+                    <div style={{ fontSize: 12, color: C.muted, marginTop: 6 }}>
+                      Patrimônio atual: <span style={{ color: C.text, fontWeight: 700 }}>{fmtBRL(totalWealth)}</span>
+                    </div>
+                  </div>
+
+                  {/* O que aconteceu */}
+                  <div style={{ marginBottom: 12, animation: "fadeUp .4s ease-out" }}>
+                    <div style={{ color: C.green, fontWeight: 800, fontSize: 13, marginBottom: 10 }}>🔍 O que aconteceu</div>
+                    <ExplanationSteps steps={sc.explanationSteps} />
+                    <div style={{ marginTop: 10, backgroundColor: "#0D0D18", borderRadius: 10, padding: "10px 14px", border: `1px solid ${C.gold}22` }}>
+                      <div style={{ fontSize: 11, color: C.gold, fontWeight: 700, marginBottom: 3 }}>💡 Sobre a magnitude</div>
+                      <div style={{ fontSize: 11, color: "#888", lineHeight: 1.6 }}>
+                        A <b style={{ color: "#aaa" }}>direção</b> você previu com a análise. A <b style={{ color: "#aaa" }}>magnitude</b> foi sorteada — como no mercado real, onde economistas acertam o sinal mas raramente o tamanho exato do impacto.
+                      </div>
+                    </div>
+                  </div>
+                </>
               );
             })()}
 
@@ -1000,8 +1026,8 @@ function ProfessorView({ gameState, prices, priceHistory, players, onControl }) 
           </div>
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "320px 1fr 280px", gap: 18 }}>
-          {/* LEFT */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 18 }}>
+          {/* LEFT: cenário + mecanismo (closed) + controles */}
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {sc && (
               <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${C.border}` }}>
@@ -1012,7 +1038,7 @@ function ProfessorView({ gameState, prices, priceHistory, players, onControl }) 
                 <div style={{ fontSize: 12, color: "#bbb", lineHeight: 1.6 }}>{sc.text}</div>
                 {phase === "closed" && (
                   <div style={{ marginTop: 14 }}>
-                    <div style={{ fontSize: 11, color: C.green, fontWeight: 700, marginBottom: 8 }}>📋 Mecanismo de transmissão</div>
+                    <div style={{ fontSize: 11, color: C.green, fontWeight: 700, marginBottom: 8 }}>🔍 O que aconteceu</div>
                     <ExplanationSteps steps={sc.explanationSteps} />
                     <div style={{ marginTop: 10, backgroundColor: "#0D0D18", borderRadius: 10, padding: "8px 12px", border: `1px solid ${C.gold}22` }}>
                       <div style={{ fontSize: 10, color: C.gold, fontWeight: 700, marginBottom: 3 }}>💡 Discuta com a turma</div>
@@ -1034,6 +1060,31 @@ function ProfessorView({ gameState, prices, priceHistory, players, onControl }) 
               </div>
             )}
 
+            {/* Gráfico de evolução só aparece no debriefing final (rodada 10, fase closed) */}
+            {phase === "closed" && gameState.round === 10 && chartData.length > 1 && (
+              <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${C.border}` }}>
+                <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: C.muted, marginBottom: 14, textTransform: "uppercase" }}>📊 Debriefing Final — Evolução por Rodada</div>
+                <ResponsiveContainer width="100%" height={200}>
+                  <LineChart data={chartData}>
+                    <XAxis dataKey="r" stroke={C.muted} tick={{ fontSize: 11 }} />
+                    <YAxis stroke={C.muted} tick={{ fontSize: 11 }} domain={["auto", "auto"]} />
+                    <Tooltip contentStyle={{ backgroundColor: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 12 }} labelFormatter={v => `Rodada ${v}`} formatter={(v, n) => [fmtBRL(v), n.charAt(0).toUpperCase() + n.slice(1)]} />
+                    <Line type="monotone" dataKey="pib" stroke={C.gold} strokeWidth={2} dot={false} name="PIB" />
+                    <Line type="monotone" dataKey="emprego" stroke={C.green} strokeWidth={2} dot={false} name="Emprego" />
+                    <Line type="monotone" dataKey="inflacao" stroke={C.red} strokeWidth={2} dot={false} name="Inflação" />
+                  </LineChart>
+                </ResponsiveContainer>
+                <div style={{ display: "flex", gap: 16, marginTop: 10, justifyContent: "center" }}>
+                  {[["📈 PIB", C.gold], ["👷 Emprego", C.green], ["🔥 Inflação", C.red]].map(([n, c]) => (
+                    <div key={n} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                      <div style={{ width: 14, height: 2, backgroundColor: c, borderRadius: 1 }} />
+                      <span style={{ color: C.muted }}>{n}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${C.border}` }}>
               <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: C.muted, marginBottom: 12, textTransform: "uppercase" }}>Controles</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -1047,69 +1098,36 @@ function ProfessorView({ gameState, prices, priceHistory, players, onControl }) 
             </div>
           </div>
 
-          {/* CENTER */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${C.border}` }}>
-              <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: C.muted, marginBottom: 14, textTransform: "uppercase" }}>Preços em tempo real</div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
-                {ASSETS.map(a => {
-                  const p = prices[a.id] || INITIAL_PRICE;
-                  const chg = (p - INITIAL_PRICE) / INITIAL_PRICE;
-                  return (
-                    <div key={a.id} style={{ backgroundColor: C.card2, borderRadius: 12, padding: "12px 14px", border: `1px solid ${col(chg)}33` }}>
-                      <div style={{ fontSize: 13, marginBottom: 6 }}>{a.icon} <b style={{ fontSize: 12 }}>{a.name.replace("Ação ", "")}</b></div>
-                      <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 16, fontWeight: 700 }}>{fmtBRL(p)}</div>
-                      <div style={{ color: col(chg), fontSize: 12, fontWeight: 700, marginTop: 3 }}>{chg >= 0 ? "▲" : "▼"} {Math.abs(chg * 100).toFixed(2)}%</div>
-                      <Sparkline data={priceHistory[a.id] || [INITIAL_PRICE]} color={col(chg)} />
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-            <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${C.border}`, flex: 1 }}>
-              <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: C.muted, marginBottom: 14, textTransform: "uppercase" }}>Evolução por rodada</div>
-              {chartData.length > 1 ? (
-                <>
-                  <ResponsiveContainer width="100%" height={200}>
-                    <LineChart data={chartData}>
-                      <XAxis dataKey="r" stroke={C.muted} tick={{ fontSize: 11 }} />
-                      <YAxis stroke={C.muted} tick={{ fontSize: 11 }} domain={["auto", "auto"]} />
-                      <Tooltip contentStyle={{ backgroundColor: C.card2, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 12 }} labelFormatter={v => `Rodada ${v}`} formatter={(v, n) => [fmtBRL(v), n.charAt(0).toUpperCase() + n.slice(1)]} />
-                      <Line type="monotone" dataKey="pib" stroke={C.gold} strokeWidth={2} dot={false} name="PIB" />
-                      <Line type="monotone" dataKey="emprego" stroke={C.green} strokeWidth={2} dot={false} name="Emprego" />
-                      <Line type="monotone" dataKey="inflacao" stroke={C.red} strokeWidth={2} dot={false} name="Inflação" />
-                    </LineChart>
-                  </ResponsiveContainer>
-                  <div style={{ display: "flex", gap: 16, marginTop: 10, justifyContent: "center" }}>
-                    {[["📈 PIB", C.gold], ["👷 Emprego", C.green], ["🔥 Inflação", C.red]].map(([n, c]) => (
-                      <div key={n} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-                        <div style={{ width: 14, height: 2, backgroundColor: c, borderRadius: 1 }} />
-                        <span style={{ color: C.muted }}>{n}</span>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <div style={{ height: 200, display: "flex", alignItems: "center", justifyContent: "center", color: C.muted, fontSize: 13 }}>Gráfico disponível após 2 rodadas</div>
-              )}
-            </div>
-          </div>
-
-          {/* RIGHT */}
-          <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${C.border}` }}>
+          {/* RIGHT: ranking fixo estilo Kahoot */}
+          <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${C.border}`, display: "flex", flexDirection: "column" }}>
             <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: C.muted, marginBottom: 14, textTransform: "uppercase" }}>🏆 Ranking</div>
             {leaderboard.length === 0 ? (
               <div style={{ color: C.muted, fontSize: 13 }}>Nenhum jogador ainda</div>
-            ) : leaderboard.slice(0, 15).map((p, i) => (
-              <div key={p.name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: `1px solid ${C.border}` }}>
-                <div style={{ width: 22, height: 22, borderRadius: "50%", flexShrink: 0, backgroundColor: i === 0 ? C.gold : i === 1 ? "#C0C0C0" : i === 2 ? "#CD7F32" : "#1e1e1e", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: i < 3 ? "#000" : C.muted }}>{i + 1}</div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.name}</div>
-                  <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: C.muted }}>{fmtBRL(p.w)}</div>
+            ) : leaderboard.slice(0, 20).map((p, i) => {
+              const variation = p.w - INITIAL_CASH;
+              return (
+                <div key={p.name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: `1px solid ${C.border}` }}>
+                  <div style={{
+                    width: 24, height: 24, borderRadius: "50%", flexShrink: 0,
+                    backgroundColor: i === 0 ? C.gold : i === 1 ? "#C0C0C0" : i === 2 ? "#CD7F32" : "#1e1e1e",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 10, fontWeight: 800, color: i < 3 ? "#000" : C.muted,
+                  }}>{i + 1}</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.name}</div>
+                    <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: C.muted }}>{fmtBRL(p.w)}</div>
+                  </div>
+                  <div style={{ textAlign: "right", flexShrink: 0 }}>
+                    <div style={{ color: col(p.ret), fontSize: 12, fontFamily: "'Space Mono', monospace", fontWeight: 700 }}>{fmtPct(p.ret)}</div>
+                    {phase === "closed" && (
+                      <div style={{ color: col(variation), fontSize: 10, fontFamily: "'Space Mono', monospace", fontWeight: 700 }}>
+                        {variation >= 0 ? "+" : ""}{fmtBRL(variation)}
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div style={{ color: col(p.ret), fontSize: 11, fontFamily: "'Space Mono', monospace", fontWeight: 700, flexShrink: 0 }}>{fmtPct(p.ret)}</div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
