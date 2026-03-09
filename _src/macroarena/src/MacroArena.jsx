@@ -1352,8 +1352,11 @@ export default function MacroArena() {
     if (mode !== "student" || !playerName) return;
     (async () => {
       const existing = await sGet(`game:player:${playerName}`);
-      if (!existing) {
-        const p = { cash: INITIAL_CASH, positions: { pib: 0, emprego: 0, inflacao: 0 } };
+      const currentState = await sGet("game:state");
+      const currentGameId = currentState?.gameId;
+      if (!existing || (currentGameId && existing.gameId !== currentGameId)) {
+        // Dado antigo de outra sessão ou sem registro — começa zerado
+        const p = { gameId: currentGameId, cash: INITIAL_CASH, positions: { pib: 0, emprego: 0, inflacao: 0 } };
         await sSet(`game:player:${playerName}`, p); setPlayer(p);
       } else setPlayer(existing);
     })();
@@ -1431,7 +1434,7 @@ export default function MacroArena() {
     const state = await sGet("game:state") || {};
     switch (action) {
       case "startGame": {
-        const ns = { gameStarted: true, round: 1, phase: "lobby", prices: { pib: INITIAL_PRICE, emprego: INITIAL_PRICE, inflacao: INITIAL_PRICE }, priceHistory: { pib: [INITIAL_PRICE], emprego: [INITIAL_PRICE], inflacao: [INITIAL_PRICE] }, timerStart: null };
+        const ns = { gameId: Date.now(), gameStarted: true, round: 1, phase: "lobby", prices: { pib: INITIAL_PRICE, emprego: INITIAL_PRICE, inflacao: INITIAL_PRICE }, priceHistory: { pib: [INITIAL_PRICE], emprego: [INITIAL_PRICE], inflacao: [INITIAL_PRICE] }, timerStart: null };
         await sSet("game:state", ns); setGameState(ns); break;
       }
       case "showScenario": {
@@ -1461,9 +1464,10 @@ export default function MacroArena() {
       case "reset": {
         // Resetar saldo de todos os jogadores para o estado inicial
         const playerKeys = await sList("game:player:");
-        const initialPlayer = { cash: INITIAL_CASH, positions: { pib: 0, emprego: 0, inflacao: 0 } };
+        const newGameId = Date.now();
+        const initialPlayer = { gameId: newGameId, cash: INITIAL_CASH, positions: { pib: 0, emprego: 0, inflacao: 0 } };
         await Promise.all(playerKeys.map(k => sSet(k, initialPlayer)));
-        const ns = { gameStarted: false, round: 1, phase: null, prices: { pib: INITIAL_PRICE, emprego: INITIAL_PRICE, inflacao: INITIAL_PRICE }, priceHistory: { pib: [INITIAL_PRICE], emprego: [INITIAL_PRICE], inflacao: [INITIAL_PRICE] } };
+        const ns = { gameId: newGameId, gameStarted: false, round: 1, phase: null, prices: { pib: INITIAL_PRICE, emprego: INITIAL_PRICE, inflacao: INITIAL_PRICE }, priceHistory: { pib: [INITIAL_PRICE], emprego: [INITIAL_PRICE], inflacao: [INITIAL_PRICE] } };
         await sSet("game:state", ns); setGameState(ns); setPlayers({});
         setPrices({ pib: INITIAL_PRICE, emprego: INITIAL_PRICE, inflacao: INITIAL_PRICE });
         setPriceHistory({ pib: [INITIAL_PRICE], emprego: [INITIAL_PRICE], inflacao: [INITIAL_PRICE] });
