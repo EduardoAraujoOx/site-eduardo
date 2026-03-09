@@ -690,7 +690,7 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
   const [pendingOrders, setPendingOrders] = useState({ pib: null, emprego: null, inflacao: null });
   const [roundTrades, setRoundTrades] = useState([]);
   const prevPhase = useRef(null);
-  const prevWealth = useRef(INITIAL_CASH);
+  const snapshotDone = useRef(false);
   const prevPlayer = useRef({ cash: INITIAL_CASH, positions: { pib: 0, emprego: 0, inflacao: 0 } });
   const prevPrices = useRef({ pib: INITIAL_PRICE, emprego: INITIAL_PRICE, inflacao: INITIAL_PRICE });
 
@@ -701,22 +701,26 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
 
   useEffect(() => {
     if (prevPhase.current === "scenario" && gameState?.phase === "closed") {
-      if (totalWealth > prevWealth.current + 1) { setConfetti(true); setTimeout(() => setConfetti(false), 3500); }
-      else if (totalWealth < prevWealth.current - 1) { setShake(true); setTimeout(() => setShake(false), 700); }
-      // NÃO atualizar prevWealth.current aqui — ele é usado para calcular o pnl
-      // da rodada durante toda a fase "closed". O baseline correto foi salvo em "reading".
+      const prevW = prevPlayer.current.cash + ASSETS.reduce((s, a) => s + (prevPlayer.current.positions[a.id] || 0) * (prevPrices.current[a.id] || INITIAL_PRICE), 0);
+      if (totalWealth > prevW + 1) { setConfetti(true); setTimeout(() => setConfetti(false), 3500); }
+      else if (totalWealth < prevW - 1) { setShake(true); setTimeout(() => setShake(false), 700); }
     }
-    if (gameState?.phase === "reading") {
-      prevWealth.current = totalWealth;
-      prevPlayer.current = player
-        ? { cash: player.cash, positions: { ...player.positions } }
-        : { cash: INITIAL_CASH, positions: { pib: 0, emprego: 0, inflacao: 0 } };
-      prevPrices.current = { ...prices };
-    }
+    if (gameState?.phase === "reading") snapshotDone.current = false;
     if (gameState?.phase === "scenario") setRoundTrades([]);
     if (gameState?.phase !== "scenario") setPendingOrders({ pib: null, emprego: null, inflacao: null });
     prevPhase.current = gameState?.phase;
   }, [gameState?.phase]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Salva snapshot de posições e preços ao início de cada rodada (fase "reading"),
+  // aguardando o player estar carregado antes de salvar — evita race condition onde
+  // o efeito de fase disparava com player=null, salvando o valor padrão em vez do saldo real.
+  useEffect(() => {
+    if (gameState?.phase === "reading" && player && !snapshotDone.current) {
+      snapshotDone.current = true;
+      prevPlayer.current = { cash: player.cash, positions: { ...player.positions } };
+      prevPrices.current = { ...prices };
+    }
+  }, [gameState?.phase, player]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const sc = gameState?.round ? SCENARIOS[gameState.round - 1] : null;
   const phase = gameState?.phase;
@@ -913,7 +917,8 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
             )}
 
             {gameState.phase === "closed" && player && (() => {
-              const pnl = totalWealth - prevWealth.current;
+              const prevWealthCalc = prevPlayer.current.cash + ASSETS.reduce((s, a) => s + (prevPlayer.current.positions[a.id] || 0) * (prevPrices.current[a.id] || INITIAL_PRICE), 0);
+              const pnl = totalWealth - prevWealthCalc;
               return (
                 <>
                   {/* Resultado da rodada em destaque */}
@@ -957,7 +962,7 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 800, color: C.gold, borderTop: `1px solid ${C.border}`, paddingTop: 6 }}>
                         <span>Patrimônio inicial</span>
-                        <span style={{ fontFamily: "'Space Mono', monospace" }}>{fmtBRL(prevWealth.current)}</span>
+                        <span style={{ fontFamily: "'Space Mono', monospace" }}>{fmtBRL(prevWealthCalc)}</span>
                       </div>
                     </div>
 
@@ -1347,8 +1352,11 @@ export default function MacroArena() {
     if (mode !== "student" || !playerName) return;
     (async () => {
       const existing = await sGet(`game:player:${playerName}`);
-      if (!existing) {
-        const p = { cash: INITIAL_CASH, positions: { pib: 0, emprego: 0, inflacao: 0 } };
+      const currentState = await sGet("game:state");
+      const currentGameId = currentState?.gameId;
+      if (!existing || (currentGameId && existing.gameId !== currentGameId)) {
+        // Dado antigo de outra sessão ou sem registro — começa zerado
+        const p = { gameId: currentGameId, cash: INITIAL_CASH, positions: { pib: 0, emprego: 0, inflacao: 0 } };
         await sSet(`game:player:${playerName}`, p); setPlayer(p);
       } else setPlayer(existing);
     })();
@@ -1426,7 +1434,7 @@ export default function MacroArena() {
     const state = await sGet("game:state") || {};
     switch (action) {
       case "startGame": {
-        const ns = { gameStarted: true, round: 1, phase: "lobby", prices: { pib: INITIAL_PRICE, emprego: INITIAL_PRICE, inflacao: INITIAL_PRICE }, priceHistory: { pib: [INITIAL_PRICE], emprego: [INITIAL_PRICE], inflacao: [INITIAL_PRICE] }, timerStart: null };
+        const ns = { gameId: Date.now(), gameStarted: true, round: 1, phase: "lobby", prices: { pib: INITIAL_PRICE, emprego: INITIAL_PRICE, inflacao: INITIAL_PRICE }, priceHistory: { pib: [INITIAL_PRICE], emprego: [INITIAL_PRICE], inflacao: [INITIAL_PRICE] }, timerStart: null };
         await sSet("game:state", ns); setGameState(ns); break;
       }
       case "showScenario": {
@@ -1456,9 +1464,10 @@ export default function MacroArena() {
       case "reset": {
         // Resetar saldo de todos os jogadores para o estado inicial
         const playerKeys = await sList("game:player:");
-        const initialPlayer = { cash: INITIAL_CASH, positions: { pib: 0, emprego: 0, inflacao: 0 } };
+        const newGameId = Date.now();
+        const initialPlayer = { gameId: newGameId, cash: INITIAL_CASH, positions: { pib: 0, emprego: 0, inflacao: 0 } };
         await Promise.all(playerKeys.map(k => sSet(k, initialPlayer)));
-        const ns = { gameStarted: false, round: 1, phase: null, prices: { pib: INITIAL_PRICE, emprego: INITIAL_PRICE, inflacao: INITIAL_PRICE }, priceHistory: { pib: [INITIAL_PRICE], emprego: [INITIAL_PRICE], inflacao: [INITIAL_PRICE] } };
+        const ns = { gameId: newGameId, gameStarted: false, round: 1, phase: null, prices: { pib: INITIAL_PRICE, emprego: INITIAL_PRICE, inflacao: INITIAL_PRICE }, priceHistory: { pib: [INITIAL_PRICE], emprego: [INITIAL_PRICE], inflacao: [INITIAL_PRICE] } };
         await sSet("game:state", ns); setGameState(ns); setPlayers({});
         setPrices({ pib: INITIAL_PRICE, emprego: INITIAL_PRICE, inflacao: INITIAL_PRICE });
         setPriceHistory({ pib: [INITIAL_PRICE], emprego: [INITIAL_PRICE], inflacao: [INITIAL_PRICE] });
