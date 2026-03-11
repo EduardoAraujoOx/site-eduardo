@@ -620,8 +620,9 @@ function renderQuestion(questao) {
     qChartWrap.appendChild(wrap);
   }
 
-  // Gabarito chip (always visible to professor)
+  // Gabarito chip — só visível após revelação
   gabaritoChip.textContent = `Gabarito: ${LABELS[correctIdx]}`;
+  gabaritoChip.style.display = revelada ? '' : 'none';
 
   btnBack.disabled = isFirst;
   btnNext.className   = 'btn-next';
