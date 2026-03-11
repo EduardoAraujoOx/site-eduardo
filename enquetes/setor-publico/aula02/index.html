@@ -460,15 +460,15 @@ const PERGUNTAS = [
     explicacao: 'O duplo diferencial desconta da variação do grupo tratado aquilo que teria ocorrido de qualquer forma, usando o grupo de controle como referência de tendência.',
   },
   {
-    texto: 'Um pesquisador quer estimar o efeito do tamanho das turmas no desempenho escolar, mas suspeita que famílias mais engajadas escolham escolas com turmas menores. Para lidar com esse problema, ele usa a variação aleatória no número de nascimentos por ano como instrumento. Por que essa estratégia funciona?',
+    texto: 'Um pesquisador divide 200 estudantes aleatoriamente em dois grupos. O grupo A recebe aulas de reforço em matemática; o grupo B continua com as aulas normais. Após 3 meses, o grupo A teve nota média 7,2 e o grupo B teve nota média 6,1. Qual é o papel do grupo B neste experimento?',
     opcoes: [
-      'Porque nascimentos são correlacionados com renda familiar',
-      'Porque a variação de nascimentos afeta o tamanho das turmas sem influenciar diretamente o desempenho dos alunos',
-      'Porque elimina a necessidade de um grupo de controle',
-      'Porque transforma um estudo observacional em experimental',
+      'Grupo de tratamento — recebeu a intervenção experimental',
+      'Grupo de controle — serve de referência para medir o efeito do reforço',
+      'Grupo placebo — recebeu um tratamento alternativo inerte',
+      'Grupo histórico — representa o desempenho dos alunos antes do programa',
     ],
     gabarito: 1,
-    explicacao: 'O instrumento válido precisa ser correlacionado com a variável de interesse (tamanho da turma) e não correlacionado diretamente com o resultado (desempenho) — só afetando o resultado através da variável de interesse. É o exemplo de Hoxby.',
+    explicacao: 'O grupo de controle é o contrafactual observado: permite estimar o que teria acontecido com o grupo de tratamento na ausência da intervenção. A diferença de notas (7,2 − 6,1 = 1,1 ponto) é o estimador causal do efeito das aulas de reforço.',
   },
   {
     texto: 'No capítulo 2, Rosen descreve um estudo clássico do século XIX em que um médico investigou a causa de uma epidemia de cólera em Londres sem saber que germes existiam. Como ele conseguiu isolar a causa?',
@@ -549,7 +549,6 @@ function renderBars(questao, votos, isRevealed) {
   votos.forEach(v => { counts[v.opcao] = (counts[v.opcao] || 0) + 1; });
   const maxVotes = total > 0 ? Math.max(...Object.values(counts)) : 0;
 
-  voteTotal.textContent  = total === 1 ? '1 resposta' : `${total} respostas`;
   voteChip.textContent   = `${total} resposta${total !== 1 ? 's' : ''}`;
   voteChip.style.display = '';
 
@@ -583,6 +582,18 @@ function renderBars(questao, votos, isRevealed) {
     `;
     barsEl.appendChild(row);
   });
+
+  // Stats: acertos/erros
+  if (isRevealed && total > 0) {
+    const correctCount = counts[correctIdx + 1] || 0;
+    const wrongCount   = total - correctCount;
+    const correctPct   = Math.round((correctCount / total) * 100);
+    voteTotal.innerHTML = `${total} resposta${total !== 1 ? 's' : ''} &nbsp;·&nbsp; `
+      + `<span style="color:var(--green)">✓ ${correctCount} acertaram (${correctPct}%)</span>`
+      + ` &nbsp;·&nbsp; <span style="color:var(--muted)">✗ ${wrongCount} erraram</span>`;
+  } else {
+    voteTotal.textContent = total === 1 ? '1 resposta' : `${total} respostas`;
+  }
 }
 
 function escHtml(s) {
@@ -668,7 +679,7 @@ async function renderSummary() {
             <div class="sum-winner-text">${escHtml(pergunta.opcoes[winnerIdx])}</div>
             <div class="sum-winner-pct">${pct}%</div>
           </div>
-          <div class="sum-votes">${total} resposta${total !== 1 ? 's' : ''} · gabarito: ${LABELS[correctIdx]}</div>
+          <div class="sum-votes">${total} resposta${total !== 1 ? 's' : ''} · gabarito: ${LABELS[correctIdx]} · <span style="color:var(--green)">✓ ${counts[correctIdx + 1] || 0}/${total} acertaram</span></div>
         </div>
       `;
     } else {
