@@ -574,8 +574,9 @@ function OrderBasket({ orders, prices, cash, positions, onSubmit }) {
   const totalBuy = entries.filter(e => e.order.side === "buy").reduce((s, e) => s + e.order.qty * e.price, 0);
   const totalSell = entries.filter(e => e.order.side === "sell").reduce((s, e) => s + e.order.qty * e.price, 0);
   const cashAfter = cash - totalBuy + totalSell;
+  const basketInsolvent = cashAfter < -0.01;
 
-  const handleConfirm = () => { onSubmit(); setConfirming(false); };
+  const handleConfirm = () => { if (!basketInsolvent) { onSubmit(); setConfirming(false); } };
 
   return (
     <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 200 }}>
@@ -641,16 +642,23 @@ function OrderBasket({ orders, prices, cash, positions, onSubmit }) {
               );
             })}
 
+            {basketInsolvent && (
+              <div style={{ color: C.red, fontSize: 12, fontWeight: 700, textAlign: "center", marginTop: 12, padding: "8px 12px", backgroundColor: "#1a0608", borderRadius: 8, border: `1px solid ${C.red}33` }}>
+                Saldo insuficiente para executar todas as compras. Reduza quantidades ou adicione vendas.
+              </div>
+            )}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 18 }}>
               <button onClick={() => setConfirming(false)} style={{
                 padding: "14px", borderRadius: 12, fontWeight: 700, fontSize: 14,
                 backgroundColor: "transparent", border: `1px solid ${C.border}`,
                 color: C.muted, cursor: "pointer",
               }}>← Editar</button>
-              <button onClick={handleConfirm} style={{
+              <button onClick={handleConfirm} disabled={basketInsolvent} style={{
                 padding: "14px", borderRadius: 12, fontWeight: 800, fontSize: 14,
-                backgroundColor: C.gold, border: "none", color: "#000", cursor: "pointer",
-              }}>Confirmar →</button>
+                backgroundColor: basketInsolvent ? "#1a1a1a" : C.gold, border: "none",
+                color: basketInsolvent ? C.muted : "#000",
+                cursor: basketInsolvent ? "not-allowed" : "pointer",
+              }}>{basketInsolvent ? "Saldo insuficiente" : "Confirmar →"}</button>
             </div>
           </div>
         </div>
@@ -733,13 +741,16 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
 
   const handleSubmitOrders = async () => {
     const executed = [];
-    for (const a of ASSETS) {
-      const order = pendingOrders[a.id];
-      if (order) {
-        const price = prices[a.id] || INITIAL_PRICE;
-        await onTrade(a.id, order.side, order.qty, price);
-        executed.push({ assetId: a.id, side: order.side, qty: order.qty, price });
-      }
+    // Ordena: vendas primeiro (liberam cash), compras depois (consomem cash).
+    // Evita rejeição silenciosa quando o basket é solvente no agregado.
+    const orderedAssets = ASSETS
+      .map(a => ({ asset: a, order: pendingOrders[a.id] }))
+      .filter(e => e.order)
+      .sort((a, b) => (a.order.side === "sell" ? -1 : 1) - (b.order.side === "sell" ? -1 : 1));
+    for (const { asset: a, order } of orderedAssets) {
+      const price = prices[a.id] || INITIAL_PRICE;
+      const ok = await onTrade(a.id, order.side, order.qty, price);
+      if (ok) executed.push({ assetId: a.id, side: order.side, qty: order.qty, price });
     }
     setRoundTrades(executed);
     setPendingOrders({ pib: null, emprego: null, inflacao: null });
@@ -1405,11 +1416,11 @@ export default function MacroArena() {
     // Usa playerRef (atualizado sincronamente) para evitar race condition
     // quando múltiplas ordens são enviadas em sequência com await.
     const cur = playerRef.current;
-    if (!cur || !playerName) return;
+    if (!cur || !playerName) return false;
     const buy = side === "buy";
     const cost = qty * price;
-    if (buy && cost > cur.cash) return;
-    if (!buy && qty > (cur.positions[assetId] || 0)) return;
+    if (buy && cost > cur.cash) return false;
+    if (!buy && qty > (cur.positions[assetId] || 0)) return false;
     const np = newPrice(price, qty, buy);
     const updated = {
       ...cur,
@@ -1425,6 +1436,7 @@ export default function MacroArena() {
       const newHist = { ...state.priceHistory, [assetId]: [...(state.priceHistory[assetId] || [INITIAL_PRICE]), np] };
       await sSet("game:state", { ...state, prices: newPrices, priceHistory: newHist });
     }
+    return true;
   }, [playerName]);
 
   const handleControl = useCallback(async (action) => {
