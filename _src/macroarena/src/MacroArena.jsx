@@ -1275,11 +1275,11 @@ function ProfessorView({ gameState, prices, priceHistory, players, onControl }) 
           </div>
 
           {/* RIGHT: ranking fixo estilo Kahoot */}
-          <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${C.border}`, display: "flex", flexDirection: "column" }}>
-            <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: C.muted, marginBottom: 14, textTransform: "uppercase" }}>🏆 Ranking</div>
+          <div style={{ backgroundColor: C.card, borderRadius: 16, padding: 16, border: `1px solid ${C.border}`, display: "flex", flexDirection: "column", maxHeight: "80vh", overflowY: "auto" }}>
+            <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: C.muted, marginBottom: 14, textTransform: "uppercase", position: "sticky", top: 0, backgroundColor: C.card, paddingBottom: 4 }}>🏆 Ranking ({leaderboard.length})</div>
             {leaderboard.length === 0 ? (
               <div style={{ color: C.muted, fontSize: 13 }}>Nenhum jogador ainda</div>
-            ) : leaderboard.slice(0, 20).map((p, i) => {
+            ) : leaderboard.map((p, i) => {
               const variation = p.w - INITIAL_CASH;
               return (
                 <div key={p.name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: `1px solid ${C.border}` }}>
@@ -1394,7 +1394,8 @@ export default function MacroArena() {
       if (mode === "professor") {
         const keys = await sList("game:player:");
         const all = {};
-        for (const k of keys) { const n = k.replace("game:player:", ""); const p = await sGet(k); if (p) all[n] = p; }
+        const currentGameId = state?.gameId;
+        for (const k of keys) { const n = k.replace("game:player:", ""); const p = await sGet(k); if (p && (!currentGameId || p.gameId === currentGameId)) all[n] = p; }
         setPlayers(all);
       } else if (playerName) {
         const p = await sGet(`game:player:${playerName}`); if (p) setPlayer(p);
@@ -1414,7 +1415,9 @@ export default function MacroArena() {
           const name = key.replace("game:player:", "");
           if (mode === "professor") {
             const p = await sGet(key);
-            if (p) setPlayers(prev => ({ ...prev, [name]: p }));
+            const curState = await sGet("game:state");
+            if (p && (!curState?.gameId || p.gameId === curState.gameId)) setPlayers(prev => ({ ...prev, [name]: p }));
+            else if (p && curState?.gameId && p.gameId !== curState.gameId) setPlayers(prev => { const next = { ...prev }; delete next[name]; return next; });
           } else if (name === playerName) {
             const p = await sGet(key);
             if (p) setPlayer(p);
