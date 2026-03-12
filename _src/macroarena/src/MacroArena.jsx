@@ -160,14 +160,14 @@ const SCENARIOS = [
   },
   {
     round: 10, mode: "competicao",
-    title: "Síntese: leitura integrada do trimestre",
-    theme: "Todas as variáveis — Blanchard Cap. 2",
-    text: "Resumo do trimestre: PIB nominal cresceu 6,2%, deflator ficou em 5,5%, desemprego recuou de 9,1% para 8,3%, Selic chegou a 11,5% e o Tesouro registrou déficit primário de 0,6% do PIB. O câmbio estabilizou em R$ 5,40.",
-    impacts: { pib: 0.05, emprego: 0.06, inflacao: 0.04 },
+    title: "EUA classificam PCC e CV como organizações terroristas",
+    theme: "Choque Geopolítico e Risco Soberano",
+    text: "O Departamento de Estado americano inclui PCC e Comando Vermelho na lista de Organizações Terroristas Estrangeiras (FTO). Investidores temem sanções secundárias a bancos brasileiros. O risco-país salta 200 pontos, o câmbio deprecia 12% e agências multilaterais (Banco Mundial, BID) sinalizam revisão de linhas de crédito ao Brasil. O governo brasileiro reage acusando ingerência na soberania nacional.",
+    impacts: { pib: -0.10, emprego: -0.08, inflacao: 0.11 },
     explanationSteps: [
-      { asset: "pib", direction: 1, chain: ["PIB nominal 6,2% ÷ deflator 5,5%", "PIB real ≈ 0,7%", "crescimento modesto mas consistente", "PIB ↑ leve → Ação PIB sobe levemente"] },
-      { asset: "emprego", direction: 1, chain: ["desemprego caiu de 9,1% → 8,3%", "recuperação após choque de automação", "Selic em queda facilita novas contratações", "Emprego ↑ → Ação Emprego sobe"] },
-      { asset: "inflacao", direction: 1, chain: ["deflator ainda em 5,5% (acima da meta)", "déficit primário mantém pressão fiscal", "câmbio estável não alivia", "Inflação ↑ leve → Ação Inflação sobe"] },
+      { asset: "pib", direction: -1, chain: ["classificação terrorista → fuga de capitais", "bancos multilaterais restringem crédito ao Brasil", "custo de financiamento externo dispara", "investimento produtivo ↓", "PIB ↓ → Ação PIB cai"] },
+      { asset: "emprego", direction: -1, chain: ["incerteza jurídica sobre sanções secundárias", "multinacionais congelam expansões no Brasil", "projetos de infraestrutura com funding externo suspensos", "contratações ↓ → Ação Emprego cai"] },
+      { asset: "inflacao", direction: 1, chain: ["câmbio deprecia 12% com fuga de dólares", "importados encarecem (combustíveis, insumos, eletrônicos)", "pass-through cambial se espalha pela cadeia produtiva", "Inflação ↑ forte → Ação Inflação sobe"] },
     ],
   },
 ];
