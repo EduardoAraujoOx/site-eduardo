@@ -707,6 +707,16 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
     : INITIAL_CASH;
   const ret = (totalWealth - INITIAL_CASH) / INITIAL_CASH;
 
+  // Restaura snapshot persistido ao reconectar (aluno que saiu e voltou).
+  // Sem isso, prevPlayer/prevPrices ficam com valores iniciais e o PnL exibido fica errado.
+  useEffect(() => {
+    if (player?.snapshot) {
+      prevPlayer.current = player.snapshot.player;
+      prevPrices.current = player.snapshot.prices;
+      snapshotDone.current = true;
+    }
+  }, [player?.snapshot]);
+
   useEffect(() => {
     if (prevPhase.current === "scenario" && gameState?.phase === "closed") {
       const prevW = prevPlayer.current.cash + ASSETS.reduce((s, a) => s + (prevPlayer.current.positions[a.id] || 0) * (prevPrices.current[a.id] || INITIAL_PRICE), 0);
@@ -722,11 +732,15 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
   // Salva snapshot de posições e preços ao início de cada rodada (fase "lobby"),
   // aguardando o player estar carregado antes de salvar — evita race condition onde
   // o efeito de fase disparava com player=null, salvando o valor padrão em vez do saldo real.
+  // Persiste no Supabase para sobreviver a refresh/reconexão.
   useEffect(() => {
     if (gameState?.phase === "lobby" && player && !snapshotDone.current) {
       snapshotDone.current = true;
       prevPlayer.current = { cash: player.cash, positions: { ...player.positions } };
       prevPrices.current = { ...prices };
+      // Persiste snapshot no Supabase (sem await — fire-and-forget, não bloqueia UI)
+      const snap = { player: prevPlayer.current, prices: prevPrices.current };
+      sSet(`game:player:${name}`, { ...player, snapshot: snap });
     }
   }, [gameState?.phase, player]); // eslint-disable-line react-hooks/exhaustive-deps
 
