@@ -160,14 +160,14 @@ const SCENARIOS = [
   },
   {
     round: 10, mode: "competicao",
-    title: "Síntese: leitura integrada do trimestre",
-    theme: "Todas as variáveis — Blanchard Cap. 2",
-    text: "Resumo do trimestre: PIB nominal cresceu 6,2%, deflator ficou em 5,5%, desemprego recuou de 9,1% para 8,3%, Selic chegou a 11,5% e o Tesouro registrou déficit primário de 0,6% do PIB. O câmbio estabilizou em R$ 5,40.",
-    impacts: { pib: 0.05, emprego: 0.06, inflacao: 0.04 },
+    title: "EUA classificam PCC e CV como organizações terroristas",
+    theme: "Choque Geopolítico e Risco Soberano",
+    text: "O Departamento de Estado americano inclui PCC e Comando Vermelho na lista de Organizações Terroristas Estrangeiras (FTO). Investidores temem sanções secundárias a bancos brasileiros. O risco-país salta 200 pontos, o câmbio deprecia 12% e agências multilaterais (Banco Mundial, BID) sinalizam revisão de linhas de crédito ao Brasil. O governo brasileiro reage acusando ingerência na soberania nacional.",
+    impacts: { pib: -0.10, emprego: -0.08, inflacao: 0.11 },
     explanationSteps: [
-      { asset: "pib", direction: 1, chain: ["PIB nominal 6,2% ÷ deflator 5,5%", "PIB real ≈ 0,7%", "crescimento modesto mas consistente", "PIB ↑ leve → Ação PIB sobe levemente"] },
-      { asset: "emprego", direction: 1, chain: ["desemprego caiu de 9,1% → 8,3%", "recuperação após choque de automação", "Selic em queda facilita novas contratações", "Emprego ↑ → Ação Emprego sobe"] },
-      { asset: "inflacao", direction: 1, chain: ["deflator ainda em 5,5% (acima da meta)", "déficit primário mantém pressão fiscal", "câmbio estável não alivia", "Inflação ↑ leve → Ação Inflação sobe"] },
+      { asset: "pib", direction: -1, chain: ["classificação terrorista → fuga de capitais", "bancos multilaterais restringem crédito ao Brasil", "custo de financiamento externo dispara", "investimento produtivo ↓", "PIB ↓ → Ação PIB cai"] },
+      { asset: "emprego", direction: -1, chain: ["incerteza jurídica sobre sanções secundárias", "multinacionais congelam expansões no Brasil", "projetos de infraestrutura com funding externo suspensos", "contratações ↓ → Ação Emprego cai"] },
+      { asset: "inflacao", direction: 1, chain: ["câmbio deprecia 12% com fuga de dólares", "importados encarecem (combustíveis, insumos, eletrônicos)", "pass-through cambial se espalha pela cadeia produtiva", "Inflação ↑ forte → Ação Inflação sobe"] },
     ],
   },
 ];
@@ -574,8 +574,9 @@ function OrderBasket({ orders, prices, cash, positions, onSubmit }) {
   const totalBuy = entries.filter(e => e.order.side === "buy").reduce((s, e) => s + e.order.qty * e.price, 0);
   const totalSell = entries.filter(e => e.order.side === "sell").reduce((s, e) => s + e.order.qty * e.price, 0);
   const cashAfter = cash - totalBuy + totalSell;
+  const basketInsolvent = cashAfter < -0.01;
 
-  const handleConfirm = () => { onSubmit(); setConfirming(false); };
+  const handleConfirm = () => { if (!basketInsolvent) { onSubmit(); setConfirming(false); } };
 
   return (
     <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 200 }}>
@@ -641,16 +642,23 @@ function OrderBasket({ orders, prices, cash, positions, onSubmit }) {
               );
             })}
 
+            {basketInsolvent && (
+              <div style={{ color: C.red, fontSize: 12, fontWeight: 700, textAlign: "center", marginTop: 12, padding: "8px 12px", backgroundColor: "#1a0608", borderRadius: 8, border: `1px solid ${C.red}33` }}>
+                Saldo insuficiente para executar todas as compras. Reduza quantidades ou adicione vendas.
+              </div>
+            )}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 18 }}>
               <button onClick={() => setConfirming(false)} style={{
                 padding: "14px", borderRadius: 12, fontWeight: 700, fontSize: 14,
                 backgroundColor: "transparent", border: `1px solid ${C.border}`,
                 color: C.muted, cursor: "pointer",
               }}>← Editar</button>
-              <button onClick={handleConfirm} style={{
+              <button onClick={handleConfirm} disabled={basketInsolvent} style={{
                 padding: "14px", borderRadius: 12, fontWeight: 800, fontSize: 14,
-                backgroundColor: C.gold, border: "none", color: "#000", cursor: "pointer",
-              }}>Confirmar →</button>
+                backgroundColor: basketInsolvent ? "#1a1a1a" : C.gold, border: "none",
+                color: basketInsolvent ? C.muted : "#000",
+                cursor: basketInsolvent ? "not-allowed" : "pointer",
+              }}>{basketInsolvent ? "Saldo insuficiente" : "Confirmar →"}</button>
             </div>
           </div>
         </div>
@@ -699,6 +707,16 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
     : INITIAL_CASH;
   const ret = (totalWealth - INITIAL_CASH) / INITIAL_CASH;
 
+  // Restaura snapshot persistido ao reconectar (aluno que saiu e voltou).
+  // Sem isso, prevPlayer/prevPrices ficam com valores iniciais e o PnL exibido fica errado.
+  useEffect(() => {
+    if (player?.snapshot) {
+      prevPlayer.current = player.snapshot.player;
+      prevPrices.current = player.snapshot.prices;
+      snapshotDone.current = true;
+    }
+  }, [player?.snapshot]);
+
   useEffect(() => {
     if (prevPhase.current === "scenario" && gameState?.phase === "closed") {
       const prevW = prevPlayer.current.cash + ASSETS.reduce((s, a) => s + (prevPlayer.current.positions[a.id] || 0) * (prevPrices.current[a.id] || INITIAL_PRICE), 0);
@@ -714,11 +732,15 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
   // Salva snapshot de posições e preços ao início de cada rodada (fase "lobby"),
   // aguardando o player estar carregado antes de salvar — evita race condition onde
   // o efeito de fase disparava com player=null, salvando o valor padrão em vez do saldo real.
+  // Persiste no Supabase para sobreviver a refresh/reconexão.
   useEffect(() => {
     if (gameState?.phase === "lobby" && player && !snapshotDone.current) {
       snapshotDone.current = true;
       prevPlayer.current = { cash: player.cash, positions: { ...player.positions } };
       prevPrices.current = { ...prices };
+      // Persiste snapshot no Supabase (sem await — fire-and-forget, não bloqueia UI)
+      const snap = { player: prevPlayer.current, prices: prevPrices.current };
+      sSet(`game:player:${name}`, { ...player, snapshot: snap });
     }
   }, [gameState?.phase, player]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -733,13 +755,16 @@ function StudentView({ name, gameState, prices, priceHistory, player, onTrade })
 
   const handleSubmitOrders = async () => {
     const executed = [];
-    for (const a of ASSETS) {
-      const order = pendingOrders[a.id];
-      if (order) {
-        const price = prices[a.id] || INITIAL_PRICE;
-        await onTrade(a.id, order.side, order.qty, price);
-        executed.push({ assetId: a.id, side: order.side, qty: order.qty, price });
-      }
+    // Ordena: vendas primeiro (liberam cash), compras depois (consomem cash).
+    // Evita rejeição silenciosa quando o basket é solvente no agregado.
+    const orderedAssets = ASSETS
+      .map(a => ({ asset: a, order: pendingOrders[a.id] }))
+      .filter(e => e.order)
+      .sort((a, b) => (a.order.side === "sell" ? -1 : 1) - (b.order.side === "sell" ? -1 : 1));
+    for (const { asset: a, order } of orderedAssets) {
+      const price = prices[a.id] || INITIAL_PRICE;
+      const ok = await onTrade(a.id, order.side, order.qty, price);
+      if (ok) executed.push({ assetId: a.id, side: order.side, qty: order.qty, price });
     }
     setRoundTrades(executed);
     setPendingOrders({ pib: null, emprego: null, inflacao: null });
@@ -1405,11 +1430,11 @@ export default function MacroArena() {
     // Usa playerRef (atualizado sincronamente) para evitar race condition
     // quando múltiplas ordens são enviadas em sequência com await.
     const cur = playerRef.current;
-    if (!cur || !playerName) return;
+    if (!cur || !playerName) return false;
     const buy = side === "buy";
     const cost = qty * price;
-    if (buy && cost > cur.cash) return;
-    if (!buy && qty > (cur.positions[assetId] || 0)) return;
+    if (buy && cost > cur.cash) return false;
+    if (!buy && qty > (cur.positions[assetId] || 0)) return false;
     const np = newPrice(price, qty, buy);
     const updated = {
       ...cur,
@@ -1425,6 +1450,7 @@ export default function MacroArena() {
       const newHist = { ...state.priceHistory, [assetId]: [...(state.priceHistory[assetId] || [INITIAL_PRICE]), np] };
       await sSet("game:state", { ...state, prices: newPrices, priceHistory: newHist });
     }
+    return true;
   }, [playerName]);
 
   const handleControl = useCallback(async (action) => {
