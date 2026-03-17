@@ -5,8 +5,8 @@ import { useState, useEffect, useRef } from "react";
 // Rawls(5+8+5+5+7=30) · Igualit(25) · Utilit(20) — antes dos modificadores
 const SEQUENCE = ['pobre','rico','pobre','pobre','classe_media'];
 const TOTAL_ROUNDS = 5;
-const CODE = "FUCAPE42";
-const BOTS = ["Ana","Bruno","Carla","Diego","Elena","Felipe","Gabi","Hugo","Isa","João","Karen","Lucas","Mari","Neto","Olga","Pedro"];
+const PROFESSOR_PASSWORD = "123123";
+const RESULTS_KEY = "vi_resultados";
 // Modificador de circunstância por rodada: -5, 0 ou +5
 const MODIFIER_OPTIONS = [-5, 0, 5];
 const MODIFIER_LABELS = {
@@ -531,12 +531,163 @@ function CenaItaparica() {
 
 const SCENE_FOR_ROUND = { 1:CenaUPA, 2:CenaPraiaCanto, 3:CenaFlexal, 4:CenaTerceiraPonte, 5:CenaItaparica };
 
+// ─── ENTRY SCREEN ────────────────────────────────────────────────────────────
+function EntryScreen({ onStudent, onProfessor }) {
+  const [nameInput, setNameInput] = useState('');
+  const [passInput, setPassInput] = useState('');
+  const [passErr, setPassErr] = useState(false);
+  const BG = { minHeight: '100vh', background: '#010B18', color: '#F1F5F9', fontFamily: 'Inter, sans-serif', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 };
+  const card = { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: 24, flex: '1 1 180px', minWidth: 180 };
+  const inp = (extra = {}) => ({ width: '100%', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, padding: '12px 14px', color: '#F1F5F9', fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'Inter,sans-serif', marginBottom: 10, ...extra });
+  return (
+    <div style={BG}>
+      <div style={{ textAlign: 'center', marginBottom: 40 }}>
+        <div style={{ fontSize: 56, marginBottom: 10 }}>⚖️</div>
+        <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: 36, fontWeight: 900, marginBottom: 8, lineHeight: 1.2 }}>O Véu da Ignorância</h1>
+        <p style={{ color: '#64748B', fontSize: 13, margin: 0 }}>Economia do Setor Público · Fucape Business School</p>
+        <p style={{ color: '#475569', fontSize: 12, marginTop: 4 }}>Os Dois Teoremas do Bem-Estar · Rawls, Bentham, Igualitarismo</p>
+      </div>
+      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center', width: '100%', maxWidth: 460 }}>
+        <div style={card}>
+          <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: 2, color: '#64748B', textTransform: 'uppercase', marginBottom: 12 }}>Aluno</div>
+          <input
+            placeholder="Seu nome"
+            value={nameInput}
+            onChange={e => setNameInput(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && nameInput.trim() && onStudent(nameInput.trim())}
+            style={inp()}
+          />
+          <button
+            onClick={() => nameInput.trim() && onStudent(nameInput.trim())}
+            style={{ width: '100%', padding: '13px 0', background: '#10B981', border: 'none', borderRadius: 8, fontWeight: 700, fontSize: 15, color: '#000', cursor: 'pointer', fontFamily: 'Inter,sans-serif' }}
+          >
+            Entrar →
+          </button>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#334155', fontSize: 12, padding: '0 4px' }}>
+          <div style={{ width: 1, flex: 1, background: 'rgba(255,255,255,0.06)' }} />
+          <span style={{ padding: '8px 0' }}>ou</span>
+          <div style={{ width: 1, flex: 1, background: 'rgba(255,255,255,0.06)' }} />
+        </div>
+        <div style={card}>
+          <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: 2, color: '#64748B', textTransform: 'uppercase', marginBottom: 12 }}>Professor</div>
+          <input
+            type="password"
+            placeholder="Senha"
+            value={passInput}
+            onChange={e => { setPassInput(e.target.value); setPassErr(false); }}
+            onKeyDown={e => { if (e.key === 'Enter') { if (passInput === PROFESSOR_PASSWORD) onProfessor(); else setPassErr(true); } }}
+            style={inp({ border: `1px solid ${passErr ? '#EF4444' : 'rgba(255,255,255,0.12)'}`, marginBottom: passErr ? 4 : 10 })}
+          />
+          {passErr && <div style={{ color: '#EF4444', fontSize: 11, marginBottom: 8 }}>Senha incorreta</div>}
+          <button
+            onClick={() => { if (passInput === PROFESSOR_PASSWORD) onProfessor(); else setPassErr(true); }}
+            style={{ width: '100%', padding: '13px 0', background: 'transparent', border: '1.5px solid #10B981', borderRadius: 8, fontWeight: 700, fontSize: 15, color: '#10B981', cursor: 'pointer', fontFamily: 'Inter,sans-serif' }}
+          >
+            Painel →
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── PROFESSOR VIEW ───────────────────────────────────────────────────────────
+function ProfessorView({ onExit }) {
+  const [resultados, setResultados] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(RESULTS_KEY) || '[]'); } catch { return []; }
+  });
+  const BG = { minHeight: '100vh', background: '#010B18', color: '#F1F5F9', fontFamily: 'Inter, sans-serif' };
+  const W = { maxWidth: 680, margin: '0 auto', padding: '32px 20px 80px' };
+  const gameUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(gameUrl)}&bgcolor=010B18&color=10B981&qzone=1`;
+  const limpar = () => { localStorage.removeItem(RESULTS_KEY); setResultados([]); };
+  const contratos = { utilitarista: RULES.utilitarista, rawlsiana: RULES.rawlsiana, igualitaria: RULES.igualitaria };
+
+  return (
+    <div style={BG}>
+      <div style={W}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32 }}>
+          <div>
+            <div style={{ fontSize: 12, color: '#64748B', fontWeight: 700, letterSpacing: 1 }}>PAINEL DO PROFESSOR</div>
+            <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: 24, fontWeight: 700, margin: '4px 0 0' }}>O Véu da Ignorância</h2>
+          </div>
+          <button onClick={onExit} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: '8px 16px', color: '#94A3B8', fontSize: 13, cursor: 'pointer', fontFamily: 'Inter,sans-serif' }}>← Sair</button>
+        </div>
+
+        {/* QR Code */}
+        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: 28, marginBottom: 24, display: 'flex', gap: 28, alignItems: 'center', flexWrap: 'wrap' }}>
+          <img src={qrUrl} alt="QR Code" style={{ width: 180, height: 180, borderRadius: 12, display: 'block', flexShrink: 0 }} />
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 8 }}>📱 QR Code para alunos</div>
+            <p style={{ color: '#94A3B8', fontSize: 14, lineHeight: 1.6, margin: '0 0 12px' }}>
+              Projete ou compartilhe este QR Code. Os alunos entram com o nome — sem código de acesso.
+            </p>
+            <div style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 8, padding: '10px 14px', fontSize: 13, color: '#10B981', fontFamily: 'JetBrains Mono, monospace', wordBreak: 'break-all' }}>
+              {gameUrl}
+            </div>
+          </div>
+        </div>
+
+        {/* Resultados */}
+        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: 24, marginBottom: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+            <div>
+              <div style={{ fontSize: 12, color: '#64748B', fontWeight: 700, letterSpacing: 1, marginBottom: 4 }}>RESULTADOS DA SESSÃO</div>
+              <div style={{ fontSize: 14, color: '#94A3B8' }}>{resultados.length} aluno{resultados.length !== 1 ? 's' : ''} completou o jogo</div>
+            </div>
+            {resultados.length > 0 && (
+              <button onClick={limpar} style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 8, padding: '6px 14px', color: '#EF4444', fontSize: 12, cursor: 'pointer', fontFamily: 'Inter,sans-serif' }}>Limpar</button>
+            )}
+          </div>
+          {resultados.length === 0 ? (
+            <div style={{ textAlign: 'center', color: '#475569', fontSize: 14, padding: '24px 0' }}>Nenhum resultado ainda. Os alunos aparecem aqui ao concluir o jogo.</div>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                    <th style={{ textAlign: 'left', padding: '8px 12px', color: '#64748B', fontWeight: 600 }}>Aluno</th>
+                    <th style={{ textAlign: 'left', padding: '8px 12px', color: '#64748B', fontWeight: 600 }}>Contrato</th>
+                    <th style={{ textAlign: 'right', padding: '8px 12px', color: '#64748B', fontWeight: 600 }}>Pts</th>
+                    <th style={{ textAlign: 'right', padding: '8px 12px', color: '#64748B', fontWeight: 600 }}>Rawls</th>
+                    <th style={{ textAlign: 'right', padding: '8px 12px', color: '#64748B', fontWeight: 600 }}>Utilit.</th>
+                    <th style={{ textAlign: 'right', padding: '8px 12px', color: '#64748B', fontWeight: 600 }}>Igual.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...resultados].reverse().map((r, i) => {
+                    const rule = RULES[r.contrato];
+                    return (
+                      <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                        <td style={{ padding: '10px 12px', color: '#F1F5F9', fontWeight: 500 }}>{r.nome}</td>
+                        <td style={{ padding: '10px 12px', color: rule?.color || '#94A3B8' }}>{rule?.emoji} {rule?.name}</td>
+                        <td style={{ padding: '10px 12px', textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', fontWeight: 700, color: rule?.color || '#F1F5F9' }}>{r.total}</td>
+                        <td style={{ padding: '10px 12px', textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', color: '#10B981' }}>{r.altScores?.rawlsiana ?? '—'}</td>
+                        <td style={{ padding: '10px 12px', textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', color: '#F59E0B' }}>{r.altScores?.utilitarista ?? '—'}</td>
+                        <td style={{ padding: '10px 12px', textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', color: '#818CF8' }}>{r.altScores?.igualitaria ?? '—'}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {/* Info da sessão */}
+        <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 12, padding: '16px 20px', fontSize: 13, color: '#475569', lineHeight: 1.7 }}>
+          <strong style={{ color: '#64748B' }}>Sequência de nascimento:</strong> Pobre → Rico → Pobre → Pobre → Classe Média<br />
+          <strong style={{ color: '#64748B' }}>Pontuação base:</strong> Rawls (30) · Igualitária (25) · Utilitarista (20) — antes dos modificadores de circunstância (±0 ou ±5 aleatórios)
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── GAME COMPONENT ──────────────────────────────────────────────────────────
-function Game({ onRestart }) {
-  const [phase, setPhase] = useState('entry');
-  const [name, setName] = useState('');
-  const [codeInput, setCodeInput] = useState('');
-  const [err, setErr] = useState('');
+function Game({ name, onRestart }) {
+  const [phase, setPhase] = useState('contract');
   const [contract, setContract] = useState(null);
   const [round, setRound] = useState(1);
   const [subPhase, setSubPhase] = useState('reveal');
@@ -549,80 +700,6 @@ function Game({ onRestart }) {
 
   const W = { maxWidth: 640, margin: '0 auto', padding: '0 20px' };
   const BG = { minHeight: '100vh', background: '#010B18', color: '#F1F5F9', fontFamily: 'Inter, sans-serif' };
-  const inp = (extra = {}) => ({
-    width: '100%', background: 'rgba(255,255,255,0.06)',
-    border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8,
-    padding: '12px 16px', color: '#F1F5F9', fontSize: 16,
-    outline: 'none', boxSizing: 'border-box', fontFamily: 'Inter,sans-serif',
-    ...extra,
-  });
-
-  // ── ENTRY ────────────────────────────────────────────────────────────────
-  if (phase === 'entry') {
-    return (
-      <div style={BG}>
-        <div style={{ ...W, paddingTop: 64, paddingBottom: 64 }}>
-          <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <div style={{ fontSize: 52, marginBottom: 16 }}>⚖️</div>
-            <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: 36, fontWeight: 900, marginBottom: 12, lineHeight: 1.2 }}>
-              O Véu da Ignorância
-            </h1>
-            <p style={{ color: '#94A3B8', fontSize: 15, lineHeight: 1.7, maxWidth: 460, margin: '0 auto' }}>
-              Você vai nascer em uma sociedade. Mas não sabe ainda como — rico, pobre ou classe média.
-              Antes de descobrir, você precisa escolher as regras que governam essa sociedade.
-            </p>
-          </div>
-          <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: 32 }}>
-            <div style={{ marginBottom: 20 }}>
-              <label style={{ display: 'block', fontSize: 12, color: '#94A3B8', marginBottom: 8, fontWeight: 600, letterSpacing: 0.8 }}>
-                SEU NOME
-              </label>
-              <input
-                value={name}
-                onChange={e => setName(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && document.getElementById('vi-code')?.focus()}
-                placeholder="Como você quer ser identificado"
-                style={inp()}
-              />
-            </div>
-            <div style={{ marginBottom: 32 }}>
-              <label style={{ display: 'block', fontSize: 12, color: '#94A3B8', marginBottom: 8, fontWeight: 600, letterSpacing: 0.8 }}>
-                CÓDIGO DA SALA
-              </label>
-              <input
-                id="vi-code"
-                value={codeInput}
-                onChange={e => { setCodeInput(e.target.value.toUpperCase()); setErr(''); }}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') {
-                    if (!name.trim()) { setErr('Digite seu nome primeiro.'); return; }
-                    if (codeInput !== CODE) { setErr('Código incorreto. Peça ao professor.'); return; }
-                    setPhase('contract');
-                  }
-                }}
-                placeholder="Digite o código fornecido pelo professor"
-                style={inp({ border: `1px solid ${err ? '#EF4444' : 'rgba(255,255,255,0.12)'}`, textTransform: 'uppercase', letterSpacing: 3 })}
-              />
-              {err && <p style={{ color: '#EF4444', fontSize: 13, marginTop: 8 }}>{err}</p>}
-            </div>
-            <button
-              onClick={() => {
-                if (!name.trim()) { setErr('Digite seu nome.'); return; }
-                if (codeInput !== CODE) { setErr('Código incorreto. Peça ao professor.'); return; }
-                setPhase('contract');
-              }}
-              style={{ width: '100%', background: '#10B981', color: '#fff', border: 'none', borderRadius: 8, padding: '14px', fontSize: 16, fontWeight: 700, cursor: 'pointer', fontFamily: 'Inter,sans-serif' }}
-            >
-              Entrar no Jogo →
-            </button>
-          </div>
-          <p style={{ textAlign: 'center', color: '#475569', fontSize: 12, marginTop: 24, letterSpacing: 0.5 }}>
-            FUCAPE · Economia do Setor Público · Os Dois Teoremas do Bem-Estar
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   // ── CONTRACT ─────────────────────────────────────────────────────────────
   if (phase === 'contract') {
@@ -816,6 +893,16 @@ function Game({ onRestart }) {
               const newScores = [...scores, roundTotal];
               setScores(newScores);
               if (round >= TOTAL_ROUNDS) {
+                // salvar resultado no localStorage para o painel do professor
+                const altScores = {};
+                Object.keys(RULES).forEach(c => {
+                  altScores[c] = SEQUENCE.reduce((sum, pos, i) => sum + RULES[c].utils[pos] + modifiers[i], 0);
+                });
+                try {
+                  const prev = JSON.parse(localStorage.getItem(RESULTS_KEY) || '[]');
+                  prev.push({ nome: name, contrato: contract, total: newScores.reduce((s, x) => s + x, 0), altScores, ts: Date.now() });
+                  localStorage.setItem(RESULTS_KEY, JSON.stringify(prev));
+                } catch {}
                 setPhase('final');
               } else {
                 setRound(r => r + 1);
@@ -928,6 +1015,11 @@ function Game({ onRestart }) {
 
 // ─── ROOT EXPORT ─────────────────────────────────────────────────────────────
 export default function VeuIgnorancia() {
+  const [mode, setMode] = useState(null); // null | 'student' | 'professor'
+  const [playerName, setPlayerName] = useState('');
   const [gameKey, setGameKey] = useState(0);
-  return <Game key={gameKey} onRestart={() => setGameKey(k => k + 1)} />;
+
+  if (!mode) return <EntryScreen onStudent={n => { setPlayerName(n); setMode('student'); }} onProfessor={() => setMode('professor')} />;
+  if (mode === 'professor') return <ProfessorView onExit={() => setMode(null)} />;
+  return <Game key={gameKey} name={playerName} onRestart={() => { setGameKey(k => k + 1); setMode(null); }} />;
 }
