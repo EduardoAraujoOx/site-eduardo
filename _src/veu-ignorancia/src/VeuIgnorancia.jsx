@@ -272,7 +272,7 @@ function ProfessorView({ onExit }) {
 
   useEffect(() => {
     fetchAll();
-    const ch = supabase.channel('vi_bus_prof')
+    const ch = supabase.channel('vi_bus')
       .on('broadcast', { event: 'kv_change' }, async ({ payload }) => {
         const k = payload?.key;
         if (k === 'vi:state') { const s = await sGet('vi:state'); setGs(s); }
@@ -371,8 +371,7 @@ function ProfessorView({ onExit }) {
               </div>
             )}
             <div style={{ ...CARD, padding: 16, fontSize: 13, color: C.muted, lineHeight: 1.7 }}>
-              <strong style={{ color: C.text }}>Sequência:</strong> Classe Média → Pobre → Rico → Pobre → Pobre &nbsp;·&nbsp;
-              <strong style={{ color: C.text }}>Desempate:</strong> safety_score → total → menor volatilidade
+              <strong style={{ color: C.text }}>Critério de desempate:</strong> safety_score (mínimo) → total → menor volatilidade
             </div>
           </>
         )}
@@ -591,7 +590,7 @@ function StudentView({ name, onExit }) {
       setGs(state);
       if (p) setPlayer(p);
     })();
-    const ch = supabase.channel(`vi_bus_${name}`)
+    const ch = supabase.channel('vi_bus')
       .on('broadcast', { event: 'kv_change' }, async ({ payload }) => {
         const k = payload?.key;
         if (k === 'vi:state') { const s = await sGet('vi:state'); setGs(s); }
