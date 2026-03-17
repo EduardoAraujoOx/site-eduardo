@@ -34,21 +34,36 @@ const BASE = {
 const REGIMES = {
   utilitarista: {
     name: "Utilitarista", emoji: "📈", color: "#F59E0B",
-    desc: "Maximiza a soma total de bem-estar. Ricos ganham muito mais, pobres ganham pouco — mas a riqueza agregada é máxima.",
-    tagline: "O que importa é a soma total.",
+    tagline: "Maximiza a soma total.",
     payoff: "Pobre: 20 · Classe Média: 100 · Rico: 550",
+    desc_curta: "Faz o bolo crescer. Aceita desigualdade se o total for maior.",
+    desc_longa: [
+      "A lógica é direta: se a soma total de bem-estar da sociedade é maior, ela é mais justa — mesmo que poucos tenham muito e muitos tenham pouco.",
+      "Tributos baixos, liberdade econômica máxima, mercado decide a alocação. Uma empresa pode crescer sem limites. Quem nasce rico tem liberdade para multiplicar riqueza sem tetos redistributivos.",
+      "Quem nasce pobre... depende da maré. O sistema não garante o piso — garante o crescimento do bolo. Se o bolo crescer o suficiente, talvez todos se beneficiem. Talvez.",
+    ],
   },
   igualitarista: {
     name: "Igualitarista", emoji: "⚖️", color: "#818CF8",
-    desc: "Todos recebem exatamente o mesmo, independentemente de onde nasceram. Nenhuma vantagem de berço.",
-    tagline: "Todos iguais, sem exceção.",
+    tagline: "Divide o bolo igualmente.",
     payoff: "Pobre: 90 · Classe Média: 90 · Rico: 90",
+    desc_curta: "Todos recebem o mesmo. Nenhuma vantagem de berço.",
+    desc_longa: [
+      "Todos recebem exatamente o mesmo, independentemente de onde nasceram. Nenhuma vantagem de herança, de rede de contatos, de escola particular.",
+      "Para financiar isso: tributação pesada sobre patrimônio e renda alta. Uma empresa rentável não pode acumular muito mais do que as demais — o Estado redistribui até equiparar. Isso cria um teto. Você aceita um teto mais baixo em troca de um piso garantido.",
+      "O problema que economistas levantam: limita os incentivos para crescer. Por que arriscar e inovar se o ganho vai ser redistribuído? O bolo pode encolher — mas estará dividido em pedaços iguais.",
+    ],
   },
   rawlsiano: {
     name: "Rawlsiano", emoji: "🛡️", color: "#10B981",
-    desc: "Protege quem nasceu mais vulnerável. Os pobres têm uma base digna; ricos ganham um pouco menos do que no utilitarismo.",
-    tagline: "Protege o mais fraco.",
+    tagline: "Protege quem nasceu mais vulnerável.",
     payoff: "Pobre: 95 · Classe Média: 92 · Rico: 110",
+    desc_curta: "Protege o piso. Ricos ganham menos que no utilitarismo, pobres ganham mais.",
+    desc_longa: [
+      "John Rawls propôs um experimento mental: se você pudesse escolher as regras da sociedade sem saber onde nasceria — sem saber sua classe, seu talento, sua família — qual escolheria?",
+      "Por trás desse 'véu da ignorância', pessoas racionais tendem a proteger o piso. Não porque são altruístas, mas porque não sabem se vão nascer pobres. Então escolhem a sociedade onde, mesmo no pior cenário, a vida ainda vale a pena.",
+      "Resultado: os pobres têm uma base digna acima do utilitarismo. Os ricos ainda se saem bem — mas contribuem um pouco mais para sustentar o piso. Equilíbrio entre crescimento e proteção.",
+    ],
   },
 };
 const CLASSES = {
@@ -56,27 +71,48 @@ const CLASSES = {
   classe_media: { label: "Classe Média", emoji: "🏠", color: "#F59E0B" },
   rico:         { label: "Rico",         emoji: "🏛️", color: "#10B981" },
 };
+// Narrativa de vida por classe social — contexto ES
+const LIFE_STORIES = {
+  pobre: {
+    headline: "Você nasceu pobre no Espírito Santo",
+    scene: "Criado em Itacibá, na periferia de Cariacica, ou num bairro sem nome oficial da Serra. Seu pai trabalha na construção civil por empreitada — quando tem obra. Sua mãe é diarista em apartamentos da Praia do Canto, leva 1h40 de ônibus para chegar lá.",
+    constraints: "A escola pública tem 38 alunos por sala e professor substituto há seis meses. A Federal existe, mas exige cursinho que custa tempo que você não tem — porque você já trabalha aos 16. Cada crise da família cobra um preço. A margem de erro é quase zero.",
+    punchline: "Seu destino é mais função do berço do que do seu esforço.",
+  },
+  classe_media: {
+    headline: "Você nasceu na classe média capixaba",
+    scene: "Cresceu em Vila Velha ou num bairro tranquilo da Serra. Seu pai é servidor estadual — algum autarquia ou secretaria em Vitória. Sua mãe é professora municipal. Moradia própria, mas financiada. Nada falta, mas nada sobra.",
+    constraints: "Escola pública boa, SESI ou Salesiano com desconto. ENEM para a UFES ou FIES para uma particular. Você trabalha e estuda ao mesmo tempo — é o capixaba clássico que 'chegou onde chegou com muito esforço'. Qualquer crise de saúde ou demissão desequilibra o orçamento em meses.",
+    punchline: "Você está acima da linha da pobreza, mas abaixo da linha da segurança.",
+  },
+  rico: {
+    headline: "Você nasceu rico em Vitória",
+    scene: "Cresceu no Jardim da Penha, Mata da Praia ou Praia do Canto. Seu avô tem participação em porto seco, agroindústria de café no sul do Estado, ou construtora consolidada. Escola particular de referência, intercâmbio em Portugal ou nos EUA, cursinho no melhor de Vitória.",
+    constraints: "Seu primeiro emprego veio via indicação de um amigo do seu pai — CEO de empresa em que já entrou como coordenador. Sua rede de contatos foi construída em churrascos na Marina e jantares em clube privativo.",
+    punchline: "Você não abre portas — elas já estavam abertas antes de você bater.",
+  },
+};
 const CIRCS = {
   pobre: [
-    { mod: 3,  text: "Professora excelente na escola pública abriu novas portas" },
-    { mod: -6, text: "Doença na família consumiu renda e energia disponíveis" },
-    { mod: 3,  text: "Rede de apoio comunitária compensou a falta de recursos" },
-    { mod: -3, text: "Transporte precário e perda de emprego pesaram no período" },
-    { mod: 6,  text: "Bolsa de estudo aprovada mudou a trajetória de vida" },
+    { mod: 6,  text: "QI fora da curva notado por uma professora: bolsa integral no IFES abriu uma brecha que, entre 100 na mesma condição, talvez 3 consigam." },
+    { mod: 3,  text: "Flertou com o tráfico, mas voltou: o bairro puxava forte, mas você saiu cedo o suficiente para não perder o emprego formal que apareceu depois." },
+    { mod: 0,  text: "A vida correu no trilho esperado: trabalho informal, conta no limite, nenhuma surpresa — nem boa, nem ruim." },
+    { mod: -3, text: "Dois anos envolvido com tráfico: saiu vivo e sem ficha, mas o estigma e o tempo perdido reduziram as oportunidades." },
+    { mod: -6, text: "Abordagem policial virou processo por engano; mesmo absolvido, o antecedente processual fechou portas de emprego formal por anos." },
   ],
   classe_media: [
-    { mod: 3,  text: "Estabilidade no emprego permitiu planejamento de longo prazo" },
-    { mod: -3, text: "Endividamento inesperado limitou as opções disponíveis" },
-    { mod: 6,  text: "Promoção modesta trouxe folga financeira significativa" },
-    { mod: -6, text: "Custo médico imprevisto desequilibrou o orçamento familiar" },
-    { mod: 0,  text: "Rotina equilibrada — acasos positivos e negativos se compensaram" },
+    { mod: 6,  text: "Negócio próprio começou numa garagem e deu certo: saiu na frente de toda a geração com disciplina, timing e uma dívida que valeu a pena." },
+    { mod: 3,  text: "Aprovado no concurso do IPAJM: estabilidade na carreira pública mudou o horizonte de longo prazo para toda a família." },
+    { mod: 0,  text: "CLT estável, conta equilibrada, vida funcional — a média que a maioria conhece e poucos admitem que é boa." },
+    { mod: -3, text: "Demissão numa reestruturação consumiu 8 meses de reserva; foi recontratado, mas voltou financeiramente do zero." },
+    { mod: -6, text: "Separação dividiu dez anos de patrimônio ao meio — casa, FGTS, investimento. Voltou pro aluguel aos 42." },
   ],
   rico: [
-    { mod: 6,  text: "Herança antecipada ampliou o patrimônio consideravelmente" },
-    { mod: -6, text: "Crise no negócio da família reduziu a riqueza herdada" },
-    { mod: 3,  text: "Rede de contatos exclusiva abriu oportunidades únicas" },
-    { mod: -3, text: "Processo judicial inesperado gerou perdas financeiras" },
-    { mod: 0,  text: "Rotina normal — nenhum choque positivo ou negativo relevante" },
+    { mod: 6,  text: "Herdou participação societária no timing exato: a valorização do porto triplicou o patrimônio em dois anos sem esforço algum." },
+    { mod: 3,  text: "Clube de investidores exclusivo deu acesso a um IPO fora do radar do varejo: retorno que a maioria nunca veria." },
+    { mod: 0,  text: "Gestão conservadora do patrimônio: cresceu na média do CDI — sem riscos grandes, sem ganhos extraordinários." },
+    { mod: -3, text: "Conflito societário com o sócio histórico: dois anos de litígio drenaram energia, dinheiro e a reputação construída em décadas." },
+    { mod: -6, text: "Sucessão mal preparada: filho assumiu o negócio sem experiência real e destruiu metade do que o pai construiu em 30 anos." },
   ],
 };
 
@@ -435,48 +471,89 @@ function ProfessorView({ onExit }) {
 // ─── STUDENT REGIME CHOICE ────────────────────────────────────────────────────
 function StudentRegimeChoice({ onChoose }) {
   const [selected, setSelected] = useState(null);
+  const [expanded, setExpanded] = useState(null);
   const keys = Object.keys(REGIMES);
+
   return (
     <div style={{ ...BG_STYLE, padding: 20 }}>
-      <div style={{ maxWidth: 520, margin: '0 auto', paddingTop: 40, paddingBottom: 80 }}>
+      <div style={{ maxWidth: 560, margin: '0 auto', paddingTop: 36, paddingBottom: 100 }}>
+
+        {/* Abertura filosófica */}
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>⚖️</div>
-          <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: 28, fontWeight: 900, marginBottom: 12 }}>O Véu da Ignorância</h1>
+          <div style={{ fontSize: 52, marginBottom: 14 }}>⚖️</div>
+          <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: 26, fontWeight: 900, lineHeight: 1.3, marginBottom: 0 }}>
+            Que tipo de sociedade você escolheria se não soubesse em qual classe social nasceria?
+          </h1>
         </div>
-        <div style={{ ...CARD, padding: 20, marginBottom: 24, borderLeft: '3px solid #818CF8' }}>
-          <p style={{ color: C.text, fontSize: 14, lineHeight: 1.75, margin: 0 }}>
-            <strong>Você vai nascer nesta sociedade — mas não sabe ainda onde.</strong><br />
-            Pode ser rico, pobre ou classe média. <em>Antes de descobrir</em>, você precisa escolher
-            as regras que vão reger essa sociedade para as próximas 5 gerações.
-            Escolha com cuidado: o regime não pode ser trocado depois.
+
+        {/* Setup */}
+        <div style={{ ...CARD, padding: 20, marginBottom: 16, borderLeft: '3px solid #818CF8' }}>
+          <p style={{ color: C.text, fontSize: 14, lineHeight: 1.8, margin: 0 }}>
+            Esta é a pergunta de John Rawls. Imagine que você vai nascer numa sociedade — mas
+            não sabe se vai ser <strong style={{ color: '#EF4444' }}>pobre</strong>,{' '}
+            <strong style={{ color: '#F59E0B' }}>classe média</strong> ou{' '}
+            <strong style={{ color: '#10B981' }}>rico</strong>. Atrás desse <em>véu da ignorância</em>,
+            você precisa escolher as regras dessa sociedade <em>antes de descobrir onde vai nascer.</em>{' '}
+            Uma vez escolhido, o regime vale para as 5 rodadas. Não pode trocar depois.
           </p>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
+
+        {/* Regimes */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
           {keys.map(k => {
             const rv = REGIMES[k];
             const sel = selected === k;
+            const exp = expanded === k;
             return (
-              <div key={k} onClick={() => setSelected(k)} style={{
-                ...CARD, padding: 16, cursor: 'pointer',
+              <div key={k} style={{
+                ...CARD, padding: 0, cursor: 'pointer', overflow: 'hidden',
                 border: `1px solid ${sel ? rv.color : C.border}`,
-                background: sel ? `${rv.color}12` : C.card,
+                background: sel ? `${rv.color}10` : C.card,
                 transition: 'all 0.15s',
               }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-                  <div style={{ fontSize: 28, flexShrink: 0 }}>{rv.emoji}</div>
+                {/* Header row */}
+                <div onClick={() => setSelected(k)} style={{ padding: '14px 16px', display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+                  <div style={{ fontSize: 26, flexShrink: 0, marginTop: 2 }}>{rv.emoji}</div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 700, fontSize: 16, color: sel ? rv.color : C.text, marginBottom: 4 }}>{rv.name}</div>
-                    <p style={{ color: C.muted, fontSize: 13, lineHeight: 1.5, margin: '0 0 6px' }}>{rv.desc}</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
+                      <span style={{ fontWeight: 700, fontSize: 16, color: sel ? rv.color : C.text }}>{rv.name}</span>
+                      <span style={{ fontSize: 11, color: C.muted, fontStyle: 'italic' }}>{rv.desc_curta}</span>
+                    </div>
                     <div style={{ fontSize: 12, color: sel ? rv.color : C.subtle, fontFamily: 'monospace' }}>{rv.payoff}</div>
                   </div>
-                  <div style={{ width: 18, height: 18, borderRadius: '50%', border: `2px solid ${sel ? rv.color : C.border}`, background: sel ? rv.color : 'transparent', flexShrink: 0, marginTop: 4 }} />
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
+                    <div style={{ width: 18, height: 18, borderRadius: '50%', border: `2px solid ${sel ? rv.color : C.border}`, background: sel ? rv.color : 'transparent', flexShrink: 0 }} />
+                    <button onClick={e => { e.stopPropagation(); setExpanded(exp ? null : k); }}
+                      style={{ background: 'none', border: 'none', color: C.muted, fontSize: 11, cursor: 'pointer', padding: 0, fontFamily: 'Inter,sans-serif' }}>
+                      {exp ? 'menos ▲' : 'entender ▼'}
+                    </button>
+                  </div>
                 </div>
+                {/* Expanded explanation */}
+                {exp && (
+                  <div style={{ padding: '0 16px 16px 54px', borderTop: `1px solid ${C.border}` }}>
+                    {rv.desc_longa.map((para, i) => (
+                      <p key={i} style={{ color: C.muted, fontSize: 13, lineHeight: 1.7, margin: i === 0 ? '12px 0 8px' : '0 0 8px' }}>{para}</p>
+                    ))}
+                  </div>
+                )}
               </div>
             );
           })}
         </div>
+
+        {/* Critério de vitória */}
+        <div style={{ ...CARD, padding: 16, marginBottom: 24, borderLeft: '3px solid #F59E0B' }}>
+          <div style={{ fontSize: 11, color: '#F59E0B', fontWeight: 800, letterSpacing: 1.5, marginBottom: 8 }}>COMO SE VENCE</div>
+          <p style={{ color: C.text, fontSize: 13, lineHeight: 1.7, margin: 0 }}>
+            Vence quem tiver o <strong style={{ color: '#10B981' }}>maior piso</strong> — ou seja, a melhor pontuação na rodada em que fez menos pontos.
+            Não importa o total acumulado: importa quanto você garantiu sofrer menos na pior geração.
+            Em caso de empate no piso, desempata pelo total; depois, por quem teve menos volatilidade.
+          </p>
+        </div>
+
         <button disabled={!selected} onClick={() => selected && onChoose(selected)}
-          style={btn('#10B981', { width: '100%', opacity: selected ? 1 : 0.4, cursor: selected ? 'pointer' : 'default', color: '#000' })}>
+          style={btn('#10B981', { width: '100%', opacity: selected ? 1 : 0.4, cursor: selected ? 'pointer' : 'default', color: '#000', fontSize: 16, padding: '15px 0' })}>
           Confirmar Escolha →
         </button>
       </div>
@@ -686,25 +763,53 @@ function StudentView({ name, onExit }) {
         <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: 24, fontWeight: 700, marginBottom: 4 }}>Onde você vai nascer?</h2>
         <p style={{ color: C.muted, fontSize: 14, marginBottom: 16 }}>Sorteando classe social…</p>
         <Roulette target={currentClass} go={true} onDone={() => setSpinDone(true)} size="large" />
-        {spinDone && myCirc && (
-          <div style={{ ...CARD, padding: 20, maxWidth: 380, width: '100%', marginTop: 16, textAlign: 'left' }}>
-            <div style={{ fontSize: 11, color: C.muted, fontWeight: 700, letterSpacing: 1.5, marginBottom: 10 }}>SUA CIRCUNSTÂNCIA DESTA RODADA</div>
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-              <div style={{ fontSize: 32 }}>{myCirc.mod > 0 ? '🌤️' : myCirc.mod < 0 ? '🌧️' : '☁️'}</div>
-              <p style={{ color: C.text, fontSize: 14, lineHeight: 1.6, margin: 0, flex: 1 }}>{myCirc.text}</p>
-              <div style={{ fontWeight: 800, fontSize: 20, color: myCirc.mod > 0 ? '#10B981' : myCirc.mod < 0 ? '#EF4444' : C.muted, flexShrink: 0, fontFamily: 'monospace' }}>
-                {myCirc.mod > 0 ? `+${myCirc.mod}` : myCirc.mod}
+
+        {spinDone && currentClass && (() => {
+          const story = LIFE_STORIES[currentClass];
+          const cl = CLASSES[currentClass];
+          return (
+            <div style={{ maxWidth: 440, width: '100%', marginTop: 4, textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {/* Narrativa de vida */}
+              <div style={{ background: `${cl.color}10`, border: `1px solid ${cl.color}40`, borderRadius: 14, padding: 18 }}>
+                <div style={{ fontSize: 12, fontWeight: 800, color: cl.color, letterSpacing: 1, marginBottom: 8 }}>{story.headline.toUpperCase()}</div>
+                <p style={{ color: C.text, fontSize: 13, lineHeight: 1.7, margin: '0 0 8px' }}>{story.scene}</p>
+                <p style={{ color: C.muted, fontSize: 13, lineHeight: 1.7, margin: '0 0 8px' }}>{story.constraints}</p>
+                <p style={{ color: cl.color, fontSize: 13, fontWeight: 600, fontStyle: 'italic', margin: 0 }}>{story.punchline}</p>
               </div>
+
+              {/* Circunstância individual */}
+              {myCirc && (
+                <div style={{ ...CARD, padding: 16 }}>
+                  <div style={{ fontSize: 11, color: C.muted, fontWeight: 700, letterSpacing: 1.5, marginBottom: 8 }}>
+                    SEU RESULTADO NESTA GERAÇÃO
+                  </div>
+                  <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                    <div style={{ fontSize: 28, flexShrink: 0, marginTop: 2 }}>
+                      {myCirc.mod >= 6 ? '🌟' : myCirc.mod === 3 ? '🌤️' : myCirc.mod === 0 ? '☁️' : myCirc.mod === -3 ? '🌧️' : '⛈️'}
+                    </div>
+                    <p style={{ color: C.text, fontSize: 13, lineHeight: 1.65, margin: 0, flex: 1 }}>{myCirc.text}</p>
+                    <div style={{
+                      fontWeight: 800, fontSize: 20, flexShrink: 0, fontFamily: 'monospace',
+                      color: myCirc.mod > 0 ? '#10B981' : myCirc.mod < 0 ? '#EF4444' : C.muted,
+                    }}>
+                      {myCirc.mod > 0 ? `+${myCirc.mod}` : myCirc.mod}
+                    </div>
+                  </div>
+                  {myScores.length === round && (
+                    <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ color: C.muted, fontSize: 13 }}>
+                        Pontuação ({BASE[p?.regime]?.[currentClass] ?? '?'} base {myCirc.mod >= 0 ? '+' : ''}{myCirc.mod}):
+                      </span>
+                      <span style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: 24, color: rv?.color }}>{myScores[round - 1]}</span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-            {myScores.length === round && (
-              <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ color: C.muted, fontSize: 13 }}>Pontuação desta rodada:</span>
-                <span style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: 22, color: rv?.color }}>{myScores[round - 1]}</span>
-              </div>
-            )}
-          </div>
-        )}
-        <div style={{ marginTop: 16, color: C.muted, fontSize: 12 }}>
+          );
+        })()}
+
+        <div style={{ marginTop: 10, color: C.muted, fontSize: 12 }}>
           {rv?.emoji} <span style={{ color: rv?.color }}>{rv?.name}</span>
         </div>
       </div>
@@ -720,21 +825,28 @@ function StudentView({ name, onExit }) {
             <div style={{ fontSize: 11, color: C.muted, fontWeight: 700, letterSpacing: 1.5 }}>RODADA {round} DE {TOTAL_ROUNDS}</div>
             <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: 24, fontWeight: 700, margin: '8px 0 0' }}>Resultado</h2>
           </div>
-          {/* Born as */}
-          {currentClass && (
-            <div style={{ ...CARD, padding: 16, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ fontSize: 40 }}>{CLASSES[currentClass].emoji}</div>
-              <div>
-                <div style={{ fontSize: 11, color: C.muted, fontWeight: 700, letterSpacing: 1.5 }}>VOCÊ NASCEU COMO</div>
-                <div style={{ fontSize: 20, fontWeight: 800, color: CLASSES[currentClass].color }}>{CLASSES[currentClass].label}</div>
+          {/* Classe + punchline */}
+          {currentClass && (() => {
+            const cl = CLASSES[currentClass];
+            const story = LIFE_STORIES[currentClass];
+            return (
+              <div style={{ background: `${cl.color}10`, border: `1px solid ${cl.color}40`, borderRadius: 12, padding: 16, marginBottom: 12 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+                  <div style={{ fontSize: 36 }}>{cl.emoji}</div>
+                  <div>
+                    <div style={{ fontSize: 11, color: C.muted, fontWeight: 700, letterSpacing: 1.5 }}>VOCÊ NASCEU COMO</div>
+                    <div style={{ fontSize: 20, fontWeight: 800, color: cl.color }}>{cl.label}</div>
+                  </div>
+                </div>
+                <p style={{ color: cl.color, fontSize: 12, fontStyle: 'italic', margin: 0 }}>{story.punchline}</p>
               </div>
-            </div>
-          )}
+            );
+          })()}
           {/* Circumstance */}
           {myCirc && (
             <div style={{ ...CARD, padding: 16, marginBottom: 12 }}>
-              <div style={{ fontSize: 11, color: C.muted, fontWeight: 700, letterSpacing: 1.5, marginBottom: 8 }}>CIRCUNSTÂNCIA</div>
-              <p style={{ color: C.text, fontSize: 14, lineHeight: 1.6, margin: '0 0 8px' }}>{myCirc.text}</p>
+              <div style={{ fontSize: 11, color: C.muted, fontWeight: 700, letterSpacing: 1.5, marginBottom: 8 }}>SEU RESULTADO NESTA GERAÇÃO</div>
+              <p style={{ color: C.text, fontSize: 13, lineHeight: 1.6, margin: '0 0 8px' }}>{myCirc.text}</p>
               <span style={{ color: myCirc.mod > 0 ? '#10B981' : myCirc.mod < 0 ? '#EF4444' : C.muted, fontWeight: 700, fontFamily: 'monospace' }}>
                 {myCirc.mod > 0 ? `+${myCirc.mod}` : myCirc.mod !== 0 ? myCirc.mod : '±0'} pts
               </span>
