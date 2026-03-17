@@ -272,13 +272,15 @@ function ProfessorView({ onExit }) {
 
   useEffect(() => {
     fetchAll();
+    // Polling de fallback — garante atualização mesmo se broadcast falhar
+    const poll = setInterval(fetchAll, 4000);
     const ch = supabase.channel('vi_bus')
       .on('broadcast', { event: 'kv_change' }, async ({ payload }) => {
         const k = payload?.key;
         if (k === 'vi:state') { const s = await sGet('vi:state'); setGs(s); }
         else if (k?.startsWith('vi:player:')) { const p = await sGet(k); if (p) setPlayers(prev => ({ ...prev, [p.name]: p })); }
       }).subscribe();
-    return () => supabase.removeChannel(ch);
+    return () => { clearInterval(poll); supabase.removeChannel(ch); };
   }, [fetchAll]);
 
   useEffect(() => { setSpinDone(false); }, [gs?.round, gs?.phase]);
@@ -292,10 +294,15 @@ function ProfessorView({ onExit }) {
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(gameUrl)}&bgcolor=010B18&color=10B981&qzone=1`;
 
   async function startGame() {
-    const keys = await sList('vi:player:');
-    await Promise.all(keys.map(k => supabase.from('game_kv').delete().eq('key', k)));
-    await sSet('vi:state', { phase: 'lobby', round: 1, currentClass: null, gameId: Date.now(), started: true });
-    setPlayers({});
+    // Não apaga players — eles já escolheram regime. Apenas inicia a rodada 1.
+    await sSet('vi:state', {
+      phase: 'spinning',
+      round: 1,
+      currentClass: SEQUENCE[0],
+      spinStart: Date.now(),
+      started: true,
+      gameId: gs?.gameId ?? Date.now(),
+    });
   }
   async function spinRound() {
     const cls = SEQUENCE[round - 1];
@@ -347,8 +354,8 @@ function ProfessorView({ onExit }) {
               <div style={{ ...CARD, padding: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minWidth: 160 }}>
                 <div style={{ fontSize: 40, fontWeight: 900, marginBottom: 4 }}>{pList.length}</div>
                 <div style={{ color: C.muted, fontSize: 13, marginBottom: 16 }}>aluno{pList.length !== 1 ? 's' : ''}</div>
-                <button onClick={startGame} disabled={pList.length === 0}
-                  style={btn('#10B981', { opacity: pList.length === 0 ? 0.4 : 1, cursor: pList.length === 0 ? 'default' : 'pointer', fontSize: 14, color: '#000' })}>
+                <button onClick={startGame}
+                  style={btn('#10B981', { fontSize: 14, color: '#000' })}>
                   Iniciar Jogo →
                 </button>
               </div>
@@ -360,10 +367,10 @@ function ProfessorView({ onExit }) {
                   {pList.map(p => {
                     const rv = REGIMES[p.regime];
                     return (
-                      <div key={p.name} style={{ background: `${rv?.color ?? '#888'}18`, border: `1px solid ${rv?.color ?? '#888'}44`, borderRadius: 8, padding: '6px 12px', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ color: rv?.color }}>{rv?.emoji ?? '?'}</span>
+                      <div key={p.name} style={{ background: `${rv?.color ?? '#555'}18`, border: `1px solid ${rv?.color ?? '#555'}44`, borderRadius: 8, padding: '6px 12px', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ color: rv?.color ?? C.muted }}>{rv?.emoji ?? '⏳'}</span>
                         <span>{p.name}</span>
-                        <span style={{ color: C.muted, fontSize: 11 }}>{rv?.name ?? 'sem regime'}</span>
+                        <span style={{ color: C.muted, fontSize: 11 }}>{rv?.name ?? 'escolhendo…'}</span>
                       </div>
                     );
                   })}
@@ -588,15 +595,27 @@ function StudentView({ name, onExit }) {
     (async () => {
       const [state, p] = await Promise.all([sGet('vi:state'), sGet(`vi:player:${name}`)]);
       setGs(state);
-      if (p) setPlayer(p);
+      if (p) {
+        setPlayer(p);
+      } else {
+        // Registra presença imediatamente (sem regime ainda) para professor ver aluno conectado
+        const presence = { name, regime: null, circumstances: null, scores: [] };
+        setPlayer(presence);
+        await sSet(`vi:player:${name}`, presence);
+      }
     })();
+    // Polling de fallback para estado do jogo
+    const poll = setInterval(async () => {
+      const s = await sGet('vi:state');
+      setGs(s);
+    }, 4000);
     const ch = supabase.channel('vi_bus')
       .on('broadcast', { event: 'kv_change' }, async ({ payload }) => {
         const k = payload?.key;
         if (k === 'vi:state') { const s = await sGet('vi:state'); setGs(s); }
         else if (k === `vi:player:${name}`) { const p = await sGet(`vi:player:${name}`); if (p) setPlayer(p); }
       }).subscribe();
-    return () => supabase.removeChannel(ch);
+    return () => { clearInterval(poll); supabase.removeChannel(ch); };
   }, [name]);
 
   useEffect(() => { setSpinDone(false); }, [gs?.round, gs?.phase]);
