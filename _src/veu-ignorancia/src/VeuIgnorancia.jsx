@@ -471,16 +471,75 @@ function ProfessorView({ onExit }) {
         )}
 
         {/* Final */}
-        {phase === 'final' && (
-          <>
-            {pList.filter(p => (p.scores?.length ?? 0) > 0).length > 0 && (
-              <RankingTable players={pList} round={TOTAL_ROUNDS} isFinal={true} />
-            )}
-            <div style={{ ...CARD, padding: 16, marginTop: 16, fontSize: 13, color: C.muted, lineHeight: 1.8 }}>
-              Os alunos podem ver a tela final no celular com a comparação entre os três regimes.
-            </div>
-          </>
-        )}
+        {phase === 'final' && (() => {
+          const voted = pList.filter(p => p.regime);
+          const counts = { utilitarista: 0, igualitarista: 0, rawlsiano: 0 };
+          voted.forEach(p => { if (counts[p.regime] !== undefined) counts[p.regime]++; });
+          const total = voted.length;
+          const majority = total > 0 ? Object.keys(counts).reduce((a, b) => counts[a] >= counts[b] ? a : b) : null;
+          const rawlsWon = majority === 'rawlsiano';
+          return (
+            <>
+              {/* Class distribution chart */}
+              <div style={{ ...CARD, padding: 20, marginBottom: 16 }}>
+                <div style={{ fontSize: 11, color: C.muted, fontWeight: 700, letterSpacing: 1.5, marginBottom: 16 }}>
+                  ESCOLHA DA TURMA — {total} aluno{total !== 1 ? 's' : ''} votaram
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {Object.keys(REGIMES).map(rk => {
+                    const rrv = REGIMES[rk];
+                    const count = counts[rk];
+                    const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+                    const isMajority = rk === majority && count > 0;
+                    return (
+                      <div key={rk}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+                          <span style={{ fontSize: 14, fontWeight: isMajority ? 700 : 400, color: isMajority ? rrv.color : C.text }}>
+                            {rrv.emoji} {rrv.name}
+                            {isMajority && <span style={{ fontSize: 11, marginLeft: 8, padding: '2px 7px', borderRadius: 99, background: `${rrv.color}25`, color: rrv.color, fontWeight: 700 }}>MAIORIA</span>}
+                          </span>
+                          <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 15, color: rrv.color }}>
+                            {count} &nbsp;<span style={{ color: C.muted, fontWeight: 400 }}>({pct}%)</span>
+                          </span>
+                        </div>
+                        <div style={{ height: 14, borderRadius: 7, background: `${rrv.color}20`, overflow: 'hidden' }}>
+                          <div style={{ height: '100%', width: `${pct}%`, background: rrv.color, borderRadius: 7 }} />
+                        </div>
+                        {/* names under each bar */}
+                        {count > 0 && (
+                          <div style={{ marginTop: 4, fontSize: 11, color: C.muted }}>
+                            {voted.filter(p => p.regime === rk).map(p => p.name).join(' · ')}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Rawls verdict */}
+              <div style={{ ...CARD, padding: 16, marginBottom: 16, borderLeft: `3px solid ${rawlsWon ? '#10B981' : '#F59E0B'}` }}>
+                <div style={{ fontSize: 11, color: C.muted, fontWeight: 700, letterSpacing: 1.5, marginBottom: 6 }}>
+                  A LÓGICA DE RAWLS SE CONFIRMOU?
+                </div>
+                <p style={{ fontSize: 13, color: C.text, lineHeight: 1.75, margin: 0 }}>
+                  {rawlsWon
+                    ? '✅ Sim — a maioria escolheu o regime Rawlsiano, priorizando proteger o pior cenário possível. Exatamente o que a teoria prevê quando as pessoas decidem sob o véu da ignorância.'
+                    : majority
+                      ? `${REGIMES[majority]?.emoji} Não exatamente — a maioria preferiu ${REGIMES[majority]?.name}. Vale perguntar: quem escolheu assim estava de fato "atrás do véu"? Ou já antecipava sua posição na sociedade?`
+                      : 'Empate técnico — boa abertura para o debate sobre qual princípio cada grupo estava maximizando.'}
+                </p>
+              </div>
+
+              {pList.filter(p => (p.scores?.length ?? 0) > 0).length > 0 && (
+                <RankingTable players={pList} round={TOTAL_ROUNDS} isFinal={true} />
+              )}
+              <div style={{ ...CARD, padding: 14, marginTop: 16, fontSize: 12, color: C.muted, lineHeight: 1.8 }}>
+                Os alunos veem na tela deles a distribuição da turma e uma pergunta reflexiva.
+              </div>
+            </>
+          );
+        })()}
       </div>
     </div>
   );
