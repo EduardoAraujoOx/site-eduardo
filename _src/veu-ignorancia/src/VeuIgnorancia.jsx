@@ -71,27 +71,45 @@ const CLASSES = {
   classe_media: { label: "Classe Média", emoji: "🏠", color: "#F59E0B" },
   rico:         { label: "Rico",         emoji: "🏛️", color: "#10B981" },
 };
-// Narrativa de vida por classe social — contexto ES
-const LIFE_STORIES = {
-  pobre: {
-    headline: "Você nasceu pobre no Espírito Santo",
-    scene: "Criado em Itacibá, na periferia de Cariacica, ou num bairro sem nome oficial da Serra. Seu pai trabalha na construção civil por empreitada — quando tem obra. Sua mãe é diarista em apartamentos da Praia do Canto, leva 1h40 de ônibus para chegar lá.",
-    constraints: "A escola pública tem 38 alunos por sala e professor substituto há seis meses. A Federal existe, mas exige cursinho que custa tempo que você não tem — porque você já trabalha aos 16. Cada crise da família cobra um preço. A margem de erro é quase zero.",
-    punchline: "Seu destino é mais função do berço do que do seu esforço.",
-  },
-  classe_media: {
+// Narrativa de vida por rodada (0-4) — contexto ES, tom ácido
+// SEQUENCE = ['classe_media', 'pobre', 'rico', 'pobre', 'pobre']
+const LIFE_STORIES_BY_ROUND = [
+  // Rodada 1 — Classe Média
+  {
     headline: "Você nasceu na classe média capixaba",
-    scene: "Cresceu em Vila Velha ou num bairro tranquilo da Serra. Seu pai é servidor estadual — algum autarquia ou secretaria em Vitória. Sua mãe é professora municipal. Moradia própria, mas financiada. Nada falta, mas nada sobra.",
-    constraints: "Escola pública boa, SESI ou Salesiano com desconto. ENEM para a UFES ou FIES para uma particular. Você trabalha e estuda ao mesmo tempo — é o capixaba clássico que 'chegou onde chegou com muito esforço'. Qualquer crise de saúde ou demissão desequilibra o orçamento em meses.",
-    punchline: "Você está acima da linha da pobreza, mas abaixo da linha da segurança.",
+    scene: "Sobrado próprio — mas financiado em 360 meses — em Vila Velha ou Campo Grande. Seu pai é servidor estadual: trabalha no DETRAN ou numa secretaria em Vitória, concursado há 18 anos. Salário de R$ 5.200 que parece confortável até você dividir pelo financiamento, o plano de saúde básico, o condomínio e a faculdade particular que era o único plano B quando a UFES não deu certo.",
+    constraints: "Você não passa fome — isso é real, e não é pouco. Mas a margem de erro é pequena: uma demissão, um problema de saúde sério, um filho que precisa de cursinho... qualquer crise desequilibra em três meses. Você vive exatamente no ponto onde a ascensão exige uma vida inteira de disciplina e a queda exige apenas um azar.",
+    punchline: "Nem protegido como os ricos, nem esquecido como os pobres. Apenas... no meio.",
   },
-  rico: {
-    headline: "Você nasceu rico em Vitória",
-    scene: "Cresceu no Jardim da Penha, Mata da Praia ou Praia do Canto. Seu avô tem participação em porto seco, agroindústria de café no sul do Estado, ou construtora consolidada. Escola particular de referência, intercâmbio em Portugal ou nos EUA, cursinho no melhor de Vitória.",
-    constraints: "Seu primeiro emprego veio via indicação de um amigo do seu pai — CEO de empresa em que já entrou como coordenador. Sua rede de contatos foi construída em churrascos na Marina e jantares em clube privativo.",
-    punchline: "Você não abre portas — elas já estavam abertas antes de você bater.",
+  // Rodada 2 — Pobre (Cariacica)
+  {
+    headline: "Você nasceu pobre em Cariacica",
+    scene: "Cresceu no Bairro Itacibá ou São Francisco. Sua mãe é diarista: sai às 6h30, chega às 20h, cuida dos apartamentos na Praia do Canto — onde o piso que ela lava custa mais do que ela ganha no mês. Seu pai trabalha na construção quando tem serviço. Quando não tem, fica em casa e o orçamento não fecha.",
+    constraints: "Você trabalha aos 16 como motoboy ou no mercadinho do bairro. A UFES existe e é gratuita — mas o cursinho que aumenta as chances custa dinheiro, e tempo que você não tem porque está trabalhando. Cada mês é uma equação difícil: luz, alimentação, condução. A margem de erro é zero. Literalmente.",
+    punchline: "Seu talento importa. Mas importa menos do que o CEP onde você nasceu.",
   },
-};
+  // Rodada 3 — Rico (Ilha do Boi / Ilha do Frade)
+  {
+    headline: "Você nasceu rico na Ilha do Boi, Vitória",
+    scene: "Ilha do Boi ou Ilha do Frade — os bairros mais caros do ES, onde o metro quadrado rivaliza com Ipanema. Seu avô é sócio de empresa de granito ou tem participação em porto seco no norte do estado. Você estudou no Andrews ou São Bento, fez intercâmbio em Lisboa ou Miami, e nunca na vida teve que escolher entre comer e estudar.",
+    constraints: "Seu primeiro emprego 'de verdade' foi numa empresa onde o CEO jogava tênis com seu pai. Você entrou como 'trainee executivo' — que na prática significa herdeiro-em-formação. Sua rede de contatos foi construída em festas em cobertura e passeios de lancha na Baía de Vitória. O capital social vale tanto quanto o financeiro — só que não aparece no Imposto de Renda.",
+    punchline: "Você pode até fracassar. Mas vai ser muito difícil cair para onde os outros nasceram.",
+  },
+  // Rodada 4 — Pobre (Serra, monoparental)
+  {
+    headline: "Você nasceu pobre na Serra",
+    scene: "Bairro Novo Horizonte ou Boa Vista, na Serra. Sua mãe cria você e dois irmãos sozinha: faz bolo para vender durante a semana e cuida de idoso nos fins de semana. Seu pai parou de aparecer quando você tinha 9 anos — o que na prática significa que sua mãe sempre fez o trabalho de dois com salário de nenhum.",
+    constraints: "A armadilha da pobreza não é preguiça — é a impossibilidade de acumular. Qualquer dinheiro poupado some antes de virar capital: conserto do celular, medicamento, material escolar. Você nunca foi ao cinema até os 15 anos. Não porque não quisesse — porque shopping fica do outro lado da cidade e condução custa R$ 10 de ida e volta.",
+    punchline: "A pobreza é cara. Ela cobra juros em tudo: no crédito, no tempo, no sonho.",
+  },
+  // Rodada 5 — Pobre (interior do ES)
+  {
+    headline: "Você nasceu pobre no interior do Espírito Santo",
+    scene: "Cresceu em Colatina ou num município pequeno no norte do estado. Família de trabalhadores rurais ou de pequeno comércio informal. Sua mãe é caixa de supermercado. A escola mais próxima fica a 12km e o ônibus escolar quebrou em março — voltou em agosto.",
+    constraints: "A 'saída' de quem nasceu aqui tem nome: migrar para Vitória, trabalhar muito e torcer para ser notado. Mas os empregos bons pedem experiência que você não tem, endereço que você não tem, e indicação que você definitivamente não tem. As oportunidades existem — só que foram distribuídas com o mesmo critério do sobrenome.",
+    punchline: "Mobilidade social não é uma escada — é uma parede com alguns ganchos, e você começa embaixo.",
+  },
+];
 const CIRCS = {
   pobre: [
     { mod: 6,  text: "QI fora da curva notado por uma professora: bolsa integral no IFES abriu uma brecha que, entre 100 na mesma condição, talvez 3 consigam." },
@@ -765,7 +783,7 @@ function StudentView({ name, onExit }) {
         <Roulette target={currentClass} go={true} onDone={() => setSpinDone(true)} size="large" />
 
         {spinDone && currentClass && (() => {
-          const story = LIFE_STORIES[currentClass];
+          const story = LIFE_STORIES_BY_ROUND[roundIdx];
           const cl = CLASSES[currentClass];
           return (
             <div style={{ maxWidth: 440, width: '100%', marginTop: 4, textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -828,7 +846,7 @@ function StudentView({ name, onExit }) {
           {/* Classe + punchline */}
           {currentClass && (() => {
             const cl = CLASSES[currentClass];
-            const story = LIFE_STORIES[currentClass];
+            const story = LIFE_STORIES_BY_ROUND[roundIdx];
             return (
               <div style={{ background: `${cl.color}10`, border: `1px solid ${cl.color}40`, borderRadius: 12, padding: 16, marginBottom: 12 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
