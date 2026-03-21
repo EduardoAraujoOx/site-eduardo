@@ -700,6 +700,72 @@
             margin: 0 !important;
         }
 
+        /* Footnotes */
+        .fn-ref {
+            font-family: var(--mono);
+            font-size: 0.68em;
+            vertical-align: super;
+            line-height: 0;
+            color: var(--accent);
+            text-decoration: none;
+            padding: 0 0.05em;
+            font-weight: 600;
+        }
+        .fn-ref:hover { text-decoration: underline; }
+
+        /* References section */
+        .references {
+            margin-top: 2.5rem;
+            border-top: 1px solid var(--border-light);
+            padding-top: 1.25rem;
+        }
+        .references-label {
+            font-family: var(--mono);
+            font-size: 0.63rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+        .references ol {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            counter-reset: ref-counter;
+        }
+        .references li {
+            font-family: var(--sans);
+            font-size: 0.77rem;
+            color: var(--text-muted);
+            line-height: 1.55;
+            padding-left: 1.6rem;
+            position: relative;
+            counter-increment: ref-counter;
+        }
+        .references li::before {
+            content: counter(ref-counter) ".";
+            position: absolute;
+            left: 0;
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+        .references li a { color: var(--text-muted); text-decoration: underline; }
+        .ref-back {
+            display: inline-block;
+            color: var(--accent);
+            text-decoration: none;
+            margin-right: 0.3em;
+            font-size: 0.9em;
+            line-height: 1;
+        }
+        .ref-back:hover { text-decoration: underline; }
+
         /* Collapsible table */
         .table-toggle {
             display: flex;
@@ -824,7 +890,7 @@
                 <span class="map-label-tag">Mapa interativo · Impacto por UF</span>
                 <span class="map-hint">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    Passe o cursor — ou toque — sobre o estado
+                    Passe o cursor ou toque sobre o estado
                 </span>
             </div>
             <div class="map-wrapper" id="mapWrapper">
@@ -865,15 +931,15 @@
     <article class="study-body">
 
         <p>
-            Em 18 de março de 2026, durante reunião virtual do Conselho Nacional de Política Fazendária (<a href="https://agenciabrasil.ebc.com.br/economia/noticia/2026-03/governo-propoe-que-estados-zerem-icms-do-diesel-importado" target="_blank" rel="noopener">CONFAZ</a>), o secretário-executivo do Ministério da Fazenda, Dario Durigan, apresentou aos estados a proposta de zeragem temporária do ICMS incidente sobre o diesel importado, a vigorar em abril e maio de 2026. A iniciativa busca conter a alta de preços provocada pela escalada do petróleo no mercado internacional, em contexto de tensões envolvendo Estados Unidos, Israel e Irã. O mecanismo prevê compensação federal de 50% das perdas de arrecadação, transferida de forma imediata por subvenção. A decisão final dos estados está prevista para a reunião presencial do CONFAZ em 27 de março, em São Paulo.
+            Em 18 de março de 2026, o secretário-executivo do Ministério da Fazenda, Dario Durigan, apresentou ao Conselho Nacional de Política Fazendária (CONFAZ) proposta de zeragem temporária do ICMS incidente sobre o diesel importado, a vigorar em abril e maio de 2026.<sup><a href="#ref1" id="fn1-src" class="fn-ref" aria-label="Referência 1">1</a></sup> A iniciativa integra um pacote de resposta à alta do petróleo provocada pelo conflito no Oriente Médio e prevê compensação federal de 50% das perdas de arrecadação, transferida por subvenção imediata. A decisão final dos governadores está prevista para reunião presencial do CONFAZ em 27 de março, em São Paulo.
         </p>
 
         <p>
-            Este estudo estima a perda líquida de arrecadação por UF decorrente da proposta, considerando: (a) a participação do diesel importado nas vendas nacionais, estimada pela <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-brasileiro-do-petroleo-gas-natural-e-biocombustiveis-2025" target="_blank" rel="noopener">ANP</a> em 29,91%; (b) as alíquotas estaduais vigentes do ICMS monofásico sobre o diesel, levantadas junto à legislação estadual e aos atos do CONFAZ; (c) a compensação federal de 50%; e (d) a partilha constitucional que destina 25% da arrecadação do ICMS aos municípios. Os valores cobrem o período de dois meses e foram calculados com base nos dados oficiais da ANP.
+            Este estudo estima uma perda líquida de R$ 1,98 bilhão para o conjunto de estados e municípios nos dois meses. O cálculo parte da participação do diesel importado nas vendas nacionais, estimada pela <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-brasileiro-do-petroleo-gas-natural-e-biocombustiveis-2025" target="_blank" rel="noopener">ANP</a> em 29,91%,<sup><a href="#ref2" id="fn2-src" class="fn-ref" aria-label="Referência 2">2</a></sup> aplicada sobre as alíquotas do ICMS monofásico vigentes em cada estado. Após o desconto da compensação federal de 50%, o impacto líquido resulta em R$ 1,49 bilhão para os estados e R$ 496 milhões para os municípios, separados conforme a partilha constitucional do ICMS.
         </p>
 
         <p>
-            O resultado agregado indica uma perda líquida de R$ 1,98 bilhão para o conjunto dos entes subnacionais, sendo R$ 1,49 bilhão absorvido pelos estados e R$ 496 milhões pelos municípios. São Paulo responde por 21% do impacto total (R$ 416 milhões), seguido por Minas Gerais (R$ 251 milhões) e Paraná (R$ 189 milhões). Os três estados mais afetados concentram mais de 43% do impacto nacional.
+            O impacto não se distribui uniformemente. São Paulo responde por 21% do total (R$ 416 milhões), seguido por Minas Gerais (R$ 251 milhões) e Paraná (R$ 189 milhões). Os três estados mais afetados concentram mais de 43% do impacto nacional, padrão diretamente associado ao peso desses estados no consumo de diesel para transporte de cargas e atividade agropecuária. Vale notar também o Mato Grosso, que aparece em 6º lugar apesar de não ser um estado industrial: sua alta exposição à medida reflete a intensa demanda logística do agronegócio no estado.
         </p>
 
         <div class="pullquote">
@@ -882,10 +948,6 @@
 
         <!-- Chart section -->
         <h2>Distribuição do impacto por UF</h2>
-
-        <p class="caption">
-            O gráfico mostra a perda líquida estimada de arrecadação por unidade da federação. A barra azul representa a parcela que recai sobre o ente estadual; a barra vermelha, a parcela correspondente aos municípios. Os estados estão ordenados do maior para o menor impacto total. Os valores já descontam a compensação federal de 50%.
-        </p>
 
         <div class="chart-section">
             <div class="chart-container">
@@ -902,12 +964,12 @@
                 </div>
             </div>
             <p class="chart-source">
-                Fonte: <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-brasileiro-do-petroleo-gas-natural-e-biocombustiveis-2025" target="_blank" rel="noopener">ANP — Anuário Estatístico 2025</a> (participação de 29,91% do diesel importado no mercado nacional). Alíquotas: legislação estadual do ICMS monofásico e atos do CONFAZ. Cálculo: Eduardo Araújo (2026). Valores em R$ milhões, base dois meses (abril–maio/2026).
+                Fonte: <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-brasileiro-do-petroleo-gas-natural-e-biocombustiveis-2025" target="_blank" rel="noopener">ANP, Anuário Estatístico 2025</a> (participação de 29,91% do diesel importado no mercado nacional). Alíquotas: legislação estadual do ICMS monofásico e atos do CONFAZ. Cálculo: Eduardo Araújo (2026). Valores em R$ milhões, base dois meses (abril e maio/2026).
             </p>
         </div>
 
         <p class="caption">
-            A concentração geográfica é expressiva: os cinco estados mais afetados — SP, MG, PR, RS e BA — respondem por 56% do impacto total. Em contrapartida, os sete estados da Região Norte (PA, AM, TO, RO, AC, AP e RR) somam juntos R$ 195 milhões, ou cerca de 10% do total.
+            A distância entre extremos é significativa: o Amapá absorve R$ 2,9 milhões e São Paulo, R$ 416 milhões. Os sete estados da Região Norte somam R$ 195 milhões, menos da metade do que apenas São Paulo perde. Para os estados que já enfrentam restrições orçamentárias estruturais, a renúncia, ainda que parcialmente compensada, representa uma pressão real sobre o caixa.
         </p>
 
         <!-- Table section -->
@@ -1015,6 +1077,24 @@
             </a>
         </div>
 
+        <!-- References -->
+        <div class="references">
+            <div class="references-label">Referências</div>
+            <ol>
+                <li id="ref1">
+                    <a class="ref-back" href="#fn1-src" aria-label="Voltar ao texto">↑</a>
+                    Agência Brasil. <em>Governo propõe que estados zerem ICMS do diesel importado.</em> 18 mar. 2026. Disponível em: <a href="https://agenciabrasil.ebc.com.br/economia/noticia/2026-03/governo-propoe-que-estados-zerem-icms-do-diesel-importado" target="_blank" rel="noopener">agenciabrasil.ebc.com.br</a>. Acesso em: 21 mar. 2026.
+                </li>
+                <li id="ref2">
+                    <a class="ref-back" href="#fn2-src" aria-label="Voltar ao texto">↑</a>
+                    Agência Nacional do Petróleo, Gás Natural e Biocombustíveis (ANP). <em>Anuário Estatístico Brasileiro do Petróleo, Gás Natural e Biocombustíveis 2025.</em> Disponível em: <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-brasileiro-do-petroleo-gas-natural-e-biocombustiveis-2025" target="_blank" rel="noopener">gov.br/anp</a>. Acesso em: 21 mar. 2026.
+                </li>
+                <li id="ref3">
+                    CNN Brasil. <em>Governo propõe zerar ICMS na importação do diesel; impacto é de R$ 3 bi.</em> 18 mar. 2026. Disponível em: <a href="https://www.cnnbrasil.com.br/economia/macroeconomia/governo-propoe-zerar-icms-importacao-do-diesel-impacto-e-de-r-3-bilhoes/" target="_blank" rel="noopener">cnnbrasil.com.br</a>. Acesso em: 21 mar. 2026.
+                </li>
+            </ol>
+        </div>
+
         <!-- Limitation note -->
         <div class="limitation-note">
             <p><strong>Nota:</strong> Os valores apresentados são estimativas baseadas nos parâmetros vigentes em março de 2026. Os resultados reais dependerão da alíquota efetivamente negociada, do montante final da compensação federal, da adesão de cada estado e de variações no consumo de diesel durante o período. O autor não representa posição institucional de nenhum órgão governamental. Veja o detalhamento completo na nota técnica disponível para download.</p>
@@ -1037,7 +1117,7 @@
                     <div class="f-step"><span class="f-n">④</span><span><strong>Impacto líquido</strong> = Bruto × 50% <em>(desconto da compensação federal)</em></span></div>
                     <div class="f-step"><span class="f-n">⑤</span><span><strong>Partilha</strong>: 75% → perda do ente estadual · 25% → perda dos municípios <em>(art. 158, IV, CF/88)</em></span></div>
                     <div class="f-highlight">
-                        O Ministério da Fazenda divulgou estimativa de renúncia de R$ 3 bilhões por mês sem detalhar a metodologia adotada. Os cálculos deste estudo são integralmente documentados, reproduzíveis e baseados em fontes públicas (ANP e legislação tributária estadual).
+                        O Ministério da Fazenda divulgou estimativa de renúncia de R$ 3 bilhões por mês sem detalhar a metodologia adotada.<sup><a href="#ref3" class="fn-ref" aria-label="Referência 3">3</a></sup> Os cálculos deste estudo são integralmente documentados, reproduzíveis e baseados em fontes públicas (ANP e legislação tributária estadual).
                     </div>
                 </div>
 
