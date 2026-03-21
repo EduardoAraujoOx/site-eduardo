@@ -948,6 +948,47 @@
         .calc-note .em { color: var(--accent); font-weight: 700; }
         .calc-note .dim { color: var(--text-muted); font-size: 0.74rem; }
 
+        /* ===== EXPLAINER DIAGRAMS ===== */
+        .study-diagrams {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin: 1.75rem 0 2rem;
+        }
+        .study-diagram {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.1rem 1.1rem 0.85rem;
+            background: var(--surface);
+        }
+        .study-diagram-title {
+            font-family: var(--mono);
+            font-size: 0.62rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 0.75rem;
+        }
+        .study-diagram svg {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        .study-diagram figcaption {
+            font-family: var(--sans);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.65rem;
+            text-align: center;
+            font-style: italic;
+            line-height: 1.4;
+        }
+        @media (max-width: 600px) {
+            .study-diagrams { grid-template-columns: 1fr; }
+        }
+
         /* Responsive */
         @media (max-width: 640px) {
             .study-hero { padding: 2.5rem 1.25rem 1.5rem; }
@@ -1004,7 +1045,7 @@
         </div>
         <h1>Isenção de ICMS no diesel importado: impacto fiscal estimado por estado</h1>
         <p class="subtitle">
-            Estimativa de perda líquida de arrecadação por UF na proposta de zeragem temporária do ICMS sobre o diesel importado (abril e maio de 2026), já descontada a compensação federal de 50%.
+            Quanto cada estado pode perder — e por que os municípios também pagam a conta.
         </p>
     </section>
 
@@ -1025,11 +1066,11 @@
         <div class="study-summary-inner">
             <div class="study-summary-label">Entenda em 3 pontos</div>
             <ul class="study-summary-list">
-                <li>A zeragem custa aos estados e municípios R$ 3,00 bilhões líquidos no bimestre — valor que já desconta a compensação federal de 50% sobre os R$ 6 bilhões de renúncia bruta</li>
-                <li>São Paulo, Minas Gerais e Paraná concentram 42% do impacto nacional, reflexo direto do seu peso no consumo de diesel do país</li>
-                <li>Municípios perdem R$ 750 milhões por força da partilha constitucional, sem ter participado das negociações federais</li>
+                <li>O governo federal propôs zerar o ICMS sobre o diesel importado. Se aprovada, essa isenção reduz a arrecadação dos estados e, por consequência, também dos municípios — os valores do Cenário 1 somam R$ 3,00 bilhões líquidos no bimestre</li>
+                <li>São Paulo, Minas Gerais e Paraná concentram mais de 42% do impacto total, simplesmente porque consomem mais diesel</li>
+                <li>Os municípios arcam com R$ 750 milhões da perda por determinação constitucional, mesmo sem ter participado de nenhuma negociação</li>
             </ul>
-            <p style="font-family:var(--sans); font-size:0.72rem; color:var(--text-muted); margin-top:0.75rem; margin-bottom:0; padding-top:0.6rem; border-top:1px solid var(--border-light);">Valores do Cenário 1 — estimativa oficial do Ministério da Fazenda. Use o seletor abaixo para comparar com o Cenário 2.</p>
+            <p style="font-family:var(--sans); font-size:0.72rem; color:var(--text-muted); margin-top:0.75rem; margin-bottom:0; padding-top:0.6rem; border-top:1px solid var(--border-light);">Valores do Cenário 1 (estimativa oficial do Ministério da Fazenda). Use o seletor abaixo para comparar com o Cenário 2.</p>
         </div>
     </div>
 
@@ -1082,7 +1123,7 @@
 
     <!-- Key figures -->
     <div class="key-figures">
-        <div class="key-figures-inner">
+        <div class="key-figures-inner" style="margin-bottom:0.75rem;">
             <div class="key-figure">
                 <div class="key-figure-value" id="kfTotal">R$ 3,00 bi</div>
                 <div class="key-figure-label">Perda líquida total de estados e municípios</div>
@@ -1095,30 +1136,26 @@
                 <div class="key-figure-value" id="kfMuni">R$ 750 mi</div>
                 <div class="key-figure-label">Parcela absorvida pelos municípios</div>
             </div>
-        </div>
+        <p style="font-family:var(--sans); font-size:0.74rem; color:var(--text-muted); line-height:1.55; padding-top:0.7rem; border-top:1px solid var(--border-light);">Os valores exibidos correspondem ao Cenário 1, calculado a partir da estimativa oficial do Ministério da Fazenda (R$ 3 bi/mês), distribuída proporcionalmente pelo consumo de diesel de cada estado (ANP 2025). A simulação alternativa com metodologia independente está detalhada na seção de metodologia.</p>
     </div>
 
     <!-- Article body -->
     <article class="study-body">
 
         <p>
-            Em 18 de março de 2026, o secretário-executivo do Ministério da Fazenda, Dario Durigan, apresentou ao Conselho Nacional de Política Fazendária (CONFAZ) proposta de zeragem temporária do ICMS sobre o diesel importado, com vigência prevista para abril e maio de 2026.<sup><a href="#ref1" id="fn1-src" class="fn-ref" aria-label="Referência 1">1</a></sup> A iniciativa integra um pacote de resposta à alta do petróleo provocada pelo conflito no Oriente Médio e prevê compensação federal de 50% das perdas de arrecadação, transferida por subvenção imediata. A decisão final dos governadores está prevista para reunião presencial do CONFAZ em 27 de março, em São Paulo.
+            Quando um estado abre mão de um imposto, os municípios também perdem. É o que diz a Constituição: 25% de tudo que os estados arrecadam com o ICMS vai automaticamente para os cofres municipais. Por isso, a proposta federal de zerar o ICMS sobre o diesel importado, anunciada em 18 de março de 2026 pelo Ministério da Fazenda durante reunião do CONFAZ,<sup><a href="#ref1" id="fn1-src" class="fn-ref" aria-label="Referência 1">1</a></sup> não afeta apenas os governadores. Ela afeta prefeitos de todo o país, que não sentaram à mesa nas negociações. O mecanismo prevê compensação federal de 50% das perdas de arrecadação, transferida de forma imediata por subvenção. A decisão final dos estados está prevista para a reunião presencial do CONFAZ em 27 de março, em São Paulo.
         </p>
 
         <p>
-            O Ministério da Fazenda estimou uma renúncia de R$ 3 bilhões por mês com a medida.<sup><a href="#ref3" class="fn-ref" aria-label="Referência 3">3</a></sup> O <strong>Cenário 1</strong> adota esse valor como âncora e distribui o impacto entre as 27 unidades da federação proporcionalmente ao volume de vendas de diesel por UF registrado pela <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-brasileiro-do-petroleo-gas-natural-e-biocombustiveis-2025" target="_blank" rel="noopener">ANP</a> em 2025.<sup><a href="#ref2" id="fn2-src" class="fn-ref" aria-label="Referência 2">2</a></sup> Para o bimestre de vigência, o impacto bruto soma R$ 6 bilhões; após a compensação federal de 50%, a perda líquida totaliza R$ 3,00 bilhões — R$ 2,25 bilhões absorvidos pelos entes estaduais e R$ 750 milhões pelos municípios, na partilha constitucional do ICMS.
+            Este estudo estima quanto cada estado e seus municípios podem perder. O governo federal divulgou um número agregado, R$ 3 bilhões por mês de renúncia fiscal,<sup><a href="#ref3" class="fn-ref" aria-label="Referência 3">3</a></sup> mas não disse quanto cabe a cada estado nem publicou a metodologia utilizada. É exatamente essa desagregação que esta análise calcula, usando os dados de consumo de diesel por estado da <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-brasileiro-do-petroleo-gas-natural-e-biocombustiveis-2025" target="_blank" rel="noopener">ANP</a> para distribuir o impacto proporcionalmente.<sup><a href="#ref2" id="fn2-src" class="fn-ref" aria-label="Referência 2">2</a></sup> O estudo apresenta também uma simulação alternativa com metodologia independente (Cenário 2), que aplica a alíquota ad rem apenas sobre a parcela importada do mercado (29,91%, segundo a ANP) e obtém impacto líquido menor, de R$ 1,82 bilhão no bimestre.<sup><a href="#ref4" id="fn4-src" class="fn-ref" aria-label="Referência 4">4</a></sup> A diferença entre os dois cenários é ela mesma um achado relevante, e está detalhada na seção de metodologia.
         </p>
 
         <p>
-            O <strong>Cenário 2</strong>, construído como estimativa independente, parte de uma hipótese técnica mais restrita: aplica a alíquota de R$ 1,17/litro apenas à parcela importada do mercado — 29,91% das vendas nacionais de diesel em janeiro de 2026 — e obtém R$ 1,82 bilhão por mês de renúncia bruta.<sup><a href="#ref4" id="fn4-src" class="fn-ref" aria-label="Referência 4">4</a></sup> O resultado é materialmente menor que o dado oficial. Essa diferença é informativa: R$ 3,04 bi por mês (base ampla) contra R$ 1,82 bi (só importado) mostra que a estimativa do governo é compatível com uma base de incidência que vai além do diesel importado — hipótese que não pode ser confirmada, mas tampouco descartada, enquanto a metodologia oficial não for detalhada publicamente.
-        </p>
-
-        <p>
-            O impacto não se distribui uniformemente. São Paulo responde por 20% do total (R$ 606 milhões), seguido por Minas Gerais (R$ 376 milhões) e Paraná (R$ 286 milhões). Os três estados mais afetados concentram 42% do impacto nacional, padrão diretamente associado ao seu peso no consumo de diesel para transporte de cargas e atividade agropecuária. Chama atenção o Mato Grosso, que aparece em 4º lugar apesar de não ser um estado industrial: sua alta exposição à medida reflete a intensa demanda logística do agronegócio.
+            O impacto não se distribui uniformemente. São Paulo responde por 20% do total (R$ 606 milhões no Cenário 1), seguido por Minas Gerais (R$ 376 milhões) e Paraná (R$ 286 milhões). Juntos, esses três estados concentram mais de 42% do impacto nacional. Chama atenção o Mato Grosso em 4º lugar: apesar de não ser um estado industrial, sua alta exposição reflete a intensa demanda logística do agronegócio.
         </p>
 
         <div class="pullquote">
-            <p>"Os municípios, que não participaram das negociações federais, absorvem R$ 750 milhões por força da partilha constitucional do ICMS."</p>
+            <p>"Os municípios não participaram das negociações, mas pagam a conta: por determinação constitucional, 25% de toda renúncia do ICMS estadual se converte automaticamente em perda municipal."</p>
         </div>
 
         <!-- Diesel A/B explainer box -->
@@ -1149,6 +1186,62 @@
             </div>
         </div>
 
+        <!-- Explainer diagrams -->
+        <div class="study-diagrams">
+
+            <figure class="study-diagram">
+                <div class="study-diagram-title">Como o ICMS chega aos municípios</div>
+                <svg viewBox="0 0 460 128" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fluxo do ICMS: do contribuinte ao estado, que repassa 25% automaticamente aos municípios">
+                    <!-- Box 1: Contribuinte -->
+                    <rect x="0" y="34" width="138" height="60" rx="4" fill="#EDF3F9" stroke="#1A3A5C" stroke-width="1.5"/>
+                    <text x="69" y="59" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="11.5" fill="#1A3A5C" font-weight="600">Contribuinte</text>
+                    <text x="69" y="75" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="11.5" fill="#1A3A5C">paga ICMS ao estado</text>
+                    <!-- Main arrow -->
+                    <line x1="140" y1="64" x2="188" y2="64" stroke="#1A3A5C" stroke-width="1.5"/>
+                    <polygon points="188,59 198,64 188,69" fill="#1A3A5C"/>
+                    <!-- Fork: vertical line at x=200 -->
+                    <line x1="200" y1="30" x2="200" y2="98" stroke="#999" stroke-width="1" stroke-dasharray="4 3"/>
+                    <!-- Top branch: Estado -->
+                    <line x1="200" y1="34" x2="240" y2="34" stroke="#1A3A5C" stroke-width="1.5"/>
+                    <polygon points="240,29 250,34 240,39" fill="#1A3A5C"/>
+                    <rect x="252" y="8" width="136" height="52" rx="4" fill="#EDF3F9" stroke="#1A3A5C" stroke-width="1.5"/>
+                    <text x="320" y="30" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="11.5" fill="#1A3A5C" font-weight="600">Estado retém</text>
+                    <text x="320" y="50" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="16" fill="#1A3A5C" font-weight="700">75%</text>
+                    <!-- Bottom branch: Município (red) -->
+                    <line x1="200" y1="94" x2="240" y2="94" stroke="#8B1A1A" stroke-width="1.5"/>
+                    <polygon points="240,89 250,94 240,99" fill="#8B1A1A"/>
+                    <rect x="252" y="68" width="200" height="52" rx="4" fill="#FEF2F2" stroke="#8B1A1A" stroke-width="1.5"/>
+                    <text x="352" y="90" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="11.5" fill="#8B1A1A" font-weight="600">Município recebe</text>
+                    <text x="352" y="108" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="14" fill="#8B1A1A" font-weight="700">25% automaticamente</text>
+                </svg>
+                <figcaption>Com a isenção, esse fluxo inteiro some.</figcaption>
+            </figure>
+
+            <figure class="study-diagram">
+                <div class="study-diagram-title">Dois cenários, uma dúvida</div>
+                <svg viewBox="0 0 460 128" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Comparação: estimativa oficial do governo (R$6bi brutos, metodologia não publicada) vs simulação independente ANP (R$3,64bi brutos, metodologia aberta)">
+                    <!-- Left block: Estimativa oficial -->
+                    <rect x="0" y="0" width="188" height="128" rx="6" fill="#F5F5F5" stroke="#DDD" stroke-width="1"/>
+                    <text x="94" y="22" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="10.5" fill="#555" font-weight="600" letter-spacing="0.04em" text-transform="uppercase">ESTIMATIVA OFICIAL</text>
+                    <text x="94" y="52" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="20" fill="#1A3A5C" font-weight="700">R$ 6 bi</text>
+                    <text x="94" y="70" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#777">brutos no bimestre</text>
+                    <text x="94" y="96" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#B44" font-style="italic">Metodologia</text>
+                    <text x="94" y="112" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#B44" font-style="italic">não publicada</text>
+                    <!-- Center: question mark -->
+                    <text x="230" y="72" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="38" fill="#CCC" font-weight="700">?</text>
+                    <!-- Right block: Simulação ANP -->
+                    <rect x="272" y="0" width="188" height="128" rx="6" fill="#FFF" stroke="#1A3A5C" stroke-width="1" stroke-dasharray="5 3"/>
+                    <text x="366" y="22" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="10.5" fill="#555" font-weight="600" letter-spacing="0.04em">SIMULAÇÃO ANP</text>
+                    <text x="366" y="52" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="20" fill="#1A3A5C" font-weight="700">R$ 3,64 bi</text>
+                    <text x="366" y="70" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#777">brutos no bimestre</text>
+                    <text x="366" y="96" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#1A3A5C" font-style="italic">Metodologia aberta</text>
+                    <text x="366" y="112" text-anchor="middle" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#1A3A5C" font-style="italic">e reproduzível</text>
+                </svg>
+                <figcaption>Por que os números diferem? A Fazenda não explicou.</figcaption>
+            </figure>
+
+        </div>
+
         <!-- Chart section -->
         <h2>Distribuição do impacto por UF</h2>
 
@@ -1172,7 +1265,7 @@
         </div>
 
         <p class="caption">
-            A distância entre extremos é significativa: o Amapá absorve R$ 4,6 milhões e São Paulo, R$ 606 milhões. Os sete estados da Região Norte somam R$ 299 milhões, menos da metade do que apenas São Paulo perde. Para estados que já operam sob restrição orçamentária estrutural — Pará, Maranhão e Piauí entre eles —, a renúncia, ainda que parcialmente compensada, representa uma pressão adicional sobre o caixa.
+            A distância entre extremos é significativa: o Amapá absorve R$ 4,6 milhões e São Paulo, R$ 606 milhões. Os sete estados da Região Norte somam R$ 299 milhões, menos da metade do que apenas São Paulo perde. Para estados que já operam sob restrição orçamentária estrutural (Pará, Maranhão e Piauí entre eles), a renúncia, ainda que parcialmente compensada, representa uma pressão adicional sobre o caixa.
         </p>
 
         <!-- Table section -->
@@ -1366,25 +1459,25 @@
             </button>
             <div class="methodology-content" id="methodContent">
 
-                <h3>Cenário 1 — Estimativa oficial (Ministério da Fazenda)</h3>
+                <h3>Cenário 1 — Rateio da estimativa oficial</h3>
                 <div class="formula-box">
                     <div class="f-label">C1 · Cálculo passo a passo</div>
-                    <div class="f-step"><span class="f-n">①</span><span><strong>Âncora MF</strong> = R$ 3 bilhões/mês de renúncia bruta <em>(estimativa do MF, valores sujeitos a verificação, Comsefaz)</em></span></div>
-                    <div class="f-step"><span class="f-n">②</span><span><strong>Impacto bruto bimestral</strong> = R$ 6 bilhões <em>(abril + maio/2026)</em></span></div>
-                    <div class="f-step"><span class="f-n">③</span><span><strong>Impacto líquido</strong> = R$ 3 bilhões <em>(desconto de 50% da compensação federal)</em></span></div>
-                    <div class="f-step"><span class="f-n">④</span><span><strong>Peso(UF)</strong> = volume de diesel ANP(UF) ÷ volume ANP(total nacional) <em>(dados abertos, 2025)</em></span></div>
-                    <div class="f-step"><span class="f-n">⑤</span><span><strong>Impacto(UF)</strong> = R$ 3 bi × Peso(UF) → 75% ente estadual · 25% municípios <em>(art. 158, IV, CF/88)</em></span></div>
+                    <div class="f-step"><span class="f-n">①</span><span><strong>Renúncia bruta mensal nacional</strong> = R$ 3 bilhões <em>(estimativa oficial do Ministério da Fazenda, valores sujeitos a verificação, Comsefaz)</em></span></div>
+                    <div class="f-step"><span class="f-n">②</span><span><strong>Peso de cada UF</strong> = consumo estadual de diesel ÷ consumo nacional total <em>(dados abertos ANP 2025)</em></span></div>
+                    <div class="f-step"><span class="f-n">③</span><span><strong>Impacto bruto por UF</strong> = R$ 3 bilhões × peso da UF × 2 meses</span></div>
+                    <div class="f-step"><span class="f-n">④</span><span><strong>Impacto líquido por UF</strong> = bruto × 50% <em>(desconto da compensação federal)</em></span></div>
+                    <div class="f-step"><span class="f-n">⑤</span><span><strong>Partilha:</strong> 75% para perda do ente estadual · 25% para perda dos municípios <em>(art. 158, IV, CF/88)</em></span></div>
                 </div>
 
-                <h3>Cenário 2 — Estimativa independente (só diesel importado)</h3>
+                <h3>Cenário 2 — Participação histórica do diesel importado (ANP)</h3>
                 <div class="formula-box">
                     <div class="f-label">C2 · Cálculo passo a passo</div>
-                    <div class="f-step"><span class="f-n">①</span><span><strong>Volume nacional</strong> = 5.199 mil m³ de diesel B vendido em jan/2026 <em>(ANP, dados abertos)</em></span></div>
-                    <div class="f-step"><span class="f-n">②</span><span><strong>Parcela importada</strong> = 29,91% do volume nacional de diesel A <em>(ANP, jan/2026)</em></span></div>
-                    <div class="f-step"><span class="f-n">③</span><span><strong>Renúncia bruta mensal</strong> = 29,91% × 5.199 mi m³ × 1.000 L/m³ × R$ 1,17/L = R$ 1,82 bi</span></div>
-                    <div class="f-step"><span class="f-n">④</span><span><strong>Impacto líquido bimestral</strong> = R$ 1,82 bi <em>(bruto bimestral R$ 3,64 bi, menos 50% de compensação)</em></span></div>
-                    <div class="f-step"><span class="f-n">⑤</span><span><strong>Impacto(UF)</strong> = R$ 1,82 bi × Peso(UF) → 75% ente estadual · 25% municípios</span></div>
-                    <div class="f-highlight">O C2 não contesta o dado do governo — mostra o que resultaria de uma aplicação estritamente técnica restrita ao diesel importado. A diferença (R$ 3,00 bi vs R$ 1,82 bi) evidencia que o número oficial é compatível com uma base de incidência mais ampla.</div>
+                    <div class="f-step"><span class="f-n">①</span><span><strong>Base tributável mensal</strong> = volume nacional de diesel B × alíquota ad rem <em>(5.199 mil m³ × 1.000 L/m³ × R$ 1,17/L)</em></span></div>
+                    <div class="f-step"><span class="f-n">②</span><span><strong>Filtro importação</strong> = base × 29,91% <em>(participação histórica do diesel importado, ANP jan/2026)</em></span></div>
+                    <div class="f-step"><span class="f-n">③</span><span><strong>Impacto bruto</strong> = filtro × 2 meses = R$ 3,64 bi</span></div>
+                    <div class="f-step"><span class="f-n">④</span><span><strong>Impacto líquido</strong> = bruto × 50% = R$ 1,82 bi <em>(desconto da compensação federal)</em></span></div>
+                    <div class="f-step"><span class="f-n">⑤</span><span><strong>Partilha:</strong> 75% para perda do ente estadual · 25% para perda dos municípios <em>(art. 158, IV, CF/88)</em></span></div>
+                    <div class="f-highlight">O C2 não contesta o dado do governo; mostra o que resultaria de uma aplicação estritamente técnica restrita ao diesel importado. A diferença (R$ 3,00 bi vs R$ 1,82 bi) evidencia que o número oficial é compatível com uma base de incidência mais ampla.</div>
                 </div>
 
                 <h3>1. Âncora do Cenário 1</h3>
