@@ -497,6 +497,212 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* ===== BYLINE ===== */
+        .study-byline {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 0.25rem 2rem 1.75rem;
+        }
+        .study-byline-name {
+            font-family: var(--sans);
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.55;
+            margin-bottom: 0.35rem;
+        }
+        .study-byline-meta {
+            font-family: var(--sans);
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .study-byline-sep { color: var(--border); }
+
+        /* ===== SUMMARY BOX ===== */
+        .study-summary {
+            max-width: 780px;
+            margin: 0 auto 0;
+            padding: 0 2rem;
+        }
+        .study-summary-inner {
+            border-left: 3px solid var(--accent);
+            padding: 1.1rem 1.4rem;
+            background: var(--accent-light);
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 0;
+        }
+        .study-summary-label {
+            font-family: var(--mono);
+            font-size: 0.64rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.8rem;
+        }
+        .study-summary-list {
+            list-style: none;
+            margin: 0; padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+        }
+        .study-summary-list li {
+            font-family: var(--serif);
+            font-size: 0.96rem;
+            line-height: 1.5;
+            color: var(--text);
+            padding-left: 1.2rem;
+            position: relative;
+        }
+        .study-summary-list li::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0.52em;
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        /* ===== PULLQUOTE ===== */
+        .pullquote {
+            border-top: 2px solid var(--accent);
+            border-bottom: 1px solid var(--border-light);
+            padding: 1.6rem 0 1.4rem;
+            margin: 2.5rem 0;
+        }
+        .pullquote p {
+            font-family: var(--display);
+            font-size: 1.35rem;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--text);
+            font-style: italic;
+            margin: 0 !important;
+        }
+
+        /* ===== SOURCE LINE ===== */
+        .chart-source {
+            font-family: var(--sans);
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            margin-top: 0.7rem;
+            line-height: 1.55;
+            border-top: 1px solid var(--border-light);
+            padding-top: 0.55rem;
+        }
+        .chart-source a { color: var(--text-muted); text-decoration: underline; }
+
+        /* ===== FORMULA BOX ===== */
+        .formula-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.1rem 1.4rem;
+            margin: 1rem 0;
+            font-family: var(--mono);
+            font-size: 0.82rem;
+            line-height: 1.8;
+            color: var(--text);
+        }
+        .formula-box .f-label {
+            font-family: var(--sans);
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--text-muted);
+            margin-bottom: 0.6rem;
+        }
+        .formula-box .f-step {
+            padding: 0.15rem 0;
+            display: grid;
+            grid-template-columns: 1.6rem 1fr;
+            gap: 0 0.5rem;
+        }
+        .formula-box .f-n {
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .formula-box .f-highlight {
+            background: var(--accent-light);
+            border-left: 2px solid var(--accent);
+            padding: 0.4rem 0.75rem;
+            border-radius: 0 4px 4px 0;
+            margin-top: 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-family: var(--sans);
+            line-height: 1.55;
+        }
+
+        /* ===== SHARE BUTTONS ===== */
+        .share-section { margin: 2rem 0 1.5rem; }
+        .share-label {
+            font-family: var(--sans);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.6rem;
+        }
+        .share-buttons { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-family: var(--sans);
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1.5px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all var(--transition);
+            line-height: 1;
+        }
+        .share-btn:hover { border-color: currentColor; }
+        .share-btn-whatsapp { color: #1aad19; }
+        .share-btn-whatsapp:hover { background: #f0fff4; border-color: #1aad19; }
+        .share-btn-twitter { color: #111; }
+        .share-btn-twitter:hover { background: #f5f5f5; border-color: #111; }
+        .share-btn-copy { color: var(--accent); }
+        .share-btn-copy:hover { background: var(--accent-light); border-color: var(--accent); }
+
+        /* ===== LIMITATION NOTE ===== */
+        .limitation-note {
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin: 2rem 0 0;
+            background: var(--surface);
+        }
+        .limitation-note p {
+            font-family: var(--sans) !important;
+            font-size: 0.81rem !important;
+            color: var(--text-muted) !important;
+            line-height: 1.6 !important;
+            margin: 0 !important;
+        }
+
+        /* Table state cell */
+        .td-state { line-height: 1.35; }
+        .td-state-name { font-size: 0.88rem; }
+        .td-state-uf {
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            display: block;
+        }
+
         /* Responsive */
         @media (max-width: 640px) {
             .study-hero { padding: 2.5rem 1.25rem 1.5rem; }
@@ -508,6 +714,9 @@
             .chart-container { height: 750px; padding: 1rem 0.5rem 0.5rem 0; }
             .study-hero-date { margin-left: 0; }
             .map-section { padding: 1.25rem 1.25rem 1rem; }
+            .study-byline { padding: 0.25rem 1.25rem 1.5rem; }
+            .study-summary { padding: 0 1.25rem; }
+            .pullquote p { font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -553,11 +762,35 @@
         </p>
     </section>
 
+    <!-- Byline -->
+    <div class="study-byline">
+        <p class="study-byline-name">
+            Eduardo Araújo é Economista, Auditor de Finanças, Professor de Finanças Públicas na Fucape Business School, Mestre em Políticas Públicas pela Universidade de Oxford.
+        </p>
+        <div class="study-byline-meta">
+            <span>21 de março de 2026</span>
+            <span class="study-byline-sep">·</span>
+            <span>4 min de leitura</span>
+        </div>
+    </div>
+
+    <!-- Summary box -->
+    <div class="study-summary">
+        <div class="study-summary-inner">
+            <div class="study-summary-label">Entenda em 3 pontos</div>
+            <ul class="study-summary-list">
+                <li>R$ 1,98 bilhão é a perda líquida estimada de estados e municípios nos dois meses, considerando apenas o diesel importado (29,91% do total)</li>
+                <li>São Paulo, Minas Gerais e Paraná concentram mais de 43% do impacto nacional — reflexo direto de seu peso no consumo de diesel</li>
+                <li>Municípios perdem R$ 496 milhões por força da partilha constitucional, sem ter participado das negociações federais</li>
+            </ul>
+        </div>
+    </div>
+
     <!-- Interactive Brazil Map -->
     <section class="map-section">
         <div class="map-section-inner">
             <div class="map-section-header">
-                <span class="map-label-tag">Mapa interativo — impacto por UF</span>
+                <span class="map-label-tag">Mapa interativo · Impacto por UF</span>
                 <span class="map-hint">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                     Passe o cursor — ou toque — sobre o estado
@@ -601,15 +834,23 @@
     <article class="study-body">
 
         <p>
-            O governo federal apresentou proposta de zeragem temporária do ICMS incidente sobre o diesel importado, a vigorar em abril e maio de 2026. A medida prevê compensação federal de 50% das perdas de arrecadação, com o objetivo de reduzir o preço do combustível nas refinarias. O impacto fiscal, no entanto, não se distribui de forma uniforme entre as unidades da federação: estados com maior consumo de diesel e alíquotas mais elevadas concentram parcela desproporcionalmente alta da perda total.
+            Em 18 de março de 2026, durante reunião virtual do Conselho Nacional de Política Fazendária (<a href="https://agenciabrasil.ebc.com.br/economia/noticia/2026-03/governo-propoe-que-estados-zerem-icms-do-diesel-importado" target="_blank" rel="noopener">CONFAZ</a>), o secretário-executivo do Ministério da Fazenda, Dario Durigan, apresentou aos estados a proposta de zeragem temporária do ICMS incidente sobre o diesel importado, a vigorar em abril e maio de 2026. A iniciativa busca conter a alta de preços provocada pela escalada do petróleo no mercado internacional, em contexto de tensões envolvendo Estados Unidos, Israel e Irã. O mecanismo prevê compensação federal de 50% das perdas de arrecadação, transferida de forma imediata por subvenção. A decisão final dos estados está prevista para a reunião presencial do CONFAZ em 27 de março, em São Paulo.
         </p>
 
         <p>
-            Este estudo estima a perda líquida de arrecadação por UF decorrente da proposta, considerando: (a) a participação do diesel importado nas vendas nacionais, estimada pela ANP em 29,91%; (b) as alíquotas estaduais vigentes do ICMS monofásico sobre o diesel; (c) a compensação federal de 50%; e (d) a partilha constitucional que destina 25% da arrecadação do ICMS aos municípios. Os valores cobrem o período de dois meses e foram calculados com base nos dados oficiais da ANP.
+            Este estudo estima a perda líquida de arrecadação por UF decorrente da proposta, considerando: (a) a participação do diesel importado nas vendas nacionais, estimada pela <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-brasileiro-do-petroleo-gas-natural-e-biocombustiveis-2025" target="_blank" rel="noopener">ANP</a> em 29,91%; (b) as alíquotas estaduais vigentes do ICMS monofásico sobre o diesel, levantadas junto à legislação estadual e aos atos do CONFAZ; (c) a compensação federal de 50%; e (d) a partilha constitucional que destina 25% da arrecadação do ICMS aos municípios. Os valores cobrem o período de dois meses e foram calculados com base nos dados oficiais da ANP.
         </p>
 
         <p>
             O resultado agregado indica uma perda líquida de R$ 1,98 bilhão para o conjunto dos entes subnacionais, sendo R$ 1,49 bilhão absorvido pelos estados e R$ 496 milhões pelos municípios. São Paulo responde por 21% do impacto total (R$ 416 milhões), seguido por Minas Gerais (R$ 251 milhões) e Paraná (R$ 189 milhões). Os três estados mais afetados concentram mais de 43% do impacto nacional.
+        </p>
+
+        <div class="pullquote">
+            <p>"Os municípios — que não participaram das negociações federais — absorvem R$ 496 milhões do impacto por força da partilha constitucional do ICMS."</p>
+        </div>
+
+        <p>
+            Vale notar uma distinção metodológica relevante em relação à estimativa divulgada pelo Ministério da Fazenda, que apontou renúncia de cerca de R$ 3 bilhões por mês para os estados (R$ 6 bilhões brutos no período, R$ 3 bilhões líquidos após compensação). A diferença em relação ao valor calculado neste estudo decorre de escopo: a proposta federal incide exclusivamente sobre o <strong>diesel importado</strong>, que representa 29,91% das vendas nacionais segundo a ANP. Ao aplicar esse filtro à base tributável, a perda líquida de dois meses recua para R$ 1,98 bilhão — uma estimativa de escopo mais preciso, restrita ao segmento diretamente atingido pela medida.
         </p>
 
         <!-- Chart section -->
@@ -633,6 +874,9 @@
                     Perda líquida dos municípios
                 </div>
             </div>
+            <p class="chart-source">
+                Fonte: <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-brasileiro-do-petroleo-gas-natural-e-biocombustiveis-2025" target="_blank" rel="noopener">ANP — Anuário Estatístico 2025</a> (participação de 29,91% do diesel importado no mercado nacional). Alíquotas: legislação estadual do ICMS monofásico e atos do CONFAZ. Cálculo: Eduardo Araújo (2026). Valores em R$ milhões, base dois meses (abril–maio/2026).
+            </p>
         </div>
 
         <p class="caption">
@@ -650,40 +894,40 @@
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>UF</th>
-                        <th>Perda do ente estadual</th>
-                        <th>Perda dos municípios</th>
-                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Perda do ente estadual (R$ mi)</th>
+                        <th>Perda dos municípios (R$ mi)</th>
+                        <th>Total (R$ mi)</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td>SP</td><td>312,0</td><td>104,0</td><td>415,9</td></tr>
-                    <tr><td>MG</td><td>188,2</td><td>62,7</td><td>250,9</td></tr>
-                    <tr><td>PR</td><td>141,7</td><td>47,2</td><td>188,9</td></tr>
-                    <tr><td>RS</td><td>93,3</td><td>31,1</td><td>124,4</td></tr>
-                    <tr><td>BA</td><td>84,7</td><td>28,2</td><td>113,0</td></tr>
-                    <tr><td>MT</td><td>78,5</td><td>26,2</td><td>104,7</td></tr>
-                    <tr><td>GO</td><td>77,8</td><td>25,9</td><td>103,8</td></tr>
-                    <tr><td>SC</td><td>71,0</td><td>23,7</td><td>94,7</td></tr>
-                    <tr><td>PA</td><td>68,5</td><td>22,8</td><td>91,4</td></tr>
-                    <tr><td>RJ</td><td>55,3</td><td>18,4</td><td>73,7</td></tr>
-                    <tr><td>MS</td><td>39,7</td><td>13,2</td><td>52,9</td></tr>
-                    <tr><td>ES</td><td>29,6</td><td>9,9</td><td>39,4</td></tr>
-                    <tr><td>AM</td><td>23,5</td><td>7,8</td><td>31,4</td></tr>
-                    <tr><td>PE</td><td>34,8</td><td>11,6</td><td>46,4</td></tr>
-                    <tr><td>MA</td><td>38,8</td><td>12,9</td><td>51,8</td></tr>
-                    <tr><td>CE</td><td>27,3</td><td>9,1</td><td>36,4</td></tr>
-                    <tr><td>DF</td><td>8,9</td><td>3,0</td><td>11,8</td></tr>
-                    <tr><td>TO</td><td>26,8</td><td>8,9</td><td>35,8</td></tr>
-                    <tr><td>RO</td><td>22,0</td><td>7,3</td><td>29,3</td></tr>
-                    <tr><td>RN</td><td>10,8</td><td>3,6</td><td>14,3</td></tr>
-                    <tr><td>AL</td><td>8,6</td><td>2,9</td><td>11,4</td></tr>
-                    <tr><td>SE</td><td>9,4</td><td>3,1</td><td>12,5</td></tr>
-                    <tr><td>PB</td><td>11,3</td><td>3,8</td><td>15,0</td></tr>
-                    <tr><td>AC</td><td>2,4</td><td>0,8</td><td>3,2</td></tr>
-                    <tr><td>PI</td><td>15,8</td><td>5,3</td><td>21,1</td></tr>
-                    <tr><td>AP</td><td>2,2</td><td>0,7</td><td>2,9</td></tr>
-                    <tr><td>RR</td><td>4,3</td><td>1,4</td><td>5,7</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">São Paulo</span><span class="td-state-uf">SP</span></td><td>312,0</td><td>104,0</td><td>415,9</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Minas Gerais</span><span class="td-state-uf">MG</span></td><td>188,2</td><td>62,7</td><td>250,9</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Paraná</span><span class="td-state-uf">PR</span></td><td>141,7</td><td>47,2</td><td>188,9</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Rio Grande do Sul</span><span class="td-state-uf">RS</span></td><td>93,3</td><td>31,1</td><td>124,4</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Bahia</span><span class="td-state-uf">BA</span></td><td>84,7</td><td>28,2</td><td>113,0</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Mato Grosso</span><span class="td-state-uf">MT</span></td><td>78,5</td><td>26,2</td><td>104,7</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Goiás</span><span class="td-state-uf">GO</span></td><td>77,8</td><td>25,9</td><td>103,8</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Santa Catarina</span><span class="td-state-uf">SC</span></td><td>71,0</td><td>23,7</td><td>94,7</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Pará</span><span class="td-state-uf">PA</span></td><td>68,5</td><td>22,8</td><td>91,4</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Rio de Janeiro</span><span class="td-state-uf">RJ</span></td><td>55,3</td><td>18,4</td><td>73,7</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Mato Grosso do Sul</span><span class="td-state-uf">MS</span></td><td>39,7</td><td>13,2</td><td>52,9</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Maranhão</span><span class="td-state-uf">MA</span></td><td>38,8</td><td>12,9</td><td>51,8</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Pernambuco</span><span class="td-state-uf">PE</span></td><td>34,8</td><td>11,6</td><td>46,4</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Espírito Santo</span><span class="td-state-uf">ES</span></td><td>29,6</td><td>9,9</td><td>39,4</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Ceará</span><span class="td-state-uf">CE</span></td><td>27,3</td><td>9,1</td><td>36,4</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Tocantins</span><span class="td-state-uf">TO</span></td><td>26,8</td><td>8,9</td><td>35,8</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Amazonas</span><span class="td-state-uf">AM</span></td><td>23,5</td><td>7,8</td><td>31,4</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Rondônia</span><span class="td-state-uf">RO</span></td><td>22,0</td><td>7,3</td><td>29,3</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Piauí</span><span class="td-state-uf">PI</span></td><td>15,8</td><td>5,3</td><td>21,1</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Paraíba</span><span class="td-state-uf">PB</span></td><td>11,3</td><td>3,8</td><td>15,0</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Rio Grande do Norte</span><span class="td-state-uf">RN</span></td><td>10,8</td><td>3,6</td><td>14,3</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Sergipe</span><span class="td-state-uf">SE</span></td><td>9,4</td><td>3,1</td><td>12,5</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Distrito Federal</span><span class="td-state-uf">DF</span></td><td>8,9</td><td>3,0</td><td>11,8</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Alagoas</span><span class="td-state-uf">AL</span></td><td>8,6</td><td>2,9</td><td>11,4</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Roraima</span><span class="td-state-uf">RR</span></td><td>4,3</td><td>1,4</td><td>5,7</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Acre</span><span class="td-state-uf">AC</span></td><td>2,4</td><td>0,8</td><td>3,2</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Amapá</span><span class="td-state-uf">AP</span></td><td>2,2</td><td>0,7</td><td>2,9</td></tr>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -694,12 +938,38 @@
                     </tr>
                 </tfoot>
             </table>
+            <p class="chart-source">
+                Fonte: <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-brasileiro-do-petroleo-gas-natural-e-biocombustiveis-2025" target="_blank" rel="noopener">ANP — Anuário Estatístico 2025</a>; legislação estadual do ICMS monofásico; CONFAZ. Cálculo: Eduardo Araújo (2026). Valores em R$ milhões, já descontada compensação federal de 50%. Municípios conforme art. 158, IV, da CF/88 (25% do ICMS estadual).
+            </p>
         </div>
 
         <!-- Closing text -->
         <p>
             Os dados desta simulação foram produzidos com metodologia integralmente documentada e base em fontes primárias abertas (ANP e legislação tributária estadual). A nota técnica com detalhamento completo dos cálculos e a planilha com os dados brutos estão disponíveis para download abaixo.
         </p>
+
+        <!-- Share -->
+        <div class="share-section">
+            <div class="share-label">Compartilhar</div>
+            <div class="share-buttons">
+                <a class="share-btn share-btn-whatsapp"
+                   href="https://wa.me/?text=Quanto%20cada%20estado%20pode%20perder%20com%20a%20proposta%20de%20zerar%20o%20ICMS%20do%20diesel%20importado%20%E2%80%94%20Estudo%20de%20Eduardo%20Ara%C3%BAjo%3A%20https%3A%2F%2Fwww.eduardoreisaraujo.com.br%2Festudos%2Ficms-diesel-importado.html"
+                   target="_blank" rel="noopener" aria-label="Compartilhar no WhatsApp">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    WhatsApp
+                </a>
+                <a class="share-btn share-btn-twitter"
+                   href="https://twitter.com/intent/tweet?text=SP%2C%20MG%20e%20PR%20concentram%2043%25%20do%20impacto%20da%20zeragem%20do%20ICMS%20no%20diesel%20importado.%20Estudo%20completo%20por%20UF%3A&url=https%3A%2F%2Fwww.eduardoreisaraujo.com.br%2Festudos%2Ficms-diesel-importado.html"
+                   target="_blank" rel="noopener" aria-label="Compartilhar no X (Twitter)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    X (Twitter)
+                </a>
+                <button class="share-btn share-btn-copy" id="copyLinkBtn" aria-label="Copiar link">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copiar link
+                </button>
+            </div>
+        </div>
 
         <!-- Action buttons -->
         <div class="study-actions">
@@ -713,6 +983,11 @@
             </a>
         </div>
 
+        <!-- Limitation note -->
+        <div class="limitation-note">
+            <p><strong>Nota:</strong> Os valores apresentados são estimativas baseadas nos parâmetros vigentes em março de 2026. Os resultados reais dependerão da alíquota efetivamente negociada, do montante final da compensação federal, da adesão de cada estado e de variações no consumo de diesel durante o período. O autor não representa posição institucional de nenhum órgão governamental. Veja o detalhamento completo na nota técnica disponível para download.</p>
+        </div>
+
         <!-- Methodology section (collapsible) -->
         <div class="methodology-section">
             <button class="methodology-toggle" id="methodToggle" aria-expanded="false">
@@ -720,6 +995,19 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="methodology-content" id="methodContent">
+
+                <h3>Fórmula de cálculo</h3>
+                <div class="formula-box">
+                    <div class="f-label">Cálculo passo a passo por UF</div>
+                    <div class="f-step"><span class="f-n">①</span><span><strong>Base tributável mensal</strong> = Arrecadação do ICMS monofásico sobre diesel (por UF)</span></div>
+                    <div class="f-step"><span class="f-n">②</span><span><strong>Filtro importação</strong> = Base × 29,91% <em>(participação ANP do diesel importado)</em></span></div>
+                    <div class="f-step"><span class="f-n">③</span><span><strong>Impacto bruto</strong> = Filtro × 2 meses <em>(abril + maio/2026)</em></span></div>
+                    <div class="f-step"><span class="f-n">④</span><span><strong>Impacto líquido</strong> = Bruto × 50% <em>(desconto da compensação federal)</em></span></div>
+                    <div class="f-step"><span class="f-n">⑤</span><span><strong>Partilha</strong>: 75% → perda do ente estadual · 25% → perda dos municípios <em>(art. 158, IV, CF/88)</em></span></div>
+                    <div class="f-highlight">
+                        Por que o resultado difere da estimativa do governo federal? O Ministério da Fazenda estimou renúncia bruta de R$ 3 bilhões por mês considerando o estoque total de diesel tributado, sem restringi-la à parcela importada. Esta análise aplica o filtro de 29,91% (passo ②), reduzindo o impacto líquido de dois meses para R$ 1,98 bilhão — valor de escopo mais preciso, restrito ao segmento efetivamente sujeito à medida.
+                    </div>
+                </div>
 
                 <h3>1. Base tributária</h3>
                 <p>
@@ -770,6 +1058,32 @@
         var isOpen = content.classList.toggle('is-open');
         this.classList.toggle('is-open', isOpen);
         this.setAttribute('aria-expanded', isOpen);
+    });
+
+    // Copy link button
+    document.getElementById('copyLinkBtn').addEventListener('click', function() {
+        var url = 'https://www.eduardoreisaraujo.com.br/estudos/icms-diesel-importado.html';
+        var btn = this;
+        navigator.clipboard.writeText(url).then(function() {
+            btn.textContent = 'Link copiado!';
+            setTimeout(function() {
+                btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copiar link';
+            }, 2000);
+        }).catch(function() {
+            // Fallback for browsers without clipboard API
+            var ta = document.createElement('textarea');
+            ta.value = url;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            btn.textContent = 'Link copiado!';
+            setTimeout(function() {
+                btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copiar link';
+            }, 2000);
+        });
     });
 
     // Chart data — sorted by total descending
@@ -970,94 +1284,114 @@
         var projection = d3.geoMercator();
         var pathGen    = d3.geoPath().projection(projection);
 
-        // Fetch IBGE state boundaries
-        fetch('https://servicodados.ibge.gov.br/api/v3/malhas/paises/BR?intrarregiao=UF&formato=application/vnd.geo+json&resolucao=2')
-            .then(function(r) {
-                if (!r.ok) throw new Error('HTTP ' + r.status);
-                return r.json();
-            })
-            .then(function(geo) {
-                loading.style.display = 'none';
+        // Resolve UF sigla from a feature, supporting multiple GeoJSON schemas
+        function getUf(d) {
+            // click_that_hood schema: properties.sigla
+            if (d.properties && d.properties.sigla) return d.properties.sigla;
+            // IBGE schema: properties.codarea (2-digit string)
+            if (d.properties && d.properties.codarea) return codeToUf[String(d.properties.codarea)] || null;
+            return null;
+        }
 
-                // Fit Brazil to SVG
-                projection.fitSize([W, H], geo);
+        function renderMap(geo) {
+            loading.style.display = 'none';
+            svgEl.style.display   = 'block';
 
-                var fontSize = Math.max(7, Math.round(W / 72));
+            projection.fitSize([W, H], geo);
+            var fontSize = Math.max(7, Math.round(W / 72));
 
-                // Draw state polygons
-                svg.selectAll('path.map-state')
-                    .data(geo.features)
-                    .enter()
-                    .append('path')
-                    .attr('class', 'map-state')
-                    .attr('d', pathGen)
-                    .attr('fill', function(d) {
-                        var uf = codeToUf[d.properties.codarea];
-                        return getColor(uf && stateData[uf] ? stateData[uf].total : null);
-                    })
-                    .on('mouseenter', function(event, d) {
-                        var uf = codeToUf[d.properties.codarea];
-                        if (!uf || !stateData[uf]) return;
+            svg.selectAll('path.map-state')
+                .data(geo.features)
+                .enter()
+                .append('path')
+                .attr('class', 'map-state')
+                .attr('d', pathGen)
+                .attr('fill', function(d) {
+                    var uf = getUf(d);
+                    return getColor(uf && stateData[uf] ? stateData[uf].total : null);
+                })
+                .on('mouseenter', function(event, d) {
+                    var uf = getUf(d);
+                    if (!uf || !stateData[uf]) return;
+                    activeUf = uf;
+                    d3.selectAll('path.map-state').classed('is-active', false);
+                    d3.select(this).classed('is-active', true);
+                    showTooltip(uf, stateData[uf], event);
+                })
+                .on('mousemove', function(event) { positionTooltip(event); })
+                .on('mouseleave', function() {
+                    d3.select(this).classed('is-active', false);
+                    activeUf = null;
+                    tooltip.classList.remove('is-visible');
+                })
+                .on('click', function(event, d) {
+                    var uf = getUf(d);
+                    if (!uf || !stateData[uf]) return;
+                    event.stopPropagation();
+                    if (activeUf === uf && tooltip.classList.contains('is-visible')) {
+                        tooltip.classList.remove('is-visible');
+                        activeUf = null;
+                        d3.select(this).classed('is-active', false);
+                    } else {
                         activeUf = uf;
                         d3.selectAll('path.map-state').classed('is-active', false);
                         d3.select(this).classed('is-active', true);
                         showTooltip(uf, stateData[uf], event);
-                    })
-                    .on('mousemove', function(event) {
-                        positionTooltip(event);
-                    })
-                    .on('mouseleave', function() {
-                        d3.select(this).classed('is-active', false);
-                        activeUf = null;
-                        tooltip.classList.remove('is-visible');
-                    })
-                    .on('click', function(event, d) {
-                        var uf = codeToUf[d.properties.codarea];
-                        if (!uf || !stateData[uf]) return;
-                        event.stopPropagation();
-                        if (activeUf === uf && tooltip.classList.contains('is-visible')) {
-                            tooltip.classList.remove('is-visible');
-                            activeUf = null;
-                            d3.select(this).classed('is-active', false);
-                        } else {
-                            activeUf = uf;
-                            d3.selectAll('path.map-state').classed('is-active', false);
-                            d3.select(this).classed('is-active', true);
-                            showTooltip(uf, stateData[uf], event);
-                        }
-                    });
+                    }
+                });
 
-                // UF abbreviation labels
-                svg.selectAll('text.map-uf-label')
-                    .data(geo.features)
-                    .enter()
-                    .append('text')
-                    .attr('class', 'map-uf-label')
-                    .attr('transform', function(d) {
-                        var c = pathGen.centroid(d);
-                        return 'translate(' + c[0] + ',' + c[1] + ')';
-                    })
-                    .attr('text-anchor', 'middle')
-                    .attr('dy', '0.35em')
-                    .attr('font-size', fontSize + 'px')
-                    .attr('fill', function(d) {
-                        var uf = codeToUf[d.properties.codarea];
-                        if (!uf || !stateData[uf]) return '#456';
-                        var t = stateData[uf].total / MAX_TOTAL;
-                        return t > 0.45 ? '#fff' : '#1A3A5C';
-                    })
-                    .text(function(d) {
-                        return codeToUf[d.properties.codarea] || '';
-                    });
-            })
-            .catch(function() {
-                loading.innerHTML =
-                    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#AAA" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="#AAA"/></svg>' +
-                    'Mapa indisponível — veja o gráfico abaixo';
-                loading.style.flexDirection = 'row';
-                loading.style.gap = '0.5rem';
-                loading.style.minHeight = '60px';
-            });
+            svg.selectAll('text.map-uf-label')
+                .data(geo.features)
+                .enter()
+                .append('text')
+                .attr('class', 'map-uf-label')
+                .attr('transform', function(d) {
+                    var c = pathGen.centroid(d);
+                    return 'translate(' + c[0] + ',' + c[1] + ')';
+                })
+                .attr('text-anchor', 'middle')
+                .attr('dy', '0.35em')
+                .attr('font-size', fontSize + 'px')
+                .attr('fill', function(d) {
+                    var uf = getUf(d);
+                    if (!uf || !stateData[uf]) return '#456';
+                    return (stateData[uf].total / MAX_TOTAL) > 0.45 ? '#fff' : '#1A3A5C';
+                })
+                .text(function(d) { return getUf(d) || ''; });
+        }
+
+        function showError() {
+            svgEl.style.display = 'none';
+            loading.innerHTML =
+                '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#AAA" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="#AAA"/></svg>' +
+                '<span>Mapa indisponível — veja o gráfico abaixo</span>';
+            loading.style.flexDirection = 'row';
+            loading.style.gap = '0.5rem';
+            loading.style.minHeight = '60px';
+            loading.style.position = 'static';
+        }
+
+        // Fetch with fallback: IBGE estados endpoint → click_that_hood GitHub CDN
+        var GEO_URLS = [
+            'https://servicodados.ibge.gov.br/api/v3/malhas/estados?formato=application/vnd.geo+json&resolucao=2',
+            'https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson'
+        ];
+
+        function tryLoad(index) {
+            if (index >= GEO_URLS.length) { showError(); return; }
+            fetch(GEO_URLS[index])
+                .then(function(r) {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.json();
+                })
+                .then(function(geo) {
+                    if (!geo || !geo.features || !geo.features.length) throw new Error('empty');
+                    renderMap(geo);
+                })
+                .catch(function() { tryLoad(index + 1); });
+        }
+
+        tryLoad(0);
 
         function showTooltip(uf, d, event) {
             tooltip.innerHTML =
