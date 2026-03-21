@@ -801,6 +801,153 @@
             display: block;
         }
 
+        /* ===== SCENARIO TOGGLE ===== */
+        .scenario-toggle-bar {
+            background: #EDF3F9;
+            border-top: 1px solid var(--border);
+            padding: 0.9rem 2rem 0.85rem;
+        }
+        .scenario-toggle-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .scenario-toggle-label {
+            font-family: var(--mono);
+            font-size: 0.63rem;
+            font-weight: 500;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+        .scenario-pills {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+        .scenario-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-family: var(--sans);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.42rem 0.9rem;
+            border-radius: 20px;
+            border: 1.5px solid var(--border);
+            background: var(--surface);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+        .scenario-pill:hover { border-color: var(--accent); color: var(--accent); }
+        .scenario-pill.is-active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        .scenario-pill .pill-badge {
+            font-family: var(--mono);
+            font-size: 0.58rem;
+            padding: 0.08rem 0.32rem;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.22);
+            letter-spacing: 0.04em;
+        }
+        .scenario-pill:not(.is-active) .pill-badge {
+            background: var(--border-light);
+            color: var(--text-muted);
+        }
+        .scenario-active-note {
+            width: 100%;
+            font-family: var(--sans);
+            font-size: 0.73rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+            margin-top: 0.1rem;
+        }
+        .scenario-active-note.c2-note { display: none; }
+        .scenario-active-note.c1-note { display: block; }
+
+        /* ===== DIESEL EXPLAINER BOX ===== */
+        .diesel-explainer {
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+        .diesel-explainer-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            background: var(--surface);
+            border: none;
+            padding: 0.9rem 1.2rem;
+            cursor: pointer;
+            text-align: left;
+            gap: 1rem;
+        }
+        .diesel-explainer-toggle:hover { background: var(--accent-light); }
+        .diesel-explainer-toggle svg { flex-shrink: 0; transition: transform 0.25s; }
+        .diesel-explainer-toggle.is-open svg { transform: rotate(180deg); }
+        .det-label {
+            font-family: var(--mono);
+            font-size: 0.61rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.1rem;
+        }
+        .det-title {
+            font-family: var(--sans);
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .diesel-explainer-body {
+            display: none;
+            padding: 0 1.2rem 1.2rem;
+            background: var(--surface);
+        }
+        .diesel-explainer-body.is-open { display: block; }
+        .diesel-explainer-body p {
+            font-family: var(--serif) !important;
+            font-size: 0.95rem !important;
+            line-height: 1.75 !important;
+            color: var(--text-secondary) !important;
+            margin-bottom: 0.85rem !important;
+        }
+        .calc-note {
+            background: var(--bg, #FAF9F7);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.85rem 1.1rem;
+            font-family: var(--mono);
+            font-size: 0.79rem;
+            line-height: 2.0;
+            color: var(--text);
+            margin: 1rem 0;
+        }
+        .calc-note .cn-head {
+            font-family: var(--sans);
+            font-size: 0.69rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+        .calc-note .em { color: var(--accent); font-weight: 700; }
+        .calc-note .dim { color: var(--text-muted); font-size: 0.74rem; }
+
         /* Responsive */
         @media (max-width: 640px) {
             .study-hero { padding: 2.5rem 1.25rem 1.5rem; }
@@ -815,6 +962,8 @@
             .study-byline { padding: 0.25rem 1.25rem 1.5rem; }
             .study-summary { padding: 0 1.25rem; }
             .pullquote p { font-size: 1.1rem; }
+            .scenario-toggle-bar { padding: 0.75rem 1.25rem 0.7rem; }
+            .scenario-pill { font-size: 0.75rem; padding: 0.38rem 0.7rem; }
         }
     </style>
 </head>
@@ -883,6 +1032,27 @@
         </div>
     </div>
 
+    <!-- Scenario toggle -->
+    <div class="scenario-toggle-bar" id="scenarioToggleBar">
+        <div class="scenario-toggle-inner">
+            <span class="scenario-toggle-label">Visualizando:</span>
+            <div class="scenario-pills" role="group" aria-label="Selecionar cenário de simulação">
+                <button class="scenario-pill is-active" id="pillC1" data-scenario="1" aria-pressed="true">
+                    <span class="pill-badge">C1</span> Estimativa oficial — Ministério da Fazenda
+                </button>
+                <button class="scenario-pill" id="pillC2" data-scenario="2" aria-pressed="false">
+                    <span class="pill-badge">C2</span> Só diesel importado (estimativa independente)
+                </button>
+            </div>
+            <span class="scenario-active-note c1-note" id="c1Note">
+                Base: R$ 3 bi/mês divulgados pelo MF (Comsefaz, valores sujeitos a verificação). Distribuição proporcional ao consumo de diesel por UF — ANP 2025.
+            </span>
+            <span class="scenario-active-note c2-note" id="c2Note">
+                Base: incidência de R$ 1,17/L sobre a parcela importada (29,91% do mercado nacional, ANP jan/2026). Estimativa independente — resultado ~39% menor que o dado oficial.
+            </span>
+        </div>
+    </div>
+
     <!-- Interactive Brazil Map -->
     <section class="map-section">
         <div class="map-section-inner">
@@ -913,15 +1083,15 @@
     <div class="key-figures">
         <div class="key-figures-inner">
             <div class="key-figure">
-                <div class="key-figure-value">R$ 3,00 bi</div>
+                <div class="key-figure-value" id="kfTotal">R$ 3,00 bi</div>
                 <div class="key-figure-label">Perda líquida total de estados e municípios</div>
             </div>
             <div class="key-figure">
-                <div class="key-figure-value">R$ 2,25 bi</div>
+                <div class="key-figure-value" id="kfEstado">R$ 2,25 bi</div>
                 <div class="key-figure-label">Parcela absorvida pelos entes estaduais</div>
             </div>
             <div class="key-figure">
-                <div class="key-figure-value">R$ 750 mi</div>
+                <div class="key-figure-value" id="kfMuni">R$ 750 mi</div>
                 <div class="key-figure-label">Parcela absorvida pelos municípios</div>
             </div>
         </div>
@@ -935,15 +1105,43 @@
         </p>
 
         <p>
-            O Ministério da Fazenda estimou uma renúncia de R$ 3 bilhões por mês com a medida.<sup><a href="#ref3" class="fn-ref" aria-label="Referência 3">3</a></sup> Este estudo utiliza esse valor como âncora e distribui o impacto entre as unidades da federação proporcionalmente ao volume de vendas de diesel por UF registrado pela <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-brasileiro-do-petroleo-gas-natural-e-biocombustiveis-2025" target="_blank" rel="noopener">ANP</a> em 2024.<sup><a href="#ref2" id="fn2-src" class="fn-ref" aria-label="Referência 2">2</a></sup> Para o bimestre de vigência, o impacto bruto soma R$ 6 bilhões. Após o desconto da compensação federal de 50%, a perda líquida totaliza R$ 3,00 bilhões: R$ 2,25 bilhões absorvidos pelos entes estaduais e R$ 750 milhões pelos municípios, conforme a partilha constitucional do ICMS.
+            O Ministério da Fazenda estimou uma renúncia de R$ 3 bilhões por mês com a medida.<sup><a href="#ref3" class="fn-ref" aria-label="Referência 3">3</a></sup> Este estudo apresenta dois cenários. O <strong>Cenário 1</strong> utiliza esse valor como âncora e distribui o impacto entre as unidades da federação proporcionalmente ao volume de vendas de diesel por UF registrado pela <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-brasileiro-do-petroleo-gas-natural-e-biocombustiveis-2025" target="_blank" rel="noopener">ANP</a> em 2025.<sup><a href="#ref2" id="fn2-src" class="fn-ref" aria-label="Referência 2">2</a></sup> Para o bimestre de vigência, o impacto bruto soma R$ 6 bilhões. Após o desconto da compensação federal de 50%, a perda líquida totaliza R$ 3,00 bilhões: R$ 2,25 bilhões absorvidos pelos entes estaduais e R$ 750 milhões pelos municípios, conforme a partilha constitucional do ICMS. O <strong>Cenário 2</strong>, apresentado como estimativa independente, aplica a alíquota de R$ 1,17/litro apenas à parcela importada do mercado — 29,91% das vendas nacionais de diesel em janeiro de 2026 — e obtém R$ 1,82 bilhão por mês.<sup><a href="#ref4" id="fn4-src" class="fn-ref" aria-label="Referência 4">4</a></sup> A diferença entre os dois resultados (R$ 3,04 bi vs R$ 1,82 bi) indica que a estimativa oficial é numericamente compatível com uma base de incidência mais ampla do que o diesel importado isolado.
         </p>
 
         <p>
-            O impacto não se distribui uniformemente. São Paulo responde por 20% do total (R$ 611 milhões), seguido por Minas Gerais (R$ 375 milhões) e Paraná (R$ 288 milhões). Os três estados mais afetados concentram 42% do impacto nacional, padrão diretamente associado ao peso desses estados no consumo de diesel para transporte de cargas e atividade agropecuária. Vale notar também o Mato Grosso, que aparece em 5º lugar apesar de não ser um estado industrial: sua alta exposição à medida reflete a intensa demanda logística do agronegócio no estado.
+            O impacto não se distribui uniformemente. São Paulo responde por 20% do total (R$ 606 milhões), seguido por Minas Gerais (R$ 376 milhões) e Paraná (R$ 286 milhões). Os três estados mais afetados concentram 42% do impacto nacional, padrão diretamente associado ao peso desses estados no consumo de diesel para transporte de cargas e atividade agropecuária. Vale notar também o Mato Grosso, que aparece em 4º lugar apesar de não ser um estado industrial: sua alta exposição à medida reflete a intensa demanda logística do agronegócio no estado.
         </p>
 
         <div class="pullquote">
             <p>"Os municípios, que não participaram das negociações federais, absorvem R$ 750 milhões por força da partilha constitucional do ICMS."</p>
+        </div>
+
+        <!-- Diesel A/B explainer box -->
+        <div class="diesel-explainer" id="dieselExplainer">
+            <button class="diesel-explainer-toggle" id="dieselExplainerToggle" aria-expanded="false" aria-controls="dieselExplainerBody">
+                <div>
+                    <div class="det-label">Contexto metodológico</div>
+                    <div class="det-title">Diesel A, Diesel B e como o ICMS incide na cadeia</div>
+                </div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="diesel-explainer-body" id="dieselExplainerBody">
+                <p><strong>Diesel A e Diesel B:</strong> o diesel A é o produto puro saído da refinaria ou desembarcado no porto pelo importador. O diesel B é a mistura que chega ao posto: diesel A acrescido de biodiesel (atualmente 14% de biodiesel, conforme resolução do CNPE). O consumidor final sempre abastece com diesel B; o diesel A é a matéria-prima que entra nessa mistura.</p>
+
+                <p><strong>Como o ICMS é cobrado:</strong> desde a Lei Complementar 192/2022 e o Convênio ICMS 15/2023, o ICMS sobre combustíveis é cobrado pelo regime de substituição tributária com alíquota <em>ad rem</em> uniforme entre todos os estados — em 2026, R$ 1,17 por litro de diesel B. O imposto é recolhido uma única vez, antecipadamente, pelo contribuinte substituto (distribuidora ou importadora), antes de o produto chegar ao posto. Para o diesel nacional, a Petrobras (refinaria) cumpre esse papel ao sair o produto para as distribuidoras. Para o diesel importado, o importador recolhe no momento do desembarque no porto.</p>
+
+                <p><strong>O que a proposta zera:</strong> a medida discutida no CONFAZ propõe zerar o ICMS incidente especificamente sobre o diesel A importado. Isso significa que a base de incidência da isenção é apenas a fração importada do mercado, não a produção nacional. Para estimar o impacto restrito ao importado (Cenário 2), é preciso conhecer a participação do diesel importado nas vendas nacionais.</p>
+
+                <p><strong>Por que os números diferem:</strong> a ANP registrou, em janeiro de 2026, vendas nacionais de diesel B de 5.199 mil m³ (≈ 5,2 bilhões de litros), com 29,91% provenientes de diesel A importado. Aplicando R$ 1,17/litro:</p>
+
+                <div class="calc-note">
+                    <div class="cn-head">Verificação aritmética — mensal, base bruta</div>
+                    Base ampla (todo o diesel B): 5.199 mi m³ × 1.000 L/m³ × R$ 1,17/L = <span class="em">R$ 6,08 bi</span> <span class="dim">→ metade = R$ 3,04 bi ≈ dado oficial</span><br>
+                    Só importado (29,91%):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 29,91% × 5.199 mi m³ × 1.000 L/m³ × R$ 1,17/L = <span class="em">R$ 1,82 bi</span>
+                </div>
+
+                <p>O número divulgado pelo governo (R$ 3 bi/mês) é numericamente muito mais próximo de uma base que inclui todo o diesel — nacional e importado — do que de uma base restrita ao importado. Isso não é, por si só, prova de que a Fazenda usou uma base ampla; a metodologia oficial não foi detalhada publicamente. Mas a compatibilidade aritmética é informativa: ela sugere que a renúncia real pode ser maior do que seria de se esperar de uma isenção tecnicamente circunscrita ao diesel importado. O Cenário 2 deste estudo aplica a base restrita, como estimativa conservadora independente.</p>
+            </div>
         </div>
 
         <!-- Chart section -->
@@ -964,12 +1162,12 @@
                 </div>
             </div>
             <p class="chart-source">
-                Fonte: Ministério da Fazenda (estimativa de R$ 3 bi/mês); <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-brasileiro-do-petroleo-gas-natural-e-biocombustiveis-2025" target="_blank" rel="noopener">ANP, Anuário Estatístico 2025</a>, Tabela 3.3 (volumes de diesel por UF, 2024). Distribuição proporcional ao consumo. Cálculo: Eduardo Araújo (2026). Valores em R$ milhões, perda líquida bimestral (abril e maio/2026), já descontada compensação federal de 50%.
+                Fonte: Ministério da Fazenda (estimativa de R$ 3 bi/mês); <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-brasileiro-do-petroleo-gas-natural-e-biocombustiveis-2025" target="_blank" rel="noopener">ANP</a> (dados abertos de vendas de combustíveis por UF, 2025). Distribuição proporcional ao consumo. Cálculo: Eduardo Araújo (2026). Valores em R$ milhões, perda líquida bimestral (abril e maio/2026), já descontada compensação federal de 50%.
             </p>
         </div>
 
         <p class="caption">
-            A distância entre extremos é significativa: o Amapá absorve R$ 4,6 milhões e São Paulo, R$ 611 milhões. Os sete estados da Região Norte somam R$ 299 milhões, menos da metade do que apenas São Paulo perde. Para os estados que já enfrentam restrições orçamentárias estruturais, a renúncia, ainda que parcialmente compensada, representa uma pressão real sobre o caixa.
+            A distância entre extremos é significativa: o Amapá absorve R$ 4,6 milhões e São Paulo, R$ 606 milhões. Os sete estados da Região Norte somam R$ 299 milhões, menos da metade do que apenas São Paulo perde. Para os estados que já enfrentam restrições orçamentárias estruturais, a renúncia, ainda que parcialmente compensada, representa uma pressão real sobre o caixa.
         </p>
 
         <!-- Table section -->
@@ -994,48 +1192,111 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td class="td-state"><span class="td-state-name">São Paulo</span><span class="td-state-uf">SP</span></td><td>458,4</td><td>152,8</td><td>611,2</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Minas Gerais</span><span class="td-state-uf">MG</span></td><td>281,1</td><td>93,7</td><td>374,8</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Paraná</span><span class="td-state-uf">PR</span></td><td>216,1</td><td>72,0</td><td>288,1</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Rio Grande do Sul</span><span class="td-state-uf">RS</span></td><td>135,7</td><td>45,2</td><td>180,9</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Mato Grosso</span><span class="td-state-uf">MT</span></td><td>134,0</td><td>44,7</td><td>178,7</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Bahia</span><span class="td-state-uf">BA</span></td><td>122,3</td><td>40,8</td><td>163,1</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Goiás</span><span class="td-state-uf">GO</span></td><td>116,6</td><td>38,8</td><td>155,4</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Santa Catarina</span><span class="td-state-uf">SC</span></td><td>104,9</td><td>35,0</td><td>139,9</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Pará</span><span class="td-state-uf">PA</span></td><td>100,7</td><td>33,5</td><td>134,2</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Rio de Janeiro</span><span class="td-state-uf">RJ</span></td><td>95,1</td><td>31,7</td><td>126,8</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Mato Grosso do Sul</span><span class="td-state-uf">MS</span></td><td>65,8</td><td>21,9</td><td>87,7</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Maranhão</span><span class="td-state-uf">MA</span></td><td>57,5</td><td>19,2</td><td>76,7</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Pernambuco</span><span class="td-state-uf">PE</span></td><td>52,9</td><td>17,6</td><td>70,5</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Espírito Santo</span><span class="td-state-uf">ES</span></td><td>45,5</td><td>15,2</td><td>60,7</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Tocantins</span><span class="td-state-uf">TO</span></td><td>42,1</td><td>14,0</td><td>56,1</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Ceará</span><span class="td-state-uf">CE</span></td><td>41,2</td><td>13,7</td><td>54,9</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Amazonas</span><span class="td-state-uf">AM</span></td><td>34,5</td><td>11,5</td><td>46,0</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Rondônia</span><span class="td-state-uf">RO</span></td><td>30,0</td><td>10,0</td><td>40,0</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Piauí</span><span class="td-state-uf">PI</span></td><td>23,2</td><td>7,7</td><td>30,9</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Paraíba</span><span class="td-state-uf">PB</span></td><td>17,5</td><td>5,9</td><td>23,4</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Rio Grande do Norte</span><span class="td-state-uf">RN</span></td><td>16,8</td><td>5,6</td><td>22,4</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Alagoas</span><span class="td-state-uf">AL</span></td><td>14,6</td><td>4,8</td><td>19,4</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Distrito Federal</span><span class="td-state-uf">DF</span></td><td>13,3</td><td>4,4</td><td>17,7</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Sergipe</span><span class="td-state-uf">SE</span></td><td>13,1</td><td>4,4</td><td>17,5</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Roraima</span><span class="td-state-uf">RR</span></td><td>8,3</td><td>2,8</td><td>11,1</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Acre</span><span class="td-state-uf">AC</span></td><td>5,6</td><td>1,8</td><td>7,4</td></tr>
-                    <tr><td class="td-state"><span class="td-state-name">Amapá</span><span class="td-state-uf">AP</span></td><td>3,5</td><td>1,1</td><td>4,6</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">São Paulo</span><span class="td-state-uf">SP</span></td><td>454,7</td><td>151,5</td><td>606,2</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Minas Gerais</span><span class="td-state-uf">MG</span></td><td>282,0</td><td>94,0</td><td>376,0</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Paraná</span><span class="td-state-uf">PR</span></td><td>214,4</td><td>71,4</td><td>285,8</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Mato Grosso</span><span class="td-state-uf">MT</span></td><td>137,6</td><td>45,9</td><td>183,5</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Rio Grande do Sul</span><span class="td-state-uf">RS</span></td><td>133,5</td><td>44,5</td><td>178,0</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Bahia</span><span class="td-state-uf">BA</span></td><td>123,7</td><td>41,2</td><td>164,9</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Goiás</span><span class="td-state-uf">GO</span></td><td>120,6</td><td>40,2</td><td>160,8</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Santa Catarina</span><span class="td-state-uf">SC</span></td><td>105,2</td><td>35,1</td><td>140,3</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Pará</span><span class="td-state-uf">PA</span></td><td>104,1</td><td>34,7</td><td>138,8</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Rio de Janeiro</span><span class="td-state-uf">RJ</span></td><td>91,3</td><td>30,4</td><td>121,7</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Mato Grosso do Sul</span><span class="td-state-uf">MS</span></td><td>66,8</td><td>22,3</td><td>89,1</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Maranhão</span><span class="td-state-uf">MA</span></td><td>57,8</td><td>19,3</td><td>77,1</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Pernambuco</span><span class="td-state-uf">PE</span></td><td>52,7</td><td>17,5</td><td>70,2</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Espírito Santo</span><span class="td-state-uf">ES</span></td><td>44,2</td><td>14,7</td><td>58,9</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Ceará</span><span class="td-state-uf">CE</span></td><td>42,8</td><td>14,2</td><td>57,0</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Tocantins</span><span class="td-state-uf">TO</span></td><td>40,3</td><td>13,5</td><td>53,8</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Amazonas</span><span class="td-state-uf">AM</span></td><td>34,7</td><td>11,5</td><td>46,2</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Rondônia</span><span class="td-state-uf">RO</span></td><td>31,7</td><td>10,6</td><td>42,3</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Piauí</span><span class="td-state-uf">PI</span></td><td>23,9</td><td>8,0</td><td>31,9</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Paraíba</span><span class="td-state-uf">PB</span></td><td>17,6</td><td>5,9</td><td>23,5</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Rio Grande do Norte</span><span class="td-state-uf">RN</span></td><td>16,3</td><td>5,4</td><td>21,7</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Alagoas</span><span class="td-state-uf">AL</span></td><td>14,2</td><td>4,7</td><td>18,9</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Sergipe</span><span class="td-state-uf">SE</span></td><td>13,4</td><td>4,5</td><td>17,9</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Distrito Federal</span><span class="td-state-uf">DF</span></td><td>13,1</td><td>4,4</td><td>17,5</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Roraima</span><span class="td-state-uf">RR</span></td><td>6,1</td><td>2,1</td><td>8,2</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Acre</span><span class="td-state-uf">AC</span></td><td>3,8</td><td>1,2</td><td>5,0</td></tr>
+                    <tr><td class="td-state"><span class="td-state-name">Amapá</span><span class="td-state-uf">AP</span></td><td>3,4</td><td>1,2</td><td>4,6</td></tr>
                 </tbody>
                 <tfoot>
                     <tr>
                         <td>Total</td>
-                        <td>2.250,3</td>
-                        <td>749,8</td>
-                        <td>3.000,1</td>
+                        <td>2.249,9</td>
+                        <td>749,9</td>
+                        <td>2.999,8</td>
                     </tr>
                 </tfoot>
             </table>
             <p class="chart-source">
-                Fonte: Ministério da Fazenda (estimativa de R$ 3 bi/mês); <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-brasileiro-do-petroleo-gas-natural-e-biocombustiveis-2025" target="_blank" rel="noopener">ANP, Anuário Estatístico 2025</a>, Tabela 3.3. Cálculo: Eduardo Araújo (2026). Valores em R$ milhões, já descontada compensação federal de 50%.
+                Fonte: Ministério da Fazenda (estimativa de R$ 3 bi/mês); <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-brasileiro-do-petroleo-gas-natural-e-biocombustiveis-2025" target="_blank" rel="noopener">ANP</a> (dados abertos de vendas por UF, 2025). Cálculo: Eduardo Araújo (2026). Valores em R$ milhões, já descontada compensação federal de 50%.
             </p>
         </div>
         </div><!-- /table-collapse -->
+
+        <!-- C2 comparison table (collapsible) -->
+        <button class="table-toggle" id="c2TableToggle" aria-expanded="false" aria-controls="c2TableCollapse" style="margin-top:0.75rem; border-color: #8BA7C2; color: #1A3A5C;">
+            <span>Cenário 2: estimativa independente — só diesel importado (comparação com C1)</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="table-collapse" id="c2TableCollapse">
+            <p class="caption" style="margin-top:1rem">
+                Cenário 2 restringe a isenção ao diesel importado (29,91% do mercado nacional, ANP jan/2026; ICMS ad rem de R$ 1,17/litro). Renúncia bruta mensal estimada: R$ 1,82 bi; líquida bimestral após compensação de 50%: <strong>R$ 1,82 bi</strong>. Valores em R$ milhões. A distribuição por UF usa os mesmos pesos de consumo da ANP 2025.
+            </p>
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Estado</th>
+                            <th>C1 — Total (R$ mi)</th>
+                            <th>C2 — Total (R$ mi)</th>
+                            <th>Diferença (C1 − C2)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="td-state"><span class="td-state-name">São Paulo</span><span class="td-state-uf">SP</span></td><td>606,2</td><td>367,7</td><td>238,5</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Minas Gerais</span><span class="td-state-uf">MG</span></td><td>376,0</td><td>228,1</td><td>147,9</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Paraná</span><span class="td-state-uf">PR</span></td><td>285,8</td><td>173,4</td><td>112,4</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Mato Grosso</span><span class="td-state-uf">MT</span></td><td>183,5</td><td>111,3</td><td>72,2</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Rio Grande do Sul</span><span class="td-state-uf">RS</span></td><td>178,0</td><td>108,0</td><td>70,0</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Bahia</span><span class="td-state-uf">BA</span></td><td>164,9</td><td>100,0</td><td>64,9</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Goiás</span><span class="td-state-uf">GO</span></td><td>160,8</td><td>97,5</td><td>63,3</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Santa Catarina</span><span class="td-state-uf">SC</span></td><td>140,3</td><td>85,1</td><td>55,2</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Pará</span><span class="td-state-uf">PA</span></td><td>138,8</td><td>84,2</td><td>54,6</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Rio de Janeiro</span><span class="td-state-uf">RJ</span></td><td>121,7</td><td>73,8</td><td>47,9</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Mato Grosso do Sul</span><span class="td-state-uf">MS</span></td><td>89,1</td><td>54,1</td><td>35,0</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Maranhão</span><span class="td-state-uf">MA</span></td><td>77,1</td><td>46,8</td><td>30,3</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Pernambuco</span><span class="td-state-uf">PE</span></td><td>70,2</td><td>42,6</td><td>27,6</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Espírito Santo</span><span class="td-state-uf">ES</span></td><td>58,9</td><td>35,7</td><td>23,2</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Ceará</span><span class="td-state-uf">CE</span></td><td>57,0</td><td>34,6</td><td>22,4</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Tocantins</span><span class="td-state-uf">TO</span></td><td>53,8</td><td>32,6</td><td>21,2</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Amazonas</span><span class="td-state-uf">AM</span></td><td>46,2</td><td>28,0</td><td>18,2</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Rondônia</span><span class="td-state-uf">RO</span></td><td>42,3</td><td>25,7</td><td>16,6</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Piauí</span><span class="td-state-uf">PI</span></td><td>31,9</td><td>19,4</td><td>12,5</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Paraíba</span><span class="td-state-uf">PB</span></td><td>23,5</td><td>14,3</td><td>9,2</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Rio Grande do Norte</span><span class="td-state-uf">RN</span></td><td>21,7</td><td>13,2</td><td>8,5</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Alagoas</span><span class="td-state-uf">AL</span></td><td>18,9</td><td>11,5</td><td>7,4</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Sergipe</span><span class="td-state-uf">SE</span></td><td>17,9</td><td>10,9</td><td>7,0</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Distrito Federal</span><span class="td-state-uf">DF</span></td><td>17,5</td><td>10,6</td><td>6,9</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Roraima</span><span class="td-state-uf">RR</span></td><td>8,2</td><td>5,0</td><td>3,2</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Acre</span><span class="td-state-uf">AC</span></td><td>5,0</td><td>3,0</td><td>2,0</td></tr>
+                        <tr><td class="td-state"><span class="td-state-name">Amapá</span><span class="td-state-uf">AP</span></td><td>4,6</td><td>2,8</td><td>1,8</td></tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>Total</td>
+                            <td>2.999,8</td>
+                            <td>1.819,9</td>
+                            <td>1.179,9</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <p class="chart-source">
+                    C1: âncora MF (R$ 3 bi/mês), distribuído por pesos de consumo ANP 2025. C2: R$ 1,17/litro × 29,91% (participação do importado, ANP jan/2026) × 5.199 mil m³. Ambos: perda líquida bimestral (abril e maio/2026), descontada compensação federal de 50%. Cálculo: Eduardo Araújo (2026).
+                </p>
+            </div>
+        </div><!-- /c2TableCollapse -->
 
         <!-- Closing text -->
         <p>
@@ -1081,6 +1342,9 @@
                 <li id="ref3">
                     CNN Brasil. <em>Governo propõe zerar ICMS na importação do diesel; impacto é de R$ 3 bi.</em> 18 mar. 2026. Disponível em: <a href="https://www.cnnbrasil.com.br/economia/macroeconomia/governo-propoe-zerar-icms-importacao-do-diesel-impacto-e-de-r-3-bilhoes/" target="_blank" rel="noopener">cnnbrasil.com.br</a>. Acesso em: 21 mar. 2026.
                 </li>
+                <li id="ref4">
+                    Agência Nacional do Petróleo, Gás Natural e Biocombustíveis (ANP). <em>Vendas de derivados de petróleo e biocombustíveis — dados abertos.</em> Arquivo: vendas-combustiveis-m3-1990-2025.csv (atualizado em 27/02/2026, cobertura até jan/2026). Disponível em: <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/vendas-de-derivados-de-petroleo-e-biocombustiveis" target="_blank" rel="noopener">gov.br/anp</a>. Acesso em: 21 mar. 2026.
+                </li>
             </ol>
         </div>
 
@@ -1097,53 +1361,69 @@
             </button>
             <div class="methodology-content" id="methodContent">
 
-                <h3>Fórmula de cálculo</h3>
+                <h3>Cenário 1 — Estimativa oficial (Ministério da Fazenda)</h3>
                 <div class="formula-box">
-                    <div class="f-label">Cálculo passo a passo</div>
-                    <div class="f-step"><span class="f-n">①</span><span><strong>Âncora MF</strong> = R$ 3 bilhões/mês de renúncia bruta <em>(estimativa do Ministério da Fazenda)</em></span></div>
+                    <div class="f-label">C1 · Cálculo passo a passo</div>
+                    <div class="f-step"><span class="f-n">①</span><span><strong>Âncora MF</strong> = R$ 3 bilhões/mês de renúncia bruta <em>(estimativa do MF, valores sujeitos a verificação, Comsefaz)</em></span></div>
                     <div class="f-step"><span class="f-n">②</span><span><strong>Impacto bruto bimestral</strong> = R$ 6 bilhões <em>(abril + maio/2026)</em></span></div>
                     <div class="f-step"><span class="f-n">③</span><span><strong>Impacto líquido</strong> = R$ 3 bilhões <em>(desconto de 50% da compensação federal)</em></span></div>
-                    <div class="f-step"><span class="f-n">④</span><span><strong>Peso(UF)</strong> = volume de diesel ANP(UF) ÷ volume ANP(total nacional) <em>(Tabela 3.3, 2024)</em></span></div>
+                    <div class="f-step"><span class="f-n">④</span><span><strong>Peso(UF)</strong> = volume de diesel ANP(UF) ÷ volume ANP(total nacional) <em>(dados abertos, 2025)</em></span></div>
                     <div class="f-step"><span class="f-n">⑤</span><span><strong>Impacto(UF)</strong> = R$ 3 bi × Peso(UF) → 75% ente estadual · 25% municípios <em>(art. 158, IV, CF/88)</em></span></div>
                 </div>
 
-                <h3>1. Âncora: estimativa do Ministério da Fazenda</h3>
+                <h3>Cenário 2 — Estimativa independente (só diesel importado)</h3>
+                <div class="formula-box">
+                    <div class="f-label">C2 · Cálculo passo a passo</div>
+                    <div class="f-step"><span class="f-n">①</span><span><strong>Volume nacional</strong> = 5.199 mil m³ de diesel B vendido em jan/2026 <em>(ANP, dados abertos)</em></span></div>
+                    <div class="f-step"><span class="f-n">②</span><span><strong>Parcela importada</strong> = 29,91% do volume nacional de diesel A <em>(ANP, jan/2026)</em></span></div>
+                    <div class="f-step"><span class="f-n">③</span><span><strong>Renúncia bruta mensal</strong> = 29,91% × 5.199 mi m³ × 1.000 L/m³ × R$ 1,17/L = R$ 1,82 bi</span></div>
+                    <div class="f-step"><span class="f-n">④</span><span><strong>Impacto líquido bimestral</strong> = R$ 1,82 bi <em>(bruto bimestral R$ 3,64 bi, menos 50% de compensação)</em></span></div>
+                    <div class="f-step"><span class="f-n">⑤</span><span><strong>Impacto(UF)</strong> = R$ 1,82 bi × Peso(UF) → 75% ente estadual · 25% municípios</span></div>
+                    <div class="f-highlight">O C2 não contesta o dado do governo — mostra o que resultaria de uma aplicação estritamente técnica restrita ao diesel importado. A diferença (R$ 3,00 bi vs R$ 1,82 bi) evidencia que o número oficial é compatível com uma base de incidência mais ampla.</div>
+                </div>
+
+                <h3>1. Âncora do Cenário 1</h3>
                 <p>
-                    O Ministério da Fazenda divulgou estimativa de renúncia fiscal de R$ 3 bilhões por mês para o conjunto dos estados sem detalhar publicamente a metodologia adotada. Este estudo utiliza esse valor como âncora para o total nacional, garantindo coerência com a referência oficial.
+                    O Ministério da Fazenda divulgou estimativa de renúncia fiscal de R$ 3 bilhões por mês para o conjunto dos estados sem detalhar publicamente a metodologia adotada. O Comsefaz registrou esses valores como "ainda sujeitos a verificação". Este estudo utiliza o número oficial como âncora no Cenário 1, garantindo coerência com a referência pública.
                 </p>
 
                 <h3>2. Distribuição por UF: volumes de diesel ANP</h3>
                 <p>
-                    Para distribuir o impacto entre as 27 unidades da federação, foi utilizado o volume de vendas de diesel pelas distribuidoras por UF, disponível na Tabela 3.3 do Anuário Estatístico da ANP 2025 (dados de 2024). O peso de cada UF corresponde à sua participação no volume total nacional. Essa abordagem assume que a composição regional do mercado de diesel importado segue o mesmo padrão do mercado nacional como um todo.
+                    Para distribuir o impacto entre as 27 unidades da federação, foi utilizado o volume de vendas de diesel por UF da base de dados abertos da ANP (2025, soma dos 12 meses). O peso de cada UF corresponde à sua participação no volume total nacional. Essa abordagem assume que a composição regional do mercado de diesel importado segue o mesmo padrão do mercado nacional.
                 </p>
 
-                <h3>3. Período de referência</h3>
+                <h3>3. Base do Cenário 2: participação do importado</h3>
+                <p>
+                    A participação do diesel A importado nas vendas nacionais de diesel (29,91%) foi extraída da base de dados abertos da ANP — arquivo <em>vendas-combustiveis-m3-1990-2025.csv</em>, atualizado em 27/02/2026, com cobertura até janeiro de 2026. O volume total de diesel B vendido em janeiro de 2026 foi de 5.199 mil m³. A alíquota ad rem de R$ 1,17/litro é o valor uniforme vigente em 2026 (Convênio ICMS 15/2023).
+                </p>
+
+                <h3>4. Período de referência</h3>
                 <p>
                     A simulação cobre dois meses (abril e maio de 2026), conforme os termos da proposta federal de zeragem temporária.
                 </p>
 
-                <h3>4. Compensação federal</h3>
+                <h3>5. Compensação federal</h3>
                 <p>
-                    O mecanismo de compensação prevê o ressarcimento de 50% das perdas brutas de arrecadação pela União. A perda líquida é, portanto, a metade do impacto bruto bimestral de R$ 6 bilhões, resultando em R$ 3,00 bilhões.
+                    O mecanismo de compensação prevê o ressarcimento de 50% das perdas brutas de arrecadação pela União. Em C1, a perda líquida bimestral é R$ 3,00 bi (metade de R$ 6 bi). Em C2, é R$ 1,82 bi (metade de R$ 3,64 bi).
                 </p>
 
-                <h3>5. Partilha constitucional</h3>
+                <h3>6. Partilha constitucional</h3>
                 <p>
-                    Nos termos do art. 158, IV, da Constituição Federal, 25% da arrecadação estadual do ICMS é destinada aos municípios. Esse critério foi aplicado sobre a perda líquida por UF para separar o impacto sobre o ente estadual (75%) do impacto sobre os municípios (25%).
+                    Nos termos do art. 158, IV, da Constituição Federal, 25% da arrecadação estadual do ICMS é destinada aos municípios. Esse critério foi aplicado sobre a perda líquida por UF: 75% ao ente estadual, 25% aos municípios.
                 </p>
 
-                <h3>6. Limitações</h3>
+                <h3>7. Limitações</h3>
                 <p>
-                    A estimativa não incorpora: (a) possível variação regional entre a participação do diesel importado e a do diesel nacional; (b) eventual compensação adicional negociada; (c) variações no consumo de diesel durante o período; (d) efeitos de segunda ordem sobre os preços ou a demanda.
+                    A estimativa não incorpora: (a) possível variação regional entre a participação do diesel importado e a do diesel nacional; (b) eventual compensação adicional negociada; (c) variações no consumo de diesel durante o período; (d) efeitos de segunda ordem sobre os preços ou a demanda; (e) o fato de que a metodologia oficial do MF não foi divulgada publicamente.
                 </p>
 
                 <p style="margin-top:1.2rem; padding-top:1rem; border-top:1px solid var(--border);">
-                    <a href="/materiais/metodologia-icms-diesel-2026.csv" download
+                    <a href="/materiais/metodologia-icms-diesel-2026.xlsx" download
                        style="display:inline-flex; align-items:center; gap:0.45rem; font-family:var(--sans); font-size:0.85rem; font-weight:600; color:var(--accent); text-decoration:none;">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                        Baixar planilha com cálculos auditáveis (CSV)
+                        Baixar planilha com cálculos auditáveis (Excel)
                     </a>
-                    <span style="font-family:var(--sans); font-size:0.8rem; color:var(--text-muted); margin-left:0.5rem;">Abre no Excel, LibreOffice ou Google Sheets</span>
+                    <span style="font-family:var(--sans); font-size:0.8rem; color:var(--text-muted); margin-left:0.5rem;">Excel / LibreOffice / Google Sheets</span>
                 </p>
         </div>
 
@@ -1162,6 +1442,22 @@
     document.getElementById('tableToggle').addEventListener('click', function() {
         var content = document.getElementById('tableCollapse');
         var isOpen = content.classList.toggle('is-open');
+        this.classList.toggle('is-open', isOpen);
+        this.setAttribute('aria-expanded', isOpen);
+    });
+
+    // C2 comparison table toggle
+    document.getElementById('c2TableToggle').addEventListener('click', function() {
+        var content = document.getElementById('c2TableCollapse');
+        var isOpen = content.classList.toggle('is-open');
+        this.classList.toggle('is-open', isOpen);
+        this.setAttribute('aria-expanded', isOpen);
+    });
+
+    // Diesel explainer toggle
+    document.getElementById('dieselExplainerToggle').addEventListener('click', function() {
+        var body = document.getElementById('dieselExplainerBody');
+        var isOpen = body.classList.toggle('is-open');
         this.classList.toggle('is-open', isOpen);
         this.setAttribute('aria-expanded', isOpen);
     });
@@ -1200,46 +1496,89 @@
         });
     });
 
-    // Chart data — sorted by total descending
-    var chartData = [
-        { uf: 'SP', estado: 458.4, muni: 152.8, total: 611.2 },
-        { uf: 'MG', estado: 281.1, muni:  93.7, total: 374.8 },
-        { uf: 'PR', estado: 216.1, muni:  72.0, total: 288.1 },
-        { uf: 'RS', estado: 135.7, muni:  45.2, total: 180.9 },
-        { uf: 'MT', estado: 134.0, muni:  44.7, total: 178.7 },
-        { uf: 'BA', estado: 122.3, muni:  40.8, total: 163.1 },
-        { uf: 'GO', estado: 116.6, muni:  38.8, total: 155.4 },
-        { uf: 'SC', estado: 104.9, muni:  35.0, total: 139.9 },
-        { uf: 'PA', estado: 100.7, muni:  33.5, total: 134.2 },
-        { uf: 'RJ', estado:  95.1, muni:  31.7, total: 126.8 },
-        { uf: 'MS', estado:  65.8, muni:  21.9, total:  87.7 },
-        { uf: 'MA', estado:  57.5, muni:  19.2, total:  76.7 },
-        { uf: 'PE', estado:  52.9, muni:  17.6, total:  70.5 },
-        { uf: 'ES', estado:  45.5, muni:  15.2, total:  60.7 },
-        { uf: 'TO', estado:  42.1, muni:  14.0, total:  56.1 },
-        { uf: 'CE', estado:  41.2, muni:  13.7, total:  54.9 },
-        { uf: 'AM', estado:  34.5, muni:  11.5, total:  46.0 },
-        { uf: 'RO', estado:  30.0, muni:  10.0, total:  40.0 },
-        { uf: 'PI', estado:  23.2, muni:   7.7, total:  30.9 },
-        { uf: 'PB', estado:  17.5, muni:   5.9, total:  23.4 },
-        { uf: 'RN', estado:  16.8, muni:   5.6, total:  22.4 },
-        { uf: 'AL', estado:  14.6, muni:   4.8, total:  19.4 },
-        { uf: 'DF', estado:  13.3, muni:   4.4, total:  17.7 },
-        { uf: 'SE', estado:  13.1, muni:   4.4, total:  17.5 },
-        { uf: 'RR', estado:   8.3, muni:   2.8, total:  11.1 },
-        { uf: 'AC', estado:   5.6, muni:   1.8, total:   7.4 },
-        { uf: 'AP', estado:   3.5, muni:   1.1, total:   4.6 }
+    // Chart data — Cenário 1 (official MF anchor), sorted by total descending
+    var chartData1 = [
+        { uf: 'SP', estado: 454.7, muni: 151.5, total: 606.2 },
+        { uf: 'MG', estado: 282.0, muni:  94.0, total: 376.0 },
+        { uf: 'PR', estado: 214.4, muni:  71.4, total: 285.8 },
+        { uf: 'MT', estado: 137.6, muni:  45.9, total: 183.5 },
+        { uf: 'RS', estado: 133.5, muni:  44.5, total: 178.0 },
+        { uf: 'BA', estado: 123.7, muni:  41.2, total: 164.9 },
+        { uf: 'GO', estado: 120.6, muni:  40.2, total: 160.8 },
+        { uf: 'SC', estado: 105.2, muni:  35.1, total: 140.3 },
+        { uf: 'PA', estado: 104.1, muni:  34.7, total: 138.8 },
+        { uf: 'RJ', estado:  91.3, muni:  30.4, total: 121.7 },
+        { uf: 'MS', estado:  66.8, muni:  22.3, total:  89.1 },
+        { uf: 'MA', estado:  57.8, muni:  19.3, total:  77.1 },
+        { uf: 'PE', estado:  52.7, muni:  17.5, total:  70.2 },
+        { uf: 'ES', estado:  44.2, muni:  14.7, total:  58.9 },
+        { uf: 'CE', estado:  42.8, muni:  14.2, total:  57.0 },
+        { uf: 'TO', estado:  40.3, muni:  13.5, total:  53.8 },
+        { uf: 'AM', estado:  34.7, muni:  11.5, total:  46.2 },
+        { uf: 'RO', estado:  31.7, muni:  10.6, total:  42.3 },
+        { uf: 'PI', estado:  23.9, muni:   8.0, total:  31.9 },
+        { uf: 'PB', estado:  17.6, muni:   5.9, total:  23.5 },
+        { uf: 'RN', estado:  16.3, muni:   5.4, total:  21.7 },
+        { uf: 'AL', estado:  14.2, muni:   4.7, total:  18.9 },
+        { uf: 'SE', estado:  13.4, muni:   4.5, total:  17.9 },
+        { uf: 'DF', estado:  13.1, muni:   4.4, total:  17.5 },
+        { uf: 'RR', estado:   6.1, muni:   2.1, total:   8.2 },
+        { uf: 'AC', estado:   3.8, muni:   1.2, total:   5.0 },
+        { uf: 'AP', estado:   3.4, muni:   1.2, total:   4.6 }
     ];
 
-    var labels = chartData.map(function(d) { return d.uf; });
-    var estadoValues = chartData.map(function(d) { return d.estado; });
-    var muniValues = chartData.map(function(d) { return d.muni; });
-    var totalValues = chartData.map(function(d) { return d.total; });
+    // Chart data — Cenário 2 (só diesel importado), same UF order
+    var chartData2 = [
+        { uf: 'SP', estado: 275.8, muni:  91.9, total: 367.7 },
+        { uf: 'MG', estado: 171.1, muni:  57.0, total: 228.1 },
+        { uf: 'PR', estado: 130.0, muni:  43.4, total: 173.4 },
+        { uf: 'MT', estado:  83.5, muni:  27.8, total: 111.3 },
+        { uf: 'RS', estado:  81.0, muni:  27.0, total: 108.0 },
+        { uf: 'BA', estado:  75.0, muni:  25.0, total: 100.0 },
+        { uf: 'GO', estado:  73.1, muni:  24.4, total:  97.5 },
+        { uf: 'SC', estado:  63.8, muni:  21.3, total:  85.1 },
+        { uf: 'PA', estado:  63.1, muni:  21.1, total:  84.2 },
+        { uf: 'RJ', estado:  55.4, muni:  18.5, total:  73.8 },
+        { uf: 'MS', estado:  40.5, muni:  13.5, total:  54.1 },
+        { uf: 'MA', estado:  35.1, muni:  11.7, total:  46.8 },
+        { uf: 'PE', estado:  31.9, muni:  10.6, total:  42.6 },
+        { uf: 'ES', estado:  26.8, muni:   8.9, total:  35.7 },
+        { uf: 'CE', estado:  25.9, muni:   8.6, total:  34.6 },
+        { uf: 'TO', estado:  24.5, muni:   8.2, total:  32.6 },
+        { uf: 'AM', estado:  21.0, muni:   7.0, total:  28.0 },
+        { uf: 'RO', estado:  19.2, muni:   6.4, total:  25.7 },
+        { uf: 'PI', estado:  14.5, muni:   4.8, total:  19.4 },
+        { uf: 'PB', estado:  10.7, muni:   3.6, total:  14.3 },
+        { uf: 'RN', estado:   9.9, muni:   3.3, total:  13.2 },
+        { uf: 'AL', estado:   8.6, muni:   2.9, total:  11.5 },
+        { uf: 'SE', estado:   8.1, muni:   2.7, total:  10.9 },
+        { uf: 'DF', estado:   8.0, muni:   2.7, total:  10.6 },
+        { uf: 'RR', estado:   3.7, muni:   1.3, total:   5.0 },
+        { uf: 'AC', estado:   2.3, muni:   0.8, total:   3.0 },
+        { uf: 'AP', estado:   2.1, muni:   0.7, total:   2.8 }
+    ];
+
+    var activeChartData = chartData1;
+
+    function getChartArrays(data) {
+        return {
+            labels:      data.map(function(d) { return d.uf; }),
+            estado:      data.map(function(d) { return d.estado; }),
+            muni:        data.map(function(d) { return d.muni; }),
+            total:       data.map(function(d) { return d.total; })
+        };
+    }
+
+    var arr = getChartArrays(chartData1);
+    var labels      = arr.labels;
+    var estadoValues = arr.estado;
+    var muniValues   = arr.muni;
+    var totalValues  = arr.total;
 
     Chart.register(ChartDataLabels);
 
     var ctx = document.getElementById('icmsChart').getContext('2d');
-    new Chart(ctx, {
+    var icmsChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: labels,
@@ -1318,6 +1657,43 @@
             }
         }
     });
+
+    // ===== SCENARIO TOGGLE LOGIC =====
+    var kfValues = {
+        1: { total: 'R$ 3,00 bi', estado: 'R$ 2,25 bi', muni: 'R$ 750 mi' },
+        2: { total: 'R$ 1,82 bi', estado: 'R$ 1,37 bi', muni: 'R$ 455 mi' }
+    };
+
+    function activateScenario(n) {
+        // Pills
+        document.getElementById('pillC1').classList.toggle('is-active', n === 1);
+        document.getElementById('pillC1').setAttribute('aria-pressed', n === 1);
+        document.getElementById('pillC2').classList.toggle('is-active', n === 2);
+        document.getElementById('pillC2').setAttribute('aria-pressed', n === 2);
+        // Notes
+        document.getElementById('c1Note').style.display = n === 1 ? 'block' : 'none';
+        document.getElementById('c2Note').style.display = n === 2 ? 'block' : 'none';
+        // Key figures
+        var kf = kfValues[n];
+        document.getElementById('kfTotal').textContent  = kf.total;
+        document.getElementById('kfEstado').textContent = kf.estado;
+        document.getElementById('kfMuni').textContent   = kf.muni;
+        // Chart
+        var cd = n === 1 ? chartData1 : chartData2;
+        var a  = getChartArrays(cd);
+        totalValues = a.total;
+        icmsChart.data.datasets[0].data = a.estado;
+        icmsChart.data.datasets[1].data = a.muni;
+        icmsChart.update('none');
+        // Map (exposed via window.updateMapScenario, set by D3 script)
+        if (typeof window.updateMapScenario === 'function') {
+            window.updateMapScenario(n);
+        }
+    }
+
+    document.getElementById('pillC1').addEventListener('click', function() { activateScenario(1); });
+    document.getElementById('pillC2').addEventListener('click', function() { activateScenario(2); });
+
     </script>
 
     <script src="/js/search.js"></script>
@@ -1327,34 +1703,67 @@
     <script>
     (function initBrazilMap() {
         var stateData = {
-            'SP': { name: 'São Paulo',               estado: 458.4, muni: 152.8, total: 611.2 },
-            'MG': { name: 'Minas Gerais',             estado: 281.1, muni:  93.7, total: 374.8 },
-            'PR': { name: 'Paraná',                   estado: 216.1, muni:  72.0, total: 288.1 },
-            'RS': { name: 'Rio Grande do Sul',        estado: 135.7, muni:  45.2, total: 180.9 },
-            'MT': { name: 'Mato Grosso',              estado: 134.0, muni:  44.7, total: 178.7 },
-            'BA': { name: 'Bahia',                    estado: 122.3, muni:  40.8, total: 163.1 },
-            'GO': { name: 'Goiás',                    estado: 116.6, muni:  38.8, total: 155.4 },
-            'SC': { name: 'Santa Catarina',           estado: 104.9, muni:  35.0, total: 139.9 },
-            'PA': { name: 'Pará',                     estado: 100.7, muni:  33.5, total: 134.2 },
-            'RJ': { name: 'Rio de Janeiro',           estado:  95.1, muni:  31.7, total: 126.8 },
-            'MS': { name: 'Mato Grosso do Sul',       estado:  65.8, muni:  21.9, total:  87.7 },
-            'MA': { name: 'Maranhão',                 estado:  57.5, muni:  19.2, total:  76.7 },
-            'PE': { name: 'Pernambuco',               estado:  52.9, muni:  17.6, total:  70.5 },
-            'ES': { name: 'Espírito Santo',           estado:  45.5, muni:  15.2, total:  60.7 },
-            'TO': { name: 'Tocantins',                estado:  42.1, muni:  14.0, total:  56.1 },
-            'CE': { name: 'Ceará',                    estado:  41.2, muni:  13.7, total:  54.9 },
-            'AM': { name: 'Amazonas',                 estado:  34.5, muni:  11.5, total:  46.0 },
-            'RO': { name: 'Rondônia',                 estado:  30.0, muni:  10.0, total:  40.0 },
-            'PI': { name: 'Piauí',                    estado:  23.2, muni:   7.7, total:  30.9 },
-            'PB': { name: 'Paraíba',                  estado:  17.5, muni:   5.9, total:  23.4 },
-            'RN': { name: 'Rio Grande do Norte',      estado:  16.8, muni:   5.6, total:  22.4 },
-            'AL': { name: 'Alagoas',                  estado:  14.6, muni:   4.8, total:  19.4 },
-            'DF': { name: 'Distrito Federal',         estado:  13.3, muni:   4.4, total:  17.7 },
-            'SE': { name: 'Sergipe',                  estado:  13.1, muni:   4.4, total:  17.5 },
-            'RR': { name: 'Roraima',                  estado:   8.3, muni:   2.8, total:  11.1 },
-            'AC': { name: 'Acre',                     estado:   5.6, muni:   1.8, total:   7.4 },
-            'AP': { name: 'Amapá',                    estado:   3.5, muni:   1.1, total:   4.6 }
+            'SP': { name: 'São Paulo',               estado: 454.7, muni: 151.5, total: 606.2 },
+            'MG': { name: 'Minas Gerais',             estado: 282.0, muni:  94.0, total: 376.0 },
+            'PR': { name: 'Paraná',                   estado: 214.4, muni:  71.4, total: 285.8 },
+            'MT': { name: 'Mato Grosso',              estado: 137.6, muni:  45.9, total: 183.5 },
+            'RS': { name: 'Rio Grande do Sul',        estado: 133.5, muni:  44.5, total: 178.0 },
+            'BA': { name: 'Bahia',                    estado: 123.7, muni:  41.2, total: 164.9 },
+            'GO': { name: 'Goiás',                    estado: 120.6, muni:  40.2, total: 160.8 },
+            'SC': { name: 'Santa Catarina',           estado: 105.2, muni:  35.1, total: 140.3 },
+            'PA': { name: 'Pará',                     estado: 104.1, muni:  34.7, total: 138.8 },
+            'RJ': { name: 'Rio de Janeiro',           estado:  91.3, muni:  30.4, total: 121.7 },
+            'MS': { name: 'Mato Grosso do Sul',       estado:  66.8, muni:  22.3, total:  89.1 },
+            'MA': { name: 'Maranhão',                 estado:  57.8, muni:  19.3, total:  77.1 },
+            'PE': { name: 'Pernambuco',               estado:  52.7, muni:  17.5, total:  70.2 },
+            'ES': { name: 'Espírito Santo',           estado:  44.2, muni:  14.7, total:  58.9 },
+            'CE': { name: 'Ceará',                    estado:  42.8, muni:  14.2, total:  57.0 },
+            'TO': { name: 'Tocantins',                estado:  40.3, muni:  13.5, total:  53.8 },
+            'AM': { name: 'Amazonas',                 estado:  34.7, muni:  11.5, total:  46.2 },
+            'RO': { name: 'Rondônia',                 estado:  31.7, muni:  10.6, total:  42.3 },
+            'PI': { name: 'Piauí',                    estado:  23.9, muni:   8.0, total:  31.9 },
+            'PB': { name: 'Paraíba',                  estado:  17.6, muni:   5.9, total:  23.5 },
+            'RN': { name: 'Rio Grande do Norte',      estado:  16.3, muni:   5.4, total:  21.7 },
+            'AL': { name: 'Alagoas',                  estado:  14.2, muni:   4.7, total:  18.9 },
+            'SE': { name: 'Sergipe',                  estado:  13.4, muni:   4.5, total:  17.9 },
+            'DF': { name: 'Distrito Federal',         estado:  13.1, muni:   4.4, total:  17.5 },
+            'RR': { name: 'Roraima',                  estado:   6.1, muni:   2.1, total:   8.2 },
+            'AC': { name: 'Acre',                     estado:   3.8, muni:   1.2, total:   5.0 },
+            'AP': { name: 'Amapá',                    estado:   3.4, muni:   1.2, total:   4.6 }
         };
+
+        // Cenário 2 — só diesel importado (29.91% do mercado nacional)
+        var stateData2 = {
+            'SP': { name: 'São Paulo',               estado: 275.8, muni:  91.9, total: 367.7 },
+            'MG': { name: 'Minas Gerais',             estado: 171.1, muni:  57.0, total: 228.1 },
+            'PR': { name: 'Paraná',                   estado: 130.0, muni:  43.4, total: 173.4 },
+            'MT': { name: 'Mato Grosso',              estado:  83.5, muni:  27.8, total: 111.3 },
+            'RS': { name: 'Rio Grande do Sul',        estado:  81.0, muni:  27.0, total: 108.0 },
+            'BA': { name: 'Bahia',                    estado:  75.0, muni:  25.0, total: 100.0 },
+            'GO': { name: 'Goiás',                    estado:  73.1, muni:  24.4, total:  97.5 },
+            'SC': { name: 'Santa Catarina',           estado:  63.8, muni:  21.3, total:  85.1 },
+            'PA': { name: 'Pará',                     estado:  63.1, muni:  21.1, total:  84.2 },
+            'RJ': { name: 'Rio de Janeiro',           estado:  55.4, muni:  18.5, total:  73.8 },
+            'MS': { name: 'Mato Grosso do Sul',       estado:  40.5, muni:  13.5, total:  54.1 },
+            'MA': { name: 'Maranhão',                 estado:  35.1, muni:  11.7, total:  46.8 },
+            'PE': { name: 'Pernambuco',               estado:  31.9, muni:  10.6, total:  42.6 },
+            'ES': { name: 'Espírito Santo',           estado:  26.8, muni:   8.9, total:  35.7 },
+            'CE': { name: 'Ceará',                    estado:  25.9, muni:   8.6, total:  34.6 },
+            'TO': { name: 'Tocantins',                estado:  24.5, muni:   8.2, total:  32.6 },
+            'AM': { name: 'Amazonas',                 estado:  21.0, muni:   7.0, total:  28.0 },
+            'RO': { name: 'Rondônia',                 estado:  19.2, muni:   6.4, total:  25.7 },
+            'PI': { name: 'Piauí',                    estado:  14.5, muni:   4.8, total:  19.4 },
+            'PB': { name: 'Paraíba',                  estado:  10.7, muni:   3.6, total:  14.3 },
+            'RN': { name: 'Rio Grande do Norte',      estado:   9.9, muni:   3.3, total:  13.2 },
+            'AL': { name: 'Alagoas',                  estado:   8.6, muni:   2.9, total:  11.5 },
+            'SE': { name: 'Sergipe',                  estado:   8.1, muni:   2.7, total:  10.9 },
+            'DF': { name: 'Distrito Federal',         estado:   8.0, muni:   2.7, total:  10.6 },
+            'RR': { name: 'Roraima',                  estado:   3.7, muni:   1.3, total:   5.0 },
+            'AC': { name: 'Acre',                     estado:   2.3, muni:   0.8, total:   3.0 },
+            'AP': { name: 'Amapá',                    estado:   2.1, muni:   0.7, total:   2.8 }
+        };
+
+        var activeStateData = stateData;
 
         // IBGE 2-digit code → UF sigla
         var codeToUf = {
@@ -1366,7 +1775,7 @@
             '52':'GO','53':'DF'
         };
 
-        var MAX_TOTAL = 611.2;
+        var MAX_TOTAL = 606.2;
 
         function getColor(total) {
             if (!total && total !== 0) return '#C8DBE8';
@@ -1422,15 +1831,15 @@
                 .attr('d', pathGen)
                 .attr('fill', function(d) {
                     var uf = getUf(d);
-                    return getColor(uf && stateData[uf] ? stateData[uf].total : null);
+                    return getColor(uf && activeStateData[uf] ? activeStateData[uf].total : null);
                 })
                 .on('mouseenter', function(event, d) {
                     var uf = getUf(d);
-                    if (!uf || !stateData[uf]) return;
+                    if (!uf || !activeStateData[uf]) return;
                     activeUf = uf;
                     d3.selectAll('path.map-state').classed('is-active', false);
                     d3.select(this).classed('is-active', true);
-                    showTooltip(uf, stateData[uf], event);
+                    showTooltip(uf, activeStateData[uf], event);
                 })
                 .on('mousemove', function(event) { positionTooltip(event); })
                 .on('mouseleave', function() {
@@ -1440,7 +1849,7 @@
                 })
                 .on('click', function(event, d) {
                     var uf = getUf(d);
-                    if (!uf || !stateData[uf]) return;
+                    if (!uf || !activeStateData[uf]) return;
                     event.stopPropagation();
                     if (activeUf === uf && tooltip.classList.contains('is-visible')) {
                         tooltip.classList.remove('is-visible');
@@ -1450,7 +1859,7 @@
                         activeUf = uf;
                         d3.selectAll('path.map-state').classed('is-active', false);
                         d3.select(this).classed('is-active', true);
-                        showTooltip(uf, stateData[uf], event);
+                        showTooltip(uf, activeStateData[uf], event);
                     }
                 })
                 .on('touchend', function(event, d) {
@@ -1458,7 +1867,7 @@
                     event.preventDefault();
                     event.stopPropagation();
                     var uf = getUf(d);
-                    if (!uf || !stateData[uf]) return;
+                    if (!uf || !activeStateData[uf]) return;
                     if (activeUf === uf && tooltip.classList.contains('is-visible')) {
                         tooltip.classList.remove('is-visible');
                         activeUf = null;
@@ -1467,7 +1876,7 @@
                         activeUf = uf;
                         d3.selectAll('path.map-state').classed('is-active', false);
                         d3.select(this).classed('is-active', true);
-                        showTooltip(uf, stateData[uf], event);
+                        showTooltip(uf, activeStateData[uf], event);
                     }
                 });
 
@@ -1485,8 +1894,8 @@
                 .attr('font-size', fontSize + 'px')
                 .attr('fill', function(d) {
                     var uf = getUf(d);
-                    if (!uf || !stateData[uf]) return '#456';
-                    return (stateData[uf].total / MAX_TOTAL) > 0.45 ? '#fff' : '#1A3A5C';
+                    if (!uf || !activeStateData[uf]) return '#456';
+                    return (activeStateData[uf].total / MAX_TOTAL) > 0.45 ? '#fff' : '#1A3A5C';
                 })
                 .text(function(d) { return getUf(d) || ''; });
         }
@@ -1593,6 +2002,24 @@
             H = Math.round(W * 0.88);
             svg.attr('width', W).attr('height', H).attr('viewBox', '0 0 ' + W + ' ' + H);
         });
+
+        // Expose scenario switcher for the global toggle
+        window.updateMapScenario = function(n) {
+            activeStateData = (n === 2) ? stateData2 : stateData;
+            MAX_TOTAL = (n === 2) ? 367.7 : 606.2;
+            tooltip.classList.remove('is-visible');
+            activeUf = null;
+            d3.selectAll('path.map-state').classed('is-active', false);
+            d3.selectAll('path.map-state').attr('fill', function(d) {
+                var uf = getUf(d);
+                return getColor(uf && activeStateData[uf] ? activeStateData[uf].total : null);
+            });
+            d3.selectAll('text.map-uf-label').attr('fill', function(d) {
+                var uf = getUf(d);
+                if (!uf || !activeStateData[uf]) return '#456';
+                return (activeStateData[uf].total / MAX_TOTAL) > 0.45 ? '#fff' : '#1A3A5C';
+            });
+        };
     })();
     </script>
 </body>
