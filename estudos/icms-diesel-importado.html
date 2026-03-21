@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICMS Diesel Importado — Impacto por UF | Eduardo Reis Araújo</title>
+    <meta name="description" content="Estimativa de perda líquida de arrecadação por UF na proposta de zeragem temporária do ICMS sobre o diesel importado, já descontada a compensação federal de 50%.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/icms-diesel-importado.html">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Quanto cada estado pode perder com a proposta de zerar o ICMS do diesel importado">
+    <meta property="og:description" content="Simulação por UF do impacto sobre estados e municípios, considerando compensação federal de 50% e partilha constitucional do ICMS.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/icms-diesel-importado.html">
+    <meta property="og:image" content="https://www.eduardoreisaraujo.com.br/images/og-share.jpg">
+    <meta property="og:locale" content="pt_BR">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/notas.css?v=4">
+    <link rel="stylesheet" href="/css/search.css">
+
+    <style>
+        /* ===== STUDY DETAIL PAGE ===== */
+        .study-hero {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 3.5rem 2rem 2rem;
+        }
+        .study-hero-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+        .study-hero-tag {
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: var(--accent-light);
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+        }
+        .study-hero-topic {
+            font-family: var(--sans);
+            font-size: 0.73rem;
+            color: var(--text-secondary);
+            background: var(--border-light);
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+        }
+        .study-hero-date {
+            font-family: var(--sans);
+            font-size: 0.73rem;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+        .study-hero h1 {
+            font-family: var(--display);
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.8rem;
+        }
+        .study-hero .subtitle {
+            font-family: var(--serif);
+            font-size: 1.1rem;
+            line-height: 1.65;
+            color: var(--text-secondary);
+        }
+
+        /* Key figures strip */
+        .key-figures {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .key-figures-inner {
+            display: flex;
+            gap: 1.5rem;
+            border-top: 2px solid var(--text);
+            border-bottom: 1px solid var(--border);
+            padding: 1.4rem 0;
+        }
+        .key-figure {
+            flex: 1;
+            min-width: 0;
+        }
+        .key-figure-value {
+            font-family: var(--display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1.2;
+        }
+        .key-figure-label {
+            font-family: var(--sans);
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+            line-height: 1.4;
+        }
+
+        /* Article body */
+        .study-body {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem 3rem;
+        }
+        .study-body p {
+            font-family: var(--serif);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text);
+            margin-bottom: 1.4rem;
+        }
+        .study-body p.caption {
+            font-family: var(--sans);
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        .study-body h2 {
+            font-family: var(--display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+        }
+
+        /* Chart container */
+        .chart-section {
+            margin: 2rem 0 2.5rem;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 880px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem 1.5rem 1rem 0.5rem;
+        }
+        .chart-legend {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        .chart-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-family: var(--sans);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .chart-legend-swatch {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+
+        /* Data table */
+        .data-table-wrapper {
+            margin: 2rem 0;
+            overflow-x: auto;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--sans);
+            font-size: 0.88rem;
+        }
+        .data-table thead th {
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+            padding: 0.7rem 1rem;
+            text-align: right;
+            white-space: nowrap;
+        }
+        .data-table thead th:first-child {
+            text-align: left;
+            border-radius: 6px 0 0 0;
+        }
+        .data-table thead th:last-child {
+            border-radius: 0 6px 0 0;
+        }
+        .data-table tbody td {
+            padding: 0.55rem 1rem;
+            text-align: right;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .data-table tbody td:first-child {
+            text-align: left;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .data-table tbody tr:hover {
+            background: var(--accent-light);
+        }
+        .data-table tfoot td {
+            padding: 0.7rem 1rem;
+            text-align: right;
+            font-weight: 700;
+            border-top: 2px solid var(--accent);
+            background: var(--callout-bg);
+        }
+        .data-table tfoot td:first-child {
+            text-align: left;
+        }
+
+        /* Action buttons */
+        .study-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 2rem 0 2.5rem;
+        }
+        .study-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--sans);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.7rem 1.4rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .study-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .study-btn-primary {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+        .study-btn-primary:hover {
+            background: #15304d;
+            color: #fff;
+        }
+
+        /* Methodology section */
+        .methodology-section {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--surface);
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+        .methodology-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: var(--display);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .methodology-toggle:hover {
+            background: var(--callout-bg);
+        }
+        .methodology-toggle svg {
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+        .methodology-toggle.is-open svg {
+            transform: rotate(180deg);
+        }
+        .methodology-content {
+            display: none;
+            padding: 0 1.5rem 1.5rem;
+        }
+        .methodology-content.is-open {
+            display: block;
+        }
+        .methodology-content h3 {
+            font-family: var(--sans);
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .methodology-content h3:first-child {
+            margin-top: 0;
+        }
+        .methodology-content p {
+            font-family: var(--serif);
+            font-size: 0.95rem;
+            line-height: 1.75;
+            color: var(--text-secondary);
+            margin-bottom: 0.8rem;
+        }
+
+        /* Back link */
+        .study-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-family: var(--sans);
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+            transition: color var(--transition);
+        }
+        .study-back:hover {
+            color: var(--accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .study-hero { padding: 2.5rem 1.25rem 1.5rem; }
+            .study-hero h1 { font-size: 1.6rem; }
+            .key-figures { padding: 0 1.25rem; }
+            .key-figures-inner { flex-direction: column; gap: 1rem; }
+            .key-figure-value { font-size: 1.3rem; }
+            .study-body { padding: 2rem 1.25rem; }
+            .chart-container { height: 750px; padding: 1rem 0.5rem 0.5rem 0; }
+            .study-hero-date { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <div class="header-right-group">
+                <nav class="header-nav">
+                    <a href="/#publicacoes">Publicações</a>
+                    <a href="/ensino/">Ensino</a>
+                    <a href="/estudos/" class="active">Estudos</a>
+                    <a href="/indicadores.html">Indicadores</a>
+                    <a href="/#contato">Contato</a>
+                </nav>
+                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="study-hero">
+        <a href="/estudos/" class="study-back">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Voltar aos Estudos
+        </a>
+        <div class="study-hero-meta">
+            <span class="study-hero-tag">Estudo 01</span>
+            <span class="study-hero-topic">ICMS</span>
+            <span class="study-hero-topic">Diesel</span>
+            <span class="study-hero-topic">Federalismo fiscal</span>
+            <span class="study-hero-date">Março de 2026</span>
+        </div>
+        <h1>Quanto cada estado pode perder com a proposta de zerar o ICMS do diesel importado</h1>
+        <p class="subtitle">
+            Estimativa de perda líquida de arrecadação por UF na proposta de zeragem temporária do ICMS em abril e maio/2026 sobre o diesel importado, já descontada a compensação federal de 50%.
+        </p>
+    </section>
+
+    <!-- Key figures -->
+    <div class="key-figures">
+        <div class="key-figures-inner">
+            <div class="key-figure">
+                <div class="key-figure-value">R$ 1,98 bi</div>
+                <div class="key-figure-label">Perda líquida total de estados e municípios</div>
+            </div>
+            <div class="key-figure">
+                <div class="key-figure-value">R$ 1,49 bi</div>
+                <div class="key-figure-label">Parcela absorvida pelos entes estaduais</div>
+            </div>
+            <div class="key-figure">
+                <div class="key-figure-value">R$ 496 mi</div>
+                <div class="key-figure-label">Parcela absorvida pelos municípios</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Article body -->
+    <article class="study-body">
+
+        <p>
+            O governo federal apresentou proposta de zeragem temporária do ICMS incidente sobre o diesel importado, a vigorar em abril e maio de 2026. A medida prevê compensação federal de 50% das perdas de arrecadação, com o objetivo de reduzir o preço do combustível nas refinarias. O impacto fiscal, no entanto, não se distribui de forma uniforme entre as unidades da federação: estados com maior consumo de diesel e alíquotas mais elevadas concentram parcela desproporcionalmente alta da perda total.
+        </p>
+
+        <p>
+            Este estudo estima a perda líquida de arrecadação por UF decorrente da proposta, considerando: (a) a participação do diesel importado nas vendas nacionais, estimada pela ANP em 29,91%; (b) as alíquotas estaduais vigentes do ICMS monofásico sobre o diesel; (c) a compensação federal de 50%; e (d) a partilha constitucional que destina 25% da arrecadação do ICMS aos municípios. Os valores cobrem o período de dois meses e foram calculados com base nos dados oficiais da ANP.
+        </p>
+
+        <p>
+            O resultado agregado indica uma perda líquida de R$ 1,98 bilhão para o conjunto dos entes subnacionais, sendo R$ 1,49 bilhão absorvido pelos estados e R$ 496 milhões pelos municípios. São Paulo responde por 21% do impacto total (R$ 416 milhões), seguido por Minas Gerais (R$ 251 milhões) e Paraná (R$ 189 milhões). Os três estados mais afetados concentram mais de 43% do impacto nacional.
+        </p>
+
+        <!-- Chart section -->
+        <h2>Distribuição do impacto por UF</h2>
+
+        <p class="caption">
+            O gráfico mostra a perda líquida estimada de arrecadação por unidade da federação. A barra azul representa a parcela que recai sobre o ente estadual; a barra vermelha, a parcela correspondente aos municípios. Os estados estão ordenados do maior para o menor impacto total. Os valores já descontam a compensação federal de 50%.
+        </p>
+
+        <div class="chart-section">
+            <div class="chart-container">
+                <canvas id="icmsChart"></canvas>
+            </div>
+            <div class="chart-legend">
+                <div class="chart-legend-item">
+                    <div class="chart-legend-swatch" style="background:#1A3A5C"></div>
+                    Perda líquida do ente estadual
+                </div>
+                <div class="chart-legend-item">
+                    <div class="chart-legend-swatch" style="background:#C0392B"></div>
+                    Perda líquida dos municípios
+                </div>
+            </div>
+        </div>
+
+        <p class="caption">
+            A concentração geográfica é expressiva: os cinco estados mais afetados — SP, MG, PR, RS e BA — respondem por 56% do impacto total. Em contrapartida, os sete estados da Região Norte (PA, AM, TO, RO, AC, AP e RR) somam juntos R$ 195 milhões, ou cerca de 10% do total.
+        </p>
+
+        <!-- Table section -->
+        <h2>Resultados por unidade da federação</h2>
+
+        <p class="caption">
+            A tabela consolida os valores estimados por UF, separando a perda do ente estadual da perda atribuída aos municípios conforme a partilha constitucional. Todos os valores estão em R$ milhões e já consideram o desconto da compensação federal de 50%.
+        </p>
+
+        <div class="data-table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>UF</th>
+                        <th>Perda do ente estadual</th>
+                        <th>Perda dos municípios</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>SP</td><td>312,0</td><td>104,0</td><td>415,9</td></tr>
+                    <tr><td>MG</td><td>188,2</td><td>62,7</td><td>250,9</td></tr>
+                    <tr><td>PR</td><td>141,7</td><td>47,2</td><td>188,9</td></tr>
+                    <tr><td>RS</td><td>93,3</td><td>31,1</td><td>124,4</td></tr>
+                    <tr><td>BA</td><td>84,7</td><td>28,2</td><td>113,0</td></tr>
+                    <tr><td>MT</td><td>78,5</td><td>26,2</td><td>104,7</td></tr>
+                    <tr><td>GO</td><td>77,8</td><td>25,9</td><td>103,8</td></tr>
+                    <tr><td>SC</td><td>71,0</td><td>23,7</td><td>94,7</td></tr>
+                    <tr><td>PA</td><td>68,5</td><td>22,8</td><td>91,4</td></tr>
+                    <tr><td>RJ</td><td>55,3</td><td>18,4</td><td>73,7</td></tr>
+                    <tr><td>MS</td><td>39,7</td><td>13,2</td><td>52,9</td></tr>
+                    <tr><td>ES</td><td>29,6</td><td>9,9</td><td>39,4</td></tr>
+                    <tr><td>AM</td><td>23,5</td><td>7,8</td><td>31,4</td></tr>
+                    <tr><td>PE</td><td>34,8</td><td>11,6</td><td>46,4</td></tr>
+                    <tr><td>MA</td><td>38,8</td><td>12,9</td><td>51,8</td></tr>
+                    <tr><td>CE</td><td>27,3</td><td>9,1</td><td>36,4</td></tr>
+                    <tr><td>DF</td><td>8,9</td><td>3,0</td><td>11,8</td></tr>
+                    <tr><td>TO</td><td>26,8</td><td>8,9</td><td>35,8</td></tr>
+                    <tr><td>RO</td><td>22,0</td><td>7,3</td><td>29,3</td></tr>
+                    <tr><td>RN</td><td>10,8</td><td>3,6</td><td>14,3</td></tr>
+                    <tr><td>AL</td><td>8,6</td><td>2,9</td><td>11,4</td></tr>
+                    <tr><td>SE</td><td>9,4</td><td>3,1</td><td>12,5</td></tr>
+                    <tr><td>PB</td><td>11,3</td><td>3,8</td><td>15,0</td></tr>
+                    <tr><td>AC</td><td>2,4</td><td>0,8</td><td>3,2</td></tr>
+                    <tr><td>PI</td><td>15,8</td><td>5,3</td><td>21,1</td></tr>
+                    <tr><td>AP</td><td>2,2</td><td>0,7</td><td>2,9</td></tr>
+                    <tr><td>RR</td><td>4,3</td><td>1,4</td><td>5,7</td></tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>Total</td>
+                        <td>1.487,3</td>
+                        <td>495,8</td>
+                        <td>1.983,0</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <!-- Closing text -->
+        <p>
+            Os dados desta simulação foram produzidos com metodologia integralmente documentada e base em fontes primárias abertas (ANP e legislação tributária estadual). A nota técnica com detalhamento completo dos cálculos e a planilha com os dados brutos estão disponíveis para download abaixo.
+        </p>
+
+        <!-- Action buttons -->
+        <div class="study-actions">
+            <a href="/materiais/Nota%20Tecnica%20Estudo%20ICMS.pdf" target="_blank" class="study-btn study-btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                Baixar nota técnica (PDF)
+            </a>
+            <a href="/materiais/impacto_icms_diesel_brasil_publicacao_anp_2991.xlsx" download class="study-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Baixar planilha detalhada (Excel)
+            </a>
+        </div>
+
+        <!-- Methodology section (collapsible) -->
+        <div class="methodology-section">
+            <button class="methodology-toggle" id="methodToggle" aria-expanded="false">
+                Metodologia
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="methodology-content" id="methodContent">
+
+                <h3>1. Base tributária</h3>
+                <p>
+                    O ICMS incidente sobre o diesel opera em regime monofásico e com valor específico por litro, definido individualmente por cada estado. A alíquota monofásica vigente em 2026 foi levantada para todas as 27 unidades da federação a partir da legislação tributária estadual e dos atos do CONFAZ.
+                </p>
+
+                <h3>2. Participação do diesel importado</h3>
+                <p>
+                    A Agência Nacional do Petróleo, Gás Natural e Biocombustíveis (ANP) estima que o diesel importado representa 29,91% do total das vendas nacionais de diesel. Esse percentual foi aplicado à base de arrecadação de cada UF para calcular o volume de ICMS sujeito à proposta de zeragem.
+                </p>
+
+                <h3>3. Período de referência</h3>
+                <p>
+                    A simulação cobre dois meses (abril e maio de 2026), conforme os termos da proposta federal de zeragem temporária.
+                </p>
+
+                <h3>4. Compensação federal</h3>
+                <p>
+                    O mecanismo de compensação prevê o ressarcimento de 50% das perdas brutas de arrecadação pela União, reduzindo o impacto líquido à metade do total estimado sem compensação.
+                </p>
+
+                <h3>5. Partilha constitucional</h3>
+                <p>
+                    Nos termos do art. 158, IV, da Constituição Federal, 25% da arrecadação estadual do ICMS é destinada aos municípios. Esse critério foi aplicado sobre a perda líquida (após compensação federal) para separar o impacto sobre o ente estadual do impacto sobre os municípios.
+                </p>
+
+                <h3>6. Limitações</h3>
+                <p>
+                    A estimativa não incorpora: (a) eventual compensação adicional negociada após a zeragem; (b) variações nas alíquotas monofásicas durante o período; (c) efeitos de segunda ordem sobre o consumo de diesel; (d) diferenças na composição do consumo entre diesel importado e nacional por UF.
+                </p>
+            </div>
+        </div>
+
+    </article>
+
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+
+    <script>
+    // Methodology toggle
+    document.getElementById('methodToggle').addEventListener('click', function() {
+        var content = document.getElementById('methodContent');
+        var isOpen = content.classList.toggle('is-open');
+        this.classList.toggle('is-open', isOpen);
+        this.setAttribute('aria-expanded', isOpen);
+    });
+
+    // Chart data — sorted by total descending
+    var chartData = [
+        { uf: 'SP', estado: 312.0, muni: 104.0, total: 415.9 },
+        { uf: 'MG', estado: 188.2, muni: 62.7, total: 250.9 },
+        { uf: 'PR', estado: 141.7, muni: 47.2, total: 188.9 },
+        { uf: 'RS', estado: 93.3, muni: 31.1, total: 124.4 },
+        { uf: 'BA', estado: 84.7, muni: 28.2, total: 113.0 },
+        { uf: 'MT', estado: 78.5, muni: 26.2, total: 104.7 },
+        { uf: 'GO', estado: 77.8, muni: 25.9, total: 103.8 },
+        { uf: 'SC', estado: 71.0, muni: 23.7, total: 94.7 },
+        { uf: 'PA', estado: 68.5, muni: 22.8, total: 91.4 },
+        { uf: 'RJ', estado: 55.3, muni: 18.4, total: 73.7 },
+        { uf: 'MS', estado: 39.7, muni: 13.2, total: 52.9 },
+        { uf: 'MA', estado: 38.8, muni: 12.9, total: 51.8 },
+        { uf: 'PE', estado: 34.8, muni: 11.6, total: 46.4 },
+        { uf: 'ES', estado: 29.6, muni: 9.9, total: 39.4 },
+        { uf: 'CE', estado: 27.3, muni: 9.1, total: 36.4 },
+        { uf: 'TO', estado: 26.8, muni: 8.9, total: 35.8 },
+        { uf: 'AM', estado: 23.5, muni: 7.8, total: 31.4 },
+        { uf: 'RO', estado: 22.0, muni: 7.3, total: 29.3 },
+        { uf: 'PI', estado: 15.8, muni: 5.3, total: 21.1 },
+        { uf: 'PB', estado: 11.3, muni: 3.8, total: 15.0 },
+        { uf: 'RN', estado: 10.8, muni: 3.6, total: 14.3 },
+        { uf: 'SE', estado: 9.4, muni: 3.1, total: 12.5 },
+        { uf: 'DF', estado: 8.9, muni: 3.0, total: 11.8 },
+        { uf: 'AL', estado: 8.6, muni: 2.9, total: 11.4 },
+        { uf: 'RR', estado: 4.3, muni: 1.4, total: 5.7 },
+        { uf: 'AC', estado: 2.4, muni: 0.8, total: 3.2 },
+        { uf: 'AP', estado: 2.2, muni: 0.7, total: 2.9 }
+    ];
+
+    var labels = chartData.map(function(d) { return d.uf; });
+    var estadoValues = chartData.map(function(d) { return d.estado; });
+    var muniValues = chartData.map(function(d) { return d.muni; });
+    var totalValues = chartData.map(function(d) { return d.total; });
+
+    Chart.register(ChartDataLabels);
+
+    var ctx = document.getElementById('icmsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Perda do ente estadual',
+                    data: estadoValues,
+                    backgroundColor: '#1A3A5C',
+                    borderRadius: { topLeft: 3, bottomLeft: 3 },
+                    barThickness: 20,
+                    datalabels: { display: false }
+                },
+                {
+                    label: 'Perda dos municípios',
+                    data: muniValues,
+                    backgroundColor: '#C0392B',
+                    borderRadius: { topRight: 3, bottomRight: 3 },
+                    barThickness: 20,
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'right',
+                        offset: 6,
+                        font: { size: 11, family: "'Source Sans 3', sans-serif", weight: '500' },
+                        color: '#6E6E6E',
+                        formatter: function(value, context) {
+                            var t = totalValues[context.dataIndex];
+                            return 'R$ ' + t.toFixed(1).replace('.', ',');
+                        }
+                    }
+                }
+            ]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: { right: 80 }
+            },
+            scales: {
+                x: {
+                    stacked: true,
+                    grid: { color: '#F2F0EB' },
+                    border: { display: false },
+                    ticks: {
+                        font: { family: "'Source Sans 3', sans-serif", size: 11 },
+                        color: '#9A9A9A',
+                        callback: function(val) { return 'R$ ' + val; }
+                    },
+                    title: {
+                        display: true,
+                        text: 'R$ milhões',
+                        font: { family: "'Source Sans 3', sans-serif", size: 12 },
+                        color: '#9A9A9A'
+                    }
+                },
+                y: {
+                    stacked: true,
+                    grid: { display: false },
+                    border: { display: false },
+                    ticks: {
+                        font: { family: "'Source Sans 3', sans-serif", size: 12, weight: '600' },
+                        color: '#1D1D1B'
+                    }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': R$ ' + context.parsed.x.toFixed(1).replace('.', ',') + ' mi';
+                        }
+                    }
+                }
+            }
+        }
+    });
+    </script>
+
+    <script src="/js/search.js"></script>
+</body>
+</html>
