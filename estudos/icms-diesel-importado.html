@@ -3,18 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICMS Diesel Importado — Impacto por UF | Eduardo Reis Araújo</title>
+    <title>Isenção de ICMS no diesel importado: impacto fiscal por estado | Eduardo Reis Araújo</title>
     <meta name="description" content="Estimativa de perda líquida de arrecadação por UF na proposta de zeragem temporária do ICMS sobre o diesel importado, já descontada a compensação federal de 50%.">
     <meta name="author" content="Eduardo Reis Araujo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/icms-diesel-importado.html">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="Quanto cada estado pode perder com a proposta de zerar o ICMS do diesel importado">
+    <meta property="og:title" content="Isenção de ICMS no diesel importado: impacto fiscal estimado por estado">
     <meta property="og:description" content="Simulação por UF do impacto sobre estados e municípios, considerando compensação federal de 50% e partilha constitucional do ICMS.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/icms-diesel-importado.html">
-    <meta property="og:image" content="https://www.eduardoreisaraujo.com.br/images/og-share.jpg">
+    <meta property="og:image" content="https://www.eduardoreisaraujo.com.br/images/og-icms-diesel.svg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:type" content="image/svg+xml">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Isenção de ICMS no diesel importado: impacto fiscal estimado por estado">
+    <meta name="twitter:description" content="Simulação por UF do impacto sobre estados e municípios, considerando compensação federal de 50% e partilha constitucional do ICMS.">
+    <meta name="twitter:image" content="https://www.eduardoreisaraujo.com.br/images/og-icms-diesel.svg">
     <meta property="og:locale" content="pt_BR">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -692,6 +700,30 @@
             margin: 0 !important;
         }
 
+        /* Collapsible table */
+        .table-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.85rem 1.1rem;
+            font-family: var(--sans);
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+            margin: 1rem 0 0;
+            transition: all var(--transition);
+        }
+        .table-toggle:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+        .table-toggle svg { transition: transform var(--transition); flex-shrink: 0; }
+        .table-toggle.is-open svg { transform: rotate(180deg); }
+        .table-collapse { display: none; margin-top: 0.5rem; }
+        .table-collapse.is-open { display: block; }
+
         /* Table state cell */
         .td-state { line-height: 1.35; }
         .td-state-name { font-size: 0.88rem; }
@@ -756,7 +788,7 @@
             <span class="study-hero-topic">Federalismo fiscal</span>
             <span class="study-hero-date">Março de 2026</span>
         </div>
-        <h1>Quanto cada estado pode perder com a proposta de zerar o ICMS do diesel importado</h1>
+        <h1>Isenção de ICMS no diesel importado: impacto fiscal estimado por estado</h1>
         <p class="subtitle">
             Estimativa de perda líquida de arrecadação por UF na proposta de zeragem temporária do ICMS em abril e maio/2026 sobre o diesel importado, já descontada a compensação federal de 50%.
         </p>
@@ -780,7 +812,7 @@
             <div class="study-summary-label">Entenda em 3 pontos</div>
             <ul class="study-summary-list">
                 <li>R$ 1,98 bilhão é a perda líquida estimada de estados e municípios nos dois meses, considerando apenas o diesel importado (29,91% do total)</li>
-                <li>São Paulo, Minas Gerais e Paraná concentram mais de 43% do impacto nacional — reflexo direto de seu peso no consumo de diesel</li>
+                <li>São Paulo, Minas Gerais e Paraná concentram mais de 43% do impacto nacional, fruto do seu peso no consumo de diesel</li>
                 <li>Municípios perdem R$ 496 milhões por força da partilha constitucional, sem ter participado das negociações federais</li>
             </ul>
         </div>
@@ -846,12 +878,8 @@
         </p>
 
         <div class="pullquote">
-            <p>"Os municípios — que não participaram das negociações federais — absorvem R$ 496 milhões do impacto por força da partilha constitucional do ICMS."</p>
+            <p>"Os municípios, que não participaram das negociações federais, absorvem R$ 496 milhões por força da partilha constitucional do ICMS."</p>
         </div>
-
-        <p>
-            Vale notar uma distinção metodológica relevante em relação à estimativa divulgada pelo Ministério da Fazenda, que apontou renúncia de cerca de R$ 3 bilhões por mês para os estados (R$ 6 bilhões brutos no período, R$ 3 bilhões líquidos após compensação). A diferença em relação ao valor calculado neste estudo decorre de escopo: a proposta federal incide exclusivamente sobre o <strong>diesel importado</strong>, que representa 29,91% das vendas nacionais segundo a ANP. Ao aplicar esse filtro à base tributável, a perda líquida de dois meses recua para R$ 1,98 bilhão — uma estimativa de escopo mais preciso, restrita ao segmento diretamente atingido pela medida.
-        </p>
 
         <!-- Chart section -->
         <h2>Distribuição do impacto por UF</h2>
@@ -884,10 +912,14 @@
         </p>
 
         <!-- Table section -->
-        <h2>Resultados por unidade da federação</h2>
+        <button class="table-toggle" id="tableToggle" aria-expanded="false" aria-controls="tableCollapse">
+            <span>Ver tabela completa com os 27 estados</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
 
-        <p class="caption">
-            A tabela consolida os valores estimados por UF, separando a perda do ente estadual da perda atribuída aos municípios conforme a partilha constitucional. Todos os valores estão em R$ milhões e já consideram o desconto da compensação federal de 50%.
+        <div class="table-collapse" id="tableCollapse">
+        <p class="caption" style="margin-top:1rem">
+            Os valores estão em R$ milhões e já consideram o desconto da compensação federal de 50%. A partilha com municípios segue o art. 158, IV, da CF/88 (25% do ICMS estadual).
         </p>
 
         <div class="data-table-wrapper">
@@ -939,9 +971,10 @@
                 </tfoot>
             </table>
             <p class="chart-source">
-                Fonte: <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-brasileiro-do-petroleo-gas-natural-e-biocombustiveis-2025" target="_blank" rel="noopener">ANP — Anuário Estatístico 2025</a>; legislação estadual do ICMS monofásico; CONFAZ. Cálculo: Eduardo Araújo (2026). Valores em R$ milhões, já descontada compensação federal de 50%. Municípios conforme art. 158, IV, da CF/88 (25% do ICMS estadual).
+                Fonte: <a href="https://www.gov.br/anp/pt-br/centrais-de-conteudo/publicacoes/anuario-estatistico/anuario-estatistico-brasileiro-do-petroleo-gas-natural-e-biocombustiveis-2025" target="_blank" rel="noopener">ANP, Anuário Estatístico 2025</a>; legislação estadual do ICMS monofásico; CONFAZ. Cálculo: Eduardo Araújo (2026). Valores em R$ milhões, já descontada compensação federal de 50%.
             </p>
         </div>
+        </div><!-- /table-collapse -->
 
         <!-- Closing text -->
         <p>
@@ -1005,7 +1038,7 @@
                     <div class="f-step"><span class="f-n">④</span><span><strong>Impacto líquido</strong> = Bruto × 50% <em>(desconto da compensação federal)</em></span></div>
                     <div class="f-step"><span class="f-n">⑤</span><span><strong>Partilha</strong>: 75% → perda do ente estadual · 25% → perda dos municípios <em>(art. 158, IV, CF/88)</em></span></div>
                     <div class="f-highlight">
-                        Por que o resultado difere da estimativa do governo federal? O Ministério da Fazenda estimou renúncia bruta de R$ 3 bilhões por mês considerando o estoque total de diesel tributado, sem restringi-la à parcela importada. Esta análise aplica o filtro de 29,91% (passo ②), reduzindo o impacto líquido de dois meses para R$ 1,98 bilhão — valor de escopo mais preciso, restrito ao segmento efetivamente sujeito à medida.
+                        O Ministério da Fazenda divulgou estimativa de renúncia de R$ 3 bilhões por mês sem detalhar a metodologia adotada. Os cálculos deste estudo são integralmente documentados, reproduzíveis e baseados em fontes públicas (ANP e legislação tributária estadual).
                     </div>
                 </div>
 
@@ -1052,6 +1085,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 
     <script>
+    // Table toggle
+    document.getElementById('tableToggle').addEventListener('click', function() {
+        var content = document.getElementById('tableCollapse');
+        var isOpen = content.classList.toggle('is-open');
+        this.classList.toggle('is-open', isOpen);
+        this.setAttribute('aria-expanded', isOpen);
+    });
+
     // Methodology toggle
     document.getElementById('methodToggle').addEventListener('click', function() {
         var content = document.getElementById('methodContent');
@@ -1338,6 +1379,23 @@
                         d3.select(this).classed('is-active', true);
                         showTooltip(uf, stateData[uf], event);
                     }
+                })
+                .on('touchend', function(event, d) {
+                    // Explicit touch handler: touchstart.preventDefault() blocks synthetic click
+                    event.preventDefault();
+                    event.stopPropagation();
+                    var uf = getUf(d);
+                    if (!uf || !stateData[uf]) return;
+                    if (activeUf === uf && tooltip.classList.contains('is-visible')) {
+                        tooltip.classList.remove('is-visible');
+                        activeUf = null;
+                        d3.select(this).classed('is-active', false);
+                    } else {
+                        activeUf = uf;
+                        d3.selectAll('path.map-state').classed('is-active', false);
+                        d3.select(this).classed('is-active', true);
+                        showTooltip(uf, stateData[uf], event);
+                    }
                 });
 
             svg.selectAll('text.map-uf-label')
@@ -1364,7 +1422,7 @@
             svgEl.style.display = 'none';
             loading.innerHTML =
                 '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#AAA" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="#AAA"/></svg>' +
-                '<span>Mapa indisponível — veja o gráfico abaixo</span>';
+                '<span>Mapa indisponível · veja o gráfico abaixo</span>';
             loading.style.flexDirection = 'row';
             loading.style.gap = '0.5rem';
             loading.style.minHeight = '60px';
@@ -1407,7 +1465,11 @@
         function positionTooltip(event) {
             var wRect = wrapper.getBoundingClientRect();
             var x, y;
-            if (event.touches && event.touches.length) {
+            // changedTouches has coordinates on touchend; touches is empty on touchend
+            if (event.changedTouches && event.changedTouches.length) {
+                x = event.changedTouches[0].clientX - wRect.left;
+                y = event.changedTouches[0].clientY - wRect.top;
+            } else if (event.touches && event.touches.length) {
                 x = event.touches[0].clientX - wRect.left;
                 y = event.touches[0].clientY - wRect.top;
             } else {
@@ -1426,12 +1488,23 @@
             tooltip.style.top  = top  + 'px';
         }
 
-        // Touch: tap state to show, tap elsewhere to hide
+        // Touch: prevent default on map states so touchend handler controls everything
         wrapper.addEventListener('touchstart', function(e) {
             if (e.target.classList.contains('map-state')) {
                 e.preventDefault();
             }
         }, { passive: false });
+
+        // Dismiss on touch outside map
+        document.addEventListener('touchend', function(e) {
+            var inMap     = e.target.closest && e.target.closest('.map-state');
+            var inTooltip = e.target.closest && e.target.closest('.map-tooltip');
+            if (!inMap && !inTooltip) {
+                tooltip.classList.remove('is-visible');
+                d3.selectAll('path.map-state').classed('is-active', false);
+                activeUf = null;
+            }
+        });
 
         document.addEventListener('click', function() {
             tooltip.classList.remove('is-visible');
