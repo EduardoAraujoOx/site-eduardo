@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudos | Eduardo Reis Araújo</title>
+    <meta name="description" content="Estudos quantitativos sobre política fiscal, tributação e finanças públicas. Análises com metodologia transparente e base em fontes primárias.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Estudos | Eduardo Reis Araújo">
+    <meta property="og:description" content="Estudos quantitativos sobre política fiscal, tributação e finanças públicas.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/">
+    <meta property="og:image" content="https://www.eduardoreisaraujo.com.br/images/og-share.jpg">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Estudos | Eduardo Reis Araújo">
+    <meta name="twitter:description" content="Estudos quantitativos sobre política fiscal, tributação e finanças públicas.">
+    <meta name="twitter:image" content="https://www.eduardoreisaraujo.com.br/images/og-share.jpg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/notas.css?v=4">
+    <link rel="stylesheet" href="/css/search.css">
+
+    <style>
+        /* ===== ESTUDOS INDEX ===== */
+        .estudos-grid {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .study-card {
+            display: flex;
+            flex-direction: column;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            text-decoration: none;
+            color: var(--text);
+            transition: box-shadow var(--transition), border-color var(--transition), transform var(--transition);
+            position: relative;
+        }
+
+        .study-card:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-color: #C0C0B8;
+            transform: translateY(-1px);
+        }
+
+        .study-card-accent {
+            height: 4px;
+            background: var(--accent);
+        }
+
+        .study-card-body {
+            padding: 1.75rem 2rem;
+        }
+
+        .study-card-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.9rem;
+            flex-wrap: wrap;
+        }
+
+        .study-tag {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: var(--accent-light);
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+        }
+
+        .study-tag-topic {
+            font-family: var(--sans);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            background: var(--border-light);
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+        }
+
+        .study-date {
+            font-family: var(--sans);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+
+        .study-card-title {
+            font-family: var(--display);
+            font-size: 1.35rem;
+            font-weight: 700;
+            line-height: 1.3;
+            color: var(--text);
+            margin-bottom: 0.6rem;
+        }
+
+        .study-card-subtitle {
+            font-family: var(--sans);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 1.2rem;
+        }
+
+        .study-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .study-card-topics {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .study-card-arrow {
+            color: var(--accent);
+            flex-shrink: 0;
+            transition: transform var(--transition);
+        }
+
+        .study-card:hover .study-card-arrow {
+            transform: translateX(4px);
+        }
+
+        @media (max-width: 640px) {
+            .estudos-grid { padding: 0 1.25rem 3rem; }
+            .study-card-body { padding: 1.25rem 1.25rem; }
+            .study-card-title { font-size: 1.15rem; }
+            .study-date { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <div class="header-right-group">
+                <nav class="header-nav">
+                    <a href="/#publicacoes">Publicações</a>
+                    <a href="/ensino/">Ensino</a>
+                    <a href="/estudos/" class="active">Estudos</a>
+                    <a href="/indicadores.html">Indicadores</a>
+                    <a href="/#contato">Contato</a>
+                </nav>
+                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="index-hero">
+        <div class="label">Análise quantitativa</div>
+        <h1>Estudos</h1>
+        <p class="intro">
+            Estimativas, simulações e análises quantitativas sobre política fiscal, tributação e finanças públicas. Cada estudo apresenta premissas explícitas, fontes primárias e metodologia replicável — para que os resultados possam ser conferidos, contestados e aprimorados.
+        </p>
+    </section>
+
+    <div class="estudos-grid">
+
+        <!-- Estudo 01: ICMS Diesel -->
+        <a href="/estudos/icms-diesel-importado.html" class="study-card">
+            <div class="study-card-accent"></div>
+            <div class="study-card-body">
+                <div class="study-card-meta">
+                    <span class="study-tag">Estudo 01</span>
+                    <span class="study-tag-topic">ICMS</span>
+                    <span class="study-tag-topic">Diesel</span>
+                    <span class="study-tag-topic">Federalismo fiscal</span>
+                    <span class="study-date">Março de 2026</span>
+                </div>
+                <div class="study-card-title">Quanto cada estado pode perder com a proposta de zerar o ICMS do diesel importado</div>
+                <div class="study-card-subtitle">
+                    Simulação por unidade da federação do impacto potencial sobre estados e municípios, considerando a compensação federal de 50% e a partilha constitucional do ICMS.
+                </div>
+                <div class="study-card-footer">
+                    <div class="study-card-topics">
+                        <span class="study-tag-topic">Gráfico por UF</span>
+                        <span class="study-tag-topic">Tabela comparativa</span>
+                        <span class="study-tag-topic">Metodologia aberta</span>
+                    </div>
+                    <span class="study-card-arrow">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </span>
+                </div>
+            </div>
+        </a>
+
+    </div>
+
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+
+    <script src="/js/search.js"></script>
+</body>
+</html>
