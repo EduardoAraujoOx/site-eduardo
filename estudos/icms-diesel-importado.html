@@ -333,6 +333,170 @@
             color: var(--accent);
         }
 
+        /* ===== BRAZIL MAP ===== */
+        .map-section {
+            background: #EDF3F9;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 1.75rem 2rem 1.5rem;
+        }
+        .map-section-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .map-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .map-label-tag {
+            font-family: var(--mono);
+            font-size: 0.66rem;
+            font-weight: 500;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+        .map-hint {
+            font-family: var(--sans);
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .map-wrapper {
+            position: relative;
+            background: #EDF3F9;
+            border-radius: 10px;
+            overflow: visible;
+            min-height: 200px;
+        }
+        #brazilMap {
+            display: block;
+            width: 100%;
+        }
+        .map-state {
+            stroke: #fff;
+            stroke-width: 0.6;
+            cursor: pointer;
+            transition: opacity 0.15s, stroke-width 0.15s;
+        }
+        .map-state:hover,
+        .map-state.is-active {
+            opacity: 0.82;
+            stroke-width: 1.5;
+            stroke: #1A3A5C;
+        }
+        .map-uf-label {
+            pointer-events: none;
+            font-family: 'Source Sans 3', sans-serif;
+            font-weight: 600;
+        }
+        .map-tooltip {
+            position: absolute;
+            background: #fff;
+            border: 1px solid #d8dde4;
+            border-radius: 8px;
+            padding: 0.9rem 1.1rem 1rem;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.13);
+            pointer-events: none;
+            min-width: 210px;
+            max-width: 250px;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.12s;
+            font-family: var(--sans);
+        }
+        .map-tooltip.is-visible { opacity: 1; }
+        .map-tooltip-name {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.55rem;
+            padding-bottom: 0.45rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .map-tooltip-uf {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: var(--border-light);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+        }
+        .map-tooltip-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.79rem;
+            margin-top: 0.3rem;
+            color: var(--text-secondary);
+        }
+        .map-tooltip-row-value {
+            font-weight: 600;
+            color: var(--text);
+        }
+        .map-tooltip-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-top: 0.55rem;
+            padding-top: 0.45rem;
+            border-top: 1px solid var(--border-light);
+            color: var(--accent);
+        }
+        .map-legend-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.85rem;
+            font-family: var(--sans);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+        .map-legend-gradient {
+            flex: 1;
+            height: 9px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #C8E1F4, #1A3A5C);
+        }
+        .map-loading {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            font-family: var(--sans);
+            font-size: 0.83rem;
+            color: var(--text-muted);
+            background: #EDF3F9;
+            border-radius: 10px;
+            min-height: 260px;
+        }
+        .map-loading-spinner {
+            width: 26px;
+            height: 26px;
+            border: 3px solid #C8D9E8;
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         /* Responsive */
         @media (max-width: 640px) {
             .study-hero { padding: 2.5rem 1.25rem 1.5rem; }
@@ -343,6 +507,7 @@
             .study-body { padding: 2rem 1.25rem; }
             .chart-container { height: 750px; padding: 1rem 0.5rem 0.5rem 0; }
             .study-hero-date { margin-left: 0; }
+            .map-section { padding: 1.25rem 1.25rem 1rem; }
         }
     </style>
 </head>
@@ -386,6 +551,32 @@
         <p class="subtitle">
             Estimativa de perda líquida de arrecadação por UF na proposta de zeragem temporária do ICMS em abril e maio/2026 sobre o diesel importado, já descontada a compensação federal de 50%.
         </p>
+    </section>
+
+    <!-- Interactive Brazil Map -->
+    <section class="map-section">
+        <div class="map-section-inner">
+            <div class="map-section-header">
+                <span class="map-label-tag">Mapa interativo — impacto por UF</span>
+                <span class="map-hint">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Passe o cursor — ou toque — sobre o estado
+                </span>
+            </div>
+            <div class="map-wrapper" id="mapWrapper">
+                <div class="map-loading" id="mapLoading">
+                    <div class="map-loading-spinner"></div>
+                    Carregando mapa…
+                </div>
+                <svg id="brazilMap" aria-label="Mapa do Brasil com impacto do ICMS diesel por estado"></svg>
+                <div class="map-tooltip" id="mapTooltip" role="tooltip" aria-live="polite"></div>
+            </div>
+            <div class="map-legend-bar">
+                <span>Menor impacto</span>
+                <div class="map-legend-gradient"></div>
+                <span>Maior impacto</span>
+            </div>
+        </div>
     </section>
 
     <!-- Key figures -->
@@ -702,5 +893,227 @@
     </script>
 
     <script src="/js/search.js"></script>
+
+    <!-- D3 for interactive Brazil map -->
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script>
+    (function initBrazilMap() {
+        var stateData = {
+            'SP': { name: 'São Paulo',               estado: 312.0, muni: 104.0, total: 415.9 },
+            'MG': { name: 'Minas Gerais',             estado: 188.2, muni:  62.7, total: 250.9 },
+            'PR': { name: 'Paraná',                   estado: 141.7, muni:  47.2, total: 188.9 },
+            'RS': { name: 'Rio Grande do Sul',        estado:  93.3, muni:  31.1, total: 124.4 },
+            'BA': { name: 'Bahia',                    estado:  84.7, muni:  28.2, total: 113.0 },
+            'MT': { name: 'Mato Grosso',              estado:  78.5, muni:  26.2, total: 104.7 },
+            'GO': { name: 'Goiás',                    estado:  77.8, muni:  25.9, total: 103.8 },
+            'SC': { name: 'Santa Catarina',           estado:  71.0, muni:  23.7, total:  94.7 },
+            'PA': { name: 'Pará',                     estado:  68.5, muni:  22.8, total:  91.4 },
+            'RJ': { name: 'Rio de Janeiro',           estado:  55.3, muni:  18.4, total:  73.7 },
+            'MS': { name: 'Mato Grosso do Sul',       estado:  39.7, muni:  13.2, total:  52.9 },
+            'MA': { name: 'Maranhão',                 estado:  38.8, muni:  12.9, total:  51.8 },
+            'PE': { name: 'Pernambuco',               estado:  34.8, muni:  11.6, total:  46.4 },
+            'ES': { name: 'Espírito Santo',           estado:  29.6, muni:   9.9, total:  39.4 },
+            'CE': { name: 'Ceará',                    estado:  27.3, muni:   9.1, total:  36.4 },
+            'TO': { name: 'Tocantins',                estado:  26.8, muni:   8.9, total:  35.8 },
+            'AM': { name: 'Amazonas',                 estado:  23.5, muni:   7.8, total:  31.4 },
+            'RO': { name: 'Rondônia',                 estado:  22.0, muni:   7.3, total:  29.3 },
+            'PI': { name: 'Piauí',                    estado:  15.8, muni:   5.3, total:  21.1 },
+            'PB': { name: 'Paraíba',                  estado:  11.3, muni:   3.8, total:  15.0 },
+            'RN': { name: 'Rio Grande do Norte',      estado:  10.8, muni:   3.6, total:  14.3 },
+            'SE': { name: 'Sergipe',                  estado:   9.4, muni:   3.1, total:  12.5 },
+            'DF': { name: 'Distrito Federal',         estado:   8.9, muni:   3.0, total:  11.8 },
+            'AL': { name: 'Alagoas',                  estado:   8.6, muni:   2.9, total:  11.4 },
+            'RR': { name: 'Roraima',                  estado:   4.3, muni:   1.4, total:   5.7 },
+            'AC': { name: 'Acre',                     estado:   2.4, muni:   0.8, total:   3.2 },
+            'AP': { name: 'Amapá',                    estado:   2.2, muni:   0.7, total:   2.9 }
+        };
+
+        // IBGE 2-digit code → UF sigla
+        var codeToUf = {
+            '11':'RO','12':'AC','13':'AM','14':'RR','15':'PA',
+            '16':'AP','17':'TO','21':'MA','22':'PI','23':'CE',
+            '24':'RN','25':'PB','26':'PE','27':'AL','28':'SE',
+            '29':'BA','31':'MG','32':'ES','33':'RJ','35':'SP',
+            '41':'PR','42':'SC','43':'RS','50':'MS','51':'MT',
+            '52':'GO','53':'DF'
+        };
+
+        var MAX_TOTAL = 415.9;
+
+        function getColor(total) {
+            if (!total && total !== 0) return '#C8DBE8';
+            var t = Math.min(Math.max(total / MAX_TOTAL, 0), 1);
+            // light #C8E1F4 → dark #1A3A5C
+            var r = Math.round(200 * (1 - t) + 26  * t);
+            var g = Math.round(225 * (1 - t) + 58  * t);
+            var b = Math.round(244 * (1 - t) + 92  * t);
+            return 'rgb(' + r + ',' + g + ',' + b + ')';
+        }
+
+        function fmtVal(v) {
+            return 'R$\u00a0' + v.toFixed(1).replace('.', ',') + '\u00a0mi';
+        }
+
+        var wrapper  = document.getElementById('mapWrapper');
+        var loading  = document.getElementById('mapLoading');
+        var tooltip  = document.getElementById('mapTooltip');
+        var svgEl    = document.getElementById('brazilMap');
+        var svg      = d3.select(svgEl);
+        var activeUf = null;
+
+        // Determine map dimensions
+        var W = wrapper.clientWidth || 680;
+        var H = Math.round(W * 0.88);
+        svg.attr('width', W).attr('height', H)
+           .attr('viewBox', '0 0 ' + W + ' ' + H);
+
+        var projection = d3.geoMercator();
+        var pathGen    = d3.geoPath().projection(projection);
+
+        // Fetch IBGE state boundaries
+        fetch('https://servicodados.ibge.gov.br/api/v3/malhas/paises/BR?intrarregiao=UF&formato=application/vnd.geo+json&resolucao=2')
+            .then(function(r) {
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                return r.json();
+            })
+            .then(function(geo) {
+                loading.style.display = 'none';
+
+                // Fit Brazil to SVG
+                projection.fitSize([W, H], geo);
+
+                var fontSize = Math.max(7, Math.round(W / 72));
+
+                // Draw state polygons
+                svg.selectAll('path.map-state')
+                    .data(geo.features)
+                    .enter()
+                    .append('path')
+                    .attr('class', 'map-state')
+                    .attr('d', pathGen)
+                    .attr('fill', function(d) {
+                        var uf = codeToUf[d.properties.codarea];
+                        return getColor(uf && stateData[uf] ? stateData[uf].total : null);
+                    })
+                    .on('mouseenter', function(event, d) {
+                        var uf = codeToUf[d.properties.codarea];
+                        if (!uf || !stateData[uf]) return;
+                        activeUf = uf;
+                        d3.selectAll('path.map-state').classed('is-active', false);
+                        d3.select(this).classed('is-active', true);
+                        showTooltip(uf, stateData[uf], event);
+                    })
+                    .on('mousemove', function(event) {
+                        positionTooltip(event);
+                    })
+                    .on('mouseleave', function() {
+                        d3.select(this).classed('is-active', false);
+                        activeUf = null;
+                        tooltip.classList.remove('is-visible');
+                    })
+                    .on('click', function(event, d) {
+                        var uf = codeToUf[d.properties.codarea];
+                        if (!uf || !stateData[uf]) return;
+                        event.stopPropagation();
+                        if (activeUf === uf && tooltip.classList.contains('is-visible')) {
+                            tooltip.classList.remove('is-visible');
+                            activeUf = null;
+                            d3.select(this).classed('is-active', false);
+                        } else {
+                            activeUf = uf;
+                            d3.selectAll('path.map-state').classed('is-active', false);
+                            d3.select(this).classed('is-active', true);
+                            showTooltip(uf, stateData[uf], event);
+                        }
+                    });
+
+                // UF abbreviation labels
+                svg.selectAll('text.map-uf-label')
+                    .data(geo.features)
+                    .enter()
+                    .append('text')
+                    .attr('class', 'map-uf-label')
+                    .attr('transform', function(d) {
+                        var c = pathGen.centroid(d);
+                        return 'translate(' + c[0] + ',' + c[1] + ')';
+                    })
+                    .attr('text-anchor', 'middle')
+                    .attr('dy', '0.35em')
+                    .attr('font-size', fontSize + 'px')
+                    .attr('fill', function(d) {
+                        var uf = codeToUf[d.properties.codarea];
+                        if (!uf || !stateData[uf]) return '#456';
+                        var t = stateData[uf].total / MAX_TOTAL;
+                        return t > 0.45 ? '#fff' : '#1A3A5C';
+                    })
+                    .text(function(d) {
+                        return codeToUf[d.properties.codarea] || '';
+                    });
+            })
+            .catch(function() {
+                loading.innerHTML =
+                    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#AAA" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="#AAA"/></svg>' +
+                    'Mapa indisponível — veja o gráfico abaixo';
+                loading.style.flexDirection = 'row';
+                loading.style.gap = '0.5rem';
+                loading.style.minHeight = '60px';
+            });
+
+        function showTooltip(uf, d, event) {
+            tooltip.innerHTML =
+                '<div class="map-tooltip-name">' + d.name +
+                '<span class="map-tooltip-uf">' + uf + '</span></div>' +
+                '<div class="map-tooltip-row"><span>Ente estadual</span><span class="map-tooltip-row-value">' + fmtVal(d.estado) + '</span></div>' +
+                '<div class="map-tooltip-row"><span>Municípios</span><span class="map-tooltip-row-value">' + fmtVal(d.muni) + '</span></div>' +
+                '<div class="map-tooltip-total"><span>Total</span><span>' + fmtVal(d.total) + '</span></div>';
+            tooltip.classList.add('is-visible');
+            positionTooltip(event);
+        }
+
+        function positionTooltip(event) {
+            var wRect = wrapper.getBoundingClientRect();
+            var x, y;
+            if (event.touches && event.touches.length) {
+                x = event.touches[0].clientX - wRect.left;
+                y = event.touches[0].clientY - wRect.top;
+            } else {
+                x = event.clientX - wRect.left;
+                y = event.clientY - wRect.top;
+            }
+            var ttW = tooltip.offsetWidth  || 230;
+            var ttH = tooltip.offsetHeight || 130;
+            var left = x + 18;
+            var top  = y - ttH / 2;
+            if (left + ttW > wRect.width - 8)  left = x - ttW - 18;
+            if (left < 8) left = 8;
+            if (top  < 8) top  = 8;
+            if (top  + ttH > wRect.height - 8) top = wRect.height - ttH - 8;
+            tooltip.style.left = left + 'px';
+            tooltip.style.top  = top  + 'px';
+        }
+
+        // Touch: tap state to show, tap elsewhere to hide
+        wrapper.addEventListener('touchstart', function(e) {
+            if (e.target.classList.contains('map-state')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        document.addEventListener('click', function() {
+            tooltip.classList.remove('is-visible');
+            d3.selectAll('path.map-state').classed('is-active', false);
+            activeUf = null;
+        });
+
+        // Resize
+        window.addEventListener('resize', function() {
+            var newW = wrapper.clientWidth;
+            if (Math.abs(newW - W) < 20) return;
+            W = newW;
+            H = Math.round(W * 0.88);
+            svg.attr('width', W).attr('height', H).attr('viewBox', '0 0 ' + W + ' ' + H);
+        });
+    })();
+    </script>
 </body>
 </html>
