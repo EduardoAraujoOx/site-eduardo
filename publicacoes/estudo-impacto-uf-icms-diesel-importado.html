@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ===== META TAGS PARA COMPARTILHAMENTO (WhatsApp, Facebook, LinkedIn, Twitter) ===== -->
+
+    <!-- Open Graph - Essenciais para WhatsApp -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Estudo mostra impacto por UF da proposta do governo federal em zerar ICMS do diesel">
+    <meta property="og:description" content="No cenário oficial, a perda líquida para estados e municípios chega a R$ 3 bilhões no bimestre e atinge também as prefeituras, via cota-parte constitucional do ICMS.">
+    <meta property="og:image" content="https://www.eduardoreisaraujo.com.br/images/og-icms-diesel.svg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/publicacoes/estudo-impacto-uf-icms-diesel-importado.html">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+    <meta property="og:locale" content="pt_BR">
+
+    <!-- Dados do artigo -->
+    <meta property="article:author" content="Eduardo Araujo">
+    <meta property="article:published_time" content="2026-03-22">
+    <meta property="article:section" content="Estudos">
+
+    <!-- Twitter Card (também usado por alguns apps) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Estudo mostra impacto por UF da proposta do governo federal em zerar ICMS do diesel">
+    <meta name="twitter:description" content="No cenário oficial, a perda líquida para estados e municípios chega a R$ 3 bilhões no bimestre e atinge também as prefeituras, via cota-parte constitucional do ICMS.">
+    <meta name="twitter:image" content="https://www.eduardoreisaraujo.com.br/images/og-icms-diesel.svg">
+
+    <!-- ===== FIM DAS META TAGS DE COMPARTILHAMENTO ===== -->
+
+    <title>Estudo mostra impacto por UF da proposta do governo federal em zerar ICMS do diesel | Eduardo Reis Araújo</title>
+
+    <!-- Fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* Reset e base */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+            color: #333;
+            background: #fff;
+            line-height: 1.6;
+        }
+
+        /* Tipografia */
+        .font-headline {
+            font-family: 'Playfair Display', Georgia, serif;
+        }
+
+        .font-sans {
+            font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .font-body {
+            font-family: 'Source Serif 4', Georgia, serif;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #f0f0f0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 48rem;
+            margin: 0 auto;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #666;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.2s;
+        }
+
+        .back-button:hover {
+            color: #111;
+        }
+
+        .site-name {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111;
+            text-decoration: none;
+        }
+
+        /* Artigo */
+        .article {
+            max-width: 40rem;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 4rem;
+        }
+
+        .article-category {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 1.25rem;
+        }
+
+        .article-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: #111;
+            margin-bottom: 1.25rem;
+            letter-spacing: -0.02em;
+        }
+
+        @media (min-width: 640px) {
+            .article-title {
+                font-size: 2.5rem;
+            }
+        }
+
+        .article-subtitle {
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-size: 1.25rem;
+            line-height: 1.5;
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Botões de ação */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-btn {
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            background: #fff;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #f5f5f5;
+            border-color: #bbb;
+            color: #333;
+        }
+
+        .action-btn.active {
+            background: #f0f0f0;
+            border-color: #111;
+            color: #111;
+        }
+
+        /* Imagem */
+        .article-figure {
+            margin: 0 -1.25rem 1.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .article-figure {
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+
+        .article-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .article-caption {
+            padding: 0.75rem 1.25rem 0;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.875rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        @media (min-width: 640px) {
+            .article-caption {
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+
+        .article-credit {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 0.25rem;
+        }
+
+        /* Autor */
+        .author-section {
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .author-avatar {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            background: #f5f5f5;
+            border: 1px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.25rem;
+            color: #888;
+            margin-bottom: 0.75rem;
+        }
+
+        .author-byline {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.9375rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .author-byline span {
+            color: #666;
+        }
+
+        .author-name {
+            color: #111;
+            font-weight: 600;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            text-decoration-thickness: 1px;
+        }
+
+        .author-name:hover {
+            text-decoration-thickness: 2px;
+        }
+
+        .author-location {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .author-date {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.875rem;
+            color: #999;
+        }
+
+        .original-link {
+            font-family: 'Source Sans 3', sans-serif;
+            display: inline-block;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #666;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .original-link:hover {
+            color: #111;
+        }
+
+        /* Conteúdo */
+        .article-content p {
+            font-size: 1.25rem;
+            line-height: 1.85;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .article-content h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .article-content a {
+            color: #333;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .article-content a:hover {
+            color: #000;
+        }
+
+        @media (max-width: 640px) {
+            .article-content p {
+                font-size: 1.125rem;
+                line-height: 1.75;
+            }
+
+            .article-content h2 {
+                font-size: 1.25rem;
+            }
+        }
+
+        /* Footer do artigo */
+        .article-footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .footer-avatar {
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            background: #f5f5f5;
+            border: 1px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.5rem;
+            color: #888;
+            flex-shrink: 0;
+        }
+
+        .footer-info {
+            font-family: 'Source Sans 3', sans-serif;
+        }
+
+        .footer-name {
+            font-weight: 600;
+            color: #111;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .footer-role {
+            font-size: 0.875rem;
+            color: #666;
+            margin-top: 0.125rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="../index.html#publicacoes" class="back-button font-sans">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>Voltar</span>
+            </a>
+            <a href="../index.html" class="site-name">Eduardo Reis Araújo</a>
+        </div>
+    </header>
+
+    <!-- Artigo -->
+    <article class="article">
+        <!-- Categoria -->
+        <div class="article-category">Estudos</div>
+
+        <!-- Título -->
+        <h1 class="article-title">Estudo mostra impacto por UF da proposta do governo federal em zerar ICMS do diesel</h1>
+
+        <!-- Subtítulo -->
+        <p class="article-subtitle">Proposta do governo federal para zerar temporariamente o ICMS do diesel importado pode impor perda líquida de R$ 3 bilhões a estados e municípios. Estudo distribui esse impacto por UF e mostra que as prefeituras também entram na conta.</p>
+
+        <!-- Botões de ação -->
+        <div class="action-buttons">
+            <button class="action-btn" onclick="shareArticle()" title="Compartilhar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                    <polyline points="16 6 12 2 8 6"></polyline>
+                    <line x1="12" y1="2" x2="12" y2="15"></line>
+                </svg>
+            </button>
+            <button class="action-btn" onclick="toggleBookmark(this)" title="Salvar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Imagem -->
+        <figure class="article-figure">
+            <img
+                src="../images/og-icms-diesel.svg"
+                alt="Ilustração sobre ICMS no diesel importado e impactos federativos"
+                class="article-image"
+            >
+            <figcaption class="article-caption">
+                Ilustração sobre ICMS no diesel importado e impactos federativos
+            </figcaption>
+        </figure>
+
+        <!-- Autor -->
+        <div class="author-section">
+            <div class="author-avatar">E</div>
+            <p class="author-byline">
+                <span>Por </span>
+                <span class="author-name">Eduardo Araujo</span>
+            </p>
+            <p class="author-location">Mestre em Políticas Públicas pela Universidade de Oxford e Consultor do Tesouro Estadual do Espírito Santo</p>
+            <p class="author-date">22 de março de 2026 • 5 min de leitura</p>
+            <a href="https://www.eduardoreisaraujo.com.br/estudos/icms-diesel-importado-v2.html" class="original-link" target="_blank" rel="noopener">
+                Leia na publicação original →
+            </a>
+        </div>
+
+        <!-- Conteúdo -->
+        <div class="article-content">
+            <p>A proposta apresentada pelo governo federal prevê zerar, por dois meses, o ICMS incidente sobre o diesel importado. No cenário oficial, o custo fiscal total da medida chega a R$ 6 bilhões no bimestre. Metade seria compensada pela União. A outra metade, de cerca de R$ 3 bilhões, seria absorvida por estados e municípios. O ponto central, portanto, não está apenas no efeito sobre o preço do combustível, mas na redistribuição de uma perda relevante de arrecadação dentro da federação.</p><p>Foi para dimensionar essa conta que elaborei o estudo publicado neste site. O trabalho distribui por UF a perda líquida que ficaria com estados e municípios e também apresenta uma simulação alternativa, restrita apenas à parcela efetivamente importada do mercado. No cenário oficial, São Paulo lidera com perda estimada de R$ 606,2 milhões no bimestre, seguido por Minas Gerais, com R$ 376 milhões, e Paraná, com R$ 285,8 milhões. No Espírito Santo, o impacto estimado é de R$ 58,9 milhões, dos quais R$ 14,7 milhões recaem sobre os municípios.</p><p>Os resultados ajudam a esclarecer um aspecto muitas vezes subestimado nesse tipo de debate. Como 25% da arrecadação do ICMS pertence constitucionalmente aos municípios, a renúncia não afeta apenas os caixas estaduais. Ela alcança também as prefeituras, inclusive sem que elas tenham participado da negociação. O estudo mostra ainda forte concentração do impacto nacional: São Paulo, Minas Gerais e Paraná respondem juntos por mais de 42% da perda líquida estimada no cenário oficial.</p><p>A metodologia parte de bases abertas e reproduzíveis. No cenário oficial, o valor divulgado pelo Ministério da Fazenda, de R$ 3 bilhões mensais, é distribuído proporcionalmente entre as UFs com base nos dados de consumo de diesel da ANP em 2025, respeitando a partilha constitucional do ICMS entre estados e municípios. Na simulação alternativa, o cálculo considera a incidência de R$ 1,17 por litro apenas sobre a parcela importada do mercado, que representou 29,91% das vendas nacionais de diesel B em janeiro de 2026. Com essa restrição, a perda líquida bimestral de estados e municípios cai para R$ 1,82 bilhão.</p><p>Os dados completos, com a tabela das 27 unidades da federação, a comparação entre cenários e a metodologia detalhada, estão disponíveis na íntegra na página do estudo (<a href="https://www.eduardoreisaraujo.com.br/estudos/icms-diesel-importado-v2.html" target="_blank" rel="noopener">acesse aqui</a>). Mais do que um exercício numérico, o material busca tornar visível a conta federativa embutida em uma medida apresentada como alívio emergencial. Em temas como esse, transparência não é detalhe técnico. É condição para avaliar quem será, de fato, chamado a pagar a conta.</p>
+        </div>
+
+        <!-- Footer -->
+        <footer class="article-footer">
+            <div class="footer-avatar">E</div>
+            <div class="footer-info">
+                <div class="footer-name">Eduardo Araujo</div>
+                <p class="footer-role">Mestre em Políticas Públicas pela Universidade de Oxford e Consultor do Tesouro Estadual do Espírito Santo</p>
+            </div>
+        </footer>
+    </article>
+
+    <script>
+        function shareArticle() {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.querySelector('meta[property="og:title"]').content,
+                    text: document.querySelector('meta[property="og:description"]').content,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert('Link copiado!');
+            }
+        }
+
+        function toggleBookmark(btn) {
+            btn.classList.toggle('active');
+            const svg = btn.querySelector('svg path');
+            if (btn.classList.contains('active')) {
+                svg.setAttribute('fill', 'currentColor');
+            } else {
+                svg.setAttribute('fill', 'none');
+            }
+        }
+    </script>
+</body>
+</html>
