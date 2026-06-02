@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tributação e Eficiência — Notas de Aula | Eduardo Reis Araújo</title>
+    <meta name="description" content="Capítulo 15 de Economia do Setor Público: peso morto da tributação, imposto lump-sum, elasticidades, distorções preexistentes e o imposto de renda na escolha entre trabalho e lazer.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/ensino/esp-u3-cap15-tributacao-eficiencia.html">
+    <meta property="og:title" content="Tributação e Eficiência — Notas de Aula | Eduardo Reis Araújo">
+    <meta property="og:description" content="A arrecadação é o retângulo. O peso morto é o triângulo. Um desaparece — o outro muda de mãos.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/ensino/esp-u3-cap15-tributacao-eficiencia.html">
+    <meta property="og:image" content="https://www.eduardoreisaraujo.com.br/images/og-share.jpg">
+    <meta property="og:image:width" content="850">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Tributação e Eficiência — Notas de Aula | Eduardo Reis Araújo">
+    <meta name="twitter:description" content="A arrecadação é o retângulo. O peso morto é o triângulo. Um desaparece — o outro muda de mãos.">
+    <meta name="twitter:image" content="https://www.eduardoreisaraujo.com.br/images/og-share.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/notas.css?v=3">
+    <link rel="stylesheet" href="/css/search.css">
+    <style>
+        .article-figure {
+            margin: 2rem 0 2.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #fafafa;
+        }
+        .article-figure img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        .article-figure figcaption {
+            font-size: 0.85rem;
+            color: #555;
+            padding: 0.6rem 1rem 0.7rem;
+            border-top: 1px solid #e8e8e8;
+            font-style: italic;
+        }
+        .formula-block {
+            background: #f5f5f5;
+            border-left: 4px solid var(--unit3);
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            color: #222;
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <div class="header-right-group">
+                <nav class="header-nav">
+                    <a href="/#publicacoes">Publicações</a>
+                    <a href="/ensino/" class="active">Ensino</a>
+                    <a href="/#contato">Contato</a>
+                </nav>
+                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <section class="article-hero">
+        <a href="/ensino/" class="back-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Voltar às notas
+        </a>
+        <div class="unit-label" style="color: var(--unit3);">Economia do Setor Público · Unidade 3 · Capítulo 15</div>
+        <h1>Tributação e Eficiência</h1>
+        <p class="lead" style="border-left-color: var(--unit3);">Todo imposto retira renda. Alguns impostos também distorcem escolhas — e essa distorção cria uma perda que não fica com o contribuinte nem se transforma em receita pública.</p>
+        <div class="article-meta">
+            <span>Prof. Eduardo Araujo</span>
+            <span class="divider"></span>
+            <span>Rosen, Cap. 15</span>
+            <span class="divider"></span>
+            <span>~28 min de leitura</span>
+            <div class="share-buttons">
+                <a href="#" class="share-btn" id="shareWhatsApp" aria-label="Compartilhar no WhatsApp">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    WhatsApp
+                </a>
+                <button class="share-btn" id="copyLink" aria-label="Copiar link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                    Copiar link
+                </button>
+            </div>
+        </div>
+    </section>
+    <div class="article-layout">
+        <div class="article-spacer"></div>
+        <article class="article-content">
+
+            <p>A tributação tem um custo evidente: ela retira renda disponível de famílias e empresas. O contribuinte paga, o governo arrecada, e os recursos financiam bens públicos, serviços ou transferências. O capítulo 15 de Rosen mostra que existe outro custo, menos visível e muitas vezes mais importante para a análise econômica: alguns impostos alteram preços relativos, mudam decisões privadas e impedem que trocas socialmente vantajosas ocorram.</p>
+            <p>Essa perda adicional é chamada de <strong>peso morto da tributação</strong>. Em outros textos, o conceito aparece como <em>excess burden</em>, excesso de gravame ou custo de eficiência da tributação. A distinção central é esta: a arrecadação é uma transferência de recursos do setor privado para o governo. O peso morto é a perda de bem-estar que não fica com o contribuinte nem se transforma em receita pública. Ela surge porque o imposto distorce escolhas.</p>
+
+            <h2 id="s1">15.1 A intuição do peso morto</h2>
+            <p>Rosen começa a explicação com a escolha de uma consumidora entre dois bens, como cevada e milho. Antes do imposto, ela distribui sua renda entre os dois bens de modo a alcançar a maior satisfação possível. No gráfico, essa escolha aparece no ponto de tangência entre a restrição orçamentária e uma curva de indiferença.</p>
+            <p>Quando o governo tributa apenas um dos bens, o preço relativo desse bem aumenta. A restrição orçamentária muda de inclinação. A consumidora reduz o consumo do bem tributado e desloca parte de sua renda para o outro bem. Essa mudança contém duas partes. A primeira é a receita do governo: parte da perda da consumidora se transforma em arrecadação. A segunda é a perda de eficiência: a consumidora não alterou sua escolha porque suas preferências mudaram, nem porque a produção ficou mais custosa para a sociedade. Ela mudou porque o imposto tornou artificialmente mais caro consumir aquele bem.</p>
+            <p>Essa é a origem do peso morto: o imposto leva a uma escolha diferente daquela que ocorreria se os preços refletissem apenas custos e preferências. A economia deixa de realizar algumas trocas que ainda seriam vantajosas do ponto de vista social.</p>
+
+            <figure class="article-figure">
+                <img src="/images/aulas/rosen-cap15-figura-1.svg" alt="Diagrama com duas restrições orçamentárias, curvas de indiferença, receita tributária e variação equivalente">
+                <figcaption>Figura 1 — Imposto sobre um bem: a cunha entre a restrição original e a restrição pós-imposto revela a receita tributária (retângulo sombreado) e a perda de eficiência que não se converte em receita (variação equivalente).</figcaption>
+            </figure>
+
+            <p>Nem toda perda do contribuinte é desperdício econômico. A parte arrecadada pelo governo é uma transferência. O peso morto é a parcela da perda que não se transforma em receita pública.</p>
+
+            <div class="concept-box" style="border-left-color: var(--unit3);">
+                <div class="concept-label" style="color: var(--unit3);">Distinção fundamental</div>
+                <p>A arrecadação é o retângulo: muda de mãos, saindo do contribuinte e indo para o governo. O peso morto é o triângulo: desaparece — não fica com ninguém.</p>
+            </div>
+
+            <h2 id="s2">15.2 Por que comparar com um imposto lump-sum</h2>
+            <p>Para separar a perda provocada pela simples retirada de renda da perda provocada pela distorção de preços, Rosen compara o imposto sobre um bem com um imposto de montante fixo, conhecido como <strong>lump-sum tax</strong>.</p>
+            <p>Um imposto lump-sum cobra um valor fixo do contribuinte, independentemente do que ele consome, de quanto trabalha ou de como organiza suas escolhas. Ele reduz a renda disponível, mas não altera preços relativos. Por isso, não muda artificialmente a relação entre dois bens, entre trabalho e lazer, ou entre consumir hoje e poupar para o futuro.</p>
+            <p>Essa comparação revela dois efeitos distintos. O <strong>efeito renda</strong> ocorre porque o contribuinte fica mais pobre ao pagar o imposto. O <strong>efeito substituição</strong> ocorre porque o imposto tornou uma opção relativamente mais cara do que outra. O imposto lump-sum gera apenas efeito renda. O imposto sobre um bem gera efeito renda e efeito substituição. <strong>O peso morto nasce do efeito substituição.</strong></p>
+            <p>Isso não significa que impostos lump-sum sejam desejáveis na prática. Eles são eficientes no sentido estrito, mas tendem a ser injustos. Um imposto fixo de R$ 5.000 por ano teria impacto muito diferente sobre uma família pobre e sobre uma família rica. A política tributária real precisa equilibrar arrecadação, eficiência e distribuição do ônus.</p>
+
+            <div class="concept-box" style="border-left-color: var(--unit3);">
+                <div class="concept-label" style="color: var(--unit3);">Efeito substituição = peso morto</div>
+                <p>O imposto lump-sum é eficiente porque não altera preços relativos — há só efeito renda. O peso morto surge quando o imposto induz o contribuinte a substituir uma escolha por outra não por preferência, mas por distorção de preços.</p>
+            </div>
+
+            <h2 id="s3">15.3 Como medir o peso morto com curvas de demanda</h2>
+            <p>Depois de apresentar a intuição pela escolha individual, Rosen passa para uma forma mais direta de mensuração: o gráfico de demanda. Um imposto específico sobre um bem cria uma diferença entre o preço pago pelo consumidor e o preço recebido pelo produtor. O consumidor paga mais, o produtor recebe menos e a quantidade negociada cai.</p>
+            <p>A arrecadação aparece como um retângulo: imposto por unidade multiplicado pela quantidade vendida depois do imposto. Já o peso morto aparece como um triângulo: ele representa as transações que deixaram de ocorrer por causa do imposto — trocas que eram socialmente desejáveis antes da tributação, nas quais havia consumidores dispostos a pagar mais do que o custo de produção.</p>
+
+            <figure class="article-figure">
+                <img src="/images/aulas/rosen-cap15-figura-2.svg" alt="Curva de demanda com imposto por unidade, retângulo de receita tributária e triângulo de peso morto">
+                <figcaption>Figura 2 — Mensuração do peso morto. O retângulo (área sombreada) é a receita tributária. O triângulo entre q₂ e q₁ é o peso morto: transações que deixaram de ocorrer mas ainda seriam socialmente vantajosas.</figcaption>
+            </figure>
+
+            <p>A fórmula aproximada ajuda a fixar a lógica:</p>
+            <div class="formula-block">Peso morto ≈ ½ × imposto por unidade × redução da quantidade</div>
+            <p>Essa expressão mostra três ideias importantes. Primeiro, quanto maior o imposto, maior tende a ser a perda de eficiência. Segundo, quanto maior a redução da quantidade, maior será o peso morto. Terceiro, o peso morto cresce de forma mais que proporcional quando a alíquota aumenta, porque o triângulo aumenta tanto em altura quanto em base.</p>
+            <p>Isso tem implicação direta para o desenho do sistema tributário. Alíquotas elevadas sobre bases estreitas tendem a gerar custos de eficiência altos. Em muitos casos, uma base ampla com alíquotas menores pode arrecadar o mesmo valor com menor distorção.</p>
+
+            <div class="concept-box" style="border-left-color: var(--unit3);">
+                <div class="concept-label" style="color: var(--unit3);">O triângulo cresce mais que proporcionalmente</div>
+                <p>Dobrar a alíquota não dobra o peso morto — ele aproximadamente quadruplica. Alíquotas altas têm custo de eficiência desproporcional em relação à arrecadação adicional gerada.</p>
+            </div>
+
+            <h2 id="s4">15.4 Elasticidade, tempo e mudança de comportamento</h2>
+            <p>O peso morto não surge simplesmente porque existe imposto. Ele surge porque o imposto muda decisões. Se a demanda por um bem fosse perfeitamente inelástica, a quantidade consumida não mudaria após a tributação. Nesse caso extremo, não haveria redução de transações e o imposto funcionaria de maneira semelhante a um lump-sum aplicado sobre aquele consumo.</p>
+            <p>Na prática, poucos bens têm demanda perfeitamente inelástica. A gasolina é um exemplo útil. No curto prazo, muitas pessoas não conseguem mudar facilmente seus deslocamentos — a demanda tende a ser menos elástica. No longo prazo, consumidores podem trocar de carro, mudar de residência, usar transporte público ou reorganizar sua rotina. A demanda se torna mais elástica, e a perda de eficiência associada ao imposto pode aumentar.</p>
+            <p>A elasticidade, portanto, não é uma característica fixa. Ela depende das alternativas disponíveis, do tempo de adaptação e da importância do bem no orçamento das famílias. Isso significa que o peso morto de um mesmo imposto pode ser bem diferente no curto e no longo prazo.</p>
+
+            <h2 id="s5">15.5 Distorções preexistentes e subsídios</h2>
+            <p>Impostos raramente são introduzidos em mercados perfeitamente livres de distorções. Muitas vezes, já existem outros tributos, subsídios, regulações, externalidades ou falhas de mercado. O custo de um novo imposto depende do ambiente em que ele é aplicado. Se um bem já é fortemente tributado, um aumento adicional pode gerar perda marginal elevada — a economia já estava afastada da alocação eficiente, e a nova tributação amplia essa distância.</p>
+            <p>Esse raciocínio ajuda a entender reformas tributárias. O problema não é apenas o nível agregado da carga tributária. O desenho do sistema importa. Um sistema com muitos regimes especiais, cumulatividade, exceções e alíquotas diferenciadas pode distorcer escolhas de produção e consumo. Empresas passam a organizar decisões não apenas com base em produtividade e demanda, mas também em oportunidades de reduzir imposto.</p>
+            <p>O mesmo raciocínio vale para <strong>subsídios</strong>. À primeira vista, o subsídio parece o oposto do imposto. Mas, do ponto de vista da eficiência, ele também altera preços relativos. Um subsídio pode induzir consumo ou produção acima do nível socialmente eficiente. Se o governo subsidia determinado bem, algumas unidades adicionais passam a ser consumidas mesmo quando seu custo social é maior do que o benefício gerado ao consumidor. A diferença entre custo e benefício dessas unidades representa peso morto.</p>
+            <p>Isso não significa que subsídios sejam sempre ruins. Eles podem ser justificados quando corrigem externalidades positivas, ampliam acesso a bens essenciais ou enfrentam desigualdades relevantes. O ponto é mais preciso: subsídios também têm custo de eficiência e precisam ser avaliados com o mesmo rigor aplicado aos impostos.</p>
+
+            <div class="concept-box" style="border-left-color: var(--unit3);">
+                <div class="concept-label" style="color: var(--unit3);">Subsídios também distorcem</div>
+                <p>Um subsídio pode criar peso morto assim como um imposto: ele pode induzir a produção ou o consumo de unidades cujo custo social supera o benefício privado. A lógica da eficiência se aplica nos dois sentidos.</p>
+            </div>
+
+            <h2 id="s6">15.6 O imposto de renda e a escolha entre trabalho e lazer</h2>
+            <p>A parte final do capítulo aplica a lógica do peso morto ao imposto de renda. Aqui, a distorção central ocorre na escolha entre trabalho e lazer. Quando o governo tributa a renda do trabalho, o salário líquido recebido pelo trabalhador diminui. Isso altera o preço relativo do lazer. Trabalhar uma hora a mais passa a render menos em termos líquidos. Como consequência, algumas pessoas podem decidir trabalhar menos, dedicar mais tempo ao lazer ou reduzir esforço em atividades remuneradas. Esse é o efeito substituição.</p>
+            <p>Mas existe também um efeito em sentido contrário. Como o imposto reduz a renda disponível, algumas pessoas podem querer trabalhar mais para recompor parte da renda perdida. Esse é o efeito renda.</p>
+            <p>O efeito final do imposto de renda sobre a oferta de trabalho depende de qual desses dois efeitos predomina. Não se deve afirmar de forma automática que um aumento do imposto de renda sempre reduz horas trabalhadas. A resposta pode variar entre grupos. Trabalhadores com jornada fixa podem reagir pouco. Profissionais autônomos, trabalhadores próximos da aposentadoria, pessoas com maior flexibilidade de horário ou segundos provedores da família podem reagir mais.</p>
+            <p>Mesmo quando a resposta em horas trabalhadas é pequena, o imposto de renda pode afetar outras margens de decisão: escolha ocupacional, informalidade, esforço, qualificação, poupança e investimento. O peso morto da tributação da renda, portanto, não depende apenas de a pessoa trabalhar mais ou menos horas. Ele pode aparecer em várias escolhas econômicas.</p>
+            <p>Essa discussão retoma a tensão entre eficiência e equidade. O imposto de renda é um dos principais instrumentos de redistribuição, mas pode gerar distorções. A questão prática não é eliminar esse imposto, e sim desenhá-lo de modo que combine progressividade, arrecadação e menor custo de eficiência possível.</p>
+
+            <div class="concept-box" style="border-left-color: var(--unit3);">
+                <div class="concept-label" style="color: var(--unit3);">Efeito substituição vs efeito renda</div>
+                <p>O imposto de renda não determina por si só que as pessoas trabalhem menos. O efeito final depende de qual dos dois efeitos predomina — e isso varia entre grupos, ocupações e contextos institucionais.</p>
+            </div>
+
+            <h2 id="s7">15.7 Como interpretar os gráficos e a lógica do capítulo</h2>
+            <p>Os gráficos do capítulo devem ser lidos a partir de uma distinção fundamental entre três elementos.</p>
+            <p>A primeira é a <strong>perda do contribuinte</strong>. Ela aparece quando o consumidor vai para uma curva de indiferença mais baixa ou quando o mercado passa a operar com menor quantidade.</p>
+            <p>A segunda é a <strong>arrecadação</strong>. Essa parte não é peso morto. Ela representa uma transferência de recursos para o governo — o retângulo no gráfico de demanda.</p>
+            <p>A terceira é a <strong>perda de eficiência</strong>. Essa é a parte que não fica com o contribuinte nem com o governo. Ela surge porque o imposto altera preços relativos e impede trocas que seriam vantajosas — o triângulo no gráfico de demanda.</p>
+            <p>Essa distinção ajuda a interpretar discussões concretas de política tributária. Um IVA com base ampla e poucas exceções tende a reduzir distorções entre setores. Impostos cumulativos podem gerar perdas de eficiência ao longo da cadeia produtiva. Benefícios fiscais podem deslocar recursos para atividades menos produtivas. Subsídios podem ampliar acesso, mas também induzir consumo excessivo. O imposto de renda pode promover redistribuição, mas alterar decisões de trabalho, poupança e investimento.</p>
+            <p>A pergunta central do capítulo não é se impostos são bons ou ruins. Governos precisam arrecadar para financiar bens públicos, políticas sociais e o funcionamento do Estado. A pergunta é outra: <strong>como arrecadar o necessário com o menor custo possível de eficiência e com uma distribuição socialmente aceitável do ônus?</strong></p>
+            <p>Tributação não é apenas uma questão contábil ou jurídica. É uma questão de incentivos. Um bom sistema tributário deve considerar não apenas quem paga formalmente o imposto, mas como o imposto muda decisões, preços relativos e bem-estar social.</p>
+
+            <div class="concept-box" style="border-left-color: var(--unit3);">
+                <div class="concept-label" style="color: var(--unit3);">Síntese</div>
+                <p>O retângulo é a arrecadação: muda de mãos. O triângulo é o peso morto: desaparece. Um bom sistema tributário arrecada o retângulo enquanto minimiza o triângulo — e distribui o ônus de forma socialmente aceitável.</p>
+            </div>
+
+            <div class="article-reference">
+                <strong>Referência</strong><br><br>
+                <span>Rosen, Harvey. <em>Public Finance</em>, capítulo 15, "Taxation and Efficiency". 8ª ed.</span>
+            </div>
+
+            <nav class="unit-nav">
+                <a href="/ensino/esp-u3-cap14-tributacao-renda.html" class="prev">
+                    <span class="nav-label">← Anterior</span>
+                    <span class="nav-title">Cap. 14: Tributação e Distribuição de Renda</span>
+                </a>
+                <a href="#" class="next disabled">
+                    <span class="nav-label">Próximo →</span>
+                    <span class="nav-title">Cap. 16: Tributação Ótima</span>
+                </a>
+            </nav>
+        </article>
+        <aside class="toc" id="toc">
+            <div class="toc-title">Neste capítulo</div>
+            <button class="toc-toggle" id="tocToggle" aria-expanded="false">
+                Neste capítulo
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="toc-links" id="tocLinks">
+                <a href="#s1" data-section="s1">15.1 A intuição do peso morto</a>
+                <a href="#s2" data-section="s2">15.2 Comparação com lump-sum</a>
+                <a href="#s3" data-section="s3">15.3 Medição com curva de demanda</a>
+                <a href="#s4" data-section="s4">15.4 Elasticidade e comportamento</a>
+                <a href="#s5" data-section="s5">15.5 Distorções e subsídios</a>
+                <a href="#s6" data-section="s6">15.6 Imposto de renda e lazer</a>
+                <a href="#s7" data-section="s7">15.7 Leitura dos gráficos</a>
+            </div>
+        </aside>
+    </div>
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+    <script>
+        var progressBar = document.getElementById('progressBar');
+        function updateProgress() {
+            var scrollTop = window.scrollY;
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            progressBar.style.width = progress + '%';
+        }
+        var tocLinkEls = document.querySelectorAll('.toc a');
+        var sects = [];
+        tocLinkEls.forEach(function(link) {
+            var id = link.getAttribute('data-section');
+            var el = document.getElementById(id);
+            if (el) sects.push({ el: el, link: link });
+        });
+        function updateToc() {
+            var current = sects[0];
+            var scrollPos = window.scrollY + 130;
+            for (var i = 0; i < sects.length; i++) {
+                if (sects[i].el.offsetTop <= scrollPos) current = sects[i];
+            }
+            tocLinkEls.forEach(function(l) { l.classList.remove('active'); });
+            if (current) current.link.classList.add('active');
+        }
+        window.addEventListener('scroll', function() { updateProgress(); updateToc(); });
+        updateProgress(); updateToc();
+        var tocToggle = document.getElementById('tocToggle');
+        var tocLinksContainer = document.getElementById('tocLinks');
+        if (tocToggle && tocLinksContainer) {
+            tocToggle.addEventListener('click', function() {
+                var isOpen = tocToggle.classList.toggle('open');
+                tocLinksContainer.classList.toggle('open');
+                tocToggle.setAttribute('aria-expanded', isOpen);
+            });
+        }
+        var shareWA = document.getElementById('shareWhatsApp');
+        if (shareWA) {
+            shareWA.addEventListener('click', function(e) {
+                e.preventDefault();
+                var text = document.title + ' ' + window.location.href;
+                window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+            });
+        }
+        var copyBtn = document.getElementById('copyLink');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', function() {
+                navigator.clipboard.writeText(window.location.href).then(function() {
+                    copyBtn.classList.add('copied');
+                    var svgEl = copyBtn.querySelector('svg').outerHTML;
+                    copyBtn.innerHTML = svgEl + ' Copiado!';
+                    setTimeout(function() {
+                        copyBtn.innerHTML = svgEl + ' Copiar link';
+                        copyBtn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        }
+    </script>
+    <script src="/js/search.js"></script>
+</body>
+</html>
