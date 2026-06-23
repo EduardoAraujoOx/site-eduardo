@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coeficiente histórico ES/BR — Reforma Tributária | Eduardo Reis Araújo</title>
-    <meta name="description" content="Cálculo do coeficiente histórico do Espírito Santo na arrecadação de ISS e ICMS (2019–2026) para fins de participação na distribuição do IBS/CBS da Reforma Tributária.">
+    <title>Coeficiente de Participação de Transição ES — Reforma Tributária | Eduardo Reis Araújo</title>
+    <meta name="description" content="Cálculo do Coeficiente de Participação de Transição do Espírito Santo no IBS, conforme LC 227/2026 (arts. 114, 115 e 129). ICMS líquido da cota-parte municipal deflacionado pela variação nominal do agregado nacional ICMS+ISS.">
     <meta name="author" content="Eduardo Reis Araujo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/reforma-tributaria-coeficiente.html">
 
-    <meta property="og:title" content="Coeficiente histórico ES/BR — Reforma Tributária">
-    <meta property="og:description" content="ISS e ICMS do Espírito Santo em relação ao Brasil (2019–2026), valores nominais e deflacionados pelo IPCA para cálculo do coeficiente IBS/CBS.">
+    <meta property="og:title" content="Coeficiente de Participação de Transição ES — Reforma Tributária">
+    <meta property="og:description" content="ICMS líquido do ES (dedução de 25% cota-parte municipal), deflacionado pelo crescimento nominal do agregado nacional ICMS+ISS, para cálculo do CPT_ES conforme LC 227/2026.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/reforma-tributaria-coeficiente.html">
     <meta property="og:locale" content="pt_BR">
@@ -246,11 +246,13 @@
                 <span class="study-hero-topic">Finanças Públicas</span>
                 <span class="study-hero-date">Jun 2026</span>
             </div>
-            <h1>Coeficiente histórico ES/BR<br>para a Reforma Tributária</h1>
+            <h1>Coeficiente de Participação<br>de Transição — ES</h1>
             <p class="lead">
-                Cálculo do peso do Espírito Santo na arrecadação nacional de ISS e ICMS
-                (2019–2026) como base para a participação estadual na distribuição do IBS e CBS,
-                conforme regras de transição da LC 214/2025. Dados: SICONFI/STN, RREO Anexo 3.
+                Cálculo do CPT_ES: participação do Espírito Santo na distribuição do IBS durante
+                o período de transição de 50 anos. Metodologia: LC 227/2026, arts. 114, 115 e 129.
+                Numerador = média do ICMS líquido da cota-parte municipal do ES (2019–2026), corrigido
+                pela variação nominal do agregado nacional ICMS+ISS. Denominador = total nacional
+                ICMS+ISS do ano de 2026. Dados: SICONFI/STN, RREO Anexo 3.
             </p>
         </section>
 
@@ -259,21 +261,21 @@
             <!-- Result highlight -->
             <div class="result-box" id="result-box" style="display:none">
                 <div>
-                    <div class="result-label">Coeficiente ES/BR (Total A / Total B)</div>
+                    <div class="result-label">CPT_ES = Total A / Total B</div>
                     <div class="result-value" id="coeff-main">—</div>
                 </div>
                 <div>
-                    <div class="result-label">ISS + ICMS — ES (total série, preços 2026)</div>
+                    <div class="result-label">Total A — Média ICMS liq. ES corrigido (R$ bi)</div>
                     <div class="result-value" id="total-es">—</div>
                 </div>
                 <div>
-                    <div class="result-label">ISS + ICMS — BR (total série, preços 2026)</div>
+                    <div class="result-label">Total B — ICMS+ISS BR de 2026 (R$ bi)</div>
                     <div class="result-value" id="total-br">—</div>
                 </div>
             </div>
 
             <!-- Main table -->
-            <span class="section-label">Tabela 1 — Arrecadação ISS e ICMS (R$ bilhões nominais)</span>
+            <span class="section-label">Tabela 1 — Cálculo do CPT_ES (LC 227/2026, arts. 114 e 115)</span>
             <div id="status-nominal" class="status-bar">
                 <span class="status-dot pending"></span>
                 <span>Carregando dados do SICONFI…</span>
@@ -283,42 +285,69 @@
                     <thead>
                         <tr>
                             <th class="th-group th-year" rowspan="2">Ano</th>
-                            <th class="th-group" colspan="2">① ISS</th>
-                            <th class="th-group" colspan="2">② ICMS</th>
-                            <th class="th-group" colspan="2">TOTAL ① + ②</th>
-                            <th class="th-group" rowspan="2">Índice<br>IPCA</th>
-                            <th class="th-group" colspan="2">Total ①+② Preços 2026</th>
+                            <th class="th-group" colspan="3">ICMS — Espírito Santo</th>
+                            <th class="th-group" colspan="3">Agregado Nacional (deflator)</th>
+                            <th class="th-group" rowspan="2">Deflator<br>(BR₂₀₂₆/BRₜ)</th>
+                            <th class="th-group" rowspan="2">ICMS ES liq.<br>corrigido (R$ bi)</th>
                         </tr>
                         <tr>
-                            <th>BR</th><th>ES</th>
-                            <th>BR</th><th>ES</th>
-                            <th>BR</th><th>ES</th>
-                            <th>ES</th><th>BR</th>
+                            <th>Bruto (R$ bi)</th>
+                            <th>Liq. ×0,75 (R$ bi)</th>
+                            <th title="25% repassados aos municípios — art. 158, IV, CF">Cota-parte mun.</th>
+                            <th>ICMS BR (R$ bi)</th>
+                            <th>ISS BR (R$ bi)</th>
+                            <th>Total BR (R$ bi)</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-nominal">
-                        <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                        <tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-muted)">Aguardando dados…</td></tr>
                     </tbody>
                     <tfoot id="tfoot-nominal"></tfoot>
                 </table>
             </div>
 
+            <!-- Secondary info table -->
+            <span class="section-label" style="margin-top:2rem">Tabela 2 — Dados complementares ISS e ICMS (contexto)</span>
+            <div class="data-table-wrap">
+                <table class="data-table" id="table-context">
+                    <thead>
+                        <tr>
+                            <th class="th-group th-year">Ano</th>
+                            <th class="th-group">ICMS BR (R$ bi)</th>
+                            <th class="th-group">ICMS ES bruto (R$ bi)</th>
+                            <th class="th-group">ISS ES (R$ bi)</th>
+                            <th class="th-group">ISS BR (R$ bi)</th>
+                            <th class="th-group">Part. ICMS ES/BR</th>
+                            <th class="th-group">Part. ISS ES/BR</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-context">
+                        <tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
             <!-- Metodologia -->
             <div class="metodologia">
-                <strong>Metodologia</strong>
+                <strong>Metodologia — LC 227/2026, arts. 114, 115 e 129</strong>
                 <ul>
-                    <li><strong>Fonte:</strong> SICONFI (STN) — RREO Anexo 3, coluna "Total Últimos 12 Meses". Para 2019–2025: período 6 (bimestre nov–dez). Para 2026: período 2 (bimestre mar–abr, dado mais recente disponível). Acesso via API Data Lake do Tesouro Nacional.</li>
-                    <li><strong>ISS:</strong> soma dos municípios (co_esfera=M), conta <code>ISSLiquidoExcetoTransferenciasEFUNDEB</code>. ISS ES = somatório dos 78 municípios capixabas.</li>
-                    <li><strong>ICMS:</strong> conta <code>ICMSLiquidoExcetoTransferenciasEFUNDEB</code> de cada estado (co_esfera=E), líquido de transferências e FUNDEB.</li>
-                    <li><strong>Deflator:</strong> IPCA acumulado anual (IBGE), com base em dezembro de 2025 (preços jan/2026).</li>
-                    <li><strong>Coeficiente:</strong> Total A (ES, soma da série deflacionada) / Total B (BR, soma da série deflacionada), conforme metodologia da LC 214/2025.</li>
+                    <li><strong>CPT_ES = Total A / Total B</strong>, onde Total A é a média aritmética de 8 valores anuais e Total B é o agregado nacional apenas do ano de 2026.</li>
+                    <li><strong>Total A (numerador):</strong> para cada ano t de 2019 a 2026, calcula-se ICMS_ES_bruto × 0,75 (dedução da cota-parte municipal de 25%, art. 158, IV, "a", CF) × deflator_t. O deflator_t = Total_BR_2026 / Total_BR_t, onde Total_BR = ICMS_BR + ISS_BR. Ano âncora 2026: deflator = 1. A média dos 8 valores é o Total A.</li>
+                    <li><strong>Total B (denominador):</strong> ICMS_BR_2026 + ISS_BR_2026. Valor fixo do ano de 2026, sem correção.</li>
+                    <li><strong>Deflator:</strong> variação nominal do agregado nacional ICMS+ISS — <em>não é o IPCA</em> (art. 115, §2º, II, LC 227/2026).</li>
+                    <li><strong>ISS ES:</strong> não entra no numerador do CPT_ES; consta apenas na Tabela 2 como dado de contexto e compõe o ISS BR do denominador.</li>
+                    <li><strong>Fundeb:</strong> não entra no coeficiente; é deduzido após a distribuição da receita do IBS ao estado (arts. 118, §4º, I e 122, §1º, I, LC 227/2026).</li>
+                    <li><strong>Fonte:</strong> SICONFI (STN) — RREO Anexo 3, coluna "Total Últimos 12 Meses". Para 2019–2025: período 6 (bimestre nov–dez). Para 2026: período 2 (bimestre mar–abr, mais recente disponível; atualizar com período 6 quando publicado).</li>
+                    <li><strong>Conta ICMS:</strong> <code>ICMSLiquidoExcetoTransferenciasEFUNDEB</code> (arrecadação bruta, líquida apenas de restituições — as transferências constitucionais e FUNDEB não estão deduzidas aqui; a dedução de 25% é aplicada manualmente na fórmula).</li>
+                    <li><strong>Conta ISS:</strong> <code>ISSLiquidoExcetoTransferenciasEFUNDEB</code> dos municípios (co_esfera=M).</li>
                 </ul>
             </div>
 
             <div class="footnote">
-                <p>¹ Dados de ISS para o Brasil exigem consulta individual a 5.570 municípios — coletados via GitHub Actions (27 jobs paralelos por estado). ISS BR poderá exibir "aguardando" até conclusão da primeira coleta.</p>
-                <p>² Valores nominais em R$ bilhões. Atualização monetária pelo IPCA/IBGE.</p>
-                <p>Fonte: <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">SICONFI — API Data Lake STN</a>. Script de coleta disponível em <code>/data/collect-siconfi.py</code>.</p>
+                <p>¹ ISS BR exige consulta individual a 5.570 municípios e é necessário para o deflator e o denominador. Coletado via GitHub Actions (27 jobs paralelos por estado). Enquanto pendente, o deflator e o CPT_ES ficam em aberto.</p>
+                <p>² Possível acréscimo ao numerador (art. 115, I, "b", LC 227/2026): se o ES mantinha em 30/04/2023 fundo estadual financiado por contribuições vinculadas a diferimento ou regime especial de ICMS (ex.: FUNDES-ES), a receita dessas contribuições entra no Total A com deflator próprio para os anos 2021–2023. Verificação pendente.</p>
+                <p>³ Adicional de ICMS para o Fundo de Combate à Pobreza (art. 82 ADCT): se vigente, compõe o numerador na proporção da receita média do adicional sobre a receita bruta média do ICMS de 2019–2026 (art. 129, §1º, I, LC 227/2026).</p>
+                <p>Fonte: <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">SICONFI — API Data Lake STN</a>. Scripts de coleta em <code>/data/collect-siconfi.py</code> e <code>/data/collect-2026.py</code>.</p>
             </div>
         </section>
     </main>
@@ -327,51 +356,26 @@
 
     <script src="/js/main.js"></script>
     <script>
-    // IPCA annual rates — Source: IBGE SIDRA
-    // 2026: uses period 2 (mar-abr) data, deflated to preços jan/2026 (base = dez/2025)
-    const IPCA_ANUAL = {
-        2019: 4.31,
-        2020: 4.52,
-        2021: 10.06,
-        2022: 5.79,
-        2023: 4.62,
-        2024: 4.83,
-        2025: 5.48,  // update when final IBGE data available
-        2026: null   // base year, no deflation needed
-    };
+    // LC 227/2026 — arts. 114, 115 e 129
+    // CPT_ES = Total A / Total B
+    // Total A = média aritmética de (ICMS_ES_bruto × 0,75 × deflator_t) para t = 2019..2026
+    // deflator_t = TotalBR_2026 / TotalBR_t,  TotalBR = ICMS_BR + ISS_BR
+    // Total B = ICMS_BR_2026 + ISS_BR_2026  (fixo, sem correção)
 
-    // SICONFI period used per year
-    const PERIODO_SICONFI = {
-        2019: 6, 2020: 6, 2021: 6, 2022: 6, 2023: 6, 2024: 6, 2025: 6,
-        2026: 2  // bimestre mar-abr (most recent available)
-    };
+    const ANOS = [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
+    const COTA_PARTE_MUN = 0.25; // art. 158, IV, "a", CF — 25% ICMS vai aos municípios
 
-    // Deflator: multiply nominal value by this factor to get "preços 2026" (base Dec/2025)
-    // deflator[year] = product of IPCA rates from year+1 to 2025
-    function calcDeflators() {
-        const anos = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
-        const deflators = {};
-        for (const ano of anos) {
-            let acc = 1;
-            for (let y = ano + 1; y <= 2025; y++) {
-                acc *= (1 + (IPCA_ANUAL[y] || 0) / 100);
-            }
-            // Include the current year's IPCA for partial-year effect
-            // (values at end of year, so deflate from end of year to Dec/2025)
-            deflators[ano] = acc;
-        }
-        deflators[2025] = 1; // already at 2025 prices, minor adjustment not needed
-        return deflators;
-    }
-
-    function fmt(val, digits = 2) {
+    function fmtBi(val, digits = 2) {
         if (val == null) return '<span class="na-cell">aguard.</span>';
         return (val / 1e9).toFixed(digits).replace('.', ',');
     }
-
-    function fmtPct(val) {
-        if (val == null) return '<span class="na-cell">—</span>';
-        return val.toFixed(4).replace('.', ',') + '%';
+    function fmtDeflator(val) {
+        if (val == null) return '<span class="na-cell">aguard.</span>';
+        return val.toFixed(4).replace('.', ',');
+    }
+    function fmtPct(val, digits = 4) {
+        if (val == null) return '<span class="na-cell">aguard.</span>';
+        return val.toFixed(digits).replace('.', ',') + '%';
     }
 
     async function loadData() {
@@ -382,113 +386,150 @@
             data = await resp.json();
         } catch (e) {
             document.getElementById('status-nominal').innerHTML =
-                '<span class="status-dot pending"></span> Dados ainda não disponíveis. Execute a coleta SICONFI primeiro.';
+                '<span class="status-dot pending"></span> Dados ainda não disponíveis.';
             return;
         }
 
-        const anos = data.anos || [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
-        const deflators = calcDeflators();
-
-        // ISS ES: prefer collected municipalities sum, fall back to collected data
         const iss_es = data.iss_es_from_munis || data.iss_es || {};
         const iss_br = data.iss_br || {};
         const icms_es = data.icms_es || {};
         const icms_br = data.icms_br || {};
 
+        // TotalBR por ano — necessário para deflator
+        const totalBR = {};
+        for (const ano of ANOS) {
+            const ib = icms_br[ano] ?? null;
+            const is = iss_br[ano] ?? null;
+            totalBR[ano] = (ib != null && is != null) ? ib + is : null;
+        }
+
+        // Total B = denominador fixo de 2026
+        const totalB = totalBR[2026];
+
+        // Deflator_t = TotalBR_2026 / TotalBR_t  (2026: deflator = 1 por definição)
+        const deflators = {};
+        for (const ano of ANOS) {
+            if (ano === 2026) { deflators[ano] = 1; continue; }
+            deflators[ano] = (totalB != null && totalBR[ano] != null)
+                ? totalB / totalBR[ano]
+                : null;
+        }
+
+        // Numerador: para cada ano, ICMS_ES × 0,75 × deflator
+        const icmsEsLiq = {};    // ICMS_ES_bruto × 0,75
+        const icmsEsCor = {};    // ICMS_ES_liq × deflator
+        for (const ano of ANOS) {
+            const bruto = icms_es[ano] ?? null;
+            icmsEsLiq[ano] = bruto != null ? bruto * (1 - COTA_PARTE_MUN) : null;
+            icmsEsCor[ano] = (icmsEsLiq[ano] != null && deflators[ano] != null)
+                ? icmsEsLiq[ano] * deflators[ano]
+                : null;
+        }
+
+        // Total A = média aritmética dos 8 valores corrigidos
+        const valoresA = ANOS.map(a => icmsEsCor[a]).filter(v => v != null);
+        const totalA = valoresA.length === ANOS.length
+            ? valoresA.reduce((s, v) => s + v, 0) / ANOS.length
+            : null;
+
+        const coeff = (totalA != null && totalB != null && totalB > 0)
+            ? totalA / totalB
+            : null;
+
+        // ── Tabela 1 ──────────────────────────────────────────────────────────
         const tbody = document.getElementById('tbody-nominal');
         const tfoot = document.getElementById('tfoot-nominal');
 
-        let totalA_es_def = 0, totalB_br_def = 0;
-        let totalA_es_nom = 0, totalB_br_nom = 0;
-        let hasAllISSBR = true;
-
-        const rows = anos.map(ano => {
-            const issEs = iss_es[ano] ?? null;
-            const issBr = iss_br[ano] ?? null;
-            const icmsEs = icms_es[ano] ?? null;
-            const icmsBr = icms_br[ano] ?? null;
-
-            if (issBr == null) hasAllISSBR = false;
-
-            const totalEs = (issEs != null && icmsEs != null) ? issEs + icmsEs : null;
-            const totalBr = (issBr != null && icmsBr != null) ? issBr + icmsBr : null;
-
-            const deflator = deflators[ano] || 1;
-            const ipca_idx = IPCA_ANUAL[ano] ?? null;
-
-            const totalEsDef = totalEs != null ? totalEs * deflator : null;
-            const totalBrDef = totalBr != null ? totalBr * deflator : null;
-
-            if (totalEsDef != null) totalA_es_def += totalEsDef;
-            if (totalBrDef != null) totalB_br_def += totalBrDef;
-            if (totalEs != null) totalA_es_nom += totalEs;
-            if (totalBr != null) totalB_br_nom += totalBr;
-
-            const ipca_str = ipca_idx != null
-                ? `${ipca_idx.toFixed(2).replace('.', ',')}%`
-                : '<span class="na-cell">—</span>';
+        const rows = ANOS.map(ano => {
+            const bruto = icms_es[ano] ?? null;
+            const liq   = icmsEsLiq[ano];
+            const cotaMun = bruto != null ? bruto * COTA_PARTE_MUN : null;
+            const icmsBr  = icms_br[ano] ?? null;
+            const issBr   = iss_br[ano] ?? null;
+            const tBR     = totalBR[ano];
+            const def     = deflators[ano];
+            const cor     = icmsEsCor[ano];
 
             return `<tr>
-                <td class="td-year">${ano}</td>
-                <td>${fmt(issBr)}</td>
-                <td>${fmt(issEs)}</td>
-                <td>${fmt(icmsBr)}</td>
-                <td>${fmt(icmsEs)}</td>
-                <td>${fmt(totalBr)}</td>
-                <td>${fmt(totalEs)}</td>
-                <td style="text-align:center">${ipca_str}</td>
-                <td>${fmt(totalEsDef)}</td>
-                <td>${fmt(totalBrDef)}</td>
+                <td class="td-year">${ano}${ano === 2026 ? ' ²' : ''}</td>
+                <td>${fmtBi(bruto)}</td>
+                <td>${fmtBi(liq)}</td>
+                <td style="color:var(--text-muted);font-size:0.72rem">${fmtBi(cotaMun)}</td>
+                <td>${fmtBi(icmsBr)}</td>
+                <td>${fmtBi(issBr)}</td>
+                <td>${fmtBi(tBR)}</td>
+                <td style="text-align:center">${ano === 2026 ? '1,0000 ¹' : fmtDeflator(def)}</td>
+                <td class="${cor != null ? 'td-coeff' : ''}">${fmtBi(cor, 3)}</td>
             </tr>`;
         });
 
         tbody.innerHTML = rows.join('');
 
-        const coeff = totalB_br_def > 0 ? (totalA_es_def / totalB_br_def * 100) : null;
-
+        const nDisp = valoresA.length;
         tfoot.innerHTML = `
             <tr>
-                <td class="td-year">Total</td>
-                <td colspan="4"></td>
-                <td>${fmt(totalB_br_nom)}</td>
-                <td>${fmt(totalA_es_nom)}</td>
-                <td></td>
-                <td class="td-coeff" id="total-a">${fmt(totalA_es_def)}</td>
-                <td class="td-coeff" id="total-b">${fmt(totalB_br_def)}</td>
+                <td class="td-year">Média (÷8)</td>
+                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">
+                    Total A = média dos ${nDisp}/8 anos corrigidos
+                </td>
+                <td class="td-coeff">${fmtBi(totalA, 3)}</td>
             </tr>
             <tr>
-                <td class="td-year">Índice</td>
+                <td class="td-year">Denominador</td>
+                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">
+                    Total B = ICMS BR₂₀₂₆ + ISS BR₂₀₂₆ (fixo, sem correção)
+                </td>
+                <td class="td-coeff">${fmtBi(totalB, 3)}</td>
+            </tr>
+            <tr>
+                <td class="td-year" style="color:var(--accent)">CPT_ES</td>
                 <td colspan="7" style="text-align:center;font-style:italic;color:var(--text-muted)">
                     Total A / Total B
                 </td>
-                <td colspan="2" class="td-coeff" style="text-align:center;font-size:1rem">
-                    ${coeff != null ? coeff.toFixed(4).replace('.', ',') + '%' : '<span class="na-cell">aguard. ISS BR</span>'}
+                <td class="td-coeff" style="font-size:1rem">
+                    ${coeff != null ? fmtPct(coeff * 100) : '<span class="na-cell">aguard. ISS BR</span>'}
                 </td>
             </tr>`;
 
-        // Update status
-        const hasICMS = icms_es[2023] != null;
-        const hasISSES = iss_es[2023] != null;
-        const statusDot = hasICMS && hasISSES && hasAllISSBR ? 'status-dot' : 'status-dot pending';
+        // ── Tabela 2 (contexto) ───────────────────────────────────────────────
+        const tbody2 = document.getElementById('tbody-context');
+        const rows2 = ANOS.map(ano => {
+            const ib = icms_br[ano] ?? null;
+            const ie = icms_es[ano] ?? null;
+            const ise = iss_es[ano] ?? null;
+            const isb = iss_br[ano] ?? null;
+            const partICMS = (ie != null && ib != null && ib > 0) ? ie / ib * 100 : null;
+            const partISS  = (ise != null && isb != null && isb > 0) ? ise / isb * 100 : null;
+            return `<tr>
+                <td class="td-year">${ano}</td>
+                <td>${fmtBi(ib)}</td>
+                <td>${fmtBi(ie)}</td>
+                <td>${fmtBi(ise)}</td>
+                <td>${fmtBi(isb)}</td>
+                <td>${fmtPct(partICMS, 2)}</td>
+                <td>${fmtPct(partISS, 2)}</td>
+            </tr>`;
+        });
+        tbody2.innerHTML = rows2.join('');
+
+        // ── Status bar ────────────────────────────────────────────────────────
+        const hasICMS  = icms_es[2023] != null;
+        const hasISSES = (iss_es[2023] ?? null) != null;
+        const hasISSBR = iss_br[2023] != null;
+        const allOK = hasICMS && hasISSES && hasISSBR;
         let statusMsg = [];
-        if (!hasICMS) statusMsg.push('ICMS: coletando…');
-        else statusMsg.push('ICMS: OK');
-        if (!hasISSES) statusMsg.push('ISS ES: coletando…');
-        else statusMsg.push('ISS ES: OK');
-        if (!hasAllISSBR) statusMsg.push('ISS BR: aguardando GitHub Action');
-        else statusMsg.push('ISS BR: OK');
+        statusMsg.push(hasICMS  ? 'ICMS: OK' : 'ICMS: coletando…');
+        statusMsg.push(hasISSES ? 'ISS ES: OK' : 'ISS ES: coletando…');
+        statusMsg.push(hasISSBR ? 'ISS BR: OK' : 'ISS BR: aguardando GitHub Action');
 
         document.getElementById('status-nominal').innerHTML =
-            `<span class="${statusDot}"></span> ${statusMsg.join(' · ')}`;
+            `<span class="status-dot ${allOK ? '' : 'pending'}"></span> ${statusMsg.join(' · ')}`;
 
-        // Show result box if we have the coefficient
+        // ── Result box ────────────────────────────────────────────────────────
         if (coeff != null) {
-            document.getElementById('coeff-main').textContent =
-                coeff.toFixed(4).replace('.', ',') + '%';
-            document.getElementById('total-es').textContent =
-                'R$ ' + fmt(totalA_es_def) + 'B';
-            document.getElementById('total-br').textContent =
-                'R$ ' + fmt(totalB_br_def) + 'B';
+            document.getElementById('coeff-main').textContent = fmtPct(coeff * 100).replace(/<[^>]+>/g, '');
+            document.getElementById('total-es').textContent = 'R$ ' + fmtBi(totalA, 3).replace(/<[^>]+>/g, '') + 'B';
+            document.getElementById('total-br').textContent = 'R$ ' + fmtBi(totalB, 3).replace(/<[^>]+>/g, '') + 'B';
             document.getElementById('result-box').style.display = 'flex';
         }
     }
