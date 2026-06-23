@@ -261,21 +261,21 @@
             <!-- Result highlight -->
             <div class="result-box" id="result-box" style="display:none">
                 <div>
-                    <div class="result-label">CPT_ES = Total A / Total B</div>
+                    <div class="result-label">CPT_ES (critério origem)</div>
                     <div class="result-value" id="coeff-main">—</div>
                 </div>
                 <div>
-                    <div class="result-label">Total A — Média ICMS liq. ES corrigido (R$ bi)</div>
+                    <div class="result-label">Receita Média de Referência ES (R$ bi)</div>
                     <div class="result-value" id="total-es">—</div>
                 </div>
                 <div>
-                    <div class="result-label">Total B — ICMS+ISS BR de 2026 (R$ bi)</div>
+                    <div class="result-label">Denominador — Total_BR_2026 (R$ bi)</div>
                     <div class="result-value" id="total-br">—</div>
                 </div>
             </div>
 
             <!-- Main table -->
-            <span class="section-label">Tabela 1 — Cálculo do CPT_ES (LC 227/2026, arts. 114 e 115)</span>
+            <span class="section-label">Tabela 1 — CPT_ES: Espírito Santo (LC 227/2026, art. 115)</span>
             <div id="status-nominal" class="status-bar">
                 <span class="status-dot pending"></span>
                 <span>Carregando dados do SICONFI…</span>
@@ -285,22 +285,20 @@
                     <thead>
                         <tr>
                             <th class="th-group th-year" rowspan="2">Ano</th>
-                            <th class="th-group" colspan="3">ICMS — Espírito Santo</th>
-                            <th class="th-group" colspan="3">Agregado Nacional (deflator)</th>
-                            <th class="th-group" rowspan="2">Deflator<br>(BR₂₀₂₆/BRₜ)</th>
-                            <th class="th-group" rowspan="2">ICMS ES liq.<br>corrigido (R$ bi)</th>
+                            <th class="th-group" colspan="2">ICMS — Espírito Santo</th>
+                            <th class="th-group" colspan="3">Índice de atualização</th>
+                            <th class="th-group" rowspan="2">ICMS ES corrigido<br>(R$ bi)</th>
                         </tr>
                         <tr>
                             <th>Bruto (R$ bi)</th>
-                            <th>Liq. ×0,75 (R$ bi)</th>
-                            <th title="25% repassados aos municípios — art. 158, IV, CF">Cota-parte mun.</th>
+                            <th>Líquido ×0,75 (R$ bi)</th>
                             <th>ICMS BR (R$ bi)</th>
                             <th>ISS BR (R$ bi)</th>
-                            <th>Total BR (R$ bi)</th>
+                            <th>Total_BR / Índice</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-nominal">
-                        <tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                        <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted)">Aguardando dados…</td></tr>
                     </tbody>
                     <tfoot id="tfoot-nominal"></tfoot>
                 </table>
@@ -331,23 +329,22 @@
             <div class="metodologia">
                 <strong>Metodologia — LC 227/2026, arts. 114, 115 e 129</strong>
                 <ul>
-                    <li><strong>CPT_ES = Total A / Total B</strong>, onde Total A é a média aritmética de 8 valores anuais e Total B é o agregado nacional apenas do ano de 2026.</li>
-                    <li><strong>Total A (numerador):</strong> para cada ano t de 2019 a 2026, calcula-se ICMS_ES_bruto × 0,75 (dedução da cota-parte municipal de 25%, art. 158, IV, "a", CF) × deflator_t. O deflator_t = Total_BR_2026 / Total_BR_t, onde Total_BR = ICMS_BR + ISS_BR. Ano âncora 2026: deflator = 1. A média dos 8 valores é o Total A.</li>
-                    <li><strong>Total B (denominador):</strong> ICMS_BR_2026 + ISS_BR_2026. Valor fixo do ano de 2026, sem correção.</li>
-                    <li><strong>Deflator:</strong> variação nominal do agregado nacional ICMS+ISS — <em>não é o IPCA</em> (art. 115, §2º, II, LC 227/2026).</li>
-                    <li><strong>ISS ES:</strong> não entra no numerador do CPT_ES; consta apenas na Tabela 2 como dado de contexto e compõe o ISS BR do denominador.</li>
-                    <li><strong>Fundeb:</strong> não entra no coeficiente; é deduzido após a distribuição da receita do IBS ao estado (arts. 118, §4º, I e 122, §1º, I, LC 227/2026).</li>
-                    <li><strong>Fonte:</strong> SICONFI (STN) — RREO Anexo 3, coluna "Total Últimos 12 Meses". Para 2019–2025: período 6 (bimestre nov–dez). Para 2026: período 2 (bimestre mar–abr, mais recente disponível; atualizar com período 6 quando publicado).</li>
-                    <li><strong>Conta ICMS:</strong> <code>ICMSLiquidoExcetoTransferenciasEFUNDEB</code> (arrecadação bruta, líquida apenas de restituições — as transferências constitucionais e FUNDEB não estão deduzidas aqui; a dedução de 25% é aplicada manualmente na fórmula).</li>
-                    <li><strong>Conta ISS:</strong> <code>ISSLiquidoExcetoTransferenciasEFUNDEB</code> dos municípios (co_esfera=M).</li>
+                    <li><strong>Passo 1 — Índice de atualização:</strong> para cada ano t, Total_BR_t = Σ ICMS estados + Σ ISS municípios. Índice_t = Total_BR_2026 / Total_BR_t. Índice de 2026 = 1,000 por definição. Idêntico para todos os entes.</li>
+                    <li><strong>Passo 2 — Receita Média do ES:</strong> para cada ano t, ICMS_ES_bruto × 0,75 × Índice_t. Média aritmética simples dos 8 valores = Receita Média de Referência ES.</li>
+                    <li><strong>Passo 3 — Denominador:</strong> soma das Receitas Médias de Referência de todos os estados, DF e municípios do Brasil. Algebricamente equivale a Total_BR_2026 (ver nota metodológica abaixo).</li>
+                    <li><strong>CPT_ES = Receita Média ES / Denominador.</strong> A soma dos CPTs de todos os entes = 100%.</li>
+                    <li><strong>Coluna "2026":</strong> 2º bimestre, coluna "Previsão Atualizada do Exercício" — melhor aproximação do total anual disponível antes do encerramento do exercício.</li>
+                    <li><strong>Municípios ES (próxima etapa):</strong> para cada município capixaba, Receita Média = (ISS_muni + cota-parte ICMS_ES × 0,25 × fração_muni) × Índice_t, média dos 8 anos.</li>
                 </ul>
+                <p style="margin-top:0.75rem;font-size:0.82rem"><strong>Nota — por que o denominador = Total_BR_2026:</strong>
+                Denominador = Σ_entes(Média_t(Receita_ente_t × Índice_t)). Como Índice_t = Total_BR_2026 / Total_BR_t, ao somar todos os entes o numerador e denominador do índice se cancelam em cada ano t: Σ_entes(Receita_ente_t) = Total_BR_t → Média_t(Total_BR_2026) = Total_BR_2026.</p>
             </div>
 
             <div class="footnote">
-                <p>¹ ISS BR exige consulta individual a 5.570 municípios e é necessário para o deflator e o denominador. Coletado via GitHub Actions (27 jobs paralelos por estado). Enquanto pendente, o deflator e o CPT_ES ficam em aberto.</p>
-                <p>² Possível acréscimo ao numerador (art. 115, I, "b", LC 227/2026): se o ES mantinha em 30/04/2023 fundo estadual financiado por contribuições vinculadas a diferimento ou regime especial de ICMS (ex.: FUNDES-ES), a receita dessas contribuições entra no Total A com deflator próprio para os anos 2021–2023. Verificação pendente.</p>
-                <p>³ Adicional de ICMS para o Fundo de Combate à Pobreza (art. 82 ADCT): se vigente, compõe o numerador na proporção da receita média do adicional sobre a receita bruta média do ICMS de 2019–2026 (art. 129, §1º, I, LC 227/2026).</p>
-                <p>Fonte: <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">SICONFI — API Data Lake STN</a>. Scripts de coleta em <code>/data/collect-siconfi.py</code> e <code>/data/collect-2026.py</code>.</p>
+                <p>¹ ISS BR requer consulta a 5.570 municípios via GitHub Actions (27 jobs paralelos por estado). Enquanto ISS_BR_2026 estiver pendente, o índice de 2026 e o CPT_ES ficam em aberto.</p>
+                <p>² <strong>Comparação:</strong> Gobetti e Monteiro (2023) estimam a participação do ES pelo critério de destino (IBS pleno) em <strong>2,4%</strong>. A diferença entre o CPT_ES (critério origem/histórico) e 2,4% representa o núcleo do impacto fiscal da transição para o ES durante os 50 anos.</p>
+                <p>³ Possíveis acréscimos ao numerador (art. 115, I, "b"): FUNDAP-ES (fundo estadual financiado por contribuições vinculadas a diferimento de ICMS) e adicional do Fundo de Combate à Pobreza (art. 82 ADCT), conforme art. 129, §1º, I — não incluídos nesta versão.</p>
+                <p>Fonte: <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">SICONFI — API Data Lake STN</a>. Scripts em <code>/data/collect-siconfi.py</code> e <code>/data/collect-2026.py</code>.</p>
             </div>
         </section>
     </main>
@@ -441,24 +438,28 @@
         const tfoot = document.getElementById('tfoot-nominal');
 
         const rows = ANOS.map(ano => {
-            const bruto = icms_es[ano] ?? null;
-            const liq   = icmsEsLiq[ano];
-            const cotaMun = bruto != null ? bruto * COTA_PARTE_MUN : null;
-            const icmsBr  = icms_br[ano] ?? null;
-            const issBr   = iss_br[ano] ?? null;
-            const tBR     = totalBR[ano];
-            const def     = deflators[ano];
-            const cor     = icmsEsCor[ano];
+            const bruto  = icms_es[ano] ?? null;
+            const liq    = icmsEsLiq[ano];
+            const icmsBr = icms_br[ano] ?? null;
+            const issBr  = iss_br[ano] ?? null;
+            const tBR    = totalBR[ano];
+            const def    = deflators[ano];
+            const cor    = icmsEsCor[ano];
+
+            // Coluna "Total_BR / Índice": mostra Total_BR e o índice calculado
+            const indiceStr = ano === 2026
+                ? `${fmtBi(tBR)} / <strong>1,0000</strong>`
+                : (tBR != null && def != null)
+                    ? `${fmtBi(tBR)} / ${fmtDeflator(def)}`
+                    : `${fmtBi(tBR)} / <span class="na-cell">aguard.</span>`;
 
             return `<tr>
-                <td class="td-year">${ano}${ano === 2026 ? ' ²' : ''}</td>
+                <td class="td-year">${ano}${ano === 2026 ? ' ¹' : ''}</td>
                 <td>${fmtBi(bruto)}</td>
                 <td>${fmtBi(liq)}</td>
-                <td style="color:var(--text-muted);font-size:0.72rem">${fmtBi(cotaMun)}</td>
                 <td>${fmtBi(icmsBr)}</td>
                 <td>${fmtBi(issBr)}</td>
-                <td>${fmtBi(tBR)}</td>
-                <td style="text-align:center">${ano === 2026 ? '1,0000 ¹' : fmtDeflator(def)}</td>
+                <td style="text-align:center;white-space:nowrap">${indiceStr}</td>
                 <td class="${cor != null ? 'td-coeff' : ''}">${fmtBi(cor, 3)}</td>
             </tr>`;
         });
@@ -466,30 +467,48 @@
         tbody.innerHTML = rows.join('');
 
         const nDisp = valoresA.length;
+        const GOBETTI = 2.4; // estimativa destino — Gobetti & Monteiro (2023)
         tfoot.innerHTML = `
             <tr>
-                <td class="td-year">Média (÷8)</td>
-                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">
-                    Total A = média dos ${nDisp}/8 anos corrigidos
+                <td class="td-year">Rec. Média ES</td>
+                <td colspan="5" style="font-style:italic;color:var(--text-muted);text-align:center">
+                    média dos ${nDisp}/8 valores corrigidos ÷ 8
                 </td>
                 <td class="td-coeff">${fmtBi(totalA, 3)}</td>
             </tr>
             <tr>
                 <td class="td-year">Denominador</td>
-                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">
-                    Total B = ICMS BR₂₀₂₆ + ISS BR₂₀₂₆ (fixo, sem correção)
+                <td colspan="5" style="font-style:italic;color:var(--text-muted);text-align:center">
+                    Total_BR_2026 = Σ Receitas Médias de todos os entes
                 </td>
                 <td class="td-coeff">${fmtBi(totalB, 3)}</td>
             </tr>
             <tr>
                 <td class="td-year" style="color:var(--accent)">CPT_ES</td>
-                <td colspan="7" style="text-align:center;font-style:italic;color:var(--text-muted)">
-                    Total A / Total B
+                <td colspan="5" style="text-align:center;font-style:italic;color:var(--text-muted)">
+                    Rec. Média ES / Denominador — critério origem (LC 227/2026)
                 </td>
                 <td class="td-coeff" style="font-size:1rem">
-                    ${coeff != null ? fmtPct(coeff * 100) : '<span class="na-cell">aguard. ISS BR</span>'}
+                    ${coeff != null ? fmtPct(coeff * 100) : '<span class="na-cell">aguard. ISS BR 2026</span>'}
                 </td>
-            </tr>`;
+            </tr>
+            <tr>
+                <td class="td-year" style="color:var(--text-muted)">Gobetti 2023</td>
+                <td colspan="5" style="text-align:center;font-style:italic;color:var(--text-muted)">
+                    Estimativa destino (IBS pleno) — Gobetti &amp; Monteiro (2023)
+                </td>
+                <td style="text-align:right;color:var(--text-muted);font-weight:600">2,4000%</td>
+            </tr>
+            ${coeff != null ? `
+            <tr>
+                <td class="td-year" style="color:var(--text-muted)">Diferença</td>
+                <td colspan="5" style="text-align:center;font-style:italic;color:var(--text-muted)">
+                    CPT_ES − critério destino (impacto fiscal da transição para o ES)
+                </td>
+                <td style="text-align:right;font-weight:700;color:${coeff * 100 - GOBETTI >= 0 ? 'var(--accent)' : '#e53e3e'}">
+                    ${(coeff * 100 - GOBETTI >= 0 ? '+' : '') + (coeff * 100 - GOBETTI).toFixed(4).replace('.', ',')}p.p.
+                </td>
+            </tr>` : ''}`;
 
         // ── Tabela 2 (contexto) ───────────────────────────────────────────────
         const tbody2 = document.getElementById('tbody-context');
