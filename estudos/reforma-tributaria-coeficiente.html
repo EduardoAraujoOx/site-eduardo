@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coeficiente histórico ES/BR — Reforma Tributária | Eduardo Reis Araújo</title>
+    <meta name="description" content="Cálculo do coeficiente histórico do Espírito Santo na arrecadação de ISS e ICMS (2019–2026) para fins de participação na distribuição do IBS/CBS da Reforma Tributária.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/reforma-tributaria-coeficiente.html">
+
+    <meta property="og:title" content="Coeficiente histórico ES/BR — Reforma Tributária">
+    <meta property="og:description" content="ISS e ICMS do Espírito Santo em relação ao Brasil (2019–2026), valores nominais e deflacionados pelo IPCA para cálculo do coeficiente IBS/CBS.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/reforma-tributaria-coeficiente.html">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/notas.css?v=4">
+    <link rel="stylesheet" href="/css/search.css">
+
+    <style>
+        .study-hero {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3.5rem 2rem 2rem;
+        }
+        .study-hero-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+        .study-hero-tag {
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: var(--accent-light);
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+        }
+        .study-hero-topic {
+            font-family: var(--sans);
+            font-size: 0.73rem;
+            color: var(--text-secondary);
+            background: var(--border-light);
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+        }
+        .study-hero-date {
+            font-family: var(--sans);
+            font-size: 0.73rem;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+        .study-hero h1 {
+            font-family: var(--display);
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.8rem;
+        }
+        .study-hero .lead {
+            font-family: var(--serif);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            max-width: 680px;
+        }
+
+        /* ===== TABLE SECTION ===== */
+        .study-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem 5rem;
+        }
+        .section-label {
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* Data table */
+        .data-table-wrap {
+            overflow-x: auto;
+            margin: 1.5rem 0 2.5rem;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            min-width: 780px;
+        }
+        .data-table thead th {
+            background: var(--bg-secondary, #f7f7f5);
+            font-weight: 600;
+            padding: 0.6rem 0.75rem;
+            text-align: center;
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+        }
+        .data-table thead .th-group {
+            background: var(--accent-light);
+            color: var(--accent);
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .data-table thead .th-year {
+            text-align: left;
+        }
+        .data-table tbody td {
+            padding: 0.5rem 0.75rem;
+            text-align: right;
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: middle;
+        }
+        .data-table tbody td.td-year {
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .data-table tfoot td {
+            padding: 0.6rem 0.75rem;
+            text-align: right;
+            border-top: 2px solid var(--border);
+            font-weight: 600;
+            background: var(--bg-secondary, #f7f7f5);
+        }
+        .data-table tfoot .td-year {
+            text-align: left;
+        }
+        .data-table .td-coeff {
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .data-table .loading-cell {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+        .data-table .na-cell {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+        }
+
+        /* result highlight */
+        .result-box {
+            background: var(--accent-light);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 0.5rem 0 2rem;
+        }
+        .result-box .result-label {
+            font-family: var(--sans);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.2rem;
+        }
+        .result-box .result-value {
+            font-family: var(--mono);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* metodologia */
+        .metodologia {
+            background: var(--bg-secondary, #f7f7f5);
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            margin: 2rem 0;
+            font-family: var(--serif);
+            font-size: 0.88rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+        .metodologia strong { color: var(--text-primary); }
+        .metodologia ul { margin: 0.5rem 0 0 1rem; }
+        .metodologia li { margin-bottom: 0.25rem; }
+
+        .status-bar {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #22c55e;
+            display: inline-block;
+        }
+        .status-dot.pending {
+            background: #f59e0b;
+        }
+
+        /* footnote */
+        .footnote {
+            font-family: var(--sans);
+            font-size: 0.73rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            border-top: 1px solid var(--border-light);
+            padding-top: 1rem;
+            margin-top: 2rem;
+        }
+        .footnote p { margin-bottom: 0.4rem; }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="study-hero">
+            <div class="study-hero-meta">
+                <span class="study-hero-tag">Estudo</span>
+                <span class="study-hero-topic">Reforma Tributária</span>
+                <span class="study-hero-topic">Finanças Públicas</span>
+                <span class="study-hero-date">Jun 2026</span>
+            </div>
+            <h1>Coeficiente histórico ES/BR<br>para a Reforma Tributária</h1>
+            <p class="lead">
+                Cálculo do peso do Espírito Santo na arrecadação nacional de ISS e ICMS
+                (2019–2026) como base para a participação estadual na distribuição do IBS e CBS,
+                conforme regras de transição da LC 214/2025. Dados: SICONFI/STN, RREO Anexo 3.
+            </p>
+        </section>
+
+        <section class="study-content">
+
+            <!-- Result highlight -->
+            <div class="result-box" id="result-box" style="display:none">
+                <div>
+                    <div class="result-label">Coeficiente ES/BR (Total A / Total B)</div>
+                    <div class="result-value" id="coeff-main">—</div>
+                </div>
+                <div>
+                    <div class="result-label">ISS + ICMS — ES (total série, preços 2026)</div>
+                    <div class="result-value" id="total-es">—</div>
+                </div>
+                <div>
+                    <div class="result-label">ISS + ICMS — BR (total série, preços 2026)</div>
+                    <div class="result-value" id="total-br">—</div>
+                </div>
+            </div>
+
+            <!-- Main table -->
+            <span class="section-label">Tabela 1 — Arrecadação ISS e ICMS (R$ bilhões nominais)</span>
+            <div id="status-nominal" class="status-bar">
+                <span class="status-dot pending"></span>
+                <span>Carregando dados do SICONFI…</span>
+            </div>
+            <div class="data-table-wrap">
+                <table class="data-table" id="table-nominal">
+                    <thead>
+                        <tr>
+                            <th class="th-group th-year" rowspan="2">Ano</th>
+                            <th class="th-group" colspan="2">① ISS</th>
+                            <th class="th-group" colspan="2">② ICMS</th>
+                            <th class="th-group" colspan="2">TOTAL ① + ②</th>
+                            <th class="th-group" rowspan="2">Índice<br>IPCA</th>
+                            <th class="th-group" colspan="2">Total ①+② Preços 2026</th>
+                        </tr>
+                        <tr>
+                            <th>BR</th><th>ES</th>
+                            <th>BR</th><th>ES</th>
+                            <th>BR</th><th>ES</th>
+                            <th>ES</th><th>BR</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-nominal">
+                        <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                    </tbody>
+                    <tfoot id="tfoot-nominal"></tfoot>
+                </table>
+            </div>
+
+            <!-- Metodologia -->
+            <div class="metodologia">
+                <strong>Metodologia</strong>
+                <ul>
+                    <li><strong>Fonte:</strong> SICONFI (STN) — RREO Anexo 3, coluna "Total Últimos 12 Meses". Para 2019–2025: período 6 (bimestre nov–dez). Para 2026: período 2 (bimestre mar–abr, dado mais recente disponível). Acesso via API Data Lake do Tesouro Nacional.</li>
+                    <li><strong>ISS:</strong> soma dos municípios (co_esfera=M), conta <code>ISSLiquidoExcetoTransferenciasEFUNDEB</code>. ISS ES = somatório dos 78 municípios capixabas.</li>
+                    <li><strong>ICMS:</strong> conta <code>ICMSLiquidoExcetoTransferenciasEFUNDEB</code> de cada estado (co_esfera=E), líquido de transferências e FUNDEB.</li>
+                    <li><strong>Deflator:</strong> IPCA acumulado anual (IBGE), com base em dezembro de 2025 (preços jan/2026).</li>
+                    <li><strong>Coeficiente:</strong> Total A (ES, soma da série deflacionada) / Total B (BR, soma da série deflacionada), conforme metodologia da LC 214/2025.</li>
+                </ul>
+            </div>
+
+            <div class="footnote">
+                <p>¹ Dados de ISS para o Brasil exigem consulta individual a 5.570 municípios — coletados via GitHub Actions (27 jobs paralelos por estado). ISS BR poderá exibir "aguardando" até conclusão da primeira coleta.</p>
+                <p>² Valores nominais em R$ bilhões. Atualização monetária pelo IPCA/IBGE.</p>
+                <p>Fonte: <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">SICONFI — API Data Lake STN</a>. Script de coleta disponível em <code>/data/collect-siconfi.py</code>.</p>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/js/main.js"></script>
+    <script>
+    // IPCA annual rates — Source: IBGE SIDRA
+    // 2026: uses period 2 (mar-abr) data, deflated to preços jan/2026 (base = dez/2025)
+    const IPCA_ANUAL = {
+        2019: 4.31,
+        2020: 4.52,
+        2021: 10.06,
+        2022: 5.79,
+        2023: 4.62,
+        2024: 4.83,
+        2025: 5.48,  // update when final IBGE data available
+        2026: null   // base year, no deflation needed
+    };
+
+    // SICONFI period used per year
+    const PERIODO_SICONFI = {
+        2019: 6, 2020: 6, 2021: 6, 2022: 6, 2023: 6, 2024: 6, 2025: 6,
+        2026: 2  // bimestre mar-abr (most recent available)
+    };
+
+    // Deflator: multiply nominal value by this factor to get "preços 2026" (base Dec/2025)
+    // deflator[year] = product of IPCA rates from year+1 to 2025
+    function calcDeflators() {
+        const anos = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
+        const deflators = {};
+        for (const ano of anos) {
+            let acc = 1;
+            for (let y = ano + 1; y <= 2025; y++) {
+                acc *= (1 + (IPCA_ANUAL[y] || 0) / 100);
+            }
+            // Include the current year's IPCA for partial-year effect
+            // (values at end of year, so deflate from end of year to Dec/2025)
+            deflators[ano] = acc;
+        }
+        deflators[2025] = 1; // already at 2025 prices, minor adjustment not needed
+        return deflators;
+    }
+
+    function fmt(val, digits = 2) {
+        if (val == null) return '<span class="na-cell">aguard.</span>';
+        return (val / 1e9).toFixed(digits).replace('.', ',');
+    }
+
+    function fmtPct(val) {
+        if (val == null) return '<span class="na-cell">—</span>';
+        return val.toFixed(4).replace('.', ',') + '%';
+    }
+
+    async function loadData() {
+        let data;
+        try {
+            const resp = await fetch('/data/reforma-tributaria.json?t=' + Date.now());
+            if (!resp.ok) throw new Error('not found');
+            data = await resp.json();
+        } catch (e) {
+            document.getElementById('status-nominal').innerHTML =
+                '<span class="status-dot pending"></span> Dados ainda não disponíveis. Execute a coleta SICONFI primeiro.';
+            return;
+        }
+
+        const anos = data.anos || [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
+        const deflators = calcDeflators();
+
+        // ISS ES: prefer collected municipalities sum, fall back to collected data
+        const iss_es = data.iss_es_from_munis || data.iss_es || {};
+        const iss_br = data.iss_br || {};
+        const icms_es = data.icms_es || {};
+        const icms_br = data.icms_br || {};
+
+        const tbody = document.getElementById('tbody-nominal');
+        const tfoot = document.getElementById('tfoot-nominal');
+
+        let totalA_es_def = 0, totalB_br_def = 0;
+        let totalA_es_nom = 0, totalB_br_nom = 0;
+        let hasAllISSBR = true;
+
+        const rows = anos.map(ano => {
+            const issEs = iss_es[ano] ?? null;
+            const issBr = iss_br[ano] ?? null;
+            const icmsEs = icms_es[ano] ?? null;
+            const icmsBr = icms_br[ano] ?? null;
+
+            if (issBr == null) hasAllISSBR = false;
+
+            const totalEs = (issEs != null && icmsEs != null) ? issEs + icmsEs : null;
+            const totalBr = (issBr != null && icmsBr != null) ? issBr + icmsBr : null;
+
+            const deflator = deflators[ano] || 1;
+            const ipca_idx = IPCA_ANUAL[ano] ?? null;
+
+            const totalEsDef = totalEs != null ? totalEs * deflator : null;
+            const totalBrDef = totalBr != null ? totalBr * deflator : null;
+
+            if (totalEsDef != null) totalA_es_def += totalEsDef;
+            if (totalBrDef != null) totalB_br_def += totalBrDef;
+            if (totalEs != null) totalA_es_nom += totalEs;
+            if (totalBr != null) totalB_br_nom += totalBr;
+
+            const ipca_str = ipca_idx != null
+                ? `${ipca_idx.toFixed(2).replace('.', ',')}%`
+                : '<span class="na-cell">—</span>';
+
+            return `<tr>
+                <td class="td-year">${ano}</td>
+                <td>${fmt(issBr)}</td>
+                <td>${fmt(issEs)}</td>
+                <td>${fmt(icmsBr)}</td>
+                <td>${fmt(icmsEs)}</td>
+                <td>${fmt(totalBr)}</td>
+                <td>${fmt(totalEs)}</td>
+                <td style="text-align:center">${ipca_str}</td>
+                <td>${fmt(totalEsDef)}</td>
+                <td>${fmt(totalBrDef)}</td>
+            </tr>`;
+        });
+
+        tbody.innerHTML = rows.join('');
+
+        const coeff = totalB_br_def > 0 ? (totalA_es_def / totalB_br_def * 100) : null;
+
+        tfoot.innerHTML = `
+            <tr>
+                <td class="td-year">Total</td>
+                <td colspan="4"></td>
+                <td>${fmt(totalB_br_nom)}</td>
+                <td>${fmt(totalA_es_nom)}</td>
+                <td></td>
+                <td class="td-coeff" id="total-a">${fmt(totalA_es_def)}</td>
+                <td class="td-coeff" id="total-b">${fmt(totalB_br_def)}</td>
+            </tr>
+            <tr>
+                <td class="td-year">Índice</td>
+                <td colspan="7" style="text-align:center;font-style:italic;color:var(--text-muted)">
+                    Total A / Total B
+                </td>
+                <td colspan="2" class="td-coeff" style="text-align:center;font-size:1rem">
+                    ${coeff != null ? coeff.toFixed(4).replace('.', ',') + '%' : '<span class="na-cell">aguard. ISS BR</span>'}
+                </td>
+            </tr>`;
+
+        // Update status
+        const hasICMS = icms_es[2023] != null;
+        const hasISSES = iss_es[2023] != null;
+        const statusDot = hasICMS && hasISSES && hasAllISSBR ? 'status-dot' : 'status-dot pending';
+        let statusMsg = [];
+        if (!hasICMS) statusMsg.push('ICMS: coletando…');
+        else statusMsg.push('ICMS: OK');
+        if (!hasISSES) statusMsg.push('ISS ES: coletando…');
+        else statusMsg.push('ISS ES: OK');
+        if (!hasAllISSBR) statusMsg.push('ISS BR: aguardando GitHub Action');
+        else statusMsg.push('ISS BR: OK');
+
+        document.getElementById('status-nominal').innerHTML =
+            `<span class="${statusDot}"></span> ${statusMsg.join(' · ')}`;
+
+        // Show result box if we have the coefficient
+        if (coeff != null) {
+            document.getElementById('coeff-main').textContent =
+                coeff.toFixed(4).replace('.', ',') + '%';
+            document.getElementById('total-es').textContent =
+                'R$ ' + fmt(totalA_es_def) + 'B';
+            document.getElementById('total-br').textContent =
+                'R$ ' + fmt(totalB_br_def) + 'B';
+            document.getElementById('result-box').style.display = 'flex';
+        }
+    }
+
+    loadData();
+    </script>
+</body>
+</html>

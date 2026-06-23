@@ -1,0 +1,219 @@
+name: Coletar ISS BR - SICONFI
+
+on:
+  workflow_dispatch:
+    inputs:
+      anos:
+        description: 'Anos para coletar (separados por vírgula)'
+        required: false
+        default: '2019,2020,2021,2022,2023,2024,2025,2026'
+
+permissions:
+  contents: write
+
+jobs:
+  # Gera lista de estados
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      ufs: ${{ steps.get-ufs.outputs.ufs }}
+    steps:
+      - id: get-ufs
+        run: |
+          UFS='["AC","AL","AM","AP","BA","CE","DF","ES","GO","MA","MG","MS","MT","PA","PB","PE","PI","PR","RJ","RN","RO","RR","RS","SC","SE","SP","TO"]'
+          echo "ufs=$UFS" >> $GITHUB_OUTPUT
+
+  # Job paralelo por estado
+  collect-state:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 27
+      matrix:
+        uf: ${{ fromJson(needs.setup.outputs.ufs) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Coletar ISS municípios ${{ matrix.uf }}
+        run: |
+          python3 - << 'PYEOF'
+          import json, time, urllib.request, os
+          from pathlib import Path
+
+          UF = "${{ matrix.uf }}"
+          ANOS = [int(a) for a in "${{ inputs.anos }}".split(",")]
+          # 2026: use period 2 (mar-abr, most recent); others: period 6 (nov-dez, full year)
+          PERIODO_POR_ANO = {a: 2 if a == 2026 else 6 for a in ANOS}
+          BASE_URL = "https://apidatalake.tesouro.gov.br/ords/siconfi/tt"
+          ISS_COD = "ISSLiquidoExcetoTransferenciasEFUNDEB"
+          TARGET_COL = "TOTAL (ÚLTIMOS 12 MESES)"
+          OUT = Path(f"data/iss-state-{UF}.json")
+
+          def fetch(url, retries=4):
+              for i in range(retries):
+                  try:
+                      with urllib.request.urlopen(url, timeout=30) as r:
+                          return json.loads(r.read())
+                  except Exception as e:
+                      if i < retries - 1:
+                          time.sleep(2 ** i)
+              return None
+
+          # Get municipalities for this UF
+          data = fetch(f"{BASE_URL}/entes")
+          if not data:
+              print(f"ERROR: Could not get entes list")
+              exit(1)
+
+          munis = [i for i in data["items"] if i.get("uf") == UF and i.get("esfera") == "M"]
+          # DF has esfera D
+          if UF == "DF":
+              munis = [i for i in data["items"] if i.get("uf") == "BR" and i.get("esfera") == "D"]
+          print(f"UF={UF}: {len(munis)} municípios, {len(ANOS)} anos = {len(munis)*len(ANOS)} chamadas")
+
+          results = {}
+          for entity in munis:
+              cod = entity["cod_ibge"]
+              nome = entity["ente"]
+              for ano in ANOS:
+                  periodo = PERIODO_POR_ANO.get(ano, 6)
+                  url = (
+                      f"{BASE_URL}/rreo"
+                      f"?an_exercicio={ano}&nr_periodo={periodo}"
+                      f"&co_tipo_demonstrativo=RREO"
+                      f"&no_anexo=RREO-Anexo%2003"
+                      f"&co_esfera=M&id_ente={cod}"
+                  )
+                  resp = fetch(url)
+                  val = None
+                  if resp:
+                      for item in resp.get("items", []):
+                          if item["cod_conta"] == ISS_COD and item["coluna"] == TARGET_COL:
+                              val = item["valor"]
+                              break
+                  if val is not None:
+                      results.setdefault(str(ano), {})[str(cod)] = {
+                          "ente": nome,
+                          "uf": UF,
+                          "valor": val,
+                      }
+                  print(f"  {nome} {ano}: {'R$ {:,.0f}'.format(val) if val else 'N/A'}")
+                  time.sleep(1.05)
+
+          # Also try DF with esfera E (DF has both state and municipal functions)
+          if UF == "DF":
+              df_ente = next((i for i in data["items"] if i.get("cod_ibge") == 53), None)
+              if df_ente:
+                  cod = df_ente["cod_ibge"]
+                  for ano in ANOS:
+                      periodo = PERIODO_POR_ANO.get(ano, 6)
+                      url = (
+                          f"{BASE_URL}/rreo"
+                          f"?an_exercicio={ano}&nr_periodo={periodo}"
+                          f"&co_tipo_demonstrativo=RREO"
+                          f"&no_anexo=RREO-Anexo%2003"
+                          f"&co_esfera=D&id_ente={cod}"
+                      )
+                      resp = fetch(url)
+                      val = None
+                      if resp:
+                          for item in resp.get("items", []):
+                              if item["cod_conta"] == ISS_COD and item["coluna"] == TARGET_COL:
+                                  val = item["valor"]
+                                  break
+                      if val is not None:
+                          results.setdefault(str(ano), {})[str(cod)] = {
+                              "ente": "Distrito Federal",
+                              "uf": "DF",
+                              "valor": val,
+                          }
+                      print(f"  DF {ano}: {'R$ {:,.0f}'.format(val) if val else 'N/A'}")
+                      time.sleep(1.05)
+
+          OUT.write_text(json.dumps(results, ensure_ascii=False, indent=2))
+          print(f"\nSalvo: {OUT}")
+          PYEOF
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: iss-${{ matrix.uf }}
+          path: data/iss-state-${{ matrix.uf }}.json
+          retention-days: 1
+
+  # Merges todos os estados e comita
+  merge-and-commit:
+    needs: collect-state
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: data/iss-states/
+          pattern: iss-*
+          merge-multiple: false
+
+      - name: Merge e calcular totais
+        run: |
+          python3 - << 'PYEOF'
+          import json
+          from pathlib import Path
+
+          ANOS = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
+          data_dir = Path("data/iss-states")
+
+          merged = {}  # {ano: {cod: {ente, uf, valor}}}
+
+          for state_file in data_dir.glob("**/iss-state-*.json"):
+              uf = state_file.stem.replace("iss-state-", "")
+              try:
+                  state_data = json.loads(state_file.read_text())
+                  for ano, entes in state_data.items():
+                      merged.setdefault(ano, {}).update(entes)
+              except Exception as e:
+                  print(f"Error processing {state_file}: {e}")
+
+          # Calculate totals
+          iss_br = {}
+          iss_es = {}
+          for ano, entes in merged.items():
+              iss_br[ano] = sum(v["valor"] for v in entes.values())
+              iss_es[ano] = sum(v["valor"] for v in entes.values() if v["uf"] == "ES")
+
+          # Load existing data file
+          out_file = Path("data/reforma-tributaria.json")
+          existing = {}
+          if out_file.exists():
+              existing = json.loads(out_file.read_text())
+
+          existing["iss_br"] = {str(a): iss_br.get(str(a)) for a in ANOS}
+          existing["iss_es_from_munis"] = {str(a): iss_es.get(str(a)) for a in ANOS}
+          existing["iss_detalhes"] = merged
+
+          out_file.write_text(json.dumps(existing, ensure_ascii=False, indent=2))
+          print("Resultado:")
+          print(f"{'Ano':<6} {'ISS BR':>18} {'ISS ES':>18}")
+          for a in ANOS:
+              a = str(a)
+              def fmt(v): return f"R$ {v/1e9:.2f}B" if v else "N/D"
+              print(f"{a:<6} {fmt(existing['iss_br'].get(a)):>18} {fmt(existing['iss_es_from_munis'].get(a)):>18}")
+          PYEOF
+
+      - name: Commit dados ISS
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/reforma-tributaria.json
+          git diff --staged --quiet || git commit -m "dados: coleta ISS BR completa via SICONFI"
+          git push
