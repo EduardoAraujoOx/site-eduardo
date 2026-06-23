@@ -187,9 +187,15 @@ jobs:
           # Calculate totals from newly collected data
           iss_br_new = {}
           iss_es_new = {}
+          iss_por_uf_new = {}  # {ano: {uf: total_iss}}
           for ano, entes in merged.items():
               iss_br_new[ano] = sum(v["valor"] for v in entes.values())
               iss_es_new[ano] = sum(v["valor"] for v in entes.values() if v["uf"] == "ES")
+              by_uf = {}
+              for v in entes.values():
+                  uf = v.get("uf", "")
+                  by_uf[uf] = by_uf.get(uf, 0) + v["valor"]
+              iss_por_uf_new[ano] = by_uf
 
           # Load existing data file — preserve existing values, only update with new data
           out_file = Path("data/reforma-tributaria.json")
@@ -201,6 +207,7 @@ jobs:
           iss_br_merged = dict(existing.get("iss_br") or {})
           iss_es_merged = dict(existing.get("iss_es_from_munis") or {})
           iss_det_merged = dict(existing.get("iss_detalhes") or {})
+          iss_uf_merged = dict(existing.get("iss_por_uf") or {})
 
           for ano, val in iss_br_new.items():
               iss_br_merged[str(ano)] = val
@@ -208,10 +215,13 @@ jobs:
               iss_es_merged[str(ano)] = val
           for ano, entes in merged.items():
               iss_det_merged[str(ano)] = entes
+          for ano, by_uf in iss_por_uf_new.items():
+              iss_uf_merged[str(ano)] = by_uf
 
           existing["iss_br"] = {str(a): iss_br_merged.get(str(a)) for a in ALL_ANOS}
           existing["iss_es_from_munis"] = {str(a): iss_es_merged.get(str(a)) for a in ALL_ANOS}
           existing["iss_detalhes"] = iss_det_merged
+          existing["iss_por_uf"] = iss_uf_merged
 
           out_file.write_text(json.dumps(existing, ensure_ascii=False, indent=2))
           print("Resultado:")
