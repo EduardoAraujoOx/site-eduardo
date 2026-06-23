@@ -170,7 +170,7 @@ jobs:
           import json
           from pathlib import Path
 
-          ANOS = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
+          ALL_ANOS = [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]
           data_dir = Path("data/iss-states")
 
           merged = {}  # {ano: {cod: {ente, uf, valor}}}
@@ -184,27 +184,39 @@ jobs:
               except Exception as e:
                   print(f"Error processing {state_file}: {e}")
 
-          # Calculate totals
-          iss_br = {}
-          iss_es = {}
+          # Calculate totals from newly collected data
+          iss_br_new = {}
+          iss_es_new = {}
           for ano, entes in merged.items():
-              iss_br[ano] = sum(v["valor"] for v in entes.values())
-              iss_es[ano] = sum(v["valor"] for v in entes.values() if v["uf"] == "ES")
+              iss_br_new[ano] = sum(v["valor"] for v in entes.values())
+              iss_es_new[ano] = sum(v["valor"] for v in entes.values() if v["uf"] == "ES")
 
-          # Load existing data file
+          # Load existing data file — preserve existing values, only update with new data
           out_file = Path("data/reforma-tributaria.json")
           existing = {}
           if out_file.exists():
               existing = json.loads(out_file.read_text())
 
-          existing["iss_br"] = {str(a): iss_br.get(str(a)) for a in ANOS}
-          existing["iss_es_from_munis"] = {str(a): iss_es.get(str(a)) for a in ANOS}
-          existing["iss_detalhes"] = merged
+          # Merge: keep existing values for anos not collected in this run
+          iss_br_merged = dict(existing.get("iss_br") or {})
+          iss_es_merged = dict(existing.get("iss_es_from_munis") or {})
+          iss_det_merged = dict(existing.get("iss_detalhes") or {})
+
+          for ano, val in iss_br_new.items():
+              iss_br_merged[str(ano)] = val
+          for ano, val in iss_es_new.items():
+              iss_es_merged[str(ano)] = val
+          for ano, entes in merged.items():
+              iss_det_merged[str(ano)] = entes
+
+          existing["iss_br"] = {str(a): iss_br_merged.get(str(a)) for a in ALL_ANOS}
+          existing["iss_es_from_munis"] = {str(a): iss_es_merged.get(str(a)) for a in ALL_ANOS}
+          existing["iss_detalhes"] = iss_det_merged
 
           out_file.write_text(json.dumps(existing, ensure_ascii=False, indent=2))
           print("Resultado:")
           print(f"{'Ano':<6} {'ISS BR':>18} {'ISS ES':>18}")
-          for a in ANOS:
+          for a in ALL_ANOS:
               a = str(a)
               def fmt(v): return f"R$ {v/1e9:.2f}B" if v else "N/D"
               print(f"{a:<6} {fmt(existing['iss_br'].get(a)):>18} {fmt(existing['iss_es_from_munis'].get(a)):>18}")
