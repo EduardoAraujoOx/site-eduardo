@@ -214,13 +214,17 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Salva o arquivo gerado antes de sincronizar com o remote
+          cp data/reforma-tributaria.json /tmp/reforma-tributaria-new.json
+          # Sincroniza com o HEAD atual do remote (evita conflito de push)
+          git fetch origin main
+          git reset --hard origin/main
+          # Restaura o arquivo gerado sobre o HEAD atualizado
+          cp /tmp/reforma-tributaria-new.json data/reforma-tributaria.json
           git add data/reforma-tributaria.json
           if git diff --staged --quiet; then
-            echo "Sem alterações, nada a commitar."
+            echo "Sem alterações em relação ao remote, nada a commitar."
             exit 0
           fi
           git commit -m "dados: coleta ISS BR completa via SICONFI"
-          # Rebase sobre commits feitos no remoto durante a coleta (~75 min)
-          git fetch origin main
-          git rebase origin/main
           git push origin main
