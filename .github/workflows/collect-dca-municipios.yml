@@ -1,0 +1,234 @@
+name: Coletar DCA Municípios - SICONFI
+
+on:
+  workflow_dispatch:
+    inputs:
+      anos:
+        description: 'Anos para coletar (separados por vírgula) — DCA disponível até ano anterior'
+        required: false
+        default: '2019,2020,2021,2022,2023,2024,2025'
+
+permissions:
+  contents: write
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      ufs: ${{ steps.get-ufs.outputs.ufs }}
+    steps:
+      - id: get-ufs
+        run: |
+          UFS='["AC","AL","AM","AP","BA","CE","DF","ES","GO","MA","MG","MS","MT","PA","PB","PE","PI","PR","RJ","RN","RO","RR","RS","SC","SE","SP","TO"]'
+          echo "ufs=$UFS" >> $GITHUB_OUTPUT
+
+  collect-state:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 27
+      matrix:
+        uf: ${{ fromJson(needs.setup.outputs.ufs) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Coletar DCA municípios ${{ matrix.uf }}
+        run: |
+          python3 - << 'PYEOF'
+          import json, time, urllib.request, os
+          from pathlib import Path
+
+          UF = "${{ matrix.uf }}"
+          ANOS = [int(a) for a in "${{ inputs.anos }}".split(",")]
+          BASE_URL = "https://apidatalake.tesouro.gov.br/ords/siconfi/tt"
+
+          # DCA Anexo I-C codes (validados contra RREO para Linhares e Vitória — match exato)
+          ISS_COD   = "RO1.1.1.4.51.1.0"   # ISS arrecadado (Receitas Brutas Realizadas)
+          COTA_COD  = "RO1.7.2.1.50.0.0"   # Cota-parte ICMS recebida do estado
+          TARGET_COL = "Receitas Brutas Realizadas"
+          OUT = Path(f"data/dca-state-{UF}.json")
+
+          def fetch(url, retries=4):
+              for i in range(retries):
+                  try:
+                      with urllib.request.urlopen(url, timeout=30) as r:
+                          return json.loads(r.read())
+                  except Exception as e:
+                      if i < retries - 1:
+                          time.sleep(2 ** i)
+              return None
+
+          # Lista de municípios do estado
+          data = fetch(f"{BASE_URL}/entes")
+          if not data:
+              print(f"ERROR: Could not get entes list")
+              exit(1)
+
+          if UF == "DF":
+              # DF tem esfera D (acumula funções estaduais e municipais)
+              munis = [i for i in data["items"] if i.get("cod_ibge") == 53]
+              esfera = "D"
+          else:
+              munis = [i for i in data["items"] if i.get("uf") == UF and i.get("esfera") == "M"]
+              esfera = "M"
+
+          print(f"UF={UF}: {len(munis)} municípios, {len(ANOS)} anos = {len(munis)*len(ANOS)} chamadas")
+
+          results = {}
+          for entity in munis:
+              cod  = entity["cod_ibge"]
+              nome = entity["ente"]
+              for ano in ANOS:
+                  url = (
+                      f"{BASE_URL}/dca"
+                      f"?an_exercicio={ano}"
+                      f"&co_tipo_demonstrativo=DCA"
+                      f"&no_anexo=DCA-Anexo%20I-C"
+                      f"&co_esfera={esfera}&id_ente={cod}"
+                  )
+                  resp = fetch(url)
+                  val_iss  = None
+                  val_cota = None
+                  if resp:
+                      for item in resp.get("items", []):
+                          if item.get("coluna") == TARGET_COL:
+                              if item["cod_conta"] == ISS_COD:
+                                  val_iss = item["valor"]
+                              elif item["cod_conta"] == COTA_COD:
+                                  val_cota = item["valor"]
+                  if val_iss is not None or val_cota is not None:
+                      entry = {"ente": nome, "uf": UF}
+                      if val_iss  is not None: entry["valor"]          = val_iss
+                      if val_cota is not None: entry["cota_parte_icms"] = val_cota
+                      results.setdefault(str(ano), {})[str(cod)] = entry
+                  iss_s  = f"R$ {val_iss/1e6:,.1f}M"  if val_iss  else "N/A"
+                  cota_s = f"R$ {val_cota/1e6:,.1f}M" if val_cota else "N/A"
+                  print(f"  {nome} {ano}: ISS={iss_s} cota={cota_s}")
+                  time.sleep(0.3)
+
+          OUT.write_text(json.dumps(results, ensure_ascii=False, indent=2))
+          print(f"\nSalvo: {OUT} ({len(results)} anos)")
+          PYEOF
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dca-${{ matrix.uf }}
+          path: data/dca-state-${{ matrix.uf }}.json
+          retention-days: 1
+
+  merge-and-commit:
+    needs: collect-state
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: data/dca-states/
+          pattern: dca-*
+          merge-multiple: false
+
+      - name: Merge e atualizar reforma-tributaria.json
+        run: |
+          python3 - << 'PYEOF'
+          import json
+          from pathlib import Path
+
+          ALL_ANOS = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
+          data_dir = Path("data/dca-states")
+
+          # Consolidar todos os estados
+          merged = {}  # {ano: {cod: {ente, uf, valor, cota_parte_icms}}}
+          for state_file in data_dir.glob("**/dca-state-*.json"):
+              try:
+                  state_data = json.loads(state_file.read_text())
+                  for ano, entes in state_data.items():
+                      merged.setdefault(ano, {}).update(entes)
+              except Exception as e:
+                  print(f"Error processing {state_file}: {e}")
+
+          # Agregar por UF
+          iss_br_new   = {}
+          iss_es_new   = {}
+          iss_uf_new   = {}  # {ano: {uf: total_iss}}
+          cota_uf_new  = {}  # {ano: {uf: total_cota}}
+
+          for ano, entes in merged.items():
+              iss_br_new[ano]  = sum(v.get("valor", 0) or 0 for v in entes.values())
+              iss_es_new[ano]  = sum(v.get("valor", 0) or 0 for v in entes.values() if v["uf"] == "ES")
+              by_uf_iss  = {}
+              by_uf_cota = {}
+              for v in entes.values():
+                  uf = v.get("uf", "")
+                  by_uf_iss [uf] = by_uf_iss .get(uf, 0) + (v.get("valor")          or 0)
+                  by_uf_cota[uf] = by_uf_cota.get(uf, 0) + (v.get("cota_parte_icms") or 0)
+              iss_uf_new [ano] = by_uf_iss
+              cota_uf_new[ano] = by_uf_cota
+
+          # Carregar arquivo existente e mesclar
+          out_file = Path("data/reforma-tributaria.json")
+          existing = json.loads(out_file.read_text()) if out_file.exists() else {}
+
+          # Campos DCA (fonte separada — não sobrescreve campos RREO de 2026)
+          dca_iss_br   = dict(existing.get("dca_iss_br")   or {})
+          dca_iss_es   = dict(existing.get("dca_iss_es")   or {})
+          dca_iss_uf   = dict(existing.get("dca_iss_por_uf") or {})
+          dca_cota_uf  = dict(existing.get("dca_cota_icms_por_uf") or {})
+          dca_detalhes = dict(existing.get("dca_detalhes") or {})
+
+          for ano, val in iss_br_new.items():
+              dca_iss_br[str(ano)] = val
+          for ano, val in iss_es_new.items():
+              dca_iss_es[str(ano)] = val
+          for ano, by_uf in iss_uf_new.items():
+              dca_iss_uf[str(ano)] = by_uf
+          for ano, by_uf in cota_uf_new.items():
+              dca_cota_uf[str(ano)] = by_uf
+          for ano, entes in merged.items():
+              dca_detalhes[str(ano)] = entes
+
+          existing["dca_iss_br"]           = {str(a): dca_iss_br .get(str(a)) for a in ALL_ANOS}
+          existing["dca_iss_es"]           = {str(a): dca_iss_es .get(str(a)) for a in ALL_ANOS}
+          existing["dca_iss_por_uf"]       = dca_iss_uf
+          existing["dca_cota_icms_por_uf"] = dca_cota_uf
+          existing["dca_detalhes"]         = dca_detalhes
+
+          out_file.write_text(json.dumps(existing, ensure_ascii=False, indent=2))
+
+          print(f"\n{'Ano':<6} {'ISS BR (DCA)':>16} {'ISS ES (DCA)':>16} {'Munis':>8}")
+          print("-" * 50)
+          for a in ALL_ANOS:
+              a_s = str(a)
+              ib  = existing["dca_iss_br"].get(a_s)
+              ie  = existing["dca_iss_es"].get(a_s)
+              nm  = len(merged.get(a_s, {}))
+              def fmt(v): return f"R$ {v/1e9:.2f}B" if v else "N/D"
+              print(f"{a_s:<6} {fmt(ib):>16} {fmt(ie):>16} {nm:>8}")
+          PYEOF
+
+      - name: Commit dados DCA
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          cp data/reforma-tributaria.json /tmp/reforma-tributaria-new.json
+          git fetch origin main
+          git reset --hard origin/main
+          cp /tmp/reforma-tributaria-new.json data/reforma-tributaria.json
+          git add data/reforma-tributaria.json
+          if git diff --staged --quiet; then
+            echo "Sem alterações, nada a commitar."
+            exit 0
+          fi
+          git commit -m "dados: coleta DCA municípios BR completa via SICONFI"
+          git push origin main
