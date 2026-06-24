@@ -275,30 +275,35 @@
             </div>
 
             <!-- Main table -->
-            <span class="section-label">Tabela 1 — CPT_ES: Espírito Santo (LC 227/2026, art. 115)</span>
+            <span class="section-label">Tabela 1 — Auditoria CPT_ES: Espírito Santo (LC 227/2026, art. 115)</span>
             <div id="status-nominal" class="status-bar">
                 <span class="status-dot pending"></span>
                 <span>Carregando dados do SICONFI…</span>
             </div>
-            <div class="data-table-wrap">
-                <table class="data-table" id="table-nominal">
+            <div class="data-table-wrap" style="overflow-x:auto">
+                <table class="data-table" id="table-nominal" style="min-width:1000px">
                     <thead>
                         <tr>
                             <th class="th-group th-year" rowspan="2">Ano</th>
-                            <th class="th-group" colspan="2">ICMS — Espírito Santo</th>
-                            <th class="th-group" colspan="3">Índice de atualização</th>
-                            <th class="th-group" rowspan="2">ICMS ES corrigido<br>(R$ bi)</th>
+                            <th class="th-group" colspan="3">Estado ES — valores nominais (R$ bi)</th>
+                            <th class="th-group" colspan="2">Municípios ES — valores nominais (R$ bi)</th>
+                            <th class="th-group" colspan="2">Índice de atualização</th>
+                            <th class="th-group" colspan="2">Valores atualizados p/ 2026 (R$ bi)</th>
                         </tr>
                         <tr>
-                            <th>Bruto (R$ bi)</th>
-                            <th>Líquido ×0,75 (R$ bi)</th>
-                            <th>ICMS BR (R$ bi)</th>
-                            <th>ISS BR (R$ bi)</th>
-                            <th>Total_BR / Índice</th>
+                            <th>ICMS ES bruto</th>
+                            <th>− Cota-parte<br>(25%)</th>
+                            <th>= ICMS ES<br>líquido (75%)</th>
+                            <th>ISS municípios</th>
+                            <th>+ Cota-parte<br>recebida (25%)</th>
+                            <th>Total BR<br>(R$ bi)</th>
+                            <th>Índice<br>(2026/t)</th>
+                            <th>Estado ES<br>(ICMS×75%)</th>
+                            <th>Municípios ES<br>(ISS + cota)</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-nominal">
-                        <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                        <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted)">Aguardando dados…</td></tr>
                     </tbody>
                     <tfoot id="tfoot-nominal"></tfoot>
                 </table>
@@ -435,103 +440,103 @@
                 : null;
         }
 
-        // Numerador: para cada ano, ICMS_ES × 0,75 × deflator
-        const icmsEsLiq = {};    // ICMS_ES_bruto × 0,75
-        const icmsEsCor = {};    // ICMS_ES_liq × deflator
+        // ── Numeradores ES ────────────────────────────────────────────────────
+        // Estado: ICMS_ES × 0,75 × deflator
+        // Municípios: (ISS_ES + ICMS_ES × 0,25) × deflator
+        const icmsEsLiq = {};   // ICMS_ES × 0,75
+        const icmsEsCota = {};  // ICMS_ES × 0,25 (cota-parte p/ municípios)
+        const issCota = {};     // ISS_ES + cota-parte
+        const corEstado = {};   // ICMS_ES × 0,75 × deflator
+        const corMunis = {};    // (ISS_ES + cota) × deflator
+
         for (const ano of ANOS) {
             const bruto = icms_es[ano] ?? null;
-            icmsEsLiq[ano] = bruto != null ? bruto * (1 - COTA_PARTE_MUN) : null;
-            icmsEsCor[ano] = (icmsEsLiq[ano] != null && deflators[ano] != null)
-                ? icmsEsLiq[ano] * deflators[ano]
-                : null;
+            const iss   = iss_es[ano]  ?? null;
+            const def   = deflators[ano];
+            icmsEsLiq[ano]  = bruto != null ? bruto * 0.75 : null;
+            icmsEsCota[ano] = bruto != null ? bruto * 0.25 : null;
+            issCota[ano]    = (iss != null && bruto != null) ? iss + bruto * 0.25 : null;
+            corEstado[ano]  = (icmsEsLiq[ano] != null && def != null) ? icmsEsLiq[ano] * def : null;
+            corMunis[ano]   = (issCota[ano]   != null && def != null) ? issCota[ano]   * def : null;
         }
 
-        // Total A = média aritmética dos 8 valores corrigidos
-        const valoresA = ANOS.map(a => icmsEsCor[a]).filter(v => v != null);
-        const totalA = valoresA.length === ANOS.length
-            ? valoresA.reduce((s, v) => s + v, 0) / ANOS.length
-            : null;
+        // Receita Média = soma / 8 (divide sempre por ANOS.length)
+        const somaEstado = ANOS.reduce((s, a) => s + (corEstado[a] ?? 0), 0);
+        const somaMunis  = ANOS.reduce((s, a) => s + (corMunis[a]  ?? 0), 0);
+        const totalA     = somaEstado / ANOS.length;  // numerador estado
+        const totalAMun  = somaMunis  / ANOS.length;  // numerador municípios
 
-        const coeff = (totalA != null && totalB != null && totalB > 0)
-            ? totalA / totalB
-            : null;
+        const coeff    = totalB != null ? totalA    / totalB : null;
+        const coeffMun = totalB != null ? totalAMun / totalB : null;
+        const coeffUF  = (coeff != null && coeffMun != null) ? coeff + coeffMun : null;
 
-        // ── Tabela 1 ──────────────────────────────────────────────────────────
+        // ── Tabela 1 (auditoria) ──────────────────────────────────────────────
         const tbody = document.getElementById('tbody-nominal');
         const tfoot = document.getElementById('tfoot-nominal');
 
         const rows = ANOS.map(ano => {
-            const bruto  = icms_es[ano] ?? null;
+            const bruto  = icms_es[ano]  ?? null;
+            const cota   = icmsEsCota[ano];
             const liq    = icmsEsLiq[ano];
-            const icmsBr = icms_br[ano] ?? null;
-            const issBr  = iss_br[ano] ?? null;
+            const iss    = iss_es[ano]   ?? null;
+            const issC   = issCota[ano];
             const tBR    = totalBR[ano];
             const def    = deflators[ano];
-            const cor    = icmsEsCor[ano];
-
-            // Coluna "Total_BR / Índice": mostra Total_BR e o índice calculado
-            const indiceStr = ano === 2026
-                ? `${fmtBi(tBR)} / <strong>1,0000</strong>`
-                : (tBR != null && def != null)
-                    ? `${fmtBi(tBR)} / ${fmtDeflator(def)}`
-                    : `${fmtBi(tBR)} / <span class="na-cell">aguard.</span>`;
+            const cEst   = corEstado[ano];
+            const cMun   = corMunis[ano];
 
             return `<tr>
                 <td class="td-year">${ano}${ano === 2026 ? ' ¹' : ''}</td>
-                <td>${fmtBi(bruto)}</td>
-                <td>${fmtBi(liq)}</td>
-                <td>${fmtBi(icmsBr)}</td>
-                <td>${fmtBi(issBr)}</td>
-                <td style="text-align:center;white-space:nowrap">${indiceStr}</td>
-                <td class="${cor != null ? 'td-coeff' : ''}">${fmtBi(cor, 3)}</td>
+                <td style="text-align:right">${fmtBi(bruto)}</td>
+                <td style="text-align:right;color:var(--text-muted)">− ${fmtBi(cota)}</td>
+                <td style="text-align:right;font-weight:600">${fmtBi(liq)}</td>
+                <td style="text-align:right">${fmtBi(iss)}</td>
+                <td style="text-align:right">+ ${fmtBi(cota)}</td>
+                <td style="text-align:right;color:var(--text-muted)">${fmtBi(tBR)}</td>
+                <td style="text-align:right;font-weight:600">${def != null ? (ano === 2026 ? '<strong>1,0000</strong>' : fmtDeflator(def)) : '<span class="na-cell">aguard.</span>'}</td>
+                <td style="text-align:right" class="${cEst != null ? 'td-coeff' : ''}">${fmtBi(cEst, 3)}</td>
+                <td style="text-align:right" class="${cMun != null ? 'td-coeff' : ''}">${fmtBi(cMun, 3)}</td>
             </tr>`;
         });
 
         tbody.innerHTML = rows.join('');
 
-        const nDisp = valoresA.length;
-        const GOBETTI = 2.4; // estimativa destino — Gobetti & Monteiro (2023)
+        const cs = 'colspan="9"';
         tfoot.innerHTML = `
+            <tr style="border-top:2px solid var(--border)">
+                <td class="td-year">Σ Valores atualizados</td>
+                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">soma dos 8 anos corrigidos</td>
+                <td style="text-align:right;font-weight:700">${fmtBi(somaEstado, 3)}</td>
+                <td style="text-align:right;font-weight:700">${fmtBi(somaMunis, 3)}</td>
+            </tr>
             <tr>
-                <td class="td-year">Rec. Média ES</td>
-                <td colspan="5" style="font-style:italic;color:var(--text-muted);text-align:center">
-                    média dos ${nDisp}/8 valores corrigidos ÷ 8
-                </td>
-                <td class="td-coeff">${fmtBi(totalA, 3)}</td>
+                <td class="td-year">÷ 8 anos = Rec. Média</td>
+                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">numerador estado ES · numerador municípios ES</td>
+                <td style="text-align:right;font-weight:700;color:var(--accent)">${fmtBi(totalA, 3)}</td>
+                <td style="text-align:right;font-weight:700;color:var(--accent)">${fmtBi(totalAMun, 3)}</td>
             </tr>
             <tr>
                 <td class="td-year">Denominador</td>
-                <td colspan="5" style="font-style:italic;color:var(--text-muted);text-align:center">
-                    Total_BR_2026 = Σ Receitas Médias de todos os entes
-                </td>
-                <td class="td-coeff">${fmtBi(totalB, 3)}</td>
+                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">Total_BR_2026 = ICMS_BR_2026 + ISS_BR_2026 = Σ Receitas Médias de todos os entes</td>
+                <td colspan="2" style="text-align:right;font-weight:700">${fmtBi(totalB, 3)}</td>
             </tr>
             <tr>
-                <td class="td-year" style="color:var(--accent)">CPT_ES</td>
-                <td colspan="5" style="text-align:center;font-style:italic;color:var(--text-muted)">
-                    Rec. Média ES / Denominador — critério origem (LC 227/2026)
-                </td>
-                <td class="td-coeff" style="font-size:1rem">
-                    ${coeff != null ? fmtPct(coeff * 100) : '<span class="na-cell">aguard. ISS BR 2026</span>'}
-                </td>
+                <td class="td-year" style="color:var(--accent)">CPT estado ES</td>
+                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">Rec. Média estado ÷ Denominador</td>
+                <td style="text-align:right;font-size:1rem;font-weight:700;color:var(--accent)">${coeff != null ? fmtPct(coeff * 100) : '<span class="na-cell">aguard.</span>'}</td>
+                <td></td>
             </tr>
             <tr>
-                <td class="td-year" style="color:var(--text-muted)">Gobetti 2023</td>
-                <td colspan="5" style="text-align:center;font-style:italic;color:var(--text-muted)">
-                    Estimativa destino (IBS pleno) — Gobetti &amp; Monteiro (2023)
-                </td>
-                <td style="text-align:right;color:var(--text-muted);font-weight:600">2,4000%</td>
+                <td class="td-year" style="color:var(--accent)">CPT municípios ES</td>
+                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">Rec. Média municípios ÷ Denominador</td>
+                <td></td>
+                <td style="text-align:right;font-size:1rem;font-weight:700;color:var(--accent)">${coeffMun != null ? fmtPct(coeffMun * 100) : '<span class="na-cell">aguard.</span>'}</td>
             </tr>
-            ${coeff != null ? `
-            <tr>
-                <td class="td-year" style="color:var(--text-muted)">Diferença</td>
-                <td colspan="5" style="text-align:center;font-style:italic;color:var(--text-muted)">
-                    CPT_ES − critério destino (impacto fiscal da transição para o ES)
-                </td>
-                <td style="text-align:right;font-weight:700;color:${coeff * 100 - GOBETTI >= 0 ? 'var(--accent)' : '#e53e3e'}">
-                    ${(coeff * 100 - GOBETTI >= 0 ? '+' : '') + (coeff * 100 - GOBETTI).toFixed(4).replace('.', ',')}p.p.
-                </td>
-            </tr>` : ''}`;
+            <tr style="background:rgba(112,161,112,0.1)">
+                <td class="td-year" style="color:var(--accent)">CPT_ES total UF</td>
+                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">estado + municípios — participação do ES no FDR nacional</td>
+                <td colspan="2" style="text-align:right;font-size:1.1rem;font-weight:700;color:var(--accent)">${coeffUF != null ? fmtPct(coeffUF * 100) : '<span class="na-cell">aguard.</span>'}</td>
+            </tr>`;
 
         // ── Tabela 2 (contexto) ───────────────────────────────────────────────
         const tbody2 = document.getElementById('tbody-context');
@@ -627,9 +632,9 @@
             `<span class="status-dot ${allOK ? '' : 'pending'}"></span> ${statusMsg.join(' · ')}`;
 
         // ── Result box ────────────────────────────────────────────────────────
-        if (coeff != null) {
-            document.getElementById('coeff-main').textContent = fmtPct(coeff * 100).replace(/<[^>]+>/g, '');
-            document.getElementById('total-es').textContent = 'R$ ' + fmtBi(totalA, 3).replace(/<[^>]+>/g, '') + 'B';
+        if (coeffUF != null) {
+            document.getElementById('coeff-main').textContent = fmtPct(coeffUF * 100).replace(/<[^>]+>/g, '');
+            document.getElementById('total-es').textContent = 'R$ ' + fmtBi(totalA + totalAMun, 3).replace(/<[^>]+>/g, '') + 'B';
             document.getElementById('total-br').textContent = 'R$ ' + fmtBi(totalB, 3).replace(/<[^>]+>/g, '') + 'B';
             document.getElementById('result-box').style.display = 'flex';
         }
