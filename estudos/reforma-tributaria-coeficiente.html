@@ -577,10 +577,10 @@
                     if (issVal  != null) { somaISS    += issVal * d;          nISS++;    }
                 }
 
-                const mediaEstado = nEstado === ANOS.length ? somaEstado / ANOS.length : null;
+                const mediaEstado = nEstado > 0 ? somaEstado / ANOS.length : null;
                 // cota-parte = ICMS_UF × 0,25 (mesmo deflator, mesma média)
                 const mediaCota   = mediaEstado != null ? mediaEstado / 3 : null; // 0.25/0.75 = 1/3
-                const mediaISS    = nISS === ANOS.length ? somaISS / ANOS.length : null;
+                const mediaISS    = nISS > 0 ? somaISS / ANOS.length : null;
                 const mediaMunis  = (mediaISS != null && mediaCota != null) ? mediaISS + mediaCota
                                   : mediaISS ?? mediaCota ?? null;
                 const mediaTotal  = (mediaEstado != null && mediaMunis != null)
