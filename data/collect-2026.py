@@ -63,12 +63,16 @@ def main():
     # ICMS dos estados
     icms_br_total = 0
     icms_es = None
+    icms_por_uf_2026 = {}  # {uf_sigla: valor}
     print("\n=== ICMS Estados ===")
     for i, state in enumerate(states):
         val = get_valor(state["cod_ibge"], "E", ICMS_COD)
         if val:
             icms_br_total += val
-            if state.get("uf") == "ES":
+            uf = state.get("uf", "")
+            if uf:
+                icms_por_uf_2026[uf] = val
+            if uf == "ES":
                 icms_es = val
         print(f"  [{i+1}/{len(states)}] {state['ente']}: {'R$ {:,.0f}'.format(val) if val else 'N/A'}")
         time.sleep(1.05)
@@ -104,6 +108,12 @@ def main():
     existing.setdefault("icms_es", {})[str(ANO)] = icms_es
     existing.setdefault("iss_es", {})[str(ANO)] = iss_es_total if iss_es_total else None
     existing.setdefault("periodo_usado", {})[str(ANO)] = PERIODO
+
+    # Salva ICMS por UF para 2026 (necessário para tabela comparativa todas as UFs)
+    icms_por_uf = existing.get("icms_por_uf", {})
+    for uf, val in icms_por_uf_2026.items():
+        icms_por_uf.setdefault(uf, {})[str(ANO)] = val
+    existing["icms_por_uf"] = icms_por_uf
 
     with open(OUTPUT, "w") as f:
         json.dump(existing, f, ensure_ascii=False, indent=2)
