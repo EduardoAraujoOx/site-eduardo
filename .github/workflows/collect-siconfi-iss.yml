@@ -6,7 +6,7 @@ on:
       anos:
         description: 'Anos para coletar (separados por vírgula)'
         required: false
-        default: '2019,2020,2021,2022,2023,2024,2025,2026'
+        default: '2018,2019,2020,2021,2022,2023,2024,2025,2026'
 
 permissions:
   contents: write
@@ -54,6 +54,7 @@ jobs:
           PERIODO_POR_ANO = {a: 2 if a == 2026 else 6 for a in ANOS}
           BASE_URL = "https://apidatalake.tesouro.gov.br/ords/siconfi/tt"
           ISS_COD = "ISSLiquidoExcetoTransferenciasEFUNDEB"
+          COTA_COD = "RREO3CotaParteDoICMS"
           TARGET_COL = "TOTAL (ÚLTIMOS 12 MESES)"
           OUT = Path(f"data/iss-state-{UF}.json")
 
@@ -93,22 +94,26 @@ jobs:
                       f"&co_esfera=M&id_ente={cod}"
                   )
                   resp = fetch(url)
-                  val = None
+                  val_iss = None
+                  val_cota = None
                   if resp:
                       for item in resp.get("items", []):
-                          if item["cod_conta"] == ISS_COD and item["coluna"] == TARGET_COL:
-                              val = item["valor"]
-                              break
-                  if val is not None:
-                      results.setdefault(str(ano), {})[str(cod)] = {
-                          "ente": nome,
-                          "uf": UF,
-                          "valor": val,
-                      }
-                  print(f"  {nome} {ano}: {'R$ {:,.0f}'.format(val) if val else 'N/A'}")
+                          if item["coluna"] == TARGET_COL:
+                              if item["cod_conta"] == ISS_COD:
+                                  val_iss = item["valor"]
+                              elif item["cod_conta"] == COTA_COD:
+                                  val_cota = item["valor"]
+                  if val_iss is not None or val_cota is not None:
+                      entry = {"ente": nome, "uf": UF}
+                      if val_iss is not None:
+                          entry["valor"] = val_iss
+                      if val_cota is not None:
+                          entry["cota_parte_icms"] = val_cota
+                      results.setdefault(str(ano), {})[str(cod)] = entry
+                  print(f"  {nome} {ano}: ISS={'R$ {:,.0f}'.format(val_iss) if val_iss else 'N/A'} cota={'R$ {:,.0f}'.format(val_cota) if val_cota else 'N/A'}")
                   time.sleep(1.05)
 
-          # Also try DF with esfera E (DF has both state and municipal functions)
+          # Also try DF with esfera D (DF has both state and municipal functions)
           if UF == "DF":
               df_ente = next((i for i in data["items"] if i.get("cod_ibge") == 53), None)
               if df_ente:
@@ -123,19 +128,23 @@ jobs:
                           f"&co_esfera=D&id_ente={cod}"
                       )
                       resp = fetch(url)
-                      val = None
+                      val_iss = None
+                      val_cota = None
                       if resp:
                           for item in resp.get("items", []):
-                              if item["cod_conta"] == ISS_COD and item["coluna"] == TARGET_COL:
-                                  val = item["valor"]
-                                  break
-                      if val is not None:
-                          results.setdefault(str(ano), {})[str(cod)] = {
-                              "ente": "Distrito Federal",
-                              "uf": "DF",
-                              "valor": val,
-                          }
-                      print(f"  DF {ano}: {'R$ {:,.0f}'.format(val) if val else 'N/A'}")
+                              if item["coluna"] == TARGET_COL:
+                                  if item["cod_conta"] == ISS_COD:
+                                      val_iss = item["valor"]
+                                  elif item["cod_conta"] == COTA_COD:
+                                      val_cota = item["valor"]
+                      if val_iss is not None or val_cota is not None:
+                          entry = {"ente": "Distrito Federal", "uf": "DF"}
+                          if val_iss is not None:
+                              entry["valor"] = val_iss
+                          if val_cota is not None:
+                              entry["cota_parte_icms"] = val_cota
+                          results.setdefault(str(ano), {})[str(cod)] = entry
+                      print(f"  DF {ano}: ISS={'R$ {:,.0f}'.format(val_iss) if val_iss else 'N/A'} cota={'R$ {:,.0f}'.format(val_cota) if val_cota else 'N/A'}")
                       time.sleep(1.05)
 
           OUT.write_text(json.dumps(results, ensure_ascii=False, indent=2))
@@ -188,14 +197,18 @@ jobs:
           iss_br_new = {}
           iss_es_new = {}
           iss_por_uf_new = {}  # {ano: {uf: total_iss}}
+          cota_por_uf_new = {}  # {ano: {uf: total_cota_parte_icms}}
           for ano, entes in merged.items():
-              iss_br_new[ano] = sum(v["valor"] for v in entes.values())
-              iss_es_new[ano] = sum(v["valor"] for v in entes.values() if v["uf"] == "ES")
-              by_uf = {}
+              iss_br_new[ano] = sum(v.get("valor", 0) or 0 for v in entes.values())
+              iss_es_new[ano] = sum(v.get("valor", 0) or 0 for v in entes.values() if v["uf"] == "ES")
+              by_uf_iss = {}
+              by_uf_cota = {}
               for v in entes.values():
                   uf = v.get("uf", "")
-                  by_uf[uf] = by_uf.get(uf, 0) + v["valor"]
-              iss_por_uf_new[ano] = by_uf
+                  by_uf_iss[uf] = by_uf_iss.get(uf, 0) + (v.get("valor") or 0)
+                  by_uf_cota[uf] = by_uf_cota.get(uf, 0) + (v.get("cota_parte_icms") or 0)
+              iss_por_uf_new[ano] = by_uf_iss
+              cota_por_uf_new[ano] = by_uf_cota
 
           # Load existing data file — preserve existing values, only update with new data
           out_file = Path("data/reforma-tributaria.json")
@@ -208,6 +221,7 @@ jobs:
           iss_es_merged = dict(existing.get("iss_es_from_munis") or {})
           iss_det_merged = dict(existing.get("iss_detalhes") or {})
           iss_uf_merged = dict(existing.get("iss_por_uf") or {})
+          cota_uf_merged = dict(existing.get("cota_parte_icms_por_uf") or {})
 
           for ano, val in iss_br_new.items():
               iss_br_merged[str(ano)] = val
@@ -217,11 +231,14 @@ jobs:
               iss_det_merged[str(ano)] = entes
           for ano, by_uf in iss_por_uf_new.items():
               iss_uf_merged[str(ano)] = by_uf
+          for ano, by_uf in cota_por_uf_new.items():
+              cota_uf_merged[str(ano)] = by_uf
 
           existing["iss_br"] = {str(a): iss_br_merged.get(str(a)) for a in ALL_ANOS}
           existing["iss_es_from_munis"] = {str(a): iss_es_merged.get(str(a)) for a in ALL_ANOS}
           existing["iss_detalhes"] = iss_det_merged
           existing["iss_por_uf"] = iss_uf_merged
+          existing["cota_parte_icms_por_uf"] = cota_uf_merged
 
           out_file.write_text(json.dumps(existing, ensure_ascii=False, indent=2))
           print("Resultado:")
