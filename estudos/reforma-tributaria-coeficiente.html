@@ -451,11 +451,11 @@
                 <strong>Metodologia — LC 227/2026, arts. 114, 115 e 129</strong>
                 <ul>
                     <li><strong>Passo 1 — Índice de atualização:</strong> para cada ano t, Total_BR_t = Σ ICMS estados + Σ ISS municípios. Índice_t = Total_BR_2026 / Total_BR_t. Índice de 2026 = 1,000 por definição. Idêntico para todos os entes.</li>
-                    <li><strong>Passo 2 — Receita Média do ES:</strong> para cada ano t, ICMS_ES_bruto × 0,75 × Índice_t. Média aritmética simples dos 8 valores = Receita Média de Referência ES.</li>
+                    <li><strong>Passo 2 — Receita Média do ES:</strong> para cada ano t, ICMS_ES_bruto × 0,75 × Índice_t. Média aritmética simples dos 8 valores (2019–2026) = Receita Média de Referência ES.</li>
                     <li><strong>Passo 3 — Denominador:</strong> soma das Receitas Médias de Referência de todos os estados, DF e municípios do Brasil. Algebricamente equivale a Total_BR_2026 (ver nota metodológica abaixo).</li>
                     <li><strong>CPT_ES = Receita Média ES / Denominador.</strong> A soma dos CPTs de todos os entes = 100%.</li>
                     <li><strong>Coluna "2026":</strong> 2º bimestre, coluna "Previsão Atualizada do Exercício" — melhor aproximação do total anual disponível antes do encerramento do exercício.</li>
-                    <li><strong>Municípios ES (próxima etapa):</strong> para cada município capixaba, Receita Média = (ISS_muni + cota-parte ICMS_ES × 0,25 × fração_muni) × Índice_t, média dos 8 anos.</li>
+                    <li><strong>Municípios ES (próxima etapa):</strong> para cada município capixaba, Receita Média = (ISS_muni + cota-parte ICMS_ES × 0,25 × fração_muni) × Índice_t, média dos 8 anos (2019–2026).</li>
                 </ul>
                 <p style="margin-top:0.75rem;font-size:0.82rem"><strong>Nota — por que o denominador = Total_BR_2026:</strong>
                 Denominador = Σ_entes(Média_t(Receita_ente_t × Índice_t)). Como Índice_t = Total_BR_2026 / Total_BR_t, ao somar todos os entes o numerador e denominador do índice se cancelam em cada ano t: Σ_entes(Receita_ente_t) = Total_BR_t → Média_t(Total_BR_2026) = Total_BR_2026.</p>
@@ -598,12 +598,12 @@
         tfoot.innerHTML = `
             <tr style="border-top:2px solid var(--border)">
                 <td class="td-year">Σ Valores atualizados</td>
-                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">soma dos 8 anos corrigidos</td>
+                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">soma dos ${ANOS.length} anos corrigidos</td>
                 <td style="text-align:right;font-weight:700">${fmtBi(somaEstado, 3)}</td>
                 <td style="text-align:right;font-weight:700">${fmtBi(somaMunis, 3)}</td>
             </tr>
             <tr>
-                <td class="td-year">÷ 8 anos = Rec. Média</td>
+                <td class="td-year">÷ ${ANOS.length} anos = Rec. Média</td>
                 <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">numerador estado ES · numerador municípios ES</td>
                 <td style="text-align:right;font-weight:700;color:var(--accent)">${fmtBi(totalA, 3)}</td>
                 <td style="text-align:right;font-weight:700;color:var(--accent)">${fmtBi(totalAMun, 3)}</td>
