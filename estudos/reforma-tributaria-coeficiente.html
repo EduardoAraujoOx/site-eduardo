@@ -19,6 +19,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="/css/notas.css?v=4">
     <link rel="stylesheet" href="/css/search.css">
 
@@ -107,6 +109,51 @@
             font-size: 0.78rem;
             min-width: 780px;
         }
+        .data-table.table-compact {
+            font-size: 0.70rem;
+        }
+        .data-table.table-compact thead th {
+            padding: 0.4rem 0.5rem;
+            white-space: normal;
+            line-height: 1.25;
+        }
+        .data-table.table-compact tbody td {
+            padding: 0.35rem 0.5rem;
+        }
+        .data-table.table-compact tfoot td {
+            padding: 0.4rem 0.5rem;
+        }
+
+        /* export/share buttons */
+        .share-row {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin: 0 0 2rem;
+        }
+        .btn-share {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-family: var(--sans);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0.45rem 0.9rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary, #f7f7f5);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: opacity 0.15s, background 0.15s;
+        }
+        .btn-share:hover { opacity: 0.8; }
+        .btn-share:disabled { opacity: 0.5; cursor: default; }
+        .btn-share-wa {
+            background: #25D366;
+            color: #fff;
+            border-color: #25D366;
+        }
+        .btn-share svg { flex-shrink: 0; }
         .data-table thead th {
             background: var(--bg-secondary, #f7f7f5);
             font-weight: 600;
@@ -274,6 +321,18 @@
                 </div>
             </div>
 
+            <!-- Export / share -->
+            <div class="share-row" id="share-row" style="display:none">
+                <button class="btn-share" id="btn-export-img" title="Baixar imagem PNG da tabela de auditoria">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Exportar imagem
+                </button>
+                <button class="btn-share btn-share-wa" id="btn-share-wa" style="display:none" title="Compartilhar pelo WhatsApp ou outro app">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                    Compartilhar
+                </button>
+            </div>
+
             <!-- Main table -->
             <span class="section-label">Tabela 1 — Auditoria CPT_ES: Espírito Santo (LC 227/2026, art. 115)</span>
             <div id="status-nominal" class="status-bar">
@@ -328,6 +387,40 @@
                         <tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Simulação -->
+            <span class="section-label" style="margin-top:2.5rem">Simulação — Impacto fiscal no ES em 2029 (1º ano do IBS)</span>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin:0.25rem 0 1rem;line-height:1.6">
+                O CPT_ES histórico (2,4031%) é menor que a participação corrente do ES em 2026 (2,5845%) porque o estado cresceu
+                acima da média nacional ao longo do período de referência. Isso gera uma <strong>perda estrutural imediata</strong>
+                no 1º ano da reforma — ainda sem considerar o efeito progressivo da regra de destino.
+                Abaixo, a simulação para diferentes hipóteses de crescimento da arrecadação nacional em 2029.
+            </p>
+            <div class="data-table-wrap">
+                <table class="data-table" id="table-sim">
+                    <thead>
+                        <tr>
+                            <th class="th-group th-year">Crescimento<br>arrecadação 2029</th>
+                            <th class="th-group">Total IBS 2029<br>(R$ bi)</th>
+                            <th class="th-group">ES sem reforma<br>(part. 2026 × total)</th>
+                            <th class="th-group">ES com CPT<br>(2,4031% × total)</th>
+                            <th class="th-group">Perda<br>(R$ bi)</th>
+                            <th class="th-group">Perda<br>(%)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-sim">
+                        <tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Gráfico -->
+            <div style="margin:1.5rem 0 2.5rem;background:var(--bg-secondary,#f7f7f5);border-radius:8px;padding:1.25rem 1.5rem">
+                <p style="font-family:var(--mono);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin:0 0 1rem">
+                    ES sem reforma vs. ES com CPT — por crescimento da arrecadação nacional (R$ bi)
+                </p>
+                <canvas id="chart-sim" style="max-height:320px"></canvas>
             </div>
 
             <!-- Tabela 3: CPT por UF -->
@@ -538,6 +631,14 @@
                 <td colspan="2" style="text-align:right;font-size:1.1rem;font-weight:700;color:var(--accent)">${coeffUF != null ? fmtPct(coeffUF * 100) : '<span class="na-cell">aguard.</span>'}</td>
             </tr>`;
 
+        // ── Simulação ────────────────────────────────────────────────────────
+        if (coeffUF != null && totalB != null) {
+            // participação corrente ES em 2026 (ponto, não média)
+            const es2026 = (icms_es[2026] ?? 0) + (iss_es[2026] ?? 0);
+            const partES2026 = es2026 / totalB;
+            buildSimulation(coeffUF, totalB, partES2026);
+        }
+
         // ── Tabela 2 (contexto) ───────────────────────────────────────────────
         const tbody2 = document.getElementById('tbody-context');
         const rows2 = ANOS.map(ano => {
@@ -637,10 +738,155 @@
             document.getElementById('total-es').textContent = 'R$ ' + fmtBi(totalA + totalAMun, 3).replace(/<[^>]+>/g, '') + 'B';
             document.getElementById('total-br').textContent = 'R$ ' + fmtBi(totalB, 3).replace(/<[^>]+>/g, '') + 'B';
             document.getElementById('result-box').style.display = 'flex';
+            document.getElementById('share-row').style.display = 'flex';
         }
     }
 
     loadData();
+
+    // ── Simulação: impacto fiscal 2029 ───────────────────────────────────────
+    function buildSimulation(cptUF, totalBR2026, partES2026) {
+        const cenarios = [-5, -2, 0, 2, 5, 8, 10, 15, 20].map(pct => {
+            const total2029 = totalBR2026 * (1 + pct / 100);
+            const esSemReforma = partES2026 * total2029;
+            const esComCPT    = cptUF * total2029;
+            const perda       = esComCPT - esSemReforma;
+            return { pct, total2029, esSemReforma, esComCPT, perda };
+        });
+
+        // Tabela
+        const tbody = document.getElementById('tbody-sim');
+        tbody.innerHTML = cenarios.map(c => {
+            const isBase = c.pct === 0;
+            const cor = c.perda < 0 ? '#e53e3e' : '#2e7d32';
+            return `<tr${isBase ? ' style="background:rgba(112,161,112,0.08);font-weight:600"' : ''}>
+                <td class="td-year">${c.pct > 0 ? '+' : ''}${c.pct}%${isBase ? ' (base)' : ''}</td>
+                <td style="text-align:right">${fmtBi(c.total2029)}</td>
+                <td style="text-align:right">${fmtBi(c.esSemReforma, 3)}</td>
+                <td style="text-align:right">${fmtBi(c.esComCPT, 3)}</td>
+                <td style="text-align:right;font-weight:700;color:${cor}">${c.perda >= 0 ? '+' : ''}${fmtBi(c.perda, 3)}</td>
+                <td style="text-align:right;color:${cor}">${c.perda >= 0 ? '+' : ''}${(c.perda / c.esSemReforma * 100).toFixed(2).replace('.', ',')}%</td>
+            </tr>`;
+        }).join('');
+
+        // Gráfico
+        const isDark = document.documentElement.classList.contains('dark') ||
+            window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)';
+        const textColor = isDark ? '#aaa' : '#666';
+
+        const labels = cenarios.map(c => `${c.pct > 0 ? '+' : ''}${c.pct}%`);
+        new Chart(document.getElementById('chart-sim'), {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'ES sem reforma (part. 2026)',
+                        data: cenarios.map(c => +(c.esSemReforma / 1e9).toFixed(3)),
+                        backgroundColor: 'rgba(90,120,90,0.55)',
+                        borderColor: 'rgba(90,120,90,0.9)',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                    },
+                    {
+                        label: 'ES com CPT histórico (2,4031%)',
+                        data: cenarios.map(c => +(c.esComCPT / 1e9).toFixed(3)),
+                        backgroundColor: 'rgba(200,80,80,0.55)',
+                        borderColor: 'rgba(200,80,80,0.9)',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                    },
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { labels: { color: textColor, font: { size: 11 } } },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => `R$ ${ctx.parsed.y.toFixed(3).replace('.', ',')}B`,
+                            afterBody: (items) => {
+                                if (items.length < 2) return '';
+                                const semRef = items[0].parsed.y;
+                                const comCPT = items[1].parsed.y;
+                                const perda = comCPT - semRef;
+                                return [`Diferença: ${perda >= 0 ? '+' : ''}R$ ${perda.toFixed(3).replace('.', ',')}B`];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { ticks: { color: textColor }, grid: { color: gridColor } },
+                    y: {
+                        ticks: { color: textColor, callback: v => `R$ ${v}B` },
+                        grid: { color: gridColor },
+                        title: { display: true, text: 'R$ bilhões', color: textColor, font: { size: 10 } }
+                    }
+                }
+            }
+        });
+    }
+
+    // ── Exportar como imagem ──────────────────────────────────────────────────
+    async function exportImage() {
+        const btn = document.getElementById('btn-export-img');
+        btn.disabled = true;
+        btn.textContent = 'Gerando…';
+
+        // Capture result-box + table-nominal
+        const target = document.getElementById('table-nominal');
+        const resultBox = document.getElementById('result-box');
+
+        // Create wrapper for clean capture
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'background:#fff;padding:20px 24px;font-family:monospace;display:inline-block;min-width:900px';
+        const title = document.createElement('p');
+        title.style.cssText = 'font-family:serif;font-size:13px;font-weight:700;margin:0 0 10px;color:#333';
+        title.textContent = 'CPT_ES — Coeficiente de Participação de Transição do Espírito Santo (LC 227/2026)';
+        wrap.appendChild(title);
+        wrap.appendChild(resultBox.cloneNode(true));
+        const spacer = document.createElement('div');
+        spacer.style.height = '12px';
+        wrap.appendChild(spacer);
+        wrap.appendChild(target.cloneNode(true));
+        const source = document.createElement('p');
+        source.style.cssText = 'font-size:10px;color:#888;margin:8px 0 0;font-family:sans-serif';
+        source.textContent = 'Fonte: SICONFI/STN — RREO Anexo 3 · eduardoreisaraujo.com.br';
+        wrap.appendChild(source);
+
+        document.body.appendChild(wrap);
+        wrap.style.position = 'fixed';
+        wrap.style.top = '-9999px';
+        wrap.style.left = '0';
+
+        try {
+            const canvas = await html2canvas(wrap, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+            const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+            const url = URL.createObjectURL(blob);
+
+            // Try Web Share API (mobile) — share file
+            if (navigator.canShare && navigator.canShare({ files: [new File([blob], 'cpt-es.png', { type: 'image/png' })] })) {
+                document.getElementById('btn-share-wa').style.display = 'inline-flex';
+                document.getElementById('btn-share-wa').onclick = async () => {
+                    const file = new File([blob], 'cpt-es.png', { type: 'image/png' });
+                    await navigator.share({ files: [file], title: 'CPT_ES — Reforma Tributária', text: 'Coeficiente de Participação de Transição do Espírito Santo (LC 227/2026)' });
+                };
+            }
+
+            // Download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'cpt-es-auditoria.png';
+            a.click();
+        } finally {
+            document.body.removeChild(wrap);
+            btn.disabled = false;
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar imagem';
+        }
+    }
+
+    document.getElementById('btn-export-img').addEventListener('click', exportImage);
     </script>
 </body>
 </html>
