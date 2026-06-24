@@ -325,6 +325,29 @@
                 </table>
             </div>
 
+            <!-- Tabela 3: CPT por UF -->
+            <span class="section-label" style="margin-top:2rem">Tabela 3 — CPT por UF (auditável — soma = 100%)</span>
+            <p style="font-size:0.82rem;color:var(--text-muted);margin:0.25rem 0 0.75rem">
+                Cada linha mostra a participação do estado (ICMS×0,75), dos municípios (ISS + cota-parte ICMS×0,25) e o total da UF.
+                A soma da coluna <strong>Total UF</strong> deve ser exatamente 100%.
+            </p>
+            <div class="data-table-wrap">
+                <table class="data-table" id="table-ufs">
+                    <thead>
+                        <tr>
+                            <th class="th-group th-year">UF</th>
+                            <th class="th-group">Índice Estadual<br><small>(ICMS×0,75)</small></th>
+                            <th class="th-group">Índice Municípios<br><small>(ISS + cota-parte)</small></th>
+                            <th class="th-group">Índice Total UF<br><small>(soma dos dois)</small></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-ufs">
+                        <tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                    </tbody>
+                    <tfoot id="tfoot-ufs"></tfoot>
+                </table>
+            </div>
+
             <!-- Metodologia -->
             <div class="metodologia">
                 <strong>Metodologia — LC 227/2026, arts. 114, 115 e 129</strong>
@@ -530,6 +553,65 @@
             </tr>`;
         });
         tbody2.innerHTML = rows2.join('');
+
+        // ── Tabela 3: CPT por UF ─────────────────────────────────────────────
+        const icms_por_uf = data.icms_por_uf || {};  // {UF: {ano: val}}
+        const iss_por_uf  = data.iss_por_uf  || {};  // {ano: {UF: val}}
+
+        // UFs únicas com pelo menos algum dado
+        const ufs = Object.keys(icms_por_uf).sort();
+
+        if (ufs.length > 0 && totalB != null) {
+            const ufRows = ufs.map(uf => {
+                // Receita Média Estado = média(ICMS_UF × 0,75 × deflator_t)
+                let somaEstado = 0, nEstado = 0;
+                // Receita Média ISS municípios = média(ISS_UF × deflator_t)
+                let somaISS = 0, nISS = 0;
+
+                for (const ano of ANOS) {
+                    const d = deflators[ano];
+                    if (d == null) continue;
+                    const icmsVal = icms_por_uf[uf]?.[ano] ?? icms_por_uf[uf]?.[String(ano)] ?? null;
+                    const issVal  = iss_por_uf?.[ano]?.[uf] ?? iss_por_uf?.[String(ano)]?.[uf] ?? null;
+                    if (icmsVal != null) { somaEstado += icmsVal * 0.75 * d; nEstado++; }
+                    if (issVal  != null) { somaISS    += issVal * d;          nISS++;    }
+                }
+
+                const mediaEstado = nEstado === ANOS.length ? somaEstado / ANOS.length : null;
+                // cota-parte = ICMS_UF × 0,25 (mesmo deflator, mesma média)
+                const mediaCota   = mediaEstado != null ? mediaEstado / 3 : null; // 0.25/0.75 = 1/3
+                const mediaISS    = nISS === ANOS.length ? somaISS / ANOS.length : null;
+                const mediaMunis  = (mediaISS != null && mediaCota != null) ? mediaISS + mediaCota
+                                  : mediaISS ?? mediaCota ?? null;
+                const mediaTotal  = (mediaEstado != null && mediaMunis != null)
+                                  ? mediaEstado + mediaMunis : null;
+
+                const cptEstado = mediaEstado != null ? mediaEstado / totalB * 100 : null;
+                const cptMunis  = mediaMunis  != null ? mediaMunis  / totalB * 100 : null;
+                const cptTotal  = mediaTotal  != null ? mediaTotal  / totalB * 100 : null;
+
+                const isES = uf === 'ES';
+                return { uf, cptEstado, cptMunis, cptTotal, isES };
+            });
+
+            const tbody3 = document.getElementById('tbody-ufs');
+            tbody3.innerHTML = ufRows.map(r => `<tr${r.isES ? ' style="background:rgba(112,161,112,0.12);font-weight:600"' : ''}>
+                <td class="td-year">${r.uf}</td>
+                <td style="text-align:right">${fmtPct(r.cptEstado)}</td>
+                <td style="text-align:right">${fmtPct(r.cptMunis)}</td>
+                <td style="text-align:right;font-weight:700">${fmtPct(r.cptTotal)}</td>
+            </tr>`).join('');
+
+            const somaTotal = ufRows.reduce((s, r) => s + (r.cptTotal ?? 0), 0);
+            const somaMunis = ufRows.reduce((s, r) => s + (r.cptMunis ?? 0), 0);
+            const somaEst   = ufRows.reduce((s, r) => s + (r.cptEstado ?? 0), 0);
+            document.getElementById('tfoot-ufs').innerHTML = `<tr style="font-weight:700;border-top:2px solid var(--border)">
+                <td class="td-year">BRASIL</td>
+                <td style="text-align:right">${fmtPct(somaEst)}</td>
+                <td style="text-align:right">${fmtPct(somaMunis)}</td>
+                <td style="text-align:right;color:var(--accent)">${fmtPct(somaTotal)}</td>
+            </tr>`;
+        }
 
         // ── Status bar ────────────────────────────────────────────────────────
         const hasICMS  = icms_es[2023] != null;
