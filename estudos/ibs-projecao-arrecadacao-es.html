@@ -392,10 +392,33 @@
         }
         .footnote p { margin-bottom: 0.5rem; }
 
+        /* CPT param card */
+        .param-card {
+            background: var(--bg-secondary, #f7f7f5);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 1.1rem 1.5rem;
+            margin: 0 0 1.5rem;
+        }
+        .param-card .result-label {
+            font-family: var(--sans);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-bottom: 0.2rem;
+        }
+        .param-card .result-value {
+            font-family: var(--mono);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.05rem;
+        }
+
         @media (max-width: 640px) {
             .study-hero { padding: 2rem 1.25rem 1.5rem; }
             .study-content { padding: 0 1.25rem 4rem; }
             .controls-panel { flex-direction: column; gap: 1rem; }
+            .param-card > div { grid-template-columns: 1fr !important; }
         }
     </style>
 </head>
@@ -422,6 +445,31 @@
         </section>
 
         <section class="study-content">
+
+            <!-- CPT parameter card derived from Estudo 02 -->
+            <span class="section-label">Parâmetro derivado do Estudo 02 — CPT_ES (base do mecanismo IBSt)</span>
+            <div class="param-card">
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:0.25rem">
+                    <div>
+                        <div class="result-label">Índice anual ES 2025 — estado (critério origem)</div>
+                        <div class="result-value" style="color:#b43c3c">1,6405%</div>
+                        <div style="font-size:0.7rem;color:var(--text-muted)">snapshot 2025 — SICONFI/STN, DCA Anual</div>
+                    </div>
+                    <div>
+                        <div class="result-label">CPT histórico ES — estado (média 2019–2025)</div>
+                        <div class="result-value" style="color:var(--accent)">1,5589%</div>
+                        <div style="font-size:0.7rem;color:var(--text-muted)">base do mecanismo de transição (art. 131 ADCT)</div>
+                    </div>
+                    <div>
+                        <div class="result-label">Variação relativa (perda no mecanismo IBSt)</div>
+                        <div class="result-value" style="color:#b43c3c">−0,0816 pp &nbsp;≈&nbsp; −4,97%</div>
+                        <div style="font-size:0.7rem;color:var(--text-muted)">→ <strong>PERDA_TRANS_REL = −5%</strong> · ver Estudo 02 para cálculo completo</div>
+                    </div>
+                </div>
+                <div style="font-family:var(--sans);font-size:0.75rem;color:var(--text-secondary);margin-top:0.9rem;line-height:1.55">
+                    O ES contribui com uma parcela de 1,6405% da arrecadação nacional de ICMS+ISS em 2025 (critério origem), mas receberá de volta pelo mecanismo de transição (art. 131 ADCT) com base no CPT histórico de 1,5589% — 5% menor. Essa diferença é capturada pelo parâmetro <code style="font-size:0.72rem">PERDA_TRANS_REL = −5%</code>, aplicado multiplicativamente à parcela de IBSt de cada ano. Cálculo completo: <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02 — CPT_ES</a>.
+                </div>
+            </div>
 
             <!-- Controls -->
             <span class="section-label">Premissas do modelo</span>
@@ -510,8 +558,9 @@
             <span class="section-label" style="margin-top:0.5rem">Tabela 2 — Projeção 2029–2033: receita líquida ES por cenário (R$ bi)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
                 Receita líquida total (ICMS' + IBS') e variação percentual em relação ao contrafactual (ICMS sem reforma).
-                O cronograma ADCT segue o art. 128 para 2029–2032 (alíquota ICMS = 9/10, 8/10, 7/10 e 6/10).
-                Para 2033 utiliza-se estimativa de continuidade linear (5/10), marcada com <span class="tag-est">est.</span>
+                O cronograma ADCT segue o art. 128 para 2029–2032 (alíquota ICMS = 9/10, 8/10, 7/10 e 6/10) e a LC 214/2025
+                para 2033, quando o ICMS estadual é extinto e o IBS representa 100% da base tributável, com 90% pelo mecanismo
+                de transição (art. 131 §1º II). O CGIBS de 2033 é estimado — marcado com <span class="tag-est">est.</span>
             </p>
             <div class="data-table-wrap">
                 <table class="data-table" id="table-proj" style="min-width:700px">
@@ -609,14 +658,14 @@
                             <td>Arts. 128 IV, 131 §1º I ADCT; LC 227 art. 51 II d</td>
                         </tr>
                         <tr>
-                            <td><strong>2033 <span class="tag-est">est.</span></strong></td>
-                            <td>5/10 (50%)*</td>
-                            <td>50%*</td>
+                            <td><strong>2033</strong> <span class="tag-est">est.</span></td>
+                            <td>0 — extinto</td>
+                            <td>100%</td>
                             <td>90%</td>
-                            <td>5,00%*</td>
-                            <td>45,00%*</td>
-                            <td>0,50%*</td>
-                            <td>Art. 131 §1º II ADCT (90% explícito); demais: estimativa linear</td>
+                            <td>10,00%</td>
+                            <td>90,00%</td>
+                            <td>0,50% <span class="tag-est">est.</span></td>
+                            <td>ICMS extinto — LC 214/2025; art. 131 §1º II ADCT (90% transição explícito); CGIBS estimado</td>
                         </tr>
                     </tbody>
                 </table>
@@ -635,9 +684,9 @@
                         O Dest% é negativo para o ES porque o estado tem saldo exportador positivo: com a mudança de critério origem→destino, o ES tende a perder base tributária no IBS direto. O cenário pessimista (−30%) utiliza a estimativa de Gobetti e Monteiro (2023). ¹
                     </li>
                     <li>
-                        <strong>IBS transição (IBSt):</strong> parcela redistribuída pelo mecanismo de transição do art. 131 ADCT, com base no CPT_ES calculado pelo critério histórico de origem:
-                        <div class="formula-block">IBSt = (ICMS + FECOP) × (ibs_trans% + perdas_trans%)</div>
-                        O parâmetro <em>perdas_trans%</em> captura ganhos ou perdas específicos do ES no mecanismo de transição (art. 131). Por ausência de nota técnica específica para o ES, foi fixado em 0%. ³
+                        <strong>IBS transição (IBSt):</strong> parcela redistribuída pelo mecanismo de transição do art. 131 ADCT com base no CPT_ES histórico. O ES recebe de volta pelo mecanismo um percentual 5% menor do que o seu índice pontual de 2025, porque o CPT histórico (média 2019–2025) é inferior ao índice 2025 (1,5589% vs 1,6405%). Esse diferencial é aplicado multiplicativamente ao percentual de IBSt de cada ano:
+                        <div class="formula-block">IBSt = (ICMS + FECOP) × ibs_trans% × (1 + PERDA_TRANS_REL)</div>
+                        com <strong>PERDA_TRANS_REL = −5%</strong> (derivado da comparação CPT_ES histórico vs índice 2025 — ver <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a> e o card de parâmetros acima). ³
                     </li>
                     <li>
                         <strong>IBS bruto total:</strong> IBS = 0,95 × IBSd + IBSt — o fator 0,95 desconta 5% do mecanismo Seguro Receita sobre a parcela direta (art. 132 ADCT). Não há FECOP-IBS para 2029–2032 (a regulamentação prevê FECOP-IBS somente a partir de 2033, por lei estadual).
@@ -655,14 +704,14 @@
                             Δ% = Δ / ICMS'_cnt
                         </div>
                     </li>
-                    <li><strong>Ano 2033:</strong> o art. 128 ADCT cobre apenas 2029–2032. Para 2033, adota-se a continuidade linear da redução de alíquota ICMS (fator 5/10) e a regra explícita do art. 131 §1º II (retenção de transição = 90%). O percentual de financiamento do CGIBS para 2033 não está explicitado no art. 51 da LC 227/2026 — estimado em 0,50% (mesmo nível de 2032). Os valores de 2033 são, portanto, estimativas com maior incerteza e estão marcados na tabela.</li>
+                    <li><strong>Ano 2033:</strong> o ICMS estadual é extinto (LC 214/2025, art. 128 ADCT cobre apenas 2029–2032; 2033 é o primeiro ano com IBS pleno). A arrecadação do ente passa a ser integralmente de IBS, com 90% pelo mecanismo de transição (art. 131 §1º II ADCT) e 10% de forma direta. O percentual de financiamento do CGIBS para 2033 não está explicitado no art. 51 da LC 227/2026 — estimado em 0,50% (mesmo nível de 2032), marcado com <span class="tag-est">est.</span> na tabela.</li>
                 </ul>
             </div>
 
             <div class="footnote">
                 <p>¹ <strong>Efeito destino para o ES:</strong> Gobetti e Monteiro (2023) estimam a participação do ES no IBS pelo critério de destino (regime permanente) em <strong>2,4%</strong>, contra um CPT_ES de aproximadamente 2,5–2,6% pelo critério histórico de origem (ver <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a>). O parâmetro Dest% na fórmula do IBSd captura o efeito desta diferença sobre a parcela direta do IBS. O cenário pessimista de −30% representa o impacto máximo estimado no componente direto; −15% é um cenário intermediário; 0% equivale à ausência de impacto diferencial (neutralidade destino/origem).</p>
                 <p>² <strong>CG% — Custo nas compras governamentais (0,35%):</strong> estimativa de aumento de custos em compras públicas decorrente da transição tributária. Valor retirado da nota técnica da ASSEF/SEFAZ-PI relativa ao ano de 2029. Adota-se o mesmo parâmetro para o ES na ausência de nota técnica específica.</p>
-                <p>³ <strong>Perdas/Ganhos no mecanismo de transição:</strong> a redistribuição via art. 131 ADCT pode gerar ganhos ou perdas para cada ente, dependendo de sua posição relativa no CPT e no fluxo de IBS nacional. A nota técnica ASSEF/SEFAZ-PI estimou uma perda de 0,24% para o Piauí. Para o ES, esse parâmetro não foi calculado em nota técnica específica e foi fixado em 0% por ora. Um valor negativo (perda) para o ES seria consistente com o fato de o CPT-origem ser maior que o CPT-destino.</p>
+                <p>³ <strong>PERDA_TRANS_REL — Perda no mecanismo de transição (IBSt):</strong> a redistribuição via art. 131 ADCT opera pelo CPT histórico (média plurianual), não pelo índice pontual do último ano. Para o ES, o CPT histórico (1,5589%) é 0,0816 pp menor que o índice pontual de 2025 (1,6405%), o que representa uma perda relativa de aproximadamente 4,97% (≈ 5%) sobre a parcela de IBSt recebida. Isso significa que o ES arrecada proporcionalmente mais pelo critério de origem 2025 do que receberá de volta pelo mecanismo de transição baseado na média histórica — a diferença é perdida para outros entes com CPT histórico maior. O parâmetro é aplicado multiplicativamente: <code style="font-size:0.72rem">IBSt = base × ibs_trans% × (1 − 0,05)</code>. Cálculo detalhado: <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02 — CPT_ES</a>.</p>
                 <p>Fonte primária: <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">SICONFI — API Data Lake STN</a>. Scripts de coleta disponíveis no repositório. Base legal: arts. 128, 131 e 132 do ADCT (LC 214/2025); arts. 47 e 51 da LC 227/2026.</p>
             </div>
         </section>
@@ -680,14 +729,15 @@
         2030: { alpha: 0.8,  ibsDiretoPct: 0.04, ibsTransPct: 0.16,  cgibsPct: 0.010,  estimated: false },
         2031: { alpha: 0.7,  ibsDiretoPct: 0.06, ibsTransPct: 0.24,  cgibsPct: 0.0067, estimated: false },
         2032: { alpha: 0.6,  ibsDiretoPct: 0.08, ibsTransPct: 0.32,  cgibsPct: 0.005,  estimated: false },
-        2033: { alpha: 0.5,  ibsDiretoPct: 0.05, ibsTransPct: 0.45,  cgibsPct: 0.005,  estimated: true  },
+        2033: { alpha: 0.0,  ibsDiretoPct: 0.10, ibsTransPct: 0.90,  cgibsPct: 0.005,  estimated: true  },
+        // alpha=0: ICMS extinto (LC 214/2025); IBS=100% base; art.131§1ºII: 90% transição → 10% direto; CGIBS est.
     };
 
     const CG_PCT = 0.0035;      // custo compras governamentais
     const SEGURO_RECEITA = 0.05; // art. 132 ADCT — 5% sobre IBSd
     const COTA_MUN = 0.25;       // art. 158 IV CF
     const FUNDEB_PCT = 0.20;     // FUNDEB
-    const PERDA_TRANS_PCT = 0;   // ganhos/perdas mecanismo transição (art. 131) — ver nota³
+    const PERDA_TRANS_REL = -0.05; // perda relativa IBSt derivada do CPT_ES — Estudo 02 (1,6405% vs 1,5589% → −4,97%)
 
     const SCENARIOS = [
         { id: 'pess',  dest: -0.30, label: 'Pessimista (−30%)',   color: '#b43c3c', colorLight: 'rgba(180,60,60,0.65)' },
@@ -742,7 +792,7 @@
         const ibsSeguro      = ibsDirBruto * SEGURO_RECEITA;
 
         // ── IBS transição ─────────────────────────────────────────────────────
-        const ibsTransBruto  = base * (a.ibsTransPct + PERDA_TRANS_PCT);
+        const ibsTransBruto  = base * a.ibsTransPct * (1 + PERDA_TRANS_REL);
 
         // ── IBS total bruto ───────────────────────────────────────────────────
         const ibsBruto       = ibsDirBruto * (1 - SEGURO_RECEITA) + ibsTransBruto;
@@ -863,8 +913,8 @@
             row('Seguro Receita (5%)', '− 5% × IBSd, art. 132 ADCT', rP.ibsSeguro, rI.ibsSeguro, rO.ibsSeguro),
             `<tr class="row-separator"><td colspan="5" class="td-label" style="font-weight:700;padding-top:0.7rem;color:var(--text-primary)">E. IBS transição — 2029 (8% da base, art. 131 §1º I ADCT)</td></tr>`,
             rowPct('Percentual IBS transição (8%)', '80% × (1−α) = 8%', '8,00%'),
-            rowPct('Perdas/Ganhos transição', 'art. 131 ADCT — ver nota ³', '0,00% (não calculado)'),
-            rowSame('IBS transição bruto', 'base × (8% + 0%)', rP.ibsTransBruto),
+            rowPct('PERDA_TRANS_REL (perda IBSt — ver nota ³)', 'CPT histórico vs CPT 2025', '−5,00% (Estudo 02)'),
+            rowSame('IBS transição bruto', 'base × 8% × (1 − 5%)', rP.ibsTransBruto),
             `<tr class="row-separator"><td colspan="5" class="td-label" style="font-weight:700;padding-top:0.7rem;color:var(--text-primary)">F. IBS bruto total e IBS líquido — 2029</td></tr>`,
             row('IBS total bruto (IBSd×0,95 + IBSt)', '0,95×IBSd + IBSt', rP.ibsBruto, rI.ibsBruto, rO.ibsBruto),
             row('Cota-parte municipal IBS (25%)', 'IBS × 25%', rP.ibsCotaMun, rI.ibsCotaMun, rO.ibsCotaMun),
