@@ -299,9 +299,9 @@
                 que o Espírito Santo receberá durante os 50 anos de transição da reforma tributária,
                 conforme o art. 115 da LC 227/2026. É calculado como a razão entre a Receita Média
                 de Referência do ES — média dos valores anuais de ICMS (deduzida a cota-parte
-                municipal de 25%) e ISS, atualizados para a base de 2026 — e a soma das Receitas
+                municipal de 25%) e ISS, atualizados para a base de 2025 — e a soma das Receitas
                 Médias de Referência de todos os entes da federação. Fonte: SICONFI/STN —
-                DCA Anexo I-C (ISS 2019–2025) e RREO Anexo 3 (ICMS e ISS 2026). Premissas explícitas, fontes primárias e metodologia replicável.
+                DCA Anexo I-C (ICMS e ISS 2019–2025). Premissas explícitas, fontes primárias e metodologia replicável.
             </p>
         </section>
 
@@ -318,7 +318,7 @@
                     <div class="result-value" id="total-es">—</div>
                 </div>
                 <div>
-                    <div class="result-label">Denominador — Total_BR_2026 (R$ bi)</div>
+                    <div class="result-label">Denominador — Total_BR_2025 (R$ bi)</div>
                     <div class="result-value" id="total-br">—</div>
                 </div>
             </div>
@@ -339,13 +339,13 @@
             <span class="section-label">Tabela 1 — Auditoria CPT_ES: Espírito Santo (LC 227/2026, art. 115)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
                 Reprodução passo a passo do cálculo do CPT_ES. Para cada ano do período de referência
-                (2019–2026): <strong>(i)</strong> ICMS bruto arrecadado pelo ES, extraído do RREO Anexo 3, 6º bimestre
+                (2019–2025): <strong>(i)</strong> ICMS bruto arrecadado pelo ES, extraído do RREO Anexo 3, 6º bimestre
                 (coluna "Total dos Últimos 12 Meses"); <strong>(ii)</strong> dedução dos 25% constitucionalmente
                 destinados aos municípios (art. 158, IV, "a", CF); <strong>(iii)</strong> ISS bruto dos municípios
-                capixabas (DCA Anexo I-C para 2019–2025 ⁵; RREO Anexo 3 para 2026),
+                capixabas (DCA Anexo I-C 2019–2025 ⁵),
                 acrescido da cota-parte ICMS recebida; <strong>(iv)</strong> índice de atualização
-                = Total_BR_2026 / Total_BR_t, único e idêntico para todos os entes. A Receita Média
-                de Referência é a média aritmética simples dos 8 valores anuais corrigidos.
+                = Total_BR_2025 / Total_BR_t, único e idêntico para todos os entes. A Receita Média
+                de Referência é a média aritmética simples dos 7 valores anuais corrigidos.
             </p>
             <div id="status-nominal" class="status-bar">
                 <span class="status-dot pending"></span>
@@ -359,7 +359,7 @@
                             <th class="th-group" colspan="3">Estado ES — nominal (R$ bi)</th>
                             <th class="th-group" colspan="2">Municípios ES — nominal (R$ bi)</th>
                             <th class="th-group" colspan="2">Agregado nacional</th>
-                            <th class="th-group" colspan="2">Receita corrigida — base 2026 (R$ bi)</th>
+                            <th class="th-group" colspan="2">Receita corrigida — base 2025 (R$ bi)</th>
                         </tr>
                         <tr>
                             <th>ICMS ES bruto<br><small style="font-weight:400;font-size:0.65em">(RREO An.3)</small></th>
@@ -386,7 +386,7 @@
                 Valores nominais de ICMS e ISS utilizados no cálculo, antes da dedução da cota-parte
                 e da atualização pelo índice. A coluna "Part. ICMS ES/BR" mostra a participação
                 bruta do ES no ICMS nacional em cada ano — base para entender por que o CPT_ES
-                diverge da participação corrente de 2026.
+                diverge da participação corrente de 2025.
             </p>
             <div class="data-table-wrap">
                 <table class="data-table" id="table-context">
@@ -410,12 +410,12 @@
             <!-- Simulação -->
             <span class="section-label" style="margin-top:2.5rem">Simulação — Impacto fiscal no ES em 2029 (1º ano do IBS)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 1rem;line-height:1.65">
-                O CPT_ES (critério histórico de origem) é menor que a participação corrente do ES em 2026
+                O CPT_ES (critério histórico de origem) é menor que a participação corrente do ES em 2025
                 porque o estado cresceu acima da média nacional ao longo de todo o período de referência.
                 Isso gera uma <strong>perda estrutural imediata no primeiro ano da reforma</strong> —
                 ainda sem considerar o efeito progressivo e crescente da regra de destino ao longo dos
                 50 anos de transição. A simulação abaixo compara, para diferentes hipóteses de variação
-                da arrecadação nacional em 2029, o que o ES receberia mantida a participação de 2026
+                da arrecadação nacional em 2029, o que o ES receberia mantida a participação de 2025
                 (critério de origem corrente) e o que receberá com o CPT_ES calculado.
             </p>
             <div class="data-table-wrap">
@@ -424,8 +424,8 @@
                         <tr>
                             <th class="th-group th-year">Crescimento<br>arrecadação 2029</th>
                             <th class="th-group">Total IBS 2029<br>(R$ bi)</th>
-                            <th class="th-group">ES sem reforma<br>(part. 2026 × total)</th>
-                            <th class="th-group">ES com CPT<br>(2,4031% × total)</th>
+                            <th class="th-group">ES sem reforma<br>(part. 2025 × total)</th>
+                            <th class="th-group">ES com CPT<br>(<span id="sim-cpt-label">calculando…</span> × total)</th>
                             <th class="th-group">Perda<br>(R$ bi)</th>
                             <th class="th-group">Perda<br>(%)</th>
                         </tr>
@@ -449,10 +449,10 @@
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
                 Coeficientes de Participação de Transição calculados para todas as 26 UFs e o DF,
                 pelo mesmo procedimento aplicado ao ES. Cada linha decompõe o CPT da UF em
-                <strong>parcela estado</strong> (ICMS×0,75 × índice, média dos 8 anos ÷ Total_BR_2026) e
+                <strong>parcela estado</strong> (ICMS×0,75 × índice, média dos 7 anos ÷ Total_BR_2025) e
                 <strong>parcela municípios</strong> (ISS + cota-parte ICMS×0,25 × índice, mesma média e denominador).
                 A soma da coluna <strong>Total UF</strong> deve ser exatamente 100% — propriedade algébrica
-                decorrente da construção do denominador (Σ Receitas Médias = Total_BR_2026).
+                decorrente da construção do denominador (Σ Receitas Médias = Total_BR_2025).
                 Serve como verificação de consistência e contextualiza o CPT_ES em relação aos demais entes.
             </p>
             <div class="data-table-wrap">
@@ -473,24 +473,20 @@
             </div>
 
             <!-- Tabela 4: CPT por município ES -->
-            <span class="section-label" style="margin-top:2rem">Tabela 4 — Contribuição ao CPT_ES por município capixaba (Versão A e B)</span>
+            <span class="section-label" style="margin-top:2rem">Tabela 4 — Coeficiente de Participação na Transição por município capixaba (DCA 2019–2025)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
-                Desagregação da parcela municipal do CPT_ES por município. Base anual = ISS bruto + cota-parte ICMS recebida (art. 115, III), corrigida pelo Índice_t. <strong>Versão A</strong>: período 2019–2025 (7 anos), denominador = TotalBR_2025; deflator base 2025. <strong>Versão B</strong>: período 2019–2026 (8 anos), denominador = TotalBR_2026; 2026 via RREO (~18/78 municípios com dado individual — demais entram com zero em 2026). ISS e cota-parte 2019–2025: DCA Anexo I-C, 78/78 municípios ES. A soma das colunas converge com a parcela municipal do CPT_ES agregado da Tabela 3.
+                Coeficiente individual de cada município capixaba (art. 115, III). Base = ISS bruto + cota-parte ICMS, corrigida pelo Índice_t, média 2019–2025. Fonte: DCA Anexo I-C, 78/78 municípios ES. A soma dos coeficientes é igual à parcela municipal do CPT_ES da Tabela 3.
             </p>
             <div class="data-table-wrap">
                 <table class="data-table">
                     <thead>
                         <tr>
                             <th style="text-align:left">Município</th>
-                            <th style="text-align:right">ISS médio<br><small style="font-weight:400;font-size:0.65em">DCA 2019–2025 (R$ M)</small></th>
-                            <th style="text-align:right">Cota-parte ICMS<br><small style="font-weight:400;font-size:0.65em">DCA 2019–2025 (R$ M)</small></th>
-                            <th style="text-align:right">Base total média<br><small style="font-weight:400;font-size:0.65em">ISS + cota (R$ M)</small></th>
-                            <th style="text-align:right">CPT — Versão A<br><small style="font-weight:400;font-size:0.65em">2019–2025 base 2025</small></th>
-                            <th style="text-align:right">CPT — Versão B<br><small style="font-weight:400;font-size:0.65em">2019–2026 base 2026</small></th>
+                            <th style="text-align:right">CPT individual<br><small style="font-weight:400;font-size:0.65em">art. 115, III — base 2025</small></th>
                         </tr>
                     </thead>
                     <tbody id="tbody-munis-es">
-                        <tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                        <tr><td colspan="2" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
                     </tbody>
                     <tfoot id="tfoot-munis-es"></tfoot>
                 </table>
@@ -500,23 +496,22 @@
             <div class="metodologia">
                 <strong>Metodologia — LC 227/2026, arts. 114, 115 e 129</strong>
                 <ul>
-                    <li><strong>Fonte dos dados:</strong> SICONFI/STN. Para o ISS municipal: <em>DCA — Demonstrativo das Contas Anuais, Anexo I-C</em> para 2019–2025 (cobertura de ~5.200 municípios/ano nacionalmente; 78/78 municípios do ES; código <code>RO1.1.1.4.51.1.0</code> para 2022–2025 e <code>RO1.1.1.8.02.3.0</code> para 2019–2021 conforme revisão PCASP; coluna "Receitas Brutas Realizadas" — ISS bruto incluindo Simples Nacional e dívida ativa, alinhado ao art. 115, §1º da LC 227/2026); para 2026: <em>RREO Anexo 3</em> (DCA indisponível). Para o ICMS estadual: RREO Anexo 3, 6º bimestre (coluna "Total dos Últimos 12 Meses"), exceto 2026 (2º bimestre, "Previsão Atualizada do Exercício").</li>
-                    <li><strong>Passo 1 — Índice de atualização:</strong> para cada ano t (2019–2026), somar o ICMS bruto dos 26 estados e do DF mais o ISS bruto de todos os municípios do Brasil. Esse agregado é o Total_BR_t. O índice de atualização é Índice_t = Total_BR_2026 / Total_BR_t. O índice de 2026 é 1,0000 por definição. Esse índice é único e idêntico para todos os entes — estados e municípios usam o mesmo fator de correção em cada ano.</li>
-                    <li><strong>Passo 2 — Receita Média de Referência do estado ES:</strong> para cada ano t, tomar o ICMS bruto do ES, multiplicar por 0,75 para deduzir a cota-parte municipal de 25% (art. 115, I, "a", e art. 158, IV, "a", CF), e multiplicar pelo Índice_t. Isso produz o valor corrigido na base de 2026. A Receita Média de Referência do estado ES é a média aritmética simples dos 8 valores corrigidos.</li>
-                    <li><strong>Passo 3 — Receita Média de Referência dos municípios ES:</strong> para cada município capixaba, tomar o ISS bruto de cada ano, acrescentar a cota-parte do ICMS recebida do estado (art. 115, III, "b"), e multiplicar pelo Índice_t. A Receita Média de Referência do conjunto dos municípios ES é a média aritmética simples dos 8 valores corrigidos.</li>
-                    <li><strong>Passo 4 — Denominador:</strong> somar as Receitas Médias de Referência de todos os 26 estados, do DF e de todos os municípios do Brasil. Esse total é o denominador comum a todos os coeficientes. Algebricamente equivale a Total_BR_2026 (ver nota abaixo).</li>
+                    <li><strong>Fonte dos dados:</strong> SICONFI/STN. Para o ISS municipal e ICMS estadual: <em>DCA — Demonstrativo das Contas Anuais, Anexo I-C</em> para 2019–2025 (cobertura ISS: ~5.200 municípios/ano nacionalmente; 78/78 municípios do ES; ICMS: 26 estados + DF). Códigos PCASP: ISS <code>RO1.1.1.4.51.1.0</code> (2022–2025) e <code>RO1.1.1.8.02.3.0</code> (2019–2021); ICMS <code>RO1.1.1.4.50.1.0</code> (2022–2025) e <code>RO1.1.1.8.02.1.0</code> (2019–2021). Coluna "Receitas Brutas Realizadas" — bruto incluindo Simples Nacional e dívida ativa, alinhado ao art. 115, §1º da LC 227/2026.</li>
+                    <li><strong>Passo 1 — Índice de atualização:</strong> para cada ano t (2019–2025), somar o ICMS bruto dos 26 estados e do DF mais o ISS bruto de todos os municípios do Brasil. Esse agregado é o Total_BR_t. O índice de atualização é Índice_t = Total_BR_2025 / Total_BR_t. O índice de 2025 é 1,0000 por definição. Esse índice é único e idêntico para todos os entes — estados e municípios usam o mesmo fator de correção em cada ano.</li>
+                    <li><strong>Passo 2 — Receita Média de Referência do estado ES:</strong> para cada ano t, tomar o ICMS bruto do ES, multiplicar por 0,75 para deduzir a cota-parte municipal de 25% (art. 115, I, "a", e art. 158, IV, "a", CF), e multiplicar pelo Índice_t. Isso produz o valor corrigido na base de 2025. A Receita Média de Referência do estado ES é a média aritmética simples dos 7 valores corrigidos.</li>
+                    <li><strong>Passo 3 — Receita Média de Referência dos municípios ES:</strong> para cada município capixaba, tomar o ISS bruto de cada ano, acrescentar a cota-parte do ICMS recebida do estado (art. 115, III, "b"), e multiplicar pelo Índice_t. A Receita Média de Referência do conjunto dos municípios ES é a média aritmética simples dos 7 valores corrigidos.</li>
+                    <li><strong>Passo 4 — Denominador:</strong> somar as Receitas Médias de Referência de todos os 26 estados, do DF e de todos os municípios do Brasil. Esse total é o denominador comum a todos os coeficientes. Algebricamente equivale a Total_BR_2025 (ver nota abaixo).</li>
                     <li><strong>Passo 5 — CPT_ES:</strong> dividir a Receita Média de Referência do ES (estado + municípios) pelo denominador do Passo 4. Como verificação, a soma dos coeficientes de todos os entes deve ser exatamente 100%.</li>
                 </ul>
-                <p style="margin-top:0.75rem;font-size:0.82rem"><strong>Nota — por que o denominador = Total_BR_2026:</strong>
-                Denominador = Σ_entes(Média_t(Receita_ente_t × Índice_t)). Como Índice_t = Total_BR_2026 / Total_BR_t, ao somar todos os entes em cada ano t: Σ_entes(Receita_ente_t) = Total_BR_t, e Total_BR_t × (Total_BR_2026 / Total_BR_t) = Total_BR_2026. A média de 8 valores iguais a Total_BR_2026 é Total_BR_2026.</p>
+                <p style="margin-top:0.75rem;font-size:0.82rem"><strong>Nota — por que o denominador = Total_BR_2025:</strong>
+                Denominador = Σ_entes(Média_t(Receita_ente_t × Índice_t)). Como Índice_t = Total_BR_2025 / Total_BR_t, ao somar todos os entes em cada ano t: Σ_entes(Receita_ente_t) = Total_BR_t, e Total_BR_t × (Total_BR_2025 / Total_BR_t) = Total_BR_2025. A média de 7 valores iguais a Total_BR_2025 é Total_BR_2025.</p>
             </div>
 
             <div class="footnote">
-                <p>¹ Para o ano de 2026, os dados referem-se ao 2º bimestre (março–abril), coluna "Previsão Atualizada do Exercício" do RREO Anexo 3 — que representa a estimativa revisada da arrecadação total anual. É a melhor aproximação disponível antes do encerramento do exercício; o valor definitivo (6º bimestre) substituirá esta estimativa quando publicado.</p>
                 <p>² SC 2025: o 6º bimestre não estava disponível no SICONFI na data de coleta; foi utilizado o 5º bimestre como aproximação. O valor foi incorporado ao Total_BR_2025 para evitar distorção no índice de atualização desse ano.</p>
                 <p>³ <strong>Referência de destino:</strong> Gobetti e Monteiro (2023) estimam a participação do ES pelo critério de destino (IBS pleno, regime permanente) em <strong>2,4%</strong>. A diferença entre o CPT_ES calculado (critério histórico de origem) e esse valor de destino representa o núcleo do impacto fiscal estrutural da transição para o ES ao longo dos 50 anos.</p>
                 <p>⁴ Possíveis acréscimos ao numerador (art. 115, I, "b"): FUNDAP-ES (fundo estadual vinculado a diferimento de ICMS nas exportações) e adicional do Fundo de Combate à Pobreza (art. 82 ADCT), conforme art. 129, §1º, I da LC 227/2026 — não incluídos nesta versão.</p>
-                <p>⁵ <strong>Fonte do ISS municipal (2019–2025):</strong> DCA — Demonstrativo das Contas Anuais, Anexo I-C (SICONFI/STN). Cobertura nacional: ~5.200 municípios por ano (~93% do total); ES: 78/78 municípios em todos os anos. O DCA reporta a arrecadação bruta total ("Receitas Brutas Realizadas"), alinhada ao art. 115, §1º da LC 227/2026 que exige o "montante total da arrecadação", incluindo Simples Nacional (LC 123/2006) e dívida ativa. Atenção ao código de conta: revisão do PCASP em 2022 alterou o código do ISS de <code>RO1.1.1.8.02.3.0</code> (2019–2021) para <code>RO1.1.1.4.51.1.0</code> (2022–2025). Para 2026: RREO Anexo 3 (DCA indisponível).</p>
+                <p>⁵ <strong>Fonte do ISS municipal (2019–2025):</strong> DCA — Demonstrativo das Contas Anuais, Anexo I-C (SICONFI/STN). Cobertura nacional: ~5.200 municípios por ano (~93% do total); ES: 78/78 municípios em todos os anos. O DCA reporta a arrecadação bruta total ("Receitas Brutas Realizadas"), alinhada ao art. 115, §1º da LC 227/2026 que exige o "montante total da arrecadação", incluindo Simples Nacional (LC 123/2006) e dívida ativa. Revisão do PCASP em 2022 alterou o código do ISS de <code>RO1.1.1.8.02.3.0</code> (2019–2021) para <code>RO1.1.1.4.51.1.0</code> (2022–2025).</p>
                 <p>Fonte primária: <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">SICONFI — API Data Lake STN</a>. Coleta via GitHub Actions (27 jobs paralelos por estado). Scripts disponíveis no repositório.</p>
             </div>
         </section>
@@ -528,11 +523,9 @@
     <script>
     // LC 227/2026 — arts. 114, 115 e 129
     // CPT_ES = Total A / Total B
-    // Total A = média aritmética de (ICMS_ES_bruto × 0,75 × deflator_t) para t = 2019..2026
-    // deflator_t = TotalBR_2026 / TotalBR_t,  TotalBR = ICMS_BR + ISS_BR
-    // Total B = ICMS_BR_2026 + ISS_BR_2026  (fixo, sem correção)
-
-    const ANOS = [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
+    // Total A = média aritmética de (ICMS_ES_bruto × 0,75 × deflator_t) para t = 2019..2025
+    // deflator_t = TotalBR_2025 / TotalBR_t,  TotalBR = ICMS_BR + ISS_BR
+    const ANOS = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
     const COTA_PARTE_MUN = 0.25; // art. 158, IV, "a", CF — 25% ICMS vai aos municípios
 
     function fmtBi(val, digits = 2) {
@@ -560,10 +553,7 @@
             return;
         }
 
-        // ISS: DCA (ISS bruto, alinhado com LC 227 §1º) para 2019–2025;
-        // RREO Anexo 3 somente para 2026 (DCA ainda não disponível)
-        const iss_es_rreo = data.iss_es_from_munis || data.iss_es || {};
-        const iss_br_rreo = data.iss_br || {};
+        // ISS: DCA Anexo I-C 2019–2025 (ISS bruto, alinhado com LC 227 §1º)
         const dca_iss_es_raw = data.dca_iss_es || {};
         const dca_iss_br_raw = data.dca_iss_br || {};
 
@@ -571,32 +561,20 @@
         const iss_br = {};
         for (const ano of ANOS) {
             const s = String(ano);
-            if (ano <= 2025) {
-                iss_es[ano] = dca_iss_es_raw[s] ?? iss_es_rreo[ano] ?? iss_es_rreo[s] ?? null;
-                iss_br[ano] = dca_iss_br_raw[s] ?? iss_br_rreo[ano] ?? iss_br_rreo[s] ?? null;
-            } else {
-                iss_es[ano] = iss_es_rreo[ano] ?? iss_es_rreo[s] ?? null;
-                iss_br[ano] = iss_br_rreo[ano] ?? iss_br_rreo[s] ?? null;
-            }
+            iss_es[ano] = dca_iss_es_raw[s] ?? null;
+            iss_br[ano] = dca_iss_br_raw[s] ?? null;
         }
 
-        // ICMS: DCA para 2019–2025, RREO para 2026
-        const dca_icms_br_raw = data.dca_icms_br      || {};
-        const dca_icms_uf_raw = data.dca_icms_por_uf  || {};
-        const icms_es_rreo    = data.icms_es           || {};
-        const icms_br_rreo    = data.icms_br           || {};
+        // ICMS: DCA Anexo I-C 2019–2025
+        const dca_icms_br_raw = data.dca_icms_br     || {};
+        const dca_icms_uf_raw = data.dca_icms_por_uf || {};
 
         const icms_es = {};
         const icms_br = {};
         for (const ano of ANOS) {
             const s = String(ano);
-            if (ano <= 2025) {
-                icms_es[ano] = dca_icms_uf_raw[s]?.['ES'] ?? icms_es_rreo[s] ?? icms_es_rreo[ano] ?? null;
-                icms_br[ano] = dca_icms_br_raw[s] ?? icms_br_rreo[s] ?? icms_br_rreo[ano] ?? null;
-            } else {
-                icms_es[ano] = icms_es_rreo[s] ?? icms_es_rreo[ano] ?? null;
-                icms_br[ano] = icms_br_rreo[s] ?? icms_br_rreo[ano] ?? null;
-            }
+            icms_es[ano] = dca_icms_uf_raw[s]?.['ES'] ?? null;
+            icms_br[ano] = dca_icms_br_raw[s] ?? null;
         }
 
         // TotalBR por ano — necessário para deflator
@@ -607,28 +585,14 @@
             totalBR[ano] = (ib != null && is != null) ? ib + is : null;
         }
 
-        // Versão B: denominador = TotalBR_2026
-        const totalB = totalBR[2026];
+        // Denominador = TotalBR_2025 (deflator base 2025 = 1)
+        const totalB = totalBR[2025];
 
-        // Versão A: denominador = TotalBR_2025 (sem dados de 2026)
-        const ANOS_A = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
-        const denomA = totalBR[2025];
-
-        // Deflator B: base 2026
         const deflators = {};
         for (const ano of ANOS) {
-            if (ano === 2026) { deflators[ano] = 1; continue; }
+            if (ano === 2025) { deflators[ano] = 1; continue; }
             deflators[ano] = (totalB != null && totalBR[ano] != null)
                 ? totalB / totalBR[ano]
-                : null;
-        }
-
-        // Deflator A: base 2025
-        const deflators_A = {};
-        for (const ano of ANOS_A) {
-            if (ano === 2025) { deflators_A[ano] = 1; continue; }
-            deflators_A[ano] = (denomA != null && totalBR[ano] != null)
-                ? denomA / totalBR[ano]
                 : null;
         }
 
@@ -678,14 +642,14 @@
             const cMun   = corMunis[ano];
 
             return `<tr>
-                <td class="td-year">${ano}${ano === 2026 ? ' ¹' : ''}</td>
+                <td class="td-year">${ano}</td>
                 <td style="text-align:right">${fmtBi(bruto)}</td>
                 <td style="text-align:right;color:var(--text-muted)">− ${fmtBi(cota)}</td>
                 <td style="text-align:right;font-weight:600">${fmtBi(liq)}</td>
                 <td style="text-align:right">${fmtBi(iss)}</td>
                 <td style="text-align:right">+ ${fmtBi(cota)}</td>
                 <td style="text-align:right;color:var(--text-muted)">${fmtBi(tBR)}</td>
-                <td style="text-align:right;font-weight:600">${def != null ? (ano === 2026 ? '<strong>1,0000</strong>' : fmtDeflator(def)) : '<span class="na-cell">aguard.</span>'}</td>
+                <td style="text-align:right;font-weight:600">${def != null ? fmtDeflator(def) : '<span class="na-cell">aguard.</span>'}</td>
                 <td style="text-align:right" class="${cEst != null ? 'td-coeff' : ''}">${fmtBi(cEst, 3)}</td>
                 <td style="text-align:right" class="${cMun != null ? 'td-coeff' : ''}">${fmtBi(cMun, 3)}</td>
             </tr>`;
@@ -696,8 +660,8 @@
         const cs = 'colspan="9"';
         tfoot.innerHTML = `
             <tr style="border-top:2px solid var(--border)">
-                <td class="td-year">Σ 2019–2026 corrigidos</td>
-                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">soma dos ${ANOS.length} valores anuais atualizados para a base de 2026</td>
+                <td class="td-year">Σ 2019–2025 corrigidos</td>
+                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">soma dos ${ANOS.length} valores anuais atualizados para a base de 2025</td>
                 <td style="text-align:right;font-weight:700">${fmtBi(somaEstado, 3)}</td>
                 <td style="text-align:right;font-weight:700">${fmtBi(somaMunis, 3)}</td>
             </tr>
@@ -708,8 +672,8 @@
                 <td style="text-align:right;font-weight:700;color:var(--accent)">${fmtBi(totalAMun, 3)}</td>
             </tr>
             <tr>
-                <td class="td-year">Denominador (Total_BR_2026)</td>
-                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">ICMS_BR_2026 + ISS_BR_2026 = Σ Receitas Médias de Referência de todos os entes da federação</td>
+                <td class="td-year">Denominador (Total_BR_2025)</td>
+                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">ICMS_BR_2025 + ISS_BR_2025 = Σ Receitas Médias de Referência de todos os entes da federação</td>
                 <td colspan="2" style="text-align:right;font-weight:700">${fmtBi(totalB, 3)}</td>
             </tr>
             <tr>
@@ -732,10 +696,10 @@
 
         // ── Simulação ────────────────────────────────────────────────────────
         if (coeffUF != null && totalB != null) {
-            // participação corrente ES em 2026 (ponto, não média)
-            const es2026 = (icms_es[2026] ?? 0) + (iss_es[2026] ?? 0);
-            const partES2026 = es2026 / totalB;
-            buildSimulation(coeffUF, totalB, partES2026);
+            // participação corrente ES em 2025 (ponto, não média)
+            const es2025 = (icms_es[2025] ?? 0) + (iss_es[2025] ?? 0);
+            const partES2025 = es2025 / totalB;
+            buildSimulation(coeffUF, totalB, partES2025);
         }
 
         // ── Tabela 2 (contexto) ───────────────────────────────────────────────
@@ -763,13 +727,9 @@
         const icms_por_uf_rreo_tab3 = data.icms_por_uf || {};  // {UF: {ano: val}} RREO
         // ISS por UF híbrido: DCA para 2019–2025, RREO fallback demais anos
         const dca_iss_por_uf_raw = data.dca_iss_por_uf || {};
-        const iss_por_uf_rreo    = data.iss_por_uf     || {};
         const iss_por_uf = {};
         for (const ano of ANOS) {
-            const s = String(ano);
-            iss_por_uf[s] = (ano <= 2025 && dca_iss_por_uf_raw[s])
-                ? dca_iss_por_uf_raw[s]
-                : (iss_por_uf_rreo[s] || iss_por_uf_rreo[ano] || {});
+            iss_por_uf[String(ano)] = dca_iss_por_uf_raw[String(ano)] || {};
         }
 
         // UFs únicas: união de DCA e RREO
@@ -832,86 +792,52 @@
             </tr>`;
         }
 
-        // ── Tabela 4: CPT por município ES — Versão A e B ────────────────────
-        const dca_det    = data.dca_detalhes || {};
-        const iss_det_26 = data.iss_detalhes?.['2026'] || {};  // RREO por município 2026
-        const ANOS_DCA   = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
+        // ── Tabela 4: CPT por município ES (DCA 2019–2025) ───────────────────
+        const dca_det = data.dca_detalhes || {};
 
-        // Consolidar dados por município ES (DCA 2019–2025 + RREO ISS 2026)
         const muniMap = {};
-        for (const ano of ANOS_DCA) {
+        for (const ano of ANOS) {
             for (const [cod, v] of Object.entries(dca_det[String(ano)] || {})) {
                 if (v.uf !== 'ES') continue;
                 if (!muniMap[cod]) muniMap[cod] = { nome: v.ente, dados: {} };
                 muniMap[cod].dados[ano] = { iss: v.valor || 0, cota: v.cota_parte_icms || 0 };
             }
         }
-        // 2026: ISS por município via RREO (cobertura parcial ~18/78)
-        for (const [cod, v] of Object.entries(iss_det_26)) {
-            if (v.uf !== 'ES') continue;
-            if (!muniMap[cod]) muniMap[cod] = { nome: v.ente, dados: {} };
-            muniMap[cod].dados[2026] = { iss: v.valor || 0, cota: 0 };
-        }
 
         const muniRows = Object.entries(muniMap).map(([cod, m]) => {
-            // Versão A: 2019–2025, denominador = denomA
-            let somaA = 0;
-            for (const ano of ANOS_A) {
-                const d_ano = m.dados[ano];
-                const def   = deflators_A[ano];
-                if (d_ano && def != null) somaA += (d_ano.iss + d_ano.cota) * def;
-            }
-            const recMediaA = somaA / ANOS_A.length;
-            const cptA = denomA != null ? recMediaA / denomA * 100 : null;
-
-            // Versão B: 2019–2026, denominador = totalB
-            let somaB = 0;
+            let soma = 0;
             for (const ano of ANOS) {
                 const d_ano = m.dados[ano];
                 const def   = deflators[ano];
-                if (d_ano && def != null) somaB += (d_ano.iss + d_ano.cota) * def;
+                if (d_ano && def != null) soma += (d_ano.iss + d_ano.cota) * def;
             }
-            const recMediaB = somaB / ANOS.length;
-            const cptB = totalB != null ? recMediaB / totalB * 100 : null;
-
-            const issMed  = ANOS_DCA.reduce((s, a) => s + (m.dados[a]?.iss  || 0), 0) / ANOS_DCA.length;
-            const cotaMed = ANOS_DCA.reduce((s, a) => s + (m.dados[a]?.cota || 0), 0) / ANOS_DCA.length;
-            return { cod, nome: m.nome, issMed, cotaMed, baseMed: issMed + cotaMed, cptA, cptB };
-        }).sort((a, b) => (b.cptA ?? 0) - (a.cptA ?? 0));
+            const cpt = totalB != null ? (soma / ANOS.length) / totalB * 100 : null;
+            return { cod, nome: m.nome, cpt };
+        }).sort((a, b) => (b.cpt ?? 0) - (a.cpt ?? 0));
 
         if (muniRows.length > 0) {
-            const fmtM = v => v != null ? (v/1e6).toFixed(1).replace('.', ',') : '—';
             document.getElementById('tbody-munis-es').innerHTML = muniRows.map((r, i) => `
                 <tr>
                     <td style="text-align:left">${i + 1}. ${r.nome}</td>
-                    <td style="text-align:right">${fmtM(r.issMed)}</td>
-                    <td style="text-align:right">${fmtM(r.cotaMed)}</td>
-                    <td style="text-align:right;font-weight:600">${fmtM(r.baseMed)}</td>
-                    <td style="text-align:right" class="td-coeff">${fmtPct(r.cptA, 5)}</td>
-                    <td style="text-align:right" class="td-coeff">${fmtPct(r.cptB, 5)}</td>
+                    <td style="text-align:right" class="td-coeff">${fmtPct(r.cpt, 5)}</td>
                 </tr>`).join('');
-            const somaA = muniRows.reduce((s, r) => s + (r.cptA ?? 0), 0);
-            const somaB = muniRows.reduce((s, r) => s + (r.cptB ?? 0), 0);
+            const somaM = muniRows.reduce((s, r) => s + (r.cpt ?? 0), 0);
             document.getElementById('tfoot-munis-es').innerHTML = `
                 <tr style="font-weight:700;border-top:2px solid var(--border)">
                     <td style="text-align:left">TOTAL (${muniRows.length} municípios)</td>
-                    <td></td><td></td><td></td>
-                    <td style="text-align:right;color:var(--accent)">${fmtPct(somaA, 5)}</td>
-                    <td style="text-align:right;color:var(--accent)">${fmtPct(somaB, 5)}</td>
+                    <td style="text-align:right;color:var(--accent)">${fmtPct(somaM, 5)}</td>
                 </tr>`;
         }
 
         // ── Status bar ────────────────────────────────────────────────────────
-        const hasICMS     = icms_es[2023] != null;
-        const hasISSES    = (iss_es[2023] ?? null) != null;
-        const hasISSBR    = iss_br[2023] != null;
-        const hasDCAiss   = (dca_iss_br_raw['2019'] ?? null) != null;
-        const hasDCAicms  = (dca_icms_br_raw['2019'] ?? null) != null;
+        const hasICMS  = icms_es[2023] != null;
+        const hasISSES = (iss_es[2023] ?? null) != null;
+        const hasISSBR = iss_br[2023] != null;
         const allOK = hasICMS && hasISSES && hasISSBR;
         let statusMsg = [];
-        statusMsg.push(hasICMS  ? `ICMS: OK (${hasDCAicms ? 'DCA 2019–2025' : 'RREO'})` : 'ICMS: coletando…');
-        statusMsg.push(hasISSES ? `ISS ES: OK (${hasDCAiss ? 'DCA 2019–2025' : 'RREO'})` : 'ISS ES: coletando…');
-        statusMsg.push(hasISSBR ? `ISS BR: OK (${hasDCAiss ? 'DCA 2019–2025' : 'RREO'})` : 'ISS BR: aguardando GitHub Action');
+        statusMsg.push(hasICMS  ? 'ICMS: DCA 2019–2025 OK' : 'ICMS: aguardando DCA…');
+        statusMsg.push(hasISSES ? 'ISS ES: DCA 2019–2025 OK' : 'ISS ES: aguardando DCA…');
+        statusMsg.push(hasISSBR ? 'ISS BR: DCA 2019–2025 OK' : 'ISS BR: aguardando DCA…');
 
         document.getElementById('status-nominal').innerHTML =
             `<span class="status-dot ${allOK ? '' : 'pending'}"></span> ${statusMsg.join(' · ')}`;
@@ -929,14 +855,19 @@
     loadData();
 
     // ── Simulação: impacto fiscal 2029 ───────────────────────────────────────
-    function buildSimulation(cptUF, totalBR2026, partES2026) {
+    function buildSimulation(cptUF, totalBR2025, partES2025) {
         const cenarios = [-5, -2, 0, 2, 5, 8, 10, 15, 20].map(pct => {
-            const total2029 = totalBR2026 * (1 + pct / 100);
-            const esSemReforma = partES2026 * total2029;
+            const total2029 = totalBR2025 * (1 + pct / 100);
+            const esSemReforma = partES2025 * total2029;
             const esComCPT    = cptUF * total2029;
             const perda       = esComCPT - esSemReforma;
             return { pct, total2029, esSemReforma, esComCPT, perda };
         });
+
+        // Atualiza label dinâmico do cabeçalho
+        const cptPctStr = (cptUF * 100).toFixed(4).replace('.', ',') + '%';
+        const simLabel = document.getElementById('sim-cpt-label');
+        if (simLabel) simLabel.textContent = cptPctStr;
 
         // Tabela
         const tbody = document.getElementById('tbody-sim');
@@ -966,7 +897,7 @@
                 labels,
                 datasets: [
                     {
-                        label: 'ES sem reforma (part. 2026)',
+                        label: 'ES sem reforma (part. 2025)',
                         data: cenarios.map(c => +(c.esSemReforma / 1e9).toFixed(3)),
                         backgroundColor: 'rgba(90,120,90,0.55)',
                         borderColor: 'rgba(90,120,90,0.9)',
@@ -974,7 +905,7 @@
                         borderRadius: 4,
                     },
                     {
-                        label: 'ES com CPT histórico (2,4031%)',
+                        label: `ES com CPT histórico (${cptPctStr})`,
                         data: cenarios.map(c => +(c.esComCPT / 1e9).toFixed(3)),
                         backgroundColor: 'rgba(200,80,80,0.55)',
                         borderColor: 'rgba(200,80,80,0.9)',
