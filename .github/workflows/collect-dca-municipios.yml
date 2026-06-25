@@ -50,9 +50,12 @@ jobs:
           ANOS = [int(a) for a in "${{ inputs.anos }}".split(",")]
           BASE_URL = "https://apidatalake.tesouro.gov.br/ords/siconfi/tt"
 
-          # DCA Anexo I-C codes (validados contra RREO para Linhares e Vitória — match exato)
-          ISS_COD   = "RO1.1.1.4.51.1.0"   # ISS arrecadado (Receitas Brutas Realizadas)
-          COTA_COD  = "RO1.7.2.1.50.0.0"   # Cota-parte ICMS recebida do estado
+          # DCA Anexo I-C — códigos por versão PCASP
+          # A partir de 2022 o PCASP foi revisado; 2019–2021 usam códigos do esquema antigo
+          ISS_COD_NEW  = "RO1.1.1.4.51.1.0"  # ISS (PCASP 2022+)
+          COTA_COD_NEW = "RO1.7.2.1.50.0.0"  # Cota-parte ICMS (PCASP 2022+)
+          ISS_COD_OLD  = "RO1.1.1.8.02.3.0"  # ISS (PCASP pré-2022)
+          COTA_COD_OLD = "RO1.7.2.8.01.1.0"  # Cota-parte ICMS (PCASP pré-2022)
           TARGET_COL = "Receitas Brutas Realizadas"
           OUT = Path(f"data/dca-state-{UF}.json")
 
@@ -97,6 +100,8 @@ jobs:
                   resp = fetch(url)
                   val_iss  = None
                   val_cota = None
+                  ISS_COD  = ISS_COD_NEW  if ano >= 2022 else ISS_COD_OLD
+                  COTA_COD = COTA_COD_NEW if ano >= 2022 else COTA_COD_OLD
                   if resp:
                       for item in resp.get("items", []):
                           if item.get("coluna") == TARGET_COL:
