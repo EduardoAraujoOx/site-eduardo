@@ -1,0 +1,187 @@
+name: Coletar DCA Estados - SICONFI
+
+on:
+  workflow_dispatch:
+    inputs:
+      anos:
+        description: 'Anos para coletar (separados por vírgula)'
+        required: false
+        default: '2019,2020,2021,2022,2023,2024,2025'
+
+permissions:
+  contents: write
+
+jobs:
+  collect-and-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Coletar DCA estados
+        run: |
+          python3 - << 'PYEOF'
+          import json, time, urllib.request
+          from pathlib import Path
+
+          ANOS = [int(a) for a in "${{ inputs.anos }}".split(",")]
+          BASE_URL = "https://apidatalake.tesouro.gov.br/ords/siconfi/tt"
+
+          # PCASP 2022+
+          ICMS_COD_NEW  = "RO1.1.1.4.50.1.0"
+          FECOP_COD_NEW = "RO1.1.1.4.50.2.0"
+          # PCASP pré-2022
+          ICMS_COD_OLD  = "RO1.1.1.8.02.1.0"
+          FECOP_COD_OLD = "RO1.1.1.8.02.2.0"
+
+          COL_BRUTA    = "Receitas Brutas Realizadas"
+          COL_TRANSF   = "Deduções - Transferências Constitucionais"
+
+          # cod_ibge dos estados (inclui DF)
+          ESTADOS = {
+              "AC":12,"AL":27,"AM":13,"AP":16,"BA":29,"CE":23,"DF":53,"ES":32,
+              "GO":52,"MA":21,"MG":31,"MS":50,"MT":51,"PA":15,"PB":25,"PE":26,
+              "PI":22,"PR":41,"RJ":33,"RN":24,"RO":11,"RR":14,"RS":43,"SC":42,
+              "SE":28,"SP":35,"TO":17
+          }
+
+          def fetch(url, retries=4):
+              for i in range(retries):
+                  try:
+                      with urllib.request.urlopen(url, timeout=30) as r:
+                          return json.loads(r.read())
+                  except Exception as e:
+                      if i < retries - 1:
+                          time.sleep(2 ** i)
+              return None
+
+          results = {}  # {ano: {uf: {icms, fecop, transf_munis}}}
+
+          for uf, cod in ESTADOS.items():
+              esfera = "D" if uf == "DF" else "E"
+              for ano in ANOS:
+                  ICMS_COD  = ICMS_COD_NEW  if ano >= 2022 else ICMS_COD_OLD
+                  FECOP_COD = FECOP_COD_NEW if ano >= 2022 else FECOP_COD_OLD
+
+                  url = (
+                      f"{BASE_URL}/dca"
+                      f"?an_exercicio={ano}"
+                      f"&co_tipo_demonstrativo=DCA"
+                      f"&no_anexo=DCA-Anexo%20I-C"
+                      f"&co_esfera={esfera}&id_ente={cod}"
+                  )
+                  resp = fetch(url)
+
+                  icms = fecop = transf = None
+                  if resp:
+                      for item in resp.get("items", []):
+                          cc  = item.get("cod_conta")
+                          col = item.get("coluna")
+                          val = item.get("valor")
+                          if cc == ICMS_COD:
+                              if col == COL_BRUTA:    icms  = val
+                              elif col == COL_TRANSF: transf = val
+                          elif cc == FECOP_COD and col == COL_BRUTA:
+                              fecop = val
+
+                  entry = {"uf": uf}
+                  if icms   is not None: entry["icms"]        = icms
+                  if fecop  is not None: entry["fecop"]       = fecop
+                  if transf is not None: entry["transf_munis"] = transf
+
+                  if len(entry) > 1:
+                      results.setdefault(str(ano), {})[uf] = entry
+
+                  icms_s  = f"R$ {icms/1e9:.2f}B"   if icms  else "N/A"
+                  fecop_s = f"R$ {fecop/1e6:.0f}M"  if fecop else "N/A"
+                  print(f"  {uf} {ano}: ICMS={icms_s} FECOP={fecop_s}")
+                  time.sleep(0.2)
+
+          Path("data/dca-estados.json").write_text(
+              json.dumps(results, ensure_ascii=False, indent=2)
+          )
+          print(f"\nSalvo: data/dca-estados.json ({len(results)} anos, {len(ESTADOS)} UFs)")
+          PYEOF
+
+      - name: Merge e atualizar reforma-tributaria.json
+        run: |
+          python3 - << 'PYEOF'
+          import json
+          from pathlib import Path
+
+          ALL_ANOS = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
+          new_data = json.loads(Path("data/dca-estados.json").read_text())
+
+          # Agregar
+          icms_br_new   = {}  # {ano: total}
+          icms_uf_new   = {}  # {ano: {uf: valor}}
+          fecop_br_new  = {}
+          fecop_uf_new  = {}
+          transf_uf_new = {}
+
+          for ano_s, ufs in new_data.items():
+              icms_br_new [ano_s] = sum(v.get("icms",  0) or 0 for v in ufs.values())
+              fecop_br_new[ano_s] = sum(v.get("fecop", 0) or 0 for v in ufs.values())
+              icms_uf_new [ano_s] = {uf: v.get("icms")  for uf, v in ufs.items() if v.get("icms")  is not None}
+              fecop_uf_new[ano_s] = {uf: v.get("fecop") for uf, v in ufs.items() if v.get("fecop") is not None}
+              transf_uf_new[ano_s]= {uf: v.get("transf_munis") for uf, v in ufs.items() if v.get("transf_munis") is not None}
+
+          out_file = Path("data/reforma-tributaria.json")
+          existing = json.loads(out_file.read_text()) if out_file.exists() else {}
+
+          dca_icms_br   = dict(existing.get("dca_icms_br")   or {})
+          dca_icms_uf   = dict(existing.get("dca_icms_por_uf") or {})
+          dca_fecop_br  = dict(existing.get("dca_fecop_br")  or {})
+          dca_fecop_uf  = dict(existing.get("dca_fecop_por_uf") or {})
+          dca_transf_uf = dict(existing.get("dca_transf_munis_por_uf") or {})
+
+          for ano, val in icms_br_new.items():
+              dca_icms_br[ano]   = val
+          for ano, val in fecop_br_new.items():
+              dca_fecop_br[ano]  = val
+          for ano, val in icms_uf_new.items():
+              dca_icms_uf[ano]   = val
+          for ano, val in fecop_uf_new.items():
+              dca_fecop_uf[ano]  = val
+          for ano, val in transf_uf_new.items():
+              dca_transf_uf[ano] = val
+
+          existing["dca_icms_br"]              = {str(a): dca_icms_br .get(str(a)) for a in ALL_ANOS}
+          existing["dca_icms_por_uf"]          = dca_icms_uf
+          existing["dca_fecop_br"]             = {str(a): dca_fecop_br.get(str(a)) for a in ALL_ANOS}
+          existing["dca_fecop_por_uf"]         = dca_fecop_uf
+          existing["dca_transf_munis_por_uf"]  = dca_transf_uf
+
+          out_file.write_text(json.dumps(existing, ensure_ascii=False, indent=2))
+
+          print(f"\n{'Ano':<6} {'ICMS BR (DCA)':>15} {'FECOP BR':>12} {'UFs':>6}")
+          print("-" * 42)
+          for a in ALL_ANOS:
+              s = str(a)
+              ib = existing["dca_icms_br"].get(s)
+              fb = existing["dca_fecop_br"].get(s)
+              nu = len(existing["dca_icms_por_uf"].get(s, {}))
+              def fmt(v): return f"R$ {v/1e9:.2f}B" if v else "N/D"
+              print(f"{s:<6} {fmt(ib):>15} {fmt(fb):>12} {nu:>6}")
+          PYEOF
+
+      - name: Commit dados DCA estados
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          cp data/reforma-tributaria.json /tmp/reforma-tributaria-new.json
+          git fetch origin main
+          git reset --hard origin/main
+          cp /tmp/reforma-tributaria-new.json data/reforma-tributaria.json
+          git add data/reforma-tributaria.json
+          if git diff --staged --quiet; then
+            echo "Sem alterações, nada a commitar."
+            exit 0
+          fi
+          git commit -m "dados: coleta DCA estados BR — ICMS, FECOP e transferências via SICONFI"
+          git push origin main
