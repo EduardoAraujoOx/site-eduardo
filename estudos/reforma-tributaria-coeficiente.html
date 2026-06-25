@@ -339,8 +339,8 @@
             <span class="section-label">Tabela 1 — Auditoria CPT_ES: Espírito Santo (LC 227/2026, art. 115)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
                 Reprodução passo a passo do cálculo do CPT_ES. Para cada ano do período de referência
-                (2019–2025): <strong>(i)</strong> ICMS bruto arrecadado pelo ES, extraído do RREO Anexo 3, 6º bimestre
-                (coluna "Total dos Últimos 12 Meses"); <strong>(ii)</strong> dedução dos 25% constitucionalmente
+                (2019–2025): <strong>(i)</strong> ICMS bruto arrecadado pelo ES, extraído do DCA Anexo I-C
+                (código <code>RO1.1.1.4.50.1.0</code> para 2022–2025; <code>RO1.1.1.8.02.1.0</code> para 2019–2021); <strong>(ii)</strong> dedução dos 25% constitucionalmente
                 destinados aos municípios (art. 158, IV, "a", CF); <strong>(iii)</strong> ISS bruto dos municípios
                 capixabas (DCA Anexo I-C 2019–2025 ⁵),
                 acrescido da cota-parte ICMS recebida; <strong>(iv)</strong> índice de atualização
@@ -362,13 +362,13 @@
                             <th class="th-group" colspan="2">Receita corrigida — base 2025 (R$ bi)</th>
                         </tr>
                         <tr>
-                            <th>ICMS ES bruto<br><small style="font-weight:400;font-size:0.65em">(RREO An.3)</small></th>
+                            <th>ICMS ES bruto<br><small style="font-weight:400;font-size:0.65em">(DCA An.I-C)</small></th>
                             <th>− Repasse mun.<br><small style="font-weight:400;font-size:0.65em">(art. 158 IV CF)</small></th>
                             <th>= ICMS ES<br>líquido (×0,75)</th>
                             <th>ISS municípios<br>ES</th>
                             <th>+ Cota-parte<br>ICMS (×0,25)</th>
                             <th>Total_BR_t<br><small style="font-weight:400;font-size:0.65em">(ICMS+ISS, R$ bi)</small></th>
-                            <th>Índice_t<br><small style="font-weight:400;font-size:0.65em">(BR₂₀₂₆ / BR_t)</small></th>
+                            <th>Índice_t<br><small style="font-weight:400;font-size:0.65em">(BR₂₀₂₅ / BR_t)</small></th>
                             <th>ICMS liq.<br>× Índice_t</th>
                             <th>(ISS + cota)<br>× Índice_t</th>
                         </tr>
@@ -381,67 +381,41 @@
             </div>
 
             <!-- Secondary info table -->
-            <span class="section-label" style="margin-top:2rem">Tabela 2 — Participação bruta do ES na arrecadação nacional (dados primários)</span>
+            <span class="section-label" style="margin-top:2rem">Tabela 2 — Trajetória anual do índice pontual do ES (2019–2025)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
-                Valores nominais de ICMS e ISS utilizados no cálculo, antes da dedução da cota-parte
-                e da atualização pelo índice. A coluna "Part. ICMS ES/BR" mostra a participação
-                bruta do ES no ICMS nacional em cada ano — base para entender por que o CPT_ES
-                diverge da participação corrente de 2025.
+                Para cada ano, mostra qual seria o coeficiente do ES se apenas aquele ano fosse considerado —
+                sem deflação e sem média. O <strong>índice anual estado</strong> = ICMS_ES × 0,75 / TotalBR_t;
+                o <strong>índice anual municípios</strong> = (ISS_ES + ICMS_ES × 0,25) / TotalBR_t.
+                Permite ver se o ES vem crescendo acima ou abaixo da média nacional ao longo do período,
+                e contextualizar o CPT histórico (média das setes fotos) em relação à trajetória.
+                Fonte: DCA Anexo I-C para ICMS estadual e ISS municipal. ²
             </p>
             <div class="data-table-wrap">
                 <table class="data-table" id="table-context">
                     <thead>
                         <tr>
                             <th class="th-group th-year">Ano</th>
-                            <th class="th-group">ICMS BR (R$ bi)</th>
-                            <th class="th-group">ICMS ES bruto (R$ bi)</th>
-                            <th class="th-group">ISS ES (R$ bi)</th>
-                            <th class="th-group">ISS BR (R$ bi)</th>
-                            <th class="th-group">Part. ICMS ES/BR</th>
-                            <th class="th-group">Part. ISS ES/BR</th>
+                            <th class="th-group">TotalBR_t<br><small style="font-weight:400;font-size:0.65em">ICMS+ISS nac. (R$ bi)</small></th>
+                            <th class="th-group">ICMS_ES × 0,75<br><small style="font-weight:400;font-size:0.65em">numerador estado (R$ bi)</small></th>
+                            <th class="th-group">ISS_ES + cota<br><small style="font-weight:400;font-size:0.65em">numerador munis (R$ bi)</small></th>
+                            <th class="th-group">Índice anual<br>estado (%)</th>
+                            <th class="th-group">Índice anual<br>municípios (%)</th>
+                            <th class="th-group">Índice anual<br>total ES (%)</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-context">
                         <tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
                     </tbody>
+                    <tfoot id="tfoot-context"></tfoot>
                 </table>
             </div>
 
-            <!-- Simulação -->
-            <span class="section-label" style="margin-top:2.5rem">Simulação — Impacto fiscal no ES em 2029 (1º ano do IBS)</span>
-            <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 1rem;line-height:1.65">
-                O CPT_ES (critério histórico de origem) é menor que a participação corrente do ES em 2025
-                porque o estado cresceu acima da média nacional ao longo de todo o período de referência.
-                Isso gera uma <strong>perda estrutural imediata no primeiro ano da reforma</strong> —
-                ainda sem considerar o efeito progressivo e crescente da regra de destino ao longo dos
-                50 anos de transição. A simulação abaixo compara, para diferentes hipóteses de variação
-                da arrecadação nacional em 2029, o que o ES receberia mantida a participação de 2025
-                (critério de origem corrente) e o que receberá com o CPT_ES calculado.
-            </p>
-            <div class="data-table-wrap">
-                <table class="data-table" id="table-sim">
-                    <thead>
-                        <tr>
-                            <th class="th-group th-year">Crescimento<br>arrecadação 2029</th>
-                            <th class="th-group">Total IBS 2029<br>(R$ bi)</th>
-                            <th class="th-group">ES sem reforma<br>(part. 2025 × total)</th>
-                            <th class="th-group">ES com CPT<br>(<span id="sim-cpt-label">calculando…</span> × total)</th>
-                            <th class="th-group">Perda<br>(R$ bi)</th>
-                            <th class="th-group">Perda<br>(%)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-sim">
-                        <tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Gráfico -->
+            <!-- Gráfico: trajetória anual vs. CPT histórico -->
             <div style="margin:1.5rem 0 2.5rem;background:var(--bg-secondary,#f7f7f5);border-radius:8px;padding:1.25rem 1.5rem">
                 <p style="font-family:var(--mono);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin:0 0 1rem">
-                    ES sem reforma vs. ES com CPT — por crescimento da arrecadação nacional (R$ bi)
+                    Índice anual pontual do ES vs. CPT histórico (média 2019–2025)
                 </p>
-                <canvas id="chart-sim" style="max-height:320px"></canvas>
+                <canvas id="chart-traj" style="max-height:340px"></canvas>
             </div>
 
             <!-- Tabela 3: CPT por UF -->
@@ -503,7 +477,8 @@
                     <li><strong>Passo 2 — Receita Média de Referência do estado ES:</strong> para cada ano t, tomar o ICMS bruto do ES, multiplicar por 0,75 para deduzir a cota-parte municipal de 25% (art. 115, I, "a", e art. 158, IV, "a", CF), e multiplicar pelo Índice_t. Isso produz o valor corrigido na base de 2025. A Receita Média de Referência do estado ES é a média aritmética simples dos 7 valores corrigidos.</li>
                     <li><strong>Passo 3 — Receita Média de Referência dos municípios ES:</strong> para cada município capixaba, tomar o ISS bruto de cada ano, acrescentar a cota-parte do ICMS recebida do estado (art. 115, III, "b"), e multiplicar pelo Índice_t. A Receita Média de Referência do conjunto dos municípios ES é a média aritmética simples dos 7 valores corrigidos.</li>
                     <li><strong>Passo 4 — Denominador:</strong> somar as Receitas Médias de Referência de todos os 26 estados, do DF e de todos os municípios do Brasil. Esse total é o denominador comum a todos os coeficientes. Algebricamente equivale a Total_BR_2025 (ver nota abaixo).</li>
-                    <li><strong>Passo 5 — CPT_ES:</strong> dividir a Receita Média de Referência do ES (estado + municípios) pelo denominador do Passo 4. Como verificação, a soma dos coeficientes de todos os entes deve ser exatamente 100%.</li>
+                    <li><strong>Passo 5 — CPT_ES estado:</strong> dividir a Receita Média de Referência do estado ES (Passo 2) pelo denominador do Passo 4. Esse é o coeficiente que determina o repasse ao governo estadual no regime IBS.</li>
+                    <li><strong>Passo 5b — CPT_ES municípios:</strong> dividir a Receita Média de Referência dos municípios ES (Passo 3) pelo denominador do Passo 4. Esse coeficiente distribui o repasse entre o conjunto dos municípios capixabas. Como verificação, a soma dos coeficientes de todos os entes (estados + municípios de todo o Brasil) deve ser exatamente 100%.</li>
                 </ul>
                 <p style="margin-top:0.75rem;font-size:0.82rem"><strong>Nota — por que o denominador = Total_BR_2025:</strong>
                 Denominador = Σ_entes(Média_t(Receita_ente_t × Índice_t)). Como Índice_t = Total_BR_2025 / Total_BR_t, ao somar todos os entes em cada ano t: Σ_entes(Receita_ente_t) = Total_BR_t, e Total_BR_t × (Total_BR_2025 / Total_BR_t) = Total_BR_2025. A média de 7 valores iguais a Total_BR_2025 é Total_BR_2025.</p>
@@ -697,34 +672,52 @@
                 <td colspan="2" style="text-align:right;font-size:1.1rem;font-weight:700;color:var(--accent)">${coeffUF != null ? fmtPct(coeffUF * 100) : '<span class="na-cell">aguard.</span>'}</td>
             </tr>`;
 
-        // ── Simulação ────────────────────────────────────────────────────────
-        if (coeffUF != null && totalB != null) {
-            // participação corrente ES em 2025 (ponto, não média)
-            const es2025 = (icms_es[2025] ?? 0) + (iss_es[2025] ?? 0);
-            const partES2025 = es2025 / totalB;
-            buildSimulation(coeffUF, totalB, partES2025);
+        // ── Tabela 2: trajetória anual pontual (sem deflação) ────────────────
+        // Para cada ano: índice_estado_t = ICMS_ES×0.75 / TotalBR_t
+        //                índice_munis_t  = (ISS_ES + ICMS_ES×0.25) / TotalBR_t
+        const snapshots = {};  // {ano: {estado, munis, total, tBR}}
+        for (const ano of ANOS) {
+            const ie  = icms_es[ano] ?? null;
+            const ise = iss_es[ano]  ?? null;
+            const tBR = (icms_br[ano] != null && iss_br[ano] != null)
+                ? icms_br[ano] + iss_br[ano] : null;
+            const numEst  = ie  != null ? ie * 0.75 : null;
+            const numMun  = (ie != null && ise != null) ? ise + ie * 0.25 : null;
+            const idxEst  = (numEst != null && tBR) ? numEst / tBR * 100 : null;
+            const idxMun  = (numMun != null && tBR) ? numMun / tBR * 100 : null;
+            const idxTot  = (idxEst != null && idxMun != null) ? idxEst + idxMun : null;
+            snapshots[ano] = { numEst, numMun, tBR, idxEst, idxMun, idxTot };
         }
 
-        // ── Tabela 2 (contexto) ───────────────────────────────────────────────
         const tbody2 = document.getElementById('tbody-context');
-        const rows2 = ANOS.map(ano => {
-            const ib = icms_br[ano] ?? null;
-            const ie = icms_es[ano] ?? null;
-            const ise = iss_es[ano] ?? null;
-            const isb = iss_br[ano] ?? null;
-            const partICMS = (ie != null && ib != null && ib > 0) ? ie / ib * 100 : null;
-            const partISS  = (ise != null && isb != null && isb > 0) ? ise / isb * 100 : null;
+        const tfoot2 = document.getElementById('tfoot-context');
+        tbody2.innerHTML = ANOS.map(ano => {
+            const s = snapshots[ano];
             return `<tr>
                 <td class="td-year">${ano}</td>
-                <td>${fmtBi(ib)}</td>
-                <td>${fmtBi(ie)}</td>
-                <td>${fmtBi(ise)}</td>
-                <td>${fmtBi(isb)}</td>
-                <td>${fmtPct(partICMS, 2)}</td>
-                <td>${fmtPct(partISS, 2)}</td>
+                <td style="text-align:right">${fmtBi(s.tBR)}</td>
+                <td style="text-align:right">${fmtBi(s.numEst, 3)}</td>
+                <td style="text-align:right">${fmtBi(s.numMun, 3)}</td>
+                <td style="text-align:right" class="${s.idxEst != null ? 'td-coeff' : ''}">${fmtPct(s.idxEst, 4)}</td>
+                <td style="text-align:right" class="${s.idxMun != null ? 'td-coeff' : ''}">${fmtPct(s.idxMun, 4)}</td>
+                <td style="text-align:right" class="${s.idxTot != null ? 'td-coeff' : ''}">${fmtPct(s.idxTot, 4)}</td>
             </tr>`;
-        });
-        tbody2.innerHTML = rows2.join('');
+        }).join('');
+
+        // Rodapé: CPT histórico oficial (média dos deflated = linha de referência)
+        if (coeff != null && coeffMun != null) {
+            tfoot2.innerHTML = `
+                <tr style="border-top:2px solid var(--border);font-weight:700;font-style:italic">
+                    <td class="td-year" style="color:var(--accent)">CPT histórico<br><small style="font-weight:400">(média 7 anos deflacionada)</small></td>
+                    <td colspan="3" style="text-align:center;color:var(--text-muted);font-size:0.8rem">← referência: média aritmética dos valores corrigidos pelo Índice_t, base 2025</td>
+                    <td style="text-align:right;color:var(--accent)">${fmtPct(coeff * 100, 4)}</td>
+                    <td style="text-align:right;color:var(--accent)">${fmtPct(coeffMun * 100, 4)}</td>
+                    <td style="text-align:right;color:var(--accent)">${fmtPct(coeffUF * 100, 4)}</td>
+                </tr>`;
+        }
+
+        // ── Gráfico: trajetória anual vs. CPT histórico ───────────────────────
+        buildTrajectoryChart(ANOS, snapshots, coeff, coeffMun);
 
         // ── Tabela 3: CPT por UF ─────────────────────────────────────────────
         const icms_por_uf_rreo_tab3 = data.icms_por_uf || {};  // {UF: {ano: val}} RREO
@@ -887,89 +880,81 @@
 
     loadData();
 
-    // ── Simulação: impacto fiscal 2029 ───────────────────────────────────────
-    function buildSimulation(cptUF, totalBR2025, partES2025) {
-        const cenarios = [-5, -2, 0, 2, 5, 8, 10, 15, 20].map(pct => {
-            const total2029 = totalBR2025 * (1 + pct / 100);
-            const esSemReforma = partES2025 * total2029;
-            const esComCPT    = cptUF * total2029;
-            const perda       = esComCPT - esSemReforma;
-            return { pct, total2029, esSemReforma, esComCPT, perda };
-        });
-
-        // Atualiza label dinâmico do cabeçalho
-        const cptPctStr = (cptUF * 100).toFixed(4).replace('.', ',') + '%';
-        const simLabel = document.getElementById('sim-cpt-label');
-        if (simLabel) simLabel.textContent = cptPctStr;
-
-        // Tabela
-        const tbody = document.getElementById('tbody-sim');
-        tbody.innerHTML = cenarios.map(c => {
-            const isBase = c.pct === 0;
-            const cor = c.perda < 0 ? '#e53e3e' : '#2e7d32';
-            return `<tr${isBase ? ' style="background:rgba(112,161,112,0.08);font-weight:600"' : ''}>
-                <td class="td-year">${c.pct > 0 ? '+' : ''}${c.pct}%${isBase ? ' (base)' : ''}</td>
-                <td style="text-align:right">${fmtBi(c.total2029)}</td>
-                <td style="text-align:right">${fmtBi(c.esSemReforma, 3)}</td>
-                <td style="text-align:right">${fmtBi(c.esComCPT, 3)}</td>
-                <td style="text-align:right;font-weight:700;color:${cor}">${c.perda >= 0 ? '+' : ''}${fmtBi(c.perda, 3)}</td>
-                <td style="text-align:right;color:${cor}">${c.perda >= 0 ? '+' : ''}${(c.perda / c.esSemReforma * 100).toFixed(2).replace('.', ',')}%</td>
-            </tr>`;
-        }).join('');
-
-        // Gráfico
+    // ── Gráfico: trajetória anual pontual vs. CPT histórico ──────────────────
+    function buildTrajectoryChart(anos, snapshots, cptEst, cptMun) {
+        if (!document.getElementById('chart-traj')) return;
         const isDark = document.documentElement.classList.contains('dark') ||
             window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)';
-        const textColor = isDark ? '#aaa' : '#666';
+        const gridColor  = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)';
+        const textColor  = isDark ? '#aaa' : '#555';
 
-        const labels = cenarios.map(c => `${c.pct > 0 ? '+' : ''}${c.pct}%`);
-        new Chart(document.getElementById('chart-sim'), {
-            type: 'bar',
-            data: {
-                labels,
-                datasets: [
-                    {
-                        label: 'ES sem reforma (part. 2025)',
-                        data: cenarios.map(c => +(c.esSemReforma / 1e9).toFixed(3)),
-                        backgroundColor: 'rgba(90,120,90,0.55)',
-                        borderColor: 'rgba(90,120,90,0.9)',
-                        borderWidth: 1,
-                        borderRadius: 4,
-                    },
-                    {
-                        label: `ES com CPT histórico (${cptPctStr})`,
-                        data: cenarios.map(c => +(c.esComCPT / 1e9).toFixed(3)),
-                        backgroundColor: 'rgba(200,80,80,0.55)',
-                        borderColor: 'rgba(200,80,80,0.9)',
-                        borderWidth: 1,
-                        borderRadius: 4,
-                    },
-                ]
+        const labels    = anos.map(String);
+        const dataEst   = anos.map(a => snapshots[a]?.idxEst  != null ? +snapshots[a].idxEst.toFixed(5)  : null);
+        const dataMun   = anos.map(a => snapshots[a]?.idxMun  != null ? +snapshots[a].idxMun.toFixed(5)  : null);
+
+        // Linhas de referência: CPT histórico (constante em todos os anos)
+        const refEst = cptEst != null ? anos.map(() => +(cptEst * 100).toFixed(5)) : null;
+        const refMun = cptMun != null ? anos.map(() => +(cptMun * 100).toFixed(5)) : null;
+
+        const datasets = [
+            {
+                label: 'Índice anual — Estado ES (ICMS×0,75 / TotalBR_t)',
+                data: dataEst,
+                borderColor: 'rgba(60,130,60,0.9)',
+                backgroundColor: 'rgba(60,130,60,0.12)',
+                borderWidth: 2,
+                pointRadius: 4,
+                tension: 0.3,
+                fill: false,
             },
+            {
+                label: 'Índice anual — Municípios ES (ISS+cota) / TotalBR_t)',
+                data: dataMun,
+                borderColor: 'rgba(60,100,180,0.9)',
+                backgroundColor: 'rgba(60,100,180,0.12)',
+                borderWidth: 2,
+                pointRadius: 4,
+                tension: 0.3,
+                fill: false,
+            },
+        ];
+        if (refEst) datasets.push({
+            label: `CPT histórico — Estado ES (${(cptEst*100).toFixed(4).replace('.',',')}%)`,
+            data: refEst,
+            borderColor: 'rgba(60,130,60,0.5)',
+            borderWidth: 1.5,
+            borderDash: [6, 4],
+            pointRadius: 0,
+            fill: false,
+        });
+        if (refMun) datasets.push({
+            label: `CPT histórico — Municípios ES (${(cptMun*100).toFixed(4).replace('.',',')}%)`,
+            data: refMun,
+            borderColor: 'rgba(60,100,180,0.5)',
+            borderWidth: 1.5,
+            borderDash: [6, 4],
+            pointRadius: 0,
+            fill: false,
+        });
+
+        new Chart(document.getElementById('chart-traj'), {
+            type: 'line',
+            data: { labels, datasets },
             options: {
                 responsive: true,
+                interaction: { mode: 'index', intersect: false },
                 plugins: {
-                    legend: { labels: { color: textColor, font: { size: 11 } } },
+                    legend: { labels: { color: textColor, font: { size: 11 }, boxWidth: 20 } },
                     tooltip: {
-                        callbacks: {
-                            label: ctx => `R$ ${ctx.parsed.y.toFixed(3).replace('.', ',')}B`,
-                            afterBody: (items) => {
-                                if (items.length < 2) return '';
-                                const semRef = items[0].parsed.y;
-                                const comCPT = items[1].parsed.y;
-                                const perda = comCPT - semRef;
-                                return [`Diferença: ${perda >= 0 ? '+' : ''}R$ ${perda.toFixed(3).replace('.', ',')}B`];
-                            }
-                        }
+                        callbacks: { label: ctx => `${ctx.dataset.label.split('—')[0].trim()}: ${ctx.parsed.y?.toFixed(4).replace('.', ',')}%` }
                     }
                 },
                 scales: {
                     x: { ticks: { color: textColor }, grid: { color: gridColor } },
                     y: {
-                        ticks: { color: textColor, callback: v => `R$ ${v}B` },
+                        ticks: { color: textColor, callback: v => v.toFixed(2).replace('.', ',') + '%' },
                         grid: { color: gridColor },
-                        title: { display: true, text: 'R$ bilhões', color: textColor, font: { size: 10 } }
+                        title: { display: true, text: 'Índice (%)', color: textColor, font: { size: 10 } }
                     }
                 }
             }
