@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeção IBS/ICMS — ES 2029–2033 | Eduardo Reis Araújo</title>
+    <meta name="description" content="Estimativa da arrecadação de ICMS e IBS do Espírito Santo em 2029–2033, primeiro quinquênio com vigência efetiva do IBS estadual. Três cenários para o efeito destino, conforme ADCT arts. 128, 131 e 132 e LC 227/2026.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/ibs-projecao-arrecadacao-es.html">
+
+    <meta property="og:title" content="Projeção IBS/ICMS — ES 2029–2033">
+    <meta property="og:description" content="Quanto o Espírito Santo arrecadará em 2029–2033 com a Reforma Tributária? Três cenários comparados ao contrafactual ICMS sem reforma.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/ibs-projecao-arrecadacao-es.html">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="/css/notas.css?v=4">
+    <link rel="stylesheet" href="/css/search.css">
+
+    <style>
+        .study-hero {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3.5rem 2rem 2rem;
+        }
+        .study-hero-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+        .study-hero-tag {
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: var(--accent-light);
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+        }
+        .study-hero-topic {
+            font-family: var(--sans);
+            font-size: 0.73rem;
+            color: var(--text-secondary);
+            background: var(--border-light);
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+        }
+        .study-hero-date {
+            font-family: var(--sans);
+            font-size: 0.73rem;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+        .study-hero h1 {
+            font-family: var(--display);
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.8rem;
+        }
+        .study-hero .lead {
+            font-family: var(--serif);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            max-width: 680px;
+        }
+
+        .study-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem 5rem;
+        }
+        .section-label {
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* Controls panel */
+        .controls-panel {
+            background: var(--bg-secondary, #f7f7f5);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem 1.5rem;
+            margin: 0 0 2rem;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            min-width: 180px;
+        }
+        .control-label {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .control-value {
+            font-family: var(--mono);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        input[type="range"] {
+            width: 180px;
+            accent-color: var(--accent, #3a6a3a);
+        }
+        .scenario-btns {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .btn-scenario {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.4rem 0.85rem;
+            border-radius: 6px;
+            border: 1.5px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-scenario.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        .btn-scenario:hover:not(.active) {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Result boxes */
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 0.5rem 0 2rem;
+        }
+        @media (max-width: 680px) {
+            .result-grid { grid-template-columns: 1fr; }
+        }
+        .result-card {
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            border: 1px solid var(--border);
+        }
+        .result-card.pessimista {
+            background: rgba(180,60,60,0.06);
+            border-color: rgba(180,60,60,0.25);
+        }
+        .result-card.intermediario {
+            background: rgba(180,120,40,0.06);
+            border-color: rgba(180,120,40,0.25);
+        }
+        .result-card.otimista {
+            background: rgba(40,140,80,0.06);
+            border-color: rgba(40,140,80,0.25);
+        }
+        .result-card-title {
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.6rem;
+        }
+        .result-card.pessimista .result-card-title { color: #b43c3c; }
+        .result-card.intermediario .result-card-title { color: #b47828; }
+        .result-card.otimista .result-card-title { color: #288c50; }
+        .result-card-scenario {
+            font-family: var(--sans);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-bottom: 0.35rem;
+        }
+        .result-card-total {
+            font-family: var(--mono);
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+        .result-card.pessimista .result-card-total { color: #b43c3c; }
+        .result-card.intermediario .result-card-total { color: #b47828; }
+        .result-card.otimista .result-card-total { color: #288c50; }
+        .result-card-delta {
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .result-card-breakdown {
+            font-family: var(--sans);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.4rem;
+            line-height: 1.5;
+        }
+
+        /* Data table */
+        .data-table-wrap {
+            overflow-x: auto;
+            margin: 1.5rem 0 2.5rem;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--mono);
+            font-size: 0.76rem;
+        }
+        .data-table thead th {
+            background: var(--bg-secondary, #f7f7f5);
+            font-weight: 600;
+            padding: 0.55rem 0.7rem;
+            text-align: right;
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+            line-height: 1.25;
+        }
+        .data-table thead .th-left { text-align: left; }
+        .data-table thead .th-group {
+            background: var(--accent-light);
+            color: var(--accent);
+            font-size: 0.62rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .data-table tbody td {
+            padding: 0.45rem 0.7rem;
+            text-align: right;
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: middle;
+        }
+        .data-table tbody td.td-left {
+            text-align: left;
+        }
+        .data-table tbody td.td-label {
+            text-align: left;
+            color: var(--text-secondary);
+            font-size: 0.72rem;
+        }
+        .data-table tbody td.td-formula {
+            text-align: left;
+            color: var(--text-muted);
+            font-size: 0.65rem;
+        }
+        .data-table tbody tr:last-child td { border-bottom: none; }
+        .data-table tfoot td {
+            padding: 0.5rem 0.7rem;
+            text-align: right;
+            border-top: 2px solid var(--border);
+            font-weight: 700;
+            background: var(--bg-secondary, #f7f7f5);
+        }
+        .data-table tfoot td.td-left { text-align: left; }
+        .data-table .td-accent { font-weight: 700; color: var(--accent); }
+        .td-pess { color: #b43c3c; font-weight: 600; }
+        .td-inter { color: #b47828; font-weight: 600; }
+        .td-otim { color: #288c50; font-weight: 600; }
+        .td-neg { color: #b43c3c; }
+        .td-pos { color: #288c50; }
+        .row-separator td { border-top: 1.5px solid var(--border); }
+        .row-total td { font-weight: 700; background: var(--bg-secondary, #f7f7f5); }
+        .na-cell { color: var(--text-muted); font-style: italic; }
+        .tag-est {
+            font-family: var(--sans);
+            font-size: 0.6rem;
+            font-weight: 500;
+            padding: 0.1rem 0.35rem;
+            border-radius: 3px;
+            background: rgba(180,120,40,0.12);
+            color: #b47828;
+            vertical-align: middle;
+            margin-left: 0.3em;
+        }
+
+        /* Charts */
+        .chart-wrap {
+            background: var(--bg-secondary, #f7f7f5);
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            margin: 0.5rem 0 2.5rem;
+        }
+        .chart-title {
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin: 0 0 1rem;
+        }
+
+        /* Metodologia */
+        .metodologia {
+            background: var(--bg-secondary, #f7f7f5);
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            margin: 2rem 0;
+            font-family: var(--serif);
+            font-size: 0.88rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+        .metodologia strong { color: var(--text-primary); }
+        .metodologia ul { margin: 0.5rem 0 0 1rem; }
+        .metodologia li { margin-bottom: 0.4rem; }
+        .metodologia .formula-block {
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            background: var(--bg-primary, #fff);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 0.6rem 0.9rem;
+            margin: 0.5rem 0;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        /* Status */
+        .status-bar {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; display: inline-block; }
+        .status-dot.pending { background: #f59e0b; }
+
+        /* adct legend */
+        .adct-table-wrap {
+            overflow-x: auto;
+            margin: 0.75rem 0 1.5rem;
+        }
+        .adct-table {
+            border-collapse: collapse;
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            width: 100%;
+        }
+        .adct-table th {
+            background: var(--bg-secondary, #f7f7f5);
+            padding: 0.4rem 0.65rem;
+            text-align: center;
+            border: 1px solid var(--border);
+            font-size: 0.67rem;
+            color: var(--text-secondary);
+        }
+        .adct-table td {
+            padding: 0.35rem 0.65rem;
+            text-align: center;
+            border: 1px solid var(--border-light);
+        }
+        .adct-table .td-est { background: rgba(180,120,40,0.08); color: #b47828; font-size: 0.62rem; }
+
+        /* footnote */
+        .footnote {
+            font-family: var(--sans);
+            font-size: 0.73rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            border-top: 1px solid var(--border-light);
+            padding-top: 1rem;
+            margin-top: 2rem;
+        }
+        .footnote p { margin-bottom: 0.5rem; }
+
+        @media (max-width: 640px) {
+            .study-hero { padding: 2rem 1.25rem 1.5rem; }
+            .study-content { padding: 0 1.25rem 4rem; }
+            .controls-panel { flex-direction: column; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="study-hero">
+            <div class="study-hero-meta">
+                <span class="study-hero-tag">Estudo 03</span>
+                <span class="study-hero-topic">Reforma Tributária</span>
+                <span class="study-hero-topic">IBS</span>
+                <span class="study-hero-topic">Finanças Públicas</span>
+                <span class="study-hero-date">Jun 2026</span>
+            </div>
+            <h1>Projeção de Arrecadação<br>IBS/ICMS — ES 2029–2033</h1>
+            <p class="lead">
+                Estimativa da receita líquida de ICMS e IBS do Espírito Santo entre 2029 e 2033 —
+                o quinquênio inicial de vigência efetiva do IBS estadual. Três cenários para o
+                efeito da mudança de critério origem→destino, comparados a um contrafactual
+                de arrecadação de ICMS sem reforma tributária. Metodologia adaptada da nota técnica
+                ASSEF/SEFAZ-PI (2026) para o contexto do ES. Fonte de dados: SICONFI/STN — DCA 2025.
+            </p>
+        </section>
+
+        <section class="study-content">
+
+            <!-- Controls -->
+            <span class="section-label">Premissas do modelo</span>
+            <div class="controls-panel">
+                <div class="control-group">
+                    <div class="control-label">Taxa de crescimento nominal anual</div>
+                    <div class="control-value" id="disp-growth">8,0% a.a.</div>
+                    <input type="range" id="range-growth" min="4" max="14" step="0.5" value="8">
+                    <div style="font-family:var(--sans);font-size:0.7rem;color:var(--text-muted)">Projeção do ICMS 2025→2029 (PIB + IPCA)</div>
+                </div>
+                <div class="control-group">
+                    <div class="control-label">Cenário — efeito destino (Dest%)</div>
+                    <div class="scenario-btns" id="scenario-btns">
+                        <button class="btn-scenario active" data-dest="-0.30">Pessimista<br><small>−30% (Gobetti)</small></button>
+                        <button class="btn-scenario" data-dest="-0.15">Intermediário<br><small>−15%</small></button>
+                        <button class="btn-scenario" data-dest="0">Neutro<br><small>0%</small></button>
+                    </div>
+                    <div style="font-family:var(--sans);font-size:0.7rem;color:var(--text-muted);margin-top:0.3rem">
+                        Impacto da mudança origem→destino no IBS direto do ES ¹
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="control-label">Custo compras governamentais (CG%)</div>
+                    <div class="control-value">0,35%</div>
+                    <div style="font-family:var(--sans);font-size:0.7rem;color:var(--text-muted)">Conforme estimativa metodológica ASSEF/PI ²</div>
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div id="status-bar" class="status-bar">
+                <span class="status-dot pending"></span>
+                <span>Carregando dados do SICONFI…</span>
+            </div>
+
+            <!-- Result cards — year 2029 -->
+            <span class="section-label" style="margin-top:0.5rem">Resultado 2029 — receita líquida ES (ICMS' + IBS')</span>
+            <div class="result-grid" id="result-grid">
+                <div class="result-card pessimista">
+                    <div class="result-card-title">Cenário Pessimista</div>
+                    <div class="result-card-scenario">Dest% = −30% (Gobetti)</div>
+                    <div class="result-card-total" id="rc-total-pess">—</div>
+                    <div class="result-card-delta" id="rc-delta-pess">—</div>
+                    <div class="result-card-breakdown" id="rc-break-pess"></div>
+                </div>
+                <div class="result-card intermediario">
+                    <div class="result-card-title">Cenário Intermediário</div>
+                    <div class="result-card-scenario">Dest% = −15%</div>
+                    <div class="result-card-total" id="rc-total-inter">—</div>
+                    <div class="result-card-delta" id="rc-delta-inter">—</div>
+                    <div class="result-card-breakdown" id="rc-break-inter"></div>
+                </div>
+                <div class="result-card otimista">
+                    <div class="result-card-title">Cenário Neutro</div>
+                    <div class="result-card-scenario">Dest% = 0% (sem perda)</div>
+                    <div class="result-card-total" id="rc-total-otim">—</div>
+                    <div class="result-card-delta" id="rc-delta-otim">—</div>
+                    <div class="result-card-breakdown" id="rc-break-otim"></div>
+                </div>
+            </div>
+
+            <!-- Table 1: Memória de cálculo 2029 -->
+            <span class="section-label" style="margin-top:1rem">Tabela 1 — Memória de cálculo 2029 (três cenários)</span>
+            <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
+                Reproduz a estrutura da nota técnica ASSEF/SEFAZ-PI adaptada para o Espírito Santo.
+                Base: ICMS bruto ES 2025 (DCA/SICONFI), projetado para 2029 pela taxa de crescimento nominal configurada acima.
+                FECOP_ES = Fundo Estadual de Equilíbrio Fiscal / Fundo de Combate à Pobreza (art. 82 ADCT, adicional de ICMS).
+            </p>
+            <div class="data-table-wrap">
+                <table class="data-table" id="table-calc" style="min-width:720px">
+                    <thead>
+                        <tr>
+                            <th class="th-left" style="width:38%;min-width:220px">Item</th>
+                            <th style="min-width:110px">Fórmula</th>
+                            <th class="th-group" style="min-width:110px">Pess. (−30%)</th>
+                            <th class="th-group" style="min-width:110px">Inter. (−15%)</th>
+                            <th class="th-group" style="min-width:110px">Neutro (0%)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-calc">
+                        <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table 2: Projeção 2029–2033 -->
+            <span class="section-label" style="margin-top:0.5rem">Tabela 2 — Projeção 2029–2033: receita líquida ES por cenário (R$ bi)</span>
+            <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
+                Receita líquida total (ICMS' + IBS') e variação percentual em relação ao contrafactual (ICMS sem reforma).
+                O cronograma ADCT segue o art. 128 para 2029–2032 (alíquota ICMS = 9/10, 8/10, 7/10 e 6/10).
+                Para 2033 utiliza-se estimativa de continuidade linear (5/10), marcada com <span class="tag-est">est.</span>
+            </p>
+            <div class="data-table-wrap">
+                <table class="data-table" id="table-proj" style="min-width:700px">
+                    <thead>
+                        <tr>
+                            <th class="th-left" rowspan="2" style="width:9%">Ano</th>
+                            <th rowspan="2" style="width:13%">ICMS<br>Contrafactual<br>(R$ bi)</th>
+                            <th rowspan="2" style="width:11%">ICMS'<br>reforma<br>(R$ bi)</th>
+                            <th class="th-group" colspan="2">Pess. −30%</th>
+                            <th class="th-group" colspan="2">Inter. −15%</th>
+                            <th class="th-group" colspan="2">Neutro 0%</th>
+                        </tr>
+                        <tr>
+                            <th class="th-group" style="font-size:0.66rem">Total (R$ bi)</th>
+                            <th class="th-group" style="font-size:0.66rem">Δ%</th>
+                            <th class="th-group" style="font-size:0.66rem">Total (R$ bi)</th>
+                            <th class="th-group" style="font-size:0.66rem">Δ%</th>
+                            <th class="th-group" style="font-size:0.66rem">Total (R$ bi)</th>
+                            <th class="th-group" style="font-size:0.66rem">Δ%</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-proj">
+                        <tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Chart 1: Receita total por ano -->
+            <div class="chart-wrap">
+                <p class="chart-title">Gráfico 1 — Receita líquida ES (R$ bi): ICMS+IBS reforma vs. contrafactual ICMS</p>
+                <canvas id="chart-receita" style="max-height:340px"></canvas>
+            </div>
+
+            <!-- Chart 2: Δ% por ano por cenário -->
+            <div class="chart-wrap">
+                <p class="chart-title">Gráfico 2 — Variação da receita líquida ES em relação ao contrafactual (%, por ano e cenário)</p>
+                <canvas id="chart-delta" style="max-height:280px"></canvas>
+            </div>
+
+            <!-- ADCT Schedule Table -->
+            <span class="section-label" style="margin-top:0.5rem">Cronograma ADCT: parâmetros do período de transição 2029–2033</span>
+            <div class="adct-table-wrap">
+                <table class="adct-table">
+                    <thead>
+                        <tr>
+                            <th>Ano</th>
+                            <th>Fator ICMS<br>(art. 128)</th>
+                            <th>IBS share<br>(1 − fator)</th>
+                            <th>Retenção<br>transição<br>(art. 131)</th>
+                            <th>IBS direto<br>(= IBS share ×<br>20% direto)</th>
+                            <th>IBS transição<br>(= IBS share ×<br>80% transição)</th>
+                            <th>CGIBS<br>(LC 227<br>art. 51)</th>
+                            <th>Base legal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>2029</strong></td>
+                            <td>9/10 (90%)</td>
+                            <td>10%</td>
+                            <td>80%</td>
+                            <td>2,00%</td>
+                            <td>8,00%</td>
+                            <td>2,00%</td>
+                            <td>Arts. 128 I, 131 §1º I ADCT; LC 227 art. 51 II a</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2030</strong></td>
+                            <td>8/10 (80%)</td>
+                            <td>20%</td>
+                            <td>80%</td>
+                            <td>4,00%</td>
+                            <td>16,00%</td>
+                            <td>1,00%</td>
+                            <td>Arts. 128 II, 131 §1º I ADCT; LC 227 art. 51 II b</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2031</strong></td>
+                            <td>7/10 (70%)</td>
+                            <td>30%</td>
+                            <td>80%</td>
+                            <td>6,00%</td>
+                            <td>24,00%</td>
+                            <td>0,67%</td>
+                            <td>Arts. 128 III, 131 §1º I ADCT; LC 227 art. 51 II c</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2032</strong></td>
+                            <td>6/10 (60%)</td>
+                            <td>40%</td>
+                            <td>80%</td>
+                            <td>8,00%</td>
+                            <td>32,00%</td>
+                            <td>0,50%</td>
+                            <td>Arts. 128 IV, 131 §1º I ADCT; LC 227 art. 51 II d</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2033 <span class="tag-est">est.</span></strong></td>
+                            <td>5/10 (50%)*</td>
+                            <td>50%*</td>
+                            <td>90%</td>
+                            <td>5,00%*</td>
+                            <td>45,00%*</td>
+                            <td>0,50%*</td>
+                            <td>Art. 131 §1º II ADCT (90% explícito); demais: estimativa linear</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Metodologia -->
+            <div class="metodologia">
+                <strong>Metodologia — adaptada da Nota Técnica ASSEF/SEFAZ-PI (2026)</strong>
+                <ul>
+                    <li><strong>Dados base (ICMS e FECOP_ES):</strong> SICONFI/STN — DCA Demonstrativo das Contas Anuais, Anexo I-C, ano 2025 (último exercício completo disponível). ICMS_ES_2025 = valor arrecadado pelo estado do ES (código PCASP <code>RO1.1.1.4.50.1.0</code>). FECOP_ES_2025 = adicional ICMS destinado ao Fundo de Combate à Pobreza do ES (código <code>RO1.1.1.4.50.2.0</code>).</li>
+                    <li><strong>Projeção para 2029:</strong> ICMS_proj(Y) = ICMS_2025 × (1 + g)^(Y−2025), onde <em>g</em> é a taxa de crescimento nominal anual configurável acima. Mesma taxa para FECOP_ES. O contrafactual representa a arrecadação sem reforma tributária — crescimento normal por PIB + IPCA.</li>
+                    <li><strong>ICMS no período de transição (ICMS'):</strong> aplica o fator de redução de alíquota (art. 128 ADCT) e deduz cota-parte municipal (25%, art. 158 IV CF) e FUNDEB (20%). Fórmula: ICMS' = α × (ICMS × 0,75 + FECOP) × 0,8, onde α é o fator ADCT do ano.</li>
+                    <li>
+                        <strong>IBS direto (IBSd):</strong> parcela paga de forma direta ao ente, calculada sobre a base ICMS+FECOP projetada sem reforma, multiplicada pelo percentual IBS direto do ano e ajustada pelo efeito destino (Dest%) e custo compras governamentais (CG%):
+                        <div class="formula-block">IBSd = (ICMS + FECOP) × ibs_direto% × (1 + Dest% + CG%)</div>
+                        O Dest% é negativo para o ES porque o estado tem saldo exportador positivo: com a mudança de critério origem→destino, o ES tende a perder base tributária no IBS direto. O cenário pessimista (−30%) utiliza a estimativa de Gobetti e Monteiro (2023). ¹
+                    </li>
+                    <li>
+                        <strong>IBS transição (IBSt):</strong> parcela redistribuída pelo mecanismo de transição do art. 131 ADCT, com base no CPT_ES calculado pelo critério histórico de origem:
+                        <div class="formula-block">IBSt = (ICMS + FECOP) × (ibs_trans% + perdas_trans%)</div>
+                        O parâmetro <em>perdas_trans%</em> captura ganhos ou perdas específicos do ES no mecanismo de transição (art. 131). Por ausência de nota técnica específica para o ES, foi fixado em 0%. ³
+                    </li>
+                    <li>
+                        <strong>IBS bruto total:</strong> IBS = 0,95 × IBSd + IBSt — o fator 0,95 desconta 5% do mecanismo Seguro Receita sobre a parcela direta (art. 132 ADCT). Não há FECOP-IBS para 2029–2032 (a regulamentação prevê FECOP-IBS somente a partir de 2033, por lei estadual).
+                    </li>
+                    <li>
+                        <strong>IBS líquido (IBS'):</strong> após cota-parte municipal (25%), FUNDEB (20%) e custeio do CGIBS (art. 51 LC 227/2026):
+                        <div class="formula-block">IBS' = IBS × 0,75 × (1 − 20% − CGIBS%)</div>
+                    </li>
+                    <li>
+                        <strong>Receita líquida total e comparação:</strong>
+                        <div class="formula-block">
+                            RL = ICMS' + IBS'
+                            ICMS'_cnt = (ICMS × 0,75 + FECOP) × 0,8  [contrafactual — sem fator α]
+                            Δ = RL − ICMS'_cnt
+                            Δ% = Δ / ICMS'_cnt
+                        </div>
+                    </li>
+                    <li><strong>Ano 2033:</strong> o art. 128 ADCT cobre apenas 2029–2032. Para 2033, adota-se a continuidade linear da redução de alíquota ICMS (fator 5/10) e a regra explícita do art. 131 §1º II (retenção de transição = 90%). O percentual de financiamento do CGIBS para 2033 não está explicitado no art. 51 da LC 227/2026 — estimado em 0,50% (mesmo nível de 2032). Os valores de 2033 são, portanto, estimativas com maior incerteza e estão marcados na tabela.</li>
+                </ul>
+            </div>
+
+            <div class="footnote">
+                <p>¹ <strong>Efeito destino para o ES:</strong> Gobetti e Monteiro (2023) estimam a participação do ES no IBS pelo critério de destino (regime permanente) em <strong>2,4%</strong>, contra um CPT_ES de aproximadamente 2,5–2,6% pelo critério histórico de origem (ver <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a>). O parâmetro Dest% na fórmula do IBSd captura o efeito desta diferença sobre a parcela direta do IBS. O cenário pessimista de −30% representa o impacto máximo estimado no componente direto; −15% é um cenário intermediário; 0% equivale à ausência de impacto diferencial (neutralidade destino/origem).</p>
+                <p>² <strong>CG% — Custo nas compras governamentais (0,35%):</strong> estimativa de aumento de custos em compras públicas decorrente da transição tributária. Valor retirado da nota técnica da ASSEF/SEFAZ-PI relativa ao ano de 2029. Adota-se o mesmo parâmetro para o ES na ausência de nota técnica específica.</p>
+                <p>³ <strong>Perdas/Ganhos no mecanismo de transição:</strong> a redistribuição via art. 131 ADCT pode gerar ganhos ou perdas para cada ente, dependendo de sua posição relativa no CPT e no fluxo de IBS nacional. A nota técnica ASSEF/SEFAZ-PI estimou uma perda de 0,24% para o Piauí. Para o ES, esse parâmetro não foi calculado em nota técnica específica e foi fixado em 0% por ora. Um valor negativo (perda) para o ES seria consistente com o fato de o CPT-origem ser maior que o CPT-destino.</p>
+                <p>Fonte primária: <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">SICONFI — API Data Lake STN</a>. Scripts de coleta disponíveis no repositório. Base legal: arts. 128, 131 e 132 do ADCT (LC 214/2025); arts. 47 e 51 da LC 227/2026.</p>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/js/main.js"></script>
+    <script>
+    // ─── ADCT schedule ──────────────────────────────────────────────────────────
+    const ANOS = [2029, 2030, 2031, 2032, 2033];
+
+    const ADCT = {
+        2029: { alpha: 0.9,  ibsDiretoPct: 0.02, ibsTransPct: 0.08,  cgibsPct: 0.020,  estimated: false },
+        2030: { alpha: 0.8,  ibsDiretoPct: 0.04, ibsTransPct: 0.16,  cgibsPct: 0.010,  estimated: false },
+        2031: { alpha: 0.7,  ibsDiretoPct: 0.06, ibsTransPct: 0.24,  cgibsPct: 0.0067, estimated: false },
+        2032: { alpha: 0.6,  ibsDiretoPct: 0.08, ibsTransPct: 0.32,  cgibsPct: 0.005,  estimated: false },
+        2033: { alpha: 0.5,  ibsDiretoPct: 0.05, ibsTransPct: 0.45,  cgibsPct: 0.005,  estimated: true  },
+    };
+
+    const CG_PCT = 0.0035;      // custo compras governamentais
+    const SEGURO_RECEITA = 0.05; // art. 132 ADCT — 5% sobre IBSd
+    const COTA_MUN = 0.25;       // art. 158 IV CF
+    const FUNDEB_PCT = 0.20;     // FUNDEB
+    const PERDA_TRANS_PCT = 0;   // ganhos/perdas mecanismo transição (art. 131) — ver nota³
+
+    const SCENARIOS = [
+        { id: 'pess',  dest: -0.30, label: 'Pessimista (−30%)',   color: '#b43c3c', colorLight: 'rgba(180,60,60,0.65)' },
+        { id: 'inter', dest: -0.15, label: 'Intermediário (−15%)', color: '#b47828', colorLight: 'rgba(180,120,40,0.65)' },
+        { id: 'otim',  dest:  0.00, label: 'Neutro (0%)',          color: '#288c50', colorLight: 'rgba(40,140,80,0.65)' },
+    ];
+
+    // ─── Formatting helpers ─────────────────────────────────────────────────────
+    function fmtBi(v, d=2) {
+        if (v == null) return '—';
+        return 'R$ ' + (v/1e9).toFixed(d).replace('.',',') + ' bi';
+    }
+    function fmtBiNum(v, d=2) {
+        if (v == null) return '—';
+        return (v/1e9).toFixed(d).replace('.',',');
+    }
+    function fmtPct(v, d=2) {
+        if (v == null) return '—';
+        const s = (v >= 0 ? '+' : '') + (v*100).toFixed(d).replace('.',',') + '%';
+        return s;
+    }
+    function fmtPctCell(v, d=2) {
+        if (v == null) return '—';
+        const pct = (v*100).toFixed(d).replace('.',',');
+        const cls = v < -0.001 ? 'td-neg' : v > 0.001 ? 'td-pos' : '';
+        const sign = v >= 0 ? '+' : '';
+        return `<span class="${cls}">${sign}${pct}%</span>`;
+    }
+
+    // ─── Core projection engine ──────────────────────────────────────────────────
+    function calcYear(icms2025, fecop2025, gRate, destPct, ano) {
+        const a = ADCT[ano];
+        const y = ano - 2025;
+        const icms = icms2025 * Math.pow(1 + gRate, y);
+        const fecop = fecop2025 * Math.pow(1 + gRate, y);
+        const base = icms + fecop;   // base bruta total (ICMS + FECOP projetado)
+
+        // ── Contrafactual (sem reforma) ────────────────────────────────────────
+        const icmsCntEstadual = (icms * (1 - COTA_MUN) + fecop);
+        const icmsCntLiq      = icmsCntEstadual * (1 - FUNDEB_PCT);
+
+        // ── ICMS com reforma ──────────────────────────────────────────────────
+        const icmsBrutoAdj     = icms * a.alpha;
+        const icmsCotaMun      = icmsBrutoAdj * COTA_MUN;
+        const fecopAdj         = fecop * a.alpha;
+        const icmsEstadualAdj  = icmsBrutoAdj - icmsCotaMun + fecopAdj;
+        const icmsFundeb       = icmsEstadualAdj * FUNDEB_PCT;
+        const icmsLiq          = icmsEstadualAdj - icmsFundeb;
+
+        // ── IBS direto ────────────────────────────────────────────────────────
+        const ibsDirBruto    = base * a.ibsDiretoPct * (1 + destPct + CG_PCT);
+        const ibsSeguro      = ibsDirBruto * SEGURO_RECEITA;
+
+        // ── IBS transição ─────────────────────────────────────────────────────
+        const ibsTransBruto  = base * (a.ibsTransPct + PERDA_TRANS_PCT);
+
+        // ── IBS total bruto ───────────────────────────────────────────────────
+        const ibsBruto       = ibsDirBruto * (1 - SEGURO_RECEITA) + ibsTransBruto;
+
+        // ── IBS líquido ───────────────────────────────────────────────────────
+        const ibsCotaMun     = ibsBruto * COTA_MUN;
+        const ibsEstadual    = ibsBruto - ibsCotaMun;
+        const ibsFundeb      = ibsEstadual * FUNDEB_PCT;
+        const ibsCgibs       = ibsEstadual * a.cgibsPct;
+        const ibsLiq         = ibsEstadual - ibsFundeb - ibsCgibs;
+
+        // ── Receita total e comparação ────────────────────────────────────────
+        const totalLiq = icmsLiq + ibsLiq;
+        const delta    = totalLiq - icmsCntLiq;
+        const deltaPct = delta / icmsCntLiq;
+
+        return {
+            icms, fecop, base,
+            icmsCntEstadual, icmsCntLiq,
+            icmsBrutoAdj, icmsCotaMun, fecopAdj, icmsEstadualAdj, icmsFundeb, icmsLiq,
+            ibsDirBruto, ibsSeguro, ibsTransBruto, ibsBruto,
+            ibsCotaMun, ibsEstadual, ibsFundeb, ibsCgibs, ibsLiq,
+            totalLiq, delta, deltaPct,
+            estimated: a.estimated,
+        };
+    }
+
+    // ─── Chart references ────────────────────────────────────────────────────────
+    let chartReceita = null;
+    let chartDelta   = null;
+
+    // ─── Render ──────────────────────────────────────────────────────────────────
+    function render(icms2025, fecop2025, gRate) {
+        // Calc all scenarios × all years
+        const results = {};
+        for (const sc of SCENARIOS) {
+            results[sc.id] = {};
+            for (const ano of ANOS) {
+                results[sc.id][ano] = calcYear(icms2025, fecop2025, gRate, sc.dest, ano);
+            }
+        }
+
+        const r2029 = {};
+        for (const sc of SCENARIOS) r2029[sc.id] = results[sc.id][2029];
+
+        // ── Result cards (2029) ────────────────────────────────────────────────
+        for (const sc of SCENARIOS) {
+            const r = r2029[sc.id];
+            const sfx = sc.id === 'pess' ? 'pess' : sc.id === 'inter' ? 'inter' : 'otim';
+            document.getElementById('rc-total-' + sfx).textContent = fmtBi(r.totalLiq, 2);
+            const dp = fmtPct(r.deltaPct, 2);
+            const cls = r.deltaPct < -0.0005 ? 'td-neg' : r.deltaPct > 0.0005 ? 'td-pos' : '';
+            document.getElementById('rc-delta-' + sfx).innerHTML =
+                `<span class="${cls}">${dp}</span> vs. contrafactual`;
+            document.getElementById('rc-break-' + sfx).innerHTML =
+                `ICMS' = ${fmtBi(r.icmsLiq, 2)}<br>IBS' = ${fmtBi(r.ibsLiq, 2)}<br>Cnt. = ${fmtBi(r.icmsCntLiq, 2)}`;
+        }
+
+        // ── Table 1: Memória de cálculo 2029 ─────────────────────────────────
+        const rP = r2029['pess'];
+        const rI = r2029['inter'];
+        const rO = r2029['otim'];
+
+        function row(label, formula, p, i, o, extraClass='') {
+            const cls = extraClass ? ` class="${extraClass}"` : '';
+            return `<tr${cls}>
+                <td class="td-label">${label}</td>
+                <td class="td-formula">${formula}</td>
+                <td class="td-pess">${p != null ? fmtBi(p) : '—'}</td>
+                <td class="td-inter">${i != null ? fmtBi(i) : '—'}</td>
+                <td class="td-otim">${o != null ? fmtBi(o) : '—'}</td>
+            </tr>`;
+        }
+        function rowSame(label, formula, val, extraClass='') {
+            const v = val != null ? fmtBi(val) : '—';
+            const cls = extraClass ? ` class="${extraClass}"` : '';
+            return `<tr${cls}>
+                <td class="td-label">${label}</td>
+                <td class="td-formula">${formula}</td>
+                <td colspan="3" style="text-align:center;font-weight:600;color:var(--accent)">${v}</td>
+            </tr>`;
+        }
+        function rowPct(label, formula, val) {
+            return `<tr>
+                <td class="td-label">${label}</td>
+                <td class="td-formula">${formula}</td>
+                <td colspan="3" style="text-align:center;color:var(--text-muted)">${val}</td>
+            </tr>`;
+        }
+
+        document.getElementById('tbody-calc').innerHTML = [
+            `<tr class="row-separator"><td colspan="5" class="td-label" style="font-weight:700;padding-top:0.7rem;color:var(--text-primary)">A. Insumos base (2025 → 2029)</td></tr>`,
+            rowSame('ICMS bruto ES (DCA 2025)', 'base', rP.icms / Math.pow(1 + gRate, 2029-2025)),
+            rowSame('FECOP bruto ES (DCA 2025)', 'base', rP.fecop / Math.pow(1 + gRate, 2029-2025)),
+            rowSame(`Taxa crescimento nominal (${(gRate*100).toFixed(1).replace('.',',')}% × 4 anos)`, '(1+g)⁴', null),
+            rowSame('ICMS projetado 2029 (sem reforma)', 'ICMS₂₅ × (1+g)⁴', rP.icms),
+            rowSame('FECOP projetado 2029 (sem reforma)', 'FECOP₂₅ × (1+g)⁴', rP.fecop),
+            rowSame('Base total (ICMS + FECOP)', 'a + b', rP.base),
+            `<tr class="row-separator"><td colspan="5" class="td-label" style="font-weight:700;padding-top:0.7rem;color:var(--text-primary)">B. Contrafactual — ICMS sem reforma (2029)</td></tr>`,
+            rowSame('ICMS × 0,75 (dedução cota-parte mun.)', 'a × 0,75', rP.icms * 0.75),
+            rowSame('ICMS estadual + FECOP', 'a×0,75 + b', rP.icmsCntEstadual),
+            rowSame('FUNDEB (20%)', 'cnt_est × 20%', rP.icmsCntEstadual * 0.20),
+            rowSame('ICMS líquido contrafactual (ICMS\'₀)', '(a×0,75 + b) × 0,8', rP.icmsCntLiq, 'row-total'),
+            `<tr class="row-separator"><td colspan="5" class="td-label" style="font-weight:700;padding-top:0.7rem;color:var(--text-primary)">C. ICMS com reforma 2029 (fator 9/10, art. 128 ADCT)</td></tr>`,
+            rowSame('Fator redução alíquota ICMS (α)', 'art. 128 I ADCT', null),
+            rowPct('α', '—', '9/10 = 90%'),
+            rowSame('ICMS bruto ajustado', 'a × α', rP.icmsBrutoAdj),
+            rowSame('Cota-parte municipal (25%)', '− 25%', rP.icmsCotaMun),
+            rowSame('FECOP ajustado', 'b × α', rP.fecopAdj),
+            rowSame('ICMS estadual previsto', 'c − d + e_adj', rP.icmsEstadualAdj),
+            rowSame('FUNDEB (20%)', 'est × 20%', rP.icmsFundeb),
+            rowSame('ICMS líquido previsto (ICMS\')', 'est × 0,8', rP.icmsLiq, 'row-total'),
+            `<tr class="row-separator"><td colspan="5" class="td-label" style="font-weight:700;padding-top:0.7rem;color:var(--text-primary)">D. IBS direto — 2029 (2% da base, art. 131 §1º I ADCT)</td></tr>`,
+            rowPct('Percentual IBS direto (2%)', '20% × (1−α) = 2%', '2,00%'),
+            rowPct('Dest% (efeito destino — difere por cenário)', 'ver nota ¹', 'Pess: −30% | Inter: −15% | Neutro: 0%'),
+            rowPct('CG% (custo compras governamentais)', 'ver nota ²', '0,35%'),
+            row('IBS direto bruto', 'base × 2% × (1 + Dest% + CG%)', rP.ibsDirBruto, rI.ibsDirBruto, rO.ibsDirBruto),
+            row('Seguro Receita (5%)', '− 5% × IBSd, art. 132 ADCT', rP.ibsSeguro, rI.ibsSeguro, rO.ibsSeguro),
+            `<tr class="row-separator"><td colspan="5" class="td-label" style="font-weight:700;padding-top:0.7rem;color:var(--text-primary)">E. IBS transição — 2029 (8% da base, art. 131 §1º I ADCT)</td></tr>`,
+            rowPct('Percentual IBS transição (8%)', '80% × (1−α) = 8%', '8,00%'),
+            rowPct('Perdas/Ganhos transição', 'art. 131 ADCT — ver nota ³', '0,00% (não calculado)'),
+            rowSame('IBS transição bruto', 'base × (8% + 0%)', rP.ibsTransBruto),
+            `<tr class="row-separator"><td colspan="5" class="td-label" style="font-weight:700;padding-top:0.7rem;color:var(--text-primary)">F. IBS bruto total e IBS líquido — 2029</td></tr>`,
+            row('IBS total bruto (IBSd×0,95 + IBSt)', '0,95×IBSd + IBSt', rP.ibsBruto, rI.ibsBruto, rO.ibsBruto),
+            row('Cota-parte municipal IBS (25%)', 'IBS × 25%', rP.ibsCotaMun, rI.ibsCotaMun, rO.ibsCotaMun),
+            row('IBS estadual previsto', 'IBS − cota', rP.ibsEstadual, rI.ibsEstadual, rO.ibsEstadual),
+            row('IBS FUNDEB (20%)', 'est × 20%', rP.ibsFundeb, rI.ibsFundeb, rO.ibsFundeb),
+            row('CGIBS (2%, art. 51 LC 227)', 'est × 2%', rP.ibsCgibs, rI.ibsCgibs, rO.ibsCgibs),
+            row('IBS líquido previsto (IBS\')', 'est × (1−20%−2%)', rP.ibsLiq, rI.ibsLiq, rO.ibsLiq, 'row-total'),
+            `<tr class="row-separator row-total"><td colspan="5" class="td-label" style="font-weight:700;padding-top:0.7rem;color:var(--text-primary)">G. Resultado final 2029</td></tr>`,
+            row('Receita líquida (ICMS\' + IBS\')', 'RL = ICMS\' + IBS\'', rP.totalLiq, rI.totalLiq, rO.totalLiq, 'row-total'),
+            `<tr>
+                <td class="td-label">Variação vs. contrafactual (Δ%)</td>
+                <td class="td-formula">Δ% = (RL − ICMS\'₀) / ICMS\'₀</td>
+                <td>${fmtPctCell(rP.deltaPct, 3)}</td>
+                <td>${fmtPctCell(rI.deltaPct, 3)}</td>
+                <td>${fmtPctCell(rO.deltaPct, 3)}</td>
+            </tr>`,
+        ].join('');
+
+        // ── Table 2: Projeção 2029–2033 ───────────────────────────────────────
+        const rows2 = ANOS.map(ano => {
+            const rp = results['pess'][ano];
+            const ri = results['inter'][ano];
+            const ro = results['otim'][ano];
+            const est = ADCT[ano].estimated;
+            const tag = est ? ' <span class="tag-est">est.</span>' : '';
+            return `<tr>
+                <td class="td-left"><strong>${ano}</strong>${tag}</td>
+                <td>${fmtBiNum(rp.icmsCntLiq)}</td>
+                <td>${fmtBiNum(rp.icmsLiq)}</td>
+                <td class="td-pess">${fmtBiNum(rp.totalLiq)}</td>
+                <td>${fmtPctCell(rp.deltaPct, 2)}</td>
+                <td class="td-inter">${fmtBiNum(ri.totalLiq)}</td>
+                <td>${fmtPctCell(ri.deltaPct, 2)}</td>
+                <td class="td-otim">${fmtBiNum(ro.totalLiq)}</td>
+                <td>${fmtPctCell(ro.deltaPct, 2)}</td>
+            </tr>`;
+        });
+        document.getElementById('tbody-proj').innerHTML = rows2.join('');
+
+        // ── Charts ─────────────────────────────────────────────────────────────
+        const isDark = document.documentElement.classList.contains('dark') ||
+            window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const gridColor   = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+        const textColor   = isDark ? '#aaa' : '#555';
+        const anosLabels  = ANOS.map(a => ADCT[a].estimated ? a + '*' : String(a));
+
+        const cntValues   = ANOS.map(a => +(results['pess'][a].icmsCntLiq / 1e9).toFixed(3));
+        const pessValues  = ANOS.map(a => +(results['pess'][a].totalLiq / 1e9).toFixed(3));
+        const interValues = ANOS.map(a => +(results['inter'][a].totalLiq / 1e9).toFixed(3));
+        const otimValues  = ANOS.map(a => +(results['otim'][a].totalLiq / 1e9).toFixed(3));
+        const deltaP = ANOS.map(a => +((results['pess'][a].deltaPct) * 100).toFixed(3));
+        const deltaI = ANOS.map(a => +((results['inter'][a].deltaPct) * 100).toFixed(3));
+        const deltaO = ANOS.map(a => +((results['otim'][a].deltaPct) * 100).toFixed(3));
+
+        // Chart 1 — Receita total
+        if (chartReceita) chartReceita.destroy();
+        chartReceita = new Chart(document.getElementById('chart-receita'), {
+            data: {
+                labels: anosLabels,
+                datasets: [
+                    {
+                        type: 'bar', label: 'Pessimista −30%',
+                        data: pessValues, backgroundColor: 'rgba(180,60,60,0.60)',
+                        borderColor: '#b43c3c', borderWidth: 1, order: 3,
+                    },
+                    {
+                        type: 'bar', label: 'Intermediário −15%',
+                        data: interValues, backgroundColor: 'rgba(180,120,40,0.60)',
+                        borderColor: '#b47828', borderWidth: 1, order: 4,
+                    },
+                    {
+                        type: 'bar', label: 'Neutro 0%',
+                        data: otimValues, backgroundColor: 'rgba(40,140,80,0.60)',
+                        borderColor: '#288c50', borderWidth: 1, order: 5,
+                    },
+                    {
+                        type: 'line', label: 'Contrafactual (ICMS sem reforma)',
+                        data: cntValues,
+                        borderColor: '#2a6496', borderWidth: 2.5,
+                        borderDash: [6,4], pointRadius: 4, pointBackgroundColor: '#2a6496',
+                        fill: false, order: 1,
+                    },
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { labels: { color: textColor, font: { size: 10 }, boxWidth: 14 } },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => `${ctx.dataset.label}: R$ ${ctx.parsed.y?.toFixed(2).replace('.',',')} bi`,
+                        }
+                    }
+                },
+                scales: {
+                    x: { ticks: { color: textColor }, grid: { color: gridColor } },
+                    y: {
+                        ticks: { color: textColor, callback: v => 'R$ ' + v.toFixed(0) + ' bi' },
+                        grid: { color: gridColor },
+                        title: { display: true, text: 'R$ bilhões', color: textColor, font: { size: 10 } }
+                    }
+                }
+            }
+        });
+
+        // Chart 2 — Delta %
+        if (chartDelta) chartDelta.destroy();
+        chartDelta = new Chart(document.getElementById('chart-delta'), {
+            type: 'line',
+            data: {
+                labels: anosLabels,
+                datasets: [
+                    {
+                        label: 'Pessimista −30%', data: deltaP,
+                        borderColor: '#b43c3c', backgroundColor: 'rgba(180,60,60,0.12)',
+                        borderWidth: 2.5, pointRadius: 5, fill: false,
+                    },
+                    {
+                        label: 'Intermediário −15%', data: deltaI,
+                        borderColor: '#b47828', backgroundColor: 'rgba(180,120,40,0.12)',
+                        borderWidth: 2.5, pointRadius: 5, fill: false,
+                    },
+                    {
+                        label: 'Neutro 0%', data: deltaO,
+                        borderColor: '#288c50', backgroundColor: 'rgba(40,140,80,0.12)',
+                        borderWidth: 2.5, pointRadius: 5, fill: false,
+                    },
+                    {
+                        label: 'Referência (0%)', data: ANOS.map(() => 0),
+                        borderColor: '#999', borderWidth: 1.5,
+                        borderDash: [4,4], pointRadius: 0, fill: false,
+                    },
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { labels: { color: textColor, font: { size: 10 }, boxWidth: 14 } },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => {
+                                if (ctx.dataset.label === 'Referência (0%)') return null;
+                                return `${ctx.dataset.label}: ${ctx.parsed.y >= 0 ? '+' : ''}${ctx.parsed.y?.toFixed(2).replace('.',',')}%`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { ticks: { color: textColor }, grid: { color: gridColor } },
+                    y: {
+                        ticks: { color: textColor, callback: v => (v >= 0 ? '+' : '') + v.toFixed(1).replace('.',',') + '%' },
+                        grid: { color: gridColor },
+                        title: { display: true, text: 'Δ% receita vs. contrafactual', color: textColor, font: { size: 10 } }
+                    }
+                }
+            }
+        });
+    }
+
+    // ─── Load data ───────────────────────────────────────────────────────────────
+    async function init() {
+        let data;
+        try {
+            const resp = await fetch('/data/reforma-tributaria.json?t=' + Date.now());
+            if (!resp.ok) throw new Error('not found');
+            data = await resp.json();
+        } catch {
+            document.getElementById('status-bar').innerHTML =
+                '<span class="status-dot pending"></span> Dados não disponíveis — verifique /data/reforma-tributaria.json';
+            return;
+        }
+
+        const dcaIcmsUf  = data.dca_icms_por_uf  || {};
+        const dcaFecopUf = data.dca_fecop_por_uf  || {};
+
+        const icms2025  = dcaIcmsUf['2025']?.['ES']  ?? data.icms_es?.['2025']  ?? null;
+        const fecop2025 = dcaFecopUf['2025']?.['ES'] ?? 0;
+
+        if (icms2025 == null) {
+            document.getElementById('status-bar').innerHTML =
+                '<span class="status-dot pending"></span> ICMS ES 2025 não encontrado nos dados';
+            return;
+        }
+
+        document.getElementById('status-bar').innerHTML =
+            `<span class="status-dot"></span> ICMS_ES 2025 = R$ ${(icms2025/1e9).toFixed(3).replace('.',',')} bi · FECOP_ES 2025 = R$ ${(fecop2025/1e6).toFixed(1).replace('.',',')} mi · Fonte: DCA/SICONFI`;
+
+        function getGRate() { return parseFloat(document.getElementById('range-growth').value) / 100; }
+
+        function refresh() {
+            render(icms2025, fecop2025, getGRate());
+        }
+
+        // Slider
+        document.getElementById('range-growth').addEventListener('input', e => {
+            const v = parseFloat(e.target.value);
+            document.getElementById('disp-growth').textContent = v.toFixed(1).replace('.',',') + '% a.a.';
+            refresh();
+        });
+
+        // Scenario buttons (visual only — all three always computed, but highlight one)
+        document.querySelectorAll('.btn-scenario').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.btn-scenario').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        refresh();
+    }
+
+    init();
+    </script>
+</body>
+</html>
