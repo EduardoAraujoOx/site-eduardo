@@ -472,6 +472,29 @@
                 </table>
             </div>
 
+            <!-- Tabela 4: CPT por município ES -->
+            <span class="section-label" style="margin-top:2rem">Tabela 4 — Contribuição ao CPT_ES por município capixaba (DCA 2022–2025)</span>
+            <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
+                Desagregação da parcela municipal do CPT_ES por município. Para cada município: base anual = ISS bruto + cota-parte ICMS recebida (art. 115, III), corrigida pelo Índice_t e acumulada na Receita Média de Referência do período completo (8 anos). Os valores de ISS e cota-parte provêm do DCA Anexo I-C para 2022–2025 (4 anos disponíveis); para 2019–2021, a DCA não está indexada na API do SICONFI, de modo que esses anos entram com valor zero no cômputo — o CPT por município está portanto <em>subestimado</em> em relação ao CPT agregado, que usa RREO para 2019–2021. A soma das contribuições municipais indica a participação interna do ES.
+            </p>
+            <div class="data-table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left">Município</th>
+                            <th style="text-align:right">ISS médio<br><small style="font-weight:400;font-size:0.65em">DCA 2022–2025 (R$ M)</small></th>
+                            <th style="text-align:right">Cota-parte ICMS<br><small style="font-weight:400;font-size:0.65em">DCA 2022–2025 (R$ M)</small></th>
+                            <th style="text-align:right">Base total média<br><small style="font-weight:400;font-size:0.65em">ISS + cota (R$ M)</small></th>
+                            <th style="text-align:right">CPT contribuição<br><small style="font-weight:400;font-size:0.65em">parcial 4/8 anos</small></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-munis-es">
+                        <tr><td colspan="5" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                    </tbody>
+                    <tfoot id="tfoot-munis-es"></tfoot>
+                </table>
+            </div>
+
             <!-- Metodologia -->
             <div class="metodologia">
                 <strong>Metodologia — LC 227/2026, arts. 114, 115 e 129</strong>
@@ -772,6 +795,58 @@
                 <td style="text-align:right">${fmtPct(somaMunis)}</td>
                 <td style="text-align:right;color:var(--accent)">${fmtPct(somaTotal)}</td>
             </tr>`;
+        }
+
+        // ── Tabela 4: CPT por município ES ───────────────────────────────────
+        const dca_det = data.dca_detalhes || {};
+        const ANOS_DCA = [2022, 2023, 2024, 2025];
+
+        // Consolidar dados por município ES
+        const muniMap = {};
+        for (const ano of ANOS_DCA) {
+            const aStr = String(ano);
+            for (const [cod, v] of Object.entries(dca_det[aStr] || {})) {
+                if (v.uf !== 'ES') continue;
+                if (!muniMap[cod]) muniMap[cod] = { nome: v.ente, dados: {} };
+                muniMap[cod].dados[ano] = {
+                    iss:  v.valor              || 0,
+                    cota: v.cota_parte_icms    || 0
+                };
+            }
+        }
+
+        const muniRows = Object.entries(muniMap).map(([cod, m]) => {
+            let soma = 0;
+            for (const ano of ANOS) {
+                const d_ano = m.dados[ano];
+                const def   = deflators[ano];
+                if (d_ano && def != null) soma += (d_ano.iss + d_ano.cota) * def;
+            }
+            const recMedia = soma / ANOS.length;
+            const cpt      = totalB != null ? recMedia / totalB * 100 : null;
+            const n = Object.keys(m.dados).length;
+            const issMed   = ANOS_DCA.reduce((s, a) => s + (m.dados[a]?.iss  || 0), 0) / n;
+            const cotaMed  = ANOS_DCA.reduce((s, a) => s + (m.dados[a]?.cota || 0), 0) / n;
+            return { cod, nome: m.nome, issMed, cotaMed, baseMed: issMed + cotaMed, cpt };
+        }).sort((a, b) => (b.cpt ?? 0) - (a.cpt ?? 0));
+
+        if (muniRows.length > 0) {
+            const fmtM = v => v != null ? (v/1e6).toFixed(1).replace('.', ',') : '—';
+            document.getElementById('tbody-munis-es').innerHTML = muniRows.map((r, i) => `
+                <tr>
+                    <td style="text-align:left">${i + 1}. ${r.nome}</td>
+                    <td style="text-align:right">${fmtM(r.issMed)}</td>
+                    <td style="text-align:right">${fmtM(r.cotaMed)}</td>
+                    <td style="text-align:right;font-weight:600">${fmtM(r.baseMed)}</td>
+                    <td style="text-align:right" class="td-coeff">${fmtPct(r.cpt, 5)}</td>
+                </tr>`).join('');
+            const somaM = muniRows.reduce((s, r) => s + (r.cpt ?? 0), 0);
+            document.getElementById('tfoot-munis-es').innerHTML = `
+                <tr style="font-weight:700;border-top:2px solid var(--border)">
+                    <td style="text-align:left">TOTAL (${muniRows.length} municípios)</td>
+                    <td></td><td></td><td></td>
+                    <td style="text-align:right;color:var(--accent)">${fmtPct(somaM, 5)}</td>
+                </tr>`;
         }
 
         // ── Status bar ────────────────────────────────────────────────────────
