@@ -426,16 +426,53 @@
                 </div>
             </div>
 
-            <!-- Tabela 3: CPT por UF -->
-            <span class="section-label" style="margin-top:2rem">Tabela 3 — CPT por UF: histórico vs. 2025 (verificação: soma = 100%)</span>
+            <!-- Tabela 3: CPT por UF (completa, 10 colunas) -->
+            <span class="section-label" style="margin-top:2rem">Tabela 3 — CPT por UF (verificação: soma = 100%)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
-                CPT histórico = média 2019–2025 deflacionada (fórmula LC 227/2026). CPT 2025 = índice pontual do ano sem deflação (foto de 2025). Diferença em vermelho: UF perderia participação em relação a ficar apenas no 2025; em verde: ganharia com o histórico. Soma CPT histórico deve ser 100%.
+                Coeficientes de Participação de Transição calculados para todas as 26 UFs e o DF,
+                pelo mesmo procedimento aplicado ao ES. Cada linha decompõe o CPT da UF em
+                <strong>parcela estado</strong> (ICMS×0,75 × índice, média dos 7 anos ÷ Total_BR_2025) e
+                <strong>parcela municípios</strong> (ISS + cota-parte ICMS×0,25 × índice, mesma média e denominador).
+                A soma da coluna <strong>Total UF</strong> deve ser exatamente 100%.
             </p>
             <div class="data-table-wrap" style="overflow-x:auto">
-                <table class="data-table" id="table-ufs" style="min-width:640px">
+                <table class="data-table" id="table-ufs" style="min-width:860px;font-size:0.8rem">
                     <thead>
                         <tr>
-                            <th class="th-group th-year" rowspan="2" style="min-width:3rem">UF</th>
+                            <th class="th-group th-year" rowspan="2" style="padding:4px 6px">UF</th>
+                            <th class="th-group" colspan="3" style="border-bottom:1px solid var(--border);padding:4px 6px;font-size:0.75rem">CPT histórico — média 2019–2025 deflacionada</th>
+                            <th class="th-group" colspan="3" style="border-bottom:1px solid var(--border);padding:4px 6px;font-size:0.75rem">Índice pontual 2025<br><small style="font-weight:400;font-size:0.7em">(foto do ano, sem deflação)</small></th>
+                            <th class="th-group" colspan="3" style="border-bottom:1px solid var(--border);padding:4px 6px;font-size:0.75rem">Variação (CPT − 2025)<br><small style="font-weight:400;font-size:0.7em">+ ganha com histórico · − perde</small></th>
+                        </tr>
+                        <tr>
+                            <th style="padding:3px 6px">Estado</th>
+                            <th style="padding:3px 6px">Municípios</th>
+                            <th style="padding:3px 6px">Total</th>
+                            <th style="padding:3px 6px">Estado</th>
+                            <th style="padding:3px 6px">Municípios</th>
+                            <th style="padding:3px 6px">Total</th>
+                            <th style="padding:3px 6px">Estado</th>
+                            <th style="padding:3px 6px">Municípios</th>
+                            <th style="padding:3px 6px">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-ufs">
+                        <tr><td colspan="10" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                    </tbody>
+                    <tfoot id="tfoot-ufs"></tfoot>
+                </table>
+            </div>
+
+            <!-- Tabela 3.1: CPT por UF (compacta, 7 colunas) -->
+            <span class="section-label" style="margin-top:2rem">Tabela 3.1 — CPT por UF: resumo histórico vs. 2025</span>
+            <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
+                Versão compacta da Tabela 3. CPT histórico = média 2019–2025 deflacionada; CPT 2025 = índice pontual do ano. Diferença positiva (verde): UF ganha com o histórico; negativa (vermelho): perde.
+            </p>
+            <div class="data-table-wrap" style="overflow-x:auto">
+                <table class="data-table" id="table-ufs-compact" style="min-width:480px">
+                    <thead>
+                        <tr>
+                            <th class="th-group th-year" rowspan="2">UF</th>
                             <th class="th-group" colspan="3" style="border-bottom:1px solid var(--border)">Estado</th>
                             <th class="th-group" colspan="3" style="border-bottom:1px solid var(--border)">Municípios</th>
                         </tr>
@@ -448,10 +485,10 @@
                             <th>Diferença</th>
                         </tr>
                     </thead>
-                    <tbody id="tbody-ufs">
+                    <tbody id="tbody-ufs-compact">
                         <tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
                     </tbody>
-                    <tfoot id="tfoot-ufs"></tfoot>
+                    <tfoot id="tfoot-ufs-compact"></tfoot>
                 </table>
             </div>
 
@@ -806,32 +843,65 @@
                 return `<span style="${color}">${s}</span>`;
             };
 
+            // ── Tabela 3: 10 colunas completas ──────────────────────────────────
             const tbody3 = document.getElementById('tbody-ufs');
             tbody3.innerHTML = ufRows.map(r => `<tr${r.isES ? ' style="background:rgba(112,161,112,0.12);font-weight:600"' : ''}>
-                <td class="td-year">${r.uf}</td>
-                <td style="text-align:right">${fmtPct(r.cptEstado)}</td>
-                <td style="text-align:right">${fmtPct(r.idx2025Est)}</td>
-                <td style="text-align:right">${fmtVar(r.varEstado)}</td>
-                <td style="text-align:right">${fmtPct(r.cptMunis)}</td>
-                <td style="text-align:right">${fmtPct(r.idx2025Mun)}</td>
-                <td style="text-align:right">${fmtVar(r.varMunis)}</td>
+                <td class="td-year" style="padding:3px 6px">${r.uf}</td>
+                <td style="text-align:right;padding:3px 6px">${fmtPct(r.cptEstado)}</td>
+                <td style="text-align:right;padding:3px 6px">${fmtPct(r.cptMunis)}</td>
+                <td style="text-align:right;font-weight:700;padding:3px 6px">${fmtPct(r.cptTotal)}</td>
+                <td style="text-align:right;padding:3px 6px">${fmtPct(r.idx2025Est)}</td>
+                <td style="text-align:right;padding:3px 6px">${fmtPct(r.idx2025Mun)}</td>
+                <td style="text-align:right;font-weight:700;padding:3px 6px">${fmtPct(r.idx2025Tot)}</td>
+                <td style="text-align:right;padding:3px 6px">${fmtVar(r.varEstado)}</td>
+                <td style="text-align:right;padding:3px 6px">${fmtVar(r.varMunis)}</td>
+                <td style="text-align:right;font-weight:700;padding:3px 6px">${fmtVar(r.varTotal)}</td>
             </tr>`).join('');
 
-            const somaEst    = ufRows.reduce((s, r) => s + (r.cptEstado  ?? 0), 0);
-            const somaMunis  = ufRows.reduce((s, r) => s + (r.cptMunis   ?? 0), 0);
-            const soma25Est  = ufRows.reduce((s, r) => s + (r.idx2025Est ?? 0), 0);
-            const soma25Mun  = ufRows.reduce((s, r) => s + (r.idx2025Mun ?? 0), 0);
-            const somaVarEst = ufRows.reduce((s, r) => s + (r.varEstado  ?? 0), 0);
-            const somaVarMun = ufRows.reduce((s, r) => s + (r.varMunis   ?? 0), 0);
+            const somaTotal    = ufRows.reduce((s, r) => s + (r.cptTotal    ?? 0), 0);
+            const somaMunis    = ufRows.reduce((s, r) => s + (r.cptMunis    ?? 0), 0);
+            const somaEst      = ufRows.reduce((s, r) => s + (r.cptEstado   ?? 0), 0);
+            const soma25Est    = ufRows.reduce((s, r) => s + (r.idx2025Est  ?? 0), 0);
+            const soma25Mun    = ufRows.reduce((s, r) => s + (r.idx2025Mun  ?? 0), 0);
+            const soma25Tot    = ufRows.reduce((s, r) => s + (r.idx2025Tot  ?? 0), 0);
+            const somaVarEst   = ufRows.reduce((s, r) => s + (r.varEstado   ?? 0), 0);
+            const somaVarMun   = ufRows.reduce((s, r) => s + (r.varMunis    ?? 0), 0);
+            const somaVarTot   = ufRows.reduce((s, r) => s + (r.varTotal    ?? 0), 0);
             document.getElementById('tfoot-ufs').innerHTML = `<tr style="font-weight:700;border-top:2px solid var(--border)">
-                <td class="td-year">BRASIL</td>
-                <td style="text-align:right">${fmtPct(somaEst)}</td>
-                <td style="text-align:right">${fmtPct(soma25Est)}</td>
-                <td style="text-align:right">${fmtVar(somaVarEst)}</td>
-                <td style="text-align:right">${fmtPct(somaMunis)}</td>
-                <td style="text-align:right">${fmtPct(soma25Mun)}</td>
-                <td style="text-align:right">${fmtVar(somaVarMun)}</td>
+                <td class="td-year" style="padding:3px 6px">BRASIL</td>
+                <td style="text-align:right;padding:3px 6px">${fmtPct(somaEst)}</td>
+                <td style="text-align:right;padding:3px 6px">${fmtPct(somaMunis)}</td>
+                <td style="text-align:right;color:var(--accent);padding:3px 6px">${fmtPct(somaTotal)}</td>
+                <td style="text-align:right;padding:3px 6px">${fmtPct(soma25Est)}</td>
+                <td style="text-align:right;padding:3px 6px">${fmtPct(soma25Mun)}</td>
+                <td style="text-align:right;color:var(--accent);padding:3px 6px">${fmtPct(soma25Tot)}</td>
+                <td style="text-align:right;padding:3px 6px">${fmtVar(somaVarEst)}</td>
+                <td style="text-align:right;padding:3px 6px">${fmtVar(somaVarMun)}</td>
+                <td style="text-align:right;color:var(--accent);padding:3px 6px">${fmtVar(somaVarTot)}</td>
             </tr>`;
+
+            // ── Tabela 3.1: 7 colunas compactas (sem Total) ─────────────────────
+            const tbody31 = document.getElementById('tbody-ufs-compact');
+            if (tbody31) {
+                tbody31.innerHTML = ufRows.map(r => `<tr${r.isES ? ' style="background:rgba(112,161,112,0.12);font-weight:600"' : ''}>
+                    <td class="td-year">${r.uf}</td>
+                    <td style="text-align:right">${fmtPct(r.cptEstado)}</td>
+                    <td style="text-align:right">${fmtPct(r.idx2025Est)}</td>
+                    <td style="text-align:right">${fmtVar(r.varEstado)}</td>
+                    <td style="text-align:right">${fmtPct(r.cptMunis)}</td>
+                    <td style="text-align:right">${fmtPct(r.idx2025Mun)}</td>
+                    <td style="text-align:right">${fmtVar(r.varMunis)}</td>
+                </tr>`).join('');
+                document.getElementById('tfoot-ufs-compact').innerHTML = `<tr style="font-weight:700;border-top:2px solid var(--border)">
+                    <td class="td-year">BRASIL</td>
+                    <td style="text-align:right">${fmtPct(somaEst)}</td>
+                    <td style="text-align:right">${fmtPct(soma25Est)}</td>
+                    <td style="text-align:right">${fmtVar(somaVarEst)}</td>
+                    <td style="text-align:right">${fmtPct(somaMunis)}</td>
+                    <td style="text-align:right">${fmtPct(soma25Mun)}</td>
+                    <td style="text-align:right">${fmtVar(somaVarMun)}</td>
+                </tr>`;
+            }
         }
 
         // ── Tabela 4: CPT por município ES (DCA 2019–2025) ───────────────────
