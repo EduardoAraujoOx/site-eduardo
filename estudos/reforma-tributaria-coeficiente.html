@@ -410,48 +410,46 @@
                 </table>
             </div>
 
-            <!-- Gráfico: trajetória anual vs. CPT histórico -->
-            <div style="margin:1.5rem 0 2.5rem;background:var(--bg-secondary,#f7f7f5);border-radius:8px;padding:1.25rem 1.5rem">
-                <p style="font-family:var(--mono);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin:0 0 1rem">
-                    Índice anual pontual do ES vs. CPT histórico (média 2019–2025)
-                </p>
-                <canvas id="chart-traj" style="max-height:340px"></canvas>
+            <!-- Gráfico: trajetória anual vs. CPT histórico (dois painéis) -->
+            <div style="margin:1.5rem 0 2.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                <div style="background:var(--bg-secondary,#f7f7f5);border-radius:8px;padding:1.25rem 1.5rem">
+                    <p style="font-family:var(--mono);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin:0 0 1rem">
+                        Estado ES — índice anual vs. CPT histórico
+                    </p>
+                    <canvas id="chart-traj-est" style="max-height:280px"></canvas>
+                </div>
+                <div style="background:var(--bg-secondary,#f7f7f5);border-radius:8px;padding:1.25rem 1.5rem">
+                    <p style="font-family:var(--mono);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin:0 0 1rem">
+                        Municípios ES — índice anual vs. CPT histórico
+                    </p>
+                    <canvas id="chart-traj-mun" style="max-height:280px"></canvas>
+                </div>
             </div>
 
             <!-- Tabela 3: CPT por UF -->
-            <span class="section-label" style="margin-top:2rem">Tabela 3 — CPT por UF (verificação: soma = 100%)</span>
+            <span class="section-label" style="margin-top:2rem">Tabela 3 — CPT por UF: histórico vs. 2025 (verificação: soma = 100%)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
-                Coeficientes de Participação de Transição calculados para todas as 26 UFs e o DF,
-                pelo mesmo procedimento aplicado ao ES. Cada linha decompõe o CPT da UF em
-                <strong>parcela estado</strong> (ICMS×0,75 × índice, média dos 7 anos ÷ Total_BR_2025) e
-                <strong>parcela municípios</strong> (ISS + cota-parte ICMS×0,25 × índice, mesma média e denominador).
-                A soma da coluna <strong>Total UF</strong> deve ser exatamente 100% — propriedade algébrica
-                decorrente da construção do denominador (Σ Receitas Médias = Total_BR_2025).
-                Serve como verificação de consistência e contextualiza o CPT_ES em relação aos demais entes.
+                CPT histórico = média 2019–2025 deflacionada (fórmula LC 227/2026). CPT 2025 = índice pontual do ano sem deflação (foto de 2025). Diferença em vermelho: UF perderia participação em relação a ficar apenas no 2025; em verde: ganharia com o histórico. Soma CPT histórico deve ser 100%.
             </p>
             <div class="data-table-wrap" style="overflow-x:auto">
-                <table class="data-table" id="table-ufs" style="min-width:900px">
+                <table class="data-table" id="table-ufs" style="min-width:640px">
                     <thead>
                         <tr>
-                            <th class="th-group th-year" rowspan="2">UF</th>
-                            <th class="th-group" colspan="3" style="border-bottom:1px solid var(--border)">CPT histórico — média 2019–2025 deflacionada</th>
-                            <th class="th-group" colspan="3" style="border-bottom:1px solid var(--border)">Índice pontual 2025<br><small style="font-weight:400;font-size:0.7em">(foto do ano, sem deflação)</small></th>
-                            <th class="th-group" colspan="3" style="border-bottom:1px solid var(--border)">Variação (CPT − 2025)<br><small style="font-weight:400;font-size:0.7em">+ ganha com histórico · − perde</small></th>
+                            <th class="th-group th-year" rowspan="2" style="min-width:3rem">UF</th>
+                            <th class="th-group" colspan="3" style="border-bottom:1px solid var(--border)">Estado</th>
+                            <th class="th-group" colspan="3" style="border-bottom:1px solid var(--border)">Municípios</th>
                         </tr>
                         <tr>
-                            <th>Estado</th>
-                            <th>Municípios</th>
-                            <th>Total</th>
-                            <th>Estado</th>
-                            <th>Municípios</th>
-                            <th>Total</th>
-                            <th>Estado</th>
-                            <th>Municípios</th>
-                            <th>Total</th>
+                            <th>CPT hist.</th>
+                            <th>2025</th>
+                            <th>Diferença</th>
+                            <th>CPT hist.</th>
+                            <th>2025</th>
+                            <th>Diferença</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-ufs">
-                        <tr><td colspan="10" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                        <tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
                     </tbody>
                     <tfoot id="tfoot-ufs"></tfoot>
                 </table>
@@ -812,36 +810,27 @@
             tbody3.innerHTML = ufRows.map(r => `<tr${r.isES ? ' style="background:rgba(112,161,112,0.12);font-weight:600"' : ''}>
                 <td class="td-year">${r.uf}</td>
                 <td style="text-align:right">${fmtPct(r.cptEstado)}</td>
-                <td style="text-align:right">${fmtPct(r.cptMunis)}</td>
-                <td style="text-align:right;font-weight:700">${fmtPct(r.cptTotal)}</td>
                 <td style="text-align:right">${fmtPct(r.idx2025Est)}</td>
-                <td style="text-align:right">${fmtPct(r.idx2025Mun)}</td>
-                <td style="text-align:right;font-weight:700">${fmtPct(r.idx2025Tot)}</td>
                 <td style="text-align:right">${fmtVar(r.varEstado)}</td>
+                <td style="text-align:right">${fmtPct(r.cptMunis)}</td>
+                <td style="text-align:right">${fmtPct(r.idx2025Mun)}</td>
                 <td style="text-align:right">${fmtVar(r.varMunis)}</td>
-                <td style="text-align:right;font-weight:700">${fmtVar(r.varTotal)}</td>
             </tr>`).join('');
 
-            const somaTotal    = ufRows.reduce((s, r) => s + (r.cptTotal    ?? 0), 0);
-            const somaMunis    = ufRows.reduce((s, r) => s + (r.cptMunis    ?? 0), 0);
-            const somaEst      = ufRows.reduce((s, r) => s + (r.cptEstado   ?? 0), 0);
-            const soma25Est    = ufRows.reduce((s, r) => s + (r.idx2025Est  ?? 0), 0);
-            const soma25Mun    = ufRows.reduce((s, r) => s + (r.idx2025Mun  ?? 0), 0);
-            const soma25Tot    = ufRows.reduce((s, r) => s + (r.idx2025Tot  ?? 0), 0);
-            const somaVarEst   = ufRows.reduce((s, r) => s + (r.varEstado   ?? 0), 0);
-            const somaVarMun   = ufRows.reduce((s, r) => s + (r.varMunis    ?? 0), 0);
-            const somaVarTot   = ufRows.reduce((s, r) => s + (r.varTotal    ?? 0), 0);
+            const somaEst    = ufRows.reduce((s, r) => s + (r.cptEstado  ?? 0), 0);
+            const somaMunis  = ufRows.reduce((s, r) => s + (r.cptMunis   ?? 0), 0);
+            const soma25Est  = ufRows.reduce((s, r) => s + (r.idx2025Est ?? 0), 0);
+            const soma25Mun  = ufRows.reduce((s, r) => s + (r.idx2025Mun ?? 0), 0);
+            const somaVarEst = ufRows.reduce((s, r) => s + (r.varEstado  ?? 0), 0);
+            const somaVarMun = ufRows.reduce((s, r) => s + (r.varMunis   ?? 0), 0);
             document.getElementById('tfoot-ufs').innerHTML = `<tr style="font-weight:700;border-top:2px solid var(--border)">
                 <td class="td-year">BRASIL</td>
                 <td style="text-align:right">${fmtPct(somaEst)}</td>
-                <td style="text-align:right">${fmtPct(somaMunis)}</td>
-                <td style="text-align:right;color:var(--accent)">${fmtPct(somaTotal)}</td>
                 <td style="text-align:right">${fmtPct(soma25Est)}</td>
-                <td style="text-align:right">${fmtPct(soma25Mun)}</td>
-                <td style="text-align:right;color:var(--accent)">${fmtPct(soma25Tot)}</td>
                 <td style="text-align:right">${fmtVar(somaVarEst)}</td>
+                <td style="text-align:right">${fmtPct(somaMunis)}</td>
+                <td style="text-align:right">${fmtPct(soma25Mun)}</td>
                 <td style="text-align:right">${fmtVar(somaVarMun)}</td>
-                <td style="text-align:right;color:var(--accent)">${fmtVar(somaVarTot)}</td>
             </tr>`;
         }
 
@@ -939,83 +928,90 @@
 
     // ── Gráfico: trajetória anual pontual vs. CPT histórico ──────────────────
     function buildTrajectoryChart(anos, snapshots, cptEst, cptMun) {
-        if (!document.getElementById('chart-traj')) return;
         const isDark = document.documentElement.classList.contains('dark') ||
             window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const gridColor  = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)';
-        const textColor  = isDark ? '#aaa' : '#555';
+        const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)';
+        const textColor = isDark ? '#aaa' : '#555';
 
-        const labels    = anos.map(String);
-        const dataEst   = anos.map(a => snapshots[a]?.idxEst  != null ? +snapshots[a].idxEst.toFixed(5)  : null);
-        const dataMun   = anos.map(a => snapshots[a]?.idxMun  != null ? +snapshots[a].idxMun.toFixed(5)  : null);
+        function buildPanel(canvasId, dataVals, cptRef, barColor, refColor, labelBar, labelRef) {
+            const el = document.getElementById(canvasId);
+            if (!el) return;
+            // Labels = anos + 'Média CPT'
+            const labels = [...anos.map(String), 'Média CPT'];
+            const barData = [...dataVals, cptRef != null ? +(cptRef * 100).toFixed(5) : null];
+            // Bar dataset (annual + média bar)
+            const barColors = anos.map((_, i) => {
+                if (i === anos.length - 1) return barColor; // last year same color
+                return barColor.replace(/[\d.]+\)$/, '0.65)');
+            });
+            barColors.push(barColor.replace(/[\d.]+\)$/, '0.3)')); // média bar lighter
 
-        // Linhas de referência: CPT histórico (constante em todos os anos)
-        const refEst = cptEst != null ? anos.map(() => +(cptEst * 100).toFixed(5)) : null;
-        const refMun = cptMun != null ? anos.map(() => +(cptMun * 100).toFixed(5)) : null;
+            // Reference line = constant CPT histórico across all positions
+            const refLine = cptRef != null
+                ? labels.map(() => +(cptRef * 100).toFixed(5))
+                : null;
 
-        const datasets = [
-            {
-                label: 'Índice anual — Estado ES (ICMS×0,75 / TotalBR_t)',
-                data: dataEst,
-                borderColor: 'rgba(60,130,60,0.9)',
-                backgroundColor: 'rgba(60,130,60,0.12)',
+            const datasets = [
+                {
+                    type: 'bar',
+                    label: labelBar,
+                    data: barData,
+                    backgroundColor: barColors,
+                    borderColor: barColor,
+                    borderWidth: 1,
+                    order: 2,
+                }
+            ];
+            if (refLine) datasets.push({
+                type: 'line',
+                label: labelRef,
+                data: refLine,
+                borderColor: refColor,
                 borderWidth: 2,
-                pointRadius: 4,
-                tension: 0.3,
+                borderDash: [6, 4],
+                pointRadius: 0,
                 fill: false,
-            },
-            {
-                label: 'Índice anual — Municípios ES (ISS+cota) / TotalBR_t)',
-                data: dataMun,
-                borderColor: 'rgba(60,100,180,0.9)',
-                backgroundColor: 'rgba(60,100,180,0.12)',
-                borderWidth: 2,
-                pointRadius: 4,
-                tension: 0.3,
-                fill: false,
-            },
-        ];
-        if (refEst) datasets.push({
-            label: `CPT histórico — Estado ES (${(cptEst*100).toFixed(4).replace('.',',')}%)`,
-            data: refEst,
-            borderColor: 'rgba(60,130,60,0.5)',
-            borderWidth: 1.5,
-            borderDash: [6, 4],
-            pointRadius: 0,
-            fill: false,
-        });
-        if (refMun) datasets.push({
-            label: `CPT histórico — Municípios ES (${(cptMun*100).toFixed(4).replace('.',',')}%)`,
-            data: refMun,
-            borderColor: 'rgba(60,100,180,0.5)',
-            borderWidth: 1.5,
-            borderDash: [6, 4],
-            pointRadius: 0,
-            fill: false,
-        });
+                order: 1,
+            });
 
-        new Chart(document.getElementById('chart-traj'), {
-            type: 'line',
-            data: { labels, datasets },
-            options: {
-                responsive: true,
-                interaction: { mode: 'index', intersect: false },
-                plugins: {
-                    legend: { labels: { color: textColor, font: { size: 11 }, boxWidth: 20 } },
-                    tooltip: {
-                        callbacks: { label: ctx => `${ctx.dataset.label.split('—')[0].trim()}: ${ctx.parsed.y?.toFixed(4).replace('.', ',')}%` }
-                    }
-                },
-                scales: {
-                    x: { ticks: { color: textColor }, grid: { color: gridColor } },
-                    y: {
-                        ticks: { color: textColor, callback: v => v.toFixed(2).replace('.', ',') + '%' },
-                        grid: { color: gridColor },
-                        title: { display: true, text: 'Índice (%)', color: textColor, font: { size: 10 } }
+            new Chart(el, {
+                data: { labels, datasets },
+                options: {
+                    responsive: true,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { labels: { color: textColor, font: { size: 10 }, boxWidth: 16 } },
+                        tooltip: {
+                            callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y?.toFixed(4).replace('.', ',')}%` }
+                        }
+                    },
+                    scales: {
+                        x: { ticks: { color: textColor, font: { size: 10 } }, grid: { color: gridColor } },
+                        y: {
+                            ticks: { color: textColor, callback: v => v.toFixed(2).replace('.', ',') + '%' },
+                            grid: { color: gridColor },
+                            title: { display: true, text: 'Índice (%)', color: textColor, font: { size: 10 } }
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
+
+        const dataEst = anos.map(a => snapshots[a]?.idxEst != null ? +snapshots[a].idxEst.toFixed(5) : null);
+        const dataMun = anos.map(a => snapshots[a]?.idxMun != null ? +snapshots[a].idxMun.toFixed(5) : null);
+
+        buildPanel(
+            'chart-traj-est', dataEst, cptEst,
+            'rgba(60,130,60,0.85)', 'rgba(60,130,60,1)',
+            'Índice anual Estado ES',
+            `CPT histórico Est. (${cptEst != null ? (cptEst*100).toFixed(4).replace('.',',') : '—'}%)`
+        );
+        buildPanel(
+            'chart-traj-mun', dataMun, cptMun,
+            'rgba(60,100,180,0.85)', 'rgba(60,100,180,1)',
+            'Índice anual Municípios ES',
+            `CPT histórico Mun. (${cptMun != null ? (cptMun*100).toFixed(4).replace('.',',') : '—'}%)`
+        );
     }
 
     // ── Exportar como imagem ──────────────────────────────────────────────────
