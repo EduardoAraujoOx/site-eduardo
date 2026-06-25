@@ -429,18 +429,29 @@
                 decorrente da construção do denominador (Σ Receitas Médias = Total_BR_2025).
                 Serve como verificação de consistência e contextualiza o CPT_ES em relação aos demais entes.
             </p>
-            <div class="data-table-wrap">
-                <table class="data-table" id="table-ufs">
+            <div class="data-table-wrap" style="overflow-x:auto">
+                <table class="data-table" id="table-ufs" style="min-width:900px">
                     <thead>
                         <tr>
-                            <th class="th-group th-year">UF</th>
-                            <th class="th-group">Índice Estadual<br><small>(ICMS×0,75)</small></th>
-                            <th class="th-group">Índice Municípios<br><small>(ISS + cota-parte)</small></th>
-                            <th class="th-group">Índice Total UF<br><small>(soma dos dois)</small></th>
+                            <th class="th-group th-year" rowspan="2">UF</th>
+                            <th class="th-group" colspan="3" style="border-bottom:1px solid var(--border)">CPT histórico — média 2019–2025 deflacionada</th>
+                            <th class="th-group" colspan="3" style="border-bottom:1px solid var(--border)">Índice pontual 2025<br><small style="font-weight:400;font-size:0.7em">(foto do ano, sem deflação)</small></th>
+                            <th class="th-group" colspan="3" style="border-bottom:1px solid var(--border)">Variação (CPT − 2025)<br><small style="font-weight:400;font-size:0.7em">+ ganha com histórico · − perde</small></th>
+                        </tr>
+                        <tr>
+                            <th>Estado</th>
+                            <th>Municípios</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th>Municípios</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th>Municípios</th>
+                            <th>Total</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-ufs">
-                        <tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                        <tr><td colspan="10" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
                     </tbody>
                     <tfoot id="tfoot-ufs"></tfoot>
                 </table>
@@ -765,9 +776,37 @@
                 const cptMunis  = mediaMunis  != null ? mediaMunis  / totalB * 100 : null;
                 const cptTotal  = mediaTotal  != null ? mediaTotal  / totalB * 100 : null;
 
+                // Índice pontual 2025: foto do ano sem deflação
+                const icms2025  = dca_icms_uf_raw['2025']?.[uf]
+                                ?? icms_por_uf_rreo_tab3[uf]?.[2025]
+                                ?? icms_por_uf_rreo_tab3[uf]?.['2025']
+                                ?? null;
+                const iss2025   = iss_por_uf?.['2025']?.[uf] ?? null;
+                const totalBR2025 = totalB; // deflator 2025 = 1, so totalB = totalBR[2025]
+                const idx2025Est  = (icms2025 != null && totalBR2025)
+                    ? icms2025 * 0.75 / totalBR2025 * 100 : null;
+                const idx2025Mun  = (icms2025 != null && iss2025 != null && totalBR2025)
+                    ? (iss2025 + icms2025 * 0.25) / totalBR2025 * 100 : null;
+                const idx2025Tot  = (idx2025Est != null && idx2025Mun != null)
+                    ? idx2025Est + idx2025Mun : null;
+
+                // Variação: CPT histórico − índice pontual 2025
+                const varEstado = (cptEstado != null && idx2025Est != null) ? cptEstado - idx2025Est : null;
+                const varMunis  = (cptMunis  != null && idx2025Mun != null) ? cptMunis  - idx2025Mun : null;
+                const varTotal  = (cptTotal  != null && idx2025Tot != null) ? cptTotal  - idx2025Tot : null;
+
                 const isES = uf === 'ES';
-                return { uf, cptEstado, cptMunis, cptTotal, isES };
+                return { uf, cptEstado, cptMunis, cptTotal,
+                         idx2025Est, idx2025Mun, idx2025Tot,
+                         varEstado, varMunis, varTotal, isES };
             });
+
+            const fmtVar = v => {
+                if (v == null) return '—';
+                const s = (v >= 0 ? '+' : '') + v.toFixed(4) + '%';
+                const color = v > 0 ? 'color:#2a7a2a' : v < 0 ? 'color:#b03030' : '';
+                return `<span style="${color}">${s}</span>`;
+            };
 
             const tbody3 = document.getElementById('tbody-ufs');
             tbody3.innerHTML = ufRows.map(r => `<tr${r.isES ? ' style="background:rgba(112,161,112,0.12);font-weight:600"' : ''}>
@@ -775,16 +814,34 @@
                 <td style="text-align:right">${fmtPct(r.cptEstado)}</td>
                 <td style="text-align:right">${fmtPct(r.cptMunis)}</td>
                 <td style="text-align:right;font-weight:700">${fmtPct(r.cptTotal)}</td>
+                <td style="text-align:right">${fmtPct(r.idx2025Est)}</td>
+                <td style="text-align:right">${fmtPct(r.idx2025Mun)}</td>
+                <td style="text-align:right;font-weight:700">${fmtPct(r.idx2025Tot)}</td>
+                <td style="text-align:right">${fmtVar(r.varEstado)}</td>
+                <td style="text-align:right">${fmtVar(r.varMunis)}</td>
+                <td style="text-align:right;font-weight:700">${fmtVar(r.varTotal)}</td>
             </tr>`).join('');
 
-            const somaTotal = ufRows.reduce((s, r) => s + (r.cptTotal ?? 0), 0);
-            const somaMunis = ufRows.reduce((s, r) => s + (r.cptMunis ?? 0), 0);
-            const somaEst   = ufRows.reduce((s, r) => s + (r.cptEstado ?? 0), 0);
+            const somaTotal    = ufRows.reduce((s, r) => s + (r.cptTotal    ?? 0), 0);
+            const somaMunis    = ufRows.reduce((s, r) => s + (r.cptMunis    ?? 0), 0);
+            const somaEst      = ufRows.reduce((s, r) => s + (r.cptEstado   ?? 0), 0);
+            const soma25Est    = ufRows.reduce((s, r) => s + (r.idx2025Est  ?? 0), 0);
+            const soma25Mun    = ufRows.reduce((s, r) => s + (r.idx2025Mun  ?? 0), 0);
+            const soma25Tot    = ufRows.reduce((s, r) => s + (r.idx2025Tot  ?? 0), 0);
+            const somaVarEst   = ufRows.reduce((s, r) => s + (r.varEstado   ?? 0), 0);
+            const somaVarMun   = ufRows.reduce((s, r) => s + (r.varMunis    ?? 0), 0);
+            const somaVarTot   = ufRows.reduce((s, r) => s + (r.varTotal    ?? 0), 0);
             document.getElementById('tfoot-ufs').innerHTML = `<tr style="font-weight:700;border-top:2px solid var(--border)">
                 <td class="td-year">BRASIL</td>
                 <td style="text-align:right">${fmtPct(somaEst)}</td>
                 <td style="text-align:right">${fmtPct(somaMunis)}</td>
                 <td style="text-align:right;color:var(--accent)">${fmtPct(somaTotal)}</td>
+                <td style="text-align:right">${fmtPct(soma25Est)}</td>
+                <td style="text-align:right">${fmtPct(soma25Mun)}</td>
+                <td style="text-align:right;color:var(--accent)">${fmtPct(soma25Tot)}</td>
+                <td style="text-align:right">${fmtVar(somaVarEst)}</td>
+                <td style="text-align:right">${fmtVar(somaVarMun)}</td>
+                <td style="text-align:right;color:var(--accent)">${fmtVar(somaVarTot)}</td>
             </tr>`;
         }
 
