@@ -473,23 +473,24 @@
             </div>
 
             <!-- Tabela 4: CPT por município ES -->
-            <span class="section-label" style="margin-top:2rem">Tabela 4 — Contribuição ao CPT_ES por município capixaba (DCA 2019–2025)</span>
+            <span class="section-label" style="margin-top:2rem">Tabela 4 — Contribuição ao CPT_ES por município capixaba (Versão A e B)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
-                Desagregação da parcela municipal do CPT_ES por município. Para cada município: base anual = ISS bruto + cota-parte ICMS recebida (art. 115, III), corrigida pelo Índice_t e acumulada na Receita Média de Referência do período completo. Os valores de ISS e cota-parte provêm do DCA Anexo I-C para todos os 7 anos do período base (2019–2025), com cobertura de 78/78 municípios do ES. A soma das contribuições municipais converge com a parcela municipal do CPT_ES agregado.
+                Desagregação da parcela municipal do CPT_ES por município. Base anual = ISS bruto + cota-parte ICMS recebida (art. 115, III), corrigida pelo Índice_t. <strong>Versão A</strong>: período 2019–2025 (7 anos), denominador = TotalBR_2025; deflator base 2025. <strong>Versão B</strong>: período 2019–2026 (8 anos), denominador = TotalBR_2026; 2026 via RREO (~18/78 municípios com dado individual — demais entram com zero em 2026). ISS e cota-parte 2019–2025: DCA Anexo I-C, 78/78 municípios ES. A soma das colunas converge com a parcela municipal do CPT_ES agregado da Tabela 3.
             </p>
             <div class="data-table-wrap">
                 <table class="data-table">
                     <thead>
                         <tr>
                             <th style="text-align:left">Município</th>
-                            <th style="text-align:right">ISS médio<br><small style="font-weight:400;font-size:0.65em">DCA 2022–2025 (R$ M)</small></th>
-                            <th style="text-align:right">Cota-parte ICMS<br><small style="font-weight:400;font-size:0.65em">DCA 2022–2025 (R$ M)</small></th>
+                            <th style="text-align:right">ISS médio<br><small style="font-weight:400;font-size:0.65em">DCA 2019–2025 (R$ M)</small></th>
+                            <th style="text-align:right">Cota-parte ICMS<br><small style="font-weight:400;font-size:0.65em">DCA 2019–2025 (R$ M)</small></th>
                             <th style="text-align:right">Base total média<br><small style="font-weight:400;font-size:0.65em">ISS + cota (R$ M)</small></th>
-                            <th style="text-align:right">CPT contribuição<br><small style="font-weight:400;font-size:0.65em">parcial 4/8 anos</small></th>
+                            <th style="text-align:right">CPT — Versão A<br><small style="font-weight:400;font-size:0.65em">2019–2025 base 2025</small></th>
+                            <th style="text-align:right">CPT — Versão B<br><small style="font-weight:400;font-size:0.65em">2019–2026 base 2026</small></th>
                         </tr>
                     </thead>
                     <tbody id="tbody-munis-es">
-                        <tr><td colspan="5" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                        <tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
                     </tbody>
                     <tfoot id="tfoot-munis-es"></tfoot>
                 </table>
@@ -579,8 +580,24 @@
             }
         }
 
-        const icms_es = data.icms_es || {};
-        const icms_br = data.icms_br || {};
+        // ICMS: DCA para 2019–2025, RREO para 2026
+        const dca_icms_br_raw = data.dca_icms_br      || {};
+        const dca_icms_uf_raw = data.dca_icms_por_uf  || {};
+        const icms_es_rreo    = data.icms_es           || {};
+        const icms_br_rreo    = data.icms_br           || {};
+
+        const icms_es = {};
+        const icms_br = {};
+        for (const ano of ANOS) {
+            const s = String(ano);
+            if (ano <= 2025) {
+                icms_es[ano] = dca_icms_uf_raw[s]?.['ES'] ?? icms_es_rreo[s] ?? icms_es_rreo[ano] ?? null;
+                icms_br[ano] = dca_icms_br_raw[s] ?? icms_br_rreo[s] ?? icms_br_rreo[ano] ?? null;
+            } else {
+                icms_es[ano] = icms_es_rreo[s] ?? icms_es_rreo[ano] ?? null;
+                icms_br[ano] = icms_br_rreo[s] ?? icms_br_rreo[ano] ?? null;
+            }
+        }
 
         // TotalBR por ano — necessário para deflator
         const totalBR = {};
@@ -590,15 +607,28 @@
             totalBR[ano] = (ib != null && is != null) ? ib + is : null;
         }
 
-        // Total B = denominador fixo de 2026
+        // Versão B: denominador = TotalBR_2026
         const totalB = totalBR[2026];
 
-        // Deflator_t = TotalBR_2026 / TotalBR_t  (2026: deflator = 1 por definição)
+        // Versão A: denominador = TotalBR_2025 (sem dados de 2026)
+        const ANOS_A = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
+        const denomA = totalBR[2025];
+
+        // Deflator B: base 2026
         const deflators = {};
         for (const ano of ANOS) {
             if (ano === 2026) { deflators[ano] = 1; continue; }
             deflators[ano] = (totalB != null && totalBR[ano] != null)
                 ? totalB / totalBR[ano]
+                : null;
+        }
+
+        // Deflator A: base 2025
+        const deflators_A = {};
+        for (const ano of ANOS_A) {
+            if (ano === 2025) { deflators_A[ano] = 1; continue; }
+            deflators_A[ano] = (denomA != null && totalBR[ano] != null)
+                ? denomA / totalBR[ano]
                 : null;
         }
 
@@ -730,8 +760,8 @@
         tbody2.innerHTML = rows2.join('');
 
         // ── Tabela 3: CPT por UF ─────────────────────────────────────────────
-        const icms_por_uf = data.icms_por_uf || {};  // {UF: {ano: val}}
-        // ISS por UF híbrido: DCA para 2022–2025, RREO fallback demais anos
+        const icms_por_uf_rreo_tab3 = data.icms_por_uf || {};  // {UF: {ano: val}} RREO
+        // ISS por UF híbrido: DCA para 2019–2025, RREO fallback demais anos
         const dca_iss_por_uf_raw = data.dca_iss_por_uf || {};
         const iss_por_uf_rreo    = data.iss_por_uf     || {};
         const iss_por_uf = {};
@@ -742,8 +772,11 @@
                 : (iss_por_uf_rreo[s] || iss_por_uf_rreo[ano] || {});
         }
 
-        // UFs únicas com pelo menos algum dado
-        const ufs = Object.keys(icms_por_uf).sort();
+        // UFs únicas: união de DCA e RREO
+        const ufs = [...new Set([
+            ...Object.keys(dca_icms_uf_raw['2025'] || {}),
+            ...Object.keys(icms_por_uf_rreo_tab3)
+        ])].sort();
 
         if (ufs.length > 0 && totalB != null) {
             const ufRows = ufs.map(uf => {
@@ -755,7 +788,9 @@
                 for (const ano of ANOS) {
                     const d = deflators[ano];
                     if (d == null) continue;
-                    const icmsVal = icms_por_uf[uf]?.[ano] ?? icms_por_uf[uf]?.[String(ano)] ?? null;
+                    const icmsVal = ano <= 2025
+                        ? (dca_icms_uf_raw[String(ano)]?.[uf] ?? null)
+                        : (icms_por_uf_rreo_tab3[uf]?.[ano] ?? icms_por_uf_rreo_tab3[uf]?.[String(ano)] ?? null);
                     const issVal  = iss_por_uf?.[ano]?.[uf] ?? iss_por_uf?.[String(ano)]?.[uf] ?? null;
                     if (icmsVal != null) { somaEstado += icmsVal * 0.75 * d; nEstado++; }
                     if (issVal  != null) { somaISS    += issVal * d;          nISS++;    }
@@ -797,38 +832,52 @@
             </tr>`;
         }
 
-        // ── Tabela 4: CPT por município ES ───────────────────────────────────
-        const dca_det = data.dca_detalhes || {};
-        const ANOS_DCA = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
+        // ── Tabela 4: CPT por município ES — Versão A e B ────────────────────
+        const dca_det    = data.dca_detalhes || {};
+        const iss_det_26 = data.iss_detalhes?.['2026'] || {};  // RREO por município 2026
+        const ANOS_DCA   = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
 
-        // Consolidar dados por município ES
+        // Consolidar dados por município ES (DCA 2019–2025 + RREO ISS 2026)
         const muniMap = {};
         for (const ano of ANOS_DCA) {
-            const aStr = String(ano);
-            for (const [cod, v] of Object.entries(dca_det[aStr] || {})) {
+            for (const [cod, v] of Object.entries(dca_det[String(ano)] || {})) {
                 if (v.uf !== 'ES') continue;
                 if (!muniMap[cod]) muniMap[cod] = { nome: v.ente, dados: {} };
-                muniMap[cod].dados[ano] = {
-                    iss:  v.valor              || 0,
-                    cota: v.cota_parte_icms    || 0
-                };
+                muniMap[cod].dados[ano] = { iss: v.valor || 0, cota: v.cota_parte_icms || 0 };
             }
+        }
+        // 2026: ISS por município via RREO (cobertura parcial ~18/78)
+        for (const [cod, v] of Object.entries(iss_det_26)) {
+            if (v.uf !== 'ES') continue;
+            if (!muniMap[cod]) muniMap[cod] = { nome: v.ente, dados: {} };
+            muniMap[cod].dados[2026] = { iss: v.valor || 0, cota: 0 };
         }
 
         const muniRows = Object.entries(muniMap).map(([cod, m]) => {
-            let soma = 0;
+            // Versão A: 2019–2025, denominador = denomA
+            let somaA = 0;
+            for (const ano of ANOS_A) {
+                const d_ano = m.dados[ano];
+                const def   = deflators_A[ano];
+                if (d_ano && def != null) somaA += (d_ano.iss + d_ano.cota) * def;
+            }
+            const recMediaA = somaA / ANOS_A.length;
+            const cptA = denomA != null ? recMediaA / denomA * 100 : null;
+
+            // Versão B: 2019–2026, denominador = totalB
+            let somaB = 0;
             for (const ano of ANOS) {
                 const d_ano = m.dados[ano];
                 const def   = deflators[ano];
-                if (d_ano && def != null) soma += (d_ano.iss + d_ano.cota) * def;
+                if (d_ano && def != null) somaB += (d_ano.iss + d_ano.cota) * def;
             }
-            const recMedia = soma / ANOS.length;
-            const cpt      = totalB != null ? recMedia / totalB * 100 : null;
-            const n = Object.keys(m.dados).length;
-            const issMed   = ANOS_DCA.reduce((s, a) => s + (m.dados[a]?.iss  || 0), 0) / n;
-            const cotaMed  = ANOS_DCA.reduce((s, a) => s + (m.dados[a]?.cota || 0), 0) / n;
-            return { cod, nome: m.nome, issMed, cotaMed, baseMed: issMed + cotaMed, cpt };
-        }).sort((a, b) => (b.cpt ?? 0) - (a.cpt ?? 0));
+            const recMediaB = somaB / ANOS.length;
+            const cptB = totalB != null ? recMediaB / totalB * 100 : null;
+
+            const issMed  = ANOS_DCA.reduce((s, a) => s + (m.dados[a]?.iss  || 0), 0) / ANOS_DCA.length;
+            const cotaMed = ANOS_DCA.reduce((s, a) => s + (m.dados[a]?.cota || 0), 0) / ANOS_DCA.length;
+            return { cod, nome: m.nome, issMed, cotaMed, baseMed: issMed + cotaMed, cptA, cptB };
+        }).sort((a, b) => (b.cptA ?? 0) - (a.cptA ?? 0));
 
         if (muniRows.length > 0) {
             const fmtM = v => v != null ? (v/1e6).toFixed(1).replace('.', ',') : '—';
@@ -838,27 +887,31 @@
                     <td style="text-align:right">${fmtM(r.issMed)}</td>
                     <td style="text-align:right">${fmtM(r.cotaMed)}</td>
                     <td style="text-align:right;font-weight:600">${fmtM(r.baseMed)}</td>
-                    <td style="text-align:right" class="td-coeff">${fmtPct(r.cpt, 5)}</td>
+                    <td style="text-align:right" class="td-coeff">${fmtPct(r.cptA, 5)}</td>
+                    <td style="text-align:right" class="td-coeff">${fmtPct(r.cptB, 5)}</td>
                 </tr>`).join('');
-            const somaM = muniRows.reduce((s, r) => s + (r.cpt ?? 0), 0);
+            const somaA = muniRows.reduce((s, r) => s + (r.cptA ?? 0), 0);
+            const somaB = muniRows.reduce((s, r) => s + (r.cptB ?? 0), 0);
             document.getElementById('tfoot-munis-es').innerHTML = `
                 <tr style="font-weight:700;border-top:2px solid var(--border)">
                     <td style="text-align:left">TOTAL (${muniRows.length} municípios)</td>
                     <td></td><td></td><td></td>
-                    <td style="text-align:right;color:var(--accent)">${fmtPct(somaM, 5)}</td>
+                    <td style="text-align:right;color:var(--accent)">${fmtPct(somaA, 5)}</td>
+                    <td style="text-align:right;color:var(--accent)">${fmtPct(somaB, 5)}</td>
                 </tr>`;
         }
 
         // ── Status bar ────────────────────────────────────────────────────────
-        const hasICMS  = icms_es[2023] != null;
-        const hasISSES = (iss_es[2023] ?? null) != null;
-        const hasISSBR = iss_br[2023] != null;
-        const hasDCA   = (dca_iss_br_raw['2019'] ?? null) != null;
+        const hasICMS     = icms_es[2023] != null;
+        const hasISSES    = (iss_es[2023] ?? null) != null;
+        const hasISSBR    = iss_br[2023] != null;
+        const hasDCAiss   = (dca_iss_br_raw['2019'] ?? null) != null;
+        const hasDCAicms  = (dca_icms_br_raw['2019'] ?? null) != null;
         const allOK = hasICMS && hasISSES && hasISSBR;
         let statusMsg = [];
-        statusMsg.push(hasICMS  ? 'ICMS: OK' : 'ICMS: coletando…');
-        statusMsg.push(hasISSES ? `ISS ES: OK (${hasDCA ? 'DCA 2019–2025' : 'RREO'})` : 'ISS ES: coletando…');
-        statusMsg.push(hasISSBR ? `ISS BR: OK (${hasDCA ? 'DCA 2019–2025' : 'RREO'})` : 'ISS BR: aguardando GitHub Action');
+        statusMsg.push(hasICMS  ? `ICMS: OK (${hasDCAicms ? 'DCA 2019–2025' : 'RREO'})` : 'ICMS: coletando…');
+        statusMsg.push(hasISSES ? `ISS ES: OK (${hasDCAiss ? 'DCA 2019–2025' : 'RREO'})` : 'ISS ES: coletando…');
+        statusMsg.push(hasISSBR ? `ISS BR: OK (${hasDCAiss ? 'DCA 2019–2025' : 'RREO'})` : 'ISS BR: aguardando GitHub Action');
 
         document.getElementById('status-nominal').innerHTML =
             `<span class="status-dot ${allOK ? '' : 'pending'}"></span> ${statusMsg.join(' · ')}`;
