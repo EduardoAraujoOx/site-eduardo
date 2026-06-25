@@ -793,14 +793,24 @@
         }
 
         // ── Tabela 4: CPT por município ES (DCA 2019–2025) ───────────────────
+        // A cota-parte de cada município é proporcionalizada pelo total real do DCA,
+        // mas reescalada para ICMS_ES × 0.25 (fórmula art. 115, III, "b").
+        // Isso garante que Σ CPT_muni = CPT_ES_munis da Tabela 3.
         const dca_det = data.dca_detalhes || {};
+        const dca_cota_por_uf_raw = data.dca_cota_icms_por_uf || {};
+
+        // Soma total das cotas DCA por ano (base para reescalonamento)
+        const cotaTotalDCA = {};
+        for (const ano of ANOS) {
+            cotaTotalDCA[ano] = (dca_cota_por_uf_raw[String(ano)] || {})['ES'] ?? null;
+        }
 
         const muniMap = {};
         for (const ano of ANOS) {
             for (const [cod, v] of Object.entries(dca_det[String(ano)] || {})) {
                 if (v.uf !== 'ES') continue;
                 if (!muniMap[cod]) muniMap[cod] = { nome: v.ente, dados: {} };
-                muniMap[cod].dados[ano] = { iss: v.valor || 0, cota: v.cota_parte_icms || 0 };
+                muniMap[cod].dados[ano] = { iss: v.valor || 0, cotaDCA: v.cota_parte_icms || 0 };
             }
         }
 
@@ -809,7 +819,15 @@
             for (const ano of ANOS) {
                 const d_ano = m.dados[ano];
                 const def   = deflators[ano];
-                if (d_ano && def != null) soma += (d_ano.iss + d_ano.cota) * def;
+                const icms  = icms_es[ano];
+                if (!d_ano || def == null) continue;
+                const cotaTeo = icms != null ? icms * 0.25 : null;
+                const cotaTotal = cotaTotalDCA[ano];
+                // Cota do município: proporcional ao DCA, mas reescalada para ICMS×0.25
+                const cotaMuni = (cotaTeo != null && cotaTotal != null && cotaTotal > 0)
+                    ? cotaTeo * (d_ano.cotaDCA / cotaTotal)
+                    : d_ano.cotaDCA;  // fallback: DCA direto
+                soma += (d_ano.iss + cotaMuni) * def;
             }
             const cpt = totalB != null ? (soma / ANOS.length) / totalB * 100 : null;
             return { cod, nome: m.nome, cpt };
