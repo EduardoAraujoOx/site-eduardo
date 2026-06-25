@@ -301,7 +301,7 @@
                 de Referência do ES — média dos valores anuais de ICMS (deduzida a cota-parte
                 municipal de 25%) e ISS, atualizados para a base de 2026 — e a soma das Receitas
                 Médias de Referência de todos os entes da federação. Fonte: SICONFI/STN —
-                DCA Anexo I-C (ISS 2022–2025) e RREO Anexo 3 (ICMS e ISS 2019–2021/2026). Premissas explícitas, fontes primárias e metodologia replicável.
+                DCA Anexo I-C (ISS 2019–2025) e RREO Anexo 3 (ICMS e ISS 2026). Premissas explícitas, fontes primárias e metodologia replicável.
             </p>
         </section>
 
@@ -342,7 +342,7 @@
                 (2019–2026): <strong>(i)</strong> ICMS bruto arrecadado pelo ES, extraído do RREO Anexo 3, 6º bimestre
                 (coluna "Total dos Últimos 12 Meses"); <strong>(ii)</strong> dedução dos 25% constitucionalmente
                 destinados aos municípios (art. 158, IV, "a", CF); <strong>(iii)</strong> ISS bruto dos municípios
-                capixabas (DCA Anexo I-C para 2022–2025 ⁵; RREO Anexo 3 para 2019–2021/2026),
+                capixabas (DCA Anexo I-C para 2019–2025 ⁵; RREO Anexo 3 para 2026),
                 acrescido da cota-parte ICMS recebida; <strong>(iv)</strong> índice de atualização
                 = Total_BR_2026 / Total_BR_t, único e idêntico para todos os entes. A Receita Média
                 de Referência é a média aritmética simples dos 8 valores anuais corrigidos.
@@ -473,9 +473,9 @@
             </div>
 
             <!-- Tabela 4: CPT por município ES -->
-            <span class="section-label" style="margin-top:2rem">Tabela 4 — Contribuição ao CPT_ES por município capixaba (DCA 2022–2025)</span>
+            <span class="section-label" style="margin-top:2rem">Tabela 4 — Contribuição ao CPT_ES por município capixaba (DCA 2019–2025)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
-                Desagregação da parcela municipal do CPT_ES por município. Para cada município: base anual = ISS bruto + cota-parte ICMS recebida (art. 115, III), corrigida pelo Índice_t e acumulada na Receita Média de Referência do período completo (8 anos). Os valores de ISS e cota-parte provêm do DCA Anexo I-C para 2022–2025 (4 anos disponíveis); para 2019–2021, a DCA não está indexada na API do SICONFI, de modo que esses anos entram com valor zero no cômputo — o CPT por município está portanto <em>subestimado</em> em relação ao CPT agregado, que usa RREO para 2019–2021. A soma das contribuições municipais indica a participação interna do ES.
+                Desagregação da parcela municipal do CPT_ES por município. Para cada município: base anual = ISS bruto + cota-parte ICMS recebida (art. 115, III), corrigida pelo Índice_t e acumulada na Receita Média de Referência do período completo. Os valores de ISS e cota-parte provêm do DCA Anexo I-C para todos os 7 anos do período base (2019–2025), com cobertura de 78/78 municípios do ES. A soma das contribuições municipais converge com a parcela municipal do CPT_ES agregado.
             </p>
             <div class="data-table-wrap">
                 <table class="data-table">
@@ -499,7 +499,7 @@
             <div class="metodologia">
                 <strong>Metodologia — LC 227/2026, arts. 114, 115 e 129</strong>
                 <ul>
-                    <li><strong>Fonte dos dados:</strong> SICONFI/STN. Para o ISS municipal, duas fontes conforme disponibilidade: <em>(a) DCA — Demonstrativo das Contas Anuais, Anexo I-C</em> para 2022–2025 (cobertura de ~5.200 municípios; código <code>RO1.1.1.4.51.1.0</code>, coluna "Receitas Brutas Realizadas" — ISS bruto incluindo Simples Nacional e dívida ativa, alinhado ao art. 115, §1º da LC 227/2026); <em>(b) RREO Anexo 3</em> para 2019–2021 e 2026, pois a DCA não está disponível na API para esses períodos. Para o ICMS estadual: RREO Anexo 3, 6º bimestre (coluna "Total dos Últimos 12 Meses"), exceto 2026 (2º bimestre, "Previsão Atualizada do Exercício").</li>
+                    <li><strong>Fonte dos dados:</strong> SICONFI/STN. Para o ISS municipal: <em>DCA — Demonstrativo das Contas Anuais, Anexo I-C</em> para 2019–2025 (cobertura de ~5.200 municípios/ano nacionalmente; 78/78 municípios do ES; código <code>RO1.1.1.4.51.1.0</code> para 2022–2025 e <code>RO1.1.1.8.02.3.0</code> para 2019–2021 conforme revisão PCASP; coluna "Receitas Brutas Realizadas" — ISS bruto incluindo Simples Nacional e dívida ativa, alinhado ao art. 115, §1º da LC 227/2026); para 2026: <em>RREO Anexo 3</em> (DCA indisponível). Para o ICMS estadual: RREO Anexo 3, 6º bimestre (coluna "Total dos Últimos 12 Meses"), exceto 2026 (2º bimestre, "Previsão Atualizada do Exercício").</li>
                     <li><strong>Passo 1 — Índice de atualização:</strong> para cada ano t (2019–2026), somar o ICMS bruto dos 26 estados e do DF mais o ISS bruto de todos os municípios do Brasil. Esse agregado é o Total_BR_t. O índice de atualização é Índice_t = Total_BR_2026 / Total_BR_t. O índice de 2026 é 1,0000 por definição. Esse índice é único e idêntico para todos os entes — estados e municípios usam o mesmo fator de correção em cada ano.</li>
                     <li><strong>Passo 2 — Receita Média de Referência do estado ES:</strong> para cada ano t, tomar o ICMS bruto do ES, multiplicar por 0,75 para deduzir a cota-parte municipal de 25% (art. 115, I, "a", e art. 158, IV, "a", CF), e multiplicar pelo Índice_t. Isso produz o valor corrigido na base de 2026. A Receita Média de Referência do estado ES é a média aritmética simples dos 8 valores corrigidos.</li>
                     <li><strong>Passo 3 — Receita Média de Referência dos municípios ES:</strong> para cada município capixaba, tomar o ISS bruto de cada ano, acrescentar a cota-parte do ICMS recebida do estado (art. 115, III, "b"), e multiplicar pelo Índice_t. A Receita Média de Referência do conjunto dos municípios ES é a média aritmética simples dos 8 valores corrigidos.</li>
@@ -515,7 +515,7 @@
                 <p>² SC 2025: o 6º bimestre não estava disponível no SICONFI na data de coleta; foi utilizado o 5º bimestre como aproximação. O valor foi incorporado ao Total_BR_2025 para evitar distorção no índice de atualização desse ano.</p>
                 <p>³ <strong>Referência de destino:</strong> Gobetti e Monteiro (2023) estimam a participação do ES pelo critério de destino (IBS pleno, regime permanente) em <strong>2,4%</strong>. A diferença entre o CPT_ES calculado (critério histórico de origem) e esse valor de destino representa o núcleo do impacto fiscal estrutural da transição para o ES ao longo dos 50 anos.</p>
                 <p>⁴ Possíveis acréscimos ao numerador (art. 115, I, "b"): FUNDAP-ES (fundo estadual vinculado a diferimento de ICMS nas exportações) e adicional do Fundo de Combate à Pobreza (art. 82 ADCT), conforme art. 129, §1º, I da LC 227/2026 — não incluídos nesta versão.</p>
-                <p>⁵ <strong>Fonte do ISS municipal (2022–2025):</strong> DCA — Demonstrativo das Contas Anuais, Anexo I-C (SICONFI/STN). Cobertura nacional: ~5.200 municípios por ano (~93% do total). O DCA reporta a arrecadação bruta total ("Receitas Brutas Realizadas"), alinhada ao art. 115, §1º da LC 227/2026 que exige o "montante total da arrecadação", incluindo Simples Nacional (LC 123/2006) e dívida ativa. Para 2019–2021, o DCA não está indexado na API do SICONFI; utiliza-se RREO Anexo 3 como fallback (diferença observada em relação ao DCA: &lt;0,5%).</p>
+                <p>⁵ <strong>Fonte do ISS municipal (2019–2025):</strong> DCA — Demonstrativo das Contas Anuais, Anexo I-C (SICONFI/STN). Cobertura nacional: ~5.200 municípios por ano (~93% do total); ES: 78/78 municípios em todos os anos. O DCA reporta a arrecadação bruta total ("Receitas Brutas Realizadas"), alinhada ao art. 115, §1º da LC 227/2026 que exige o "montante total da arrecadação", incluindo Simples Nacional (LC 123/2006) e dívida ativa. Atenção ao código de conta: revisão do PCASP em 2022 alterou o código do ISS de <code>RO1.1.1.8.02.3.0</code> (2019–2021) para <code>RO1.1.1.4.51.1.0</code> (2022–2025). Para 2026: RREO Anexo 3 (DCA indisponível).</p>
                 <p>Fonte primária: <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">SICONFI — API Data Lake STN</a>. Coleta via GitHub Actions (27 jobs paralelos por estado). Scripts disponíveis no repositório.</p>
             </div>
         </section>
@@ -559,8 +559,8 @@
             return;
         }
 
-        // ISS híbrido: DCA (ISS bruto, alinhado com LC 227 §1º) para 2022–2025;
-        // RREO Anexo 3 para 2019–2021 (DCA indisponível na API para esse período) e 2026
+        // ISS: DCA (ISS bruto, alinhado com LC 227 §1º) para 2019–2025;
+        // RREO Anexo 3 somente para 2026 (DCA ainda não disponível)
         const iss_es_rreo = data.iss_es_from_munis || data.iss_es || {};
         const iss_br_rreo = data.iss_br || {};
         const dca_iss_es_raw = data.dca_iss_es || {};
@@ -570,7 +570,7 @@
         const iss_br = {};
         for (const ano of ANOS) {
             const s = String(ano);
-            if (ano >= 2022 && ano <= 2025) {
+            if (ano <= 2025) {
                 iss_es[ano] = dca_iss_es_raw[s] ?? iss_es_rreo[ano] ?? iss_es_rreo[s] ?? null;
                 iss_br[ano] = dca_iss_br_raw[s] ?? iss_br_rreo[ano] ?? iss_br_rreo[s] ?? null;
             } else {
@@ -737,7 +737,7 @@
         const iss_por_uf = {};
         for (const ano of ANOS) {
             const s = String(ano);
-            iss_por_uf[s] = (ano >= 2022 && ano <= 2025 && dca_iss_por_uf_raw[s])
+            iss_por_uf[s] = (ano <= 2025 && dca_iss_por_uf_raw[s])
                 ? dca_iss_por_uf_raw[s]
                 : (iss_por_uf_rreo[s] || iss_por_uf_rreo[ano] || {});
         }
@@ -799,7 +799,7 @@
 
         // ── Tabela 4: CPT por município ES ───────────────────────────────────
         const dca_det = data.dca_detalhes || {};
-        const ANOS_DCA = [2022, 2023, 2024, 2025];
+        const ANOS_DCA = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
 
         // Consolidar dados por município ES
         const muniMap = {};
@@ -853,12 +853,12 @@
         const hasICMS  = icms_es[2023] != null;
         const hasISSES = (iss_es[2023] ?? null) != null;
         const hasISSBR = iss_br[2023] != null;
-        const hasDCA   = (dca_iss_br_raw['2023'] ?? null) != null;
+        const hasDCA   = (dca_iss_br_raw['2019'] ?? null) != null;
         const allOK = hasICMS && hasISSES && hasISSBR;
         let statusMsg = [];
         statusMsg.push(hasICMS  ? 'ICMS: OK' : 'ICMS: coletando…');
-        statusMsg.push(hasISSES ? `ISS ES: OK (${hasDCA ? 'DCA 2022–2025' : 'RREO'})` : 'ISS ES: coletando…');
-        statusMsg.push(hasISSBR ? `ISS BR: OK (${hasDCA ? 'DCA 2022–2025' : 'RREO'})` : 'ISS BR: aguardando GitHub Action');
+        statusMsg.push(hasISSES ? `ISS ES: OK (${hasDCA ? 'DCA 2019–2025' : 'RREO'})` : 'ISS ES: coletando…');
+        statusMsg.push(hasISSBR ? `ISS BR: OK (${hasDCA ? 'DCA 2019–2025' : 'RREO'})` : 'ISS BR: aguardando GitHub Action');
 
         document.getElementById('status-nominal').innerHTML =
             `<span class="status-dot ${allOK ? '' : 'pending'}"></span> ${statusMsg.join(' · ')}`;
