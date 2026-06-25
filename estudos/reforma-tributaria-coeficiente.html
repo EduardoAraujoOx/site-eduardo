@@ -475,18 +475,20 @@
             <!-- Tabela 4: CPT por município ES -->
             <span class="section-label" style="margin-top:2rem">Tabela 4 — Coeficiente de Participação na Transição por município capixaba (DCA 2019–2025)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
-                Coeficiente individual de cada município capixaba (art. 115, III). Base = ISS bruto + cota-parte ICMS, corrigida pelo Índice_t, média 2019–2025. Fonte: DCA Anexo I-C, 78/78 municípios ES. A soma dos coeficientes é igual à parcela municipal do CPT_ES da Tabela 3.
+                Coeficiente individual de cada município capixaba (art. 115, III). Base = ISS bruto + cota-parte ICMS (25% do ICMS_ES bruto, conforme art. 115, III, "b" c/c art. 158, IV, CF — distribuído proporcionalmente ao rateio real do DCA entre os municípios), corrigida pelo Índice_t, média 2019–2025. A soma dos coeficientes é igual à parcela municipal do CPT_ES da Tabela 3. ⁶
             </p>
             <div class="data-table-wrap">
-                <table class="data-table">
+                <table class="data-table" id="table-munis-es">
                     <thead>
                         <tr>
                             <th style="text-align:left">Município</th>
-                            <th style="text-align:right">CPT individual<br><small style="font-weight:400;font-size:0.65em">art. 115, III — base 2025</small></th>
+                            <th style="text-align:right">CPT<br><small style="font-weight:400;font-size:0.65em">art. 115, III</small></th>
+                            <th style="text-align:left;border-left:1px solid var(--border)">Município</th>
+                            <th style="text-align:right">CPT<br><small style="font-weight:400;font-size:0.65em">art. 115, III</small></th>
                         </tr>
                     </thead>
                     <tbody id="tbody-munis-es">
-                        <tr><td colspan="2" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                        <tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
                     </tbody>
                     <tfoot id="tfoot-munis-es"></tfoot>
                 </table>
@@ -512,6 +514,7 @@
                 <p>³ <strong>Referência de destino:</strong> Gobetti e Monteiro (2023) estimam a participação do ES pelo critério de destino (IBS pleno, regime permanente) em <strong>2,4%</strong>. A diferença entre o CPT_ES calculado (critério histórico de origem) e esse valor de destino representa o núcleo do impacto fiscal estrutural da transição para o ES ao longo dos 50 anos.</p>
                 <p>⁴ Possíveis acréscimos ao numerador (art. 115, I, "b"): FUNDAP-ES (fundo estadual vinculado a diferimento de ICMS nas exportações) e adicional do Fundo de Combate à Pobreza (art. 82 ADCT), conforme art. 129, §1º, I da LC 227/2026 — não incluídos nesta versão.</p>
                 <p>⁵ <strong>Fonte do ISS municipal (2019–2025):</strong> DCA — Demonstrativo das Contas Anuais, Anexo I-C (SICONFI/STN). Cobertura nacional: ~5.200 municípios por ano (~93% do total); ES: 78/78 municípios em todos os anos. O DCA reporta a arrecadação bruta total ("Receitas Brutas Realizadas"), alinhada ao art. 115, §1º da LC 227/2026 que exige o "montante total da arrecadação", incluindo Simples Nacional (LC 123/2006) e dívida ativa. Revisão do PCASP em 2022 alterou o código do ISS de <code>RO1.1.1.8.02.3.0</code> (2019–2021) para <code>RO1.1.1.4.51.1.0</code> (2022–2025).</p>
+                <p>⁶ <strong>Cota-parte ICMS nos coeficientes municipais:</strong> o art. 115, III, "b" da LC 227/2026 remete ao percentual constitucionalmente destinado aos municípios (art. 158, IV, CF = 25% do ICMS bruto estadual). Por isso, adotamos <em>ICMS_ES × 25%</em> como base de cálculo, não o valor efetivamente repassado. A <code>cota_parte_icms</code> registrada pelos municípios no DCA tende a ser cerca de 11% menor que o montante constitucional porque: (i) o FUNDAP-ES (fundo de incentivo à exportação) retém parte do ICMS antes do repasse; e (ii) há erros de escrituração nos registros municipais. A distribuição do total <em>ICMS_ES × 25%</em> entre os municípios é feita proporcionalmente ao rateio real constante do DCA, preservando a participação relativa de cada ente. Auditor da SEFAZ-BA chegou ao mesmo ajuste metodológico de forma independente.</p>
                 <p>Fonte primária: <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">SICONFI — API Data Lake STN</a>. Coleta via GitHub Actions (27 jobs paralelos por estado). Scripts disponíveis no repositório.</p>
             </div>
         </section>
@@ -834,16 +837,28 @@
         }).sort((a, b) => (b.cpt ?? 0) - (a.cpt ?? 0));
 
         if (muniRows.length > 0) {
-            document.getElementById('tbody-munis-es').innerHTML = muniRows.map((r, i) => `
-                <tr>
-                    <td style="text-align:left">${i + 1}. ${r.nome}</td>
-                    <td style="text-align:right" class="td-coeff">${fmtPct(r.cpt, 5)}</td>
-                </tr>`).join('');
+            // Renderiza em 4 colunas (2 pares Município|CPT por linha)
+            const half = Math.ceil(muniRows.length / 2);
+            const leftCol  = muniRows.slice(0, half);
+            const rightCol = muniRows.slice(half);
+            const rows4 = leftCol.map((l, i) => {
+                const r = rightCol[i];
+                const rCells = r
+                    ? `<td style="text-align:left;border-left:1px solid var(--border)">${half + i + 1}. ${r.nome}</td>
+                       <td style="text-align:right" class="td-coeff">${fmtPct(r.cpt, 5)}</td>`
+                    : `<td style="border-left:1px solid var(--border)"></td><td></td>`;
+                return `<tr>
+                    <td style="text-align:left">${i + 1}. ${l.nome}</td>
+                    <td style="text-align:right" class="td-coeff">${fmtPct(l.cpt, 5)}</td>
+                    ${rCells}
+                </tr>`;
+            });
+            document.getElementById('tbody-munis-es').innerHTML = rows4.join('');
             const somaM = muniRows.reduce((s, r) => s + (r.cpt ?? 0), 0);
             document.getElementById('tfoot-munis-es').innerHTML = `
                 <tr style="font-weight:700;border-top:2px solid var(--border)">
-                    <td style="text-align:left">TOTAL (${muniRows.length} municípios)</td>
-                    <td style="text-align:right;color:var(--accent)">${fmtPct(somaM, 5)}</td>
+                    <td colspan="2" style="text-align:left">TOTAL (${muniRows.length} municípios)</td>
+                    <td colspan="2" style="text-align:right;color:var(--accent)">${fmtPct(somaM, 5)}</td>
                 </tr>`;
         }
 
