@@ -438,9 +438,9 @@
             <p class="lead">
                 Estimativa da receita líquida de ICMS e IBS do Espírito Santo entre 2029 e 2033 —
                 o quinquênio inicial de vigência efetiva do IBS estadual. Três cenários para o
-                efeito da mudança de critério origem→destino, comparados a um contrafactual
-                de arrecadação de ICMS sem reforma tributária. Metodologia adaptada da nota técnica
-                ASSEF/SEFAZ-PI (2026) para o contexto do ES. Fonte de dados: SICONFI/STN — DCA 2025.
+                efeito da mudança de critério origem→destino, comparados a um contrafactual de
+                arrecadação de ICMS projetado com crescimento nominal (PIB + IPCA, referência Focus/BCB).
+                Metodologia adaptada da nota técnica ASSEF/SEFAZ-PI (2026). Fonte: SICONFI/STN — DCA 2025.
             </p>
         </section>
 
@@ -498,6 +498,41 @@
                 </div>
             </div>
 
+            <!-- Parameters table -->
+            <span class="section-label" style="margin-top:1.25rem">Tabela de Parâmetros — premissas e constantes do modelo</span>
+            <div class="data-table-wrap" style="margin:0 0 1.5rem">
+                <table class="data-table" style="min-width:560px">
+                    <thead>
+                        <tr>
+                            <th class="th-left" style="width:38%">Parâmetro</th>
+                            <th class="th-left" style="width:18%">Valor</th>
+                            <th class="th-left">Fonte / Base legal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="3" class="td-label" style="font-weight:700;color:var(--text-primary);padding-top:0.6rem">Dado base</td></tr>
+                        <tr><td class="td-label">ICMS bruto ES 2025</td><td id="p-icms" style="font-weight:600;color:var(--accent)">—</td><td class="td-formula">SICONFI/STN — DCA 2025 (PCASP RO1.1.1.4.50)</td></tr>
+                        <tr><td class="td-label">Taxa crescimento nominal (g)</td><td id="p-g" style="font-weight:600;color:var(--accent)">8,0% a.a.</td><td class="td-formula">Configurável — referência: Boletim Focus/BCB (mediana PIB nominal + IPCA)</td></tr>
+                        <tr><td colspan="3" class="td-label" style="font-weight:700;color:var(--text-primary);padding-top:0.6rem">Efeito destino — parcela IBS direto (Dest%)</td></tr>
+                        <tr><td class="td-label">Dest% — Cenário pessimista</td><td class="td-pess">−30%</td><td class="td-formula">Gobetti e Monteiro (2023) — estados produtores exportadores</td></tr>
+                        <tr><td class="td-label">Dest% — Cenário intermediário</td><td class="td-inter">−15%</td><td class="td-formula">Estimativa intermediária</td></tr>
+                        <tr><td class="td-label">Dest% — Cenário neutro</td><td class="td-otim">0%</td><td class="td-formula">Ausência de impacto diferencial origem→destino</td></tr>
+                        <tr><td colspan="3" class="td-label" style="font-weight:700;color:var(--text-primary);padding-top:0.6rem">Mecanismo de transição e deduções</td></tr>
+                        <tr><td class="td-label">PERDA_TRANS_REL — perda relativa IBSt</td><td style="font-weight:600;color:#b43c3c">−5,00%</td><td class="td-formula">Estudo 02 — CPT histórico 1,5589% vs índice ES 2025 1,6405%</td></tr>
+                        <tr><td class="td-label">CG% — custo compras governamentais</td><td>+0,35%</td><td class="td-formula">Nota técnica ASSEF/SEFAZ-PI (2026)</td></tr>
+                        <tr><td class="td-label">Seguro Receita — sobre IBSd</td><td>5%</td><td class="td-formula">Art. 132 ADCT</td></tr>
+                        <tr><td class="td-label">Cota-parte municipal</td><td>25%</td><td class="td-formula">Art. 158 IV CF/1988</td></tr>
+                        <tr><td class="td-label">FUNDEB</td><td>20%</td><td class="td-formula">EC 108/2020</td></tr>
+                        <tr><td colspan="3" class="td-label" style="font-weight:700;color:var(--text-primary);padding-top:0.6rem">CGIBS — custeio do comitê gestor (art. 51 LC 227/2026)</td></tr>
+                        <tr><td class="td-label">CGIBS 2029</td><td>2,00%</td><td class="td-formula">Art. 51 II a LC 227/2026</td></tr>
+                        <tr><td class="td-label">CGIBS 2030</td><td>1,00%</td><td class="td-formula">Art. 51 II b LC 227/2026</td></tr>
+                        <tr><td class="td-label">CGIBS 2031</td><td>0,67%</td><td class="td-formula">Art. 51 II c LC 227/2026</td></tr>
+                        <tr><td class="td-label">CGIBS 2032</td><td>0,50%</td><td class="td-formula">Art. 51 II d LC 227/2026</td></tr>
+                        <tr><td class="td-label">CGIBS 2033 <span class="tag-est">est.</span></td><td>0,50%</td><td class="td-formula">Estimativa — não previsto explicitamente no art. 51</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
             <!-- Status -->
             <div id="status-bar" class="status-bar">
                 <span class="status-dot pending"></span>
@@ -534,8 +569,9 @@
             <span class="section-label" style="margin-top:1rem">Tabela 1 — Memória de cálculo 2029 (três cenários)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
                 Reproduz a estrutura da nota técnica ASSEF/SEFAZ-PI adaptada para o Espírito Santo.
-                Base: ICMS bruto ES 2025 (DCA/SICONFI), projetado para 2029 pela taxa de crescimento nominal configurada acima.
-                FECOP_ES = Fundo Estadual de Equilíbrio Fiscal / Fundo de Combate à Pobreza (art. 82 ADCT, adicional de ICMS).
+                Base: ICMS bruto ES 2025 (DCA/SICONFI), projetado para 2029 pela taxa de crescimento configurada.
+                O ICMS bruto do DCA é a receita bruta arrecadada pelo estado, antes de qualquer dedução; as deduções
+                (cota-parte municipal, FUNDEB) são aplicadas explicitamente nas fórmulas abaixo.
             </p>
             <div class="data-table-wrap">
                 <table class="data-table" id="table-calc" style="min-width:720px">
@@ -590,8 +626,8 @@
 
             <!-- Chart 1: Receita total por ano -->
             <div class="chart-wrap">
-                <p class="chart-title">Gráfico 1 — Receita líquida ES (R$ bi): ICMS+IBS reforma vs. contrafactual ICMS</p>
-                <canvas id="chart-receita" style="max-height:340px"></canvas>
+                <p class="chart-title">Gráfico 1 — "Boca de jacaré": divergência entre contrafactual e projeções com reforma (R$ bi) · área = impacto fiscal máximo (cenário pessimista)</p>
+                <canvas id="chart-receita" style="max-height:360px"></canvas>
             </div>
 
             <!-- Chart 2: Δ% por ano por cenário -->
@@ -675,17 +711,17 @@
             <div class="metodologia">
                 <strong>Metodologia — adaptada da Nota Técnica ASSEF/SEFAZ-PI (2026)</strong>
                 <ul>
-                    <li><strong>Dados base (ICMS e FECOP_ES):</strong> SICONFI/STN — DCA Demonstrativo das Contas Anuais, Anexo I-C, ano 2025 (último exercício completo disponível). ICMS_ES_2025 = valor arrecadado pelo estado do ES (código PCASP <code>RO1.1.1.4.50.1.0</code>). FECOP_ES_2025 = adicional ICMS destinado ao Fundo de Combate à Pobreza do ES (código <code>RO1.1.1.4.50.2.0</code>).</li>
-                    <li><strong>Projeção para 2029:</strong> ICMS_proj(Y) = ICMS_2025 × (1 + g)^(Y−2025), onde <em>g</em> é a taxa de crescimento nominal anual configurável acima. Mesma taxa para FECOP_ES. O contrafactual representa a arrecadação sem reforma tributária — crescimento normal por PIB + IPCA.</li>
-                    <li><strong>ICMS no período de transição (ICMS'):</strong> aplica o fator de redução de alíquota (art. 128 ADCT) e deduz cota-parte municipal (25%, art. 158 IV CF) e FUNDEB (20%). Fórmula: ICMS' = α × (ICMS × 0,75 + FECOP) × 0,8, onde α é o fator ADCT do ano.</li>
+                    <li><strong>Dado base (ICMS_ES 2025):</strong> SICONFI/STN — DCA Demonstrativo das Contas Anuais, Anexo I-C, ano 2025 (último exercício completo disponível). ICMS_ES_2025 = receita bruta arrecadada pelo estado do ES (código PCASP <code>RO1.1.1.4.50.1.0</code>). O DCA registra a receita bruta antes de qualquer dedução; cota-parte municipal e FUNDEB aparecem como transferências na saída, sendo aplicadas explicitamente nas fórmulas.</li>
+                    <li><strong>Projeção do contrafactual:</strong> ICMS_cnt(Y) = ICMS_2025 × (1 + g)^(Y−2025), onde <em>g</em> é a taxa de crescimento nominal configurável acima (referência: mediana das projeções de PIB real + IPCA do Boletim Focus/BCB). O contrafactual representa o que o estado arrecadaria sem a reforma tributária — trajetória de referência para mensurar o impacto fiscal.</li>
+                    <li><strong>ICMS no período de transição (ICMS'):</strong> aplica o fator de redução de alíquota do art. 128 ADCT (α) e deduz cota-parte municipal (25%, art. 158 IV CF) e FUNDEB (20%). Fórmula: ICMS' = ICMS × α × 0,75 × 0,80.</li>
                     <li>
                         <strong>IBS direto (IBSd):</strong> parcela paga de forma direta ao ente, calculada sobre a base ICMS+FECOP projetada sem reforma, multiplicada pelo percentual IBS direto do ano e ajustada pelo efeito destino (Dest%) e custo compras governamentais (CG%):
-                        <div class="formula-block">IBSd = (ICMS + FECOP) × ibs_direto% × (1 + Dest% + CG%)</div>
+                        <div class="formula-block">IBSd = ICMS × ibs_direto% × (1 + Dest% + CG%)</div>
                         O Dest% é negativo para o ES porque o estado tem saldo exportador positivo: com a mudança de critério origem→destino, o ES tende a perder base tributária no IBS direto. O cenário pessimista (−30%) utiliza a estimativa de Gobetti e Monteiro (2023). ¹
                     </li>
                     <li>
                         <strong>IBS transição (IBSt):</strong> parcela redistribuída pelo mecanismo de transição do art. 131 ADCT com base no CPT_ES histórico. O ES recebe de volta pelo mecanismo um percentual 5% menor do que o seu índice pontual de 2025, porque o CPT histórico (média 2019–2025) é inferior ao índice 2025 (1,5589% vs 1,6405%). Esse diferencial é aplicado multiplicativamente ao percentual de IBSt de cada ano:
-                        <div class="formula-block">IBSt = (ICMS + FECOP) × ibs_trans% × (1 + PERDA_TRANS_REL)</div>
+                        <div class="formula-block">IBSt = ICMS × ibs_trans% × (1 + PERDA_TRANS_REL)</div>
                         com <strong>PERDA_TRANS_REL = −5%</strong> (derivado da comparação CPT_ES histórico vs índice 2025 — ver <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a> e o card de parâmetros acima). ³
                     </li>
                     <li>
@@ -699,7 +735,7 @@
                         <strong>Receita líquida total e comparação:</strong>
                         <div class="formula-block">
                             RL = ICMS' + IBS'
-                            ICMS'_cnt = (ICMS × 0,75 + FECOP) × 0,8  [contrafactual — sem fator α]
+                            ICMS'_cnt = ICMS × 0,75 × 0,80  [contrafactual — ICMS bruto sem reforma, após deduções]
                             Δ = RL − ICMS'_cnt
                             Δ% = Δ / ICMS'_cnt
                         </div>
@@ -768,24 +804,22 @@
     }
 
     // ─── Core projection engine ──────────────────────────────────────────────────
-    function calcYear(icms2025, fecop2025, gRate, destPct, ano) {
+    function calcYear(icms2025, gRate, destPct, ano) {
         const a = ADCT[ano];
         const y = ano - 2025;
         const icms = icms2025 * Math.pow(1 + gRate, y);
-        const fecop = fecop2025 * Math.pow(1 + gRate, y);
-        const base = icms + fecop;   // base bruta total (ICMS + FECOP projetado)
+        const base = icms;  // DCA bruto (FECOP excluído — linha separada no DCA, valor imaterial)
 
         // ── Contrafactual (sem reforma) ────────────────────────────────────────
-        const icmsCntEstadual = (icms * (1 - COTA_MUN) + fecop);
-        const icmsCntLiq      = icmsCntEstadual * (1 - FUNDEB_PCT);
+        const icmsCntEstadual = icms * (1 - COTA_MUN);     // ICMS × 75%
+        const icmsCntLiq      = icmsCntEstadual * (1 - FUNDEB_PCT);  // × 80%
 
         // ── ICMS com reforma ──────────────────────────────────────────────────
-        const icmsBrutoAdj     = icms * a.alpha;
-        const icmsCotaMun      = icmsBrutoAdj * COTA_MUN;
-        const fecopAdj         = fecop * a.alpha;
-        const icmsEstadualAdj  = icmsBrutoAdj - icmsCotaMun + fecopAdj;
-        const icmsFundeb       = icmsEstadualAdj * FUNDEB_PCT;
-        const icmsLiq          = icmsEstadualAdj - icmsFundeb;
+        const icmsBrutoAdj    = icms * a.alpha;
+        const icmsCotaMun     = icmsBrutoAdj * COTA_MUN;
+        const icmsEstadualAdj = icmsBrutoAdj - icmsCotaMun;
+        const icmsFundeb      = icmsEstadualAdj * FUNDEB_PCT;
+        const icmsLiq         = icmsEstadualAdj - icmsFundeb;
 
         // ── IBS direto ────────────────────────────────────────────────────────
         const ibsDirBruto    = base * a.ibsDiretoPct * (1 + destPct + CG_PCT);
@@ -810,9 +844,9 @@
         const deltaPct = delta / icmsCntLiq;
 
         return {
-            icms, fecop, base,
+            icms, base,
             icmsCntEstadual, icmsCntLiq,
-            icmsBrutoAdj, icmsCotaMun, fecopAdj, icmsEstadualAdj, icmsFundeb, icmsLiq,
+            icmsBrutoAdj, icmsCotaMun, icmsEstadualAdj, icmsFundeb, icmsLiq,
             ibsDirBruto, ibsSeguro, ibsTransBruto, ibsBruto,
             ibsCotaMun, ibsEstadual, ibsFundeb, ibsCgibs, ibsLiq,
             totalLiq, delta, deltaPct,
@@ -825,13 +859,13 @@
     let chartDelta   = null;
 
     // ─── Render ──────────────────────────────────────────────────────────────────
-    function render(icms2025, fecop2025, gRate) {
+    function render(icms2025, gRate) {
         // Calc all scenarios × all years
         const results = {};
         for (const sc of SCENARIOS) {
             results[sc.id] = {};
             for (const ano of ANOS) {
-                results[sc.id][ano] = calcYear(icms2025, fecop2025, gRate, sc.dest, ano);
+                results[sc.id][ano] = calcYear(icms2025, gRate, sc.dest, ano);
             }
         }
 
@@ -885,26 +919,20 @@
 
         document.getElementById('tbody-calc').innerHTML = [
             `<tr class="row-separator"><td colspan="5" class="td-label" style="font-weight:700;padding-top:0.7rem;color:var(--text-primary)">A. Insumos base (2025 → 2029)</td></tr>`,
-            rowSame('ICMS bruto ES (DCA 2025)', 'base', rP.icms / Math.pow(1 + gRate, 2029-2025)),
-            rowSame('FECOP bruto ES (DCA 2025)', 'base', rP.fecop / Math.pow(1 + gRate, 2029-2025)),
-            rowSame(`Taxa crescimento nominal (${(gRate*100).toFixed(1).replace('.',',')}% × 4 anos)`, '(1+g)⁴', null),
-            rowSame('ICMS projetado 2029 (sem reforma)', 'ICMS₂₅ × (1+g)⁴', rP.icms),
-            rowSame('FECOP projetado 2029 (sem reforma)', 'FECOP₂₅ × (1+g)⁴', rP.fecop),
-            rowSame('Base total (ICMS + FECOP)', 'a + b', rP.base),
+            rowSame('ICMS bruto ES 2025 (DCA/SICONFI)', 'ICMS₂₅', rP.icms / Math.pow(1 + gRate, 4)),
+            rowPct(`Fator crescimento nominal (g = ${(gRate*100).toFixed(1).replace('.',',')}% a.a., 4 anos)`, '(1+g)⁴', '= ' + Math.pow(1 + gRate, 4).toFixed(4).replace('.',',')),
+            rowSame('ICMS projetado 2029 (= base tributável)', 'ICMS₂₅ × (1+g)⁴', rP.base),
             `<tr class="row-separator"><td colspan="5" class="td-label" style="font-weight:700;padding-top:0.7rem;color:var(--text-primary)">B. Contrafactual — ICMS sem reforma (2029)</td></tr>`,
-            rowSame('ICMS × 0,75 (dedução cota-parte mun.)', 'a × 0,75', rP.icms * 0.75),
-            rowSame('ICMS estadual + FECOP', 'a×0,75 + b', rP.icmsCntEstadual),
-            rowSame('FUNDEB (20%)', 'cnt_est × 20%', rP.icmsCntEstadual * 0.20),
-            rowSame('ICMS líquido contrafactual (ICMS\'₀)', '(a×0,75 + b) × 0,8', rP.icmsCntLiq, 'row-total'),
+            rowSame('ICMS estadual (dedução cota-parte 25%)', 'ICMS × 0,75', rP.icmsCntEstadual),
+            rowSame('FUNDEB (20% sobre ICMS estadual)', 'ICMS×0,75 × 0,20', rP.icmsCntEstadual * 0.20),
+            rowSame('ICMS líquido contrafactual (ICMS\'₀)', 'ICMS × 0,75 × 0,80', rP.icmsCntLiq, 'row-total'),
             `<tr class="row-separator"><td colspan="5" class="td-label" style="font-weight:700;padding-top:0.7rem;color:var(--text-primary)">C. ICMS com reforma 2029 (fator 9/10, art. 128 ADCT)</td></tr>`,
-            rowSame('Fator redução alíquota ICMS (α)', 'art. 128 I ADCT', null),
-            rowPct('α', '—', '9/10 = 90%'),
-            rowSame('ICMS bruto ajustado', 'a × α', rP.icmsBrutoAdj),
-            rowSame('Cota-parte municipal (25%)', '− 25%', rP.icmsCotaMun),
-            rowSame('FECOP ajustado', 'b × α', rP.fecopAdj),
-            rowSame('ICMS estadual previsto', 'c − d + e_adj', rP.icmsEstadualAdj),
-            rowSame('FUNDEB (20%)', 'est × 20%', rP.icmsFundeb),
-            rowSame('ICMS líquido previsto (ICMS\')', 'est × 0,8', rP.icmsLiq, 'row-total'),
+            rowPct('Fator α — redução alíquota ICMS', 'art. 128 I ADCT', '9/10 = 90%'),
+            rowSame('ICMS bruto ajustado (α = 0,9)', 'ICMS × 0,9', rP.icmsBrutoAdj),
+            rowSame('Cota-parte municipal (25%)', '− ICMS_adj × 0,25', rP.icmsCotaMun),
+            rowSame('ICMS estadual previsto', 'ICMS_adj × 0,75', rP.icmsEstadualAdj),
+            rowSame('FUNDEB (20%)', 'est × 0,20', rP.icmsFundeb),
+            rowSame('ICMS líquido previsto (ICMS\')', 'est × 0,80', rP.icmsLiq, 'row-total'),
             `<tr class="row-separator"><td colspan="5" class="td-label" style="font-weight:700;padding-top:0.7rem;color:var(--text-primary)">D. IBS direto — 2029 (2% da base, art. 131 §1º I ADCT)</td></tr>`,
             rowPct('Percentual IBS direto (2%)', '20% × (1−α) = 2%', '2,00%'),
             rowPct('Dest% (efeito destino — difere por cenário)', 'ver nota ¹', 'Pess: −30% | Inter: −15% | Neutro: 0%'),
@@ -969,33 +997,43 @@
         const deltaI = ANOS.map(a => +((results['inter'][a].deltaPct) * 100).toFixed(3));
         const deltaO = ANOS.map(a => +((results['otim'][a].deltaPct) * 100).toFixed(3));
 
-        // Chart 1 — Receita total
+        // Chart 1 — "Boca de jacaré": contrafactual (upper jaw) vs reform scenarios (lower jaw)
+        // Dataset order: 0=contrafactual, 1=neutro, 2=inter, 3=pess
+        // Fill on dataset 3 (pess) targets dataset 0 (contrafactual) → shades the gap = the "jaw"
         if (chartReceita) chartReceita.destroy();
         chartReceita = new Chart(document.getElementById('chart-receita'), {
+            type: 'line',
             data: {
                 labels: anosLabels,
                 datasets: [
                     {
-                        type: 'bar', label: 'Pessimista −30%',
-                        data: pessValues, backgroundColor: 'rgba(180,60,60,0.60)',
-                        borderColor: '#b43c3c', borderWidth: 1, order: 3,
-                    },
-                    {
-                        type: 'bar', label: 'Intermediário −15%',
-                        data: interValues, backgroundColor: 'rgba(180,120,40,0.60)',
-                        borderColor: '#b47828', borderWidth: 1, order: 4,
-                    },
-                    {
-                        type: 'bar', label: 'Neutro 0%',
-                        data: otimValues, backgroundColor: 'rgba(40,140,80,0.60)',
-                        borderColor: '#288c50', borderWidth: 1, order: 5,
-                    },
-                    {
-                        type: 'line', label: 'Contrafactual (ICMS sem reforma)',
+                        label: 'Contrafactual — ICMS sem reforma',
                         data: cntValues,
                         borderColor: '#2a6496', borderWidth: 2.5,
-                        borderDash: [6,4], pointRadius: 4, pointBackgroundColor: '#2a6496',
-                        fill: false, order: 1,
+                        borderDash: [8, 4], pointRadius: 5, pointBackgroundColor: '#2a6496',
+                        fill: false, tension: 0.15, order: 0,
+                    },
+                    {
+                        label: 'Neutro (Dest% = 0%)',
+                        data: otimValues,
+                        borderColor: '#288c50', borderWidth: 1.8,
+                        borderDash: [4, 3], pointRadius: 4, pointBackgroundColor: '#288c50',
+                        fill: false, tension: 0.15, order: 3,
+                    },
+                    {
+                        label: 'Intermediário (Dest% = −15%)',
+                        data: interValues,
+                        borderColor: '#b47828', borderWidth: 1.8,
+                        pointRadius: 4, pointBackgroundColor: '#b47828',
+                        fill: false, tension: 0.15, order: 2,
+                    },
+                    {
+                        label: 'Pessimista (Dest% = −30%, Gobetti)',
+                        data: pessValues,
+                        borderColor: '#b43c3c', borderWidth: 2.5,
+                        pointRadius: 5, pointBackgroundColor: '#b43c3c',
+                        fill: { target: 0, above: 'rgba(180,60,60,0.10)' },
+                        tension: 0.15, order: 4,
                     },
                 ]
             },
@@ -1003,19 +1041,29 @@
                 responsive: true,
                 interaction: { mode: 'index', intersect: false },
                 plugins: {
-                    legend: { labels: { color: textColor, font: { size: 10 }, boxWidth: 14 } },
+                    legend: { labels: { color: textColor, font: { size: 10 }, boxWidth: 16 } },
                     tooltip: {
                         callbacks: {
                             label: ctx => `${ctx.dataset.label}: R$ ${ctx.parsed.y?.toFixed(2).replace('.',',')} bi`,
+                            afterBody: items => {
+                                const cnt = items.find(i => i.dataset.label.startsWith('Contrafactual'));
+                                const pess = items.find(i => i.dataset.label.startsWith('Pessimista'));
+                                if (cnt && pess) {
+                                    const gap = (cnt.parsed.y - pess.parsed.y).toFixed(2).replace('.',',');
+                                    return [`⟵ gap max: R$ ${gap} bi`];
+                                }
+                                return [];
+                            }
                         }
                     }
                 },
                 scales: {
                     x: { ticks: { color: textColor }, grid: { color: gridColor } },
                     y: {
+                        min: 0,
                         ticks: { color: textColor, callback: v => 'R$ ' + v.toFixed(0) + ' bi' },
                         grid: { color: gridColor },
-                        title: { display: true, text: 'R$ bilhões', color: textColor, font: { size: 10 } }
+                        title: { display: true, text: 'R$ bilhões (receita líquida estadual)', color: textColor, font: { size: 10 } }
                     }
                 }
             }
@@ -1089,11 +1137,8 @@
             return;
         }
 
-        const dcaIcmsUf  = data.dca_icms_por_uf  || {};
-        const dcaFecopUf = data.dca_fecop_por_uf  || {};
-
-        const icms2025  = dcaIcmsUf['2025']?.['ES']  ?? data.icms_es?.['2025']  ?? null;
-        const fecop2025 = dcaFecopUf['2025']?.['ES'] ?? 0;
+        const dcaIcmsUf = data.dca_icms_por_uf || {};
+        const icms2025  = dcaIcmsUf['2025']?.['ES'] ?? data.icms_es?.['2025'] ?? null;
 
         if (icms2025 == null) {
             document.getElementById('status-bar').innerHTML =
@@ -1102,18 +1147,21 @@
         }
 
         document.getElementById('status-bar').innerHTML =
-            `<span class="status-dot"></span> ICMS_ES 2025 = R$ ${(icms2025/1e9).toFixed(3).replace('.',',')} bi · FECOP_ES 2025 = R$ ${(fecop2025/1e6).toFixed(1).replace('.',',')} mi · Fonte: DCA/SICONFI`;
+            `<span class="status-dot"></span> ICMS bruto ES 2025 = R$ ${(icms2025/1e9).toFixed(3).replace('.',',')} bi · Fonte: DCA/SICONFI`;
+        document.getElementById('p-icms').textContent =
+            `R$ ${(icms2025/1e9).toFixed(3).replace('.',',')} bi`;
 
         function getGRate() { return parseFloat(document.getElementById('range-growth').value) / 100; }
 
         function refresh() {
-            render(icms2025, fecop2025, getGRate());
+            render(icms2025, getGRate());
         }
 
         // Slider
         document.getElementById('range-growth').addEventListener('input', e => {
             const v = parseFloat(e.target.value);
             document.getElementById('disp-growth').textContent = v.toFixed(1).replace('.',',') + '% a.a.';
+            document.getElementById('p-g').textContent = v.toFixed(1).replace('.',',') + '% a.a.';
             refresh();
         });
 
