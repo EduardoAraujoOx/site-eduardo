@@ -164,10 +164,28 @@
         .footnote { font-family: var(--sans); font-size: 0.73rem; color: var(--text-muted); line-height: 1.55; border-top: 1px solid var(--border-light); padding-top: 1.25rem; margin-top: 2.5rem; }
         .footnote p { margin-bottom: 0.6rem; }
 
+        /* Chart callout — gap 2033 */
+        .chart-callout { font-family: var(--sans); font-size: 0.79rem; line-height: 1.5; color: var(--text-secondary); padding: 0.5rem 0.9rem 0.5rem 1rem; margin: 0.25rem 0 1rem; border-left: 3px solid; border-radius: 0 6px 6px 0; background: var(--bg-secondary, #f7f7f5); }
+        .chart-callout.cl-pess  { border-left-color: #b43c3c; }
+        .chart-callout.cl-inter { border-left-color: #b47828; }
+        .chart-callout.cl-neutro { border-left-color: #288c50; }
+
+        /* Projection tabbed tables */
+        .proj-tab-container { margin: 0.5rem 0 2rem; }
+        .proj-tab-bar { display: flex; gap: 0; border-bottom: 2px solid var(--border); }
+        .proj-tab { font-family: var(--mono); font-size: 0.72rem; padding: 0.5rem 1.1rem; cursor: pointer; border: 1px solid transparent; border-bottom: none; border-radius: 6px 6px 0 0; color: var(--text-muted); background: transparent; transition: background 0.12s; letter-spacing: 0.02em; }
+        .proj-tab:hover { background: var(--bg-secondary, #f7f7f5); color: var(--text-secondary); }
+        .proj-tab.active-pess  { border-color: rgba(180,60,60,0.35);  border-bottom-color: var(--bg-secondary, #f7f7f5); color: #b43c3c; font-weight: 700; background: rgba(180,60,60,0.04); }
+        .proj-tab.active-inter { border-color: rgba(180,120,40,0.35); border-bottom-color: var(--bg-secondary, #f7f7f5); color: #b47828; font-weight: 700; background: rgba(180,120,40,0.04); }
+        .proj-tab.active-neutro{ border-color: rgba(40,140,80,0.35);  border-bottom-color: var(--bg-secondary, #f7f7f5); color: #288c50; font-weight: 700; background: rgba(40,140,80,0.04); }
+        .proj-panel { display: none; }
+        .proj-panel.active { display: block; }
+        .row-acumulado td { border-top: 2px solid var(--border); font-weight: 700; background: var(--bg-secondary, #f7f7f5); }
+
         @media (max-width: 680px) {
             .mechanism-grid, .scenario-grid { grid-template-columns: 1fr; }
             .cpt-grid { grid-template-columns: 1fr; }
-            .chart-tab { padding: 0.4rem 0.7rem; font-size: 0.65rem; }
+            .chart-tab, .proj-tab { padding: 0.4rem 0.7rem; font-size: 0.65rem; }
         }
         @media (max-width: 640px) {
             .study-hero { padding: 2rem 1.25rem 1.5rem; }
@@ -434,15 +452,16 @@
             <!-- 5. RESULTADOS -->
             <h2 class="section-heading">Resultados: a trajetória da arrecadação 2029–2033</h2>
             <p class="prose">
-                Cada gráfico mostra a receita estadual total do ES por ano em um cenário (barras)
-                e a referência sem reforma (linha pontilhada azul). O gap entre as barras e a linha
-                de referência é a perda estimada.
+                Cada gráfico mostra a receita estadual do ES com reforma (linha colorida) e sem reforma
+                (linha pontilhada azul). A área sombreada entre as duas linhas — a <em>boca do jacaré</em>
+                — é a perda estimada. O eixo vertical inicia em R$&nbsp;15&nbsp;bi para tornar as
+                diferenças visualmente claras.
             </p>
             <p class="prose" style="font-size:0.85rem">
                 <strong>Destaque para 2033:</strong> o ICMS é extinto e toda a receita vem do IBS.
-                Os fatores 2 e 3 (CPT histórico e CGIBS) aparecem em magnitude plena.
-                <strong>Mesmo no cenário neutro</strong>, o ES perde receita pela combinação desses dois
-                fatores certos.
+                Com o CPT histórico menor (Fator&nbsp;2) e a parcela IBSd sob critério de destino
+                (Fator&nbsp;4), o gap atinge seu valor máximo. <strong>Mesmo no cenário neutro</strong>,
+                o ES perde receita pela combinação dos fatores certos 2 e 3.
             </p>
 
             <!-- TABBED CHARTS -->
@@ -455,50 +474,84 @@
                 <div class="chart-panel active" id="panel-pess">
                     <div class="chart-wrap">
                         <p class="chart-title">Cenário Pessimista (−30% no IBSd) — receita estadual ES, 2029–2033</p>
-                        <p class="chart-subtitle">Barras: receita total com reforma · Linha pontilhada: referência sem reforma</p>
+                        <p class="chart-subtitle">Linha colorida: receita com reforma · Linha pontilhada: referência sem reforma · Área sombreada: perda estimada</p>
                         <canvas id="chart-pess" style="max-height:360px"></canvas>
                     </div>
+                    <div class="chart-callout cl-pess" id="callout-pess"></div>
                 </div>
                 <div class="chart-panel" id="panel-inter">
                     <div class="chart-wrap">
                         <p class="chart-title">Cenário Intermediário (−15% no IBSd) — receita estadual ES, 2029–2033</p>
-                        <p class="chart-subtitle">Barras: receita total com reforma · Linha pontilhada: referência sem reforma</p>
+                        <p class="chart-subtitle">Linha colorida: receita com reforma · Linha pontilhada: referência sem reforma · Área sombreada: perda estimada</p>
                         <canvas id="chart-inter" style="max-height:360px"></canvas>
                     </div>
+                    <div class="chart-callout cl-inter" id="callout-inter"></div>
                 </div>
                 <div class="chart-panel" id="panel-neutro">
                     <div class="chart-wrap">
                         <p class="chart-title">Cenário Neutro (0% no IBSd) — receita estadual ES, 2029–2033</p>
-                        <p class="chart-subtitle">Barras: receita total com reforma · Linha pontilhada: referência sem reforma</p>
+                        <p class="chart-subtitle">Linha colorida: receita com reforma · Linha pontilhada: referência sem reforma · Área sombreada: perda estimada</p>
                         <canvas id="chart-neutro" style="max-height:360px"></canvas>
                     </div>
+                    <div class="chart-callout cl-neutro" id="callout-neutro"></div>
                 </div>
             </div>
 
-            <span class="section-label">Tabela 1 — Projeção 2029–2033: receita estadual por cenário (R$ bi)</span>
-            <div class="data-table-wrap">
-                <table class="data-table" id="table-proj" style="min-width:680px">
-                    <thead>
-                        <tr>
-                            <th class="th-left" rowspan="2" style="width:7%">Ano</th>
-                            <th rowspan="2" style="width:14%;color:#2a6496">Referência<br>(sem reforma)</th>
-                            <th class="th-pess" colspan="2">Pessimista −30%</th>
-                            <th class="th-inter" colspan="2">Intermediário −15%</th>
-                            <th class="th-neutro" colspan="2">Neutro 0%</th>
-                        </tr>
-                        <tr>
-                            <th class="th-pess" style="font-size:0.65rem">Total (R$ bi)</th>
-                            <th class="th-pess" style="font-size:0.65rem">Δ%</th>
-                            <th class="th-inter" style="font-size:0.65rem">Total (R$ bi)</th>
-                            <th class="th-inter" style="font-size:0.65rem">Δ%</th>
-                            <th class="th-neutro" style="font-size:0.65rem">Total (R$ bi)</th>
-                            <th class="th-neutro" style="font-size:0.65rem">Δ%</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-proj">
-                        <tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text-muted)">Aguardando dados…</td></tr>
-                    </tbody>
-                </table>
+            <span class="section-label">Tabela 1 — Projeção 2029–2033: receita estadual estimada por cenário (R$ bi)</span>
+            <div class="proj-tab-container">
+                <div class="proj-tab-bar">
+                    <button class="proj-tab active-pess"  data-ptab="pess">Pessimista −30%</button>
+                    <button class="proj-tab" data-ptab="inter">Intermediário −15%</button>
+                    <button class="proj-tab" data-ptab="neutro">Neutro 0%</button>
+                </div>
+                <div class="proj-panel active" id="ppanel-pess">
+                    <div class="data-table-wrap">
+                        <table class="data-table" style="min-width:480px">
+                            <thead><tr>
+                                <th class="th-left" style="width:10%">Ano</th>
+                                <th style="color:#2a6496">Sem reforma<br>(R$ bi)</th>
+                                <th class="th-pess">Com reforma<br>(R$ bi)</th>
+                                <th class="th-pess">Diferença<br>(R$ bi)</th>
+                                <th class="th-pess">Diferença<br>(%)</th>
+                            </tr></thead>
+                            <tbody id="tbody-pess">
+                                <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="proj-panel" id="ppanel-inter">
+                    <div class="data-table-wrap">
+                        <table class="data-table" style="min-width:480px">
+                            <thead><tr>
+                                <th class="th-left" style="width:10%">Ano</th>
+                                <th style="color:#2a6496">Sem reforma<br>(R$ bi)</th>
+                                <th class="th-inter">Com reforma<br>(R$ bi)</th>
+                                <th class="th-inter">Diferença<br>(R$ bi)</th>
+                                <th class="th-inter">Diferença<br>(%)</th>
+                            </tr></thead>
+                            <tbody id="tbody-inter">
+                                <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="proj-panel" id="ppanel-neutro">
+                    <div class="data-table-wrap">
+                        <table class="data-table" style="min-width:480px">
+                            <thead><tr>
+                                <th class="th-left" style="width:10%">Ano</th>
+                                <th style="color:#2a6496">Sem reforma<br>(R$ bi)</th>
+                                <th class="th-neutro">Com reforma<br>(R$ bi)</th>
+                                <th class="th-neutro">Diferença<br>(R$ bi)</th>
+                                <th class="th-neutro">Diferença<br>(%)</th>
+                            </tr></thead>
+                            <tbody id="tbody-neutro">
+                                <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <!-- 6. CONFIGURAÇÃO AVANÇADA -->
@@ -552,8 +605,16 @@
                 <p><sup>2</sup> <strong>CG% = +0,35%:</strong> ajuste aplicado à base do IBSd para refletir
                 o impacto nas compras governamentais. Parâmetro adotado na ausência de estimativa específica para o ES.</p>
 
-                <p><sup>3</sup> <strong>Seguro Receita (art. 132 ADCT):</strong> 5% do IBSd bruto é retido como
-                mecanismo de garantia de receita. Deduzido antes do cálculo do IBS estadual.</p>
+                <p><sup>3</sup> <strong>Seguro Receita (art. 132 ADCT):</strong> o mecanismo tem duas faces.
+                A face de <em>contribuição</em>: 5% do IBSd nacional é retido e forma um fundo de garantia — o
+                modelo deduz essa fração do IBSd bruto antes de calcular a parcela estadual (tratamento conservador).
+                A face de <em>recebimento</em>: estados cujas receitas totais de IBS ficarem abaixo do piso
+                garantido recebem compensação desse fundo. O ES, como provável perdedor líquido nos cenários
+                pessimista e intermediário (exportador com base destino menor), poderia ser <em>receptor</em>
+                líquido do Seguro Receita — o que reduziria parcialmente as perdas estimadas.
+                O modelo não incorpora o lado do recebimento por falta de parâmetros legais definitivos sobre
+                o piso e a distribuição do fundo; as perdas aqui apresentadas representam, portanto, um
+                <em>limite superior conservador</em> nesses cenários.</p>
 
                 <p><sup>4</sup> <strong>Por que não deduzimos FUNDEB:</strong> a EC 132/2023 estende a vinculação ao
                 FUNDEB ao IBS na mesma proporção do ICMS — 20% da receita estadual, simetricamente. Uma nota técnica
@@ -657,7 +718,7 @@
                  totalReform, delta, deltaPct, estimated: a.estimated };
     }
 
-    // ── Gráficos por cenário (barra total + linha referência) ────────────────
+    // ── Gráficos por cenário (linha + área sombreada "boca do jacaré") ────────
     const scenarioCharts = { pess: null, inter: null, neutro: null };
 
     function buildScenarioChart(canvasId, scId, results) {
@@ -667,24 +728,32 @@
         const textColor = isDark ? '#aaa' : '#555';
         const labels    = ANOS.map(a => ADCT[a].estimated ? a + '*' : String(a));
 
-        const cntVals   = ANOS.map(a => +(results[scId][a].cntEstadual  / 1e9).toFixed(3));
-        const totalVals = ANOS.map(a => +(results[scId][a].totalReform  / 1e9).toFixed(3));
+        const cntVals   = ANOS.map(a => +(results[scId][a].cntEstadual / 1e9).toFixed(3));
+        const totalVals = ANOS.map(a => +(results[scId][a].totalReform / 1e9).toFixed(3));
 
         const scColor = { pess: '#b43c3c', inter: '#b47828', neutro: '#288c50' }[scId];
-        const scBgAlpha = { pess: 'rgba(180,60,60,0.72)', inter: 'rgba(180,120,40,0.72)', neutro: 'rgba(40,140,80,0.72)' }[scId];
+        const fillColor = { pess: 'rgba(180,60,60,0.14)', inter: 'rgba(180,120,40,0.13)', neutro: 'rgba(40,140,80,0.12)' }[scId];
+
+        // Dynamic Y axis: floor slightly below minimum value, ceiling above reference
+        const allVals = [...cntVals, ...totalVals];
+        const yMin = Math.max(15, Math.floor(Math.min(...allVals) - 0.5));
+        const yMax = Math.ceil(Math.max(...allVals) + 0.5);
 
         if (scenarioCharts[scId]) scenarioCharts[scId].destroy();
         scenarioCharts[scId] = new Chart(document.getElementById(canvasId), {
-            type: 'bar',
+            type: 'line',
             data: {
                 labels,
                 datasets: [
-                    { type: 'line', label: 'Referência — sem reforma',
-                      data: cntVals, borderColor: '#2a6496', borderWidth: 2.5,
-                      borderDash: [8,4], pointRadius: 5, pointBackgroundColor: '#2a6496',
+                    { label: 'Referência — sem reforma',
+                      data: cntVals, borderColor: '#2a6496', borderWidth: 2,
+                      borderDash: [8, 4], pointRadius: 4, pointBackgroundColor: '#2a6496',
                       fill: false, tension: 0, order: 0 },
-                    { type: 'bar', label: 'Receita com reforma',
-                      data: totalVals, backgroundColor: scBgAlpha, order: 1 },
+                    { label: 'Receita com reforma',
+                      data: totalVals, borderColor: scColor, borderWidth: 2.5,
+                      pointRadius: 4, pointBackgroundColor: scColor,
+                      fill: { target: 0, below: fillColor, above: 'transparent' },
+                      tension: 0, order: 1 },
                 ]
             },
             options: {
@@ -695,16 +764,14 @@
                     tooltip: {
                         callbacks: {
                             label: ctx => {
-                                if (ctx.dataset.type === 'line')
-                                    return `Referência: R$ ${ctx.parsed.y.toFixed(2).replace('.',',')} bi`;
-                                return `Receita com reforma: R$ ${ctx.parsed.y.toFixed(2).replace('.',',')} bi`;
+                                const v = `R$ ${ctx.parsed.y.toFixed(2).replace('.',',')} bi`;
+                                return ctx.datasetIndex === 0 ? `Referência: ${v}` : `Com reforma: ${v}`;
                             },
                             afterBody: items => {
-                                const ref  = items.find(i => i.dataset.type === 'line');
-                                const bar  = items.find(i => i.dataset.type !== 'line');
-                                if (!ref || !bar) return [];
-                                const delta = bar.parsed.y - ref.parsed.y;
-                                const pct   = (delta / ref.parsed.y * 100).toFixed(2).replace('.',',');
+                                if (items.length < 2) return [];
+                                const ref = items[0].parsed.y, reform = items[1].parsed.y;
+                                const delta = reform - ref;
+                                const pct = (delta / ref * 100).toFixed(2).replace('.',',');
                                 return [`Δ vs. referência: ${delta>=0?'+':''}${delta.toFixed(2).replace('.',',')} bi (${delta>=0?'+':''}${pct}%)`];
                             }
                         }
@@ -712,26 +779,49 @@
                 },
                 scales: {
                     x: { ticks: { color: textColor }, grid: { color: gridColor } },
-                    y: { ticks: { color: textColor, callback: v => 'R$ ' + v.toFixed(0) + ' bi' },
+                    y: { min: yMin, max: yMax,
+                         ticks: { color: textColor, callback: v => 'R$ ' + v + ' bi' },
                          grid: { color: gridColor },
                          title: { display: true, text: 'R$ bilhões (receita estadual)', color: textColor, font: { size: 10 } } }
                 }
             }
         });
+
+        // Callout: gap em 2033
+        const r33 = results[scId][2033];
+        const delta33 = r33.totalReform - r33.cntEstadual;
+        const pct33   = delta33 / r33.cntEstadual;
+        const el = document.getElementById('callout-' + scId);
+        if (el) {
+            el.innerHTML = `Em <strong>2033</strong> — ICMS extinto, IBS em pleno vigor: perda estimada de
+                <strong>${fmtBi(Math.abs(delta33), 2)}</strong>
+                (<strong>${fmtPct(pct33, 1)}</strong> vs. referência sem reforma).`;
+        }
     }
 
     // ── Tab switching ─────────────────────────────────────────────────────────
-    document.querySelectorAll('.chart-tab').forEach(btn => {
+    document.querySelector('.chart-tab-container').querySelectorAll('.chart-tab').forEach(btn => {
         btn.addEventListener('click', () => {
             const tab = btn.dataset.tab;
-            document.querySelectorAll('.chart-tab').forEach(b => {
+            document.querySelector('.chart-tab-container').querySelectorAll('.chart-tab').forEach(b => {
                 b.className = 'chart-tab';
             });
             btn.classList.add('active-' + tab);
             document.querySelectorAll('.chart-panel').forEach(p => p.classList.remove('active'));
             document.getElementById('panel-' + tab).classList.add('active');
-            // Resize chart in newly visible panel
             if (scenarioCharts[tab]) scenarioCharts[tab].resize();
+        });
+    });
+
+    document.querySelector('.proj-tab-container').querySelectorAll('.proj-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tab = btn.dataset.ptab;
+            document.querySelector('.proj-tab-container').querySelectorAll('.proj-tab').forEach(b => {
+                b.className = 'proj-tab';
+            });
+            btn.classList.add('active-' + tab);
+            document.querySelectorAll('.proj-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('ppanel-' + tab).classList.add('active');
         });
     });
 
@@ -756,21 +846,38 @@
                 `ICMS' = ${fmtBi(r.icmsReformEstadual, 2)}<br>IBS' = ${fmtBi(r.ibsLiq, 2)}<br>Ref. = ${fmtBi(r.cntEstadual, 2)}`;
         }
 
-        // Tabela de projeção 2029–2033
-        document.getElementById('tbody-proj').innerHTML = ANOS.map(ano => {
-            const rp = results['pess'][ano], ri = results['inter'][ano], rn = results['neutro'][ano];
-            const tag = ADCT[ano].estimated ? ' <span class="tag-est">est.</span>' : '';
-            return `<tr>
-                <td class="td-left"><strong>${ano}</strong>${tag}</td>
-                <td class="td-cnt">${fmtBiNum(rp.cntEstadual)}</td>
-                <td class="td-pess">${fmtBiNum(rp.totalReform)}</td>
-                <td>${fmtPctCell(rp.deltaPct)}</td>
-                <td class="td-inter">${fmtBiNum(ri.totalReform)}</td>
-                <td>${fmtPctCell(ri.deltaPct)}</td>
-                <td class="td-neutro">${fmtBiNum(rn.totalReform)}</td>
-                <td>${fmtPctCell(rn.deltaPct)}</td>
+        // Tabelas de projeção 2029–2033 (uma por cenário)
+        function renderScenTable(tbodyId, scId) {
+            const scClass = { pess: 'td-pess', inter: 'td-inter', neutro: 'td-neutro' }[scId];
+            let accRef = 0, accReform = 0;
+            const rows = ANOS.map(ano => {
+                const r = results[scId][ano];
+                const tag = ADCT[ano].estimated ? ' <span class="tag-est">est.</span>' : '';
+                const dCls = r.delta < -1e6 ? 'td-neg' : r.delta > 1e6 ? 'td-pos' : '';
+                accRef    += r.cntEstadual;
+                accReform += r.totalReform;
+                return `<tr>
+                    <td class="td-left"><strong>${ano}</strong>${tag}</td>
+                    <td class="td-cnt">${fmtBiNum(r.cntEstadual)}</td>
+                    <td class="${scClass}">${fmtBiNum(r.totalReform)}</td>
+                    <td><span class="${dCls}">${fmtBiNum(r.delta)}</span></td>
+                    <td>${fmtPctCell(r.deltaPct)}</td>
+                </tr>`;
+            }).join('');
+            const accDelta = accReform - accRef;
+            const accDCls  = accDelta < 0 ? 'td-neg' : 'td-pos';
+            const totalRow = `<tr class="row-acumulado">
+                <td class="td-left">Acumulado 2029–2033</td>
+                <td class="td-cnt">${fmtBiNum(accRef)}</td>
+                <td class="${scClass}">${fmtBiNum(accReform)}</td>
+                <td><span class="${accDCls}">${fmtBiNum(accDelta)}</span></td>
+                <td>${fmtPctCell(accDelta / accRef)}</td>
             </tr>`;
-        }).join('');
+            document.getElementById(tbodyId).innerHTML = rows + totalRow;
+        }
+        renderScenTable('tbody-pess',  'pess');
+        renderScenTable('tbody-inter', 'inter');
+        renderScenTable('tbody-neutro','neutro');
 
         // Memória de cálculo 2029
         const rP = results['pess'][2029], rI = results['inter'][2029], rN = results['neutro'][2029];
