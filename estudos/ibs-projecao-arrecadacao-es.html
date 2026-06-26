@@ -538,7 +538,7 @@
                 (ver <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a>).</p>
 
                 <p><strong>Fontes:</strong>
-                    SICONFI/STN — RREO Anexo 3, período 6, Total Últimos 12 Meses; DCA Demonstrativo das Contas Anuais.
+                    SICONFI/STN — RREO Anexo 3, Total Últimos 12 Meses (período variável conforme disponibilidade do SICONFI); DCA Demonstrativo das Contas Anuais.
                     Base legal: arts. 128, 131 e 132 do ADCT (LC 214/2025); arts. 47 e 51 da LC 227/2026; EC 132/2023.
                     <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">API Data Lake STN</a>.
                     * Ano 2033 com parâmetros estimados (CGIBS).
@@ -864,7 +864,7 @@
         document.querySelectorAll('#base-year-label').forEach(el => el.textContent = baseYear);
         document.getElementById('p-icms-bruto').textContent = fmtBi(icmsBase, 3);
         document.getElementById('status-bar').innerHTML =
-            `<span class="status-dot"></span> ICMS ES ${baseYear} = ${fmtBi(icmsBase, 3)} · SICONFI/STN`;
+            `<span class="status-dot"></span> ICMS ES ${baseYear} = ${fmtBi(icmsBase, 3)} · SICONFI/STN · RREO período ${data.periodo_usado?.[`${baseYear}`] ?? '?'}`;
 
         let gRate = 0;
 
