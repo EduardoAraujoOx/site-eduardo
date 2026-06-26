@@ -1044,6 +1044,14 @@
                 order: 1,
             });
 
+            // Y axis: tight range around data + reference line, with 10% padding each side
+            const allVals = [...barData, ...(refLine || [])].filter(v => v != null);
+            const yMin = allVals.length ? Math.min(...allVals) : 0;
+            const yMax = allVals.length ? Math.max(...allVals) : 2;
+            const yPad = (yMax - yMin) * 0.15 || 0.05;
+            const yAxisMin = Math.max(0, +(yMin - yPad).toFixed(4));
+            const yAxisMax = +(yMax + yPad).toFixed(4);
+
             new Chart(el, {
                 data: { labels, datasets },
                 options: {
@@ -1058,6 +1066,8 @@
                     scales: {
                         x: { ticks: { color: textColor, font: { size: 10 } }, grid: { color: gridColor } },
                         y: {
+                            min: yAxisMin,
+                            max: yAxisMax,
                             ticks: { color: textColor, callback: v => v.toFixed(2).replace('.', ',') + '%' },
                             grid: { color: gridColor },
                             title: { display: true, text: 'Índice (%)', color: textColor, font: { size: 10 } }
