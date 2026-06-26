@@ -518,6 +518,26 @@
                 </div>
             </div>
 
+            <span class="section-label">Tabela síntese — perspectiva comparada dos três cenários, 2029–2033 (R$ bi)</span>
+            <div class="data-table-wrap" style="margin-bottom:2rem">
+                <table class="data-table" id="table-sintese" style="min-width:620px">
+                    <thead>
+                        <tr>
+                            <th class="th-left" style="min-width:240px">Variável</th>
+                            <th>2029</th>
+                            <th>2030</th>
+                            <th>2031</th>
+                            <th>2032</th>
+                            <th>2033*</th>
+                            <th style="font-weight:700;border-left:2px solid var(--border)">Acumulado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-sintese">
+                        <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
             <span class="section-label">Tabela 1 — Projeção 2029–2033: receita estadual estimada por cenário (R$ bi)</span>
             <div class="proj-tab-container">
                 <div class="proj-tab-bar">
@@ -900,6 +920,27 @@
             </tr>`;
             document.getElementById(tbodyId).innerHTML = rows + totalRow;
         }
+        // Tabela síntese — todos os cenários × todos os anos
+        (function buildSintese() {
+            function sinteseRow(label, vals, cls, rowCls) {
+                const rc = rowCls ? ` class="${rowCls}"` : '';
+                const cc = cls ? ` class="${cls}"` : '';
+                const cells = vals.map(v => `<td${cc}>${fmtBiNum(v)}</td>`).join('');
+                const soma = vals.reduce((s, v) => s + v, 0);
+                return `<tr${rc}><td class="td-left">${label}</td>${cells}<td${cc} style="font-weight:700;border-left:2px solid var(--border)">${fmtBiNum(soma)}</td></tr>`;
+            }
+            const refVals    = ANOS.map(a => results['pess'][a].cntEstadual);
+            const pessVals   = ANOS.map(a => results['pess'][a].totalReform);
+            const interVals  = ANOS.map(a => results['inter'][a].totalReform);
+            const neutroVals = ANOS.map(a => results['neutro'][a].totalReform);
+            document.getElementById('tbody-sintese').innerHTML = [
+                sinteseRow(`Referência sem reforma (a preços de ${baseYear}, sem crescimento real)`, refVals, 'td-cnt', ''),
+                sinteseRow('Pessimista: −30% no IBSd (perdas máximas na mudança para IBS destino)', pessVals, 'td-pess', 'row-separator'),
+                sinteseRow('Intermediário: −15% no IBSd (perdas moderadas na mudança para IBS destino)', interVals, 'td-inter', ''),
+                sinteseRow('Neutro: 0% no IBSd (sem perdas na mudança para IBS destino)', neutroVals, 'td-neutro', ''),
+            ].join('');
+        })();
+
         renderScenTable('tbody-pess',  'pess');
         renderScenTable('tbody-inter', 'inter');
         renderScenTable('tbody-neutro','neutro');
