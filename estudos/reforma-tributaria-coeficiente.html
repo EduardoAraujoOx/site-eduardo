@@ -514,6 +514,28 @@
                 </table>
             </div>
 
+            <!-- Tabela 4.1: histórico vs. 2025 por município ES -->
+            <span class="section-label" style="margin-top:2rem">Tabela 4.1 — Municípios capixabas: CPT histórico vs. índice pontual 2025</span>
+            <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
+                CPT histórico = média 2019–2025 deflacionada (mesma base da Tabela 4). CPT 2025 = índice pontual do ano, sem deflação. Diferença positiva (verde): município ganha com o histórico; negativa (vermelho): perde.
+            </p>
+            <div class="data-table-wrap" style="overflow-x:auto">
+                <table class="data-table" id="table-munis-es-comp">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left">Município</th>
+                            <th style="text-align:right">CPT histórico<br><small style="font-weight:400;font-size:0.65em">média 2019–2025</small></th>
+                            <th style="text-align:right">CPT 2025<br><small style="font-weight:400;font-size:0.65em">índice pontual</small></th>
+                            <th style="text-align:right">Diferença<br><small style="font-weight:400;font-size:0.65em">hist. − 2025</small></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-munis-es-comp">
+                        <tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                    </tbody>
+                    <tfoot id="tfoot-munis-es-comp"></tfoot>
+                </table>
+            </div>
+
             <!-- Metodologia -->
             <div class="metodologia">
                 <strong>Metodologia — LC 227/2026, arts. 114, 115 e 129</strong>
@@ -942,7 +964,22 @@
                 soma += (d_ano.iss + cotaMuni) * def;
             }
             const cpt = totalB != null ? (soma / ANOS.length) / totalB * 100 : null;
-            return { cod, nome: m.nome, cpt };
+
+            // Índice pontual 2025 (deflator 2025 = 1, sem deflação)
+            const d2025  = m.dados[2025];
+            const icms25 = icms_es[2025];
+            const cota25Tot = cotaTotalDCA[2025];
+            let cpt2025 = null;
+            if (d2025 != null && totalB != null) {
+                const cotaTeo25 = icms25 != null ? icms25 * 0.25 : null;
+                const cotaMuni25 = (cotaTeo25 != null && cota25Tot != null && cota25Tot > 0)
+                    ? cotaTeo25 * (d2025.cotaDCA / cota25Tot)
+                    : d2025.cotaDCA;
+                cpt2025 = (d2025.iss + cotaMuni25) / totalB * 100;
+            }
+            const varMuni = (cpt != null && cpt2025 != null) ? cpt - cpt2025 : null;
+
+            return { cod, nome: m.nome, cpt, cpt2025, varMuni };
         }).sort((a, b) => (b.cpt ?? 0) - (a.cpt ?? 0));
 
         if (muniRows.length > 0) {
@@ -969,6 +1006,31 @@
                     <td colspan="2" style="text-align:left">TOTAL (${muniRows.length} municípios)</td>
                     <td colspan="2" style="text-align:right;color:var(--accent)">${fmtPct(somaM, 5)}</td>
                 </tr>`;
+
+            // ── Tabela 4.1: histórico vs. 2025 por município ─────────────────────
+            const tbody41 = document.getElementById('tbody-munis-es-comp');
+            if (tbody41) {
+                tbody41.innerHTML = muniRows.map(r => {
+                    const varStyle = r.varMuni == null ? '' : r.varMuni > 0 ? 'color:#2a7a2a' : r.varMuni < 0 ? 'color:#b03030' : '';
+                    const varTxt = r.varMuni == null ? '—' : (r.varMuni >= 0 ? '+' : '') + r.varMuni.toFixed(5) + '%';
+                    return `<tr>
+                        <td style="text-align:left">${r.nome}</td>
+                        <td style="text-align:right" class="td-coeff">${fmtPct(r.cpt, 5)}</td>
+                        <td style="text-align:right" class="td-coeff">${fmtPct(r.cpt2025, 5)}</td>
+                        <td style="text-align:right;${varStyle}" class="td-coeff">${varTxt}</td>
+                    </tr>`;
+                }).join('');
+                const soma25M  = muniRows.reduce((s, r) => s + (r.cpt2025 ?? 0), 0);
+                const somaVarM = muniRows.reduce((s, r) => s + (r.varMuni ?? 0), 0);
+                const varSomStyle = somaVarM > 0 ? 'color:#2a7a2a' : somaVarM < 0 ? 'color:#b03030' : '';
+                document.getElementById('tfoot-munis-es-comp').innerHTML = `
+                    <tr style="font-weight:700;border-top:2px solid var(--border)">
+                        <td style="text-align:left">TOTAL (${muniRows.length} municípios)</td>
+                        <td style="text-align:right;color:var(--accent)">${fmtPct(somaM, 5)}</td>
+                        <td style="text-align:right;color:var(--accent)">${fmtPct(soma25M, 5)}</td>
+                        <td style="text-align:right;${varSomStyle}">${somaVarM >= 0 ? '+' : ''}${somaVarM.toFixed(5)}%</td>
+                    </tr>`;
+            }
         }
 
         // ── Status bar ────────────────────────────────────────────────────────
