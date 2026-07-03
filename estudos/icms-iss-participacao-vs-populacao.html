@@ -507,6 +507,60 @@
                 hoje eles são sócios minoritários da cota-parte de Manaus e se beneficiam da mudança no ISS.
             </div>
 
+            <!-- ═══════════════ PARTE 3C — ESTADO vs. MUNICÍPIO ═══════════════ -->
+            <span class="section-label" style="margin-top:2.5rem">Tabela 4 e Gráfico 4: o efeito é maior no governo estadual ou nos municípios?</span>
+            <p class="section-intro">
+                As Tabelas 2 e 3 já mostram que estado e municípios são afetados de forma diferente dentro de
+                cada UF, mas não separam, em reais, o quanto do efeito total cai sobre o governo estadual e o
+                quanto cai sobre o conjunto dos municípios. Gobetti e Monteiro não publicam essa quebra pronta em
+                uma única tabela, então construímos essa segregação por resíduo: o saldo municipal líquido vem
+                diretamente da Tabela 2 (soma dos ganhos e das perdas de todos os municípios da UF); o saldo
+                estadual é a diferença entre o saldo total da Tabela 1 e esse saldo municipal. É uma estimativa
+                derivada, não um número que os autores calcularam diretamente, e carrega uma imprecisão pequena
+                porque os 20% do ICMS/IBS retidos pelo Fundeb não pertencem inteiramente a nenhuma das duas
+                esferas. Ainda assim, o resultado é revelador para o caso capixaba.
+            </p>
+            <div id="status-gobetti-esferas" class="status-bar">
+                <span class="status-dot"></span>
+                <span>Carregando dados…</span>
+            </div>
+            <div class="chart-panel">
+                <p class="chart-panel-title">Saldo (pós menos pré-reforma) por esfera de governo, cenário estático, base 2022 (R$ bi)</p>
+                <div class="chart-canvas-wrap"><canvas id="chart-gobetti-esferas"></canvas></div>
+                <div class="chart-legend-note">
+                    <span><span class="legend-swatch" style="background:#2a78d6"></span>Governo estadual (estimado por resíduo)</span>
+                    <span><span class="legend-swatch" style="background:#1baf7a"></span>Municípios (Tabela 2 do paper)</span>
+                </div>
+            </div>
+            <div class="data-table-wrap">
+                <table class="data-table" id="table-gobetti-esferas">
+                    <thead>
+                        <tr>
+                            <th class="th-uf">UF</th>
+                            <th>Saldo total<br><small style="font-weight:400">(R$ bi)</small></th>
+                            <th>Saldo estadual<br><small style="font-weight:400">(R$ bi, estimado)</small></th>
+                            <th>Saldo municipal<br><small style="font-weight:400">(R$ bi)</small></th>
+                            <th>% do saldo total<br><small style="font-weight:400">que é municipal</small></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-gobetti-esferas">
+                        <tr><td colspan="5" class="loading-cell">Aguardando dados…</td></tr>
+                    </tbody>
+                    <tfoot id="tfoot-gobetti-esferas"></tfoot>
+                </table>
+            </div>
+
+            <div class="callout">
+                <strong>No caso do ES, a perda é sobretudo do governo estadual.</strong> Do saldo negativo de
+                R$ 5,6 bilhões estimado para o ES, cerca de R$ 4,3 bilhões (77%) recairiam sobre o caixa do
+                governo estadual, e apenas R$ 1,3 bilhão (23%) sobre o conjunto dos municípios capixabas. Isso
+                ajuda a entender por que a Parte 3 deste estudo, ao falar em "perda do ES", está descrevendo
+                principalmente um problema de receita estadual, e não uma distribuição equilibrada de perdas entre
+                Vitória e as prefeituras do interior. Padrão semelhante aparece em Mato Grosso, Mato Grosso do Sul
+                e Amazonas: nos quatro estados de pior trajetória segundo Gobetti e Monteiro, a maior parte do
+                golpe é absorvida pelo tesouro estadual, não pelas prefeituras.
+            </div>
+
             <!-- Metodologia -->
             <div class="metodologia">
                 <h3>Como foram calculadas as participações (Partes 1 e 2)</h3>
@@ -556,6 +610,17 @@
                     mas também a mudança na forma como a cota-parte estadual é repartida entre os municípios, que
                     passa a ser baseada sobretudo em população em vez dos critérios de valor adicionado fiscal
                     hoje vigentes em cada estado.
+                </p>
+                <p>
+                    A Tabela 4 não reproduz um dado do paper original: nós a construímos combinando as duas
+                    tabelas anteriores. Tomamos o saldo municipal líquido de cada UF (soma dos ganhos e das perdas
+                    de todos os seus municípios, na Tabela 2) e subtraímos esse valor do saldo total da mesma UF
+                    na Tabela 1, que soma estado e municípios. O resultado é o saldo implícito do governo
+                    estadual. É uma estimativa por resíduo, não um número calculado diretamente pelos autores, e
+                    tem uma imprecisão pequena porque 20% do ICMS e do futuro IBS estadual são retidos pelo
+                    Fundeb, um fundo que não pertence integralmente nem ao caixa do estado nem ao dos municípios.
+                    Ainda assim, a ordem de grandeza é clara o suficiente para mostrar onde a perda ou o ganho de
+                    cada UF se concentra.
                 </p>
             </div>
 
@@ -1009,9 +1074,126 @@
         });
     }
 
+    async function loadGobettiEsferas() {
+        let data;
+        try {
+            const resp = await fetch('/data/gobetti-2023-perdas-ganhos-uf.json?t=' + Date.now());
+            if (!resp.ok) throw new Error('not found');
+            data = await resp.json();
+        } catch (e) {
+            document.getElementById('status-gobetti-esferas').innerHTML =
+                '<span class="status-dot"></span> Dados não disponíveis.';
+            return;
+        }
+        const bloco = data.tabela4_esferas;
+        if (!bloco) {
+            document.getElementById('status-gobetti-esferas').innerHTML =
+                '<span class="status-dot"></span> Dados não disponíveis.';
+            return;
+        }
+
+        document.getElementById('status-gobetti-esferas').innerHTML =
+            '<span class="status-dot" style="background:#22c55e"></span> 27 UFs · estimativa derivada, ver metodologia · fonte: ' + data.fonte;
+
+        const rows = [...bloco.ufs].sort((a, b) => a.estado_saldo - b.estado_saldo);
+
+        const tbody = document.getElementById('tbody-gobetti-esferas');
+        tbody.innerHTML = rows.map(r => {
+            const pctMuni = r.total_saldo !== 0 ? (r.muni_saldo / r.total_saldo * 100) : null;
+            return `<tr${r.uf === 'ES' ? ' class="row-es"' : ''}>
+            <td class="td-uf">${r.uf} <small style="font-weight:400;color:var(--text-muted)">${NOMES_UF[r.uf]}</small></td>
+            <td>${fmtDiff(r.total_saldo / 1e9, 2, '')}</td>
+            <td>${fmtDiff(r.estado_saldo / 1e9, 2, '')}</td>
+            <td>${fmtDiff(r.muni_saldo / 1e9, 2, '')}</td>
+            <td>${pctMuni != null ? pctMuni.toFixed(0) + '%' : '–'}</td>
+        </tr>`;
+        }).join('');
+
+        const somaTotal = rows.reduce((s, r) => s + r.total_saldo, 0);
+        const somaEstado = rows.reduce((s, r) => s + r.estado_saldo, 0);
+        const somaMuni = rows.reduce((s, r) => s + r.muni_saldo, 0);
+        document.getElementById('tfoot-gobetti-esferas').innerHTML = `<tr>
+            <td class="td-uf">BRASIL</td>
+            <td>${fmtDiff(somaTotal / 1e9, 2, '')}</td>
+            <td>${fmtDiff(somaEstado / 1e9, 2, '')}</td>
+            <td>${fmtDiff(somaMuni / 1e9, 2, '')}</td>
+            <td>–</td>
+        </tr>`;
+
+        buildGobettiEsferasChart(rows);
+    }
+
+    function buildGobettiEsferasChart(rows) {
+        const el = document.getElementById('chart-gobetti-esferas');
+        if (!el) return;
+
+        el.parentElement.style.height = Math.max(420, rows.length * 46) + 'px';
+
+        new Chart(el, {
+            type: 'bar',
+            data: {
+                labels: rows.map(r => r.uf),
+                datasets: [
+                    {
+                        label: 'Estadual',
+                        data: rows.map(r => +(r.estado_saldo / 1e9).toFixed(2)),
+                        backgroundColor: '#2a78d6',
+                        borderRadius: 3,
+                        datalabels: {
+                            anchor: 'end', align: 'end', clamp: true, clip: false,
+                            color: '#3a3a3a', font: { size: 8, family: "'JetBrains Mono', monospace" },
+                            formatter: v => (v >= 0 ? '+' : '') + v.toFixed(1)
+                        }
+                    },
+                    {
+                        label: 'Municipal',
+                        data: rows.map(r => +(r.muni_saldo / 1e9).toFixed(2)),
+                        backgroundColor: '#1baf7a',
+                        borderRadius: 3,
+                        datalabels: {
+                            anchor: 'end', align: 'end', clamp: true, clip: false,
+                            color: '#3a3a3a', font: { size: 8, family: "'JetBrains Mono', monospace" },
+                            formatter: v => (v >= 0 ? '+' : '') + v.toFixed(1)
+                        }
+                    }
+                ]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: ctx => NOMES_UF[ctx[0].label] || ctx[0].label,
+                            label: ctx => `${ctx.dataset.label}: ${ctx.parsed.x >= 0 ? '+' : ''}${ctx.parsed.x.toFixed(2)} bi`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grace: '15%',
+                        title: { display: true, text: 'Saldo (pós-reforma menos pré-reforma), R$ bilhões', color: '#6E6E6E', font: { size: 11 } },
+                        ticks: { color: '#6E6E6E' },
+                        grid: { color: 'rgba(0,0,0,0.06)' }
+                    },
+                    y: {
+                        ticks: {
+                            color: (ctx) => ctx.tick && ctx.tick.label === 'ES' ? '#b0342e' : '#3a3a3a',
+                            font: (ctx) => ({ size: 11, weight: ctx.tick && ctx.tick.label === 'ES' ? '700' : '400', family: "'JetBrains Mono', monospace" })
+                        },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+
     loadParticipacao();
     loadGobetti();
     loadGobettiMunis();
+    loadGobettiEsferas();
     </script>
 </body>
 </html>
