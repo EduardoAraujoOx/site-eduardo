@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projeção ICMS/IBS por Estado 2029–2033: Impacto da Reforma Tributária | Eduardo Reis Araújo</title>
-    <meta name="description" content="Projeção da receita estadual de ICMS/IBS para todos os 27 estados e o Distrito Federal durante a transição da Reforma Tributária (2029–2033), com três cenários baseados no estudo de Gobetti e Monteiro (IPEA, 2023).">
+    <title>Projeção ICMS/IBS por Estado 2029–2033 | Eduardo Reis Araújo</title>
+    <meta name="description" content="Projeção da receita estadual de ICMS/IBS para os 27 estados e o Distrito Federal durante a transição da Reforma Tributária (2029–2033), com três cenários de redistribuição pelo critério destino.">
     <meta name="author" content="Eduardo Reis Araujo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/ibs-projecao-arrecadacao-br.html">
 
-    <meta property="og:title" content="Projeção ICMS/IBS por Estado 2029–2033: Reforma Tributária">
-    <meta property="og:description" content="Projeção da receita estadual de ICMS/IBS para todos os estados brasileiros durante a transição (2029–2033), com três cenários de redistribuição por destino.">
+    <meta property="og:title" content="Projeção ICMS/IBS por Estado 2029–2033">
+    <meta property="og:description" content="Projeção da receita estadual de ICMS/IBS para os estados brasileiros durante a transição (2029–2033), com três cenários de redistribuição por destino.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/ibs-projecao-arrecadacao-br.html">
     <meta property="og:locale" content="pt_BR">
@@ -20,7 +20,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-    <!-- KaTeX for math rendering -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"
@@ -52,41 +51,21 @@
         .status-bar { display: flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.5rem; }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #999; flex-shrink: 0; transition: background 0.3s; }
 
-        /* ── Negative / positive colours (page-specific) ── */
+        /* ── Cores pos/neg ── */
         :root {
-            --neg:          #b03a2e;
-            --neg-bg:       #fdf3f2;
-            --pos:          #1e8449;
-            --pos-bg:       #f0faf4;
-            --highlight-es: #fefce8;
-            --border-es:    #d4a017;
+            --neg:       #b03a2e;
+            --neg-bg:    #fdf3f2;
+            --pos:       #1e8449;
+            --pos-bg:    #f0faf4;
+            --border-es: #d4a017;
         }
         @media (prefers-color-scheme: dark) {
-            :root {
-                --neg: #e05a4f; --neg-bg: #2a1a1a;
-                --pos: #4caf76; --pos-bg: #192a20;
-                --highlight-es: #2a2510; --border-es: #c0940a;
-            }
+            :root { --neg: #e05a4f; --neg-bg: #2a1a1a; --pos: #4caf76; --pos-bg: #192a20; --border-es: #c0940a; }
         }
-        :root[data-theme="light"] { --neg:#b03a2e; --neg-bg:#fdf3f2; --pos:#1e8449; --pos-bg:#f0faf4; --highlight-es:#fefce8; --border-es:#d4a017; }
-        :root[data-theme="dark"]  { --neg:#e05a4f; --neg-bg:#2a1a1a; --pos:#4caf76; --pos-bg:#192a20; --highlight-es:#2a2510; --border-es:#c0940a; }
+        :root[data-theme="light"] { --neg:#b03a2e; --neg-bg:#fdf3f2; --pos:#1e8449; --pos-bg:#f0faf4; --border-es:#d4a017; }
+        :root[data-theme="dark"]  { --neg:#e05a4f; --neg-bg:#2a1a1a; --pos:#4caf76; --pos-bg:#192a20; --border-es:#c0940a; }
 
-        /* ── Scenario cards ── */
-        .sc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2.5rem; }
-        .sc-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.1rem 1.25rem; }
-        .sc-card.sc1 { border-left: 4px solid var(--neg); }
-        .sc-card.sc2 { border-left: 4px solid #c27c0e; }
-        .sc-card.sc3 { border-left: 4px solid var(--accent); }
-        .sc-label { font-family: var(--mono); font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.3rem; }
-        .sc-name { font-family: var(--sans); font-size: 0.95rem; font-weight: 700; margin-bottom: 0.7rem; }
-        .sc-stat-label { font-family: var(--sans); font-size: 0.75rem; color: var(--text-muted); }
-        .sc-stat-val { font-family: var(--mono); font-size: 1.35rem; font-weight: 700; }
-        .sc-stat-val.neg { color: var(--neg); }
-        .sc-stat-val.pos { color: var(--pos); }
-        .sc-stat-sub { font-family: var(--sans); font-size: 0.77rem; color: var(--text-muted); margin-top: 0.1rem; }
-        .sc-divider { border: none; border-top: 1px solid var(--border); margin: 0.65rem 0; }
-
-        /* ── Methodology ── */
+        /* ── Metodologia ── */
         .methodology { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 2rem; background: var(--surface); }
         .methodology summary { padding: 0.9rem 1.25rem; cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; list-style: none; display: flex; align-items: center; gap: 0.5rem; }
         .methodology summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; }
@@ -113,7 +92,7 @@
         .meto-section-title { font-family: var(--sans); font-size: 0.85rem; font-weight: 600; color: var(--text); margin: 1.25rem 0 0.4rem; }
         .meto-note { font-family: var(--serif); font-size: 0.82rem; color: var(--text-secondary); line-height: 1.65; margin-top: 0.5rem; }
 
-        /* ── Tabs ── */
+        /* ── Abas ── */
         .tabs-wrap { margin-bottom: 0; }
         .tab-btns { display: flex; gap: 0.25rem; border-bottom: 2px solid var(--border); margin-bottom: 1.25rem; }
         .tab-btn { padding: 0.5rem 1.1rem; border: 1px solid transparent; border-bottom: none; border-radius: 6px 6px 0 0; background: none; cursor: pointer; font-family: var(--sans); font-size: 0.86rem; font-weight: 500; color: var(--text-muted); transition: all 0.15s; position: relative; bottom: -2px; }
@@ -122,10 +101,10 @@
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
 
-        /* ── Section label ── */
+        /* ── Label de seção ── */
         .section-label { display: block; font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 0.5rem; }
 
-        /* ── Data table ── */
+        /* ── Tabela de dados ── */
         .table-wrap { overflow-x: auto; margin-bottom: 1.5rem; }
         .data-table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
         .data-table th { background: var(--bg); border: 1px solid var(--border); padding: 0.42rem 0.6rem; text-align: center; font-family: var(--sans); font-weight: 600; font-size: 0.76rem; white-space: nowrap; color: var(--text); }
@@ -136,27 +115,30 @@
         .data-table td.td-ref { color: var(--text-muted); }
         .data-table .td-neg { color: var(--neg); font-weight: 600; }
         .data-table .td-pos { color: var(--pos); font-weight: 600; }
-        .data-table tr.row-es { background: var(--highlight-es); }
-        .data-table tr.row-es td.td-uf::after { content: ' ★'; color: var(--border-es); font-size: 0.7em; }
-        .data-table tfoot tr { background: var(--bg); font-weight: 700; border-top: 2px solid var(--border); }
+        /* Linha ES: tint âmbar via color-mix — compatível com temas claro e escuro */
+        .data-table tr.row-es { background: color-mix(in srgb, var(--border-es) 12%, transparent); }
+        .data-table tr.row-es td { color: var(--text); }
+        .data-table tr.row-es td.td-ref { color: var(--text-muted); }
+        .data-table tr.row-es td.td-neg { color: var(--neg); }
+        .data-table tr.row-es td.td-pos { color: var(--pos); }
+        .data-table tr.row-es td.td-uf::after { content: ' \2605'; color: var(--border-es); font-size: 0.7em; }
+        .data-table tfoot tr { background: var(--bg); border-top: 2px solid var(--border); }
         .data-table tfoot td { font-weight: 700; }
         .data-table tr:hover:not(tfoot tr) { background: var(--accent-bg); }
-        .data-table tr.row-es:hover { background: var(--highlight-es); }
+        .data-table tr.row-es:hover { background: color-mix(in srgb, var(--border-es) 20%, transparent); }
 
-        /* ── Callout / note ── */
+        /* ── Callout ── */
         .callout { background: var(--accent-bg); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 0.75rem 1rem; font-family: var(--serif); font-size: 0.84rem; color: var(--text); margin: 1rem 0; line-height: 1.6; }
 
-        /* ── Footnotes ── */
+        /* ── Notas de rodapé ── */
         .footnotes { margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
         .footnotes p { font-family: var(--serif); font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.4rem; }
         .footnotes a { color: var(--accent); text-decoration: none; }
         .footnotes a:hover { text-decoration: underline; }
 
-        /* ── Responsive ── */
         @media (max-width: 640px) {
             .study-hero { padding: 2rem 1.25rem 1rem; }
             .study-content { padding: 0 1.25rem 3rem; }
-            .sc-grid { grid-template-columns: 1fr; }
             .tab-btns { flex-wrap: wrap; }
         }
     </style>
@@ -193,14 +175,15 @@
         </div>
         <h1>Projeção ICMS/IBS por Estado 2029–2033</h1>
         <p class="lead">
-            Estimativa da receita estadual de ICMS/IBS durante a transição da Reforma Tributária, comparando
-            a trajetória contrafactual (sem reforma) com três cenários de redistribuição pelo critério destino,
-            para os 27 estados e o Distrito Federal.
+            Estimativa da receita estadual de ICMS/IBS durante a transição da Reforma Tributária,
+            para os 27 estados e o Distrito Federal. A projeção compara a trajetória contrafactual
+            sem reforma com três cenários de redistribuição do IBSd pelo critério destino, tomando
+            como referência os coeficientes de Gobetti e Monteiro (IPEA, 2023).
         </p>
         <p class="study-meta">
             Dados: SICONFI/STN, DCA Anexo&nbsp;I-C, 2019–2025 &bull;
-            Coeficientes Gobetti: IPEA Carta de Conjuntura&nbsp;60 (2023) &bull;
-            Base jurídica: EC&nbsp;132/2023, LC&nbsp;214/2025, LC&nbsp;227/2026
+            Coeficientes: IPEA Carta de Conjuntura&nbsp;60 (2023) &bull;
+            Base legal: EC&nbsp;132/2023, LC&nbsp;214/2025, LC&nbsp;227/2026
         </p>
     </div>
 
@@ -208,119 +191,77 @@
 
         <div id="status-main" class="status-bar">
             <span class="status-dot"></span>
-            <span>Carregando dados…</span>
+            <span>Carregando dados...</span>
         </div>
 
-        <!-- Scenario summary cards -->
-        <div class="sc-grid">
-            <div class="sc-card sc1">
-                <div class="sc-label">Cenário 1</div>
-                <div class="sc-name">Gobetti pleno</div>
-                <div class="sc-stat-label">Redistribuição integral origem → destino</div>
-                <hr class="sc-divider">
-                <div class="sc-stat-label">ES em 2033</div>
-                <div class="sc-stat-val neg" id="sc1-es33">—</div>
-                <div class="sc-stat-sub" id="sc1-es33-abs">—</div>
-                <hr class="sc-divider">
-                <div class="sc-stat-label">Estados que perdem em 2033</div>
-                <div class="sc-stat-val" id="sc1-count-neg" style="font-size:1.1rem">—</div>
-            </div>
-            <div class="sc-card sc2">
-                <div class="sc-label">Cenário 2</div>
-                <div class="sc-name">Intermediário</div>
-                <div class="sc-stat-label">Metade do efeito Gobetti, bolo conservado</div>
-                <hr class="sc-divider">
-                <div class="sc-stat-label">ES em 2033</div>
-                <div class="sc-stat-val neg" id="sc2-es33">—</div>
-                <div class="sc-stat-sub" id="sc2-es33-abs">—</div>
-                <hr class="sc-divider">
-                <div class="sc-stat-label">Estados que perdem em 2033</div>
-                <div class="sc-stat-val" id="sc2-count-neg" style="font-size:1.1rem">—</div>
-            </div>
-            <div class="sc-card sc3">
-                <div class="sc-label">Cenário 3</div>
-                <div class="sc-name">Neutro</div>
-                <div class="sc-stat-label">Nenhuma redistribuição por destino (\(\delta = 0\))</div>
-                <hr class="sc-divider">
-                <div class="sc-stat-label">ES em 2033</div>
-                <div class="sc-stat-val" id="sc3-es33">—</div>
-                <div class="sc-stat-sub" id="sc3-es33-abs">—</div>
-                <hr class="sc-divider">
-                <div class="sc-stat-label">Estados que perdem em 2033</div>
-                <div class="sc-stat-val" id="sc3-count-neg" style="font-size:1.1rem">—</div>
-            </div>
-        </div>
-
-        <!-- Methodology -->
         <details class="methodology">
             <summary>Metodologia e fórmula matemática</summary>
             <div class="methodology-body">
 
                 <p class="meto-note">
-                    A receita estadual projetada de ICMS/IBS para cada UF e para cada ano
-                    \(a \in \{2029, \ldots, 2033\}\) é a soma de três componentes: ICMS residual
-                    (em extinção gradual), IBSt distribuído pelo CPT histórico, e IBSd distribuído
-                    pelo critério destino.
+                    A receita estadual de ICMS/IBS projetada para o ano \(a \in \{2029,\ldots,2033\}\)
+                    é decomposta em três parcelas: ICMS residual em extinção gradual, IBS distribuído pelo
+                    critério histórico (IBSt) e IBS distribuído pelo critério destino (IBSd).
                 </p>
 
                 <div class="meto-formula-box">
 $$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}}
-\;+\; R_0^{avg}\cdot s_a\cdot(1-c_a)\cdot\!\Bigl[\underbrace{\alpha_a}_{\text{IBSt via CPT}}
-\;+\; \underbrace{(1-\alpha_a)(1-\rho)(1+\delta_{\text{UF}})}_{\text{IBSd via destino}}\Bigr]$$
+\;+\; R_0^{avg}\cdot s_a\cdot\Bigl[\underbrace{\alpha_a}_{\text{IBSt via CPT}}
+\;+\; \underbrace{(1-\alpha_a)\cdot(1-c_a)\cdot(1-\rho)\cdot(1+\delta_{\text{UF}})}_{\text{IBSd via destino}}\Bigr]$$
                 </div>
 
-                <p class="meto-section-title">Descrição das variáveis</p>
+                <p class="meto-section-title">Variáveis</p>
                 <table class="param-table">
                     <thead><tr><th>Símbolo</th><th>Definição</th><th>Valores / fonte</th></tr></thead>
                     <tbody>
                         <tr>
                             <td>\(R_0^{2025}\)</td>
-                            <td>Receita-base do ICMS: ICMS bruto do estado em 2025, multiplicado por 0,75 (cota estadual, art. 158 IV CF/88). É a referência contrafactual — o que o estado receberia sem reforma.</td>
+                            <td>Base de referência do ICMS: receita estadual de 2025, igual a 75% do ICMS bruto (art. 158, IV, CF/88). Representa o contrafactual estacionário, o que o estado receberia sem a reforma.</td>
                             <td>SICONFI/STN, DCA Anexo I-C, 2025</td>
                         </tr>
                         <tr>
                             <td>\(R_0^{avg}\)</td>
-                            <td>Base IBS do estado: participação histórica no bolo nacional. Calculada como \(\text{TotalBR}_{2025} \times \text{CPT}_{UF}^{estado}\), o que equivale à média deflacionada de ICMS bruto × 0,75 nos anos 2019–2025. Captura o posicionamento histórico do estado no bolo tributário nacional.</td>
-                            <td>SICONFI/STN DCA 2019–2025; deflator = TotalBR\(_{2025}\)/TotalBR\(_t\)</td>
+                            <td>Base de referência do IBS: participação histórica no bolo nacional, equivalente a \(\mathrm{TotalBR}_{2025}\times\mathrm{CPT}_{UF}\). Calculada como média deflacionada de (ICMS bruto × 0,75) nos anos 2019–2025. Estados com crescimento de ICMS acima da média nacional têm \(R_0^{avg}<R_0^{2025}\); abaixo da média, \(R_0^{avg}>R_0^{2025}\).</td>
+                            <td>DCA 2019–2025; deflator = TotalBR\(_{2025}\)/TotalBR\(_t\)</td>
                         </tr>
                         <tr>
                             <td>\(f_a\)</td>
-                            <td>Fração remanescente do ICMS no ano \(a\). Reduz 1/10 por ano de 2029 a 2032, extinguindo-se em 2033 (art. 128 ADCT, EC 132/2023).</td>
+                            <td>Fração remanescente do ICMS no ano \(a\): reduz 1/10 a cada ano de 2029 a 2032 e se extingue em 2033 (ADCT art. 128).</td>
                             <td>0,9 / 0,8 / 0,7 / 0,6 / 0</td>
                         </tr>
                         <tr>
-                            <td>\(s_a\)</td>
-                            <td>Fração IBS ativa: \(s_a = 1 - f_a\). Representa a parcela do bolo já convertida em IBS.</td>
+                            <td>\(s_a = 1-f_a\)</td>
+                            <td>Fração do bolo tributário já convertida em IBS no ano \(a\).</td>
                             <td>0,1 / 0,2 / 0,3 / 0,4 / 1,0</td>
                         </tr>
                         <tr>
                             <td>\(\alpha_a\)</td>
-                            <td>Fração do IBS distribuída pelo critério histórico (IBSt). A parcela \(1 - \alpha_a\) é distribuída pelo critério destino (IBSd). Previsto nos arts. 131–132 ADCT e arts. 114–116 LC 227/2026.</td>
+                            <td>Fração do IBS distribuída pelo critério histórico (IBSt); a parcela \((1-\alpha_a)\) é distribuída pelo critério destino (IBSd). Base legal: ADCT arts. 131–132 e LC 227/2026 arts. 114–116.</td>
                             <td>0,80 (2029–2032) / 0,90 (2033)</td>
                         </tr>
                         <tr>
                             <td>\(\delta_{\text{UF}}\)</td>
-                            <td>Efeito destino: variação relativa da receita estadual sob redistribuição integral pelo critério consumo. Obtido de Gobetti e Monteiro (IPEA, 2023), coluna <em>estado_pct</em> (nível estadual). Nos cenários: Cen. 1 = valor integral; Cen. 2 = metade; Cen. 3 = zero.</td>
-                            <td>Gobetti-Monteiro, tabela4_esferas</td>
-                        </tr>
-                        <tr>
-                            <td>\(\rho\)</td>
-                            <td>Seguro-Receita (art. 132 ADCT): fração do IBSd retida para fundo de garantia de mínimos durante a transição. Aplicada antes da distribuição por destino. Hipótese: municípios são os principais beneficiários do retorno do fundo, portanto não se desconta ρ como receita potencial dos estados.</td>
-                            <td>0,05 (5% do IBSd bruto)</td>
+                            <td>Efeito destino: variação relativa da receita estadual sob redistribuição integral pelo critério consumo. Coeficientes estimados por Gobetti e Monteiro (IPEA, 2023), campo \(estado\_pct\) da Tabela 4 (esfera estadual). Varia por cenário conforme descrito abaixo.</td>
+                            <td>IPEA, 2023, tabela4_esferas</td>
                         </tr>
                         <tr>
                             <td>\(c_a\)</td>
-                            <td>Taxa de financiamento do Comitê Gestor do IBS (art. 51 LC 227/2026). Dedução sobre todo o IBS arrecadado, anterior à repartição entre IBSt e IBSd.</td>
+                            <td>Taxa de financiamento do Comitê Gestor do IBS (CGIBS, art. 51 LC 227/2026). Dedução aplicada exclusivamente sobre a parcela IBSd, anterior à redistribuição por destino.</td>
                             <td>2,0% / 1,0% / 0,67% / 0,5% / 0,5%</td>
+                        </tr>
+                        <tr>
+                            <td>\(\rho\)</td>
+                            <td>Seguro-Receita (ADCT art. 132): fração do IBSd retida para fundo de garantia de receita mínima. Aplicada antes da distribuição por destino. O retorno do fundo beneficia principalmente municípios; por hipótese conservadora, não é computado como receita estadual potencial.</td>
+                            <td>5% do IBSd bruto</td>
                         </tr>
                     </tbody>
                 </table>
 
-                <p class="meto-section-title">Parâmetros da transição (ADCT, arts. 128 e 131)</p>
+                <p class="meto-section-title">Parâmetros da transição (ADCT arts. 128 e 131)</p>
                 <div class="table-wrap">
                     <table class="param-table">
                         <thead>
-                            <tr><th>Ano</th><th>\(f_a\) (ICMS)</th><th>\(s_a\) (IBS)</th><th>\(\alpha_a\) (IBSt)</th><th>\(1-\alpha_a\) (IBSd)</th><th>\(c_a\) (CGIBS)</th></tr>
+                            <tr><th>Ano</th><th>\(f_a\)</th><th>\(s_a\)</th><th>\(\alpha_a\) (IBSt)</th><th>\(1-\alpha_a\) (IBSd)</th><th>\(c_a\) (CGIBS, sobre IBSd)</th></tr>
                         </thead>
                         <tbody>
                             <tr><td>2029</td><td>0,90</td><td>0,10</td><td>0,80</td><td>0,20</td><td>2,00%</td></tr>
@@ -336,57 +277,60 @@ $$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}
                 <table class="param-table">
                     <thead><tr><th>Cenário</th><th>\(\delta_{\text{UF}}\)</th><th>Descrição</th></tr></thead>
                     <tbody>
-                        <tr><td>1 — Gobetti pleno</td><td>estado_pct / 100</td><td>Redistribuição integral origem → destino, conforme Gobetti e Monteiro (IPEA, 2023), coeficiente estadual (tabela4_esferas)</td></tr>
-                        <tr><td>2 — Intermediário</td><td>(estado_pct / 100) / 2</td><td>Metade do efeito Gobetti; por ser uma transformação linear de uma redistribuição soma-zero, o bolo total entre estados é conservado</td></tr>
-                        <tr><td>3 — Neutro</td><td>0</td><td>IBSd distribuído pelo mesmo critério histórico (CPT), sem redistribuição por destino</td></tr>
+                        <tr><td>1 — Redistribuição integral</td><td>estado_pct / 100</td><td>O IBSd é alocado conforme os coeficientes de consumo estimados por Gobetti e Monteiro (IPEA, 2023) para redistribuição plena pelo critério destino, nível estadual (Tabela 4, esferas).</td></tr>
+                        <tr><td>2 — Redistribuição moderada</td><td>(estado_pct / 100) / 2</td><td>O efeito redistributivo é reduzido à metade. Por ser transformação linear de uma redistribuição soma-zero, o bolo total entre estados é conservado.</td></tr>
+                        <tr><td>3 — Neutro</td><td>0</td><td>O IBSd é distribuído pelo mesmo critério histórico do IBSt (CPT), sem redistribuição por destino.</td></tr>
                     </tbody>
                 </table>
 
-                <p class="meto-section-title">Dois componentes de referência: \(R_0^{2025}\) e \(R_0^{avg}\)</p>
+                <p class="meto-section-title">Dois referenciais: \(R_0^{2025}\) e \(R_0^{avg}\)</p>
                 <p class="meto-note">
-                    A fórmula distingue duas bases. O ICMS decrescente usa \(R_0^{2025}\) — o valor efetivo de 2025,
-                    parâmetro de estado estacionário a preços constantes. O IBS nascente usa \(R_0^{avg}\) — a média
-                    histórica deflacionada, que coincide com o quanto o estado receberia do bolo IBS pelo critério CPT
-                    (\(R_0^{avg} = \text{TotalBR} \times \text{CPT}_{UF}\)). Estados que cresceram acima da média
-                    nacional entre 2019 e 2025 têm \(R_0^{avg} < R_0^{2025}\); estados que cresceram abaixo têm
-                    \(R_0^{avg} > R_0^{2025}\). Essa diferença (captada pelo coeficiente
-                    \(\lambda_{UF} = R_0^{avg} / R_0^{2025}\), exibido na tabela do Cenário 3)
-                    é um efeito estrutural do CPT: o critério de participação histórica compensa estados que
-                    cresceram menos e penaliza os que cresceram mais rápido do que a média.
+                    O ICMS decrescente usa \(R_0^{2025}\) como contrafactual de estado estacionário.
+                    O IBS nascente usa \(R_0^{avg}\), a média histórica deflacionada, correspondente
+                    à parcela do bolo nacional alocada ao estado pelo Coeficiente de Participação de
+                    Transição (\(R_0^{avg}=\mathrm{TotalBR}_{2025}\times\mathrm{CPT}_{UF}\)).
+                    O quociente \(\lambda_{UF}=R_0^{avg}/R_0^{2025}\), exibido na tabela do Cenário 3,
+                    mede esse diferencial: \(\lambda<1\) indica estado que cresceu acima da média
+                    nacional entre 2019 e 2025 e perde levemente com o critério histórico mesmo
+                    sem redistribuição por destino.
                 </p>
+
+                <p class="meto-section-title">Simplificações e mecanismos não modelados</p>
                 <p class="meto-note">
-                    <strong>Hipótese de bolo constante:</strong> a carga tributária total do IBS é assumida
-                    constante em relação ao ICMS+ISS de referência (base 2025, preços constantes). O Cenário 2
-                    preserva a propriedade de soma zero: \(\sum_{\text{UF}} \text{CPT}_{UF} \cdot \delta_{UF} = 0\),
-                    portanto \(\sum \text{CPT} \cdot (\delta/2) = 0\) também.
+                    Por limitação de dados individualizados por UF, o modelo não incorpora:
+                    o Fundo de Compensação de Benefícios Fiscais ou Financeiro-Fiscais (FCBF,
+                    ADCT art. 65 EC 132/2023), relevante para estados com benefícios legados via
+                    CONFAZ; a possibilidade de alíquotas estaduais do IBS divergirem da carga
+                    histórica do ICMS; o efeito do cashback sobre a receita líquida do bolo
+                    (ADCT art. 134); e a parcela municipal do IBS, correspondente à transição do ISS.
+                    Os valores pressupõem bolo tributário constante em termos reais (base 2025).
                 </p>
+
                 <p class="meto-note">
-                    <strong>Diferença em relação ao Estudo 03 (ES):</strong> O Estudo 03 usa \(\delta = -30\%\)
-                    (coeficiente total UF, Gobetti tabela1_static) e, no cenário neutro, trata \(R_0^{2025}\) como
-                    base tanto para IBSt quanto para IBSd. Este estudo usa o coeficiente estadual
-                    (\(\delta_{ES} = -34{,}25\%\), tabela4_esferas) e \(R_0^{avg}\) para ambos os componentes IBS,
-                    o que é metodologicamente mais consistente com a definição do CPT.
-                    No cenário neutro em 2033, a diferença numérica para o ES é de aproximadamente 0,5%,
-                    uma discrepância pequena mas metodologicamente relevante.
+                    <strong>Relação com o Estudo 03 (Espírito Santo):</strong> O Estudo 03 utiliza
+                    \(\delta_{ES}=-30\%\) (coeficiente total UF, Gobetti tabela1_static) e trata
+                    \(R_0^{2025}\) como base tanto do IBSt quanto do IBSd. Este estudo adota o
+                    coeficiente estadual (\(\delta_{ES}=-34{,}25\%\), tabela4_esferas) e
+                    \(R_0^{avg}\) como base do IBS, mais consistente com a definição do CPT.
+                    A diferença numérica para o ES no cenário neutro em 2033 é de aproximadamente
+                    0,5 ponto percentual.
                 </p>
             </div>
         </details>
 
-        <!-- Tables -->
         <div class="tabs-wrap">
             <div class="tab-btns">
-                <button class="tab-btn active" data-tab="sc1">Cenário 1: Gobetti pleno</button>
-                <button class="tab-btn" data-tab="sc2">Cenário 2: Intermediário</button>
+                <button class="tab-btn active" data-tab="sc1">Cenário 1: Redistribuição integral</button>
+                <button class="tab-btn" data-tab="sc2">Cenário 2: Redistribuição moderada</button>
                 <button class="tab-btn" data-tab="sc3">Cenário 3: Neutro</button>
             </div>
 
-            <!-- Cenário 1 -->
             <div id="tab-sc1" class="tab-panel active">
-                <span class="section-label">Cenário 1: Gobetti pleno — redistribuição integral origem→destino (R$ bi, preços 2025)</span>
+                <span class="section-label">Cenário 1: Redistribuição integral (R$ bi, preços 2025)</span>
                 <div class="callout">
-                    Cada estado recebe o IBSd na proporção estimada por Gobetti e Monteiro (IPEA, 2023) para
-                    a redistribuição integral origem → destino. O \(\delta_{UF}\) reflete a variação percentual da
-                    receita estadual sob IBS pleno (base 2022), conforme <em>Tabela 4 — esferas</em> do estudo original.
+                    O IBSd é alocado pelo critério de consumo final, com coeficientes \(\delta_{UF}\)
+                    estimados por Gobetti e Monteiro (IPEA, 2023) para a redistribuição plena da
+                    arrecadação de IBS entre estados, nível estadual (Tabela 4, esferas).
                 </div>
                 <div class="table-wrap">
                     <table class="data-table" id="table-sc1">
@@ -400,24 +344,24 @@ $$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}
                             </tr>
                             <tr>
                                 <th>2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
-                                <th>Δ% 2029</th><th>Δ% 2033</th>
+                                <th>&#916;% 2029</th><th>&#916;% 2033</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-sc1">
-                            <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando…</td></tr>
+                            <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
                         </tbody>
                         <tfoot id="tfoot-sc1"></tfoot>
                     </table>
                 </div>
             </div>
 
-            <!-- Cenário 2 -->
             <div id="tab-sc2" class="tab-panel">
-                <span class="section-label">Cenário 2: Intermediário — metade do efeito Gobetti, bolo conservado (R$ bi, preços 2025)</span>
+                <span class="section-label">Cenário 2: Redistribuição moderada (R$ bi, preços 2025)</span>
                 <div class="callout">
-                    O parâmetro \(\delta_{UF}\) é reduzido à metade em todos os estados simultaneamente.
-                    Por ser uma transformação linear de uma redistribuição soma-zero, o bolo total de IBS entre estados
-                    permanece conservado: o que um estado deixa de perder, outro deixa de ganhar na mesma proporção.
+                    O parâmetro \(\delta_{UF}\) é reduzido à metade em relação ao Cenário 1.
+                    Por ser transformação linear de uma redistribuição soma-zero, o bolo total de
+                    IBS entre estados é conservado: a menor perda de um estado corresponde ao
+                    menor ganho de outro, na mesma proporção.
                 </div>
                 <div class="table-wrap">
                     <table class="data-table" id="table-sc2">
@@ -431,26 +375,24 @@ $$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}
                             </tr>
                             <tr>
                                 <th>2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
-                                <th>Δ% 2029</th><th>Δ% 2033</th>
+                                <th>&#916;% 2029</th><th>&#916;% 2033</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-sc2">
-                            <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando…</td></tr>
+                            <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
                         </tbody>
                         <tfoot id="tfoot-sc2"></tfoot>
                     </table>
                 </div>
             </div>
 
-            <!-- Cenário 3 -->
             <div id="tab-sc3" class="tab-panel">
-                <span class="section-label">Cenário 3: Neutro — sem redistribuição por destino (\(\delta = 0\)), somente efeitos sistemáticos (R$ bi, preços 2025)</span>
+                <span class="section-label">Cenário 3: Neutro (R$ bi, preços 2025)</span>
                 <div class="callout">
-                    Sem redistribuição por destino, ainda persistem dois efeitos: (1) as deduções do CGIBS e do
-                    Seguro-Receita sobre o IBSd; (2) o efeito CPT — estados cujo crescimento de ICMS entre 2019 e 2025
-                    ficou abaixo da média nacional têm \(R_0^{avg} > R_0^{2025}\) (\(\lambda > 1\)), ganhando com a
-                    transição; os que cresceram acima da média têm \(\lambda < 1\) e podem perder levemente mesmo
-                    sem redistribuição por destino. A coluna \(\lambda_{UF}\) mostra esse coeficiente de ajuste CPT.
+                    Com \(\delta_{UF}=0\), variações residuais decorrem exclusivamente do efeito CPT:
+                    estados com crescimento de ICMS abaixo da média nacional entre 2019 e 2025 têm
+                    \(\lambda>1\) e ganham levemente com a base histórica; os que cresceram acima
+                    têm \(\lambda<1\). A coluna \(\lambda_{UF}\) exibe esse coeficiente.
                 </div>
                 <div class="table-wrap">
                     <table class="data-table" id="table-sc3">
@@ -464,11 +406,11 @@ $$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}
                             </tr>
                             <tr>
                                 <th>2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
-                                <th>Δ% 2029</th><th>Δ% 2033</th>
+                                <th>&#916;% 2029</th><th>&#916;% 2033</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-sc3">
-                            <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando…</td></tr>
+                            <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
                         </tbody>
                         <tfoot id="tfoot-sc3"></tfoot>
                     </table>
@@ -477,7 +419,7 @@ $$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}
         </div>
 
         <div class="callout" style="margin-top:1rem">
-            Para análise aprofundada do Espírito Santo, incluindo decomposição por componente e gráfico de trajetória,
+            Para análise do Espírito Santo com decomposição por componente e gráfico de trajetória,
             veja o <a href="/estudos/ibs-projecao-arrecadacao-es.html">Estudo 03: Projeção IBS/ICMS ES 2029–2033</a>.
             O coeficiente CPT do ES é analisado no
             <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02: Coeficiente de Participação de Transição ES</a>.
@@ -485,11 +427,10 @@ $$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}
 
         <div class="footnotes">
             <p><strong>Fontes e notas metodológicas:</strong></p>
-            <p>1. Receita de referência (\(R_0^{2025}\)): SICONFI/STN, DCA Anexo I-C (ICMS estadual bruto), 2025. Receita estadual = 75% do ICMS bruto (art. 158, IV, CF/88). A base IBS (\(R_0^{avg}\)) é a média deflacionada de 2019–2025, com deflator = TotalBR\(_{2025}\) / TotalBR\(_t\), onde TotalBR = soma nacional de ICMS+ISS, mesmo método do CPT (LC 227/2026, art. 115).</p>
-            <p>2. Coeficientes Gobetti (\(\delta_{UF}\), nível estadual): Gobetti, S.&nbsp;W.; Monteiro, P.&nbsp;K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura, n. 60, Nota de Conjuntura 18. IPEA, 28 ago. 2023. Disponível em: <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">repositorio.ipea.gov.br</a>. Coluna <em>estado_pct</em> da <em>Tabela 4 — esferas</em> (saldo estadual derivado da proporção ICMS×75%/(ICMS+ISS) estimada pelo DCA 2022).</p>
-            <p>3. Regra de transição: ADCT arts. 128, 131 e 132 (EC 132/2023); distribuição IBSt/IBSd: LC 227/2026, arts. 114–116; CGIBS: LC 227/2026, art. 51; Seguro-Receita: ADCT art. 132.</p>
-            <p>4. O cenário 3 (neutro, \(\delta = 0\)) pode gerar variações residuais via efeito CPT (\(\lambda \neq 1\)) e deduções de CGIBS e Seguro-Receita. Estados com crescimento de ICMS acima da média nacional entre 2019 e 2025 têm \(\lambda < 1\) e perdem levemente mesmo sem redistribuição por destino, pois o CPT captura a participação histórica, não o valor corrente.</p>
-            <p>5. Os valores não incluem crescimento real da receita (base fixa em preços de 2025) nem o retorno do Seguro-Receita como receita potencial para estados deficitários (hipótese conservadora).</p>
+            <p>1. Receita de referência (\(R_0^{2025}\)): SICONFI/STN, DCA Anexo I-C (ICMS bruto estadual), 2025. Receita estadual = 75% do ICMS bruto (art. 158, IV, CF/88). Base IBS (\(R_0^{avg}\)): média deflacionada de 2019–2025, com deflator = TotalBR\(_{2025}\)/TotalBR\(_t\), onde TotalBR é a soma nacional de ICMS+ISS (mesmo método do CPT, LC 227/2026 art. 115).</p>
+            <p>2. Coeficientes \(\delta_{UF}\) (nível estadual): Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura, n. 60, Nota de Conjuntura 18. IPEA, 28 ago. 2023. Disponível em: <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">repositorio.ipea.gov.br</a>. Campo \(estado\_pct\) da Tabela 4 (esferas).</p>
+            <p>3. Base legal: EC 132/2023; ADCT arts. 128, 131 e 132; LC 214/2025; LC 227/2026 arts. 51, 114–116.</p>
+            <p>4. Mecanismos não modelados por simplificação: FCBF (ADCT art. 65), variações de alíquota estadual do IBS, cashback (ADCT art. 134) e parcela municipal do IBS (equivalente ao ISS). O Cenário 3 pode apresentar variações residuais via efeito CPT (\(\lambda\neq 1\)) e deduções de CGIBS e Seguro-Receita sobre o IBSd.</p>
         </div>
     </div>
 
@@ -499,9 +440,6 @@ $$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}
 
     <script src="/js/search.js"></script>
     <script>
-    // ══════════════════════════════════════════════════════════════
-    //  Constantes
-    // ══════════════════════════════════════════════════════════════
     const UFS = ['AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT',
                  'PA','PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO'];
 
@@ -515,7 +453,7 @@ $$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}
         SE:'Sergipe', SP:'São Paulo', TO:'Tocantins'
     };
 
-    // ADCT: fa=ICMS remanescente, sa=fração IBS, alphaBIS=fração IBSt, ca=CGIBS
+    // fa=ICMS remanescente, sa=fração IBS, alphaBIS=fração IBSt, ca=CGIBS (sobre IBSd)
     const ADCT = {
         2029: { fa: 0.9, sa: 0.10, alphaBIS: 0.80, ca: 0.020  },
         2030: { fa: 0.8, sa: 0.20, alphaBIS: 0.80, ca: 0.010  },
@@ -525,18 +463,12 @@ $$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}
     };
     const ANOS     = [2029, 2030, 2031, 2032, 2033];
     const ANOS_REF = ['2019','2020','2021','2022','2023','2024','2025'];
-    const RHO      = 0.05;   // Seguro-Receita
+    const RHO      = 0.05;
 
-    // ══════════════════════════════════════════════════════════════
-    //  Formatação
-    // ══════════════════════════════════════════════════════════════
     const fmtBi  = (v, d=2) => (v/1e9).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
     const fmtPct = (v, d=1) => (v >= 0 ? '+' : '') + (v*100).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}) + '%';
     const clsPct = v => v < -0.0005 ? 'td-neg' : v > 0.0005 ? 'td-pos' : '';
 
-    // ══════════════════════════════════════════════════════════════
-    //  Deflators (mesma metodologia da página CPT)
-    // ══════════════════════════════════════════════════════════════
     function computeDeflators(dca_icms, dca_iss) {
         const totals = {};
         for (const yr of ANOS_REF) {
@@ -553,13 +485,9 @@ $$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}
         return def;
     }
 
-    // ══════════════════════════════════════════════════════════════
-    //  Parâmetros por estado
-    //
-    //  r0_2025 = ICMS_UF_2025 × 0,75  → base do ICMS residual (contrafactual)
-    //  r0_avg  = TotalBR × CPT_UF      → base do IBS (média histórica deflacionada)
-    //  lambda  = r0_avg / r0_2025      → exibido no Cenário 3; < 1 se UF cresceu acima da média
-    // ══════════════════════════════════════════════════════════════
+    // r0_2025 = ICMS_UF_2025 x 0,75  (base do ICMS residual, contrafactual estacionário)
+    // r0_avg  = TotalBR x CPT_UF      (base do IBS, média histórica deflacionada 2019-2025)
+    // lambda  = r0_avg / r0_2025      (exibido no Cenário 3; < 1 se UF cresceu acima da média)
     function computeParams(dca_icms, dca_iss, deflators, gobettiByUF) {
         const params = {};
         for (const uf of UFS) {
@@ -583,15 +511,9 @@ $$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}
         return params;
     }
 
-    // ══════════════════════════════════════════════════════════════
-    //  Projeção de receita para um estado e cenário
-    //
-    //  ICMS residual : R0_2025 × fa
-    //  IBSt (CPT)    : R0_avg  × sa × alphaBIS × (1 − ca)
-    //  IBSd (destino): R0_avg  × sa × (1−alphaBIS) × (1−ca) × (1−ρ) × (1+δ)
-    //
-    //  Δ% comparado a R0_2025 (contrafactual de estado estacionário sem reforma)
-    // ══════════════════════════════════════════════════════════════
+    // ICMS residual : R0_2025 x fa
+    // IBSt (CPT)    : R0_avg  x sa x alphaBIS           (sem dedução CGIBS)
+    // IBSd (destino): R0_avg  x sa x (1-alphaBIS) x (1-ca) x (1-rho) x (1+delta)
     function project(uf, params, deltaFn) {
         const { r0_2025, r0_avg } = params[uf];
         const res = {};
@@ -599,8 +521,8 @@ $$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}
             const { fa, sa, alphaBIS, ca } = ADCT[a];
             const delta    = deltaFn(uf, params);
             const icms_res = r0_2025 * fa;
-            const ibst     = r0_avg  * sa * alphaBIS         * (1 - ca);
-            const ibsd     = r0_avg  * sa * (1 - alphaBIS)   * (1 - ca) * (1 - RHO) * (1 + delta);
+            const ibst     = r0_avg  * sa * alphaBIS;
+            const ibsd     = r0_avg  * sa * (1 - alphaBIS) * (1 - ca) * (1 - RHO) * (1 + delta);
             const total    = icms_res + ibst + ibsd;
             res[a] = { total, dpct: r0_2025 > 0 ? (total - r0_2025) / r0_2025 : 0 };
         }
@@ -613,9 +535,6 @@ $$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}
         { id: 'sc3', fn: ()      => 0 }
     ];
 
-    // ══════════════════════════════════════════════════════════════
-    //  Render table
-    // ══════════════════════════════════════════════════════════════
     function buildTable(tbodyId, tfootId, params, deltaFn, showLambda) {
         const rows = UFS.map(uf => {
             const r = project(uf, params, deltaFn);
@@ -640,7 +559,6 @@ $$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}
             </tr>`;
         }).join('');
 
-        // Footer totals
         let sumR0 = 0;
         const sumYears = {};
         ANOS.forEach(a => sumYears[a] = 0);
@@ -662,33 +580,6 @@ $$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}
         </tr>`;
     }
 
-    // ══════════════════════════════════════════════════════════════
-    //  Cards de cenário
-    // ══════════════════════════════════════════════════════════════
-    function fillCards(params) {
-        SCENARIOS.forEach((sc, i) => {
-            const n = i + 1;
-            const esRes  = project('ES', params, sc.fn);
-            const d33    = esRes[2033].dpct;
-            const d33abs = esRes[2033].total - params['ES'].r0_2025;
-
-            document.getElementById(`sc${n}-es33`).textContent    = fmtPct(d33, 1);
-            document.getElementById(`sc${n}-es33`).className       = `sc-stat-val ${d33 < 0 ? 'neg' : 'pos'}`;
-            document.getElementById(`sc${n}-es33-abs`).textContent =
-                `${fmtBi(d33abs, 2)} R$ bi vs. referência em 2033`;
-
-            let countNeg = 0;
-            for (const uf of UFS) {
-                const r = project(uf, params, sc.fn);
-                if (r[2033].dpct < -0.001) countNeg++;
-            }
-            document.getElementById(`sc${n}-count-neg`).textContent = `${countNeg} de 27`;
-        });
-    }
-
-    // ══════════════════════════════════════════════════════════════
-    //  Tab switcher
-    // ══════════════════════════════════════════════════════════════
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -698,9 +589,6 @@ $$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}
         });
     });
 
-    // ══════════════════════════════════════════════════════════════
-    //  Bootstrap
-    // ══════════════════════════════════════════════════════════════
     (async function init() {
         const statusEl = document.getElementById('status-main');
         try {
@@ -717,20 +605,17 @@ $$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}
             const deflators = computeDeflators(dca_icms, dca_iss);
 
             const gobettiByUF = {};
-            for (const u of gobettiData.tabela4_esferas.ufs) {
-                gobettiByUF[u.uf] = u;
-            }
+            for (const u of gobettiData.tabela4_esferas.ufs) gobettiByUF[u.uf] = u;
 
             const params = computeParams(dca_icms, dca_iss, deflators, gobettiByUF);
 
-            fillCards(params);
             buildTable('tbody-sc1', 'tfoot-sc1', params, SCENARIOS[0].fn, false);
             buildTable('tbody-sc2', 'tfoot-sc2', params, SCENARIOS[1].fn, false);
             buildTable('tbody-sc3', 'tfoot-sc3', params, SCENARIOS[2].fn, true);
 
             statusEl.innerHTML =
                 '<span class="status-dot" style="background:#22c55e"></span> ' +
-                '27 UFs · DCA 2019–2025 · coeficientes Gobetti-Monteiro (IPEA, 2023)';
+                '27 UFs · DCA 2019–2025 · coeficientes IPEA (2023)';
         } catch (err) {
             statusEl.innerHTML =
                 '<span class="status-dot" style="background:#ef4444"></span> Erro ao carregar dados: ' + err.message;
