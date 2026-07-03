@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ICMS+ISS por UF vs. População: Quem Arrecada Acima ou Abaixo do seu Peso Demográfico | Eduardo Reis Araújo</title>
-    <meta name="description" content="Comparação entre a participação de cada UF na arrecadação nacional de ICMS+ISS (2025) e sua participação na população brasileira. Gráfico de dispersão com linha de 45° para identificar entes acima ou abaixo do critério populacional, e projeções de perdas/ganhos por UF na transição origem→destino (Gobetti).">
+    <meta name="description" content="Comparação entre a participação de cada UF na arrecadação nacional de ICMS+ISS (2025) e sua participação na população brasileira, com gráfico de barras divergentes para identificar quem arrecada acima ou abaixo do critério populacional. Inclui as projeções de perdas e ganhos por UF na transição origem→destino do IBS, segundo o estudo de Sérgio Gobetti e Priscila Kaiser Monteiro (IPEA, 2023).">
     <meta name="author" content="Eduardo Reis Araujo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/icms-iss-participacao-vs-populacao.html">
 
     <meta property="og:title" content="ICMS+ISS por UF vs. População: Quem Arrecada Acima ou Abaixo do seu Peso Demográfico">
-    <meta property="og:description" content="Participação de cada UF na arrecadação nacional de ICMS+ISS (2025) comparada à participação populacional, com gráfico de dispersão e linha de 45°.">
+    <meta property="og:description" content="Participação de cada UF na arrecadação nacional de ICMS+ISS (2025) comparada à participação populacional, e as projeções de Gobetti sobre a transição origem→destino do IBS.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/icms-iss-participacao-vs-populacao.html">
     <meta property="og:locale" content="pt_BR">
@@ -94,11 +94,12 @@
             display: block;
         }
         .section-intro {
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             color: var(--text-secondary);
             margin: 0.25rem 0 1rem;
-            line-height: 1.65;
+            line-height: 1.7;
         }
+        .section-intro + .section-intro { margin-top: -0.5rem; }
 
         .callout {
             background: var(--accent-light);
@@ -109,7 +110,7 @@
             margin: 0 0 2rem;
             font-family: var(--serif);
             font-size: 0.9rem;
-            line-height: 1.65;
+            line-height: 1.7;
             color: var(--text-secondary);
         }
         .callout strong { color: var(--text); }
@@ -172,8 +173,8 @@
         .chart-panel {
             background: var(--border-light);
             border-radius: 8px;
-            padding: 1.25rem 1.5rem 1.5rem;
-            margin: 0 0 1rem;
+            padding: 1.25rem 1.25rem 1.5rem;
+            margin: 0 0 1.5rem;
         }
         .chart-panel-title {
             font-family: var(--mono);
@@ -200,6 +201,40 @@
             margin-right: 0.35rem;
             vertical-align: middle;
         }
+        .legend-swatch {
+            display: inline-block;
+            width: 12px;
+            height: 8px;
+            border-radius: 2px;
+            margin-right: 0.35rem;
+            vertical-align: middle;
+        }
+        .chart-scroll {
+            overflow-x: auto;
+        }
+        .chart-canvas-wrap {
+            position: relative;
+            width: 100%;
+        }
+        details.chart-secondary {
+            margin: 0 0 2rem;
+        }
+        details.chart-secondary summary {
+            cursor: pointer;
+            font-family: var(--sans);
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--accent);
+            padding: 0.6rem 0;
+            list-style: none;
+        }
+        details.chart-secondary summary::-webkit-details-marker { display: none; }
+        details.chart-secondary summary::before {
+            content: '▸ ';
+        }
+        details.chart-secondary[open] summary::before {
+            content: '▾ ';
+        }
 
         .status-bar {
             font-family: var(--mono);
@@ -218,19 +253,6 @@
             display: inline-block;
         }
 
-        .pending-box {
-            background: var(--border-light);
-            border: 1px dashed var(--border);
-            border-radius: 8px;
-            padding: 1.5rem 1.75rem;
-            margin: 1rem 0 2rem;
-            font-family: var(--serif);
-            font-size: 0.9rem;
-            line-height: 1.7;
-            color: var(--text-secondary);
-        }
-        .pending-box strong { color: var(--text); }
-
         .metodologia {
             background: var(--border-light);
             border-radius: 8px;
@@ -238,18 +260,27 @@
             margin: 2rem 0;
             font-family: var(--serif);
             font-size: 0.88rem;
-            line-height: 1.7;
+            line-height: 1.75;
             color: var(--text-secondary);
         }
         .metodologia strong { color: var(--text); }
-        .metodologia ul { margin: 0.5rem 0 0 1rem; }
-        .metodologia li { margin-bottom: 0.25rem; }
+        .metodologia h3 {
+            font-family: var(--sans);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text);
+            margin: 1.25rem 0 0.5rem;
+        }
+        .metodologia h3:first-child { margin-top: 0; }
+        .metodologia p { margin-bottom: 0.75rem; }
+        .metodologia p:last-child { margin-bottom: 0; }
 
         .footnote {
             font-family: var(--sans);
             font-size: 0.73rem;
             color: var(--text-muted);
-            line-height: 1.5;
+            line-height: 1.6;
             border-top: 1px solid var(--border-light);
             padding-top: 1rem;
             margin-top: 2rem;
@@ -271,26 +302,28 @@
             </div>
             <h1>ICMS+ISS por UF vs. população: quem arrecada acima ou abaixo do seu peso demográfico</h1>
             <p class="lead">
-                A participação de cada UF na arrecadação nacional de ICMS+ISS não acompanha, de forma alguma,
-                sua participação na população brasileira. Este estudo compara as duas variáveis para 2025
-                (mesma base do <a href="/estudos/reforma-tributaria-coeficiente.html">Coeficiente de Participação
-                de Transição</a>) e localiza cada UF acima ou abaixo da linha de paridade populacional.
-                Em seguida, traz — a partir do paper de Sérgio Gobetti sobre a transição origem→destino do IBS —
-                as projeções de perdas e ganhos por UF nesse novo critério.
+                Quanto cada estado arrecada de ICMS e ISS tem pouca relação com quanto cada estado pesa na
+                população brasileira. Este estudo compara as duas participações para 2025, usando a mesma base de
+                dados do <a href="/estudos/reforma-tributaria-coeficiente.html">Coeficiente de Participação de
+                Transição</a>, e mostra de forma visual quem arrecada acima e quem arrecada abaixo do que sua fatia
+                populacional sugeriria. Na sequência, trazemos as projeções de Sérgio Gobetti e Priscila Kaiser
+                Monteiro (IPEA) sobre o quanto cada UF ganha ou perde quando o ICMS deixa de ser cobrado na origem
+                da produção e passa a ser cobrado no destino do consumo, como prevê a reforma tributária.
             </p>
         </section>
 
         <section class="study-content">
 
             <!-- ═══════════════ PARTE 1 — TABELA ═══════════════ -->
-            <span class="section-label">Tabela 1: Participação tributária (ICMS+ISS, 2025) vs. participação populacional, por UF</span>
+            <span class="section-label">Tabela 1: participação tributária (ICMS+ISS, 2025) e participação populacional, por UF</span>
             <p class="section-intro">
-                Coluna 2: soma do ICMS estadual bruto e do ISS municipal bruto de cada UF em 2025 (DCA Anexo I-C,
-                SICONFI/STN), como fração do agregado nacional ICMS+ISS — o mesmo critério pontual ("foto 2025")
-                usado na Tabela 3 do estudo do Coeficiente de Participação de Transição. Coluna 4: população
-                estimada da UF em 1º/07/2025 (IBGE), como fração da população brasileira. A coluna "Razão" é a
-                divisão simples participação tributária ÷ participação populacional: acima de 1 significa que a
-                UF arrecada mais do que sua fatia populacional "previa"; abaixo de 1, o oposto.
+                A coluna de participação tributária soma o ICMS estadual e o ISS municipal, ambos brutos, que cada
+                UF arrecadou em 2025, e mostra qual fatia isso representa do total nacional. É a mesma fonte e o
+                mesmo critério pontual já usados na Tabela 3 do estudo do Coeficiente de Participação de Transição:
+                dados do DCA Anexo I-C, do SICONFI/STN. A coluna de participação populacional faz o mesmo cálculo
+                para a população, com base na estimativa do IBGE para 1º de julho de 2025. A "Razão" simplesmente
+                divide uma pela outra: acima de 1 significa que a UF arrecada mais do que sua fatia populacional
+                sugeriria; abaixo de 1, o contrário.
             </p>
             <div id="status-table" class="status-bar">
                 <span class="status-dot"></span>
@@ -317,79 +350,156 @@
             </div>
 
             <div class="callout">
-                <strong>Nota sobre o Espírito Santo:</strong> ao contrário do que a intuição de "estado pequeno
-                sub-representado" sugeriria, o ES aparece <strong>acima</strong> da linha de paridade: 2,46% da
-                arrecadação nacional de ICMS+ISS contra 1,93% da população — razão ≈ 1,27. O resultado é coerente
-                com o perfil da economia capixaba (FUNDAP, porto, siderurgia e mineração), que gera arrecadação
-                desproporcional ao tamanho populacional do estado. Isso não invalida o argumento de perda fiscal do
-                ES na transição para o IBS por destino (tratado na Parte 3, abaixo) — apenas mostra que a causa
-                dessa perda não é "sub-representação tributária atual", e sim a mudança de critério de origem
-                para destino, que desloca a base de incidência para onde está o consumo (Parte 3).
+                <strong>Nota sobre o Espírito Santo:</strong> a intuição comum é que um estado pequeno como o ES
+                deveria arrecadar abaixo do seu peso populacional. Os dados mostram o contrário: o ES fica
+                <strong>acima</strong> da paridade, com 2,46% da arrecadação nacional de ICMS+ISS contra 1,93% da
+                população (razão de aproximadamente 1,27). Isso é coerente com o perfil da economia capixaba, que
+                combina FUNDAP, porto e um parque industrial de siderurgia e mineração, gerando arrecadação
+                desproporcional ao tamanho da população do estado. Vale reforçar que isso não contradiz a perda
+                fiscal do ES na transição do IBS para o critério de destino, discutida na Parte 3 deste estudo:
+                aquela perda não decorre de o ES arrecadar pouco hoje, mas de a mudança de critério deslocar a base
+                de incidência para onde o consumo acontece, não para onde a produção acontece.
             </div>
 
-            <!-- ═══════════════ PARTE 2 — GRÁFICO DE DISPERSÃO ═══════════════ -->
-            <span class="section-label" style="margin-top:2rem">Gráfico 1: participação tributária vs. participação populacional (dispersão, linha de 45°)</span>
+            <!-- ═══════════════ PARTE 2 — GRÁFICOS ═══════════════ -->
+            <span class="section-label" style="margin-top:2rem">Gráfico 1: quem arrecada acima ou abaixo da paridade populacional</span>
             <p class="section-intro">
-                Cada ponto é uma UF, posicionada por sua participação populacional (eixo X) e sua participação em
-                ICMS+ISS (eixo Y), ambas em % do total nacional. A linha tracejada de 45° é o lugar geométrico onde
-                as duas participações são iguais (razão = 1). Pontos <strong>acima</strong> da linha arrecadam mais
-                do que sua fatia populacional; pontos <strong>abaixo</strong>, menos.
+                Cada barra representa uma UF, ordenada da maior vantagem tributária para a maior desvantagem. A
+                barra mostra a diferença, em pontos percentuais, entre a participação em ICMS+ISS e a participação
+                populacional da UF. Barras azuis para a direita indicam UFs que arrecadam acima do que sua
+                população sugeriria; barras vermelhas para a esquerda indicam UFs que arrecadam abaixo.
             </p>
             <div class="chart-panel">
-                <p class="chart-panel-title">Participação tributária (Y) × participação populacional (X) — 27 UFs, 2025</p>
-                <canvas id="chart-scatter" style="max-height:520px"></canvas>
+                <p class="chart-panel-title">Diferença entre participação tributária e participação populacional (p.p.), 27 UFs, 2025</p>
+                <div class="chart-canvas-wrap"><canvas id="chart-diverging"></canvas></div>
                 <div class="chart-legend-note">
-                    <span><span class="legend-dot" style="background:#2a78d6"></span>UF</span>
-                    <span><span class="legend-dot" style="background:#e34948"></span>Espírito Santo</span>
-                    <span>┈┈ Linha de 45° (participação tributária = participação populacional)</span>
+                    <span><span class="legend-swatch" style="background:#2a78d6"></span>Acima da paridade populacional</span>
+                    <span><span class="legend-swatch" style="background:#e34948"></span>Abaixo da paridade populacional</span>
                 </div>
             </div>
 
-            <!-- ═══════════════ PARTE 3 — GOBETTI (PENDENTE) ═══════════════ -->
-            <span class="section-label" style="margin-top:2.5rem">Tabela 2: Projeção de perdas/ganhos por UF na transição origem → destino (Gobetti)</span>
+            <details class="chart-secondary">
+                <summary>Ver também: gráfico de dispersão com a linha de 45°</summary>
+                <p class="section-intro">
+                    Uma forma alternativa de olhar para os mesmos dados: cada ponto é posicionado por sua
+                    participação populacional (eixo horizontal) e por sua participação em ICMS+ISS (eixo vertical).
+                    A linha tracejada é o ponto onde as duas participações seriam idênticas. Pontos acima da linha
+                    arrecadam mais do que sua fatia populacional; pontos abaixo, menos. Em telas pequenas, o
+                    gráfico de barras acima costuma ser mais fácil de ler porque não depende de comparar a
+                    distância de um ponto até uma diagonal.
+                </p>
+                <div class="chart-panel">
+                    <p class="chart-panel-title">Participação tributária (eixo Y) x participação populacional (eixo X), 27 UFs, 2025</p>
+                    <canvas id="chart-scatter" style="max-height:480px"></canvas>
+                    <div class="chart-legend-note">
+                        <span><span class="legend-dot" style="background:#2a78d6"></span>UF</span>
+                        <span><span class="legend-dot" style="background:#e34948"></span>Espírito Santo</span>
+                        <span>Linha tracejada: participação tributária = participação populacional</span>
+                    </div>
+                </div>
+            </details>
+
+            <!-- ═══════════════ PARTE 3 — GOBETTI ═══════════════ -->
+            <span class="section-label" style="margin-top:2.5rem">Tabela 2 e Gráfico 2: perdas e ganhos por UF na transição de origem para destino</span>
             <p class="section-intro">
-                Sérgio Gobetti, em estudos sobre a reforma do ICMS/IBS, projeta o impacto por UF da mudança do
-                critério de cobrança de <em>origem</em> (onde o bem é produzido) para <em>destino</em> (onde o bem
-                é consumido) — o núcleo da transição para o IBS. Estados exportadores líquidos para o resto do país
-                (produtores industriais, como o ES) tendem a perder participação; estados consumidores líquidos
-                tendem a ganhar. Esta tabela reproduzirá essas projeções, com a metodologia de Gobetti explicitada
-                a partir do paper original.
+                Sérgio Gobetti e Priscila Kaiser Monteiro publicaram, em agosto de 2023, uma nota técnica do IPEA
+                que simula o efeito redistributivo da reforma tributária caso o novo modelo já estivesse
+                plenamente em vigor em 2022, sem o amortecimento da regra de transição legal de cinquenta anos. Os
+                dois pesquisadores estimam quanto cada UF arrecadaria de estado mais municípios com o novo imposto
+                sobre bens e serviços, cobrado no destino, comparando esse valor com o que foi efetivamente
+                arrecadado de ICMS e ISS naquele ano.
             </p>
-            <div class="pending-box">
-                <strong>Aguardando o PDF do paper de Gobetti.</strong> Assim que você enviar o documento, vou
-                extrair (i) a metodologia exata usada para projetar as perdas/ganhos por UF — provavelmente uma
-                simulação de recomposição da base de ICMS por local de consumo, usando dados de comércio
-                interestadual (GIA/EFD ou Matriz de Insumo-Produto) — e (ii) a tabela completa de % de perda ou
-                ganho por UF, com o ES destacado e comparado ao referencial de destino já citado no estudo do CPT_ES
-                (2,4%, conforme Gobetti e Monteiro, 2023).
+            <div id="status-gobetti" class="status-bar">
+                <span class="status-dot"></span>
+                <span>Carregando dados…</span>
+            </div>
+            <div class="chart-panel">
+                <p class="chart-panel-title">Variação percentual da receita estado+municípios, cenário estático (destino pleno vs. origem, base 2022)</p>
+                <div class="chart-canvas-wrap"><canvas id="chart-gobetti"></canvas></div>
+                <div class="chart-legend-note">
+                    <span><span class="legend-swatch" style="background:#2a78d6"></span>Ganha com a mudança de critério</span>
+                    <span><span class="legend-swatch" style="background:#e34948"></span>Perde com a mudança de critério</span>
+                </div>
+            </div>
+            <div class="data-table-wrap">
+                <table class="data-table" id="table-gobetti">
+                    <thead>
+                        <tr>
+                            <th class="th-uf">UF</th>
+                            <th>Receita pré-reforma<br><small style="font-weight:400">(R$ bi, 2022)</small></th>
+                            <th>Receita pós-reforma<br><small style="font-weight:400">(R$ bi, destino pleno)</small></th>
+                            <th>Variação<br><small style="font-weight:400">(R$ bi)</small></th>
+                            <th>Variação<br><small style="font-weight:400">(%)</small></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-gobetti">
+                        <tr><td colspan="5" class="loading-cell">Aguardando dados…</td></tr>
+                    </tbody>
+                    <tfoot id="tfoot-gobetti"></tfoot>
+                </table>
+            </div>
+
+            <div class="callout">
+                <strong>E o Espírito Santo, na prática, perde quanto?</strong> Nesse cenário estático, sem qualquer
+                amortecimento, o ES aparece como o segundo estado mais afetado do país: perderia cerca de 30% da
+                sua receita conjunta de estado e municípios se a mudança de critério já estivesse totalmente em
+                vigor em 2022. Só o Amazonas perderia proporcionalmente mais. Mas a reforma aprovada não funciona
+                assim: ela prevê uma transição gradual de cinquenta anos, mais um fundo de compensação (o
+                seguro-receita) que limita a perda relativa de qualquer estado a, no máximo, 27% em qualquer
+                cenário de crescimento econômico. Considerando essa regra de transição e o crescimento esperado do
+                PIB ao longo do tempo, Gobetti e Monteiro projetam que a perda efetiva do ES ao final da transição
+                ficaria entre 12%, no cenário mais otimista para o crescimento gerado pela própria reforma, e 24%,
+                no cenário mais pessimista. Em ambos os casos, bem abaixo do impacto estático de partida.
             </div>
 
             <!-- Metodologia -->
             <div class="metodologia">
-                <strong>Metodologia — Partes 1 e 2</strong>
-                <ul>
-                    <li><strong>Numerador (participação tributária):</strong> ICMS estadual bruto + ISS municipal
-                    bruto de cada UF em 2025, extraídos do DCA Anexo I-C (SICONFI/STN), como fração da soma nacional
-                    de ICMS+ISS em 2025. É o mesmo dado de "índice pontual 2025" usado na Tabela 3 do estudo do
-                    Coeficiente de Participação de Transição — sem qualquer dedução de cota-parte municipal, já que
-                    aqui o objetivo é medir a arrecadação bruta gerada no território da UF, não sua distribuição
-                    interna entre estado e municípios.</li>
-                    <li><strong>Denominador (participação populacional):</strong> população estimada de cada UF em
-                    1º de julho de 2025, conforme IBGE (Estimativas da População Residente no Brasil e Unidades da
-                    Federação, DOU), como fração da população total do Brasil na mesma data (213.421.037
-                    habitantes).</li>
-                    <li><strong>Leitura do gráfico:</strong> a linha de 45° representa neutralidade — nem toda
-                    unidade da federação precisa estar sobre ela para haver "justiça" na distribuição, porque a
-                    arrecadação de ICMS/ISS não é (nem pretende ser) proporcional à população: ela reflete onde a
-                    atividade econômica formal está concentrada. O gráfico serve para visualizar a magnitude do
-                    descolamento, não para julgar se ele é "certo" ou "errado".</li>
-                </ul>
+                <h3>Como foram calculadas as participações (Partes 1 e 2)</h3>
+                <p>
+                    A participação tributária de cada UF soma o ICMS estadual bruto e o ISS municipal bruto
+                    arrecadados em 2025, extraídos do DCA Anexo I-C do SICONFI/STN, e divide esse total pela soma
+                    nacional de ICMS+ISS no mesmo ano. É o mesmo dado usado como "índice pontual 2025" na Tabela 3
+                    do estudo do Coeficiente de Participação de Transição, sem qualquer dedução da cota-parte
+                    municipal: o objetivo aqui é medir a arrecadação bruta gerada no território da UF, não como
+                    ela se distribui internamente entre o governo estadual e os municípios.
+                </p>
+                <p>
+                    A participação populacional usa a população estimada de cada UF em 1º de julho de 2025,
+                    segundo o IBGE, dividida pela população total do Brasil na mesma data (213.421.037
+                    habitantes).
+                </p>
+                <p>
+                    A linha de 45° do gráfico de dispersão, ou o zero do gráfico de barras, representa neutralidade
+                    entre as duas variáveis, não um ideal normativo. A arrecadação de ICMS e ISS não é, nem
+                    pretende ser, proporcional à população: ela reflete onde a atividade econômica formal está
+                    concentrada. Os gráficos servem para visualizar a magnitude do descolamento entre as duas
+                    variáveis, não para julgar se ele é desejável ou problemático.
+                </p>
+                <h3>Como Gobetti e Monteiro projetaram as perdas e ganhos por UF (Parte 3)</h3>
+                <p>
+                    O ponto de partida da simulação é uma proxy da base tributável do consumo das famílias,
+                    construída a partir da Pesquisa de Orçamentos Familiares do IBGE, combinada com uma estimativa
+                    das compras governamentais sujeitas a tributação. Com essa proxy, os autores calibram uma
+                    alíquota neutra, que preserva a arrecadação total do país, e redistribuem a receita conforme o
+                    local onde o consumo estimado ocorre, em vez do local onde o bem foi produzido.
+                </p>
+                <p>
+                    O resultado dessa simulação é comparado à arrecadação real de ICMS e ISS em 2022, gerando a
+                    Tabela 1 do paper original: o efeito redistributivo estático, ou seja, o que aconteceria se o
+                    novo critério já estivesse totalmente em vigor naquele ano, sem transição gradual. É essa
+                    tabela que reproduzimos acima. Os próprios autores destacam que esse número estático superestima
+                    o impacto de curto e médio prazo, porque a reforma efetivamente aprovada substitui a mudança
+                    abrupta por uma transição de cinquenta anos, combinada com um fundo de compensação que protege
+                    os estados de maior perda relativa. É por isso que trazemos, no texto acima, também a
+                    estimativa de perda efetiva do ES ao final dessa transição, que é bem menor do que o número
+                    estático de partida.
+                </p>
             </div>
 
             <div class="footnote">
-                <p>Fonte tributária: <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">SICONFI: API Data Lake STN</a>, DCA Anexo I-C 2025 (ICMS estadual e ISS municipal brutos).</p>
-                <p>Fonte populacional: IBGE, Estimativas da População Residente no Brasil e Unidades da Federação com data de referência em 1º de julho de 2025 (Diretoria de Pesquisas — DPE — Coordenação de População e Indicadores Sociais).</p>
-                <p>Referência de destino do ES: Gobetti e Monteiro (2023) estimam a participação do ES pelo critério de destino (IBS pleno, regime permanente) em 2,4% — ver estudo do <a href="/estudos/reforma-tributaria-coeficiente.html">CPT_ES</a>.</p>
+                <p>Fonte tributária (Partes 1 e 2): <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">SICONFI: API Data Lake STN</a>, DCA Anexo I-C 2025 (ICMS estadual e ISS municipal brutos).</p>
+                <p>Fonte populacional (Partes 1 e 2): IBGE, Estimativas da População Residente no Brasil e Unidades da Federação com data de referência em 1º de julho de 2025 (Diretoria de Pesquisas, Coordenação de População e Indicadores Sociais).</p>
+                <p>Fonte da Parte 3: GOBETTI, S. W.; MONTEIRO, P. K. Impactos redistributivos da reforma tributária: estimativas atualizadas. Carta de Conjuntura, n. 60, Nota de Conjuntura 18, Brasília: IPEA, 28 de agosto de 2023. <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">Documento original</a>.</p>
             </div>
         </section>
     </main>
@@ -398,8 +508,8 @@
 
     <script src="/js/main.js"></script>
     <script>
-    function fmtBi(val) {
-        return (val / 1e9).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    function fmtBi(val, digits = 2) {
+        return (val / 1e9).toLocaleString('pt-BR', { minimumFractionDigits: digits, maximumFractionDigits: digits });
     }
     function fmtPct(val, digits = 3) {
         return val.toLocaleString('pt-BR', { minimumFractionDigits: digits, maximumFractionDigits: digits }) + '%';
@@ -407,8 +517,8 @@
     function fmtPop(val) {
         return Math.round(val).toLocaleString('pt-BR');
     }
-    function fmtDiff(val) {
-        const s = (val >= 0 ? '+' : '') + val.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 }) + ' p.p.';
+    function fmtDiff(val, digits = 3, suffix = ' p.p.') {
+        const s = (val >= 0 ? '+' : '') + val.toLocaleString('pt-BR', { minimumFractionDigits: digits, maximumFractionDigits: digits }) + suffix;
         return `<span class="${val >= 0 ? 'diff-pos' : 'diff-neg'}">${s}</span>`;
     }
     function fmtRatio(val) {
@@ -424,7 +534,12 @@
         RS: 'Rio Grande do Sul', SC: 'Santa Catarina', SE: 'Sergipe', SP: 'São Paulo', TO: 'Tocantins'
     };
 
-    async function loadData() {
+    const COR_POS = '#2a78d6';
+    const COR_NEG = '#e34948';
+
+    if (window.ChartDataLabels) Chart.register(ChartDataLabels);
+
+    async function loadParticipacao() {
         let data;
         try {
             const resp = await fetch('/data/icms-iss-vs-populacao-2025.json?t=' + Date.now());
@@ -463,17 +578,74 @@
             <td>${fmtPct(somaTaxPct)}</td>
             <td>${fmtPop(somaPop)}</td>
             <td>${fmtPct(somaPopPct)}</td>
-            <td>—</td>
+            <td>–</td>
             <td>1,00</td>
         </tr>`;
 
+        buildDivergingChart(rows);
         buildScatterChart(data.ufs);
+    }
+
+    function buildDivergingChart(rows) {
+        const el = document.getElementById('chart-diverging');
+        if (!el) return;
+
+        el.parentElement.style.height = Math.max(420, rows.length * 30) + 'px';
+
+        new Chart(el, {
+            type: 'bar',
+            data: {
+                labels: rows.map(r => r.uf),
+                datasets: [{
+                    label: 'Diferença (p.p.)',
+                    data: rows.map(r => +r.diff.toFixed(3)),
+                    backgroundColor: rows.map(r => r.uf === 'ES' ? '#b0342e' : (r.diff >= 0 ? COR_POS : COR_NEG)),
+                    borderRadius: 3,
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'end',
+                        clamp: true,
+                        clip: false,
+                        color: '#3a3a3a',
+                        font: { size: 9, family: "'JetBrains Mono', monospace" },
+                        formatter: v => (v >= 0 ? '+' : '') + v.toFixed(2)
+                    }
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: ctx => NOMES_UF[ctx[0].label] || ctx[0].label,
+                            label: ctx => `Diferença: ${ctx.parsed.x >= 0 ? '+' : ''}${ctx.parsed.x.toFixed(3)} p.p.`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Diferença entre participação tributária e populacional (p.p.)', color: '#6E6E6E', font: { size: 11 } },
+                        ticks: { color: '#6E6E6E' },
+                        grid: { color: 'rgba(0,0,0,0.06)' }
+                    },
+                    y: {
+                        ticks: {
+                            color: (ctx) => ctx.tick && ctx.tick.label === 'ES' ? '#b0342e' : '#3a3a3a',
+                            font: (ctx) => ({ size: 11, weight: ctx.tick && ctx.tick.label === 'ES' ? '700' : '400', family: "'JetBrains Mono', monospace" })
+                        },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
     }
 
     function buildScatterChart(ufs) {
         const el = document.getElementById('chart-scatter');
         if (!el) return;
-        if (window.ChartDataLabels) Chart.register(ChartDataLabels);
 
         const gridColor = 'rgba(0,0,0,0.07)';
         const textColor = '#6E6E6E';
@@ -568,7 +740,105 @@
         });
     }
 
-    loadData();
+    async function loadGobetti() {
+        let data;
+        try {
+            const resp = await fetch('/data/gobetti-2023-perdas-ganhos-uf.json?t=' + Date.now());
+            if (!resp.ok) throw new Error('not found');
+            data = await resp.json();
+        } catch (e) {
+            document.getElementById('status-gobetti').innerHTML =
+                '<span class="status-dot"></span> Dados não disponíveis.';
+            return;
+        }
+
+        document.getElementById('status-gobetti').innerHTML =
+            '<span class="status-dot" style="background:#22c55e"></span> 27 UFs · ' + data.fonte;
+
+        const rows = [...data.tabela1_static.ufs].sort((a, b) => a.pct - b.pct);
+
+        const tbody = document.getElementById('tbody-gobetti');
+        tbody.innerHTML = rows.map(r => `<tr${r.uf === 'ES' ? ' class="row-es"' : ''}>
+            <td class="td-uf">${r.uf} <small style="font-weight:400;color:var(--text-muted)">${NOMES_UF[r.uf]}</small></td>
+            <td>${fmtBi(r.pre)}</td>
+            <td>${fmtBi(r.pos)}</td>
+            <td>${fmtDiff(r.saldo / 1e9, 2, '')}</td>
+            <td style="font-weight:600">${fmtDiff(r.pct, 2, '%')}</td>
+        </tr>`).join('');
+
+        const somaPre = rows.reduce((s, r) => s + r.pre, 0);
+        const somaPos = rows.reduce((s, r) => s + r.pos, 0);
+        document.getElementById('tfoot-gobetti').innerHTML = `<tr>
+            <td class="td-uf">BRASIL</td>
+            <td>${fmtBi(somaPre)}</td>
+            <td>${fmtBi(somaPos)}</td>
+            <td>${fmtDiff((somaPos - somaPre) / 1e9, 2, '')}</td>
+            <td>–</td>
+        </tr>`;
+
+        buildGobettiChart(rows);
+    }
+
+    function buildGobettiChart(rows) {
+        const el = document.getElementById('chart-gobetti');
+        if (!el) return;
+
+        el.parentElement.style.height = Math.max(420, rows.length * 30) + 'px';
+        const sorted = [...rows].sort((a, b) => b.pct - a.pct);
+
+        new Chart(el, {
+            type: 'bar',
+            data: {
+                labels: sorted.map(r => r.uf),
+                datasets: [{
+                    label: 'Variação (%)',
+                    data: sorted.map(r => r.pct),
+                    backgroundColor: sorted.map(r => r.uf === 'ES' ? '#b0342e' : (r.pct >= 0 ? COR_POS : COR_NEG)),
+                    borderRadius: 3,
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'end',
+                        clamp: true,
+                        clip: false,
+                        color: '#3a3a3a',
+                        font: { size: 9, family: "'JetBrains Mono', monospace" },
+                        formatter: v => (v >= 0 ? '+' : '') + v.toFixed(1) + '%'
+                    }
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: ctx => NOMES_UF[ctx[0].label] || ctx[0].label,
+                            label: ctx => `Variação: ${ctx.parsed.x >= 0 ? '+' : ''}${ctx.parsed.x.toFixed(2)}%`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Variação % da receita estado+municípios, origem → destino (cenário estático)', color: '#6E6E6E', font: { size: 11 } },
+                        ticks: { color: '#6E6E6E', callback: v => v + '%' },
+                        grid: { color: 'rgba(0,0,0,0.06)' }
+                    },
+                    y: {
+                        ticks: {
+                            color: (ctx) => ctx.tick && ctx.tick.label === 'ES' ? '#b0342e' : '#3a3a3a',
+                            font: (ctx) => ({ size: 11, weight: ctx.tick && ctx.tick.label === 'ES' ? '700' : '400', family: "'JetBrains Mono', monospace" })
+                        },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+
+    loadParticipacao();
+    loadGobetti();
     </script>
 </body>
 </html>
