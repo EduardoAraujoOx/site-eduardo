@@ -452,6 +452,61 @@
                 no cenário mais pessimista. Em ambos os casos, bem abaixo do impacto estático de partida.
             </div>
 
+            <!-- ═══════════════ PARTE 3B — MUNICÍPIOS (GOBETTI) ═══════════════ -->
+            <span class="section-label" style="margin-top:2.5rem">Tabela 3 e Gráfico 3: quantos municípios ganham ou perdem em cada UF</span>
+            <p class="section-intro">
+                O valor agregado por UF (Tabela 2, acima) já soma estado e municípios, mas esconde uma pergunta
+                importante: dentro de cada UF, a maioria das prefeituras ganha ou perde? Gobetti e Monteiro
+                respondem a essa pergunta em outra tabela do mesmo estudo, contando quantos municípios de cada UF
+                teriam receita líquida maior ou menor com a reforma, no mesmo cenário estático de 2022. O gráfico
+                abaixo mostra o percentual de municípios ganhadores em cada UF, tomando 50% como referência: mais
+                da metade das prefeituras ganhando é o caso típico no Brasil, onde 82% dos 5.569 municípios
+                analisados saem ganhando.
+            </p>
+            <div id="status-gobetti-munis" class="status-bar">
+                <span class="status-dot"></span>
+                <span>Carregando dados…</span>
+            </div>
+            <div class="chart-panel">
+                <p class="chart-panel-title">Percentual de municípios ganhadores em cada UF, em relação à referência de 50% (cenário estático, base 2022)</p>
+                <div class="chart-canvas-wrap"><canvas id="chart-gobetti-munis"></canvas></div>
+                <div class="chart-legend-note">
+                    <span><span class="legend-swatch" style="background:#2a78d6"></span>Maioria dos municípios ganha</span>
+                    <span><span class="legend-swatch" style="background:#e34948"></span>Maioria dos municípios perde</span>
+                </div>
+            </div>
+            <div class="data-table-wrap">
+                <table class="data-table" id="table-gobetti-munis">
+                    <thead>
+                        <tr>
+                            <th class="th-uf">UF</th>
+                            <th>Municípios<br><small style="font-weight:400">(nº total)</small></th>
+                            <th>Ganhadores<br><small style="font-weight:400">(nº)</small></th>
+                            <th>Perdedores<br><small style="font-weight:400">(nº)</small></th>
+                            <th>% ganhadores</th>
+                            <th>Ganhos<br><small style="font-weight:400">(R$ mi)</small></th>
+                            <th>Perdas<br><small style="font-weight:400">(R$ mi)</small></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-gobetti-munis">
+                        <tr><td colspan="7" class="loading-cell">Aguardando dados…</td></tr>
+                    </tbody>
+                    <tfoot id="tfoot-gobetti-munis"></tfoot>
+                </table>
+            </div>
+
+            <div class="callout">
+                <strong>O Espírito Santo é o pior caso do país nesse quesito.</strong> Das 27 UFs, só três têm
+                menos da metade dos municípios ganhando: Espírito Santo (31 de 78, ou 40%), Mato Grosso do Sul
+                (41%) e Mato Grosso (47%). O ES é o mais extremo dos três. A explicação, segundo os autores, é a
+                combinação de dois efeitos: o estado perde uma fatia grande do novo imposto, o que já reduz o
+                bolo disponível para repartir com as prefeituras, e essa fatia menor ainda é redistribuída por um
+                critério mais populacional do que o atual, prejudicando municípios pequenos que hoje dependem de
+                uma cota-parte concentrada em poucas cidades industriais. Um contraste interessante é o Amazonas:
+                apesar de também perder bastante como estado, a maioria dos municípios amazonenses ganha, porque
+                hoje eles são sócios minoritários da cota-parte de Manaus e se beneficiam da mudança no ISS.
+            </div>
+
             <!-- Metodologia -->
             <div class="metodologia">
                 <h3>Como foram calculadas as participações (Partes 1 e 2)</h3>
@@ -493,6 +548,14 @@
                     os estados de maior perda relativa. É por isso que trazemos, no texto acima, também a
                     estimativa de perda efetiva do ES ao final dessa transição, que é bem menor do que o número
                     estático de partida.
+                </p>
+                <p>
+                    A Tabela 3 usa uma tabela diferente do mesmo estudo, focada na receita líquida dos municípios:
+                    para cada UF, os autores contam quantas prefeituras teriam receita líquida maior ou menor com
+                    a reforma, considerando não só a substituição do ISS pelo novo imposto municipal no destino,
+                    mas também a mudança na forma como a cota-parte estadual é repartida entre os municípios, que
+                    passa a ser baseada sobretudo em população em vez dos critérios de valor adicionado fiscal
+                    hoje vigentes em cada estado.
                 </p>
             </div>
 
@@ -627,6 +690,7 @@
                 },
                 scales: {
                     x: {
+                        grace: '15%',
                         title: { display: true, text: 'Diferença entre participação tributária e populacional (p.p.)', color: '#6E6E6E', font: { size: 11 } },
                         ticks: { color: '#6E6E6E' },
                         grid: { color: 'rgba(0,0,0,0.06)' }
@@ -821,6 +885,7 @@
                 },
                 scales: {
                     x: {
+                        grace: '15%',
                         title: { display: true, text: 'Variação % da receita estado+municípios, origem → destino (cenário estático)', color: '#6E6E6E', font: { size: 11 } },
                         ticks: { color: '#6E6E6E', callback: v => v + '%' },
                         grid: { color: 'rgba(0,0,0,0.06)' }
@@ -837,8 +902,116 @@
         });
     }
 
+    async function loadGobettiMunis() {
+        let data;
+        try {
+            const resp = await fetch('/data/gobetti-2023-perdas-ganhos-uf.json?t=' + Date.now());
+            if (!resp.ok) throw new Error('not found');
+            data = await resp.json();
+        } catch (e) {
+            document.getElementById('status-gobetti-munis').innerHTML =
+                '<span class="status-dot"></span> Dados não disponíveis.';
+            return;
+        }
+        const bloco = data.tabela2_municipios;
+        if (!bloco) {
+            document.getElementById('status-gobetti-munis').innerHTML =
+                '<span class="status-dot"></span> Dados não disponíveis.';
+            return;
+        }
+
+        document.getElementById('status-gobetti-munis').innerHTML =
+            '<span class="status-dot" style="background:#22c55e"></span> 27 UFs, ' +
+            `${bloco.total.n_municipios.toLocaleString('pt-BR')} municípios · fonte: ${data.fonte}`;
+
+        const rows = [...bloco.ufs].sort((a, b) => a.pct_ganhadores - b.pct_ganhadores);
+
+        const tbody = document.getElementById('tbody-gobetti-munis');
+        tbody.innerHTML = rows.map(r => `<tr${r.uf === 'ES' ? ' class="row-es"' : ''}>
+            <td class="td-uf">${r.uf} <small style="font-weight:400;color:var(--text-muted)">${NOMES_UF[r.uf]}</small></td>
+            <td>${r.n_municipios.toLocaleString('pt-BR')}</td>
+            <td>${r.n_ganhadores.toLocaleString('pt-BR')}</td>
+            <td>${r.n_perdedores.toLocaleString('pt-BR')}</td>
+            <td style="font-weight:600" class="${r.pct_ganhadores >= 50 ? 'diff-pos' : 'diff-neg'}">${r.pct_ganhadores.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%</td>
+            <td>${r.ganhos_mi.toLocaleString('pt-BR')}</td>
+            <td>${r.perdas_mi.toLocaleString('pt-BR')}</td>
+        </tr>`).join('');
+
+        document.getElementById('tfoot-gobetti-munis').innerHTML = `<tr>
+            <td class="td-uf">BRASIL</td>
+            <td>${bloco.total.n_municipios.toLocaleString('pt-BR')}</td>
+            <td>${bloco.total.n_ganhadores.toLocaleString('pt-BR')}</td>
+            <td>${bloco.total.n_perdedores.toLocaleString('pt-BR')}</td>
+            <td>${bloco.total.pct_ganhadores.toLocaleString('pt-BR')}%</td>
+            <td>${bloco.total.ganhos_mi.toLocaleString('pt-BR')}</td>
+            <td>${bloco.total.perdas_mi.toLocaleString('pt-BR')}</td>
+        </tr>`;
+
+        buildGobettiMunisChart(rows);
+    }
+
+    function buildGobettiMunisChart(rows) {
+        const el = document.getElementById('chart-gobetti-munis');
+        if (!el) return;
+
+        el.parentElement.style.height = Math.max(420, rows.length * 30) + 'px';
+        const sorted = [...rows].sort((a, b) => (b.pct_ganhadores - 50) - (a.pct_ganhadores - 50));
+
+        new Chart(el, {
+            type: 'bar',
+            data: {
+                labels: sorted.map(r => r.uf),
+                datasets: [{
+                    label: '% ganhadores (relativo a 50%)',
+                    data: sorted.map(r => +(r.pct_ganhadores - 50).toFixed(1)),
+                    backgroundColor: sorted.map(r => r.uf === 'ES' ? '#b0342e' : (r.pct_ganhadores >= 50 ? COR_POS : COR_NEG)),
+                    borderRadius: 3,
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'end',
+                        clamp: true,
+                        clip: false,
+                        color: '#3a3a3a',
+                        font: { size: 9, family: "'JetBrains Mono', monospace" },
+                        formatter: (v, ctx) => sorted[ctx.dataIndex].pct_ganhadores.toFixed(0) + '%'
+                    }
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: ctx => NOMES_UF[ctx[0].label] || ctx[0].label,
+                            label: ctx => `${sorted[ctx.dataIndex].pct_ganhadores.toFixed(1)}% dos municípios ganham (${sorted[ctx.dataIndex].n_ganhadores}/${sorted[ctx.dataIndex].n_municipios})`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grace: '15%',
+                        title: { display: true, text: 'Pontos percentuais acima/abaixo de 50% dos municípios ganhando', color: '#6E6E6E', font: { size: 11 } },
+                        ticks: { color: '#6E6E6E', callback: v => (v >= 0 ? '+' : '') + v + ' p.p.' },
+                        grid: { color: 'rgba(0,0,0,0.06)' }
+                    },
+                    y: {
+                        ticks: {
+                            color: (ctx) => ctx.tick && ctx.tick.label === 'ES' ? '#b0342e' : '#3a3a3a',
+                            font: (ctx) => ({ size: 11, weight: ctx.tick && ctx.tick.label === 'ES' ? '700' : '400', family: "'JetBrains Mono', monospace" })
+                        },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+
     loadParticipacao();
     loadGobetti();
+    loadGobettiMunis();
     </script>
 </body>
 </html>
