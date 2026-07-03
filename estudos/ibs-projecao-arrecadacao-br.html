@@ -18,323 +18,193 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- KaTeX for math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '\\(', right: '\\)', display: false}
+            ],
+            throwOnError: false
+        })"></script>
+
+    <link rel="stylesheet" href="/css/notas.css?v=4">
+    <link rel="stylesheet" href="/css/search.css">
 
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        /* ── Page layout ── */
+        .study-hero { max-width: 980px; margin: 0 auto; padding: 3rem 2rem 1.5rem; }
+        .study-hero-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+        .study-hero-tag { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); padding: 0.25rem 0.6rem; border-radius: 4px; }
+        .study-hero-topic { font-family: var(--sans); font-size: 0.73rem; color: var(--text-secondary); background: var(--border-light); padding: 0.2rem 0.55rem; border-radius: 4px; }
+        .study-hero-date { font-family: var(--sans); font-size: 0.73rem; color: var(--text-muted); margin-left: auto; }
+        .study-hero h1 { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 0.8rem; }
+        .study-hero .lead { font-family: var(--serif); font-size: 1rem; line-height: 1.72; color: var(--text-secondary); max-width: 760px; }
+        .study-hero .study-meta { font-family: var(--sans); font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem; }
 
-        :root {
-            --bg:           #ffffff;
-            --bg-secondary: #f7f7f5;
-            --bg-card:      #fefefe;
-            --text:         #1a1a1a;
-            --text-muted:   #666;
-            --accent:       #2a6496;
-            --accent-soft:  #e8f2f9;
-            --border:       #ddd;
-            --neg:          #c0392b;
-            --neg-bg:       #fdf3f2;
-            --pos:          #27ae60;
-            --pos-bg:       #f0faf4;
-            --highlight-es: #fff8e1;
-            --border-es:    #f0c000;
-            --font-body:    'Inter', system-ui, sans-serif;
-            --font-mono:    'JetBrains Mono', 'Courier New', monospace;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg:           #1a1a1a;
-                --bg-secondary: #242424;
-                --bg-card:      #1e1e1e;
-                --text:         #e8e8e8;
-                --text-muted:   #999;
-                --accent:       #5b9bd5;
-                --accent-soft:  #1a2d3f;
-                --border:       #3a3a3a;
-                --neg:          #e05a4f;
-                --neg-bg:       #2a1a1a;
-                --pos:          #4caf76;
-                --pos-bg:       #192a20;
-                --highlight-es: #2a2510;
-                --border-es:    #c0940a;
-            }
-        }
-
-        :root[data-theme="light"] {
-            --bg: #ffffff; --bg-secondary: #f7f7f5; --bg-card: #fefefe;
-            --text: #1a1a1a; --text-muted: #666; --accent: #2a6496; --accent-soft: #e8f2f9;
-            --border: #ddd; --neg: #c0392b; --neg-bg: #fdf3f2; --pos: #27ae60; --pos-bg: #f0faf4;
-            --highlight-es: #fff8e1; --border-es: #f0c000;
-        }
-        :root[data-theme="dark"] {
-            --bg: #1a1a1a; --bg-secondary: #242424; --bg-card: #1e1e1e;
-            --text: #e8e8e8; --text-muted: #999; --accent: #5b9bd5; --accent-soft: #1a2d3f;
-            --border: #3a3a3a; --neg: #e05a4f; --neg-bg: #2a1a1a; --pos: #4caf76; --pos-bg: #192a20;
-            --highlight-es: #2a2510; --border-es: #c0940a;
-        }
-
-        html { scroll-behavior: smooth; }
-
-        body {
-            font-family: var(--font-body);
-            background: var(--bg);
-            color: var(--text);
-            font-size: 15px;
-            line-height: 1.6;
-        }
-
-        /* ── Nav ── */
-        .site-nav {
-            position: sticky; top: 0; z-index: 100;
-            background: var(--bg);
-            border-bottom: 1px solid var(--border);
-            padding: 0.7rem 1.5rem;
-            display: flex; align-items: center; gap: 1.5rem;
-        }
-        .site-nav a { color: var(--text-muted); text-decoration: none; font-size: 0.88rem; }
-        .site-nav a:hover { color: var(--accent); }
-        .site-nav .sep { color: var(--border); }
-
-        /* ── Layout ── */
-        .page-wrap { max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-
-        .page-header { margin-bottom: 2rem; }
-        .page-header h1 {
-            font-size: clamp(1.4rem, 3vw, 2rem);
-            font-weight: 700;
-            color: var(--accent);
-            line-height: 1.25;
-            margin-bottom: 0.5rem;
-        }
-        .page-header .lead {
-            color: var(--text-muted);
-            max-width: 78ch;
-            font-size: 0.97rem;
-            line-height: 1.7;
-        }
-        .page-header .study-meta {
-            margin-top: 0.6rem;
-            font-size: 0.82rem;
-            color: var(--text-muted);
-        }
+        .study-content { max-width: 980px; margin: 0 auto; padding: 0 2rem 5rem; }
 
         /* ── Status bar ── */
-        .status-bar {
-            display: flex; align-items: center; gap: 0.5rem;
-            font-size: 0.82rem; color: var(--text-muted);
-            margin-bottom: 1.4rem;
+        .status-bar { display: flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #999; flex-shrink: 0; transition: background 0.3s; }
+
+        /* ── Negative / positive colours (page-specific) ── */
+        :root {
+            --neg:          #b03a2e;
+            --neg-bg:       #fdf3f2;
+            --pos:          #1e8449;
+            --pos-bg:       #f0faf4;
+            --highlight-es: #fefce8;
+            --border-es:    #d4a017;
         }
-        .status-dot {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: #999; flex-shrink: 0;
-            transition: background 0.3s;
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --neg: #e05a4f; --neg-bg: #2a1a1a;
+                --pos: #4caf76; --pos-bg: #192a20;
+                --highlight-es: #2a2510; --border-es: #c0940a;
+            }
         }
+        :root[data-theme="light"] { --neg:#b03a2e; --neg-bg:#fdf3f2; --pos:#1e8449; --pos-bg:#f0faf4; --highlight-es:#fefce8; --border-es:#d4a017; }
+        :root[data-theme="dark"]  { --neg:#e05a4f; --neg-bg:#2a1a1a; --pos:#4caf76; --pos-bg:#192a20; --highlight-es:#2a2510; --border-es:#c0940a; }
 
         /* ── Scenario cards ── */
-        .sc-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2.5rem;
-        }
-        .sc-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1.1rem 1.25rem;
-        }
+        .sc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2.5rem; }
+        .sc-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.1rem 1.25rem; }
         .sc-card.sc1 { border-left: 4px solid var(--neg); }
-        .sc-card.sc2 { border-left: 4px solid #e67e22; }
+        .sc-card.sc2 { border-left: 4px solid #c27c0e; }
         .sc-card.sc3 { border-left: 4px solid var(--accent); }
-        .sc-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.3rem; }
-        .sc-name { font-size: 0.97rem; font-weight: 700; margin-bottom: 0.7rem; }
-        .sc-stat-label { font-size: 0.75rem; color: var(--text-muted); }
-        .sc-stat-val { font-size: 1.4rem; font-weight: 700; font-family: var(--font-mono); }
+        .sc-label { font-family: var(--mono); font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.3rem; }
+        .sc-name { font-family: var(--sans); font-size: 0.95rem; font-weight: 700; margin-bottom: 0.7rem; }
+        .sc-stat-label { font-family: var(--sans); font-size: 0.75rem; color: var(--text-muted); }
+        .sc-stat-val { font-family: var(--mono); font-size: 1.35rem; font-weight: 700; }
         .sc-stat-val.neg { color: var(--neg); }
         .sc-stat-val.pos { color: var(--pos); }
-        .sc-stat-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.1rem; }
+        .sc-stat-sub { font-family: var(--sans); font-size: 0.77rem; color: var(--text-muted); margin-top: 0.1rem; }
         .sc-divider { border: none; border-top: 1px solid var(--border); margin: 0.65rem 0; }
 
         /* ── Methodology ── */
-        .methodology {
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            background: var(--bg-secondary);
-        }
-        .methodology summary {
-            padding: 0.9rem 1.25rem;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.92rem;
-            list-style: none;
-            display: flex; align-items: center; gap: 0.5rem;
-        }
-        .methodology summary::before { content: '▶'; font-size: 0.7rem; transition: transform 0.2s; }
+        .methodology { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 2rem; background: var(--surface); }
+        .methodology summary { padding: 0.9rem 1.25rem; cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; list-style: none; display: flex; align-items: center; gap: 0.5rem; }
+        .methodology summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; }
         .methodology[open] summary::before { transform: rotate(90deg); }
-        .methodology-body { padding: 0 1.25rem 1.25rem; }
+        .methodology-body { padding: 0 1.5rem 1.5rem; }
 
-        .meto-formula {
+        .meto-formula-box {
             background: var(--bg);
             border: 1px solid var(--border);
             border-radius: 6px;
-            padding: 1rem 1.25rem;
-            margin: 0.75rem 0;
-            font-family: var(--font-mono);
-            font-size: 0.9rem;
+            padding: 1.25rem 1.5rem;
+            margin: 0.75rem 0 1.25rem;
             overflow-x: auto;
         }
-        .meto-formula .formula-main { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
-        .meto-formula .formula-terms { color: var(--text-muted); font-size: 0.82rem; line-height: 1.8; }
+        .meto-formula-box .katex-display { margin: 0.25rem 0; }
 
         .param-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; margin: 0.75rem 0; }
-        .param-table th { background: var(--bg-secondary); padding: 0.45rem 0.75rem; text-align: left; border-bottom: 2px solid var(--border); font-weight: 600; }
-        .param-table td { padding: 0.4rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: top; }
-        .param-table td:first-child { font-family: var(--font-mono); font-weight: 600; font-size: 0.88rem; }
+        .param-table th { background: var(--bg); padding: 0.45rem 0.75rem; text-align: left; border-bottom: 2px solid var(--border); font-family: var(--sans); font-weight: 600; font-size: 0.8rem; }
+        .param-table td { padding: 0.4rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: top; font-family: var(--sans); font-size: 0.82rem; color: var(--text-secondary); }
+        .param-table td:first-child { font-family: var(--mono); font-weight: 600; font-size: 0.84rem; color: var(--text); white-space: nowrap; }
+        .param-table td:nth-child(3) { font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); }
         .param-table tr:last-child td { border-bottom: none; }
 
-        .meto-section-title { font-size: 0.88rem; font-weight: 600; margin: 1rem 0 0.4rem; }
-        .meto-note { font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; margin-top: 0.5rem; }
+        .meto-section-title { font-family: var(--sans); font-size: 0.85rem; font-weight: 600; color: var(--text); margin: 1.25rem 0 0.4rem; }
+        .meto-note { font-family: var(--serif); font-size: 0.82rem; color: var(--text-secondary); line-height: 1.65; margin-top: 0.5rem; }
 
         /* ── Tabs ── */
         .tabs-wrap { margin-bottom: 0; }
-        .tab-btns {
-            display: flex; gap: 0.25rem;
-            border-bottom: 2px solid var(--border);
-            margin-bottom: 1.25rem;
-        }
-        .tab-btn {
-            padding: 0.55rem 1.1rem;
-            border: 1px solid transparent;
-            border-bottom: none;
-            border-radius: 6px 6px 0 0;
-            background: none;
-            cursor: pointer;
-            font-family: var(--font-body);
-            font-size: 0.88rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            transition: all 0.15s;
-            position: relative; bottom: -2px;
-        }
-        .tab-btn:hover { color: var(--text); background: var(--bg-secondary); }
-        .tab-btn.active {
-            color: var(--accent);
-            border-color: var(--border);
-            border-bottom-color: var(--bg);
-            background: var(--bg);
-            font-weight: 600;
-        }
+        .tab-btns { display: flex; gap: 0.25rem; border-bottom: 2px solid var(--border); margin-bottom: 1.25rem; }
+        .tab-btn { padding: 0.5rem 1.1rem; border: 1px solid transparent; border-bottom: none; border-radius: 6px 6px 0 0; background: none; cursor: pointer; font-family: var(--sans); font-size: 0.86rem; font-weight: 500; color: var(--text-muted); transition: all 0.15s; position: relative; bottom: -2px; }
+        .tab-btn:hover { color: var(--text); background: var(--bg); }
+        .tab-btn.active { color: var(--accent); border-color: var(--border); border-bottom-color: var(--surface); background: var(--surface); font-weight: 600; }
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
 
         /* ── Section label ── */
-        .section-label {
-            display: block;
-            font-size: 0.78rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.07em;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-        }
+        .section-label { display: block; font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 0.5rem; }
 
         /* ── Data table ── */
         .table-wrap { overflow-x: auto; margin-bottom: 1.5rem; }
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.82rem;
-        }
-        .data-table th {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            padding: 0.45rem 0.65rem;
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.78rem;
-            white-space: nowrap;
-        }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
+        .data-table th { background: var(--bg); border: 1px solid var(--border); padding: 0.42rem 0.6rem; text-align: center; font-family: var(--sans); font-weight: 600; font-size: 0.76rem; white-space: nowrap; color: var(--text); }
         .data-table th.th-left { text-align: left; }
-        .data-table td {
-            border: 1px solid var(--border);
-            padding: 0.38rem 0.65rem;
-            text-align: right;
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            white-space: nowrap;
-        }
-        .data-table td.td-uf {
-            text-align: left;
-            font-family: var(--font-body);
-            font-weight: 600;
-            font-size: 0.82rem;
-        }
+        .data-table td { border: 1px solid var(--border); padding: 0.36rem 0.6rem; text-align: right; font-family: var(--mono); font-size: 0.78rem; white-space: nowrap; color: var(--text); }
+        .data-table td.td-uf { text-align: left; font-family: var(--sans); font-weight: 600; font-size: 0.81rem; }
         .data-table td.td-uf small { font-weight: 400; color: var(--text-muted); }
         .data-table td.td-ref { color: var(--text-muted); }
         .data-table .td-neg { color: var(--neg); font-weight: 600; }
         .data-table .td-pos { color: var(--pos); font-weight: 600; }
         .data-table tr.row-es { background: var(--highlight-es); }
         .data-table tr.row-es td.td-uf::after { content: ' ★'; color: var(--border-es); font-size: 0.7em; }
-        .data-table tfoot tr { background: var(--bg-secondary); font-weight: 700; border-top: 2px solid var(--border); }
+        .data-table tfoot tr { background: var(--bg); font-weight: 700; border-top: 2px solid var(--border); }
         .data-table tfoot td { font-weight: 700; }
-        .data-table tr:hover { background: var(--accent-soft); }
+        .data-table tr:hover:not(tfoot tr) { background: var(--accent-bg); }
         .data-table tr.row-es:hover { background: var(--highlight-es); }
 
         /* ── Callout / note ── */
-        .callout {
-            background: var(--accent-soft);
-            border-left: 3px solid var(--accent);
-            border-radius: 0 6px 6px 0;
-            padding: 0.75rem 1rem;
-            font-size: 0.83rem;
-            color: var(--text);
-            margin: 1rem 0;
-            line-height: 1.6;
-        }
-        .callout strong { color: var(--accent); }
+        .callout { background: var(--accent-bg); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 0.75rem 1rem; font-family: var(--serif); font-size: 0.84rem; color: var(--text); margin: 1rem 0; line-height: 1.6; }
 
         /* ── Footnotes ── */
-        .footnotes {
-            margin-top: 2.5rem;
-            border-top: 1px solid var(--border);
-            padding-top: 1rem;
-        }
-        .footnotes p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.4rem; }
+        .footnotes { margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+        .footnotes p { font-family: var(--serif); font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.4rem; }
         .footnotes a { color: var(--accent); text-decoration: none; }
         .footnotes a:hover { text-decoration: underline; }
 
         /* ── Responsive ── */
         @media (max-width: 640px) {
-            .page-wrap { padding: 1rem 1rem 3rem; }
+            .study-hero { padding: 2rem 1.25rem 1rem; }
+            .study-content { padding: 0 1.25rem 3rem; }
             .sc-grid { grid-template-columns: 1fr; }
+            .tab-btns { flex-wrap: wrap; }
         }
     </style>
 </head>
 <body>
-    <nav class="site-nav">
-        <a href="/">Início</a>
-        <span class="sep">/</span>
-        <a href="/estudos/">Estudos</a>
-        <span class="sep">/</span>
-        <span style="color:var(--text)">ICMS/IBS por Estado</span>
-    </nav>
 
-    <div class="page-wrap">
-        <header class="page-header">
-            <h1>Projeção ICMS/IBS por Estado 2029–2033:<br>Impacto da Reforma Tributária</h1>
-            <p class="lead">
-                Estimativa da receita estadual de ICMS/IBS durante a transição da Reforma Tributária, comparando
-                a trajetória contrafactual (sem reforma) com três cenários de redistribuição pelo critério destino,
-                para os 27 estados e o Distrito Federal.
-            </p>
-            <p class="study-meta">
-                Dados: SICONFI/STN, DCA Anexo&nbsp;I-C, 2019–2025 &bull;
-                Coeficientes Gobetti: IPEA Carta de Conjuntura&nbsp;60 (2023) &bull;
-                Base jurídica: EC&nbsp;132/2023, LC&nbsp;214/2025, LC&nbsp;227/2026
-            </p>
-        </header>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <div class="header-right-group">
+                <nav class="header-nav">
+                    <a href="/#publicacoes">Publicações</a>
+                    <a href="/ensino/">Ensino</a>
+                    <a href="/estudos/" class="active">Estudos</a>
+                    <a href="/#contato">Contato</a>
+                </nav>
+                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="study-hero">
+        <div class="study-hero-meta">
+            <span class="study-hero-tag">Estudo 06</span>
+            <span class="study-hero-topic">Reforma Tributária</span>
+            <span class="study-hero-topic">IBS</span>
+            <span class="study-hero-topic">Todos os estados</span>
+            <span class="study-hero-date">Julho de 2026</span>
+        </div>
+        <h1>Projeção ICMS/IBS por Estado 2029–2033</h1>
+        <p class="lead">
+            Estimativa da receita estadual de ICMS/IBS durante a transição da Reforma Tributária, comparando
+            a trajetória contrafactual (sem reforma) com três cenários de redistribuição pelo critério destino,
+            para os 27 estados e o Distrito Federal.
+        </p>
+        <p class="study-meta">
+            Dados: SICONFI/STN, DCA Anexo&nbsp;I-C, 2019–2025 &bull;
+            Coeficientes Gobetti: IPEA Carta de Conjuntura&nbsp;60 (2023) &bull;
+            Base jurídica: EC&nbsp;132/2023, LC&nbsp;214/2025, LC&nbsp;227/2026
+        </p>
+    </div>
+
+    <div class="study-content">
 
         <div id="status-main" class="status-bar">
             <span class="status-dot"></span>
@@ -369,8 +239,8 @@
             </div>
             <div class="sc-card sc3">
                 <div class="sc-label">Cenário 3</div>
-                <div class="sc-name">Neutro (sem redist.)</div>
-                <div class="sc-stat-label">Nenhuma redistribuição por destino (δ = 0)</div>
+                <div class="sc-name">Neutro</div>
+                <div class="sc-stat-label">Nenhuma redistribuição por destino (\(\delta = 0\))</div>
                 <hr class="sc-divider">
                 <div class="sc-stat-label">ES em 2033</div>
                 <div class="sc-stat-val" id="sc3-es33">—</div>
@@ -385,32 +255,72 @@
         <details class="methodology">
             <summary>Metodologia e fórmula matemática</summary>
             <div class="methodology-body">
+
                 <p class="meto-note">
                     A receita estadual projetada de ICMS/IBS para cada UF e para cada ano
-                    <em>a</em> ∈ {2029, …, 2033} é dada pela soma de três componentes:
-                    o ICMS residual (que vai sendo extinto), a parcela do IBS distribuída pelo
-                    critério histórico (IBSt) e a parcela distribuída pelo critério destino (IBSd).
+                    \(a \in \{2029, \ldots, 2033\}\) é a soma de três componentes: ICMS residual
+                    (em extinção gradual), IBSt distribuído pelo CPT histórico, e IBSd distribuído
+                    pelo critério destino.
                 </p>
 
-                <div class="meto-formula">
-                    <div class="formula-main">R<sub>a,UF</sub> = R₀<sub>UF</sub>·f<sub>a</sub> + R₀<sub>UF</sub>·s<sub>a</sub>·α<sub>a</sub>·λ<sub>UF</sub>·(1−c<sub>a</sub>) + R₀<sub>UF</sub>·s<sub>a</sub>·(1−α<sub>a</sub>)·(1+δ<sub>UF</sub>)·(1−ρ)·(1−c<sub>a</sub>)</div>
-                    <div class="formula-terms">
-                        R₀<sub>UF</sub> = receita de referência: média 2019–2025 do ICMS estadual bruto × 75%, deflacionada a preços de 2025<br>
-                        f<sub>a</sub> = fração remanescente do ICMS (1 → 0,6 em 2029–2032; zero em 2033)<br>
-                        s<sub>a</sub> = fração da base convertida em IBS (1 − f<sub>a</sub>)<br>
-                        α<sub>a</sub> = fração do IBS distribuída pelo critério histórico (80% em 2029–2032; 90% em 2033)<br>
-                        λ<sub>UF</sub> = ajuste CPT: índice histórico 2019–2025 / índice pontual 2025 (captura variação estrutural)<br>
-                        δ<sub>UF</sub> = efeito destino: variação estimada da receita estadual sob redistribuição IBS por destino<br>
-                        ρ = retenção do Seguro-Receita (art. 132 ADCT): 5% do IBSd<br>
-                        c<sub>a</sub> = financiamento do Comitê Gestor IBS (art. 51 LC 227/2026): 2,0% / 1,0% / 0,67% / 0,5% / 0,5%
-                    </div>
+                <div class="meto-formula-box">
+$$R_{a,\,\text{UF}} \;=\; \underbrace{R_0^{2025}\cdot f_a}_{\text{ICMS residual}}
+\;+\; R_0^{avg}\cdot s_a\cdot(1-c_a)\cdot\!\Bigl[\underbrace{\alpha_a}_{\text{IBSt via CPT}}
+\;+\; \underbrace{(1-\alpha_a)(1-\rho)(1+\delta_{\text{UF}})}_{\text{IBSd via destino}}\Bigr]$$
                 </div>
+
+                <p class="meto-section-title">Descrição das variáveis</p>
+                <table class="param-table">
+                    <thead><tr><th>Símbolo</th><th>Definição</th><th>Valores / fonte</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>\(R_0^{2025}\)</td>
+                            <td>Receita-base do ICMS: ICMS bruto do estado em 2025, multiplicado por 0,75 (cota estadual, art. 158 IV CF/88). É a referência contrafactual — o que o estado receberia sem reforma.</td>
+                            <td>SICONFI/STN, DCA Anexo I-C, 2025</td>
+                        </tr>
+                        <tr>
+                            <td>\(R_0^{avg}\)</td>
+                            <td>Base IBS do estado: participação histórica no bolo nacional. Calculada como \(\text{TotalBR}_{2025} \times \text{CPT}_{UF}^{estado}\), o que equivale à média deflacionada de ICMS bruto × 0,75 nos anos 2019–2025. Captura o posicionamento histórico do estado no bolo tributário nacional.</td>
+                            <td>SICONFI/STN DCA 2019–2025; deflator = TotalBR\(_{2025}\)/TotalBR\(_t\)</td>
+                        </tr>
+                        <tr>
+                            <td>\(f_a\)</td>
+                            <td>Fração remanescente do ICMS no ano \(a\). Reduz 1/10 por ano de 2029 a 2032, extinguindo-se em 2033 (art. 128 ADCT, EC 132/2023).</td>
+                            <td>0,9 / 0,8 / 0,7 / 0,6 / 0</td>
+                        </tr>
+                        <tr>
+                            <td>\(s_a\)</td>
+                            <td>Fração IBS ativa: \(s_a = 1 - f_a\). Representa a parcela do bolo já convertida em IBS.</td>
+                            <td>0,1 / 0,2 / 0,3 / 0,4 / 1,0</td>
+                        </tr>
+                        <tr>
+                            <td>\(\alpha_a\)</td>
+                            <td>Fração do IBS distribuída pelo critério histórico (IBSt). A parcela \(1 - \alpha_a\) é distribuída pelo critério destino (IBSd). Previsto nos arts. 131–132 ADCT e arts. 114–116 LC 227/2026.</td>
+                            <td>0,80 (2029–2032) / 0,90 (2033)</td>
+                        </tr>
+                        <tr>
+                            <td>\(\delta_{\text{UF}}\)</td>
+                            <td>Efeito destino: variação relativa da receita estadual sob redistribuição integral pelo critério consumo. Obtido de Gobetti e Monteiro (IPEA, 2023), coluna <em>estado_pct</em> (nível estadual). Nos cenários: Cen. 1 = valor integral; Cen. 2 = metade; Cen. 3 = zero.</td>
+                            <td>Gobetti-Monteiro, tabela4_esferas</td>
+                        </tr>
+                        <tr>
+                            <td>\(\rho\)</td>
+                            <td>Seguro-Receita (art. 132 ADCT): fração do IBSd retida para fundo de garantia de mínimos durante a transição. Aplicada antes da distribuição por destino. Hipótese: municípios são os principais beneficiários do retorno do fundo, portanto não se desconta ρ como receita potencial dos estados.</td>
+                            <td>0,05 (5% do IBSd bruto)</td>
+                        </tr>
+                        <tr>
+                            <td>\(c_a\)</td>
+                            <td>Taxa de financiamento do Comitê Gestor do IBS (art. 51 LC 227/2026). Dedução sobre todo o IBS arrecadado, anterior à repartição entre IBSt e IBSd.</td>
+                            <td>2,0% / 1,0% / 0,67% / 0,5% / 0,5%</td>
+                        </tr>
+                    </tbody>
+                </table>
 
                 <p class="meto-section-title">Parâmetros da transição (ADCT, arts. 128 e 131)</p>
                 <div class="table-wrap">
                     <table class="param-table">
                         <thead>
-                            <tr><th>Ano</th><th>f<sub>a</sub> (ICMS)</th><th>s<sub>a</sub> (IBS)</th><th>α<sub>a</sub> (IBSt)</th><th>1−α<sub>a</sub> (IBSd)</th><th>c<sub>a</sub> (CGIBS)</th></tr>
+                            <tr><th>Ano</th><th>\(f_a\) (ICMS)</th><th>\(s_a\) (IBS)</th><th>\(\alpha_a\) (IBSt)</th><th>\(1-\alpha_a\) (IBSd)</th><th>\(c_a\) (CGIBS)</th></tr>
                         </thead>
                         <tbody>
                             <tr><td>2029</td><td>0,90</td><td>0,10</td><td>0,80</td><td>0,20</td><td>2,00%</td></tr>
@@ -422,32 +332,42 @@
                     </table>
                 </div>
 
-                <p class="meto-section-title">Cenários (parâmetro δ<sub>UF</sub>)</p>
+                <p class="meto-section-title">Cenários (parâmetro \(\delta_{\text{UF}}\))</p>
                 <table class="param-table">
-                    <thead><tr><th>Cenário</th><th>δ<sub>UF</sub></th><th>Descrição</th></tr></thead>
+                    <thead><tr><th>Cenário</th><th>\(\delta_{\text{UF}}\)</th><th>Descrição</th></tr></thead>
                     <tbody>
-                        <tr><td>1 — Gobetti pleno</td><td>estado_pct / 100 por UF</td><td>Redistribuição integral origem → destino, conforme Gobetti-Monteiro (IPEA, 2023), nível estadual</td></tr>
-                        <tr><td>2 — Intermediário</td><td>(estado_pct / 100) / 2</td><td>Metade do efeito Gobetti; por ser linear, o bolo total de IBS entre estados é conservado</td></tr>
+                        <tr><td>1 — Gobetti pleno</td><td>estado_pct / 100</td><td>Redistribuição integral origem → destino, conforme Gobetti e Monteiro (IPEA, 2023), coeficiente estadual (tabela4_esferas)</td></tr>
+                        <tr><td>2 — Intermediário</td><td>(estado_pct / 100) / 2</td><td>Metade do efeito Gobetti; por ser uma transformação linear de uma redistribuição soma-zero, o bolo total entre estados é conservado</td></tr>
                         <tr><td>3 — Neutro</td><td>0</td><td>IBSd distribuído pelo mesmo critério histórico (CPT), sem redistribuição por destino</td></tr>
                     </tbody>
                 </table>
 
-                <p class="meto-section-title">Deflator e referência histórica</p>
+                <p class="meto-section-title">Dois componentes de referência: \(R_0^{2025}\) e \(R_0^{avg}\)</p>
                 <p class="meto-note">
-                    O deflator de cada ano é calculado como Total_BR_2025 / Total_BR_t, onde Total_BR é a soma nacional
-                    do ICMS + ISS (DCA Anexo I-C, todos os estados), mesmo método adotado no cálculo do CPT (LC 227/2026, art. 115).
-                    O λ<sub>UF</sub> mede se o ICMS do estado cresceu mais ou menos que a média nacional: se λ &lt; 1, a UF perde
-                    na parcela IBSt (2029–2033) por crescer abaixo da média nacional entre 2019 e 2025.
+                    A fórmula distingue duas bases. O ICMS decrescente usa \(R_0^{2025}\) — o valor efetivo de 2025,
+                    parâmetro de estado estacionário a preços constantes. O IBS nascente usa \(R_0^{avg}\) — a média
+                    histórica deflacionada, que coincide com o quanto o estado receberia do bolo IBS pelo critério CPT
+                    (\(R_0^{avg} = \text{TotalBR} \times \text{CPT}_{UF}\)). Estados que cresceram acima da média
+                    nacional entre 2019 e 2025 têm \(R_0^{avg} < R_0^{2025}\); estados que cresceram abaixo têm
+                    \(R_0^{avg} > R_0^{2025}\). Essa diferença (captada pelo coeficiente
+                    \(\lambda_{UF} = R_0^{avg} / R_0^{2025}\), exibido na tabela do Cenário 3)
+                    é um efeito estrutural do CPT: o critério de participação histórica compensa estados que
+                    cresceram menos e penaliza os que cresceram mais rápido do que a média.
                 </p>
                 <p class="meto-note">
-                    <strong>Hipótese de bolo constante:</strong> a carga tributária total do IBS é assumida constante
-                    em relação ao ICMS+ISS de referência (mesma base 2025). O cenário 2 preserva a propriedade de soma zero
-                    da redistribuição: o que um estado perde, outro ganha.
+                    <strong>Hipótese de bolo constante:</strong> a carga tributária total do IBS é assumida
+                    constante em relação ao ICMS+ISS de referência (base 2025, preços constantes). O Cenário 2
+                    preserva a propriedade de soma zero: \(\sum_{\text{UF}} \text{CPT}_{UF} \cdot \delta_{UF} = 0\),
+                    portanto \(\sum \text{CPT} \cdot (\delta/2) = 0\) também.
                 </p>
                 <p class="meto-note">
-                    <strong>Seguro-Receita (ρ = 5%):</strong> aplicado como desconto uniforme sobre o IBSd de todos os estados.
-                    Na prática, estados com perdas líquidas podem ser recipientes do fundo; estados perdedores podem ter impacto
-                    menor do que o projetado. A hipótese de aplicação simétrica é conservadora para os perdedores.
+                    <strong>Diferença em relação ao Estudo 03 (ES):</strong> O Estudo 03 usa \(\delta = -30\%\)
+                    (coeficiente total UF, Gobetti tabela1_static) e, no cenário neutro, trata \(R_0^{2025}\) como
+                    base tanto para IBSt quanto para IBSd. Este estudo usa o coeficiente estadual
+                    (\(\delta_{ES} = -34{,}25\%\), tabela4_esferas) e \(R_0^{avg}\) para ambos os componentes IBS,
+                    o que é metodologicamente mais consistente com a definição do CPT.
+                    No cenário neutro em 2033, a diferença numérica para o ES é de aproximadamente 0,5%,
+                    uma discrepância pequena mas metodologicamente relevante.
                 </p>
             </div>
         </details>
@@ -462,21 +382,21 @@
 
             <!-- Cenário 1 -->
             <div id="tab-sc1" class="tab-panel active">
-                <span class="section-label">Cenário 1: Gobetti pleno — redistribuição integral para o critério destino (receita ICMS/IBS estadual, R$ bi, preços 2025)</span>
+                <span class="section-label">Cenário 1: Gobetti pleno — redistribuição integral origem→destino (R$ bi, preços 2025)</span>
                 <div class="callout">
                     Cada estado recebe o IBSd na proporção estimada por Gobetti e Monteiro (IPEA, 2023) para
-                    a redistribuição origem → destino. O δ<sub>UF</sub> por estado reflete a variação da receita
-                    estadual sob IBS pleno (base 2022), segundo a <em>Tabela 4</em> do estudo original.
+                    a redistribuição integral origem → destino. O \(\delta_{UF}\) reflete a variação percentual da
+                    receita estadual sob IBS pleno (base 2022), conforme <em>Tabela 4 — esferas</em> do estudo original.
                 </div>
                 <div class="table-wrap">
                     <table class="data-table" id="table-sc1">
                         <thead>
                             <tr>
                                 <th class="th-left" rowspan="2">UF</th>
-                                <th rowspan="2">δ<sub>1</sub></th>
-                                <th rowspan="2">R₀<br>(ref.)</th>
+                                <th rowspan="2">\(\delta_1\)</th>
+                                <th rowspan="2">\(R_0^{2025}\)<br>(ref.)</th>
                                 <th colspan="5">Receita ICMS/IBS estadual projetada (R$ bi)</th>
-                                <th colspan="2">Variação vs. referência</th>
+                                <th colspan="2">Variação vs. \(R_0^{2025}\)</th>
                             </tr>
                             <tr>
                                 <th>2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
@@ -484,7 +404,7 @@
                             </tr>
                         </thead>
                         <tbody id="tbody-sc1">
-                            <tr><td colspan="10" class="loading-cell" style="text-align:center;padding:2rem;color:var(--text-muted)">Carregando…</td></tr>
+                            <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando…</td></tr>
                         </tbody>
                         <tfoot id="tfoot-sc1"></tfoot>
                     </table>
@@ -493,21 +413,21 @@
 
             <!-- Cenário 2 -->
             <div id="tab-sc2" class="tab-panel">
-                <span class="section-label">Cenário 2: Intermediário — metade do efeito Gobetti, bolo redistributivo conservado (receita ICMS/IBS estadual, R$ bi, preços 2025)</span>
+                <span class="section-label">Cenário 2: Intermediário — metade do efeito Gobetti, bolo conservado (R$ bi, preços 2025)</span>
                 <div class="callout">
-                    O parâmetro δ<sub>UF</sub> é reduzido à metade em todos os estados simultaneamente.
-                    Por ser uma transformação linear da redistribuição zero-sum de Gobetti, o bolo total de IBS
-                    entre estados permanece conservado: o que um estado deixa de perder, outro deixa de ganhar.
+                    O parâmetro \(\delta_{UF}\) é reduzido à metade em todos os estados simultaneamente.
+                    Por ser uma transformação linear de uma redistribuição soma-zero, o bolo total de IBS entre estados
+                    permanece conservado: o que um estado deixa de perder, outro deixa de ganhar na mesma proporção.
                 </div>
                 <div class="table-wrap">
                     <table class="data-table" id="table-sc2">
                         <thead>
                             <tr>
                                 <th class="th-left" rowspan="2">UF</th>
-                                <th rowspan="2">δ<sub>2</sub></th>
-                                <th rowspan="2">R₀<br>(ref.)</th>
+                                <th rowspan="2">\(\delta_2\)</th>
+                                <th rowspan="2">\(R_0^{2025}\)<br>(ref.)</th>
                                 <th colspan="5">Receita ICMS/IBS estadual projetada (R$ bi)</th>
-                                <th colspan="2">Variação vs. referência</th>
+                                <th colspan="2">Variação vs. \(R_0^{2025}\)</th>
                             </tr>
                             <tr>
                                 <th>2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
@@ -515,7 +435,7 @@
                             </tr>
                         </thead>
                         <tbody id="tbody-sc2">
-                            <tr><td colspan="10" class="loading-cell" style="text-align:center;padding:2rem;color:var(--text-muted)">Carregando…</td></tr>
+                            <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando…</td></tr>
                         </tbody>
                         <tfoot id="tfoot-sc2"></tfoot>
                     </table>
@@ -524,21 +444,23 @@
 
             <!-- Cenário 3 -->
             <div id="tab-sc3" class="tab-panel">
-                <span class="section-label">Cenário 3: Neutro — sem redistribuição por destino (δ = 0), somente efeitos sistemáticos (receita ICMS/IBS estadual, R$ bi, preços 2025)</span>
+                <span class="section-label">Cenário 3: Neutro — sem redistribuição por destino (\(\delta = 0\)), somente efeitos sistemáticos (R$ bi, preços 2025)</span>
                 <div class="callout">
-                    Sem redistribuição por destino, ainda persistem efeitos sobre cada estado: o ajuste λ<sub>UF</sub>
-                    do CPT (que reflete o desempenho histórico de cada UF em relação à média nacional) e as deduções
-                    do CGIBS e do Seguro-Receita. Estados com λ &lt; 1 perdem mesmo sem redistribuição.
+                    Sem redistribuição por destino, ainda persistem dois efeitos: (1) as deduções do CGIBS e do
+                    Seguro-Receita sobre o IBSd; (2) o efeito CPT — estados cujo crescimento de ICMS entre 2019 e 2025
+                    ficou abaixo da média nacional têm \(R_0^{avg} > R_0^{2025}\) (\(\lambda > 1\)), ganhando com a
+                    transição; os que cresceram acima da média têm \(\lambda < 1\) e podem perder levemente mesmo
+                    sem redistribuição por destino. A coluna \(\lambda_{UF}\) mostra esse coeficiente de ajuste CPT.
                 </div>
                 <div class="table-wrap">
                     <table class="data-table" id="table-sc3">
                         <thead>
                             <tr>
                                 <th class="th-left" rowspan="2">UF</th>
-                                <th rowspan="2">λ<sub>UF</sub></th>
-                                <th rowspan="2">R₀<br>(ref.)</th>
+                                <th rowspan="2">\(\lambda_{UF}\)</th>
+                                <th rowspan="2">\(R_0^{2025}\)<br>(ref.)</th>
                                 <th colspan="5">Receita ICMS/IBS estadual projetada (R$ bi)</th>
-                                <th colspan="2">Variação vs. referência</th>
+                                <th colspan="2">Variação vs. \(R_0^{2025}\)</th>
                             </tr>
                             <tr>
                                 <th>2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
@@ -546,7 +468,7 @@
                             </tr>
                         </thead>
                         <tbody id="tbody-sc3">
-                            <tr><td colspan="10" class="loading-cell" style="text-align:center;padding:2rem;color:var(--text-muted)">Carregando…</td></tr>
+                            <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando…</td></tr>
                         </tbody>
                         <tfoot id="tfoot-sc3"></tfoot>
                     </table>
@@ -556,21 +478,26 @@
 
         <div class="callout" style="margin-top:1rem">
             Para análise aprofundada do Espírito Santo, incluindo decomposição por componente e gráfico de trajetória,
-            veja o <a href="/estudos/ibs-projecao-arrecadacao-es.html" style="color:var(--accent)">Estudo 03: Projeção IBS/ICMS ES 2029–2033</a>.
+            veja o <a href="/estudos/ibs-projecao-arrecadacao-es.html">Estudo 03: Projeção IBS/ICMS ES 2029–2033</a>.
             O coeficiente CPT do ES é analisado no
-            <a href="/estudos/reforma-tributaria-coeficiente.html" style="color:var(--accent)">Estudo 02: Coeficiente de Participação de Transição ES</a>.
+            <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02: Coeficiente de Participação de Transição ES</a>.
         </div>
 
         <div class="footnotes">
-            <p><strong>Fontes:</strong></p>
-            <p>1. Receita estadual de referência (R₀): SICONFI/STN, DCA Anexo I-C (ICMS estadual bruto), 2019–2025. Deflator: razão entre o total nacional ICMS+ISS de 2025 e o total de cada ano. Receita estadual = 75% do ICMS bruto (art. 158, IV, CF/88).</p>
-            <p>2. Coeficientes Gobetti (δ<sub>UF</sub>, nível estadual): Gobetti, S.&nbsp;W.; Monteiro, P.&nbsp;K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura, n. 60, Nota de Conjuntura 18. IPEA, 28 ago. 2023. Disponível em: <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">repositorio.ipea.gov.br</a>. Tabela 1 (efeito total UF) e Tabela 2 (municípios); o saldo estadual é derivado por diferença, aplicando proporção estimada pelo DCA 2022 (ICMS × 75% / (ICMS + ISS)). Ver arquivo <code>data/gobetti-2023-perdas-ganhos-uf.json</code>.</p>
+            <p><strong>Fontes e notas metodológicas:</strong></p>
+            <p>1. Receita de referência (\(R_0^{2025}\)): SICONFI/STN, DCA Anexo I-C (ICMS estadual bruto), 2025. Receita estadual = 75% do ICMS bruto (art. 158, IV, CF/88). A base IBS (\(R_0^{avg}\)) é a média deflacionada de 2019–2025, com deflator = TotalBR\(_{2025}\) / TotalBR\(_t\), onde TotalBR = soma nacional de ICMS+ISS, mesmo método do CPT (LC 227/2026, art. 115).</p>
+            <p>2. Coeficientes Gobetti (\(\delta_{UF}\), nível estadual): Gobetti, S.&nbsp;W.; Monteiro, P.&nbsp;K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura, n. 60, Nota de Conjuntura 18. IPEA, 28 ago. 2023. Disponível em: <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">repositorio.ipea.gov.br</a>. Coluna <em>estado_pct</em> da <em>Tabela 4 — esferas</em> (saldo estadual derivado da proporção ICMS×75%/(ICMS+ISS) estimada pelo DCA 2022).</p>
             <p>3. Regra de transição: ADCT arts. 128, 131 e 132 (EC 132/2023); distribuição IBSt/IBSd: LC 227/2026, arts. 114–116; CGIBS: LC 227/2026, art. 51; Seguro-Receita: ADCT art. 132.</p>
-            <p>4. O cenário 3 (neutro, δ = 0) não implica ausência de impacto: o ajuste λ<sub>UF</sub> do CPT e as deduções de CGIBS e Seguro-Receita geram variações residuais mesmo sem redistribuição por destino.</p>
-            <p>5. Os valores não incluem crescimento real da receita (base fixa em preços de 2025) nem impacto do Seguro-Receita como receita potencial para estados perdedores (hipótese conservadora).</p>
+            <p>4. O cenário 3 (neutro, \(\delta = 0\)) pode gerar variações residuais via efeito CPT (\(\lambda \neq 1\)) e deduções de CGIBS e Seguro-Receita. Estados com crescimento de ICMS acima da média nacional entre 2019 e 2025 têm \(\lambda < 1\) e perdem levemente mesmo sem redistribuição por destino, pois o CPT captura a participação histórica, não o valor corrente.</p>
+            <p>5. Os valores não incluem crescimento real da receita (base fixa em preços de 2025) nem o retorno do Seguro-Receita como receita potencial para estados deficitários (hipótese conservadora).</p>
         </div>
     </div>
 
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+
+    <script src="/js/search.js"></script>
     <script>
     // ══════════════════════════════════════════════════════════════
     //  Constantes
@@ -590,28 +517,25 @@
 
     // ADCT: fa=ICMS remanescente, sa=fração IBS, alphaBIS=fração IBSt, ca=CGIBS
     const ADCT = {
-        2029: { fa: 0.9, sa: 0.10, alphaBIS: 0.80, ca: 0.020 },
-        2030: { fa: 0.8, sa: 0.20, alphaBIS: 0.80, ca: 0.010 },
+        2029: { fa: 0.9, sa: 0.10, alphaBIS: 0.80, ca: 0.020  },
+        2030: { fa: 0.8, sa: 0.20, alphaBIS: 0.80, ca: 0.010  },
         2031: { fa: 0.7, sa: 0.30, alphaBIS: 0.80, ca: 0.0067 },
-        2032: { fa: 0.6, sa: 0.40, alphaBIS: 0.80, ca: 0.005 },
-        2033: { fa: 0.0, sa: 1.00, alphaBIS: 0.90, ca: 0.005 }
+        2032: { fa: 0.6, sa: 0.40, alphaBIS: 0.80, ca: 0.005  },
+        2033: { fa: 0.0, sa: 1.00, alphaBIS: 0.90, ca: 0.005  }
     };
     const ANOS     = [2029, 2030, 2031, 2032, 2033];
     const ANOS_REF = ['2019','2020','2021','2022','2023','2024','2025'];
-    const RHO      = 0.05;  // Seguro-Receita
+    const RHO      = 0.05;   // Seguro-Receita
 
     // ══════════════════════════════════════════════════════════════
     //  Formatação
     // ══════════════════════════════════════════════════════════════
     const fmtBi  = (v, d=2) => (v/1e9).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
-    const fmtPct = (v, d=1) => {
-        const s = (v*100).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
-        return (v >= 0 ? '+' : '') + s + '%';
-    };
+    const fmtPct = (v, d=1) => (v >= 0 ? '+' : '') + (v*100).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}) + '%';
     const clsPct = v => v < -0.0005 ? 'td-neg' : v > 0.0005 ? 'td-pos' : '';
 
     // ══════════════════════════════════════════════════════════════
-    //  Deflators (igual metodologia da página CPT)
+    //  Deflators (mesma metodologia da página CPT)
     // ══════════════════════════════════════════════════════════════
     function computeDeflators(dca_icms, dca_iss) {
         const totals = {};
@@ -625,14 +549,16 @@
         }
         const base2025 = totals['2025'];
         const def = {};
-        for (const yr of ANOS_REF) {
-            def[yr] = totals[yr] ? base2025 / totals[yr] : null;
-        }
+        for (const yr of ANOS_REF) def[yr] = totals[yr] ? base2025 / totals[yr] : null;
         return def;
     }
 
     // ══════════════════════════════════════════════════════════════
     //  Parâmetros por estado
+    //
+    //  r0_2025 = ICMS_UF_2025 × 0,75  → base do ICMS residual (contrafactual)
+    //  r0_avg  = TotalBR × CPT_UF      → base do IBS (média histórica deflacionada)
+    //  lambda  = r0_avg / r0_2025      → exibido no Cenário 3; < 1 se UF cresceu acima da média
     // ══════════════════════════════════════════════════════════════
     function computeParams(dca_icms, dca_iss, deflators, gobettiByUF) {
         const params = {};
@@ -647,29 +573,36 @@
                     if (yr === '2025') val2025 = icms * 0.75;
                 }
             }
-            const r0     = n > 0 ? sum / n : 0;
-            const lambda = val2025 > 0 ? r0 / val2025 : 1.0;
-            const g      = gobettiByUF[uf];
-            const delta1 = g ? g.estado_pct / 100 : 0;
-            params[uf]   = { r0, lambda, delta1 };
+            const r0_avg  = n > 0 ? sum / n : 0;
+            const r0_2025 = val2025;
+            const lambda  = r0_2025 > 0 ? r0_avg / r0_2025 : 1.0;
+            const g       = gobettiByUF[uf];
+            const delta1  = g ? g.estado_pct / 100 : 0;
+            params[uf]    = { r0_2025, r0_avg, lambda, delta1 };
         }
         return params;
     }
 
     // ══════════════════════════════════════════════════════════════
     //  Projeção de receita para um estado e cenário
+    //
+    //  ICMS residual : R0_2025 × fa
+    //  IBSt (CPT)    : R0_avg  × sa × alphaBIS × (1 − ca)
+    //  IBSd (destino): R0_avg  × sa × (1−alphaBIS) × (1−ca) × (1−ρ) × (1+δ)
+    //
+    //  Δ% comparado a R0_2025 (contrafactual de estado estacionário sem reforma)
     // ══════════════════════════════════════════════════════════════
     function project(uf, params, deltaFn) {
-        const { r0, lambda } = params[uf];
+        const { r0_2025, r0_avg } = params[uf];
         const res = {};
         for (const a of ANOS) {
             const { fa, sa, alphaBIS, ca } = ADCT[a];
             const delta    = deltaFn(uf, params);
-            const icms_res = r0 * fa;
-            const ibst     = r0 * sa * alphaBIS * lambda * (1 - ca);
-            const ibsd     = r0 * sa * (1 - alphaBIS) * (1 + delta) * (1 - RHO) * (1 - ca);
+            const icms_res = r0_2025 * fa;
+            const ibst     = r0_avg  * sa * alphaBIS         * (1 - ca);
+            const ibsd     = r0_avg  * sa * (1 - alphaBIS)   * (1 - ca) * (1 - RHO) * (1 + delta);
             const total    = icms_res + ibst + ibsd;
-            res[a] = { total, dpct: (total - r0) / r0 };
+            res[a] = { total, dpct: r0_2025 > 0 ? (total - r0_2025) / r0_2025 : 0 };
         }
         return res;
     }
@@ -686,23 +619,21 @@
     function buildTable(tbodyId, tfootId, params, deltaFn, showLambda) {
         const rows = UFS.map(uf => {
             const r = project(uf, params, deltaFn);
-            return { uf, r, r0: params[uf].r0, lambda: params[uf].lambda, delta1: params[uf].delta1 };
-        }).sort((a, b) => a.r[2033].dpct - b.r[2033].dpct);  // sort by 2033 Δ%
+            return { uf, r, r0_2025: params[uf].r0_2025, lambda: params[uf].lambda };
+        }).sort((a, b) => a.r[2033].dpct - b.r[2033].dpct);
 
         const tbody = document.getElementById(tbodyId);
-        tbody.innerHTML = rows.map(({ uf, r, r0, lambda, delta1 }) => {
+        tbody.innerHTML = rows.map(({ uf, r, r0_2025, lambda }) => {
             const isES   = uf === 'ES';
             const d1cell = showLambda
                 ? `<td class="td-ref">${lambda.toLocaleString('pt-BR',{minimumFractionDigits:4,maximumFractionDigits:4})}</td>`
                 : `<td class="td-ref">${(deltaFn(uf, params)*100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}%</td>`;
-            const yrCells = ANOS.map(a =>
-                `<td>${fmtBi(r[a].total, 2)}</td>`
-            ).join('');
+            const yrCells = ANOS.map(a => `<td>${fmtBi(r[a].total, 2)}</td>`).join('');
             const d29 = r[2029].dpct, d33 = r[2033].dpct;
             return `<tr${isES ? ' class="row-es"' : ''}>
                 <td class="td-uf">${uf} <small>${NOMES_UF[uf]}</small></td>
                 ${d1cell}
-                <td class="td-ref">${fmtBi(r0, 2)}</td>
+                <td class="td-ref">${fmtBi(r0_2025, 2)}</td>
                 ${yrCells}
                 <td class="${clsPct(d29)}">${fmtPct(d29, 1)}</td>
                 <td class="${clsPct(d33)}">${fmtPct(d33, 1)}</td>
@@ -710,22 +641,21 @@
         }).join('');
 
         // Footer totals
-        const tfoot = document.getElementById(tfootId);
         let sumR0 = 0;
         const sumYears = {};
         ANOS.forEach(a => sumYears[a] = 0);
         for (const uf of UFS) {
-            sumR0 += params[uf].r0;
+            sumR0 += params[uf].r0_2025;
             const r = project(uf, params, deltaFn);
             ANOS.forEach(a => { sumYears[a] += r[a].total; });
         }
         const dpct29 = (sumYears[2029] - sumR0) / sumR0;
         const dpct33 = (sumYears[2033] - sumR0) / sumR0;
         const yrSumCells = ANOS.map(a => `<td>${fmtBi(sumYears[a], 1)}</td>`).join('');
-        tfoot.innerHTML = `<tr>
+        document.getElementById(tfootId).innerHTML = `<tr>
             <td class="td-uf"><strong>Brasil</strong> <small>27 UFs</small></td>
-            <td></td>
-            <td>${fmtBi(sumR0, 1)}</td>
+            <td class="td-ref"></td>
+            <td class="td-ref">${fmtBi(sumR0, 1)}</td>
             ${yrSumCells}
             <td class="${clsPct(dpct29)}">${fmtPct(dpct29, 1)}</td>
             <td class="${clsPct(dpct33)}">${fmtPct(dpct33, 1)}</td>
@@ -733,18 +663,18 @@
     }
 
     // ══════════════════════════════════════════════════════════════
-    //  Preencher cards de cenário
+    //  Cards de cenário
     // ══════════════════════════════════════════════════════════════
     function fillCards(params) {
         SCENARIOS.forEach((sc, i) => {
             const n = i + 1;
-            const esRes = project('ES', params, sc.fn);
-            const d33   = esRes[2033].dpct;
-            const d33abs = esRes[2033].total - params['ES'].r0;
+            const esRes  = project('ES', params, sc.fn);
+            const d33    = esRes[2033].dpct;
+            const d33abs = esRes[2033].total - params['ES'].r0_2025;
 
-            document.getElementById(`sc${n}-es33`).textContent     = fmtPct(d33, 1);
-            document.getElementById(`sc${n}-es33`).className        = `sc-stat-val ${d33 < 0 ? 'neg' : 'pos'}`;
-            document.getElementById(`sc${n}-es33-abs`).textContent  =
+            document.getElementById(`sc${n}-es33`).textContent    = fmtPct(d33, 1);
+            document.getElementById(`sc${n}-es33`).className       = `sc-stat-val ${d33 < 0 ? 'neg' : 'pos'}`;
+            document.getElementById(`sc${n}-es33-abs`).textContent =
                 `${fmtBi(d33abs, 2)} R$ bi vs. referência em 2033`;
 
             let countNeg = 0;
@@ -794,14 +724,13 @@
             const params = computeParams(dca_icms, dca_iss, deflators, gobettiByUF);
 
             fillCards(params);
-
             buildTable('tbody-sc1', 'tfoot-sc1', params, SCENARIOS[0].fn, false);
             buildTable('tbody-sc2', 'tfoot-sc2', params, SCENARIOS[1].fn, false);
             buildTable('tbody-sc3', 'tfoot-sc3', params, SCENARIOS[2].fn, true);
 
             statusEl.innerHTML =
                 '<span class="status-dot" style="background:#22c55e"></span> ' +
-                '27 UFs · dados DCA 2019–2025 · coeficientes Gobetti-Monteiro IPEA 2023';
+                '27 UFs · DCA 2019–2025 · coeficientes Gobetti-Monteiro (IPEA, 2023)';
         } catch (err) {
             statusEl.innerHTML =
                 '<span class="status-dot" style="background:#ef4444"></span> Erro ao carregar dados: ' + err.message;
