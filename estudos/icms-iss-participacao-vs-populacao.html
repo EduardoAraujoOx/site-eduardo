@@ -508,17 +508,23 @@
             </div>
 
             <!-- ═══════════════ PARTE 3C — ESTADO vs. MUNICÍPIO ═══════════════ -->
-            <span class="section-label" style="margin-top:2.5rem">Tabela 4 e Gráfico 4: o efeito é maior no governo estadual ou nos municípios?</span>
+            <span class="section-label" style="margin-top:2.5rem">Tabela 4 e Gráfico 4: o governo estadual começou com quanto e terminou com quanto?</span>
             <p class="section-intro">
                 As Tabelas 2 e 3 já mostram que estado e municípios são afetados de forma diferente dentro de
-                cada UF, mas não separam, em reais, o quanto do efeito total cai sobre o governo estadual e o
-                quanto cai sobre o conjunto dos municípios. Gobetti e Monteiro não publicam essa quebra pronta em
-                uma única tabela, então construímos essa segregação por resíduo: o saldo municipal líquido vem
-                diretamente da Tabela 2 (soma dos ganhos e das perdas de todos os municípios da UF); o saldo
-                estadual é a diferença entre o saldo total da Tabela 1 e esse saldo municipal. É uma estimativa
-                derivada, não um número que os autores calcularam diretamente, e carrega uma imprecisão pequena
-                porque os 20% do ICMS/IBS retidos pelo Fundeb não pertencem inteiramente a nenhuma das duas
-                esferas. Ainda assim, o resultado é revelador para o caso capixaba.
+                cada UF, mas não respondem a uma pergunta direta: em reais, quanto cada esfera arrecadava antes
+                da reforma e quanto passaria a arrecadar depois, no mesmo cenário estático da Tabela 1? Gobetti e
+                Monteiro não publicam essa divisão pronta, então a construímos em duas etapas. Primeiro, como o
+                saldo (a variação) da esfera municipal já está na Tabela 2 do paper, o saldo da esfera estadual
+                sai por resíduo: saldo total da Tabela 1 menos o saldo municipal. Segundo, para descobrir o ponto
+                de partida de cada esfera (quanto cada uma arrecadava antes da reforma), como o paper não divide
+                o valor pré-reforma da Tabela 1 entre estado e município por UF, usamos a arrecadação real de
+                ICMS e ISS de cada UF em 2022 (SICONFI/STN) e a mesma regra constitucional de cota-parte (75% do
+                ICMS líquido para o estado, 25% mais o ISS integral para os municípios) já usada no estudo do
+                Coeficiente de Participação de Transição, só para estimar a <em>proporção</em> entre as duas
+                esferas. Essa proporção é aplicada sobre o valor pré-reforma que o próprio Gobetti reporta, o que
+                preserva exatamente o total da Tabela 1 e evita herdar diferenças de cobertura entre as duas
+                bases de dados. Com o ponto de partida e a variação de cada esfera, chegamos ao ponto de chegada
+                por soma simples.
             </p>
             <div id="status-gobetti-esferas" class="status-bar">
                 <span class="status-dot"></span>
@@ -528,37 +534,45 @@
                 <p class="chart-panel-title">Saldo (pós menos pré-reforma) por esfera de governo, cenário estático, base 2022 (R$ bi)</p>
                 <div class="chart-canvas-wrap"><canvas id="chart-gobetti-esferas"></canvas></div>
                 <div class="chart-legend-note">
-                    <span><span class="legend-swatch" style="background:#2a78d6"></span>Governo estadual (estimado por resíduo)</span>
-                    <span><span class="legend-swatch" style="background:#1baf7a"></span>Municípios (Tabela 2 do paper)</span>
+                    <span><span class="legend-swatch" style="background:#2a78d6"></span>Governo estadual (Pré/Pós estimados)</span>
+                    <span><span class="legend-swatch" style="background:#1baf7a"></span>Municípios (Pré/Pós estimados)</span>
                 </div>
             </div>
             <div class="data-table-wrap">
                 <table class="data-table" id="table-gobetti-esferas">
                     <thead>
                         <tr>
-                            <th class="th-uf">UF</th>
-                            <th>Saldo total<br><small style="font-weight:400">(R$ bi)</small></th>
-                            <th>Saldo estadual<br><small style="font-weight:400">(R$ bi, estimado)</small></th>
-                            <th>Saldo municipal<br><small style="font-weight:400">(R$ bi)</small></th>
-                            <th>% do saldo total<br><small style="font-weight:400">que é municipal</small></th>
+                            <th class="th-uf th-year" rowspan="2">UF</th>
+                            <th class="th-group" colspan="3" style="border-bottom:1px solid var(--border)">Governo estadual (R$ bi)</th>
+                            <th class="th-group" colspan="3" style="border-bottom:1px solid var(--border)">Municípios (R$ bi)</th>
+                        </tr>
+                        <tr>
+                            <th>Pré</th>
+                            <th>Pós</th>
+                            <th>Variação (%)</th>
+                            <th>Pré</th>
+                            <th>Pós</th>
+                            <th>Variação (%)</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-gobetti-esferas">
-                        <tr><td colspan="5" class="loading-cell">Aguardando dados…</td></tr>
+                        <tr><td colspan="7" class="loading-cell">Aguardando dados…</td></tr>
                     </tbody>
                     <tfoot id="tfoot-gobetti-esferas"></tfoot>
                 </table>
             </div>
 
             <div class="callout">
-                <strong>No caso do ES, a perda é sobretudo do governo estadual.</strong> Do saldo negativo de
-                R$ 5,6 bilhões estimado para o ES, cerca de R$ 4,3 bilhões (77%) recairiam sobre o caixa do
-                governo estadual, e apenas R$ 1,3 bilhão (23%) sobre o conjunto dos municípios capixabas. Isso
-                ajuda a entender por que a Parte 3 deste estudo, ao falar em "perda do ES", está descrevendo
-                principalmente um problema de receita estadual, e não uma distribuição equilibrada de perdas entre
-                Vitória e as prefeituras do interior. Padrão semelhante aparece em Mato Grosso, Mato Grosso do Sul
-                e Amazonas: nos quatro estados de pior trajetória segundo Gobetti e Monteiro, a maior parte do
-                golpe é absorvida pelo tesouro estadual, não pelas prefeituras.
+                <strong>No ES, as duas esferas perdem, mas o estado perde proporcionalmente mais.</strong> O
+                governo estadual capixaba sairia de uma base de aproximadamente R$ 12,6 bilhões para cerca de
+                R$ 8,3 bilhões, uma queda de 34%. Os municípios capixabas, somados, sairiam de R$ 6,0 bilhões
+                para R$ 4,7 bilhões, uma queda de 21%. Em reais, a maior parte da perda total do ES (R$ 5,6
+                bilhões) recai sobre o caixa do governo estadual (R$ 4,3 bilhões, ou 77% do total), e não sobre o
+                conjunto das prefeituras (R$ 1,3 bilhão, ou 23%). Isso ajuda a entender por que falar em "perda do
+                ES" na transição para o IBS é, antes de tudo, falar de um problema de caixa do governo estadual,
+                não de uma distribuição equilibrada de perdas entre Vitória e o interior. Padrão semelhante
+                aparece em Mato Grosso, Mato Grosso do Sul e Amazonas: nos quatro estados de pior trajetória
+                segundo Gobetti e Monteiro, a maior parte do golpe é absorvida pelo tesouro estadual.
             </div>
 
             <!-- Metodologia -->
@@ -612,15 +626,28 @@
                     hoje vigentes em cada estado.
                 </p>
                 <p>
-                    A Tabela 4 não reproduz um dado do paper original: nós a construímos combinando as duas
-                    tabelas anteriores. Tomamos o saldo municipal líquido de cada UF (soma dos ganhos e das perdas
-                    de todos os seus municípios, na Tabela 2) e subtraímos esse valor do saldo total da mesma UF
-                    na Tabela 1, que soma estado e municípios. O resultado é o saldo implícito do governo
-                    estadual. É uma estimativa por resíduo, não um número calculado diretamente pelos autores, e
-                    tem uma imprecisão pequena porque 20% do ICMS e do futuro IBS estadual são retidos pelo
-                    Fundeb, um fundo que não pertence integralmente nem ao caixa do estado nem ao dos municípios.
-                    Ainda assim, a ordem de grandeza é clara o suficiente para mostrar onde a perda ou o ganho de
-                    cada UF se concentra.
+                    A Tabela 4 não reproduz um dado do paper original: nós a construímos em duas etapas,
+                    combinando as tabelas anteriores com uma fonte de dados externa ao Gobetti. Primeiro, o saldo
+                    (a variação) de cada esfera: o saldo municipal líquido de cada UF vem direto da Tabela 2 (soma
+                    dos ganhos e das perdas de todos os seus municípios); o saldo estadual é a diferença entre o
+                    saldo total da mesma UF na Tabela 1 e esse saldo municipal. Essa parte é uma estimativa por
+                    resíduo, com uma imprecisão pequena porque 20% do ICMS e do futuro IBS estadual são retidos
+                    pelo Fundeb, um fundo que não pertence integralmente a nenhuma das duas esferas.
+                </p>
+                <p>
+                    Segundo, o ponto de partida de cada esfera antes da reforma, que o paper de Gobetti não
+                    divide por UF na Tabela 1: usamos o ICMS e o ISS efetivamente arrecadados por cada UF em 2022
+                    (SICONFI/STN, DCA Anexo I-C), com a mesma regra de cota-parte constitucional do estudo do
+                    Coeficiente de Participação de Transição (75% do ICMS líquido para o estado, 25% mais o ISS
+                    integral para os municípios), apenas para calcular a <em>proporção</em> entre as duas
+                    esferas em cada UF. Aplicamos essa proporção sobre o valor pré-reforma que o próprio Gobetti
+                    reporta na Tabela 1, o que preserva exatamente o total já publicado pelos autores e evita
+                    herdar diferenças de cobertura entre a base do SICONFI e a base usada por eles. Conferimos que
+                    essa proporção fica sempre entre 59% e 72% de participação estadual em todas as 27 UFs, uma
+                    faixa estreita e coerente com a regra constitucional, mesmo nos casos em que o valor absoluto
+                    de ICMS do SICONFI diverge mais do total reportado por Gobetti (Mato Grosso e Tocantins, onde
+                    a base do DCA parece incompleta em 2022). Com o ponto de partida e o saldo de cada esfera,
+                    o ponto de chegada é soma simples.
                 </p>
             </div>
 
@@ -628,6 +655,7 @@
                 <p>Fonte tributária (Partes 1 e 2): <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">SICONFI: API Data Lake STN</a>, DCA Anexo I-C 2025 (ICMS estadual e ISS municipal brutos).</p>
                 <p>Fonte populacional (Partes 1 e 2): IBGE, Estimativas da População Residente no Brasil e Unidades da Federação com data de referência em 1º de julho de 2025 (Diretoria de Pesquisas, Coordenação de População e Indicadores Sociais).</p>
                 <p>Fonte da Parte 3: GOBETTI, S. W.; MONTEIRO, P. K. Impactos redistributivos da reforma tributária: estimativas atualizadas. Carta de Conjuntura, n. 60, Nota de Conjuntura 18, Brasília: IPEA, 28 de agosto de 2023. <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">Documento original</a>.</p>
+                <p>Fonte da proporção estado/município usada na Tabela 4: SICONFI/STN, DCA Anexo I-C, ICMS estadual e ISS municipal brutos de 2022, mesma base e metodologia do estudo do <a href="/estudos/reforma-tributaria-coeficiente.html">Coeficiente de Participação de Transição</a>.</p>
             </div>
         </section>
     </main>
@@ -1095,29 +1123,28 @@
         document.getElementById('status-gobetti-esferas').innerHTML =
             '<span class="status-dot" style="background:#22c55e"></span> 27 UFs · estimativa derivada, ver metodologia · fonte: ' + data.fonte;
 
-        const rows = [...bloco.ufs].sort((a, b) => a.estado_saldo - b.estado_saldo);
+        const rows = [...bloco.ufs].sort((a, b) => a.estado_pct - b.estado_pct);
 
         const tbody = document.getElementById('tbody-gobetti-esferas');
-        tbody.innerHTML = rows.map(r => {
-            const pctMuni = r.total_saldo !== 0 ? (r.muni_saldo / r.total_saldo * 100) : null;
-            return `<tr${r.uf === 'ES' ? ' class="row-es"' : ''}>
+        tbody.innerHTML = rows.map(r => `<tr${r.uf === 'ES' ? ' class="row-es"' : ''}>
             <td class="td-uf">${r.uf} <small style="font-weight:400;color:var(--text-muted)">${NOMES_UF[r.uf]}</small></td>
-            <td>${fmtDiff(r.total_saldo / 1e9, 2, '')}</td>
-            <td>${fmtDiff(r.estado_saldo / 1e9, 2, '')}</td>
-            <td>${fmtDiff(r.muni_saldo / 1e9, 2, '')}</td>
-            <td>${pctMuni != null ? pctMuni.toFixed(0) + '%' : '–'}</td>
-        </tr>`;
-        }).join('');
+            <td>${fmtBi(r.estado_pre)}</td>
+            <td>${fmtBi(r.estado_pos)}</td>
+            <td style="font-weight:600">${fmtDiff(r.estado_pct, 1, '%')}</td>
+            <td>${fmtBi(r.muni_pre)}</td>
+            <td>${fmtBi(r.muni_pos)}</td>
+            <td style="font-weight:600">${fmtDiff(r.muni_pct, 1, '%')}</td>
+        </tr>`).join('');
 
-        const somaTotal = rows.reduce((s, r) => s + r.total_saldo, 0);
-        const somaEstado = rows.reduce((s, r) => s + r.estado_saldo, 0);
-        const somaMuni = rows.reduce((s, r) => s + r.muni_saldo, 0);
+        const t = bloco.total;
         document.getElementById('tfoot-gobetti-esferas').innerHTML = `<tr>
             <td class="td-uf">BRASIL</td>
-            <td>${fmtDiff(somaTotal / 1e9, 2, '')}</td>
-            <td>${fmtDiff(somaEstado / 1e9, 2, '')}</td>
-            <td>${fmtDiff(somaMuni / 1e9, 2, '')}</td>
-            <td>–</td>
+            <td>${fmtBi(t.estado_pre)}</td>
+            <td>${fmtBi(t.estado_pos)}</td>
+            <td>${fmtDiff(t.estado_saldo / t.estado_pre * 100, 1, '%')}</td>
+            <td>${fmtBi(t.muni_pre)}</td>
+            <td>${fmtBi(t.muni_pos)}</td>
+            <td>${fmtDiff(t.muni_saldo / t.muni_pre * 100, 1, '%')}</td>
         </tr>`;
 
         buildGobettiEsferasChart(rows);
@@ -1127,16 +1154,17 @@
         const el = document.getElementById('chart-gobetti-esferas');
         if (!el) return;
 
-        el.parentElement.style.height = Math.max(420, rows.length * 46) + 'px';
+        const sorted = [...rows].sort((a, b) => b.estado_pct - a.estado_pct);
+        el.parentElement.style.height = Math.max(420, sorted.length * 46) + 'px';
 
         new Chart(el, {
             type: 'bar',
             data: {
-                labels: rows.map(r => r.uf),
+                labels: sorted.map(r => r.uf),
                 datasets: [
                     {
                         label: 'Estadual',
-                        data: rows.map(r => +(r.estado_saldo / 1e9).toFixed(2)),
+                        data: sorted.map(r => +(r.estado_saldo / 1e9).toFixed(2)),
                         backgroundColor: '#2a78d6',
                         borderRadius: 3,
                         datalabels: {
@@ -1147,7 +1175,7 @@
                     },
                     {
                         label: 'Municipal',
-                        data: rows.map(r => +(r.muni_saldo / 1e9).toFixed(2)),
+                        data: sorted.map(r => +(r.muni_saldo / 1e9).toFixed(2)),
                         backgroundColor: '#1baf7a',
                         borderRadius: 3,
                         datalabels: {
