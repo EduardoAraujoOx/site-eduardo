@@ -582,230 +582,339 @@
     ]
   },
   "tabela4_esferas": {
-    "descricao": "Efeito redistributivo estático (mesma base da Tabela 1) segregado por esfera de governo. O saldo municipal líquido vem diretamente da Tabela 2 do paper (soma de ganhos e perdas dos municípios de cada UF). O saldo estadual é uma estimativa derivada por resíduo: saldo total da Tabela 1 menos o saldo municipal líquido da Tabela 2. Os autores não publicam essa quebra estado/município em uma única tabela; a derivação é transparente, mas sujeita a uma pequena imprecisão porque os 20% do ICMS/IBS retidos pelo Fundeb não pertencem inteiramente a nenhuma das duas esferas.",
+    "descricao": "Efeito redistributivo estático (mesma base da Tabela 1) por esfera de governo, com receita pré e pós-reforma em R$. O saldo municipal líquido vem diretamente da Tabela 2 do paper de Gobetti e Monteiro (soma de ganhos e perdas dos municípios de cada UF); o saldo estadual é a diferença entre o saldo total da Tabela 1 e esse saldo municipal. Como o paper não publica a divisão do valor pré-reforma (Tabela 1) entre estado e municípios por UF, estimamos essa proporção a partir do ICMS e do ISS efetivamente arrecadados por cada UF em 2022 (SICONFI/STN, DCA Anexo I-C), aplicando a mesma regra constitucional de cota-parte (75% ICMS líquido para o estado, 25% para os municípios, mais o ISS integral) usada no estudo do Coeficiente de Participação de Transição. Essa proporção é aplicada sobre o valor pré-reforma informado pelo próprio Gobetti (preservando exatamente o total da Tabela 1), o que evita herdar eventuais diferenças de cobertura entre a base do SICONFI e a base usada pelos autores. A receita pós-reforma de cada esfera é então obtida somando essa base pré-reforma estimada ao saldo (variação) da mesma esfera.",
     "total": {
-      "pre": 801319000000,
-      "pos": 801320000000,
-      "total_saldo": 1000000,
+      "estado_pre": 520621939960.20624,
+      "estado_pos": 519333939960.20624,
       "estado_saldo": -1288000000,
+      "muni_pre": 280697060039.79376,
+      "muni_pos": 281986060039.79376,
       "muni_saldo": 1289000000
     },
     "ufs": [
       {
-        "uf": "MA",
-        "pre": 12848000000,
-        "pos": 15111000000,
-        "total_saldo": 2263000000,
-        "estado_saldo": 961000000,
-        "muni_saldo": 1302000000
-      },
-      {
-        "uf": "PI",
-        "pre": 6386000000,
-        "pos": 9408000000,
-        "total_saldo": 3022000000,
-        "estado_saldo": 1752000000,
-        "muni_saldo": 1270000000
-      },
-      {
-        "uf": "PB",
-        "pre": 8361000000,
-        "pos": 10089000000,
-        "total_saldo": 1728000000,
-        "estado_saldo": 757000000,
-        "muni_saldo": 971000000
-      },
-      {
-        "uf": "CE",
-        "pre": 19224000000,
-        "pos": 22533000000,
-        "total_saldo": 3309000000,
-        "estado_saldo": 1615000000,
-        "muni_saldo": 1694000000
-      },
-      {
         "uf": "AC",
-        "pre": 1948000000,
-        "pos": 2371000000,
-        "total_saldo": 423000000,
+        "share_estimada_estado": 0.6902,
+        "estado_pre": 1344415709.6972146,
+        "estado_pos": 1555415709.6972146,
         "estado_saldo": 211000000,
-        "muni_saldo": 212000000
+        "estado_pct": 15.69,
+        "muni_pre": 603584290.3027855,
+        "muni_pos": 815584290.3027855,
+        "muni_saldo": 212000000,
+        "muni_pct": 35.12
       },
       {
         "uf": "AL",
-        "pre": 6946000000,
-        "pos": 8752000000,
-        "total_saldo": 1806000000,
+        "share_estimada_estado": 0.677,
+        "estado_pre": 4702640327.6911955,
+        "estado_pos": 5578640327.6911955,
         "estado_saldo": 876000000,
-        "muni_saldo": 930000000
-      },
-      {
-        "uf": "SE",
-        "pre": 5163000000,
-        "pos": 6134000000,
-        "total_saldo": 971000000,
-        "estado_saldo": 571000000,
-        "muni_saldo": 400000000
-      },
-      {
-        "uf": "PE",
-        "pre": 23736000000,
-        "pos": 23837000000,
-        "total_saldo": 101000000,
-        "estado_saldo": -676000000,
-        "muni_saldo": 777000000
-      },
-      {
-        "uf": "RN",
-        "pre": 8134000000,
-        "pos": 10360000000,
-        "total_saldo": 2226000000,
-        "estado_saldo": 1344000000,
-        "muni_saldo": 882000000
-      },
-      {
-        "uf": "BA",
-        "pre": 37426000000,
-        "pos": 40233000000,
-        "total_saldo": 2807000000,
-        "estado_saldo": 673000000,
-        "muni_saldo": 2134000000
-      },
-      {
-        "uf": "AP",
-        "pre": 1508000000,
-        "pos": 2251000000,
-        "total_saldo": 743000000,
-        "estado_saldo": 489000000,
-        "muni_saldo": 254000000
-      },
-      {
-        "uf": "PA",
-        "pre": 22185000000,
-        "pos": 25375000000,
-        "total_saldo": 3190000000,
-        "estado_saldo": 1516000000,
-        "muni_saldo": 1674000000
-      },
-      {
-        "uf": "RR",
-        "pre": 1745000000,
-        "pos": 1799000000,
-        "total_saldo": 54000000,
-        "estado_saldo": -49000000,
-        "muni_saldo": 103000000
-      },
-      {
-        "uf": "TO",
-        "pre": 4964000000,
-        "pos": 5610000000,
-        "total_saldo": 646000000,
-        "estado_saldo": 271000000,
-        "muni_saldo": 375000000
-      },
-      {
-        "uf": "RO",
-        "pre": 6463000000,
-        "pos": 5918000000,
-        "total_saldo": -545000000,
-        "estado_saldo": -659000000,
-        "muni_saldo": 114000000
+        "estado_pct": 18.63,
+        "muni_pre": 2243359672.3088045,
+        "muni_pos": 3173359672.3088045,
+        "muni_saldo": 930000000,
+        "muni_pct": 41.46
       },
       {
         "uf": "AM",
-        "pre": 15248000000,
-        "pos": 10136000000,
-        "total_saldo": -5112000000,
+        "share_estimada_estado": 0.6882,
+        "estado_pre": 10493481157.352022,
+        "estado_pos": 6241481157.352022,
         "estado_saldo": -4252000000,
-        "muni_saldo": -860000000
+        "estado_pct": -40.52,
+        "muni_pre": 4754518842.647979,
+        "muni_pos": 3894518842.647979,
+        "muni_saldo": -860000000,
+        "muni_pct": -18.09
       },
       {
-        "uf": "GO",
-        "pre": 26451000000,
-        "pos": 27259000000,
-        "total_saldo": 808000000,
-        "estado_saldo": -497000000,
-        "muni_saldo": 1305000000
+        "uf": "AP",
+        "share_estimada_estado": 0.6863,
+        "estado_pre": 1034978289.5370768,
+        "estado_pos": 1523978289.537077,
+        "estado_saldo": 489000000,
+        "estado_pct": 47.25,
+        "muni_pre": 473021710.4629231,
+        "muni_pos": 727021710.462923,
+        "muni_saldo": 254000000,
+        "muni_pct": 53.7
       },
       {
-        "uf": "MG",
-        "pre": 78182000000,
-        "pos": 78772000000,
-        "total_saldo": 590000000,
-        "estado_saldo": -2329000000,
-        "muni_saldo": 2919000000
+        "uf": "BA",
+        "share_estimada_estado": 0.6671,
+        "estado_pre": 24965338096.34165,
+        "estado_pos": 25638338096.34165,
+        "estado_saldo": 673000000,
+        "estado_pct": 2.7,
+        "muni_pre": 12460661903.658352,
+        "muni_pos": 14594661903.658352,
+        "muni_saldo": 2134000000,
+        "muni_pct": 17.13
       },
       {
-        "uf": "ES",
-        "pre": 18612000000,
-        "pos": 13007000000,
-        "total_saldo": -5605000000,
-        "estado_saldo": -4315000000,
-        "muni_saldo": -1290000000
-      },
-      {
-        "uf": "RS",
-        "pre": 47696000000,
-        "pos": 54395000000,
-        "total_saldo": 6699000000,
-        "estado_saldo": 3228000000,
-        "muni_saldo": 3471000000
-      },
-      {
-        "uf": "PR",
-        "pre": 47372000000,
-        "pos": 54804000000,
-        "total_saldo": 7432000000,
-        "estado_saldo": 4351000000,
-        "muni_saldo": 3081000000
-      },
-      {
-        "uf": "RJ",
-        "pre": 62145000000,
-        "pos": 71817000000,
-        "total_saldo": 9672000000,
-        "estado_saldo": 8718000000,
-        "muni_saldo": 954000000
-      },
-      {
-        "uf": "MS",
-        "pre": 15346000000,
-        "pos": 12120000000,
-        "total_saldo": -3226000000,
-        "estado_saldo": -2889000000,
-        "muni_saldo": -337000000
-      },
-      {
-        "uf": "SC",
-        "pre": 38300000000,
-        "pos": 38358000000,
-        "total_saldo": 58000000,
-        "estado_saldo": -921000000,
-        "muni_saldo": 979000000
-      },
-      {
-        "uf": "MT",
-        "pre": 21423000000,
-        "pos": 16476000000,
-        "total_saldo": -4947000000,
-        "estado_saldo": -4406000000,
-        "muni_saldo": -541000000
-      },
-      {
-        "uf": "SP",
-        "pre": 250756000000,
-        "pos": 215554000000,
-        "total_saldo": -35202000000,
-        "estado_saldo": -12886000000,
-        "muni_saldo": -22316000000
+        "uf": "CE",
+        "share_estimada_estado": 0.6665,
+        "estado_pre": 12812006067.475924,
+        "estado_pos": 14427006067.475924,
+        "estado_saldo": 1615000000,
+        "estado_pct": 12.61,
+        "muni_pre": 6411993932.5240755,
+        "muni_pos": 8105993932.5240755,
+        "muni_saldo": 1694000000,
+        "muni_pct": 26.42
       },
       {
         "uf": "DF",
-        "pre": 12751000000,
-        "pos": 18841000000,
-        "total_saldo": 6090000000,
+        "share_estimada_estado": 0.5931,
+        "estado_pre": 7563233274.374443,
+        "estado_pos": 12821233274.374443,
         "estado_saldo": 5258000000,
-        "muni_saldo": 832000000
+        "estado_pct": 69.52,
+        "muni_pre": 5187766725.625557,
+        "muni_pos": 6019766725.625557,
+        "muni_saldo": 832000000,
+        "muni_pct": 16.04
+      },
+      {
+        "uf": "ES",
+        "share_estimada_estado": 0.6769,
+        "estado_pre": 12597889159.501797,
+        "estado_pos": 8282889159.501797,
+        "estado_saldo": -4315000000,
+        "estado_pct": -34.25,
+        "muni_pre": 6014110840.498203,
+        "muni_pos": 4724110840.498203,
+        "muni_saldo": -1290000000,
+        "muni_pct": -21.45
+      },
+      {
+        "uf": "GO",
+        "share_estimada_estado": 0.6803,
+        "estado_pre": 17995148325.386192,
+        "estado_pos": 17498148325.386192,
+        "estado_saldo": -497000000,
+        "estado_pct": -2.76,
+        "muni_pre": 8455851674.613807,
+        "muni_pos": 9760851674.613808,
+        "muni_saldo": 1305000000,
+        "muni_pct": 15.43
+      },
+      {
+        "uf": "MA",
+        "share_estimada_estado": 0.6692,
+        "estado_pre": 8597516908.171429,
+        "estado_pos": 9558516908.171429,
+        "estado_saldo": 961000000,
+        "estado_pct": 11.18,
+        "muni_pre": 4250483091.828571,
+        "muni_pos": 5552483091.828571,
+        "muni_saldo": 1302000000,
+        "muni_pct": 30.63
+      },
+      {
+        "uf": "MG",
+        "share_estimada_estado": 0.6714,
+        "estado_pre": 52491354568.4295,
+        "estado_pos": 50162354568.4295,
+        "estado_saldo": -2329000000,
+        "estado_pct": -4.44,
+        "muni_pre": 25690645431.570503,
+        "muni_pos": 28609645431.570503,
+        "muni_saldo": 2919000000,
+        "muni_pct": 11.36
+      },
+      {
+        "uf": "MS",
+        "share_estimada_estado": 0.6917,
+        "estado_pre": 10614143950.975588,
+        "estado_pos": 7725143950.975588,
+        "estado_saldo": -2889000000,
+        "estado_pct": -27.22,
+        "muni_pre": 4731856049.024411,
+        "muni_pos": 4394856049.024411,
+        "muni_saldo": -337000000,
+        "muni_pct": -7.12
+      },
+      {
+        "uf": "MT",
+        "share_estimada_estado": 0.7111,
+        "estado_pre": 15233876747.521004,
+        "estado_pos": 10827876747.521004,
+        "estado_saldo": -4406000000,
+        "estado_pct": -28.92,
+        "muni_pre": 6189123252.478995,
+        "muni_pos": 5648123252.478995,
+        "muni_saldo": -541000000,
+        "muni_pct": -8.74
+      },
+      {
+        "uf": "PA",
+        "share_estimada_estado": 0.6766,
+        "estado_pre": 15009703573.6656,
+        "estado_pos": 16525703573.6656,
+        "estado_saldo": 1516000000,
+        "estado_pct": 10.1,
+        "muni_pre": 7175296426.334399,
+        "muni_pos": 8849296426.3344,
+        "muni_saldo": 1674000000,
+        "muni_pct": 23.33
+      },
+      {
+        "uf": "PB",
+        "share_estimada_estado": 0.7206,
+        "estado_pre": 6025050890.640019,
+        "estado_pos": 6782050890.640019,
+        "estado_saldo": 757000000,
+        "estado_pct": 12.56,
+        "muni_pre": 2335949109.35998,
+        "muni_pos": 3306949109.35998,
+        "muni_saldo": 971000000,
+        "muni_pct": 41.57
+      },
+      {
+        "uf": "PE",
+        "share_estimada_estado": 0.6733,
+        "estado_pre": 15982059548.321432,
+        "estado_pos": 15306059548.321432,
+        "estado_saldo": -676000000,
+        "estado_pct": -4.23,
+        "muni_pre": 7753940451.678567,
+        "muni_pos": 8530940451.678567,
+        "muni_saldo": 777000000,
+        "muni_pct": 10.02
+      },
+      {
+        "uf": "PI",
+        "share_estimada_estado": 0.675,
+        "estado_pre": 4310691052.7571125,
+        "estado_pos": 6062691052.7571125,
+        "estado_saldo": 1752000000,
+        "estado_pct": 40.64,
+        "muni_pre": 2075308947.242888,
+        "muni_pos": 3345308947.242888,
+        "muni_saldo": 1270000000,
+        "muni_pct": 61.2
+      },
+      {
+        "uf": "PR",
+        "share_estimada_estado": 0.6733,
+        "estado_pre": 31894986266.392982,
+        "estado_pos": 36245986266.39298,
+        "estado_saldo": 4351000000,
+        "estado_pct": 13.64,
+        "muni_pre": 15477013733.607018,
+        "muni_pos": 18558013733.607018,
+        "muni_saldo": 3081000000,
+        "muni_pct": 19.91
+      },
+      {
+        "uf": "RJ",
+        "share_estimada_estado": 0.5988,
+        "estado_pre": 37211962742.60123,
+        "estado_pos": 45929962742.60123,
+        "estado_saldo": 8718000000,
+        "estado_pct": 23.43,
+        "muni_pre": 24933037257.398773,
+        "muni_pos": 25887037257.398773,
+        "muni_saldo": 954000000,
+        "muni_pct": 3.83
+      },
+      {
+        "uf": "RN",
+        "share_estimada_estado": 0.6625,
+        "estado_pre": 5389035382.779012,
+        "estado_pos": 6733035382.779012,
+        "estado_saldo": 1344000000,
+        "estado_pct": 24.94,
+        "muni_pre": 2744964617.2209883,
+        "muni_pos": 3626964617.2209883,
+        "muni_saldo": 882000000,
+        "muni_pct": 32.13
+      },
+      {
+        "uf": "RO",
+        "share_estimada_estado": 0.7031,
+        "estado_pre": 4543886829.0459385,
+        "estado_pos": 3884886829.0459385,
+        "estado_saldo": -659000000,
+        "estado_pct": -14.5,
+        "muni_pre": 1919113170.9540617,
+        "muni_pos": 2033113170.9540617,
+        "muni_saldo": 114000000,
+        "muni_pct": 5.94
+      },
+      {
+        "uf": "RR",
+        "share_estimada_estado": 0.6844,
+        "estado_pre": 1194192718.0985205,
+        "estado_pos": 1145192718.0985205,
+        "estado_saldo": -49000000,
+        "estado_pct": -4.1,
+        "muni_pre": 550807281.9014794,
+        "muni_pos": 653807281.9014794,
+        "muni_saldo": 103000000,
+        "muni_pct": 18.7
+      },
+      {
+        "uf": "RS",
+        "share_estimada_estado": 0.6831,
+        "estado_pre": 32581553114.650993,
+        "estado_pos": 35809553114.65099,
+        "estado_saldo": 3228000000,
+        "estado_pct": 9.91,
+        "muni_pre": 15114446885.349009,
+        "muni_pos": 18585446885.349007,
+        "muni_saldo": 3471000000,
+        "muni_pct": 22.96
+      },
+      {
+        "uf": "SC",
+        "share_estimada_estado": 0.6853,
+        "estado_pre": 26248685332.271828,
+        "estado_pos": 25327685332.271828,
+        "estado_saldo": -921000000,
+        "estado_pct": -3.51,
+        "muni_pre": 12051314667.728172,
+        "muni_pos": 13030314667.728172,
+        "muni_saldo": 979000000,
+        "muni_pct": 8.12
+      },
+      {
+        "uf": "SE",
+        "share_estimada_estado": 0.6613,
+        "estado_pre": 3414347981.5645843,
+        "estado_pos": 3985347981.5645843,
+        "estado_saldo": 571000000,
+        "estado_pct": 16.72,
+        "muni_pre": 1748652018.4354157,
+        "muni_pos": 2148652018.4354157,
+        "muni_saldo": 400000000,
+        "muni_pct": 22.87
+      },
+      {
+        "uf": "SP",
+        "share_estimada_estado": 0.6097,
+        "estado_pre": 152878849359.17184,
+        "estado_pos": 139992849359.17184,
+        "estado_saldo": -12886000000,
+        "estado_pct": -8.43,
+        "muni_pre": 97877150640.82816,
+        "muni_pos": 75561150640.82816,
+        "muni_saldo": -22316000000,
+        "muni_pct": -22.8
+      },
+      {
+        "uf": "TO",
+        "share_estimada_estado": 0.7032,
+        "estado_pre": 3490912585.7900915,
+        "estado_pos": 3761912585.7900915,
+        "estado_saldo": 271000000,
+        "estado_pct": 7.76,
+        "muni_pre": 1473087414.2099082,
+        "muni_pos": 1848087414.2099082,
+        "muni_saldo": 375000000,
+        "muni_pct": 25.46
       }
     ]
   }
