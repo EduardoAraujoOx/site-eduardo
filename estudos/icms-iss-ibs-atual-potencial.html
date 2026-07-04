@@ -94,16 +94,8 @@
         .data-table tr:hover:not(tfoot tr) { background: var(--accent-bg); }
         .data-table tr.row-es:hover { background: color-mix(in srgb, var(--border-es) 20%, transparent); }
 
-        /* ── Tabela de coeficientes (com barras) ── */
-        .coef-table td.td-coef { text-align: left; vertical-align: middle; white-space: normal; min-width: 150px; }
-        .coef-cell { display: flex; align-items: center; gap: 0.55rem; }
-        .coef-cell .coef-num { font-family: var(--mono); font-size: 0.8rem; font-weight: 600; color: var(--text); min-width: 3.6rem; text-align: right; flex-shrink: 0; }
-        .bar-track { position: relative; flex: 1; height: 9px; background: var(--border-light); border-radius: 4px; overflow: hidden; min-width: 60px; }
-        .bar-fill { position: absolute; top: 0; left: 0; height: 100%; border-radius: 4px; }
-        .bar-fill.bar-atual { background: var(--text-muted); }
-        .bar-fill.bar-potencial { background: var(--accent); }
-        .data-table tr.row-es .bar-fill.bar-potencial { background: var(--border-es); }
-        .data-table tr.row-es .bar-fill.bar-atual { background: color-mix(in srgb, var(--border-es) 55%, var(--text-muted)); }
+        /* ── Tabela de coeficientes (esferas separadas) ── */
+        .coef-table th.col-divider, .coef-table td.col-divider { border-left: 2px solid var(--border); }
 
         /* ── Callout ── */
         .callout { background: var(--accent-bg); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 0.75rem 1rem; font-family: var(--serif); font-size: 0.84rem; color: var(--text); margin: 1rem 0; line-height: 1.6; }
@@ -119,7 +111,6 @@
             .study-content { padding: 0 1.25rem 3rem; }
             .quadro-row { grid-template-columns: 1fr; }
             .quadro-cell.atual { border-right: none; border-bottom: 1px solid var(--border); }
-            .coef-cell .coef-num { min-width: 3.2rem; }
         }
     </style>
 </head>
@@ -301,33 +292,41 @@
             nacional.
         </div>
 
-        <span class="section-label">Tabela 2 &middot; Coeficiente de participação de cada UF no bolo nacional (%)</span>
+        <span class="section-label">Tabela 2 &middot; Coeficiente de participação de cada ente no bolo da sua própria esfera (%)</span>
         <div class="callout">
-            Esta tabela isola as duas últimas colunas da Tabela 3 &mdash; a participação percentual de cada
-            UF no total nacional &mdash; calculada diretamente a partir dos valores em reais acima, com mais
-            casas decimais e ordenada da maior perda relativa de participação para o maior ganho. A barra
-            cinza mostra o peso atual no bolo de ICMS+ISS; a barra colorida, o peso potencial no IBS.
+            Aqui o estado e o município são tratados como entes separados, cada um comparado apenas contra
+            o total nacional da <em>sua</em> esfera &mdash; e não contra o bolo combinado de ICMS+ISS/IBS da
+            Tabela 1. Para o estado: participação do ICMS da UF no ICMS nacional (atual) vs. participação do
+            IBS estadual da UF no IBS estadual nacional (potencial). Para os municípios da UF: participação
+            do ISS no ISS nacional (atual) vs. participação do IBS municipal no IBS municipal nacional
+            (potencial). Isso isola como a migração origem&rarr;destino muda o peso de cada ente,
+            separadamente, sem que a esfera municipal (mais concentrada) contamine a leitura da esfera
+            estadual, ou vice-versa.
         </div>
         <div class="table-wrap">
             <table class="data-table coef-table" id="table-coef">
                 <thead>
                     <tr>
-                        <th class="th-left">UF</th>
-                        <th class="th-left">Coeficiente ICMS + ISS atual (%)</th>
-                        <th class="th-left">Coeficiente IBS potencial (%)</th>
-                        <th>Variação (p.p.)</th>
+                        <th class="th-left" rowspan="2">UF</th>
+                        <th colspan="3">Esfera estadual: ICMS &rarr; IBS estadual</th>
+                        <th class="col-divider" colspan="3">Esfera municipal: ISS &rarr; IBS municipal</th>
+                    </tr>
+                    <tr>
+                        <th>Atual (%)</th><th>Potencial (%)</th><th>Variação (p.p.)</th>
+                        <th class="col-divider">Atual (%)</th><th>Potencial (%)</th><th>Variação (p.p.)</th>
                     </tr>
                 </thead>
                 <tbody id="tbody-coef">
-                    <tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                    <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
                 </tbody>
+                <tfoot id="tfoot-coef"></tfoot>
             </table>
         </div>
 
         <div class="footnotes">
             <p><strong>Fontes e notas metodológicas:</strong></p>
             <p>1. Tabela 1 desta página: reprodução integral, sem qualquer alteração de valores, da Tabela 3 de Orair, R. O.; Gobetti, S. W. <em>Reforma Tributária e Federalismo Fiscal: uma análise das propostas de criação de um novo imposto sobre o valor adicionado para o Brasil.</em> Texto para Discussão n. 2530. Rio de Janeiro: Ipea, dezembro de 2019, p. 40. Disponível em: <a href="https://repositorio.ipea.gov.br/handle/11058/9596" target="_blank" rel="noopener">repositorio.ipea.gov.br/handle/11058/9596</a>.</p>
-            <p>2. Tabela 2 desta página: elaboração própria, derivada diretamente dos valores em R$ milhões da Tabela 1 (coeficiente = valor da UF / total nacional da coluna &times; 100), sem qualquer dado adicional além do publicado pelos autores na Tabela 3 original.</p>
+            <p>2. Tabela 2 desta página: elaboração própria, derivada diretamente dos valores em R$ milhões da Tabela 1, sem qualquer dado adicional além do publicado pelos autores na Tabela 3 original. Esfera estadual: coeficiente atual = ICMS da UF / ICMS nacional &times; 100; coeficiente potencial = IBS estadual da UF / IBS estadual nacional &times; 100. Esfera municipal: coeficiente atual = ISS da UF / ISS nacional &times; 100; coeficiente potencial = IBS municipal da UF / IBS municipal nacional &times; 100. Cada esfera é comparada apenas contra o total nacional da própria esfera.</p>
             <p>3. Base de dados: ICMS e ISS efetivamente arrecadados em 2018. IBS estadual e municipal: estimativa dos autores para o cenário de migração integral e imediata ao princípio do destino, sem regra de transição, construída a partir de proxy de consumo por UF (Censo IBGE 2010 e POF 2008-2009, corrigida pela variação do PIB municipal 2010-2016).</p>
             <p>4. Este estudo não deve ser confundido com os dados de Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura n. 60, Nota de Conjuntura 18. Ipea, 28 ago. 2023 (base 2022), usados nos Estudos 02, 03, 05 e 06 desta página. As duas fontes têm anos-base, metodologias de proxy e magnitudes distintas, ainda que apontem na mesma direção qualitativa.</p>
         </div>
@@ -387,39 +386,49 @@
     }
 
     function buildCoefTable(data) {
-        const totalAtual = data.totais.icms_iss;
-        const totalPot   = data.totais.ibs_estadual_municipal;
+        // Cada esfera é medida contra o total nacional da própria esfera, não contra o bolo combinado:
+        // estado = ICMS_UF / ICMS_BR (atual) vs. IBS_estadual_UF / IBS_estadual_BR (potencial)
+        // município = ISS_UF / ISS_BR (atual) vs. IBS_municipal_UF / IBS_municipal_BR (potencial)
+        const totalIcms   = data.totais.icms;
+        const totalIbsEst = data.totais.ibs_estadual;
+        const totalIss    = data.totais.iss;
+        const totalIbsMun = data.totais.ibs_municipal;
 
         const rows = data.ufs.map(u => {
-            const coefAtual = (u.icms_iss / totalAtual) * 100;
-            const coefPot   = (u.ibs_estadual_municipal / totalPot) * 100;
-            return { uf: u.uf, nome: u.nome, coefAtual, coefPot, variacao: coefPot - coefAtual };
-        }).sort((a, b) => a.variacao - b.variacao);
-
-        const maxCoef = Math.max(...rows.map(r => Math.max(r.coefAtual, r.coefPot)));
+            const coefEstAtual = (u.icms / totalIcms) * 100;
+            const coefEstPot   = (u.ibs_estadual / totalIbsEst) * 100;
+            const coefMunAtual = (u.iss / totalIss) * 100;
+            const coefMunPot   = (u.ibs_municipal / totalIbsMun) * 100;
+            return {
+                uf: u.uf, nome: u.nome,
+                coefEstAtual, coefEstPot, varEst: coefEstPot - coefEstAtual,
+                coefMunAtual, coefMunPot, varMun: coefMunPot - coefMunAtual
+            };
+        }).sort((a, b) => a.uf.localeCompare(b.uf));
 
         const tbody = document.getElementById('tbody-coef');
         tbody.innerHTML = rows.map(r => {
             const isES = r.uf === 'ES';
-            const wAtual = (r.coefAtual / maxCoef) * 100;
-            const wPot   = (r.coefPot / maxCoef) * 100;
             return `<tr${isES ? ' class="row-es"' : ''}>
                 <td class="td-uf">${r.uf} <small>${r.nome}</small></td>
-                <td class="td-coef">
-                    <div class="coef-cell">
-                        <span class="coef-num">${fmtNum(r.coefAtual)}%</span>
-                        <span class="bar-track"><span class="bar-fill bar-atual" style="width:${wAtual.toFixed(2)}%"></span></span>
-                    </div>
-                </td>
-                <td class="td-coef">
-                    <div class="coef-cell">
-                        <span class="coef-num">${fmtNum(r.coefPot)}%</span>
-                        <span class="bar-track"><span class="bar-fill bar-potencial" style="width:${wPot.toFixed(2)}%"></span></span>
-                    </div>
-                </td>
-                <td class="${clsPct(r.variacao)}">${fmtPct(r.variacao)}</td>
+                <td>${fmtNum(r.coefEstAtual)}</td>
+                <td>${fmtNum(r.coefEstPot)}</td>
+                <td class="${clsPct(r.varEst)}">${fmtPct(r.varEst)}</td>
+                <td class="col-divider">${fmtNum(r.coefMunAtual)}</td>
+                <td>${fmtNum(r.coefMunPot)}</td>
+                <td class="${clsPct(r.varMun)}">${fmtPct(r.varMun)}</td>
             </tr>`;
         }).join('');
+
+        document.getElementById('tfoot-coef').innerHTML = `<tr>
+            <td class="td-uf"><strong>Total</strong> <small>27 UFs</small></td>
+            <td>100,00</td>
+            <td>100,00</td>
+            <td>${fmtPct(0)}</td>
+            <td class="col-divider">100,00</td>
+            <td>100,00</td>
+            <td>${fmtPct(0)}</td>
+        </tr>`;
     }
 
     (async function init() {
