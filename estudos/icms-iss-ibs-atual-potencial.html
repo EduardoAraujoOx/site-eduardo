@@ -301,7 +301,9 @@
             do ISS no ISS nacional (atual) vs. participação do IBS municipal no IBS municipal nacional
             (potencial). Isso isola como a migração origem&rarr;destino muda o peso de cada ente,
             separadamente, sem que a esfera municipal (mais concentrada) contamine a leitura da esfera
-            estadual, ou vice-versa.
+            estadual, ou vice-versa. O último bloco, "Total UF", soma estado e município de volta em um
+            único coeficiente &mdash; equivalente às duas últimas colunas da Tabela 1 &mdash;, útil para
+            enxergar o efeito líquido sobre cada UF como um todo.
         </div>
         <div class="table-wrap">
             <table class="data-table coef-table" id="table-coef">
@@ -310,25 +312,58 @@
                         <th class="th-left" rowspan="2">UF</th>
                         <th colspan="3">Esfera estadual: ICMS &rarr; IBS estadual</th>
                         <th class="col-divider" colspan="3">Esfera municipal: ISS &rarr; IBS municipal</th>
+                        <th class="col-divider" colspan="3">Total UF: estado + município</th>
                     </tr>
                     <tr>
                         <th>Atual (%)</th><th>Potencial (%)</th><th>Variação (p.p.)</th>
                         <th class="col-divider">Atual (%)</th><th>Potencial (%)</th><th>Variação (p.p.)</th>
+                        <th class="col-divider">Atual (%)</th><th>Potencial (%)</th><th>Variação (p.p.)</th>
                     </tr>
                 </thead>
                 <tbody id="tbody-coef">
-                    <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                    <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
                 </tbody>
                 <tfoot id="tfoot-coef"></tfoot>
+            </table>
+        </div>
+
+        <span class="section-label">Tabela 3 &middot; Cenário alternativo: participação populacional como proxy do destino (2025)</span>
+        <div class="callout">
+            Um terceiro exercício, independente do de Orair e Gobetti: em vez de estimar o consumo por UF
+            (Tabela 1, base 2018), esta tabela usa a <strong>participação de cada UF na população
+            brasileira</strong> (IBGE, 2025) como proxy direta do destino &mdash; afinal, é o próprio critério
+            populacional que a PEC 45 adota para parte da cota-parte municipal do IBS. Essa participação
+            populacional é comparada com a participação atual de cada UF no bolo de ICMS+ISS efetivamente
+            arrecadado em 2025 (SICONFI/STN). É um cenário mais simples e com base mais recente que a
+            Tabela 1, mas que aponta na mesma direção: UFs mais populosas relativamente à sua arrecadação
+            atual tendem a ganhar peso com uma reforma orientada ao destino/consumo. Os mesmos dados, com
+            gráficos de dispersão e barras divergentes, estão detalhados no
+            <a href="/estudos/icms-iss-participacao-vs-populacao.html">Estudo 05</a>.
+        </div>
+        <div class="table-wrap">
+            <table class="data-table" id="table-pop">
+                <thead>
+                    <tr>
+                        <th class="th-left">UF</th>
+                        <th>ICMS + ISS atual 2025 (%)</th>
+                        <th>População 2025 (%, proxy destino)</th>
+                        <th>Variação (p.p.)</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-pop">
+                    <tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+                <tfoot id="tfoot-pop"></tfoot>
             </table>
         </div>
 
         <div class="footnotes">
             <p><strong>Fontes e notas metodológicas:</strong></p>
             <p>1. Tabela 1 desta página: reprodução integral, sem qualquer alteração de valores, da Tabela 3 de Orair, R. O.; Gobetti, S. W. <em>Reforma Tributária e Federalismo Fiscal: uma análise das propostas de criação de um novo imposto sobre o valor adicionado para o Brasil.</em> Texto para Discussão n. 2530. Rio de Janeiro: Ipea, dezembro de 2019, p. 40. Disponível em: <a href="https://repositorio.ipea.gov.br/handle/11058/9596" target="_blank" rel="noopener">repositorio.ipea.gov.br/handle/11058/9596</a>.</p>
-            <p>2. Tabela 2 desta página: elaboração própria, derivada diretamente dos valores em R$ milhões da Tabela 1, sem qualquer dado adicional além do publicado pelos autores na Tabela 3 original. Esfera estadual: coeficiente atual = ICMS da UF / ICMS nacional &times; 100; coeficiente potencial = IBS estadual da UF / IBS estadual nacional &times; 100. Esfera municipal: coeficiente atual = ISS da UF / ISS nacional &times; 100; coeficiente potencial = IBS municipal da UF / IBS municipal nacional &times; 100. Cada esfera é comparada apenas contra o total nacional da própria esfera.</p>
-            <p>3. Base de dados: ICMS e ISS efetivamente arrecadados em 2018. IBS estadual e municipal: estimativa dos autores para o cenário de migração integral e imediata ao princípio do destino, sem regra de transição, construída a partir de proxy de consumo por UF (Censo IBGE 2010 e POF 2008-2009, corrigida pela variação do PIB municipal 2010-2016).</p>
-            <p>4. Este estudo não deve ser confundido com os dados de Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura n. 60, Nota de Conjuntura 18. Ipea, 28 ago. 2023 (base 2022), usados nos Estudos 02, 03, 05 e 06 desta página. As duas fontes têm anos-base, metodologias de proxy e magnitudes distintas, ainda que apontem na mesma direção qualitativa.</p>
+            <p>2. Tabela 2 desta página: elaboração própria, derivada diretamente dos valores em R$ milhões da Tabela 1, sem qualquer dado adicional além do publicado pelos autores na Tabela 3 original. Esfera estadual: coeficiente atual = ICMS da UF / ICMS nacional &times; 100; coeficiente potencial = IBS estadual da UF / IBS estadual nacional &times; 100. Esfera municipal: coeficiente atual = ISS da UF / ISS nacional &times; 100; coeficiente potencial = IBS municipal da UF / IBS municipal nacional &times; 100. Total UF: coeficiente atual = (ICMS + ISS) da UF / (ICMS + ISS) nacional &times; 100; coeficiente potencial = (IBS estadual + IBS municipal) da UF / (IBS estadual + IBS municipal) nacional &times; 100 &mdash; equivalente às duas últimas colunas da Tabela 1.</p>
+            <p>3. Base de dados das Tabelas 1 e 2: ICMS e ISS efetivamente arrecadados em 2018. IBS estadual e municipal: estimativa dos autores para o cenário de migração integral e imediata ao princípio do destino, sem regra de transição, construída a partir de proxy de consumo por UF (Censo IBGE 2010 e POF 2008-2009, corrigida pela variação do PIB municipal 2010-2016).</p>
+            <p>4. Tabela 3 desta página: elaboração própria. ICMS + ISS atual 2025: SICONFI/STN, DCA Anexo I-C. População 2025: IBGE, Estimativas de População (referência 01/07/2025), usada como proxy do critério de destino/consumo. Coeficiente = valor da UF / total nacional &times; 100 em cada coluna; variação = participação populacional &minus; participação tributária atual. Mesma base de dados do <a href="/estudos/icms-iss-participacao-vs-populacao.html">Estudo 05</a>, com ano-base (2025) mais recente e independente da proxy de consumo de Orair e Gobetti usada nas Tabelas 1 e 2.</p>
+            <p>5. Este estudo não deve ser confundido com os dados de Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura n. 60, Nota de Conjuntura 18. Ipea, 28 ago. 2023 (base 2022), usados nos Estudos 02, 03, 05 e 06 desta página. As três fontes têm anos-base, metodologias de proxy e magnitudes distintas, ainda que apontem na mesma direção qualitativa.</p>
         </div>
     </div>
 
@@ -389,20 +424,26 @@
         // Cada esfera é medida contra o total nacional da própria esfera, não contra o bolo combinado:
         // estado = ICMS_UF / ICMS_BR (atual) vs. IBS_estadual_UF / IBS_estadual_BR (potencial)
         // município = ISS_UF / ISS_BR (atual) vs. IBS_municipal_UF / IBS_municipal_BR (potencial)
+        // total UF = (ICMS+ISS)_UF / (ICMS+ISS)_BR (atual) vs. (IBS_estadual+IBS_municipal)_UF / (IBS_estadual+IBS_municipal)_BR (potencial)
         const totalIcms   = data.totais.icms;
         const totalIbsEst = data.totais.ibs_estadual;
         const totalIss    = data.totais.iss;
         const totalIbsMun = data.totais.ibs_municipal;
+        const totalAtualUF = data.totais.icms_iss;
+        const totalPotUF    = data.totais.ibs_estadual_municipal;
 
         const rows = data.ufs.map(u => {
             const coefEstAtual = (u.icms / totalIcms) * 100;
             const coefEstPot   = (u.ibs_estadual / totalIbsEst) * 100;
             const coefMunAtual = (u.iss / totalIss) * 100;
             const coefMunPot   = (u.ibs_municipal / totalIbsMun) * 100;
+            const coefUFAtual  = (u.icms_iss / totalAtualUF) * 100;
+            const coefUFPot    = (u.ibs_estadual_municipal / totalPotUF) * 100;
             return {
                 uf: u.uf, nome: u.nome,
                 coefEstAtual, coefEstPot, varEst: coefEstPot - coefEstAtual,
-                coefMunAtual, coefMunPot, varMun: coefMunPot - coefMunAtual
+                coefMunAtual, coefMunPot, varMun: coefMunPot - coefMunAtual,
+                coefUFAtual, coefUFPot, varUF: coefUFPot - coefUFAtual
             };
         }).sort((a, b) => a.uf.localeCompare(b.uf));
 
@@ -417,6 +458,9 @@
                 <td class="col-divider">${fmtNum(r.coefMunAtual)}</td>
                 <td>${fmtNum(r.coefMunPot)}</td>
                 <td class="${clsPct(r.varMun)}">${fmtPct(r.varMun)}</td>
+                <td class="col-divider">${fmtNum(r.coefUFAtual)}</td>
+                <td>${fmtNum(r.coefUFPot)}</td>
+                <td class="${clsPct(r.varUF)}">${fmtPct(r.varUF)}</td>
             </tr>`;
         }).join('');
 
@@ -428,22 +472,55 @@
             <td class="col-divider">100,00</td>
             <td>100,00</td>
             <td>${fmtPct(0)}</td>
+            <td class="col-divider">100,00</td>
+            <td>100,00</td>
+            <td>${fmtPct(0)}</td>
+        </tr>`;
+    }
+
+    function buildPopTable(popData) {
+        const rows = popData.ufs.map(u => ({
+            uf: u.uf, nome: NOMES_UF[u.uf],
+            taxPct: u.tax_pct, popPct: u.pop_pct, variacao: u.pop_pct - u.tax_pct
+        })).sort((a, b) => a.uf.localeCompare(b.uf));
+
+        const tbody = document.getElementById('tbody-pop');
+        tbody.innerHTML = rows.map(r => {
+            const isES = r.uf === 'ES';
+            return `<tr${isES ? ' class="row-es"' : ''}>
+                <td class="td-uf">${r.uf} <small>${r.nome}</small></td>
+                <td>${fmtNum(r.taxPct)}</td>
+                <td>${fmtNum(r.popPct)}</td>
+                <td class="${clsPct(r.variacao)}">${fmtPct(r.variacao)}</td>
+            </tr>`;
+        }).join('');
+
+        document.getElementById('tfoot-pop').innerHTML = `<tr>
+            <td class="td-uf"><strong>Total</strong> <small>27 UFs</small></td>
+            <td>100,00</td>
+            <td>100,00</td>
+            <td>${fmtPct(0)}</td>
         </tr>`;
     }
 
     (async function init() {
         const statusEl = document.getElementById('status-main');
         try {
-            const resp = await fetch('/data/orair-gobetti-2019-tabela3-icms-iss-ibs.json?t=' + Date.now());
-            if (!resp.ok) throw new Error('Erro ao carregar dados');
-            const data = await resp.json();
+            const [resp, popResp] = await Promise.all([
+                fetch('/data/orair-gobetti-2019-tabela3-icms-iss-ibs.json?t=' + Date.now()),
+                fetch('/data/icms-iss-vs-populacao-2025.json?t=' + Date.now())
+            ]);
+            if (!resp.ok || !popResp.ok) throw new Error('Erro ao carregar dados');
+            const data    = await resp.json();
+            const popData = await popResp.json();
 
             buildTable3(data);
             buildCoefTable(data);
+            buildPopTable(popData);
 
             statusEl.innerHTML =
                 '<span class="status-dot" style="background:#22c55e"></span> ' +
-                '27 UFs · Orair e Gobetti, TD 2530 (Ipea, 2019) · base 2018';
+                '27 UFs · Orair e Gobetti, TD 2530 (Ipea, 2019), base 2018 · SICONFI/IBGE, base 2025';
         } catch (err) {
             statusEl.innerHTML =
                 '<span class="status-dot" style="background:#ef4444"></span> Erro ao carregar dados: ' + err.message;
