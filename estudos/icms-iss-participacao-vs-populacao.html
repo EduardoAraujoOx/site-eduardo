@@ -637,6 +637,44 @@
                 correção.
             </div>
 
+            <!-- ═══════════════ PARTE 3E — VALIDAÇÃO ═══════════════ -->
+            <span class="section-label" style="margin-top:2.5rem">Verificação: os números da Tabela 4 são confiáveis?</span>
+            <p class="section-intro">
+                O saldo (a variação, em reais) de cada esfera na Tabela 4 vem inteiramente de números que o
+                próprio Gobetti publica: o saldo municipal é a Tabela 2 do paper, e o saldo estadual é o resíduo
+                entre a Tabela 1 e essa Tabela 2. Nenhum dado externo entra nessa conta. A única parte estimada é
+                o <em>ponto de partida</em> de cada esfera (quanto cada uma arrecadava antes da reforma), porque
+                o paper não divide o valor pré-reforma da Tabela 1 entre estado e município por UF. Para checar
+                se essa estimativa é confiável, comparamos o total de ICMS+ISS de 2022 que o SICONFI registra
+                para cada UF com o valor pré-reforma que o próprio Gobetti reporta na Tabela 1: quanto mais perto
+                de zero for essa diferença, mais confiável é a proporção estado/município que estimamos para
+                aquela UF. Para o Espírito Santo, a diferença é de apenas 1,3%, uma das menores do país: o total
+                de R$ 18,37 bilhões do SICONFI praticamente bate com os R$ 18,61 bilhões que Gobetti usa como
+                ponto de partida, o que dá confiança de que a queda de 34% na esfera estadual não é um artefato
+                da nossa estimativa. Já Mato Grosso e Tocantins, com diferenças de 52% e 46%, são os dois casos em
+                que a proporção estimada merece mais cautela.
+            </p>
+            <div id="status-validacao" class="status-bar">
+                <span class="status-dot"></span>
+                <span>Carregando dados…</span>
+            </div>
+            <div class="data-table-wrap">
+                <table class="data-table" id="table-validacao">
+                    <thead>
+                        <tr>
+                            <th class="th-uf">UF</th>
+                            <th>Total SICONFI 2022<br><small style="font-weight:400">(ICMS+ISS, R$ bi)</small></th>
+                            <th>Total Gobetti<br><small style="font-weight:400">(Tabela 1, R$ bi)</small></th>
+                            <th>Diferença<br><small style="font-weight:400">(%)</small></th>
+                            <th>Confiabilidade da<br><small style="font-weight:400">proporção estimada</small></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-validacao">
+                        <tr><td colspan="5" class="loading-cell">Aguardando dados…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
             <!-- Metodologia -->
             <div class="metodologia">
                 <h3>Como foram calculadas as participações (Partes 1 e 2)</h3>
@@ -1402,11 +1440,52 @@
         });
     }
 
+    async function loadValidacao() {
+        let data;
+        try {
+            const resp = await fetch('/data/gobetti-2023-perdas-ganhos-uf.json?t=' + Date.now());
+            if (!resp.ok) throw new Error('not found');
+            data = await resp.json();
+        } catch (e) {
+            document.getElementById('status-validacao').innerHTML =
+                '<span class="status-dot"></span> Dados não disponíveis.';
+            return;
+        }
+        const bloco = data.validacao_siconfi_gobetti;
+        if (!bloco) {
+            document.getElementById('status-validacao').innerHTML =
+                '<span class="status-dot"></span> Dados não disponíveis.';
+            return;
+        }
+
+        document.getElementById('status-validacao').innerHTML =
+            '<span class="status-dot" style="background:#22c55e"></span> 27 UFs · SICONFI/STN DCA Anexo I-C 2022 vs. Gobetti e Monteiro (2023), Tabela 1';
+
+        const rows = [...bloco.ufs].sort((a, b) => Math.abs(b.diff_pct) - Math.abs(a.diff_pct));
+
+        const tbody = document.getElementById('tbody-validacao');
+        tbody.innerHTML = rows.map(r => {
+            const absDiff = Math.abs(r.diff_pct);
+            let label, color;
+            if (absDiff <= 3) { label = 'Alta'; color = '#1a7a3c'; }
+            else if (absDiff <= 10) { label = 'Média'; color = '#b8860b'; }
+            else { label = 'Baixa'; color = '#b0342e'; }
+            return `<tr${r.uf === 'ES' ? ' class="row-es"' : ''}>
+            <td class="td-uf">${r.uf} <small style="font-weight:400;color:var(--text-muted)">${NOMES_UF[r.uf]}</small></td>
+            <td>${fmtBi(r.siconfi_total)}</td>
+            <td>${fmtBi(r.gobetti_total)}</td>
+            <td>${fmtDiff(r.diff_pct, 1, '%')}</td>
+            <td style="font-weight:600;color:${color}">${label}</td>
+        </tr>`;
+        }).join('');
+    }
+
     loadParticipacao();
     loadGobetti();
     loadGobettiMunis();
     loadGobettiEsferas();
     loadGobettiCoef();
+    loadValidacao();
     </script>
 </body>
 </html>
