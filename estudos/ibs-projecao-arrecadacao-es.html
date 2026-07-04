@@ -18,6 +18,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
     <link rel="stylesheet" href="/css/notas.css?v=4">
     <link rel="stylesheet" href="/css/search.css">
     <style>
@@ -164,6 +167,18 @@
         .footnote { font-family: var(--sans); font-size: 0.73rem; color: var(--text-muted); line-height: 1.55; border-top: 1px solid var(--border-light); padding-top: 1.25rem; margin-top: 2.5rem; }
         .footnote p { margin-bottom: 0.6rem; }
 
+        /* Formula box + variable table */
+        .formula-box { background: var(--bg-secondary, #f7f7f5); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem 1rem; margin: 0.75rem 0 1.25rem; overflow-x: auto; text-align: center; }
+        .var-table-wrap { overflow-x: auto; margin: 0.75rem 0 1.5rem; border: 1px solid var(--border-light); border-radius: 8px; }
+        .var-table { width: 100%; border-collapse: collapse; }
+        .var-table th { background: var(--bg-secondary, #f7f7f5); padding: 0.4rem 0.75rem; text-align: left; border-bottom: 2px solid var(--border); font-family: var(--mono); font-size: 0.65rem; color: var(--text-secondary); }
+        .var-table td { padding: 0.4rem 0.75rem; border-bottom: 1px solid var(--border-light); vertical-align: top; font-family: var(--sans); font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5; }
+        .var-table td:first-child { font-family: var(--mono); font-size: 0.73rem; color: var(--text-primary); white-space: nowrap; width: 6rem; }
+        .var-table td:last-child { font-family: var(--mono); font-size: 0.73rem; color: var(--accent); white-space: nowrap; }
+        .var-table tr:last-child td { border-bottom: none; }
+        .simplif-box { background: var(--bg-secondary, #f7f7f5); border: 1px solid var(--border); border-left: 4px solid var(--text-muted); border-radius: 8px; padding: 0.9rem 1.25rem; margin: 1.25rem 0; font-family: var(--sans); font-size: 0.80rem; line-height: 1.65; color: var(--text-secondary); }
+        .simplif-box strong { color: var(--text-primary); }
+
         /* Chart callout — gap 2033 */
         .chart-callout { font-family: var(--sans); font-size: 0.79rem; line-height: 1.5; color: var(--text-secondary); padding: 0.5rem 0.9rem 0.5rem 1rem; margin: 0.25rem 0 1rem; border-left: 3px solid; border-radius: 0 6px 6px 0; background: var(--bg-secondary, #f7f7f5); }
         .chart-callout.cl-pess  { border-left-color: #b43c3c; }
@@ -243,14 +258,14 @@
             <div class="baseline-card">
                 <div class="baseline-card-accent"></div>
                 <div class="baseline-card-body">
-                    <div class="bc-label">ICMS bruto ES <span id="base-year-label">2026</span>: base de referência contrafactual (SICONFI/STN)</div>
+                    <div class="bc-label">ICMS bruto ES <span id="base-year-label">2025</span> (DCA/SICONFI): base de referência contrafactual</div>
                     <div class="bc-value" id="p-icms-bruto" style="color:#2a6496">—</div>
-                    <div class="bc-sub">Fonte: RREO Anexo 3, total dos últimos 12 meses · nível de referência fixo para 2029–2033</div>
+                    <div class="bc-sub">Fonte: DCA — Demonstrativo das Contas Anuais · nível fixo para 2029–2033</div>
                 </div>
                 <div class="baseline-card-est">
                     <div class="bc-label">Receita estadual de referência (75%)</div>
                     <div class="bc-value" id="p-cnt-estadual" style="color:var(--text-primary)">—</div>
-                    <div class="bc-sub">Após cota-parte municipal (25%) · art. 158 IV CF · linha de base para todos os anos</div>
+                    <div class="bc-sub">r₀²⁰²⁵ = ICMS bruto × 75% · base contrafactual estadual fixa para 2029–2033</div>
                 </div>
             </div>
 
@@ -302,7 +317,7 @@
                             <th>Split IBSt / IBSd<br>(art. 131 §1º)</th>
                             <th>IBSd sobre<br>a base total</th>
                             <th>IBSt sobre<br>a base total</th>
-                            <th>CGIBS<br>(art. 51 LC 227)</th>
+                            <th>CGIBS (apenas IBSd)<br>(art. 51 LC 227)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -346,13 +361,14 @@
                 <li class="factor-item fator-certo">
                     <div class="factor-num">Fator 2</div>
                     <div class="factor-body">
-                        <div class="factor-title">O CPT histórico do ES é menor que sua participação atual: perda estrutural no IBSt <span class="factor-badge badge-certo">certo</span></div>
+                        <div class="factor-title">O CPT histórico do ES é menor que sua participação em 2025: perda estrutural no IBSt <span class="factor-badge badge-certo">certo</span></div>
                         <div class="factor-desc">
                             80% do IBS (em 2029–2032) e 90% (em 2033) é redistribuído pelo CPT histórico
-                            (média 2019–2025). Como o ES arrecadou, em 2025, uma participação nacional
-                            superior à sua média histórica, o coeficiente de transição é desfavorável:
-                            o estado recebe proporcionalmente menos pelo mecanismo de transição. Essa
-                            perda de −5% no IBSt aplica-se a <em>todos os anos e todos os cenários</em>.
+                            (média 2019–2025). No modelo, isso é capturado pelo coeficiente
+                            λ_ES = r₀ᵃᵛᵍ / r₀²⁰²⁵, onde r₀ᵃᵛᵍ é a média histórica deflacionada
+                            do ICMS estadual e r₀²⁰²⁵ é o nível de 2025. Como o ES cresceu acima da
+                            média nacional nesse período, λ_ES &lt; 1 (<span id="lambda-display-factor">≈ −5%</span> vs. 2025).
+                            Esse ajuste aplica-se ao IBSt em <em>todos os anos e todos os cenários</em>.
                         </div>
                     </div>
                 </li>
@@ -361,10 +377,12 @@
                     <div class="factor-body">
                         <div class="factor-title">O CGIBS é uma nova dedução que o ICMS não tinha <span class="factor-badge badge-certo">certo</span></div>
                         <div class="factor-desc">
-                            Art. 51 LC 227/2026: uma fração do IBS estadual financia o custeio do
-                            Comitê Gestor do IBS (2% em 2029, decrescente). Essa dedução não tinha
-                            equivalente no regime do ICMS. É a única assimetria estrutural entre os
-                            dois regimes: a única dedução aplicada ao IBS e não ao nível de referência.
+                            Art. 51 LC 227/2026: uma fração do IBSd estadual financia o custeio do
+                            Comitê Gestor do IBS (2% em 2029, decrescente). Esta dedução incide
+                            <strong>exclusivamente sobre o IBSd</strong> — a parcela de destino — e não
+                            sobre o IBSt, que segue o CPT (art. 131 §1º I ADCT). É a única assimetria
+                            estrutural entre os dois regimes: dedução aplicada ao IBS sem equivalente
+                            no ICMS.
                         </div>
                     </div>
                 </li>
@@ -373,37 +391,96 @@
                     <div class="factor-body">
                         <div class="factor-title">A mudança de critério de origem para destino no IBSd: magnitude incerta <span class="factor-badge badge-incerto">incerto</span></div>
                         <div class="factor-desc">
-                            20% (2029–2032) ou 10% (2033) do IBS segue o critério de destino. O ES tem
-                            saldo exportador positivo: a migração origem→destino tende a reduzir a base
-                            do IBSd. Em quanto? Essa magnitude define os três cenários: −30% (pessimista),
-                            −15% (intermediário) ou 0% (neutro).
+                            20% do IBS (2029–2032) ou 10% (2033) é distribuído ao estado de consumo
+                            (destino). O ES tem saldo exportador positivo: a migração origem→destino
+                            reduz a base do IBSd. A magnitude é o δ_ES — parâmetro incerto que
+                            diferencia os três cenários. A referência adotada é Gobetti e Monteiro
+                            (2023, tabela 4 — esfera estadual): δ_ES = <span id="delta1-display-factor">−34,25%</span>
+                            (Cenário 1); metade disso no Cenário 2; zero no Cenário 3 (neutro).
                         </div>
                     </div>
                 </li>
             </ul>
 
+            <!-- FÓRMULA DO MODELO -->
+            <h2 class="section-heading">A fórmula do modelo</h2>
+            <p class="prose">
+                A receita estadual projetada para o ano <em>a</em> resulta da soma de três parcelas,
+                cada uma correspondendo a um mecanismo do ADCT:
+            </p>
+            <div class="formula-box">
+                $$R_a = \underbrace{r_0^{2025}\cdot f_a}_{\text{Fator 1: ICMS residual}}
+                \;+\; r_0^{avg}\cdot s_a\cdot\Bigl[
+                \underbrace{\alpha_a}_{\text{Fator 2: IBSt via CPT}}
+                \;+\;\underbrace{(1-\alpha_a)\cdot(1-c_a)\cdot(1-\rho)\cdot(1+\delta_{\text{ES}})}_{\text{Fatores 3 e 4: IBSd via destino, net CGIBS e Seguro Receita}}
+                \Bigr]$$
+            </div>
+            <p class="prose" style="font-size:0.85rem">
+                Dois valores-base distintos fundamentam o cálculo. <strong>r₀²⁰²⁵</strong> é o nível
+                contrafactual fixo: o que o estado receberia sem reforma. <strong>r₀ᵃᵛᵍ</strong> é
+                a média histórica deflacionada (2019–2025), que encoda o CPT do mecanismo de transição.
+                A razão λ_ES = r₀ᵃᵛᵍ / r₀²⁰²⁵ captura a perda estrutural do IBSt
+                (Fator 2): λ_ES &lt; 1 porque o ES cresceu acima da média nacional.
+            </p>
+            <div class="var-table-wrap">
+                <table class="var-table">
+                    <thead>
+                        <tr><th>Símbolo</th><th>Definição</th><th>Valor (ES, 2025)</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>$r_0^{2025}$</td><td>ICMS_ES_2025 (DCA) × 75%: base contrafactual estadual, fixa em todos os anos</td><td id="vt-r0-2025">—</td></tr>
+                        <tr><td>$r_0^{avg}$</td><td>Média histórica 2019–2025: média(ICMS_ES_t × 75% × defl_t), base de distribuição do IBS</td><td id="vt-r0-avg">—</td></tr>
+                        <tr><td>$\lambda_{ES}$</td><td>$r_0^{avg}/r_0^{2025}$ — razão histórica/2025; encoda o ajuste CPT do IBSt</td><td id="vt-lambda">—</td></tr>
+                        <tr><td>$f_a$</td><td>Fator de redução do ICMS (art. 128 ADCT): 9/10 em 2029; 0 em 2033</td><td>0,9 → 0</td></tr>
+                        <tr><td>$s_a$</td><td>Share IBS total (art. 131 §1º ADCT): 10% em 2029; 100% em 2033</td><td>10% → 100%</td></tr>
+                        <tr><td>$\alpha_a$</td><td>Fração IBSt (art. 131 §1º I–II ADCT): 80% para 2029–2032; 90% em 2033</td><td>80% / 90%</td></tr>
+                        <tr><td>$c_a$</td><td>CGIBS (art. 51 LC 227/2026): apenas sobre IBSd pós-Seguro Receita</td><td>2,00% → 0,50%</td></tr>
+                        <tr><td>$\rho$</td><td>Seguro Receita (art. 132 ADCT): 5% do IBSd bruto forma fundo de garantia</td><td>5,00%</td></tr>
+                        <tr><td>$\delta_{\text{ES}}$</td><td>Efeito destino IBSd (Gobetti e Monteiro, 2023, tabela 4): varia por cenário</td><td id="vt-delta">—</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="simplif-box">
+                <strong>Simplificações e mecanismos não modelados</strong>
+                <p style="margin:0.5rem 0 0">
+                    Por simplificação ou ausência de parâmetros definitivos, o modelo não incorpora:
+                    (i) <strong>FCBF</strong> (Fundo de Compensação de Benefícios Fiscais, art. 134 ADCT) —
+                    atenua perdas em estados com grande base de incentivos, mas seus critérios de distribuição
+                    ainda não foram regulamentados;
+                    (ii) <strong>variação da alíquota de referência nacional</strong> (art. 130 ADCT) —
+                    será fixada pelo Comitê Gestor após o período de testes (2027–2028); se a base IBS for mais
+                    ampla que a base ICMS, as perdas aqui estimadas representam limite superior;
+                    (iii) <strong>cashback do IBS</strong> (art. 134 §1º ADCT) — mecanismo redistributivo
+                    para consumidores de baixa renda, sem efeito direto sobre a receita líquida estadual;
+                    (iv) <strong>ISS municipal</strong> — a substituição do ISS pelo IBS na parcela municipal
+                    não foi modelada separadamente.
+                </p>
+            </div>
+
             <!-- CPT infobox — detalha Fator 2 -->
             <div class="cpt-infobox">
-                <strong>Fator 2 em detalhe: CPT do Espírito Santo</strong>
+                <strong>Fator 2 em detalhe: λ_ES e o ajuste CPT</strong>
                 <div class="cpt-grid">
                     <div>
-                        <div class="cpt-item-label">Índice ES 2025, critério de origem</div>
-                        <div class="cpt-item-value" style="color:#b43c3c">1,6405%</div>
-                        <div style="font-size:0.7rem;color:var(--text-muted)">DCA/SICONFI, participação no total nacional</div>
+                        <div class="cpt-item-label">r₀²⁰²⁵ = ICMS_ES_2025 × 75% (DCA)</div>
+                        <div class="cpt-item-value" style="color:#2a6496" id="cpt-r0-2025">—</div>
+                        <div style="font-size:0.7rem;color:var(--text-muted)">base contrafactual estadual fixa</div>
                     </div>
                     <div>
-                        <div class="cpt-item-label">CPT histórico ES, média 2019–2025</div>
-                        <div class="cpt-item-value" style="color:var(--accent)">1,5589%</div>
-                        <div style="font-size:0.7rem;color:var(--text-muted)">base do mecanismo de transição (art. 131 ADCT)</div>
+                        <div class="cpt-item-label">r₀ᵃᵛᵍ = média histórica deflacionada</div>
+                        <div class="cpt-item-value" style="color:var(--accent)" id="cpt-r0-avg">—</div>
+                        <div style="font-size:0.7rem;color:var(--text-muted)">base de distribuição do IBS (2019–2025)</div>
                     </div>
                     <div>
-                        <div class="cpt-item-label">Perda relativa no mecanismo IBSt</div>
-                        <div class="cpt-item-value" style="color:#b43c3c">≈ −5,0%</div>
+                        <div class="cpt-item-label">λ_ES = r₀ᵃᵛᵍ / r₀²⁰²⁵ (ajuste IBSt)</div>
+                        <div class="cpt-item-value" style="color:#b43c3c" id="cpt-lambda">—</div>
                         <div style="font-size:0.7rem;color:var(--text-muted)">aplicado ao IBSt, igual nos três cenários</div>
                     </div>
                 </div>
                 <div style="margin-top:0.75rem;font-size:0.78rem">
-                    Cálculo detalhado: <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02: CPT_ES</a>.
+                    Metodologia CPT: <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02: CPT_ES</a>.
+                    Deflator: razão TotalBR_2025 / TotalBR_t (soma nacional ICMS + ISS, DCA/SICONFI).
                 </div>
             </div>
 
@@ -411,16 +488,17 @@
             <h2 class="section-heading">Os três cenários: diferenciados pelo Fator 4</h2>
             <p class="prose">
                 Os fatores 1, 2 e 3 são idênticos nos três cenários. A única variável que os diferencia
-                é o efeito do critério destino sobre o IBSd (Fator 4):
+                é a magnitude do efeito destino no IBSd (δ_ES, Fator 4), calibrada com base em
+                Gobetti e Monteiro (2023):
             </p>
 
             <div class="scenario-grid">
                 <div class="scenario-card pessimista">
-                    <div class="sc-tag">Cenário Pessimista</div>
-                    <div class="sc-dest">−30% no IBSd</div>
+                    <div class="sc-tag">Cenário 1: Redistribuição integral</div>
+                    <div class="sc-dest" id="sc-dest-pess">—</div>
                     <div class="sc-desc">
-                        Estimativa máxima para estados exportadores, referenciada em estudos sobre o
-                        impacto da migração origem→destino (Gobetti e Monteiro, 2023).
+                        δ_ES segundo Gobetti e Monteiro (2023, tabela 4, esfera estadual): estimativa
+                        completa do impacto da migração origem→destino para o Espírito Santo.
                     </div>
                     <div class="sc-res-label">Perda no 1.º ano (2029)</div>
                     <div class="sc-total" id="sc-pct29-pess">—</div>
@@ -430,11 +508,11 @@
                     <div class="sc-delta" id="sc-abs33-pess">—</div>
                 </div>
                 <div class="scenario-card intermediario">
-                    <div class="sc-tag">Cenário Intermediário</div>
-                    <div class="sc-dest">−15% no IBSd</div>
+                    <div class="sc-tag">Cenário 2: Redistribuição moderada</div>
+                    <div class="sc-dest" id="sc-dest-inter">—</div>
                     <div class="sc-desc">
-                        Estimativa intermediária, entre a perda máxima e a neutralidade plena. Perda
-                        parcial na base do IBSd pela mudança do critério de distribuição.
+                        Metade do δ_ES do Cenário 1. Hipótese de redistribuição parcial: a soma
+                        nacional δ_UF = 0 é preservada (escalonamento linear do conjunto de UFs).
                     </div>
                     <div class="sc-res-label">Perda no 1.º ano (2029)</div>
                     <div class="sc-total" id="sc-pct29-inter">—</div>
@@ -444,10 +522,10 @@
                     <div class="sc-delta" id="sc-abs33-inter">—</div>
                 </div>
                 <div class="scenario-card neutro">
-                    <div class="sc-tag">Cenário Neutro</div>
-                    <div class="sc-dest">0% (sem perda de destino)</div>
+                    <div class="sc-tag">Cenário 3: Neutro</div>
+                    <div class="sc-dest">0% (sem efeito de destino)</div>
                     <div class="sc-desc">
-                        Hipótese de neutralidade: a mudança origem→destino não gera impacto adicional
+                        Hipótese de neutralidade plena: a mudança origem→destino não gera impacto
                         no IBSd do ES. Representa o limite superior de arrecadação.
                     </div>
                     <div class="sc-res-label">Perda no 1.º ano (2029)</div>
@@ -494,13 +572,13 @@
             <!-- TABBED CHARTS -->
             <div class="chart-tab-container">
                 <div class="chart-tab-bar">
-                    <button class="chart-tab active-pess" data-tab="pess">Pessimista −30%</button>
-                    <button class="chart-tab" data-tab="inter">Intermediário −15%</button>
-                    <button class="chart-tab" data-tab="neutro">Neutro 0%</button>
+                    <button class="chart-tab active-pess" data-tab="pess">C1: Redistribuição integral</button>
+                    <button class="chart-tab" data-tab="inter">C2: Redistribuição moderada</button>
+                    <button class="chart-tab" data-tab="neutro">C3: Neutro</button>
                 </div>
                 <div class="chart-panel active" id="panel-pess">
                     <div class="chart-wrap">
-                        <p class="chart-title">Cenário Pessimista (−30% no IBSd): receita estadual ES, 2029–2033</p>
+                        <p class="chart-title">Cenário 1 — Redistribuição integral: receita estadual ES, 2029–2033</p>
                         <p class="chart-subtitle">Linha colorida: receita com reforma · Linha pontilhada: referência sem reforma · Área sombreada: perda estimada</p>
                         <canvas id="chart-pess" style="max-height:360px"></canvas>
                     </div>
@@ -508,7 +586,7 @@
                 </div>
                 <div class="chart-panel" id="panel-inter">
                     <div class="chart-wrap">
-                        <p class="chart-title">Cenário Intermediário (−15% no IBSd): receita estadual ES, 2029–2033</p>
+                        <p class="chart-title">Cenário 2 — Redistribuição moderada: receita estadual ES, 2029–2033</p>
                         <p class="chart-subtitle">Linha colorida: receita com reforma · Linha pontilhada: referência sem reforma · Área sombreada: perda estimada</p>
                         <canvas id="chart-inter" style="max-height:360px"></canvas>
                     </div>
@@ -516,7 +594,7 @@
                 </div>
                 <div class="chart-panel" id="panel-neutro">
                     <div class="chart-wrap">
-                        <p class="chart-title">Cenário Neutro (0% no IBSd): receita estadual ES, 2029–2033</p>
+                        <p class="chart-title">Cenário 3 — Neutro (0% no IBSd): receita estadual ES, 2029–2033</p>
                         <p class="chart-subtitle">Linha colorida: receita com reforma · Linha pontilhada: referência sem reforma · Área sombreada: perda estimada</p>
                         <canvas id="chart-neutro" style="max-height:360px"></canvas>
                     </div>
@@ -547,9 +625,9 @@
             <span class="section-label">Projeção 2029–2033: receita ICMS/IBS estadual estimada por cenário (R$ bi)</span>
             <div class="proj-tab-container">
                 <div class="proj-tab-bar">
-                    <button class="proj-tab active-pess"  data-ptab="pess">Pessimista −30%</button>
-                    <button class="proj-tab" data-ptab="inter">Intermediário −15%</button>
-                    <button class="proj-tab" data-ptab="neutro">Neutro 0%</button>
+                    <button class="proj-tab active-pess"  data-ptab="pess">C1: Redistribuição integral</button>
+                    <button class="proj-tab" data-ptab="inter">C2: Redistribuição moderada</button>
+                    <button class="proj-tab" data-ptab="neutro">C3: Neutro</button>
                 </div>
                 <div class="proj-panel active" id="ppanel-pess">
                     <div class="data-table-wrap">
@@ -645,11 +723,12 @@
 
             <!-- 8. NOTAS E FONTES -->
             <div class="footnote">
-                <p><sup>1</sup> <strong>Efeito destino (Dest%, Fator 4):</strong> a parcela direta do IBS (20% em 2029–2032;
-                10% em 2033) é distribuída ao estado onde ocorre o consumo, pelo critério de destino. Para o ES, com saldo
-                exportador positivo, isso implica redução da base do IBSd em relação ao critério de origem do ICMS.
-                O cenário pessimista de −30% é referenciado em Gobetti e Monteiro (2023); −15% é intermediário;
-                0% representa neutralidade plena.</p>
+                <p><sup>1</sup> <strong>Efeito destino (δ_ES, Fator 4):</strong> a parcela direta do IBS (20% em 2029–2032;
+                10% em 2033) é distribuída ao estado de consumo (destino). Para o ES, com saldo exportador positivo,
+                isso implica redução da base do IBSd em relação ao critério de origem do ICMS.
+                O Cenário 1 adota δ_ES = −34,25% conforme Gobetti e Monteiro (2023), tabela 4, esfera estadual
+                (<em>tabela4_esferas</em>); o Cenário 2 usa metade desse valor (−17,125%);
+                o Cenário 3 assume neutralidade plena (0%).</p>
 
                 <p><sup>2</sup> <strong>Seguro Receita (art. 132 ADCT):</strong> o mecanismo opera em duas direções.
                 A contribuição: 5% do IBSd é retido e forma um fundo de garantia; o modelo deduz essa fração do
@@ -694,26 +773,24 @@
     <script src="/js/main.js"></script>
     <script>
     // ── ADCT schedule (arts. 128, 131 ADCT; LC 214/2025; LC 227/2026 art. 51) ──
-    // Split IBSt/IBSd: 80%/20% para 2029–2032 (art.131§1ºI); 90%/10% em 2033 (art.131§1ºII)
+    // fa: fator ICMS (art.128); sa: share IBS; alphaBIS: fração IBSt; ca: CGIBS apenas IBSd (art.51)
     const ANOS = [2029, 2030, 2031, 2032, 2033];
+    const ANOS_REF = ['2019','2020','2021','2022','2023','2024','2025'];
     const ADCT = {
-        2029: { alpha: 0.9,  ibsDiretoPct: 0.02, ibsTransPct: 0.08,  cgibsPct: 0.020,  estimated: false },
-        2030: { alpha: 0.8,  ibsDiretoPct: 0.04, ibsTransPct: 0.16,  cgibsPct: 0.010,  estimated: false },
-        2031: { alpha: 0.7,  ibsDiretoPct: 0.06, ibsTransPct: 0.24,  cgibsPct: 0.0067, estimated: false },
-        2032: { alpha: 0.6,  ibsDiretoPct: 0.08, ibsTransPct: 0.32,  cgibsPct: 0.005,  estimated: false },
-        // alpha=0: ICMS extinto (LC 214/2025); art.131§1ºII: 90% transição + 10% direto; CGIBS est.
-        2033: { alpha: 0.0,  ibsDiretoPct: 0.10, ibsTransPct: 0.90,  cgibsPct: 0.005,  estimated: true  },
+        2029: { fa: 0.9, sa: 0.10, alphaBIS: 0.80, ca: 0.020,  estimated: false },
+        2030: { fa: 0.8, sa: 0.20, alphaBIS: 0.80, ca: 0.010,  estimated: false },
+        2031: { fa: 0.7, sa: 0.30, alphaBIS: 0.80, ca: 0.0067, estimated: false },
+        2032: { fa: 0.6, sa: 0.40, alphaBIS: 0.80, ca: 0.005,  estimated: false },
+        2033: { fa: 0.0, sa: 1.00, alphaBIS: 0.90, ca: 0.005,  estimated: true  },
     };
 
-    const SEGURO_RECEITA  = 0.05;     // art. 132 ADCT, 5% sobre IBSd bruto (nota 2)
-    const COTA_MUN        = 0.25;     // art. 158 IV CF/1988, cota-parte municipal
-    const PERDA_TRANS_REL = -0.05;    // CPT_ES histórico 1,5589% vs índice 2025 1,6405%: −4,97% ≈ −5%
+    const RHO = 0.05;  // Seguro Receita (art. 132 ADCT): 5% do IBSd bruto forma fundo de garantia
     // FUNDEB não deduzido: EC 132/2023 garante simetria entre ICMS e IBS (ver nota 3)
 
     const SCENARIOS = [
-        { id: 'pess',  dest: -0.30, label: 'Pessimista (−30%)',    color: '#b43c3c' },
-        { id: 'inter', dest: -0.15, label: 'Intermediário (−15%)', color: '#b47828' },
-        { id: 'neutro', dest: 0.00, label: 'Neutro (0%)',          color: '#288c50' },
+        { id: 'pess',   label: 'Cenário 1: Redistribuição integral', color: '#b43c3c' },
+        { id: 'inter',  label: 'Cenário 2: Redistribuição moderada', color: '#b47828' },
+        { id: 'neutro', label: 'Cenário 3: Neutro',                 color: '#288c50' },
     ];
 
     // ── Formatação ────────────────────────────────────────────────────────────
@@ -727,46 +804,36 @@
     }
 
     // ── Modelo de projeção ────────────────────────────────────────────────────
-    // Receita estadual = ICMS/IBS × (1 − 25% cota-parte municipal)
-    // FUNDEB excluído de ambos os lados — dedução simétrica (EC 132/2023), ver nota 4
-    // Única assimetria real: CGIBS (Fator 3), dedução exclusiva do regime IBS
-    function calcYear(icmsBase, gRate, destPct, ano, baseYear) {
-        const a = ADCT[ano];
-        const icms = icmsBase * Math.pow(1 + gRate, ano - baseYear);
+    // r0_2025 = ICMS_ES_2025 (DCA) × 75%: base contrafactual estadual (já parcela estadual)
+    // r0_avg  = média histórica 2019–2025 (ICMS_ES_t × 75% × defl_t): base IBS via CPT
+    // λ_ES = r0_avg / r0_2025 captura perda estrutural do IBSt (Fator 2), já embutido em r0_avg
+    // Fórmula: R_a = r0_2025·fa + r0_avg·sa·[αa + (1−αa)·(1−ca)·(1−ρ)·(1+δ_ES)]
+    // CGIBS (ca) aplica-se APENAS ao IBSd pós-Seguro Receita (art. 51 LC 227/2026)
+    function calcYear(r0_2025, r0_avg, gRate, destPct, ano, baseYear) {
+        const a  = ADCT[ano];
+        const gf = Math.pow(1 + gRate, ano - baseYear);
 
-        // Referência (sem reforma): ICMS × 75%
-        const cntEstadual = icms * (1 - COTA_MUN);
+        const cntEstadual = r0_2025 * gf;                            // referência sem reforma
 
-        // Fator 1 — ICMS com reforma: fator alpha × 75%
-        const icmsReformEstadual = icms * a.alpha * (1 - COTA_MUN);
+        const icmsReform    = r0_2025 * gf * a.fa;                  // Fator 1: ICMS residual
 
-        // Fator 4 — IBSd: share × (1 + Dest%) — critério destino
-        const ibsDirBruto = icms * a.ibsDiretoPct * (1 + destPct);
-        const ibsSeguro   = ibsDirBruto * SEGURO_RECEITA;  // art. 132 ADCT (nota 2)
+        const ibst          = r0_avg  * gf * a.sa * a.alphaBIS;     // Fator 2: IBSt via CPT histórico
 
-        // Fator 2 — IBSt: share × (1 + PERDA_TRANS_REL) — CPT histórico
-        const ibsTransBruto = icms * a.ibsTransPct * (1 + PERDA_TRANS_REL);
+        const ibsd_bruto    = r0_avg  * gf * a.sa * (1 - a.alphaBIS) * (1 + destPct); // Fator 4
+        const ibsSeguro     = ibsd_bruto * RHO;                      // Seguro Receita (art. 132)
+        const ibsd_psr      = ibsd_bruto * (1 - RHO);               // IBSd pós-Seguro Receita
 
-        // IBS total bruto: IBSd (após Seguro Receita) + IBSt
-        const ibsBruto = ibsDirBruto * (1 - SEGURO_RECEITA) + ibsTransBruto;
+        const ibsd_cgibs    = ibsd_psr * a.ca;                      // Fator 3: CGIBS (apenas IBSd)
+        const ibsd_liq      = ibsd_psr - ibsd_cgibs;
 
-        // Parcelas estaduais (75% após cota municipal)
-        const ibsEstadual     = ibsBruto      * (1 - COTA_MUN);
-        const ibsTransEstadual = ibsTransBruto * (1 - COTA_MUN);
-        const ibsDirEstadual   = ibsDirBruto * (1 - SEGURO_RECEITA) * (1 - COTA_MUN);
+        const ibsTotal      = ibst + ibsd_liq;
+        const totalReform   = icmsReform + ibsTotal;
+        const delta         = totalReform - cntEstadual;
+        const deltaPct      = cntEstadual > 0 ? delta / cntEstadual : 0;
 
-        // Fator 3 — CGIBS: única dedução assimétrica (aplicada proporcionalmente)
-        const ibsCgibs       = ibsEstadual * a.cgibsPct;
-        const ibsLiq         = ibsEstadual - ibsCgibs;
-
-        const totalReform = icmsReformEstadual + ibsLiq;
-        const delta    = totalReform - cntEstadual;
-        const deltaPct = delta / cntEstadual;
-
-        return { icms, cntEstadual, icmsReformEstadual,
-                 ibsDirBruto, ibsSeguro, ibsTransBruto, ibsBruto,
-                 ibsEstadual, ibsCgibs, ibsLiq,
-                 totalReform, delta, deltaPct, estimated: a.estimated };
+        return { cntEstadual, icmsReform, ibst,
+                 ibsd_bruto, ibsSeguro, ibsd_psr, ibsd_cgibs, ibsd_liq,
+                 ibsTotal, totalReform, delta, deltaPct, estimated: a.estimated };
     }
 
     // ── Gráficos por cenário (linha + área sombreada "boca do jacaré") ────────
@@ -877,16 +944,17 @@
     });
 
     // ── Render ────────────────────────────────────────────────────────────────
-    function render(icmsBase, gRate, baseYear) {
+    function render(r0_2025, r0_avg, gRate, baseYear, delta1) {
+        const deltas = { pess: delta1, inter: delta1 / 2, neutro: 0 };
         const results = {};
         for (const sc of SCENARIOS) {
             results[sc.id] = {};
-            for (const ano of ANOS) results[sc.id][ano] = calcYear(icmsBase, gRate, sc.dest, ano, baseYear);
+            for (const ano of ANOS) results[sc.id][ano] = calcYear(r0_2025, r0_avg, gRate, deltas[sc.id], ano, baseYear);
         }
 
         document.getElementById('p-cnt-estadual').textContent = fmtBi(results['pess'][2029].cntEstadual);
 
-        // Cards dos cenários: perda no 1.º ano (2029) e no 5.º ano (2033)
+        // Cards dos cenários
         for (const sc of SCENARIOS) {
             const r29 = results[sc.id][2029];
             const r33 = results[sc.id][2033];
@@ -964,16 +1032,18 @@
                 return `<tr><td class="td-formula" style="padding-left:1.6rem"><em>${prefix} ${label}</em></td>${cells}<td style="border-left:2px solid var(--border)">${fmtPctCell(totalDiff / totalRef, 2)}</td></tr>`;
             }
 
+            const d1pct = (delta1*100).toFixed(2).replace('.',',');
+            const d2pct = (delta1/2*100).toFixed(2).replace('.',',');
             document.getElementById('tbody-sintese').innerHTML = [
-                valRow('(A)', `ICMS estadual: base de referência ${baseYear} (75% do ICMS bruto, RREO/SICONFI, sem crescimento real)`, refVals, 'td-cnt', ''),
-                valRow('(B)', 'ICMS/IBS estadual, cenário pessimista (−30% no IBSd)', pessVals, 'td-pess', 'row-separator'),
-                valRow('(C)', 'ICMS/IBS estadual, cenário intermediário (−15% no IBSd)', interVals, 'td-inter', ''),
-                valRow('(D)', 'ICMS/IBS estadual, cenário neutro (0% no IBSd)', neutroVals, 'td-neutro', ''),
-                diffRow('(A−B)', 'Diferença: referência menos pessimista (R$ bi)', refVals, pessVals, 'row-separator'),
+                valRow('(A)', `ICMS estadual: base de referência ${baseYear} (r₀²⁰²⁵ = ICMS DCA 2025 × 75%, sem crescimento real)`, refVals, 'td-cnt', ''),
+                valRow('(B)', `ICMS/IBS estadual, cenário 1 — redistribuição integral (δ_ES = ${d1pct}% no IBSd)`, pessVals, 'td-pess', 'row-separator'),
+                valRow('(C)', `ICMS/IBS estadual, cenário 2 — redistribuição moderada (δ_ES = ${d2pct}% no IBSd)`, interVals, 'td-inter', ''),
+                valRow('(D)', 'ICMS/IBS estadual, cenário 3 — neutro (0% no IBSd)', neutroVals, 'td-neutro', ''),
+                diffRow('(A−B)', 'Diferença: referência menos cenário 1 (R$ bi)', refVals, pessVals, 'row-separator'),
                 pctRow('', 'Variação percentual (A−B)/A', refVals, pessVals),
-                diffRow('(A−C)', 'Diferença: referência menos intermediário (R$ bi)', refVals, interVals, 'row-separator'),
+                diffRow('(A−C)', 'Diferença: referência menos cenário 2 (R$ bi)', refVals, interVals, 'row-separator'),
                 pctRow('', 'Variação percentual (A−C)/A', refVals, interVals),
-                diffRow('(A−D)', 'Diferença: referência menos neutro (R$ bi)', refVals, neutroVals, 'row-separator'),
+                diffRow('(A−D)', 'Diferença: referência menos cenário 3 (R$ bi)', refVals, neutroVals, 'row-separator'),
                 pctRow('', 'Variação percentual (A−D)/A', refVals, neutroVals),
             ].join('');
         })();
@@ -984,6 +1054,8 @@
 
         // Memória de cálculo 2029
         const rP = results['pess'][2029], rI = results['inter'][2029], rN = results['neutro'][2029];
+        const dP = deltas['pess'], dI = deltas['inter'];
+        const lambda = r0_2025 > 0 ? r0_avg / r0_2025 : 1;
 
         function rowSame(label, rule, val, cls='') {
             const c = cls ? ` class="${cls}"` : '';
@@ -1006,43 +1078,40 @@
         }
 
         document.getElementById('tbody-calc').innerHTML = [
-            secHead('A. Base de referência'),
-            rowSame('ICMS bruto ES ' + baseYear + ' (base de referência contrafactual)', 'Fonte: SICONFI/STN', icmsBase),
-            rowStatic('Taxa de crescimento nominal (g)', gRate===0?'Nível fixo (padrão)':'Configurado pelo usuário', gRate===0?'0% a.a. (nível de referência fixo para 2029–2033)':((gRate*100).toFixed(1)+'% a.a.')),
-            rowSame('Base tributável 2029', 'Ref. × (1+g)^(2029−'+baseYear+')', rP.icms),
+            secHead('A. Bases de referência (DCA/SICONFI, 2025)'),
+            rowSame('r₀²⁰²⁵ = ICMS_ES_2025 (DCA) × 75%', 'Base contrafactual estadual fixa', r0_2025),
+            rowSame('r₀ᵃᵛᵍ = média histórica deflacionada 2019–2025', 'Média(ICMS_ES_t × 75% × defl_t)', r0_avg),
+            rowStatic('λ_ES = r₀ᵃᵛᵍ / r₀²⁰²⁵', 'Razão histórica/2025; captura ajuste CPT do IBSt', `${lambda.toFixed(4).replace('.',',')} (${((lambda-1)*100).toFixed(2).replace('.', ',')}% vs. 2025)`),
 
-            secHead('B. Referência sem reforma: receita estadual = 75% do ICMS'),
-            rowSame('Cota-parte municipal (25%)', '− 25% · art. 158 IV CF', rP.icms * 0.25),
-            rowSame('Receita estadual de referência (75%)', 'Base × 75%', rP.cntEstadual, 'row-total'),
+            secHead('B. Referência sem reforma: r₀²⁰²⁵ (receita estadual já no nível 75%)'),
+            rowSame('Receita estadual de referência (75% embutido em r₀²⁰²⁵)', 'r₀²⁰²⁵ × (1+g)⁰', rP.cntEstadual, 'row-total'),
 
-            secHead('C. Fator 1: ICMS na transição, fator 9/10 (art. 128 I ADCT)'),
-            rowStatic('Fator alpha de redução do ICMS', 'Art. 128 I ADCT', '9/10 = 90%'),
-            rowSame('ICMS bruto ajustado (× 90%)', 'Base × 90%', rP.icms * 0.9),
-            rowSame('ICMS estadual ajustado (75%)', '× 75% · art. 158 IV CF', rP.icmsReformEstadual, 'row-total'),
+            secHead('C. Fator 1: ICMS residual — fa = 9/10 (art. 128 I ADCT)'),
+            rowStatic('Fator fa em 2029', 'Art. 128 I ADCT', 'fa = 9/10 = 90%'),
+            rowSame('ICMS residual estadual = r₀²⁰²⁵ × fa', 'r₀²⁰²⁵ × 90%', rP.icmsReform, 'row-total'),
 
-            secHead('D. Fator 4: IBSd, 2,0% da base (art. 131 §1º I · split 20% × share 10%) · varia por cenário'),
-            rowStatic('Split IBSt/IBSd em 2029', 'Art. 131 §1º I ADCT', '80% / 20% (constante 2029–2032; vira 90%/10% em 2033)'),
-            rowStatic('Parcela direta (IBSd) sobre a base', '20% × share IBS 10%', '2,00% da base tributável'),
-            rowStatic('Efeito destino (Fator 4) ¹', 'Nota 1', 'Pess: −30% | Inter: −15% | Neutro: 0%'),
-            rowScen('IBSd bruto', 'Base × 2% × (1 + Dest%)', rP.ibsDirBruto, rI.ibsDirBruto, rN.ibsDirBruto),
-            rowScen('Seguro Receita (−5%) ²', '× 5% · art. 132 ADCT', rP.ibsSeguro, rI.ibsSeguro, rN.ibsSeguro),
+            secHead('D. Fator 2: IBSt via CPT histórico — sa × αa = 8% (art. 131 §1º I ADCT) · igual nos três cenários'),
+            rowStatic('sa × αa = 10% × 80%', 'Share IBS × fração IBSt', '8,00% aplicado sobre r₀ᵃᵛᵍ'),
+            rowStatic('λ_ES embutido em r₀ᵃᵛᵍ', 'λ = r₀ᵃᵛᵍ / r₀²⁰²⁵', `${lambda.toFixed(4).replace('.',',')} — IBSt = r₀ᵃᵛᵍ × 8%`),
+            rowSame('IBSt = r₀ᵃᵛᵍ × sa × αa', 'r₀ᵃᵛᵍ × 8%', rP.ibst, 'row-total'),
 
-            secHead('E. Fator 2: IBSt, 8,0% da base (art. 131 §1º I · split 80% × share 10%) · igual nos três cenários'),
-            rowStatic('Parcela transição (IBSt) sobre a base', '80% × share IBS 10%', '8,00% da base'),
-            rowStatic('Perda CPT histórico ES (PERDA_TRANS_REL)', 'CPT hist. 1,5589% vs índice 2025 1,6405%', '−5,00% (igual nos 3 cenários · Estudo 02)'),
-            rowSame('IBSt bruto', 'Base × 8% × (1 − 5%)', rP.ibsTransBruto),
+            secHead('E. Fator 4: IBSd via destino — sa × (1−αa) = 2% (art. 131 §1º I ADCT) · varia por cenário'),
+            rowStatic('sa × (1−αa) = 10% × 20%', 'Share IBS × fração IBSd', '2,00% aplicado sobre r₀ᵃᵛᵍ'),
+            rowStatic('δ_ES — efeito destino (Gobetti, tabela4_esferas) ¹', 'Nota 1', `C1: ${(dP*100).toFixed(2).replace('.',',')}% | C2: ${(dI*100).toFixed(2).replace('.',',')}% | C3: 0%`),
+            rowScen('IBSd bruto = r₀ᵃᵛᵍ × sa × (1−αa) × (1+δ)', 'r₀ᵃᵛᵍ × 2% × (1+δ)', rP.ibsd_bruto, rI.ibsd_bruto, rN.ibsd_bruto),
+            rowScen('Seguro Receita = IBSd bruto × ρ ²', '× 5% · art. 132 ADCT', rP.ibsSeguro, rI.ibsSeguro, rN.ibsSeguro),
+            rowScen('IBSd pós-Seguro Receita', '× (1−5%)', rP.ibsd_psr, rI.ibsd_psr, rN.ibsd_psr),
 
-            secHead('F. IBS total e IBS estadual: Fator 3 (CGIBS), única assimetria estrutural'),
-            rowScen('IBS total bruto', '0,95 × IBSd + IBSt', rP.ibsBruto, rI.ibsBruto, rN.ibsBruto),
-            rowScen('Cota-parte municipal IBS (25%)', '× 25% · art. 158 IV CF', rP.ibsBruto*COTA_MUN, rI.ibsBruto*COTA_MUN, rN.ibsBruto*COTA_MUN),
-            rowScen('IBS estadual (75%)', '× 75%', rP.ibsEstadual, rI.ibsEstadual, rN.ibsEstadual),
-            rowScen('CGIBS (2,00% · art. 51 LC 227/2026), Fator 3', '× 2%, sem equivalente no ICMS', rP.ibsCgibs, rI.ibsCgibs, rN.ibsCgibs),
-            rowScen('IBS estadual líq. CGIBS', '× (1 − 2%)', rP.ibsLiq, rI.ibsLiq, rN.ibsLiq, 'row-total'),
+            secHead('F. Fator 3: CGIBS (art. 51 LC 227/2026) — aplica-se APENAS ao IBSd pós-Seguro Receita'),
+            rowStatic('ca em 2029', 'Art. 51 LC 227/2026', 'ca = 2,00% — sem equivalente no ICMS'),
+            rowScen('CGIBS = IBSd × ca', '× 2,00%', rP.ibsd_cgibs, rI.ibsd_cgibs, rN.ibsd_cgibs),
+            rowScen('IBSd líquido = IBSd × (1−ca)', '× (1−2%)', rP.ibsd_liq, rI.ibsd_liq, rN.ibsd_liq, 'row-total'),
 
             secHead('G. Resultado fiscal 2029'),
-            rowScen('Receita estadual total (ICMS\' + IBS\')', 'RT = ICMS\' + IBS\'', rP.totalReform, rI.totalReform, rN.totalReform, 'row-total'),
-            `<tr><td class="td-label">Variação vs. referência sem reforma (Δ%)</td>
-                <td class="td-formula">Δ% = (RT − Ref.) / Ref.</td>
+            rowScen('IBS total estadual = IBSt + IBSd líquido', 'IBSt + IBSd_liq', rP.ibsTotal, rI.ibsTotal, rN.ibsTotal),
+            rowScen('Receita estadual total com reforma', 'ICMS residual + IBS total', rP.totalReform, rI.totalReform, rN.totalReform, 'row-total'),
+            `<tr><td class="td-label">Variação vs. referência (Δ%)</td>
+                <td class="td-formula">Δ% = (RT − r₀²⁰²⁵) / r₀²⁰²⁵</td>
                 <td>${fmtPctCell(rP.deltaPct, 3)}</td>
                 <td>${fmtPctCell(rI.deltaPct, 3)}</td>
                 <td>${fmtPctCell(rN.deltaPct, 3)}</td></tr>`,
@@ -1056,48 +1125,97 @@
 
     // ── Carregar dados e inicializar ──────────────────────────────────────────
     async function init() {
-        let data;
+        let data, gobetti;
         try {
-            const resp = await fetch('/data/reforma-tributaria.json?t=' + Date.now());
-            if (!resp.ok) throw new Error('not found');
-            data = await resp.json();
+            const [resp, gResp] = await Promise.all([
+                fetch('/data/reforma-tributaria.json?t=' + Date.now()),
+                fetch('/data/gobetti-2023-perdas-ganhos-uf.json?t=' + Date.now()),
+            ]);
+            if (!resp.ok) throw new Error('reforma-tributaria.json não encontrado');
+            data    = await resp.json();
+            gobetti = gResp.ok ? await gResp.json() : null;
         } catch {
             document.getElementById('status-bar').innerHTML =
                 '<span class="status-dot pending"></span> Dados não disponíveis; verifique /data/reforma-tributaria.json';
             return;
         }
 
-        const icmsEs = data.icms_es || {};
-        const dcaUf  = data.dca_icms_por_uf || {};
-        let icmsBase, baseYear;
-        if (icmsEs['2026']) {
-            icmsBase = icmsEs['2026'];
-            baseYear = 2026;
-        } else if (icmsEs['2025']) {
-            icmsBase = icmsEs['2025'];
-            baseYear = 2025;
-        } else {
-            icmsBase = dcaUf['2025']?.['ES'] ?? null;
-            baseYear = 2025;
+        // ── δ_ES: Gobetti tabela4_esferas ────────────────────────────────────
+        let delta1 = -0.3425;
+        if (gobetti?.tabela4_esferas?.ufs) {
+            const esRow = gobetti.tabela4_esferas.ufs.find(u => u.uf === 'ES');
+            if (esRow?.estado_pct != null) delta1 = esRow.estado_pct / 100;
         }
 
-        if (icmsBase == null) {
+        // ── Deflators: TotalBR_2025 / TotalBR_t (ICMS + ISS, DCA) ───────────
+        const dca_icms = data.dca_icms_por_uf || {};
+        const dca_iss  = data.dca_iss_por_uf  || {};
+        const totals_br = {};
+        for (const yr of ANOS_REF) {
+            const s_icms = Object.values(dca_icms[yr] || {}).reduce((s,v) => s+v, 0);
+            const s_iss  = Object.values(dca_iss[yr]  || {}).reduce((s,v) => s+v, 0);
+            totals_br[yr] = s_icms + s_iss;
+        }
+        const total_br_2025 = totals_br['2025'] || 1;
+        const deflators = {};
+        for (const yr of ANOS_REF) deflators[yr] = totals_br[yr] > 0 ? total_br_2025 / totals_br[yr] : 1;
+
+        // ── r0_2025 e r0_avg para ES (DCA 2025) ──────────────────────────────
+        const icms_es_2025 = dca_icms['2025']?.['ES'];
+        if (icms_es_2025 == null) {
             document.getElementById('status-bar').innerHTML =
-                '<span class="status-dot pending"></span> ICMS ES não encontrado nos dados';
+                '<span class="status-dot pending"></span> ICMS ES 2025 não encontrado nos dados (DCA)';
             return;
         }
+        const r0_2025 = icms_es_2025 * 0.75;
 
-        document.querySelectorAll('#base-year-label').forEach(el => el.textContent = baseYear);
-        document.getElementById('p-icms-bruto').textContent = fmtBi(icmsBase, 3);
-        const periodoStr = data.periodo_usado?.[`${baseYear}`] != null
-            ? ` · RREO período ${data.periodo_usado[`${baseYear}`]}`
-            : '';
+        let sum_r0 = 0, n_r = 0;
+        for (const yr of ANOS_REF) {
+            const icms = dca_icms[yr]?.['ES'];
+            if (icms != null) { sum_r0 += icms * 0.75 * deflators[yr]; n_r++; }
+        }
+        const r0_avg = n_r > 0 ? sum_r0 / n_r : r0_2025;
+        const lambda = r0_2025 > 0 ? r0_avg / r0_2025 : 1.0;
+
+        // ── UI estático ───────────────────────────────────────────────────────
+        document.querySelectorAll('#base-year-label').forEach(el => el.textContent = '2025');
+        document.getElementById('p-icms-bruto').textContent = fmtBi(icms_es_2025, 3);
+        document.getElementById('p-cnt-estadual').textContent = fmtBi(r0_2025, 3);
         document.getElementById('status-bar').innerHTML =
-            `<span class="status-dot"></span> ICMS ES ${baseYear} = ${fmtBi(icmsBase, 3)} · SICONFI/STN${periodoStr}`;
+            `<span class="status-dot"></span> Base DCA 2025: r₀²⁰²⁵ = ${fmtBi(r0_2025, 3)} · λ_ES = ${lambda.toFixed(4).replace('.',',')} · δ_ES (C1) = ${fmtPct(delta1, 2)}`;
+
+        // CPT infobox
+        const elR0_2025 = document.getElementById('cpt-r0-2025');
+        const elR0_avg  = document.getElementById('cpt-r0-avg');
+        const elLambda  = document.getElementById('cpt-lambda');
+        if (elR0_2025) elR0_2025.textContent = fmtBi(r0_2025, 3);
+        if (elR0_avg)  elR0_avg.textContent  = fmtBi(r0_avg,  3);
+        if (elLambda)  elLambda.textContent  = lambda.toFixed(4).replace('.',',') + ' (' + fmtPct(lambda-1, 1) + ' vs. 2025)';
+
+        // Variable table
+        const elVtR0_2025 = document.getElementById('vt-r0-2025');
+        const elVtR0_avg  = document.getElementById('vt-r0-avg');
+        const elVtLambda  = document.getElementById('vt-lambda');
+        const elVtDelta   = document.getElementById('vt-delta');
+        if (elVtR0_2025) elVtR0_2025.textContent = fmtBi(r0_2025, 3);
+        if (elVtR0_avg)  elVtR0_avg.textContent  = fmtBi(r0_avg,  3);
+        if (elVtLambda)  elVtLambda.textContent  = lambda.toFixed(4).replace('.',',') + ' (' + fmtPct(lambda-1, 1) + ')';
+        if (elVtDelta)   elVtDelta.textContent   = fmtPct(delta1, 2) + ' (C1) / ' + fmtPct(delta1/2, 2) + ' (C2) / 0% (C3)';
+
+        // Factor list dynamic values
+        const elLambdaFactor = document.getElementById('lambda-display-factor');
+        const elDelta1Factor = document.getElementById('delta1-display-factor');
+        if (elLambdaFactor) elLambdaFactor.textContent = fmtPct(lambda-1, 1);
+        if (elDelta1Factor) elDelta1Factor.textContent = fmtPct(delta1, 2);
+
+        // Scenario cards dest% display
+        const elDestPess  = document.getElementById('sc-dest-pess');
+        const elDestInter = document.getElementById('sc-dest-inter');
+        if (elDestPess)  elDestPess.textContent  = fmtPct(delta1,   2) + ' no IBSd';
+        if (elDestInter) elDestInter.textContent = fmtPct(delta1/2, 2) + ' no IBSd';
 
         let gRate = 0;
-
-        function refresh() { render(icmsBase, gRate, baseYear); }
+        function refresh() { render(r0_2025, r0_avg, gRate, 2025, delta1); }
 
         document.getElementById('range-growth').addEventListener('input', e => {
             gRate = parseFloat(e.target.value) / 100;
