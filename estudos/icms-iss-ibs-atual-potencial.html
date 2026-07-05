@@ -102,6 +102,9 @@
         .data-table tr.renda-subtotal { background: var(--bg); font-weight: 600; }
         .data-table tr.renda-subtotal td { border-top: 2px solid var(--border); }
 
+        /* ── Grupos de esfera (Tabela 5) ── */
+        .data-table th.col-divider, .data-table td.col-divider { border-left: 2px solid var(--border); }
+
         /* ── Gráfico de correlação ── */
         .chart-panel { background: var(--border-light); border-radius: 8px; padding: 1.25rem 1.25rem 1.5rem; margin: 0 0 1.5rem; }
         .chart-panel-title { font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin: 0 0 1rem; }
@@ -430,6 +433,40 @@
             </table>
         </div>
 
+        <span class="section-label">Tabela 5 &middot; Origem (2025) vs. destino projetado por esfera, ajustado pela variação de Gobetti e Monteiro (%)</span>
+        <div class="callout">
+            Um quarto exercício, que parte desta vez da fotografia atual em vez da estimativa combinada de
+            Gobetti e Monteiro. "Origem" é o coeficiente de participação de cada UF em 2025 (SICONFI/STN),
+            calculado separadamente para cada esfera: o estado é comparado ao total nacional de ICMS líquido
+            (75% do ICMS bruto, art. 158, IV, CF/88), e o município ao total nacional de cota-parte (25% do
+            ICMS) mais ISS. "Destino projetado" aplica a cada UF, nas duas esferas, a mesma variação relativa
+            calculada na Tabela 2 a partir da estimativa de Gobetti e Monteiro. Como essa variação foi
+            estimada para a UF como um todo, a soma dos coeficientes ajustados não fecha exatamente em 100%
+            em nenhuma das esferas; por isso, cada coeficiente ajustado é normalizado (multiplicado por
+            100 dividido pela soma de todos os ajustados daquela esfera), o que redistribui a diferença
+            proporcionalmente entre todos os entes.
+        </div>
+        <div class="table-wrap">
+            <table class="data-table" id="table-origem-destino">
+                <thead>
+                    <tr>
+                        <th class="th-left" rowspan="2">UF</th>
+                        <th rowspan="2">Variação relativa aplicada, Tabela 2 (%)</th>
+                        <th colspan="2">Esfera estadual</th>
+                        <th class="col-divider" colspan="2">Esfera municipal</th>
+                    </tr>
+                    <tr>
+                        <th>Origem 2025 (%)</th><th>Destino projetado (%)</th>
+                        <th class="col-divider">Origem 2025 (%)</th><th>Destino projetado (%)</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-origem-destino">
+                    <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+                <tfoot id="tfoot-origem-destino"></tfoot>
+            </table>
+        </div>
+
         <div class="footnotes">
             <p><strong>Fontes e notas metodológicas:</strong></p>
             <p>1. Tabela 1 desta página: reprodução integral, sem qualquer alteração de valores, da Tabela 1 de Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura n. 60, Nota de Conjuntura 18. Ipea, 28 ago. 2023. Disponível em: <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">repositorio.ipea.gov.br</a>. O PIBpc médio por faixa de renda e o PIBpc médio nacional (linha "Total") reproduzem os valores publicados pelos autores, ponderados pela população de cada UF; as demais colunas são recalculadas a partir dos valores individuais de cada UF.</p>
@@ -438,6 +475,7 @@
             <p>4. Tabela 3 desta página: elaboração própria. ICMS + ISS atual 2025: SICONFI/STN, DCA Anexo I-C. População 2025: IBGE, Estimativas de População (referência 01/07/2025), usada como proxy do critério de destino/consumo. Coeficiente = valor da UF / total nacional &times; 100 em cada coluna; variação = participação populacional menos participação tributária atual. Mesma base de dados do <a href="/estudos/icms-iss-participacao-vs-populacao.html">Estudo 05</a>, com ano-base (2025) mais recente e independente da proxy de consumo de Gobetti e Monteiro usada nas Tabelas 1 e 2.</p>
             <p>5. Gráfico de dispersão (Tabela 2 vs. Tabela 3): cruza, para cada UF, o coeficiente potencial da Tabela 2 (eixo X, receita pós-reforma da UF / receita pós-reforma nacional &times; 100) com a participação populacional da Tabela 3 (eixo Y). A correlação é o coeficiente de Pearson entre as duas séries; a segunda estatística é a proporção de UFs cuja participação populacional fica a menos de 1 ponto percentual do coeficiente potencial estimado por Gobetti e Monteiro. Ambas são calculadas no navegador, a partir dos mesmos dados publicados nas Tabelas 1 a 3.</p>
             <p>6. Tabela 4 desta página: elaboração própria, sem qualquer dado adicional além do publicado por Gobetti e Monteiro (Tabela 2) e do SICONFI/STN, DCA Anexo I-C 2025 (mesma base da Tabela 3). Peso do estado = 0,75 &times; ICMS bruto da UF / (ICMS bruto da UF + ISS da UF); peso do município = (0,25 &times; ICMS bruto da UF + ISS da UF) / (ICMS bruto da UF + ISS da UF), refletindo a cota-parte constitucional de 25% do ICMS aos municípios (art. 158, IV, CF/88). Coeficiente potencial estadual = coeficiente potencial da Tabela 2 &times; peso do estado; coeficiente potencial municipal = coeficiente potencial da Tabela 2 &times; peso do município. É uma aproximação: pressupõe que a proporção estado/município de cada UF em 2025 se mantém após a migração para o IBS, algo que a própria reforma pode alterar (por exemplo, ao mudar os critérios de rateio da cota-parte municipal).</p>
+            <p>7. Tabela 5 desta página: elaboração própria. Coeficiente de origem estadual = ICMS líquido da UF (75% do ICMS bruto, SICONFI/STN 2025) / soma nacional do ICMS líquido &times; 100; coeficiente de origem municipal = receita municipal da UF (25% do ICMS bruto + ISS, SICONFI/STN 2025) / soma nacional dessa receita municipal &times; 100. Coeficiente de destino projetado (bruto) = coeficiente de origem &times; (1 + variação relativa da Tabela 2); em seguida, os coeficientes de destino de cada esfera são normalizados (multiplicados por 100 / soma dos coeficientes de destino brutos daquela esfera) para que voltem a somar 100%. Pressupõe que a variação relativa estimada por Gobetti e Monteiro para a UF como um todo se aplica igualmente às duas esferas, o que é uma simplificação: a reforma pode afetar estado e município de forma desigual dentro da mesma UF.</p>
         </div>
     </div>
 
@@ -613,6 +651,66 @@
         </tr>`;
     }
 
+    // Origem (2025, por esfera) x destino projetado: aplica a variação relativa da Tabela 2 (estimada
+    // por Gobetti e Monteiro para a UF como um todo) sobre os coeficientes de origem de cada esfera,
+    // depois normaliza para que cada esfera volte a somar 100% (diferença redistribuída proporcionalmente).
+    function buildTable5(data, popData) {
+        const totalPre = data.tabela1_static.total_pre;
+        const totalPos = data.tabela1_static.total_pos;
+        const varRelByUf = {};
+        data.tabela1_static.ufs.forEach(u => {
+            const coefAtual = (u.pre / totalPre) * 100;
+            const coefPot   = (u.pos / totalPos) * 100;
+            varRelByUf[u.uf] = (coefPot - coefAtual) / coefAtual;
+        });
+
+        const totalEstadoBR    = popData.ufs.reduce((s, u) => s + u.icms * 0.75, 0);
+        const totalMunicipioBR = popData.ufs.reduce((s, u) => s + (u.icms * 0.25 + u.iss), 0);
+
+        const rows = popData.ufs.map(u => {
+            const origemEstado    = (u.icms * 0.75) / totalEstadoBR * 100;
+            const origemMunicipio = (u.icms * 0.25 + u.iss) / totalMunicipioBR * 100;
+            const varRel = varRelByUf[u.uf];
+            return {
+                uf: u.uf, nome: NOMES_UF[u.uf], varRel: varRel * 100,
+                origemEstado, origemMunicipio,
+                brutoEstado: origemEstado * (1 + varRel),
+                brutoMunicipio: origemMunicipio * (1 + varRel)
+            };
+        });
+
+        const somaBrutoEstado    = rows.reduce((s, r) => s + r.brutoEstado, 0);
+        const somaBrutoMunicipio = rows.reduce((s, r) => s + r.brutoMunicipio, 0);
+
+        const finalRows = rows.map(r => ({
+            ...r,
+            destinoEstado:    r.brutoEstado    * (100 / somaBrutoEstado),
+            destinoMunicipio: r.brutoMunicipio * (100 / somaBrutoMunicipio)
+        })).sort((a, b) => a.uf.localeCompare(b.uf));
+
+        const tbody = document.getElementById('tbody-origem-destino');
+        tbody.innerHTML = finalRows.map(r => {
+            const isES = r.uf === 'ES';
+            return `<tr${isES ? ' class="row-es"' : ''}>
+                <td class="td-uf">${r.uf} <small>${r.nome}</small></td>
+                <td class="${clsPct(r.varRel)}">${fmtPct(r.varRel)}</td>
+                <td>${fmtNum(r.origemEstado)}</td>
+                <td>${fmtNum(r.destinoEstado)}</td>
+                <td class="col-divider">${fmtNum(r.origemMunicipio)}</td>
+                <td>${fmtNum(r.destinoMunicipio)}</td>
+            </tr>`;
+        }).join('');
+
+        document.getElementById('tfoot-origem-destino').innerHTML = `<tr>
+            <td class="td-uf"><strong>Total</strong> <small>27 UFs</small></td>
+            <td>&mdash;</td>
+            <td>100,00</td>
+            <td>100,00</td>
+            <td class="col-divider">100,00</td>
+            <td>100,00</td>
+        </tr>`;
+    }
+
     function pearsonR(xs, ys) {
         const n = xs.length;
         const mx = xs.reduce((s, v) => s + v, 0) / n;
@@ -758,6 +856,7 @@
             buildPopTable(popData);
             buildCorrelationChart(data, popData);
             buildTable4(data, popData);
+            buildTable5(data, popData);
 
             statusEl.innerHTML =
                 '<span class="status-dot" style="background:#22c55e"></span> ' +
