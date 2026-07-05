@@ -382,14 +382,14 @@
         <div class="callout">
             Voltando à pergunta central desta página: as Tabelas 2 e 3 respondem a ela por dois caminhos
             distintos, um estimando consumo (Gobetti e Monteiro, 2022), outro usando população como atalho
-            (2025). O gráfico abaixo cruza a variação percentual de cada UF nos dois cenários: no eixo
-            horizontal, a variação da Tabela 2; no eixo vertical, a variação da Tabela 3. Quanto mais
-            próximos os pontos estiverem da linha de paridade (45°), mais a participação populacional se
-            comporta como uma aproximação razoável da estimativa de consumo, bem mais elaborada, dos
-            autores.
+            (2025). O gráfico abaixo cruza, para cada UF, o coeficiente potencial estimado por Gobetti e
+            Monteiro (Tabela 2, eixo X) com sua participação na população brasileira (Tabela 3, eixo Y).
+            Quanto mais próximos os pontos estiverem da linha de paridade (45°), mais a participação
+            populacional se comporta como uma aproximação razoável da estimativa de consumo, bem mais
+            elaborada, dos autores.
         </div>
         <div class="chart-panel">
-            <p class="chart-panel-title">Variação de participação: Gobetti e Monteiro (eixo X) x população (eixo Y), 27 UFs</p>
+            <p class="chart-panel-title">Coeficiente potencial, Gobetti e Monteiro (eixo X) x participação populacional (eixo Y), 27 UFs</p>
             <canvas id="chart-scatter-compare" style="max-height:480px"></canvas>
             <div class="chart-legend-note">
                 <span><span class="legend-dot" style="background:#2a78d6"></span>UF</span>
@@ -407,7 +407,7 @@
             <p>2. Tabela 2 desta página: elaboração própria, derivada diretamente dos valores em R$ milhões da Tabela 1, sem qualquer dado adicional além do publicado pelos autores. Coeficiente atual = receita pré-reforma da UF / receita pré-reforma nacional &times; 100; coeficiente potencial = receita pós-reforma da UF / receita pós-reforma nacional &times; 100.</p>
             <p>3. Base de dados das Tabelas 1 e 2: ICMS e ISS efetivamente arrecadados em 2022 (soma de estado e municípios de cada UF). IBS: estimativa dos autores para o cenário de migração integral e imediata ao princípio do destino, sem regra de transição, construída a partir de proxy de consumo por UF, na mesma linhagem metodológica de Orair e Gobetti (2019), com receita de referência atualizada para 2022.</p>
             <p>4. Tabela 3 desta página: elaboração própria. ICMS + ISS atual 2025: SICONFI/STN, DCA Anexo I-C. População 2025: IBGE, Estimativas de População (referência 01/07/2025), usada como proxy do critério de destino/consumo. Coeficiente = valor da UF / total nacional &times; 100 em cada coluna; variação = participação populacional menos participação tributária atual. Mesma base de dados do <a href="/estudos/icms-iss-participacao-vs-populacao.html">Estudo 05</a>, com ano-base (2025) mais recente e independente da proxy de consumo de Gobetti e Monteiro usada nas Tabelas 1 e 2.</p>
-            <p>5. Gráfico de dispersão (Tabela 2 vs. Tabela 3): cruza, para cada UF, a variação da Tabela 2 (eixo X) com a variação da Tabela 3 (eixo Y). A correlação é o coeficiente de Pearson entre as duas séries; a concordância de sinal é a proporção de UFs em que os dois cenários apontam na mesma direção (ambos ganho ou ambos perda de participação). Ambas as estatísticas são calculadas no navegador, a partir dos mesmos dados publicados nas Tabelas 1 a 3.</p>
+            <p>5. Gráfico de dispersão (Tabela 2 vs. Tabela 3): cruza, para cada UF, o coeficiente potencial da Tabela 2 (eixo X, receita pós-reforma da UF / receita pós-reforma nacional &times; 100) com a participação populacional da Tabela 3 (eixo Y). A correlação é o coeficiente de Pearson entre as duas séries; a segunda estatística é a proporção de UFs cuja participação populacional fica a menos de 1 ponto percentual do coeficiente potencial estimado por Gobetti e Monteiro. Ambas são calculadas no navegador, a partir dos mesmos dados publicados nas Tabelas 1 a 3.</p>
         </div>
     </div>
 
@@ -546,34 +546,32 @@
     }
 
     function buildCorrelationChart(data, popData) {
-        const totalPre = data.tabela1_static.total_pre;
         const totalPos = data.tabela1_static.total_pos;
-        const varUFByUf = {};
+        const coefPotByUf = {};
         data.tabela1_static.ufs.forEach(u => {
-            const coefAtual = (u.pre / totalPre) * 100;
-            const coefPot   = (u.pos / totalPos) * 100;
-            varUFByUf[u.uf] = coefPot - coefAtual;
+            coefPotByUf[u.uf] = (u.pos / totalPos) * 100;
         });
 
         const points = popData.ufs.map(u => ({
             uf: u.uf,
             nome: NOMES_UF[u.uf],
-            x: varUFByUf[u.uf],
-            y: u.pop_pct - u.tax_pct
+            x: coefPotByUf[u.uf],
+            y: u.pop_pct
         })).filter(p => p.x != null);
 
         const r = pearsonR(points.map(p => p.x), points.map(p => p.y));
-        const sameSign = points.filter(p => Math.sign(p.x) === Math.sign(p.y)).length;
+        const TOLERANCIA_PP = 1;
+        const proximas = points.filter(p => Math.abs(p.x - p.y) < TOLERANCIA_PP).length;
 
         document.getElementById('callout-correlation').innerHTML =
-            `Correlação entre os dois cenários: <span class="corr-stat">r = ${r.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>. ` +
-            `Em <span class="corr-stat">${sameSign} das ${points.length} UFs</span> (${fmtNum(sameSign / points.length * 100, 0)}%), os dois cenários apontam na mesma direção (ambos ganho ou ambos perda de participação) com a migração para o destino.`;
+            `Correlação entre as duas séries: <span class="corr-stat">r = ${r.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>. ` +
+            `Em <span class="corr-stat">${proximas} das ${points.length} UFs</span> (${fmtNum(proximas / points.length * 100, 0)}%), a participação populacional fica a menos de ${TOLERANCIA_PP} ponto percentual do coeficiente potencial estimado por Gobetti e Monteiro.`;
 
         const el = document.getElementById('chart-scatter-compare');
         if (!el || typeof Chart === 'undefined') return;
         if (window.ChartDataLabels) Chart.register(ChartDataLabels);
 
-        const X_MIN = -2, X_MAX = 2, Y_MIN = -4, Y_MAX = 4;
+        const maxVal = Math.ceil(Math.max(...points.map(p => Math.max(p.x, p.y))) * 1.1);
         const regularPoints = points.filter(p => p.uf !== 'ES');
         const esPoint       = points.filter(p => p.uf === 'ES');
         const gridColor = 'rgba(0,0,0,0.07)';
@@ -586,7 +584,7 @@
                     {
                         label: 'Linha de paridade',
                         type: 'line',
-                        data: [{ x: X_MIN, y: X_MIN }, { x: X_MAX, y: X_MAX }],
+                        data: [{ x: 0, y: 0 }, { x: maxVal, y: maxVal }],
                         borderColor: 'rgba(0,0,0,0.35)',
                         borderWidth: 1.5,
                         borderDash: [6, 4],
@@ -641,21 +639,21 @@
                         callbacks: {
                             label: ctx => {
                                 const d = ctx.raw;
-                                return `${d.nome || d.uf}: Gobetti/Monteiro ${fmtPct(d.x)} · população ${fmtPct(d.y)}`;
+                                return `${d.nome || d.uf}: Gobetti/Monteiro ${fmtNum(d.x)}% · população ${fmtNum(d.y)}%`;
                             }
                         }
                     }
                 },
                 scales: {
                     x: {
-                        min: X_MIN, max: X_MAX,
-                        title: { display: true, text: 'Variação Tabela 2, Gobetti/Monteiro (p.p.)', color: textColor, font: { size: 11 } },
+                        min: 0, max: maxVal,
+                        title: { display: true, text: 'Coeficiente potencial, Tabela 2, Gobetti/Monteiro (%)', color: textColor, font: { size: 11 } },
                         ticks: { color: textColor, callback: v => v + '%' },
                         grid: { color: gridColor }
                     },
                     y: {
-                        min: Y_MIN, max: Y_MAX,
-                        title: { display: true, text: 'Variação populacional, Tabela 3 (p.p.)', color: textColor, font: { size: 11 } },
+                        min: 0, max: maxVal,
+                        title: { display: true, text: 'Participação populacional, Tabela 3 (%)', color: textColor, font: { size: 11 } },
                         ticks: { color: textColor, callback: v => v + '%' },
                         grid: { color: gridColor }
                     }
