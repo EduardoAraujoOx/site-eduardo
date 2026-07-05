@@ -281,14 +281,15 @@
                     <a href="/estudos/ibs-projecao-arrecadacao-es.html">Estudo 03</a>,
                     <a href="/estudos/icms-iss-participacao-vs-populacao.html">Estudo 05</a> e
                     <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> desta página, o que
-                    garante consistência entre os estudos. A Tabela 3 desta página soma uma segunda fonte,
-                    independente da primeira: a participação populacional de cada UF em 2025 (IBGE), comparada
-                    à arrecadação atual de ICMS+ISS (SICONFI/STN). As duas fontes chegam a conclusões
-                    qualitativamente semelhantes sobre quem ganha e quem perde com a migração
-                    origem&rarr;destino, mas os valores em reais e os coeficientes percentuais de cada UF não
-                    são diretamente comparáveis entre si, pois usam anos-base e metodologias de proxy
-                    diferentes. O gráfico de dispersão ao final desta página mede o quanto essas fontes
-                    concordam entre si.
+                    garante consistência entre os estudos. A Tabela 3 desta página soma uma segunda proxy
+                    de destino, independente da de Gobetti e Monteiro: a participação populacional de cada
+                    UF em 2025 (IBGE). Essa proxy é comparada ao mesmo coeficiente atual da Tabela 2, e não
+                    a uma medida independente de 2025, de modo que a diferença entre as Tabelas 2 e 3 isole
+                    apenas o efeito de qual proxy de destino se usa &mdash; consumo estimado por Gobetti e
+                    Monteiro, base 2022, ou população, base 2025 &mdash;, e não uma diferença no ano-base do
+                    lado "atual". As duas abordagens chegam a conclusões qualitativamente semelhantes sobre
+                    quem ganha e quem perde com a migração origem&rarr;destino. O gráfico de dispersão ao
+                    final desta página mede o quanto elas concordam entre si.
                 </p>
             </div>
         </details>
@@ -354,15 +355,17 @@
 
         <span class="section-label">Tabela 3 &middot; Cenário alternativo: participação populacional como proxy do destino (2025)</span>
         <div class="callout">
-            Uma segunda leitura, independente da de Gobetti e Monteiro. Em vez de estimar o consumo por UF
-            (Tabela 1, base 2022), esta tabela usa a <strong>participação de cada UF na população
-            brasileira</strong> (IBGE, 2025) como proxy direta do destino. Afinal, é o próprio critério
-            populacional que passou a orientar parte do rateio da cota-parte municipal do IBS estadual.
-            Essa participação populacional é comparada com a participação atual de cada UF no total nacional
-            de ICMS+ISS efetivamente arrecadado em 2025 (SICONFI/STN). É um cenário mais simples e com base
-            mais recente que a Tabela 1, mas que aponta na mesma direção: UFs mais populosas relativamente à
-            sua arrecadação atual tendem a ganhar peso com uma reforma orientada ao destino e ao consumo. Os
-            mesmos dados, com gráficos de dispersão e barras divergentes, estão detalhados no
+            Uma segunda leitura da mesma pergunta da Tabela 2, trocando apenas a proxy de destino usada. Em
+            vez de estimar o consumo por UF (Tabela 1, base 2022), esta tabela usa a <strong>participação
+            de cada UF na população brasileira</strong> (IBGE, 2025) como proxy direta do destino. Afinal, é
+            o próprio critério populacional que passou a orientar parte do rateio da cota-parte municipal do
+            IBS estadual. Essa participação populacional é comparada ao mesmo <strong>coeficiente atual da
+            Tabela 2</strong> (Gobetti e Monteiro, base 2022) &mdash; não a uma medida independente de 2025
+            &mdash;, para que a única diferença entre as duas tabelas seja a proxy de destino, não o
+            ano-base do lado "atual". É um cenário mais simples que a Tabela 1, mas que aponta na mesma
+            direção: UFs mais populosas relativamente à sua arrecadação atual tendem a ganhar peso com uma
+            reforma orientada ao destino e ao consumo. Os dados de população, com gráficos de dispersão e
+            barras divergentes contra a arrecadação de 2025, estão detalhados no
             <a href="/estudos/icms-iss-participacao-vs-populacao.html">Estudo 05</a>.
         </div>
         <div class="table-wrap">
@@ -370,13 +373,14 @@
                 <thead>
                     <tr>
                         <th class="th-left">UF</th>
-                        <th>ICMS + ISS atual 2025 (%)</th>
+                        <th>Coeficiente atual, Tabela 2 (%)</th>
                         <th>População 2025 (%, proxy destino)</th>
                         <th>Variação (p.p.)</th>
+                        <th>Variação relativa (%)</th>
                     </tr>
                 </thead>
                 <tbody id="tbody-pop">
-                    <tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
                 </tbody>
                 <tfoot id="tfoot-pop"></tfoot>
             </table>
@@ -472,15 +476,53 @@
             </table>
         </div>
 
+        <span class="section-label">Tabela 6 &middot; Cenários do coeficiente de participação por esfera: neutro, intermediário e de destino pleno (%)</span>
+        <div class="callout">
+            Um quinto exercício, que reorganiza as duas colunas da Tabela 5 em três cenários explícitos para
+            o coeficiente de participação de cada UF, por esfera. O <strong>cenário neutro</strong> repete,
+            sem qualquer alteração, a coluna "Sistemática vigente" da Tabela 5: o coeficiente de cada UF sob
+            o ICMS/ISS vigente em 2025. O <strong>cenário de destino pleno</strong> repete a coluna "Regime
+            do IBS projetado" da mesma tabela: o coeficiente que resultaria da migração integral e imediata
+            ao princípio do destino, na estimativa de Gobetti e Monteiro &mdash; um cenário que não é bom
+            nem ruim em si para todas as UFs por igual, e sim favorável às consumidoras líquidas e
+            desfavorável às produtoras líquidas. O <strong>cenário intermediário</strong> é a média
+            aritmética simples entre os dois, um ponto de referência estilizado para estimativas de
+            arrecadação num horizonte de transição &mdash; não uma projeção literal do cronograma de 50 anos
+            de transição do ICMS/ISS para o IBS previsto na EC 132/2023 (art. 128 do ADCT), que muda o peso
+            relativo de origem e destino ano a ano até 2078. No Espírito Santo, por exemplo, o coeficiente
+            estadual é de 1,6405% no cenário neutro, 1,1507% no de destino pleno, e 1,3956% no intermediário.
+        </div>
+        <div class="table-wrap">
+            <table class="data-table" id="table-cenarios">
+                <thead>
+                    <tr>
+                        <th class="th-left" rowspan="2">UF</th>
+                        <th colspan="3">Esfera estadual</th>
+                        <th class="col-divider" colspan="3">Esfera municipal</th>
+                    </tr>
+                    <tr>
+                        <th>Cenário neutro (%)</th><th>Cenário intermediário (%)</th><th>Cenário de destino pleno (%)</th>
+                        <th class="col-divider">Cenário neutro (%)</th><th>Cenário intermediário (%)</th><th>Cenário de destino pleno (%)</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-cenarios">
+                    <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+                <tfoot id="tfoot-cenarios"></tfoot>
+            </table>
+        </div>
+
         <div class="footnotes">
             <p><strong>Fontes e notas metodológicas:</strong></p>
             <p>1. Tabela 1 desta página: reprodução integral, sem qualquer alteração de valores, da Tabela 1 de Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura n. 60, Nota de Conjuntura 18. Ipea, 28 ago. 2023. Disponível em: <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">repositorio.ipea.gov.br</a>. O PIBpc médio por faixa de renda e o PIBpc médio nacional (linha "Total") reproduzem os valores publicados pelos autores, ponderados pela população de cada UF; as demais colunas são recalculadas a partir dos valores individuais de cada UF.</p>
             <p>2. Tabela 2 desta página: elaboração própria, derivada diretamente dos valores em R$ milhões da Tabela 1, sem qualquer dado adicional além do publicado pelos autores. Coeficiente atual = receita pré-reforma da UF / receita pré-reforma nacional &times; 100; coeficiente potencial = receita pós-reforma da UF / receita pós-reforma nacional &times; 100.</p>
             <p>3. Base de dados das Tabelas 1 e 2: ICMS e ISS efetivamente arrecadados em 2022 (soma de estado e municípios de cada UF). IBS: estimativa dos autores para o cenário de migração integral e imediata ao princípio do destino, sem regra de transição, construída a partir de proxy de consumo por UF, na mesma linhagem metodológica de Orair e Gobetti (2019), com receita de referência atualizada para 2022.</p>
-            <p>4. Tabela 3 desta página: elaboração própria. ICMS + ISS atual 2025: SICONFI/STN, DCA Anexo I-C. População 2025: IBGE, Estimativas de População (referência 01/07/2025), usada como proxy do critério de destino/consumo. Coeficiente = valor da UF / total nacional &times; 100 em cada coluna; variação = participação populacional menos participação tributária atual. Mesma base de dados do <a href="/estudos/icms-iss-participacao-vs-populacao.html">Estudo 05</a>, com ano-base (2025) mais recente e independente da proxy de consumo de Gobetti e Monteiro usada nas Tabelas 1 e 2.</p>
+            <p>4. Tabela 3 desta página: elaboração própria. Coeficiente atual: idêntico ao coeficiente atual da Tabela 2 desta página (nota 2), derivado da Tabela 1 de Gobetti e Monteiro, base 2022 &mdash; não uma medida independente de 2025, para isolar o efeito de qual proxy de destino se usa em cada tabela. População 2025: IBGE, Estimativas de População (referência 01/07/2025), mesma base do <a href="/estudos/icms-iss-participacao-vs-populacao.html">Estudo 05</a>, usada aqui como proxy alternativa do critério de destino/consumo. Variação (p.p.) = participação populacional &minus; coeficiente atual; variação relativa (%) = variação (p.p.) / coeficiente atual &times; 100, na mesma lógica da Tabela 2.</p>
             <p>5. Gráfico de dispersão (Tabela 2 vs. Tabela 3): cruza, para cada UF, o coeficiente potencial da Tabela 2 (eixo X, receita pós-reforma da UF / receita pós-reforma nacional &times; 100) com a participação populacional da Tabela 3 (eixo Y). A correlação é o coeficiente de Pearson entre as duas séries; a segunda estatística é a proporção de UFs cuja participação populacional fica a menos de 1 ponto percentual do coeficiente potencial estimado por Gobetti e Monteiro. Ambas são calculadas no navegador, a partir dos mesmos dados publicados nas Tabelas 1 a 3.</p>
             <p>6. Tabela 4 desta página: elaboração própria, sem qualquer dado adicional além do publicado por Gobetti e Monteiro (Tabela 2) e do SICONFI/STN, DCA Anexo I-C 2025 (mesma base da Tabela 3). Peso do estado = 0,75 &times; ICMS bruto da UF / (ICMS bruto da UF + ISS da UF); peso do município = (0,25 &times; ICMS bruto da UF + ISS da UF) / (ICMS bruto da UF + ISS da UF), refletindo a cota-parte constitucional de 25% do ICMS aos municípios (art. 158, IV, CF/88). Coeficiente potencial estadual = coeficiente potencial da Tabela 2 &times; peso do estado; coeficiente potencial municipal = coeficiente potencial da Tabela 2 &times; peso do município. É uma aproximação: pressupõe que a proporção estado/município de cada UF em 2025 se mantém após a migração para o IBS, algo que a própria reforma pode alterar (por exemplo, ao mudar os critérios de rateio da cota-parte municipal).</p>
             <p>7. Tabela 5 desta página: elaboração própria, na mesma lógica de denominador único do Coeficiente de Participação de Transição (CPT) usado no <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a>. Total nacional agregado (SICONFI/STN, 2025) = soma do ICMS bruto de todas as UFs + soma do ISS de todos os municípios. Coeficiente estadual sob a sistemática vigente = ICMS líquido da UF (75% do ICMS bruto) / total nacional agregado &times; 100; coeficiente municipal sob a sistemática vigente = receita municipal da UF (25% do ICMS bruto + ISS) / total nacional agregado &times; 100 &mdash; ambos contra o mesmo denominador, e não contra totais separados por esfera; por isso cada um, somado entre as 27 UFs, não fecha em 100% sozinho. Coeficiente projetado sob o regime do IBS (bruto) = coeficiente sob a sistemática vigente &times; (1 + variação relativa da Tabela 2); em seguida, todos os coeficientes projetados (estaduais e municipais, das 27 UFs) são normalizados por um único fator de escala (100 dividido pela soma de todos eles) para que o conjunto volte a somar 100%. Pressupõe que a variação relativa estimada por Gobetti e Monteiro para a UF como um todo se aplica igualmente às duas esferas, o que é uma simplificação: a reforma pode afetar estado e município de forma desigual dentro da mesma UF.</p>
+            <p>8. Tabela 6 desta página: elaboração própria, a partir das mesmas colunas da Tabela 5 (nota 7), sem qualquer dado adicional. Cenário neutro = coluna "Sistemática vigente" da Tabela 5; cenário de destino pleno = coluna "Regime do IBS projetado" da Tabela 5; cenário intermediário = média aritmética simples entre os dois, (neutro + pleno) &divide; 2, por esfera. É um ponto de referência estilizado para estimativas de arrecadação, não uma projeção do cronograma legal de transição de 50 anos entre ICMS/ISS e IBS (EC 132/2023, art. 128 do ADCT).</p>
+            <p>9. Colunas percentuais das Tabelas 2, 3, 5 e 6 são exibidas com quatro casas decimais, e não uma ou duas como nas demais tabelas desta página, porque alimentam estimativas de arrecadação em estudos subsequentes, nos quais o arredondamento em casas decimais menores se acumularia UF a UF. Os totais de cada coluna são recalculados a partir dos valores individuais de cada UF com essa mesma precisão, não arredondados a partir de um total previamente publicado.</p>
         </div>
     </div>
 
@@ -565,44 +607,59 @@
             const isES = r.uf === 'ES';
             return `<tr${isES ? ' class="row-es"' : ''}>
                 <td class="td-uf">${r.uf} <small>${r.nome}</small></td>
-                <td>${fmtNum(r.coefAtual)}</td>
-                <td>${fmtNum(r.coefPot)}</td>
-                <td class="${clsPct(r.variacao)}">${fmtPct(r.variacao)}</td>
-                <td class="${clsPct(r.variacaoRel)}">${fmtPct(r.variacaoRel)}</td>
+                <td>${fmtNum(r.coefAtual, 4)}</td>
+                <td>${fmtNum(r.coefPot, 4)}</td>
+                <td class="${clsPct(r.variacao)}">${fmtPct(r.variacao, 4)}</td>
+                <td class="${clsPct(r.variacaoRel)}">${fmtPct(r.variacaoRel, 4)}</td>
             </tr>`;
         }).join('');
 
         document.getElementById('tfoot-coef').innerHTML = `<tr>
             <td class="td-uf"><strong>Total</strong> <small>27 UFs</small></td>
-            <td>100,00</td>
-            <td>100,00</td>
-            <td>${fmtPct(0)}</td>
-            <td>${fmtPct(0)}</td>
+            <td>${fmtNum(100, 4)}</td>
+            <td>${fmtNum(100, 4)}</td>
+            <td>${fmtPct(0, 4)}</td>
+            <td>${fmtPct(0, 4)}</td>
         </tr>`;
     }
 
-    function buildPopTable(popData) {
-        const rows = popData.ufs.map(u => ({
-            uf: u.uf, nome: NOMES_UF[u.uf],
-            taxPct: u.tax_pct, popPct: u.pop_pct, variacao: u.pop_pct - u.tax_pct
-        })).sort((a, b) => a.uf.localeCompare(b.uf));
+    function buildPopTable(data, popData) {
+        const totalPre = data.tabela1_static.total_pre;
+        const coefAtualByUf = {};
+        data.tabela1_static.ufs.forEach(u => {
+            coefAtualByUf[u.uf] = (u.pre / totalPre) * 100;
+        });
+
+        const rows = popData.ufs.map(u => {
+            const coefAtual = coefAtualByUf[u.uf];
+            const variacao  = u.pop_pct - coefAtual;
+            return {
+                uf: u.uf, nome: NOMES_UF[u.uf],
+                coefAtual, popPct: u.pop_pct, variacao,
+                variacaoRel: (variacao / coefAtual) * 100
+            };
+        }).sort((a, b) => a.uf.localeCompare(b.uf));
 
         const tbody = document.getElementById('tbody-pop');
         tbody.innerHTML = rows.map(r => {
             const isES = r.uf === 'ES';
             return `<tr${isES ? ' class="row-es"' : ''}>
                 <td class="td-uf">${r.uf} <small>${r.nome}</small></td>
-                <td>${fmtNum(r.taxPct)}</td>
-                <td>${fmtNum(r.popPct)}</td>
-                <td class="${clsPct(r.variacao)}">${fmtPct(r.variacao)}</td>
+                <td>${fmtNum(r.coefAtual, 4)}</td>
+                <td>${fmtNum(r.popPct, 4)}</td>
+                <td class="${clsPct(r.variacao)}">${fmtPct(r.variacao, 4)}</td>
+                <td class="${clsPct(r.variacaoRel)}">${fmtPct(r.variacaoRel, 4)}</td>
             </tr>`;
         }).join('');
 
+        const somaCoefAtual = rows.reduce((s, r) => s + r.coefAtual, 0);
+        const somaPopPct    = rows.reduce((s, r) => s + r.popPct, 0);
         document.getElementById('tfoot-pop').innerHTML = `<tr>
             <td class="td-uf"><strong>Total</strong> <small>27 UFs</small></td>
-            <td>100,00</td>
-            <td>100,00</td>
-            <td>${fmtPct(0)}</td>
+            <td>${fmtNum(somaCoefAtual, 4)}</td>
+            <td>${fmtNum(somaPopPct, 4)}</td>
+            <td>${fmtPct(0, 4)}</td>
+            <td>${fmtPct(0, 4)}</td>
         </tr>`;
     }
 
@@ -661,9 +718,10 @@
     // coeficientes estadual e municipal — não dois totais normalizados separadamente por esfera. Por isso,
     // a soma dos coeficientes estaduais de todas as UFs não fecha em 100% sozinha (fica perto do peso
     // nacional do ICMS líquido no total ICMS+ISS); apenas a soma de estado + município de todas as UFs
-    // fecha em 100%. O regime do IBS projetado aplica a variação relativa da Tabela 2 sobre esses
-    // coeficientes e normaliza pelo mesmo critério (um único fator de escala), preservando essa mesma regra.
-    function buildTable5(data, popData) {
+    // fecha em 100%. O regime do IBS projetado (aqui chamado de "pleno") aplica a variação relativa da
+    // Tabela 2 sobre esses coeficientes e normaliza pelo mesmo critério (um único fator de escala),
+    // preservando essa mesma regra. Compartilhado pelas Tabelas 5 e 6.
+    function computeEsferaScenarios(data, popData) {
         const totalPre = data.tabela1_static.total_pre;
         const totalPos = data.tabela1_static.total_pos;
         const varRelByUf = {};
@@ -676,50 +734,93 @@
         const totalBR = popData.ufs.reduce((s, u) => s + u.icms + u.iss, 0);
 
         const rows = popData.ufs.map(u => {
-            const origemEstado    = (u.icms * 0.75) / totalBR * 100;
-            const origemMunicipio = (u.icms * 0.25 + u.iss) / totalBR * 100;
+            const neutroEstado    = (u.icms * 0.75) / totalBR * 100;
+            const neutroMunicipio = (u.icms * 0.25 + u.iss) / totalBR * 100;
             const varRel = varRelByUf[u.uf];
             return {
                 uf: u.uf, nome: NOMES_UF[u.uf], varRel: varRel * 100,
-                origemEstado, origemMunicipio,
-                brutoEstado: origemEstado * (1 + varRel),
-                brutoMunicipio: origemMunicipio * (1 + varRel)
+                neutroEstado, neutroMunicipio,
+                brutoEstado: neutroEstado * (1 + varRel),
+                brutoMunicipio: neutroMunicipio * (1 + varRel)
             };
         });
 
         const somaBruto = rows.reduce((s, r) => s + r.brutoEstado + r.brutoMunicipio, 0);
         const escala = 100 / somaBruto;
 
-        const finalRows = rows.map(r => ({
-            ...r,
-            destinoEstado:    r.brutoEstado    * escala,
-            destinoMunicipio: r.brutoMunicipio * escala
+        return rows.map(r => ({
+            uf: r.uf, nome: r.nome, varRel: r.varRel,
+            neutroEstado: r.neutroEstado,
+            neutroMunicipio: r.neutroMunicipio,
+            plenoEstado:    r.brutoEstado    * escala,
+            plenoMunicipio: r.brutoMunicipio * escala
         })).sort((a, b) => a.uf.localeCompare(b.uf));
+    }
 
+    function buildTable5(scenarios) {
         const tbody = document.getElementById('tbody-origem-destino');
-        tbody.innerHTML = finalRows.map(r => {
+        tbody.innerHTML = scenarios.map(r => {
             const isES = r.uf === 'ES';
             return `<tr${isES ? ' class="row-es"' : ''}>
                 <td class="td-uf">${r.uf} <small>${r.nome}</small></td>
-                <td class="${clsPct(r.varRel)}">${fmtPct(r.varRel)}</td>
-                <td>${fmtNum(r.origemEstado)}</td>
-                <td>${fmtNum(r.destinoEstado)}</td>
-                <td class="col-divider">${fmtNum(r.origemMunicipio)}</td>
-                <td>${fmtNum(r.destinoMunicipio)}</td>
+                <td class="${clsPct(r.varRel)}">${fmtPct(r.varRel, 4)}</td>
+                <td>${fmtNum(r.neutroEstado, 4)}</td>
+                <td>${fmtNum(r.plenoEstado, 4)}</td>
+                <td class="col-divider">${fmtNum(r.neutroMunicipio, 4)}</td>
+                <td>${fmtNum(r.plenoMunicipio, 4)}</td>
             </tr>`;
         }).join('');
 
-        const somaOrigemEstado    = rows.reduce((s, r) => s + r.origemEstado, 0);
-        const somaOrigemMunicipio = rows.reduce((s, r) => s + r.origemMunicipio, 0);
-        const somaDestinoEstado    = finalRows.reduce((s, r) => s + r.destinoEstado, 0);
-        const somaDestinoMunicipio = finalRows.reduce((s, r) => s + r.destinoMunicipio, 0);
+        const somaNeutroEstado    = scenarios.reduce((s, r) => s + r.neutroEstado, 0);
+        const somaNeutroMunicipio = scenarios.reduce((s, r) => s + r.neutroMunicipio, 0);
+        const somaPlenoEstado     = scenarios.reduce((s, r) => s + r.plenoEstado, 0);
+        const somaPlenoMunicipio  = scenarios.reduce((s, r) => s + r.plenoMunicipio, 0);
         document.getElementById('tfoot-origem-destino').innerHTML = `<tr>
             <td class="td-uf"><strong>Total</strong> <small>27 UFs</small></td>
             <td>&mdash;</td>
-            <td>${fmtNum(somaOrigemEstado)}</td>
-            <td>${fmtNum(somaDestinoEstado)}</td>
-            <td class="col-divider">${fmtNum(somaOrigemMunicipio)}</td>
-            <td>${fmtNum(somaDestinoMunicipio)}</td>
+            <td>${fmtNum(somaNeutroEstado, 4)}</td>
+            <td>${fmtNum(somaPlenoEstado, 4)}</td>
+            <td class="col-divider">${fmtNum(somaNeutroMunicipio, 4)}</td>
+            <td>${fmtNum(somaPlenoMunicipio, 4)}</td>
+        </tr>`;
+    }
+
+    // Três cenários por esfera, a partir das mesmas colunas da Tabela 5: neutro (sistemática vigente),
+    // destino pleno (regime do IBS projetado) e intermediário (média aritmética simples entre os dois).
+    function buildTable6(scenarios) {
+        const rows = scenarios.map(r => ({
+            uf: r.uf, nome: r.nome,
+            neutroEstado: r.neutroEstado,
+            intermediarioEstado: (r.neutroEstado + r.plenoEstado) / 2,
+            plenoEstado: r.plenoEstado,
+            neutroMunicipio: r.neutroMunicipio,
+            intermediarioMunicipio: (r.neutroMunicipio + r.plenoMunicipio) / 2,
+            plenoMunicipio: r.plenoMunicipio
+        }));
+
+        const tbody = document.getElementById('tbody-cenarios');
+        tbody.innerHTML = rows.map(r => {
+            const isES = r.uf === 'ES';
+            return `<tr${isES ? ' class="row-es"' : ''}>
+                <td class="td-uf">${r.uf} <small>${r.nome}</small></td>
+                <td>${fmtNum(r.neutroEstado, 4)}</td>
+                <td>${fmtNum(r.intermediarioEstado, 4)}</td>
+                <td>${fmtNum(r.plenoEstado, 4)}</td>
+                <td class="col-divider">${fmtNum(r.neutroMunicipio, 4)}</td>
+                <td>${fmtNum(r.intermediarioMunicipio, 4)}</td>
+                <td>${fmtNum(r.plenoMunicipio, 4)}</td>
+            </tr>`;
+        }).join('');
+
+        const soma = key => rows.reduce((s, r) => s + r[key], 0);
+        document.getElementById('tfoot-cenarios').innerHTML = `<tr>
+            <td class="td-uf"><strong>Total</strong> <small>27 UFs</small></td>
+            <td>${fmtNum(soma('neutroEstado'), 4)}</td>
+            <td>${fmtNum(soma('intermediarioEstado'), 4)}</td>
+            <td>${fmtNum(soma('plenoEstado'), 4)}</td>
+            <td class="col-divider">${fmtNum(soma('neutroMunicipio'), 4)}</td>
+            <td>${fmtNum(soma('intermediarioMunicipio'), 4)}</td>
+            <td>${fmtNum(soma('plenoMunicipio'), 4)}</td>
         </tr>`;
     }
 
@@ -865,10 +966,12 @@
 
             buildTable3(data);
             buildCoefTable(data);
-            buildPopTable(popData);
+            buildPopTable(data, popData);
             buildCorrelationChart(data, popData);
             buildTable4(data, popData);
-            buildTable5(data, popData);
+            const scenarios = computeEsferaScenarios(data, popData);
+            buildTable5(scenarios);
+            buildTable6(scenarios);
 
             statusEl.innerHTML =
                 '<span class="status-dot" style="background:#22c55e"></span> ' +
