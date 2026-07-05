@@ -325,7 +325,10 @@
             fatia atual (pré-reforma) e qual seria a fatia potencial (pós-reforma) de cada UF no bolo
             agregado de estado e municípios. Coeficiente atual = receita pré-reforma da UF dividida pelo
             total nacional pré-reforma; coeficiente potencial = receita pós-reforma da UF dividida pelo total
-            nacional pós-reforma. A variação é a diferença entre os dois, em pontos percentuais.
+            nacional pós-reforma. A variação em pontos percentuais é a diferença simples entre os dois; a
+            variação relativa mostra essa mesma queda ou alta em proporção ao coeficiente atual da UF (no
+            Espírito Santo, por exemplo, a queda de 0,7 p.p. sobre um coeficiente atual de 2,3% equivale a
+            uma perda relativa de cerca de 30% de participação).
         </div>
         <div class="table-wrap">
             <table class="data-table" id="table-coef">
@@ -335,10 +338,11 @@
                         <th>Coeficiente atual (%)</th>
                         <th>Coeficiente potencial (%)</th>
                         <th>Variação (p.p.)</th>
+                        <th>Variação relativa (%)</th>
                     </tr>
                 </thead>
                 <tbody id="tbody-coef">
-                    <tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
                 </tbody>
                 <tfoot id="tfoot-coef"></tfoot>
             </table>
@@ -479,7 +483,8 @@
         const rows = data.tabela1_static.ufs.map(u => {
             const coefAtual = (u.pre / totalPre) * 100;
             const coefPot   = (u.pos / totalPos) * 100;
-            return { uf: u.uf, nome: NOMES_UF[u.uf], coefAtual, coefPot, variacao: coefPot - coefAtual };
+            const variacao  = coefPot - coefAtual;
+            return { uf: u.uf, nome: NOMES_UF[u.uf], coefAtual, coefPot, variacao, variacaoRel: (variacao / coefAtual) * 100 };
         }).sort((a, b) => a.uf.localeCompare(b.uf));
 
         const tbody = document.getElementById('tbody-coef');
@@ -490,6 +495,7 @@
                 <td>${fmtNum(r.coefAtual)}</td>
                 <td>${fmtNum(r.coefPot)}</td>
                 <td class="${clsPct(r.variacao)}">${fmtPct(r.variacao)}</td>
+                <td class="${clsPct(r.variacaoRel)}">${fmtPct(r.variacaoRel)}</td>
             </tr>`;
         }).join('');
 
@@ -497,6 +503,7 @@
             <td class="td-uf"><strong>Total</strong> <small>27 UFs</small></td>
             <td>100,00</td>
             <td>100,00</td>
+            <td>${fmtPct(0)}</td>
             <td>${fmtPct(0)}</td>
         </tr>`;
     }
@@ -566,7 +573,7 @@
         if (!el || typeof Chart === 'undefined') return;
         if (window.ChartDataLabels) Chart.register(ChartDataLabels);
 
-        const maxAbs = Math.ceil(Math.max(...points.map(p => Math.max(Math.abs(p.x), Math.abs(p.y)))) * 1.15);
+        const X_MIN = -2, X_MAX = 2, Y_MIN = -4, Y_MAX = 4;
         const regularPoints = points.filter(p => p.uf !== 'ES');
         const esPoint       = points.filter(p => p.uf === 'ES');
         const gridColor = 'rgba(0,0,0,0.07)';
@@ -579,7 +586,7 @@
                     {
                         label: 'Linha de paridade',
                         type: 'line',
-                        data: [{ x: -maxAbs, y: -maxAbs }, { x: maxAbs, y: maxAbs }],
+                        data: [{ x: X_MIN, y: X_MIN }, { x: X_MAX, y: X_MAX }],
                         borderColor: 'rgba(0,0,0,0.35)',
                         borderWidth: 1.5,
                         borderDash: [6, 4],
@@ -641,13 +648,13 @@
                 },
                 scales: {
                     x: {
-                        min: -maxAbs, max: maxAbs,
+                        min: X_MIN, max: X_MAX,
                         title: { display: true, text: 'Variação Tabela 2, Gobetti/Monteiro (p.p.)', color: textColor, font: { size: 11 } },
                         ticks: { color: textColor, callback: v => v + '%' },
                         grid: { color: gridColor }
                     },
                     y: {
-                        min: -maxAbs, max: maxAbs,
+                        min: Y_MIN, max: Y_MAX,
                         title: { display: true, text: 'Variação populacional, Tabela 3 (p.p.)', color: textColor, font: { size: 11 } },
                         ticks: { color: textColor, callback: v => v + '%' },
                         grid: { color: gridColor }
