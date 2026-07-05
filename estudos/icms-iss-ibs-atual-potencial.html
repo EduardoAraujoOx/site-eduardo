@@ -401,6 +401,35 @@
             Calculando correlação entre os dois cenários...
         </div>
 
+        <span class="section-label">Tabela 4 &middot; Repartição do coeficiente potencial entre estado e municípios (%)</span>
+        <div class="callout">
+            A Tabela 2 estima o coeficiente potencial de cada UF como um todo (estado mais municípios), pois
+            é assim que Gobetti e Monteiro publicam a Tabela 1 original, sem segregação por esfera. Para
+            aproximar como esse coeficiente se dividiria entre as duas esferas, esta tabela aplica a cada UF
+            a mesma proporção observada em sua arrecadação de ICMS e ISS em 2025 (SICONFI/STN): 75% do ICMS
+            bruto fica com o estado (art. 158, IV, CF/88), e os 25% restantes (cota-parte) somados ao ISS
+            integral ficam com os municípios. O coeficiente potencial estadual e o municipal de cada UF são
+            o coeficiente potencial total multiplicado pela participação de cada esfera nesse bolo de 2025 e,
+            por construção, sempre somam de volta o valor total da Tabela 2.
+        </div>
+        <div class="table-wrap">
+            <table class="data-table" id="table-esfera">
+                <thead>
+                    <tr>
+                        <th class="th-left">UF</th>
+                        <th>Coeficiente potencial total, Tabela 2 (%)</th>
+                        <th>Peso do estado no ICMS+ISS 2025 (%)</th>
+                        <th>Coeficiente potencial estadual (%)</th>
+                        <th>Coeficiente potencial municipal (%)</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-esfera">
+                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+                <tfoot id="tfoot-esfera"></tfoot>
+            </table>
+        </div>
+
         <div class="footnotes">
             <p><strong>Fontes e notas metodológicas:</strong></p>
             <p>1. Tabela 1 desta página: reprodução integral, sem qualquer alteração de valores, da Tabela 1 de Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura n. 60, Nota de Conjuntura 18. Ipea, 28 ago. 2023. Disponível em: <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">repositorio.ipea.gov.br</a>. O PIBpc médio por faixa de renda e o PIBpc médio nacional (linha "Total") reproduzem os valores publicados pelos autores, ponderados pela população de cada UF; as demais colunas são recalculadas a partir dos valores individuais de cada UF.</p>
@@ -408,6 +437,7 @@
             <p>3. Base de dados das Tabelas 1 e 2: ICMS e ISS efetivamente arrecadados em 2022 (soma de estado e municípios de cada UF). IBS: estimativa dos autores para o cenário de migração integral e imediata ao princípio do destino, sem regra de transição, construída a partir de proxy de consumo por UF, na mesma linhagem metodológica de Orair e Gobetti (2019), com receita de referência atualizada para 2022.</p>
             <p>4. Tabela 3 desta página: elaboração própria. ICMS + ISS atual 2025: SICONFI/STN, DCA Anexo I-C. População 2025: IBGE, Estimativas de População (referência 01/07/2025), usada como proxy do critério de destino/consumo. Coeficiente = valor da UF / total nacional &times; 100 em cada coluna; variação = participação populacional menos participação tributária atual. Mesma base de dados do <a href="/estudos/icms-iss-participacao-vs-populacao.html">Estudo 05</a>, com ano-base (2025) mais recente e independente da proxy de consumo de Gobetti e Monteiro usada nas Tabelas 1 e 2.</p>
             <p>5. Gráfico de dispersão (Tabela 2 vs. Tabela 3): cruza, para cada UF, o coeficiente potencial da Tabela 2 (eixo X, receita pós-reforma da UF / receita pós-reforma nacional &times; 100) com a participação populacional da Tabela 3 (eixo Y). A correlação é o coeficiente de Pearson entre as duas séries; a segunda estatística é a proporção de UFs cuja participação populacional fica a menos de 1 ponto percentual do coeficiente potencial estimado por Gobetti e Monteiro. Ambas são calculadas no navegador, a partir dos mesmos dados publicados nas Tabelas 1 a 3.</p>
+            <p>6. Tabela 4 desta página: elaboração própria, sem qualquer dado adicional além do publicado por Gobetti e Monteiro (Tabela 2) e do SICONFI/STN, DCA Anexo I-C 2025 (mesma base da Tabela 3). Peso do estado = 0,75 &times; ICMS bruto da UF / (ICMS bruto da UF + ISS da UF); peso do município = (0,25 &times; ICMS bruto da UF + ISS da UF) / (ICMS bruto da UF + ISS da UF), refletindo a cota-parte constitucional de 25% do ICMS aos municípios (art. 158, IV, CF/88). Coeficiente potencial estadual = coeficiente potencial da Tabela 2 &times; peso do estado; coeficiente potencial municipal = coeficiente potencial da Tabela 2 &times; peso do município. É uma aproximação: pressupõe que a proporção estado/município de cada UF em 2025 se mantém após a migração para o IBS, algo que a própria reforma pode alterar (por exemplo, ao mudar os critérios de rateio da cota-parte municipal).</p>
         </div>
     </div>
 
@@ -533,6 +563,56 @@
         </tr>`;
     }
 
+    // Repartição estado/município do coeficiente potencial: usa a cota-parte constitucional do ICMS
+    // (75% estado / 25% município, art. 158, IV, CF/88) aplicada ao ICMS bruto e ISS de 2025 (SICONFI/STN)
+    // para estimar, em cada UF, que fração do coeficiente potencial (Tabela 2) cabe a cada esfera.
+    function buildTable4(data, popData) {
+        const totalPos = data.tabela1_static.total_pos;
+        const coefPotByUf = {};
+        data.tabela1_static.ufs.forEach(u => {
+            coefPotByUf[u.uf] = (u.pos / totalPos) * 100;
+        });
+
+        const rows = popData.ufs.map(u => {
+            const coefPot     = coefPotByUf[u.uf];
+            const icmsLiquido = u.icms * 0.75;
+            const cotaParte   = u.icms * 0.25;
+            const pesoEstado  = icmsLiquido / (u.icms + u.iss);
+            const pesoMun     = (cotaParte + u.iss) / (u.icms + u.iss);
+            return {
+                uf: u.uf, nome: NOMES_UF[u.uf], coefPot,
+                pesoEstado: pesoEstado * 100,
+                coefEstado: coefPot * pesoEstado,
+                coefMun: coefPot * pesoMun
+            };
+        }).sort((a, b) => a.uf.localeCompare(b.uf));
+
+        const tbody = document.getElementById('tbody-esfera');
+        tbody.innerHTML = rows.map(r => {
+            const isES = r.uf === 'ES';
+            return `<tr${isES ? ' class="row-es"' : ''}>
+                <td class="td-uf">${r.uf} <small>${r.nome}</small></td>
+                <td>${fmtNum(r.coefPot)}</td>
+                <td>${fmtNum(r.pesoEstado)}</td>
+                <td>${fmtNum(r.coefEstado)}</td>
+                <td>${fmtNum(r.coefMun)}</td>
+            </tr>`;
+        }).join('');
+
+        const totalIcms = popData.ufs.reduce((s, u) => s + u.icms, 0);
+        const totalIss   = popData.ufs.reduce((s, u) => s + u.iss, 0);
+        const pesoEstadoBR = (totalIcms * 0.75) / (totalIcms + totalIss) * 100;
+        const somaCoefEstado = rows.reduce((s, r) => s + r.coefEstado, 0);
+        const somaCoefMun     = rows.reduce((s, r) => s + r.coefMun, 0);
+        document.getElementById('tfoot-esfera').innerHTML = `<tr>
+            <td class="td-uf"><strong>Total</strong> <small>27 UFs</small></td>
+            <td>100,00</td>
+            <td>${fmtNum(pesoEstadoBR)}</td>
+            <td>${fmtNum(somaCoefEstado)}</td>
+            <td>${fmtNum(somaCoefMun)}</td>
+        </tr>`;
+    }
+
     function pearsonR(xs, ys) {
         const n = xs.length;
         const mx = xs.reduce((s, v) => s + v, 0) / n;
@@ -571,7 +651,7 @@
         if (!el || typeof Chart === 'undefined') return;
         if (window.ChartDataLabels) Chart.register(ChartDataLabels);
 
-        const maxVal = Math.ceil(Math.max(...points.map(p => Math.max(p.x, p.y))) * 1.1);
+        const maxVal = 11;
         const regularPoints = points.filter(p => p.uf !== 'ES');
         const esPoint       = points.filter(p => p.uf === 'ES');
         const gridColor = 'rgba(0,0,0,0.07)';
@@ -677,6 +757,7 @@
             buildCoefTable(data);
             buildPopTable(popData);
             buildCorrelationChart(data, popData);
+            buildTable4(data, popData);
 
             statusEl.innerHTML =
                 '<span class="status-dot" style="background:#22c55e"></span> ' +
