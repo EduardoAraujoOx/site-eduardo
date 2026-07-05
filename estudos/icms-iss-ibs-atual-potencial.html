@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICMS+ISS Atual vs. IBS Potencial por UF (Orair e Gobetti, Ipea 2019) | Eduardo Reis Araújo</title>
-    <meta name="description" content="Qual o impacto da migração do ICMS e do ISS para o IBS no destino? Três estimativas independentes por UF: a Tabela 3 de Orair e Gobetti (Ipea, 2019), seus coeficientes por esfera de governo e um cenário populacional alternativo, com gráfico de correlação entre as abordagens.">
+    <title>ICMS+ISS Atual vs. IBS Potencial por UF (Gobetti e Monteiro, Ipea 2023) | Eduardo Reis Araújo</title>
+    <meta name="description" content="Qual o impacto da migração do ICMS e do ISS para o IBS no destino? Duas estimativas independentes por UF: a Tabela 1 de Gobetti e Monteiro (Ipea, 2023), seu coeficiente de participação por UF e um cenário populacional alternativo, com gráfico de correlação entre as abordagens.">
     <meta name="author" content="Eduardo Reis Araujo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/icms-iss-ibs-atual-potencial.html">
 
-    <meta property="og:title" content="Qual o impacto da migração para o destino no IBS? Três estimativas por UF">
-    <meta property="og:description" content="A Tabela 3 de Orair e Gobetti (Ipea, 2019), seus coeficientes por esfera de governo e um cenário populacional alternativo, com gráfico de correlação entre as abordagens.">
+    <meta property="og:title" content="Qual o impacto da migração para o destino no IBS? Duas estimativas por UF">
+    <meta property="og:description" content="A Tabela 1 de Gobetti e Monteiro (Ipea, 2023), seu coeficiente de participação por UF e um cenário populacional alternativo, com gráfico de correlação entre as abordagens.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/icms-iss-ibs-atual-potencial.html">
     <meta property="og:locale" content="pt_BR">
@@ -85,6 +85,7 @@
         .data-table td { border: 1px solid var(--border); padding: 0.36rem 0.6rem; text-align: right; font-family: var(--mono); font-size: 0.78rem; white-space: nowrap; color: var(--text); }
         .data-table td.td-uf { text-align: left; font-family: var(--sans); font-weight: 600; font-size: 0.81rem; }
         .data-table td.td-uf small { font-weight: 400; color: var(--text-muted); }
+        .data-table td.td-renda { text-align: left; font-family: var(--sans); font-weight: 700; vertical-align: middle; color: var(--text-secondary); }
         .data-table .td-neg { color: var(--neg); font-weight: 600; }
         .data-table .td-pos { color: var(--pos); font-weight: 600; }
         .data-table tr.row-es { background: color-mix(in srgb, var(--border-es) 12%, transparent); }
@@ -97,8 +98,9 @@
         .data-table tr:hover:not(tfoot tr) { background: var(--accent-bg); }
         .data-table tr.row-es:hover { background: color-mix(in srgb, var(--border-es) 20%, transparent); }
 
-        /* ── Tabela de coeficientes (esferas separadas) ── */
-        .coef-table th.col-divider, .coef-table td.col-divider { border-left: 2px solid var(--border); }
+        /* ── Grupo de renda (Tabela 1) ── */
+        .data-table tr.renda-subtotal { background: var(--bg); font-weight: 600; }
+        .data-table tr.renda-subtotal td { border-top: 2px solid var(--border); }
 
         /* ── Gráfico de correlação ── */
         .chart-panel { background: var(--border-light); border-radius: 8px; padding: 1.25rem 1.25rem 1.5rem; margin: 0 0 1.5rem; }
@@ -154,23 +156,23 @@
             <span class="study-hero-topic">ICMS/ISS/IBS</span>
             <span class="study-hero-date">Julho de 2026</span>
         </div>
-        <h1>ICMS+ISS atual vs. IBS potencial por UF: a Tabela 3 de Orair e Gobetti</h1>
+        <h1>ICMS+ISS atual vs. IBS potencial por UF: a Tabela 1 de Gobetti e Monteiro</h1>
         <p class="lead">
             Qual é o impacto esperado, sobre a receita de cada estado e município, da migração do ICMS e do
-            ISS para o IBS, cobrado no destino em vez da origem? Esta página reúne três estimativas
-            independentes para responder a essa pergunta, UF por UF. A primeira reproduz, na íntegra, a
-            Tabela 3 do estudo seminal de Rodrigo Orair e Sérgio Gobetti: a receita de ICMS e ISS
-            efetivamente arrecadada por cada UF, comparada à estimativa dos autores de quanto cada uma
-            arrecadaria de IBS caso a migração para o destino já estivesse totalmente em vigor. A segunda
-            deriva dessa mesma tabela um coeficiente de participação por esfera de governo. A terceira
-            propõe um cenário alternativo, mais simples, usando a população de cada UF como proxy do
-            destino. Ao final, um gráfico de dispersão mostra o quanto essas duas abordagens concordam
-            entre si.
+            ISS para o IBS, cobrado no destino em vez da origem? Esta página reúne duas estimativas
+            independentes para responder a essa pergunta, UF por UF, em três tabelas. A Tabela 1 reproduz, na
+            íntegra, a Tabela 1 de Sérgio Gobetti e Priscila Monteiro: a receita agregada de estado e
+            municípios de cada UF, efetivamente arrecadada com ICMS e ISS em 2022, comparada à estimativa dos
+            autores de quanto cada UF arrecadaria com o IBS caso a migração para o destino já estivesse
+            totalmente em vigor naquele ano. A Tabela 2 deriva dessa mesma fonte o coeficiente de participação
+            de cada UF no bolo nacional. Já a Tabela 3, independente das duas primeiras, propõe um cenário
+            alternativo e mais simples, usando a população de cada UF como proxy do destino. Ao final, um
+            gráfico de dispersão mostra o quanto essas duas fontes concordam entre si.
         </p>
         <p class="study-meta">
-            Dados: Orair, R. O.; Gobetti, S. W. <em>Reforma Tributária e Federalismo Fiscal</em>. Texto para
-            Discussão n.&nbsp;2530. Ipea, dezembro de 2019. Tabela 3, base 2018 &bull;
-            Fonte integral, sem alterações nos valores publicados.
+            Dados: Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária:
+            estimativas atualizadas</em>. Carta de Conjuntura n.&nbsp;60, Nota de Conjuntura 18. Ipea, 28 ago.
+            2023. Tabela 1, base 2022 &bull; Fonte integral, sem alterações nos valores publicados.
         </p>
     </div>
 
@@ -236,39 +238,49 @@
                 <p class="meto-section-title">Como os autores estimaram a receita potencial do IBS</p>
                 <p class="meto-note">
                     Como o Brasil não possui estatísticas oficiais de consumo das famílias desagregadas por
-                    estado ou por município, Orair e Gobetti construíram uma proxy: partiram da renda apurada
-                    pelo Censo IBGE de 2010 e da propensão média a consumir de cada UF, calculada a partir da
-                    Pesquisa de Orçamentos Familiares (POF) 2008-2009. Esses coeficientes de participação no
-                    consumo nacional foram então corrigidos pela variação do PIB de cada município entre 2010
-                    e 2016, e o coeficiente final adotado é a média simples entre as participações relativas
-                    obtidas nos dois pontos no tempo. Os próprios autores destacam que o objetivo não é medir
-                    o consumo em valores absolutos, mas apenas a participação relativa de cada ente: o que
-                    importa é o sinal, quem ganha e quem perde, não a magnitude exata.
+                    estado ou por município, Gobetti e Monteiro partiram de uma proxy da base tributável do
+                    consumo das famílias e das compras governamentais, na mesma linhagem metodológica do
+                    estudo original de Rodrigo Orair e Sérgio Gobetti (2019). O objetivo era atualizar essa
+                    proxy com as informações de renda municipal do Censo Demográfico de 2022 do IBGE, mas os
+                    autores relatam que esses dados ainda não estavam disponíveis, de modo que a distribuição
+                    espacial do consumo manteve a base metodológica anterior. O que foi atualizado é a receita
+                    de referência: em vez do ICMS e do ISS de 2018, o modelo agora parte da arrecadação de
+                    2022, ano em que o ICMS somou R$ 694 bilhões (dos quais R$ 170 bilhões foram repassados
+                    aos municípios via cota-parte) e o ISS somou R$ 107 bilhões.
                 </p>
                 <p class="meto-note">
-                    A Tabela 3 é um exercício <strong>estático e hipotético</strong>: compara a receita
-                    efetivamente arrecadada de ICMS e ISS em 2018 com o que cada UF arrecadaria de IBS
-                    <em>se a migração para o destino já estivesse plenamente em vigor naquele mesmo ano</em>,
-                    sem qualquer regra de transição. Não é uma projeção de arrecadação futura, e sim uma
-                    fotografia do potencial redistributivo de longo prazo da reforma, mantendo o tamanho
-                    total do bolo tributário (ICMS + ISS = IBS estadual + IBS municipal) inalterado em cada
-                    esfera, apenas redistribuindo-o entre as 27 UFs.
+                    Em relação à versão original, esta atualização (Nota de Conjuntura 18, ago. 2023) também
+                    ajustou três parâmetros do simulador: a amplitude dos regimes diferenciados e isenções por
+                    tipo de bem ou serviço; a imunidade recíproca entre entes públicos nas compras
+                    governamentais; e o critério de rateio da cota-parte municipal do IBS estadual, que passa
+                    a ser feito principalmente por população (85% do rateio, mais 5% em partes iguais entre
+                    municípios de cada UF e 10% por desempenho educacional).
+                </p>
+                <p class="meto-note">
+                    A Tabela 1 é um exercício <strong>estático e hipotético</strong>: soma a receita de estado
+                    e municípios de cada UF e compara o que foi efetivamente arrecadado com ICMS e ISS em 2022
+                    ao que cada UF arrecadaria com o IBS <em>se a migração para o destino já estivesse
+                    plenamente em vigor naquele mesmo ano</em>, sem qualquer regra de transição. Não é uma
+                    projeção de arrecadação futura, e sim uma fotografia do potencial redistributivo de longo
+                    prazo da reforma: no total, cerca de R$ 54 bilhões dos R$ 801 bilhões de receita
+                    "trocariam de mãos" entre as 27 UFs, favorecendo as unidades que concentram 70% da
+                    população brasileira.
                 </p>
 
-                <p class="meto-section-title">Três fontes independentes, uma mesma pergunta</p>
+                <p class="meto-section-title">Duas fontes independentes, uma mesma pergunta</p>
                 <p class="meto-note">
-                    Este Estudo 07 reproduz a <strong>Tabela 3 do Texto para Discussão n. 2530</strong>
-                    (Orair e Gobetti, Ipea, dezembro de 2019), com base em dados de 2018, e deriva dela as
-                    Tabelas 1 e 2 desta página. É um estudo diferente, mais antigo e com base de dados
-                    distinta, do que o usado nos
+                    Este Estudo 07 reproduz a <strong>Tabela 1</strong> de Gobetti, S. W.; Monteiro, P. K.
+                    <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de
+                    Conjuntura n.&nbsp;60, Nota de Conjuntura 18 (Ipea, 28 ago. 2023), e deriva dela a Tabela 2
+                    desta página. É a mesma fonte já usada nos
                     <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a>,
-                    <a href="/estudos/ibs-projecao-arrecadacao-es.html">Estudo 03</a> e
-                    <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> desta página, que
-                    tomam por base a <em>Carta de Conjuntura</em> n.&nbsp;60 (Gobetti e Monteiro, Ipea, 2023),
-                    com dados atualizados para 2022. A Tabela 3 desta página soma uma terceira fonte,
-                    independente das duas anteriores: a participação populacional de cada UF em 2025 (IBGE),
-                    comparada à arrecadação atual de ICMS+ISS (SICONFI/STN). As três fontes chegam a
-                    conclusões qualitativamente semelhantes sobre quem ganha e quem perde com a migração
+                    <a href="/estudos/ibs-projecao-arrecadacao-es.html">Estudo 03</a>,
+                    <a href="/estudos/icms-iss-participacao-vs-populacao.html">Estudo 05</a> e
+                    <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> desta página, o que
+                    garante consistência entre os estudos. A Tabela 3 desta página soma uma segunda fonte,
+                    independente da primeira: a participação populacional de cada UF em 2025 (IBGE), comparada
+                    à arrecadação atual de ICMS+ISS (SICONFI/STN). As duas fontes chegam a conclusões
+                    qualitativamente semelhantes sobre quem ganha e quem perde com a migração
                     origem&rarr;destino, mas os valores em reais e os coeficientes percentuais de cada UF não
                     são diretamente comparáveis entre si, pois usam anos-base e metodologias de proxy
                     diferentes. O gráfico de dispersão ao final desta página mede o quanto essas fontes
@@ -277,70 +289,56 @@
             </div>
         </details>
 
-        <span class="section-label">Tabela 1 &middot; Reprodução integral da Tabela 3 (R$ milhões, base 2018)</span>
+        <span class="section-label">Tabela 1 &middot; Reprodução integral: efeitos redistributivos por UF e nível de renda (R$ milhões, base 2022)</span>
         <div class="table-wrap">
             <table class="data-table" id="table-t3">
                 <thead>
                     <tr>
+                        <th class="th-left">Renda</th>
                         <th class="th-left">UF</th>
-                        <th>ICMS</th>
-                        <th>IBS estadual</th>
-                        <th>ISS</th>
-                        <th>IBS municipal</th>
-                        <th>ICMS + ISS</th>
-                        <th>IBS estadual + municipal</th>
-                        <th>Diferença</th>
-                        <th>ICMS + ISS (%)</th>
-                        <th>IBS estadual + municipal (%)</th>
+                        <th>PIBpc 2020</th>
+                        <th>Pré-reforma (A)</th>
+                        <th>Pós-reforma (B)</th>
+                        <th>Saldo (B&minus;A)</th>
                     </tr>
                 </thead>
                 <tbody id="tbody-t3">
-                    <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                    <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
                 </tbody>
                 <tfoot id="tfoot-t3"></tfoot>
             </table>
         </div>
 
         <div class="callout">
-            O caso de São Paulo ilustra como a mudança origem&rarr;destino afeta o ISS municipal mais do que
-            o ICMS estadual. Segundo os próprios autores, o ICMS paulista representa 28,9% do total
-            nacional, mas o ISS dos municípios de São Paulo chega a 42,4%, inflado, entre outros fatores,
-            pela guerra fiscal de municípios como Barueri e Poá, que atraem sedes de administradoras de
-            cartão de crédito e outras prestadoras de serviços. Com a unificação no IBS, a participação
-            paulista (estadual e municipal) convergiria para 26,6%, próxima da real fatia de São Paulo no
-            consumo nacional.
+            No agregado, cerca de R$ 54 bilhões (7% dos R$ 801 bilhões arrecadados em 2022) trocariam de mãos
+            entre as 27 UFs com a migração para o destino, favorecendo as unidades que concentram 70% da
+            população brasileira. O efeito é nítido por faixa de renda: as UFs de renda baixa ganham, no
+            conjunto, mais de R$ 22 bilhões, enquanto as de renda alta perdem cerca de R$ 13 bilhões. São
+            Paulo concentra a maior perda absoluta (&minus;R$ 35,2 bilhões), e o Espírito Santo é uma das
+            poucas UFs de renda média a perder participação (&minus;R$ 5,6 bilhões), ao lado de Amazonas,
+            Mato Grosso e Mato Grosso do Sul.
         </div>
 
-        <span class="section-label">Tabela 2 &middot; Coeficiente de participação de cada ente no bolo da sua própria esfera (%)</span>
+        <span class="section-label">Tabela 2 &middot; Coeficiente de participação de cada UF no bolo nacional (%)</span>
         <div class="callout">
-            Aqui o estado e o município são tratados como entes separados, cada um comparado apenas contra
-            o total nacional da <em>própria</em> esfera, e não contra o bolo combinado de ICMS+ISS/IBS da
-            Tabela 1. Para o estado: participação do ICMS da UF no ICMS nacional (atual) contra a
-            participação do IBS estadual da UF no IBS estadual nacional (potencial). Para os municípios da
-            UF: participação do ISS no ISS nacional (atual) contra a participação do IBS municipal no IBS
-            municipal nacional (potencial). Isso isola como a migração origem&rarr;destino muda o peso de
-            cada ente, separadamente, sem que a esfera municipal, mais concentrada, contamine a leitura da
-            esfera estadual, ou vice-versa. O último bloco, "Total UF", soma estado e município de volta em
-            um único coeficiente, equivalente às duas últimas colunas da Tabela 1, útil para enxergar o
-            efeito líquido sobre cada UF como um todo.
+            Esta tabela deriva da Tabela 1 o coeficiente de participação de cada UF no total nacional: qual a
+            fatia atual (pré-reforma) e qual seria a fatia potencial (pós-reforma) de cada UF no bolo
+            agregado de estado e municípios. Coeficiente atual = receita pré-reforma da UF dividida pelo
+            total nacional pré-reforma; coeficiente potencial = receita pós-reforma da UF dividida pelo total
+            nacional pós-reforma. A variação é a diferença entre os dois, em pontos percentuais.
         </div>
         <div class="table-wrap">
-            <table class="data-table coef-table" id="table-coef">
+            <table class="data-table" id="table-coef">
                 <thead>
                     <tr>
-                        <th class="th-left" rowspan="2">UF</th>
-                        <th colspan="3">Esfera estadual: ICMS &rarr; IBS estadual</th>
-                        <th class="col-divider" colspan="3">Esfera municipal: ISS &rarr; IBS municipal</th>
-                        <th class="col-divider" colspan="3">Total UF: estado + município</th>
-                    </tr>
-                    <tr>
-                        <th>Atual (%)</th><th>Potencial (%)</th><th>Variação (p.p.)</th>
-                        <th class="col-divider">Atual (%)</th><th>Potencial (%)</th><th>Variação (p.p.)</th>
-                        <th class="col-divider">Atual (%)</th><th>Potencial (%)</th><th>Variação (p.p.)</th>
+                        <th class="th-left">UF</th>
+                        <th>Coeficiente atual (%)</th>
+                        <th>Coeficiente potencial (%)</th>
+                        <th>Variação (p.p.)</th>
                     </tr>
                 </thead>
                 <tbody id="tbody-coef">
-                    <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                    <tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
                 </tbody>
                 <tfoot id="tfoot-coef"></tfoot>
             </table>
@@ -348,15 +346,15 @@
 
         <span class="section-label">Tabela 3 &middot; Cenário alternativo: participação populacional como proxy do destino (2025)</span>
         <div class="callout">
-            Um terceiro exercício, independente do de Orair e Gobetti. Em vez de estimar o consumo por UF
-            (Tabela 1, base 2018), esta tabela usa a <strong>participação de cada UF na população
+            Uma segunda leitura, independente da de Gobetti e Monteiro. Em vez de estimar o consumo por UF
+            (Tabela 1, base 2022), esta tabela usa a <strong>participação de cada UF na população
             brasileira</strong> (IBGE, 2025) como proxy direta do destino. Afinal, é o próprio critério
-            populacional que a PEC 45 adota para parte da cota-parte municipal do IBS. Essa participação
-            populacional é comparada com a participação atual de cada UF no bolo de ICMS+ISS efetivamente
-            arrecadado em 2025 (SICONFI/STN). É um cenário mais simples e com base mais recente que a
-            Tabela 1, mas que aponta na mesma direção: UFs mais populosas relativamente à sua arrecadação
-            atual tendem a ganhar peso com uma reforma orientada ao destino e ao consumo. Os mesmos dados,
-            com gráficos de dispersão e barras divergentes, estão detalhados no
+            populacional que passou a orientar parte do rateio da cota-parte municipal do IBS estadual.
+            Essa participação populacional é comparada com a participação atual de cada UF no bolo de
+            ICMS+ISS efetivamente arrecadado em 2025 (SICONFI/STN). É um cenário mais simples e com base
+            mais recente que a Tabela 1, mas que aponta na mesma direção: UFs mais populosas relativamente à
+            sua arrecadação atual tendem a ganhar peso com uma reforma orientada ao destino e ao consumo. Os
+            mesmos dados, com gráficos de dispersão e barras divergentes, estão detalhados no
             <a href="/estudos/icms-iss-participacao-vs-populacao.html">Estudo 05</a>.
         </div>
         <div class="table-wrap">
@@ -376,18 +374,18 @@
             </table>
         </div>
 
-        <span class="section-label">Tabela 2 vs. Tabela 3 &middot; a população é um bom preditor da estimativa de Orair e Gobetti?</span>
+        <span class="section-label">Tabela 2 vs. Tabela 3 &middot; a população é um bom preditor da estimativa de Gobetti e Monteiro?</span>
         <div class="callout">
             Voltando à pergunta central desta página: as Tabelas 2 e 3 respondem a ela por dois caminhos
-            distintos, um estimando consumo (Orair e Gobetti, 2018), outro usando população como atalho
+            distintos, um estimando consumo (Gobetti e Monteiro, 2022), outro usando população como atalho
             (2025). O gráfico abaixo cruza a variação percentual de cada UF nos dois cenários: no eixo
-            horizontal, a variação do "Total UF" da Tabela 2; no eixo vertical, a variação da Tabela 3.
-            Quanto mais próximos os pontos estiverem da linha de paridade (45°), mais a participação
-            populacional se comporta como uma aproximação razoável da estimativa de consumo, bem mais
-            elaborada, dos autores.
+            horizontal, a variação da Tabela 2; no eixo vertical, a variação da Tabela 3. Quanto mais
+            próximos os pontos estiverem da linha de paridade (45°), mais a participação populacional se
+            comporta como uma aproximação razoável da estimativa de consumo, bem mais elaborada, dos
+            autores.
         </div>
         <div class="chart-panel">
-            <p class="chart-panel-title">Variação de participação: Orair e Gobetti (eixo X) x população (eixo Y), 27 UFs</p>
+            <p class="chart-panel-title">Variação de participação: Gobetti e Monteiro (eixo X) x população (eixo Y), 27 UFs</p>
             <canvas id="chart-scatter-compare" style="max-height:480px"></canvas>
             <div class="chart-legend-note">
                 <span><span class="legend-dot" style="background:#2a78d6"></span>UF</span>
@@ -401,12 +399,11 @@
 
         <div class="footnotes">
             <p><strong>Fontes e notas metodológicas:</strong></p>
-            <p>1. Tabela 1 desta página: reprodução integral, sem qualquer alteração de valores, da Tabela 3 de Orair, R. O.; Gobetti, S. W. <em>Reforma Tributária e Federalismo Fiscal: uma análise das propostas de criação de um novo imposto sobre o valor adicionado para o Brasil.</em> Texto para Discussão n. 2530. Rio de Janeiro: Ipea, dezembro de 2019, p. 40. Disponível em: <a href="https://repositorio.ipea.gov.br/handle/11058/9596" target="_blank" rel="noopener">repositorio.ipea.gov.br/handle/11058/9596</a>.</p>
-            <p>2. Tabela 2 desta página: elaboração própria, derivada diretamente dos valores em R$ milhões da Tabela 1, sem qualquer dado adicional além do publicado pelos autores na Tabela 3 original. Esfera estadual: coeficiente atual = ICMS da UF / ICMS nacional &times; 100; coeficiente potencial = IBS estadual da UF / IBS estadual nacional &times; 100. Esfera municipal: coeficiente atual = ISS da UF / ISS nacional &times; 100; coeficiente potencial = IBS municipal da UF / IBS municipal nacional &times; 100. Total UF: coeficiente atual = (ICMS + ISS) da UF / (ICMS + ISS) nacional &times; 100; coeficiente potencial = (IBS estadual + IBS municipal) da UF / (IBS estadual + IBS municipal) nacional &times; 100. Esse último par é equivalente às duas últimas colunas da Tabela 1.</p>
-            <p>3. Base de dados das Tabelas 1 e 2: ICMS e ISS efetivamente arrecadados em 2018. IBS estadual e municipal: estimativa dos autores para o cenário de migração integral e imediata ao princípio do destino, sem regra de transição, construída a partir de proxy de consumo por UF (Censo IBGE 2010 e POF 2008-2009, corrigida pela variação do PIB municipal 2010-2016).</p>
-            <p>4. Tabela 3 desta página: elaboração própria. ICMS + ISS atual 2025: SICONFI/STN, DCA Anexo I-C. População 2025: IBGE, Estimativas de População (referência 01/07/2025), usada como proxy do critério de destino/consumo. Coeficiente = valor da UF / total nacional &times; 100 em cada coluna; variação = participação populacional menos participação tributária atual. Mesma base de dados do <a href="/estudos/icms-iss-participacao-vs-populacao.html">Estudo 05</a>, com ano-base (2025) mais recente e independente da proxy de consumo de Orair e Gobetti usada nas Tabelas 1 e 2.</p>
-            <p>5. Gráfico de dispersão (Tabela 2 vs. Tabela 3): cruza, para cada UF, a variação "Total UF" da Tabela 2 (eixo X) com a variação da Tabela 3 (eixo Y). A correlação é o coeficiente de Pearson entre as duas séries; a concordância de sinal é a proporção de UFs em que os dois cenários apontam na mesma direção (ambos ganho ou ambos perda de participação). Ambas as estatísticas são calculadas no navegador, a partir dos mesmos dados publicados nas Tabelas 1 a 3.</p>
-            <p>6. Este estudo não deve ser confundido com os dados de Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura n. 60, Nota de Conjuntura 18. Ipea, 28 ago. 2023 (base 2022), usados nos Estudos 02, 03, 05 e 06 desta página. As três fontes têm anos-base, metodologias de proxy e magnitudes distintas, ainda que apontem na mesma direção qualitativa.</p>
+            <p>1. Tabela 1 desta página: reprodução integral, sem qualquer alteração de valores, da Tabela 1 de Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura n. 60, Nota de Conjuntura 18. Ipea, 28 ago. 2023. Disponível em: <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">repositorio.ipea.gov.br</a>. O PIBpc médio por faixa de renda e o PIBpc médio nacional (linha "Total") reproduzem os valores publicados pelos autores, ponderados pela população de cada UF; as demais colunas são recalculadas a partir dos valores individuais de cada UF.</p>
+            <p>2. Tabela 2 desta página: elaboração própria, derivada diretamente dos valores em R$ milhões da Tabela 1, sem qualquer dado adicional além do publicado pelos autores. Coeficiente atual = receita pré-reforma da UF / receita pré-reforma nacional &times; 100; coeficiente potencial = receita pós-reforma da UF / receita pós-reforma nacional &times; 100.</p>
+            <p>3. Base de dados das Tabelas 1 e 2: ICMS e ISS efetivamente arrecadados em 2022 (soma de estado e municípios de cada UF). IBS: estimativa dos autores para o cenário de migração integral e imediata ao princípio do destino, sem regra de transição, construída a partir de proxy de consumo por UF, na mesma linhagem metodológica de Orair e Gobetti (2019), com receita de referência atualizada para 2022.</p>
+            <p>4. Tabela 3 desta página: elaboração própria. ICMS + ISS atual 2025: SICONFI/STN, DCA Anexo I-C. População 2025: IBGE, Estimativas de População (referência 01/07/2025), usada como proxy do critério de destino/consumo. Coeficiente = valor da UF / total nacional &times; 100 em cada coluna; variação = participação populacional menos participação tributária atual. Mesma base de dados do <a href="/estudos/icms-iss-participacao-vs-populacao.html">Estudo 05</a>, com ano-base (2025) mais recente e independente da proxy de consumo de Gobetti e Monteiro usada nas Tabelas 1 e 2.</p>
+            <p>5. Gráfico de dispersão (Tabela 2 vs. Tabela 3): cruza, para cada UF, a variação da Tabela 2 (eixo X) com a variação da Tabela 3 (eixo Y). A correlação é o coeficiente de Pearson entre as duas séries; a concordância de sinal é a proporção de UFs em que os dois cenários apontam na mesma direção (ambos ganho ou ambos perda de participação). Ambas as estatísticas são calculadas no navegador, a partir dos mesmos dados publicados nas Tabelas 1 a 3.</p>
         </div>
     </div>
 
@@ -430,64 +427,59 @@
     const fmtPct = (v, d=2) => (v >= 0 ? '+' : '') + v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }) + '%';
     const clsPct = v => v < -0.005 ? 'td-neg' : v > 0.005 ? 'td-pos' : '';
 
-    function buildTable3(data) {
-        const tbody = document.getElementById('tbody-t3');
-        tbody.innerHTML = data.ufs.map(u => {
-            const isES = u.uf === 'ES';
-            return `<tr${isES ? ' class="row-es"' : ''}>
-                <td class="td-uf">${u.uf} <small>${u.nome}</small></td>
-                <td>${fmtNum(u.icms)}</td>
-                <td>${fmtNum(u.ibs_estadual)}</td>
-                <td>${fmtNum(u.iss)}</td>
-                <td>${fmtNum(u.ibs_municipal)}</td>
-                <td>${fmtNum(u.icms_iss)}</td>
-                <td>${fmtNum(u.ibs_estadual_municipal)}</td>
-                <td class="${clsPct(u.diferenca)}">${u.diferenca >= 0 ? '+' : ''}${fmtNum(u.diferenca, 0)}</td>
-                <td>${fmtNum(u.pct_icms_iss)}</td>
-                <td>${fmtNum(u.pct_ibs)}</td>
-            </tr>`;
-        }).join('');
+    // PIBpc médio por faixa de renda, ponderado pela população: valores publicados na Tabela 1
+    // original (Gobetti e Monteiro, 2023), não recalculáveis a partir dos dados por UF disponíveis.
+    const RENDA_ORDEM  = ['Baixa', 'Média', 'Alta'];
+    const RENDA_PIBPC  = { 'Baixa': 18454, 'Média': 29383, 'Alta': 47330 };
+    const PIBPC_BRASIL = 34639;
 
-        const t = data.totais;
+    function buildTable3(data) {
+        const ufs = data.tabela1_static.ufs;
+        const rowsHtml = [];
+        RENDA_ORDEM.forEach(renda => {
+            const group = ufs.filter(u => u.renda === renda).sort((a, b) => a.pibpc2020 - b.pibpc2020);
+            group.forEach((u, i) => {
+                const isES = u.uf === 'ES';
+                rowsHtml.push(`<tr${isES ? ' class="row-es"' : ''}>
+                    ${i === 0 ? `<td class="td-renda" rowspan="${group.length}">${renda}</td>` : ''}
+                    <td class="td-uf">${u.uf} <small>${NOMES_UF[u.uf]}</small></td>
+                    <td>${fmtNum(u.pibpc2020, 0)}</td>
+                    <td>${fmtNum(u.pre / 1e6, 0)}</td>
+                    <td>${fmtNum(u.pos / 1e6, 0)}</td>
+                    <td class="${clsPct(u.saldo)}">${u.saldo >= 0 ? '+' : ''}${fmtNum(u.saldo / 1e6, 0)}</td>
+                </tr>`);
+            });
+            const somaPre   = group.reduce((s, u) => s + u.pre, 0);
+            const somaPos   = group.reduce((s, u) => s + u.pos, 0);
+            const somaSaldo = group.reduce((s, u) => s + u.saldo, 0);
+            rowsHtml.push(`<tr class="renda-subtotal">
+                <td colspan="2">Subtotal: renda ${renda.toLowerCase()}</td>
+                <td>${fmtNum(RENDA_PIBPC[renda], 0)}</td>
+                <td>${fmtNum(somaPre / 1e6, 0)}</td>
+                <td>${fmtNum(somaPos / 1e6, 0)}</td>
+                <td class="${clsPct(somaSaldo)}">${somaSaldo >= 0 ? '+' : ''}${fmtNum(somaSaldo / 1e6, 0)}</td>
+            </tr>`);
+        });
+        document.getElementById('tbody-t3').innerHTML = rowsHtml.join('');
+
+        const t = data.tabela1_static;
         document.getElementById('tfoot-t3').innerHTML = `<tr>
-            <td class="td-uf"><strong>Total</strong> <small>27 UFs</small></td>
-            <td>${fmtNum(t.icms)}</td>
-            <td>${fmtNum(t.ibs_estadual)}</td>
-            <td>${fmtNum(t.iss)}</td>
-            <td>${fmtNum(t.ibs_municipal)}</td>
-            <td>${fmtNum(t.icms_iss)}</td>
-            <td>${fmtNum(t.ibs_estadual_municipal)}</td>
-            <td>&mdash;</td>
-            <td>100,00</td>
-            <td>100,00</td>
+            <td class="td-renda" colspan="2"><strong>Total</strong> <small>27 UFs</small></td>
+            <td>${fmtNum(PIBPC_BRASIL, 0)}</td>
+            <td>${fmtNum(t.total_pre / 1e6, 0)}</td>
+            <td>${fmtNum(t.total_pos / 1e6, 0)}</td>
+            <td>${fmtNum((t.total_pos - t.total_pre) / 1e6, 0)}</td>
         </tr>`;
     }
 
     function buildCoefTable(data) {
-        // Cada esfera é medida contra o total nacional da própria esfera, não contra o bolo combinado:
-        // estado = ICMS_UF / ICMS_BR (atual) vs. IBS_estadual_UF / IBS_estadual_BR (potencial)
-        // município = ISS_UF / ISS_BR (atual) vs. IBS_municipal_UF / IBS_municipal_BR (potencial)
-        // total UF = (ICMS+ISS)_UF / (ICMS+ISS)_BR (atual) vs. (IBS_estadual+IBS_municipal)_UF / (IBS_estadual+IBS_municipal)_BR (potencial)
-        const totalIcms   = data.totais.icms;
-        const totalIbsEst = data.totais.ibs_estadual;
-        const totalIss    = data.totais.iss;
-        const totalIbsMun = data.totais.ibs_municipal;
-        const totalAtualUF = data.totais.icms_iss;
-        const totalPotUF    = data.totais.ibs_estadual_municipal;
+        const totalPre = data.tabela1_static.total_pre;
+        const totalPos = data.tabela1_static.total_pos;
 
-        const rows = data.ufs.map(u => {
-            const coefEstAtual = (u.icms / totalIcms) * 100;
-            const coefEstPot   = (u.ibs_estadual / totalIbsEst) * 100;
-            const coefMunAtual = (u.iss / totalIss) * 100;
-            const coefMunPot   = (u.ibs_municipal / totalIbsMun) * 100;
-            const coefUFAtual  = (u.icms_iss / totalAtualUF) * 100;
-            const coefUFPot    = (u.ibs_estadual_municipal / totalPotUF) * 100;
-            return {
-                uf: u.uf, nome: u.nome,
-                coefEstAtual, coefEstPot, varEst: coefEstPot - coefEstAtual,
-                coefMunAtual, coefMunPot, varMun: coefMunPot - coefMunAtual,
-                coefUFAtual, coefUFPot, varUF: coefUFPot - coefUFAtual
-            };
+        const rows = data.tabela1_static.ufs.map(u => {
+            const coefAtual = (u.pre / totalPre) * 100;
+            const coefPot   = (u.pos / totalPos) * 100;
+            return { uf: u.uf, nome: NOMES_UF[u.uf], coefAtual, coefPot, variacao: coefPot - coefAtual };
         }).sort((a, b) => a.uf.localeCompare(b.uf));
 
         const tbody = document.getElementById('tbody-coef');
@@ -495,27 +487,15 @@
             const isES = r.uf === 'ES';
             return `<tr${isES ? ' class="row-es"' : ''}>
                 <td class="td-uf">${r.uf} <small>${r.nome}</small></td>
-                <td>${fmtNum(r.coefEstAtual)}</td>
-                <td>${fmtNum(r.coefEstPot)}</td>
-                <td class="${clsPct(r.varEst)}">${fmtPct(r.varEst)}</td>
-                <td class="col-divider">${fmtNum(r.coefMunAtual)}</td>
-                <td>${fmtNum(r.coefMunPot)}</td>
-                <td class="${clsPct(r.varMun)}">${fmtPct(r.varMun)}</td>
-                <td class="col-divider">${fmtNum(r.coefUFAtual)}</td>
-                <td>${fmtNum(r.coefUFPot)}</td>
-                <td class="${clsPct(r.varUF)}">${fmtPct(r.varUF)}</td>
+                <td>${fmtNum(r.coefAtual)}</td>
+                <td>${fmtNum(r.coefPot)}</td>
+                <td class="${clsPct(r.variacao)}">${fmtPct(r.variacao)}</td>
             </tr>`;
         }).join('');
 
         document.getElementById('tfoot-coef').innerHTML = `<tr>
             <td class="td-uf"><strong>Total</strong> <small>27 UFs</small></td>
             <td>100,00</td>
-            <td>100,00</td>
-            <td>${fmtPct(0)}</td>
-            <td class="col-divider">100,00</td>
-            <td>100,00</td>
-            <td>${fmtPct(0)}</td>
-            <td class="col-divider">100,00</td>
             <td>100,00</td>
             <td>${fmtPct(0)}</td>
         </tr>`;
@@ -559,12 +539,12 @@
     }
 
     function buildCorrelationChart(data, popData) {
-        const totalAtualUF = data.totais.icms_iss;
-        const totalPotUF   = data.totais.ibs_estadual_municipal;
+        const totalPre = data.tabela1_static.total_pre;
+        const totalPos = data.tabela1_static.total_pos;
         const varUFByUf = {};
-        data.ufs.forEach(u => {
-            const coefAtual = (u.icms_iss / totalAtualUF) * 100;
-            const coefPot   = (u.ibs_estadual_municipal / totalPotUF) * 100;
+        data.tabela1_static.ufs.forEach(u => {
+            const coefAtual = (u.pre / totalPre) * 100;
+            const coefPot   = (u.pos / totalPos) * 100;
             varUFByUf[u.uf] = coefPot - coefAtual;
         });
 
@@ -654,7 +634,7 @@
                         callbacks: {
                             label: ctx => {
                                 const d = ctx.raw;
-                                return `${d.nome || d.uf}: Orair/Gobetti ${fmtPct(d.x)} · população ${fmtPct(d.y)}`;
+                                return `${d.nome || d.uf}: Gobetti/Monteiro ${fmtPct(d.x)} · população ${fmtPct(d.y)}`;
                             }
                         }
                     }
@@ -662,7 +642,7 @@
                 scales: {
                     x: {
                         min: -maxAbs, max: maxAbs,
-                        title: { display: true, text: 'Variação Total UF, Tabela 2 (p.p.)', color: textColor, font: { size: 11 } },
+                        title: { display: true, text: 'Variação Tabela 2, Gobetti/Monteiro (p.p.)', color: textColor, font: { size: 11 } },
                         ticks: { color: textColor, callback: v => v + '%' },
                         grid: { color: gridColor }
                     },
@@ -681,7 +661,7 @@
         const statusEl = document.getElementById('status-main');
         try {
             const [resp, popResp] = await Promise.all([
-                fetch('/data/orair-gobetti-2019-tabela3-icms-iss-ibs.json?t=' + Date.now()),
+                fetch('/data/gobetti-2023-perdas-ganhos-uf.json?t=' + Date.now()),
                 fetch('/data/icms-iss-vs-populacao-2025.json?t=' + Date.now())
             ]);
             if (!resp.ok || !popResp.ok) throw new Error('Erro ao carregar dados');
@@ -695,7 +675,7 @@
 
             statusEl.innerHTML =
                 '<span class="status-dot" style="background:#22c55e"></span> ' +
-                '27 UFs · Orair e Gobetti, TD 2530 (Ipea, 2019), base 2018 · SICONFI/IBGE, base 2025';
+                '27 UFs · Gobetti e Monteiro, Carta de Conjuntura 60 (Ipea, 2023), base 2022 · SICONFI/IBGE, base 2025';
         } catch (err) {
             statusEl.innerHTML =
                 '<span class="status-dot" style="background:#ef4444"></span> Erro ao carregar dados: ' + err.message;
