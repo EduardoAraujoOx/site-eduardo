@@ -1,0 +1,457 @@
+{
+  "_meta": {
+    "descricao": "Parâmetros derivados para projeção de receita ICMS/IBS por UF (2029–2033), Reforma Tributária EC 132/2023 + LC 214/2024 + LC 227/2026",
+    "fontes": {
+      "dca": "SICONFI/STN — DCA (Demonstrativo das Contas Anuais), acesso jun/2025",
+      "gobetti": "Gobetti & Monteiro, IPEA TD 2022 (2023), Tabela 1 — participações pré e pós-reforma por UF"
+    },
+    "gerado_por": "data/collect-siconfi.py + data/merge-results.py, parâmetros calculados em ibs-projecao-arrecadacao-br.html",
+    "nota_metodologica": "TotalBR_2025 é a soma nacional de ICMS+ISS (DCA 2025), base neutra de receita (art. 130 ADCT). phi_neutro = r0_2025/TotalBR (participação UF no ICMS estadual 2025 × 75%). phi_cpt = r0_avg/TotalBR (média deflacionada 2019–2025, base IBSt). phi_dest_c1 = coeficiente pleno de destino Gobetti normalizado (Cenário 1). phi_dest_c2 = média entre phi_neutro e phi_dest_c1 (Cenário 2). phi_dest_c3 = phi_neutro (Cenário 3, neutro). RHO=0.05 (Seguro-Receita, art. 132 ADCT). CGIBS (ca) aplica-se apenas ao IBSd.",
+    "formula": "R_a_UF = TotalBR * [phi_neutro*fa + sa*(phi_cpt*alpha_bis + phi_dest*sa*(1-alpha_bis)*(1-ca)*(1-rho))]"
+  },
+  "global": {
+    "total_br_2025_reais": 1029573688573.62,
+    "total_br_2025_bi": 1029.5737,
+    "rho_seguro_receita": 0.05,
+    "anos_ref_deflacao": [
+      "2019",
+      "2020",
+      "2021",
+      "2022",
+      "2023",
+      "2024",
+      "2025"
+    ],
+    "deflators_para_2025": {
+      "2019": 1.759724,
+      "2020": 1.721062,
+      "2021": 1.380997,
+      "2022": 1.286704,
+      "2023": 1.241176,
+      "2024": 1.078835,
+      "2025": 1.0
+    },
+    "totais_nacionais_dca": {
+      "2019": {
+        "icms_br": 512501165557.69,
+        "iss_br": 72575738376.57,
+        "total": 585076903934.26
+      },
+      "2020": {
+        "icms_br": 525280463571.25,
+        "iss_br": 72939656553.14,
+        "total": 598220120124.39
+      },
+      "2021": {
+        "icms_br": 655213422197.43,
+        "iss_br": 90315695421.34,
+        "total": 745529117618.77
+      },
+      "2022": {
+        "icms_br": 694424706419.7,
+        "iss_br": 105738689405.94,
+        "total": 800163395825.64
+      },
+      "2023": {
+        "icms_br": 708531573094.66,
+        "iss_br": 120982841687.58,
+        "total": 829514414782.24
+      },
+      "2024": {
+        "icms_br": 814527574371.58,
+        "iss_br": 139810741117.97,
+        "total": 954338315489.55
+      },
+      "2025": {
+        "icms_br": 875783701718.08,
+        "iss_br": 153789986855.54,
+        "total": 1029573688573.62
+      }
+    }
+  },
+  "adct_cronograma": {
+    "2029": {
+      "fa": 0.9,
+      "sa": 0.1,
+      "alpha_bis": 0.8,
+      "ca": 0.02
+    },
+    "2030": {
+      "fa": 0.7,
+      "sa": 0.3,
+      "alpha_bis": 0.8,
+      "ca": 0.015
+    },
+    "2031": {
+      "fa": 0.4,
+      "sa": 0.6,
+      "alpha_bis": 0.8,
+      "ca": 0.01
+    },
+    "2032": {
+      "fa": 0.2,
+      "sa": 0.8,
+      "alpha_bis": 0.8,
+      "ca": 0.005
+    },
+    "2033": {
+      "fa": 0.0,
+      "sa": 1.0,
+      "alpha_bis": 0.9,
+      "ca": 0.005
+    }
+  },
+  "ufs": {
+    "AC": {
+      "icms_dca_2025": 2220306998.18,
+      "iss_dca_2025": 229350754.4,
+      "r0_2025": 1665230248.63,
+      "r0_avg": 1760064817.12,
+      "lambda": 1.05695,
+      "var_rel_gobetti": 0.217144,
+      "phi_neutro": 0.0016174,
+      "phi_cpt": 0.00170951,
+      "phi_dest_c1_pleno": 0.00197586,
+      "phi_dest_c2_inter": 0.00179663,
+      "phi_dest_c3_neutro": 0.0016174
+    },
+    "AL": {
+      "icms_dca_2025": 8393295012.36,
+      "iss_dca_2025": 992212047.08,
+      "r0_2025": 6294971259.27,
+      "r0_avg": 5928604672.8,
+      "lambda": 0.9418,
+      "var_rel_gobetti": 0.260004,
+      "phi_neutro": 0.00611415,
+      "phi_cpt": 0.00575831,
+      "phi_dest_c1_pleno": 0.00773224,
+      "phi_dest_c2_inter": 0.00692319,
+      "phi_dest_c3_neutro": 0.00611415
+    },
+    "AM": {
+      "icms_dca_2025": 16904534360.06,
+      "iss_dca_2025": 1906136784.67,
+      "r0_2025": 12678400770.05,
+      "r0_avg": 13260975757.54,
+      "lambda": 1.04595,
+      "var_rel_gobetti": -0.335258,
+      "phi_neutro": 0.01231422,
+      "phi_cpt": 0.01288006,
+      "phi_dest_c1_pleno": 0.00821593,
+      "phi_dest_c2_inter": 0.01026508,
+      "phi_dest_c3_neutro": 0.01231422
+    },
+    "AP": {
+      "icms_dca_2025": 1702929834.08,
+      "iss_dca_2025": 143387818.63,
+      "r0_2025": 1277197375.56,
+      "r0_avg": 1281729814.24,
+      "lambda": 1.003549,
+      "var_rel_gobetti": 0.492704,
+      "phi_neutro": 0.00124051,
+      "phi_cpt": 0.00124491,
+      "phi_dest_c1_pleno": 0.00185854,
+      "phi_dest_c2_inter": 0.00154952,
+      "phi_dest_c3_neutro": 0.00124051
+    },
+    "BA": {
+      "icms_dca_2025": 41451495168.11,
+      "iss_dca_2025": 5645472549.21,
+      "r0_2025": 31088621376.08,
+      "r0_avg": 31257577761.83,
+      "lambda": 1.005435,
+      "var_rel_gobetti": 0.075,
+      "phi_neutro": 0.03019563,
+      "phi_cpt": 0.03035973,
+      "phi_dest_c1_pleno": 0.03257986,
+      "phi_dest_c2_inter": 0.03138774,
+      "phi_dest_c3_neutro": 0.03019563
+    },
+    "CE": {
+      "icms_dca_2025": 21227268364.23,
+      "iss_dca_2025": 3078753206.74,
+      "r0_2025": 15920451273.17,
+      "r0_avg": 16036261597.38,
+      "lambda": 1.007274,
+      "var_rel_gobetti": 0.172127,
+      "phi_neutro": 0.01546315,
+      "phi_cpt": 0.01557563,
+      "phi_dest_c1_pleno": 0.01819154,
+      "phi_dest_c2_inter": 0.01682734,
+      "phi_dest_c3_neutro": 0.01546315
+    },
+    "DF": {
+      "icms_dca_2025": 12495978651.6,
+      "iss_dca_2025": 3862785832.04,
+      "r0_2025": 9371983988.7,
+      "r0_avg": 9942411533.59,
+      "lambda": 1.060865,
+      "var_rel_gobetti": 0.477608,
+      "phi_neutro": 0.00910278,
+      "phi_cpt": 0.00965682,
+      "phi_dest_c1_pleno": 0.01349988,
+      "phi_dest_c2_inter": 0.01130133,
+      "phi_dest_c3_neutro": 0.00910278
+    },
+    "ES": {
+      "icms_dca_2025": 22519755234.49,
+      "iss_dca_2025": 2769305387.25,
+      "r0_2025": 16889816425.87,
+      "r0_avg": 16050443891.69,
+      "lambda": 0.950303,
+      "var_rel_gobetti": -0.301151,
+      "phi_neutro": 0.01640467,
+      "phi_cpt": 0.01558941,
+      "phi_dest_c1_pleno": 0.01150662,
+      "phi_dest_c2_inter": 0.01395565,
+      "phi_dest_c3_neutro": 0.01640467
+    },
+    "GO": {
+      "icms_dca_2025": 30158958605.76,
+      "iss_dca_2025": 3623617205.06,
+      "r0_2025": 22619218954.32,
+      "r0_avg": 25259842125.69,
+      "lambda": 1.116742,
+      "var_rel_gobetti": 0.030546,
+      "phi_neutro": 0.0219695,
+      "phi_cpt": 0.02453427,
+      "phi_dest_c1_pleno": 0.02272397,
+      "phi_dest_c2_inter": 0.02234673,
+      "phi_dest_c3_neutro": 0.0219695
+    },
+    "MA": {
+      "icms_dca_2025": 15564067525.43,
+      "iss_dca_2025": 1895860966.7,
+      "r0_2025": 11673050644.07,
+      "r0_avg": 10244856372.84,
+      "lambda": 0.87765,
+      "var_rel_gobetti": 0.176135,
+      "phi_neutro": 0.01133775,
+      "phi_cpt": 0.00995058,
+      "phi_dest_c1_pleno": 0.01338384,
+      "phi_dest_c2_inter": 0.0123608,
+      "phi_dest_c3_neutro": 0.01133775
+    },
+    "MG": {
+      "icms_dca_2025": 86617805155.56,
+      "iss_dca_2025": 10826299519.07,
+      "r0_2025": 64963353866.67,
+      "r0_avg": 66941918984.62,
+      "lambda": 1.030457,
+      "var_rel_gobetti": 0.007545,
+      "phi_neutro": 0.06309733,
+      "phi_cpt": 0.06501907,
+      "phi_dest_c1_pleno": 0.06380758,
+      "phi_dest_c2_inter": 0.06345246,
+      "phi_dest_c3_neutro": 0.06309733
+    },
+    "MS": {
+      "icms_dca_2025": 25144810779.77,
+      "iss_dca_2025": 1741330238.11,
+      "r0_2025": 18858608084.83,
+      "r0_avg": 15297541423.82,
+      "lambda": 0.81117,
+      "var_rel_gobetti": -0.210219,
+      "phi_neutro": 0.01831691,
+      "phi_cpt": 0.01485813,
+      "phi_dest_c1_pleno": 0.01451964,
+      "phi_dest_c2_inter": 0.01641827,
+      "phi_dest_c3_neutro": 0.01831691
+    },
+    "MT": {
+      "icms_dca_2025": 41011897180.52,
+      "iss_dca_2025": 2431764952.05,
+      "r0_2025": 30758922885.39,
+      "r0_avg": 26592726580.02,
+      "lambda": 0.864553,
+      "var_rel_gobetti": -0.230921,
+      "phi_neutro": 0.0298754,
+      "phi_cpt": 0.02582887,
+      "phi_dest_c1_pleno": 0.02306117,
+      "phi_dest_c2_inter": 0.02646828,
+      "phi_dest_c3_neutro": 0.0298754
+    },
+    "PA": {
+      "icms_dca_2025": 25081072565.66,
+      "iss_dca_2025": 2766062261.6,
+      "r0_2025": 18810804424.24,
+      "r0_avg": 18385424930.57,
+      "lambda": 0.977386,
+      "var_rel_gobetti": 0.143789,
+      "phi_neutro": 0.01827048,
+      "phi_cpt": 0.01785732,
+      "phi_dest_c1_pleno": 0.02097455,
+      "phi_dest_c2_inter": 0.01962252,
+      "phi_dest_c3_neutro": 0.01827048
+    },
+    "PB": {
+      "icms_dca_2025": 10419713017.45,
+      "iss_dca_2025": 542149606.99,
+      "r0_2025": 7814784763.09,
+      "r0_avg": 7566390378.52,
+      "lambda": 0.968215,
+      "var_rel_gobetti": 0.206672,
+      "phi_neutro": 0.00759031,
+      "phi_cpt": 0.00734905,
+      "phi_dest_c1_pleno": 0.00919275,
+      "phi_dest_c2_inter": 0.00839153,
+      "phi_dest_c3_neutro": 0.00759031
+    },
+    "PE": {
+      "icms_dca_2025": 27414254125.54,
+      "iss_dca_2025": 3613977441.61,
+      "r0_2025": 20560690594.15,
+      "r0_avg": 20964326023.43,
+      "lambda": 1.019631,
+      "var_rel_gobetti": 0.004254,
+      "phi_neutro": 0.0199701,
+      "phi_cpt": 0.02036214,
+      "phi_dest_c1_pleno": 0.02012892,
+      "phi_dest_c2_inter": 0.02004951,
+      "phi_dest_c3_neutro": 0.0199701
+    },
+    "PI": {
+      "icms_dca_2025": 8395199810.99,
+      "iss_dca_2025": 969337278.43,
+      "r0_2025": 6296399858.24,
+      "r0_avg": 5864832759.06,
+      "lambda": 0.931458,
+      "var_rel_gobetti": 0.473221,
+      "phi_neutro": 0.00611554,
+      "phi_cpt": 0.00569637,
+      "phi_dest_c1_pleno": 0.00904273,
+      "phi_dest_c2_inter": 0.00757913,
+      "phi_dest_c3_neutro": 0.00611554
+    },
+    "PR": {
+      "icms_dca_2025": 52742155677.36,
+      "iss_dca_2025": 7275090728.0,
+      "r0_2025": 39556616758.02,
+      "r0_avg": 40423856656.27,
+      "lambda": 1.021924,
+      "var_rel_gobetti": 0.156884,
+      "phi_neutro": 0.03842038,
+      "phi_cpt": 0.03926271,
+      "phi_dest_c1_pleno": 0.04461167,
+      "phi_dest_c2_inter": 0.04151603,
+      "phi_dest_c3_neutro": 0.03842038
+    },
+    "RJ": {
+      "icms_dca_2025": 55603869791.94,
+      "iss_dca_2025": 15630032640.7,
+      "r0_2025": 41702902343.96,
+      "r0_avg": 44850842528.48,
+      "lambda": 1.075485,
+      "var_rel_gobetti": 0.155635,
+      "phi_neutro": 0.04050502,
+      "phi_cpt": 0.04356254,
+      "phi_dest_c1_pleno": 0.04698142,
+      "phi_dest_c2_inter": 0.04374322,
+      "phi_dest_c3_neutro": 0.04050502
+    },
+    "RN": {
+      "icms_dca_2025": 9383667432.4,
+      "iss_dca_2025": 1327649402.35,
+      "r0_2025": 7037750574.3,
+      "r0_avg": 7143063102.41,
+      "lambda": 1.014964,
+      "var_rel_gobetti": 0.273664,
+      "phi_neutro": 0.0068356,
+      "phi_cpt": 0.00693788,
+      "phi_dest_c1_pleno": 0.00873833,
+      "phi_dest_c2_inter": 0.00778696,
+      "phi_dest_c3_neutro": 0.0068356
+    },
+    "RO": {
+      "icms_dca_2025": 8914247539.32,
+      "iss_dca_2025": 634322525.56,
+      "r0_2025": 6685685654.49,
+      "r0_avg": 6462635165.17,
+      "lambda": 0.966638,
+      "var_rel_gobetti": -0.084327,
+      "phi_neutro": 0.00649364,
+      "phi_cpt": 0.006277,
+      "phi_dest_c1_pleno": 0.00596795,
+      "phi_dest_c2_inter": 0.0062308,
+      "phi_dest_c3_neutro": 0.00649364
+    },
+    "RR": {
+      "icms_dca_2025": 2143083290.43,
+      "iss_dca_2025": 241834996.19,
+      "r0_2025": 1607312467.82,
+      "r0_avg": 1579927526.94,
+      "lambda": 0.982962,
+      "var_rel_gobetti": 0.030944,
+      "phi_neutro": 0.00156114,
+      "phi_cpt": 0.00153455,
+      "phi_dest_c1_pleno": 0.00161538,
+      "phi_dest_c2_inter": 0.00158826,
+      "phi_dest_c3_neutro": 0.00156114
+    },
+    "RS": {
+      "icms_dca_2025": 53501249510.32,
+      "iss_dca_2025": 6131160506.73,
+      "r0_2025": 40125937132.74,
+      "r0_avg": 43877124466.43,
+      "lambda": 1.093485,
+      "var_rel_gobetti": 0.140451,
+      "phi_neutro": 0.03897335,
+      "phi_cpt": 0.04261679,
+      "phi_dest_c1_pleno": 0.0446109,
+      "phi_dest_c2_inter": 0.04179213,
+      "phi_dest_c3_neutro": 0.03897335
+    },
+    "SC": {
+      "icms_dca_2025": 45170526262.28,
+      "iss_dca_2025": 5524148551.28,
+      "r0_2025": 33877894696.71,
+      "r0_avg": 32567120277.27,
+      "lambda": 0.961309,
+      "var_rel_gobetti": 0.001513,
+      "phi_neutro": 0.03290478,
+      "phi_cpt": 0.03163166,
+      "phi_dest_c1_pleno": 0.03307595,
+      "phi_dest_c2_inter": 0.03299037,
+      "phi_dest_c3_neutro": 0.03290478
+    },
+    "SE": {
+      "icms_dca_2025": 5843793660.31,
+      "iss_dca_2025": 882828320.96,
+      "r0_2025": 4382845245.23,
+      "r0_avg": 4399124492.06,
+      "lambda": 1.003714,
+      "var_rel_gobetti": 0.188067,
+      "phi_neutro": 0.00425695,
+      "phi_cpt": 0.00427276,
+      "phi_dest_c1_pleno": 0.00507617,
+      "phi_dest_c2_inter": 0.00466656,
+      "phi_dest_c3_neutro": 0.00425695
+    },
+    "SP": {
+      "icms_dca_2025": 237071553843.02,
+      "iss_dca_2025": 68461565019.87,
+      "r0_2025": 177803665382.26,
+      "r0_avg": 188334726920.64,
+      "lambda": 1.059229,
+      "var_rel_gobetti": -0.140385,
+      "phi_neutro": 0.1726964,
+      "phi_cpt": 0.18292496,
+      "phi_dest_c1_pleno": 0.1489993,
+      "phi_dest_c2_inter": 0.16084785,
+      "phi_dest_c3_neutro": 0.1726964
+    },
+    "TO": {
+      "icms_dca_2025": 8686212320.91,
+      "iss_dca_2025": 643550314.26,
+      "r0_2025": 6514659240.68,
+      "r0_avg": 6104757088.94,
+      "lambda": 0.93708,
+      "var_rel_gobetti": 0.130136,
+      "phi_neutro": 0.00632753,
+      "phi_cpt": 0.0059294,
+      "phi_dest_c1_pleno": 0.00717731,
+      "phi_dest_c2_inter": 0.00675242,
+      "phi_dest_c3_neutro": 0.00632753
+    }
+  }
+}
