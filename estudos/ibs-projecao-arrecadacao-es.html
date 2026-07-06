@@ -352,9 +352,10 @@
                         <div class="factor-title">O ICMS cai gradualmente e deixa de existir em 2033 <span class="factor-badge badge-certo">certo</span></div>
                         <div class="factor-desc">
                             Art. 128 ADCT: a alíquota efetiva do ICMS é reduzida em 1/10 ao ano,
-                            de 9/10 em 2029 a zero em 2033. Trata-se de disposição expressa em lei,
-                            sem margem de estimativa. A questão é se o IBS que substitui o ICMS
-                            compensa essa redução gradual.
+                            de 9/10 em 2029 a zero em 2033. Na fórmula: a parcela
+                            TotalBR × φ<sup>neutro</sup><sub>ES</sub> × f<sub>a</sub> declina
+                            de 90% a 0% do valor de referência do estado. Trata-se de disposição
+                            expressa em lei, sem margem de estimativa.
                         </div>
                     </div>
                 </li>
@@ -363,12 +364,13 @@
                     <div class="factor-body">
                         <div class="factor-title">O CPT histórico do ES é menor que sua participação em 2025: perda estrutural no IBSt <span class="factor-badge badge-certo">certo</span></div>
                         <div class="factor-desc">
-                            80% do IBS (em 2029–2032) e 90% (em 2033) é redistribuído pelo CPT histórico
-                            (média 2019–2025). No modelo, isso é capturado pelo coeficiente
-                            λ_ES = r₀ᵃᵛᵍ / r₀²⁰²⁵, onde r₀ᵃᵛᵍ é a média histórica deflacionada
-                            do ICMS estadual e r₀²⁰²⁵ é o nível de 2025. Como o ES cresceu acima da
-                            média nacional nesse período, λ_ES &lt; 1 (<span id="lambda-display-factor">≈ −5%</span> vs. 2025).
-                            Esse ajuste aplica-se ao IBSt em <em>todos os anos e todos os cenários</em>.
+                            80% do IBS (2029–2032) e 90% (2033) é redistribuído pelo CPT histórico
+                            (média 2019–2025). Na fórmula: IBSt = TotalBR × φ<sup>CPT</sup><sub>ES</sub>
+                            × s<sub>a</sub> × α<sub>a</sub>, onde φ<sup>CPT</sup><sub>ES</sub> &lt;
+                            φ<sup>neutro</sup><sub>ES</sub> porque o ES cresceu acima da média nacional
+                            nesse período. O fator λ<sub>ES</sub> = φ<sup>CPT</sup>/φ<sup>neutro</sup>
+                            captura essa diferença (<span id="lambda-display-factor">≈ −5%</span> vs. 2025).
+                            Aplica-se em <em>todos os anos e todos os cenários</em>.
                         </div>
                     </div>
                 </li>
@@ -414,35 +416,97 @@
                 cada uma correspondendo a um mecanismo do ADCT:
             </p>
             <div class="formula-box">
-                $$R_a = \underbrace{r_0^{2025}\cdot f_a}_{\text{Fator 1: ICMS residual}}
-                \;+\; s_a\cdot\Bigl[
-                \underbrace{\text{TotalBR}_{2025}\cdot\varphi^{CPT}_{ES}\cdot\alpha_a}_{\substack{\text{Fator 2: IBSt} \\ \text{via CPT histórico}}}
-                \;+\;\underbrace{\text{TotalBR}_{2025}\cdot\varphi^{dest}_{ES}\cdot(1-\alpha_a)\cdot(1-c_a)\cdot(1-\rho)}_{\text{Fatores 3 e 4: IBSd via coeficiente de destino}}
-                \Bigr]$$
+                $$R_a = \text{TotalBR}_{2025}\times\Bigl[
+                \underbrace{\varphi^{neutro}_{ES}\cdot f_a}_{\text{Fator 1: ICMS residual}}
+                \;+\; s_a\cdot\Bigl(
+                \underbrace{\varphi^{CPT}_{ES}\cdot\alpha_a}_{\substack{\text{Fator 2: IBSt} \\ \text{via CPT histórico}}}
+                \;+\;\underbrace{\varphi^{dest}_{ES}\cdot(1-\alpha_a)\cdot(1-c_a)\cdot(1-\rho)}_{\text{Fatores 3 e 4: IBSd via coeficiente de destino}}
+                \Bigr)\Bigr]$$
             </div>
-            <p class="prose" style="font-size:0.85rem">
-                Três bases estruturam o modelo. <strong>r₀²⁰²⁵</strong> é o nível contrafactual
-                fixo: o que o estado receberia sem reforma. <strong>r₀ᵃᵛᵍ</strong> é a média
-                histórica deflacionada (2019–2025), base do IBSt via CPT — equivalente a
-                TotalBR<sub>2025</sub> × φ<sup>CPT</sup><sub>ES</sub>, onde λ_ES = r₀ᵃᵛᵍ / r₀²⁰²⁵
-                &lt; 1 porque o ES cresceu acima da média nacional. <strong>TotalBR<sub>2025</sub></strong>
-                é o bolo nacional constante (ICMS + ISS, DCA 2025): premissa de reforma neutra em receita,
-                com alíquotas calibradas para preservar a arrecadação agregada. O IBSd usa diretamente
-                o coeficiente de destino φ<sup>dest</sup><sub>ES</sub> (Tabela 6, Estudo 07), que expressa
-                a participação do ES no bolo nacional sob o critério de consumo.
-            </p>
+            <div class="simplif-box" style="margin-top:1.5rem">
+                <strong>Por que essa formulação? A lógica do bolo constante</strong>
+
+                <p style="margin:0.8rem 0 0">
+                    A fórmula tem uma propriedade central: <strong>TotalBR<sub>2025</sub> aparece
+                    como fator comum</strong> — a receita de cada componente é o produto da mesma
+                    base nacional (o bolo) por um coeficiente φ específico de participação do ES.
+                    Isso não é simplificação algébrica: é a consequência direta da premissa de
+                    <em>neutralidade de receita</em> da reforma.
+                </p>
+
+                <p style="margin:0.8rem 0 0">
+                    <strong>Fundamento da premissa.</strong> O art. 130 do ADCT atribui ao Comitê
+                    Gestor do IBS a competência para fixar a alíquota de referência do novo imposto.
+                    A literatura técnica que embasou a reforma (Gobetti e Monteiro, IPEA, 2023;
+                    Rezende, FGV, 2023) converge para a hipótese de que essa alíquota será calibrada
+                    para preservar a arrecadação agregada nacional de ICMS e ISS. Nesse cenário,
+                    o IBS não cria nem destrói receita em nível nacional: distribui o mesmo bolo por
+                    critérios diferentes. TotalBR<sub>2025</sub> — a soma nacional de ICMS e ISS pelo
+                    DCA/SICONFI em 2025 — é a estimativa desse bolo a preços de 2025.
+                </p>
+
+                <p style="margin:0.8rem 0 0">
+                    <strong>O que cada φ representa.</strong> Com o bolo fixo, tudo que determina
+                    a receita de um estado é sua <em>participação</em> nele. A fórmula identifica
+                    três coeficientes de participação para o ES:
+                </p>
+                <ul style="margin:0.5rem 0 0.5rem 1.2rem;line-height:1.7;font-size:0.83rem">
+                    <li>
+                        <strong>φ<sup>neutro</sup><sub>ES</sub></strong> — participação pelo
+                        critério de origem em 2025 (ICMS estadual × 75% / TotalBR<sub>2025</sub>).
+                        É o ponto de partida: o que o ES receberia se a reforma simplesmente
+                        aplicasse ao bolo IBS a mesma lógica do ICMS vigente. É também a base
+                        do ICMS residual: conforme fa declina de 9/10 a 0, o estado perde
+                        φ<sup>neutro</sup> × f<sub>a</sub> × TotalBR de receita a cada ano.
+                        Equivale ao Cenário 3 (neutro) do coeficiente de destino — porque o
+                        cenário "neutro" é justamente não alterar a distribuição vigente.
+                    </li>
+                    <li>
+                        <strong>φ<sup>CPT</sup><sub>ES</sub></strong> — participação histórica
+                        do ES, medida pela média deflacionada de ICMS estadual de 2019 a 2025
+                        (base do CPT). Como o ES cresceu acima da média nacional nesse período,
+                        sua participação histórica média fica abaixo da pontual de 2025:
+                        λ<sub>ES</sub> = φ<sup>CPT</sup>/φ<sup>neutro</sup> &lt; 1. Esse
+                        coeficiente determina a receita de IBSt — a parcela de transição do IBS —
+                        e é <em>igual nos três cenários</em>: não é incerto, é estruturalmente
+                        adverso.
+                    </li>
+                    <li>
+                        <strong>φ<sup>dest</sup><sub>ES</sub></strong> — participação pelo
+                        critério de destino (consumo final dos bens tributados dentro do estado).
+                        Como o ES é exportador líquido — produz mais do que consome internamente
+                        —, esse coeficiente fica abaixo de φ<sup>neutro</sup> nos Cenários 1 e 2.
+                        A magnitude exata depende de onde ocorre o consumo dos bens produzidos
+                        no ES — um parâmetro empiricamente incerto, daí os três cenários.
+                    </li>
+                </ul>
+
+                <p style="margin:0.5rem 0 0">
+                    <strong>A reforma como transição entre distribuições.</strong> A equação
+                    descreve uma transição: o estado parte de uma receita proporcional a
+                    φ<sup>neutro</sup> (ICMS, critério de origem) e converge para uma receita
+                    proporcional a uma média ponderada de φ<sup>CPT</sup> e φ<sup>dest</sup>
+                    (IBS, critérios histórico e de destino). A pergunta central do estudo
+                    equivale a perguntar se essa média ponderada supera ou fica abaixo de
+                    φ<sup>neutro</sup>. Nos três cenários: φ<sup>CPT</sup> &lt; φ<sup>neutro</sup>
+                    e φ<sup>dest</sup> ≤ φ<sup>neutro</sup> — portanto a combinação também fica
+                    abaixo, e o ES perde receita em todos eles. A diferença entre os cenários
+                    é apenas a magnitude de φ<sup>dest</sup>.
+                </p>
+            </div>
             <div class="var-table-wrap">
                 <table class="var-table">
                     <thead>
                         <tr><th>Símbolo</th><th>Definição</th><th>Valor (ES, 2025)</th></tr>
                     </thead>
                     <tbody>
-                        <tr><td>$r_0^{2025}$</td><td>ICMS_ES_2025 (DCA) × 75%: base contrafactual estadual, fixa em todos os anos</td><td id="vt-r0-2025">—</td></tr>
-                        <tr><td>$r_0^{avg}$</td><td>Média histórica 2019–2025: média(ICMS_ES_t × 75% × defl_t), base IBSt via CPT</td><td id="vt-r0-avg">—</td></tr>
-                        <tr><td>$\varphi^{CPT}_{ES}$</td><td>$r_0^{avg}/\text{TotalBR}_{2025}$ — coeficiente de participação histórica IBSt no bolo nacional ($\lambda_{ES} &lt; 1$ embutido)</td><td id="vt-cptES">—</td></tr>
-                        <tr><td>$\lambda_{ES}$</td><td>$r_0^{avg}/r_0^{2025}$ — razão histórica/2025; encoda o ajuste CPT do IBSt</td><td id="vt-lambda">—</td></tr>
-                        <tr><td>$\text{TotalBR}_{2025}$</td><td>Soma nacional ICMS + ISS (DCA 2025): bolo constante — premissa de alíquota neutra em receita</td><td id="vt-totalBR">—</td></tr>
-                        <tr><td>$\varphi^{dest}_{ES}$</td><td>Coeficiente de destino ES (Tabela 6, Estudo 07): participação do ES no bolo nacional por cenário</td><td id="vt-delta">—</td></tr>
+                        <tr><td>$\text{TotalBR}_{2025}$</td><td>Soma nacional ICMS + ISS (DCA 2025): bolo constante — fator comum a todos os componentes da fórmula</td><td id="vt-totalBR">—</td></tr>
+                        <tr><td>$\varphi^{neutro}_{ES}$</td><td>$r_0^{2025}/\text{TotalBR}_{2025}$ — participação ES pelo critério de origem em 2025; base do ICMS residual e do Cenário 3 (destino neutro)</td><td id="vt-neutroES">—</td></tr>
+                        <tr><td>$\varphi^{CPT}_{ES}$</td><td>$r_0^{avg}/\text{TotalBR}_{2025}$ — participação histórica deflacionada 2019–2025; base do IBSt ($\lambda_{ES} &lt; 1$ embutido, determinístico)</td><td id="vt-cptES">—</td></tr>
+                        <tr><td>$\varphi^{dest}_{ES}$</td><td>Participação ES pelo critério de destino/consumo (Tabela 6, Estudo 07); base do IBSd; varia por cenário (incerto)</td><td id="vt-delta">—</td></tr>
+                        <tr><td>$\lambda_{ES}$</td><td>$\varphi^{CPT}_{ES}/\varphi^{neutro}_{ES} = r_0^{avg}/r_0^{2025}$ — ES cresceu acima da média nacional no período base, logo $\lambda &lt; 1$</td><td id="vt-lambda">—</td></tr>
+                        <tr><td>$r_0^{2025}$</td><td>$\text{TotalBR}_{2025}\times\varphi^{neutro}_{ES}$ — ICMS_ES_2025 (DCA) × 75%: valor monetário derivado</td><td id="vt-r0-2025">—</td></tr>
+                        <tr><td>$r_0^{avg}$</td><td>$\text{TotalBR}_{2025}\times\varphi^{CPT}_{ES}$ — média histórica deflacionada 2019–2025: valor monetário derivado</td><td id="vt-r0-avg">—</td></tr>
                         <tr><td>$f_a$</td><td>Fator de redução do ICMS (art. 128 ADCT): 9/10 em 2029; 0 em 2033</td><td>0,9 → 0</td></tr>
                         <tr><td>$s_a$</td><td>Share IBS total (art. 131 §1º ADCT): 10% em 2029; 100% em 2033</td><td>10% → 100%</td></tr>
                         <tr><td>$\alpha_a$</td><td>Fração IBSt (art. 131 §1º I–II ADCT): 80% para 2029–2032; 90% em 2033</td><td>80% / 90%</td></tr>
@@ -821,21 +885,20 @@
     }
 
     // ── Modelo de projeção ────────────────────────────────────────────────────
-    // r0_2025 = ICMS_ES_2025 (DCA) × 75%: base contrafactual estadual (já parcela estadual)
-    // cptES   = φ^CPT_ES = r0_avg / TotalBR_2025: coef. participação histórica IBSt (λ_ES < 1 embutido)
-    // IBSt: TotalBR_2025 × cptES × sa × αa — bolo constante nacional × φ^CPT_ES
-    // IBSd: TotalBR_2025 × coefDest × sa × (1−αa) — bolo constante nacional × φ_ES^dest
-    // coefDest (φ_ES^dest) é fração do bolo nacional atribuída ao ES via critério destino (Tabela 6, Estudo 07)
-    // CGIBS (ca) aplica-se APENAS ao IBSd pós-Seguro Receita (art. 51 LC 227/2026)
-    function calcYear(r0_2025, cptES, TotalBR, gRate, coefDest, ano, baseYear) {
+    // Base comum: TotalBR_2025 (bolo nacional ICMS+ISS, premissa de neutralidade de receita)
+    // neutroES = φ^neutro_ES = r0_2025 / TotalBR_2025: participação ES em 2025 (critério origem)
+    // cptES    = φ^CPT_ES   = r0_avg  / TotalBR_2025: participação histórica IBSt (λ_ES < 1 embutido)
+    // coefDest = φ^dest_ES             : participação pelo critério destino (Tabela 6, Estudo 07)
+    // R_a = TotalBR × [neutroES × fa + sa × (cptES × αa + coefDest × (1−αa) × (1−ca) × (1−ρ))]
+    function calcYear(neutroES, cptES, TotalBR, gRate, coefDest, ano, baseYear) {
         const a  = ADCT[ano];
         const gf = Math.pow(1 + gRate, ano - baseYear);
 
-        const cntEstadual = r0_2025 * gf;                            // referência sem reforma
+        const cntEstadual = TotalBR * gf * neutroES;                 // referência sem reforma (TotalBR × φ^neutro)
 
-        const icmsReform    = r0_2025 * gf * a.fa;                  // Fator 1: ICMS residual
+        const icmsReform    = TotalBR * gf * neutroES * a.fa;       // Fator 1: TotalBR × φ^neutro × fa
 
-        const ibst          = TotalBR * gf * a.sa * a.alphaBIS * cptES; // Fator 2: IBSt = TotalBR × φ^CPT_ES
+        const ibst          = TotalBR * gf * a.sa * a.alphaBIS * cptES; // Fator 2: TotalBR × φ^CPT_ES × sa × αa
 
         const ibsd_bruto    = TotalBR  * gf * a.sa * (1 - a.alphaBIS) * coefDest; // Fator 4
         const ibsSeguro     = ibsd_bruto * RHO;                      // Seguro Receita (art. 132)
@@ -964,11 +1027,12 @@
     // ── Render ────────────────────────────────────────────────────────────────
     // coefDests: { pess, inter, neutro } — frações de TotalBR (Tabela 6, Estudo 07)
     function render(r0_2025, r0_avg, TotalBR, gRate, baseYear, coefDests) {
-        const cptES = TotalBR > 0 ? r0_avg / TotalBR : 0;  // φ^CPT_ES = r0_avg / TotalBR_2025
+        const neutroES = TotalBR > 0 ? r0_2025 / TotalBR : 0;  // φ^neutro_ES = r0_2025 / TotalBR_2025
+        const cptES    = TotalBR > 0 ? r0_avg   / TotalBR : 0;  // φ^CPT_ES   = r0_avg  / TotalBR_2025
         const results = {};
         for (const sc of SCENARIOS) {
             results[sc.id] = {};
-            for (const ano of ANOS) results[sc.id][ano] = calcYear(r0_2025, cptES, TotalBR, gRate, coefDests[sc.id], ano, baseYear);
+            for (const ano of ANOS) results[sc.id][ano] = calcYear(neutroES, cptES, TotalBR, gRate, coefDests[sc.id], ano, baseYear);
         }
 
         document.getElementById('p-cnt-estadual').textContent = fmtBi(results['pess'][2029].cntEstadual);
@@ -1072,7 +1136,7 @@
 
         // Memória de cálculo 2029
         const rP = results['pess'][2029], rI = results['inter'][2029], rN = results['neutro'][2029];
-        const lambda = r0_2025 > 0 ? r0_avg / r0_2025 : 1;
+        const lambda = neutroES > 0 ? cptES / neutroES : 1;  // = r0_avg / r0_2025
 
         function rowSame(label, rule, val, cls='') {
             const c = cls ? ` class="${cls}"` : '';
@@ -1095,17 +1159,18 @@
         }
 
         document.getElementById('tbody-calc').innerHTML = [
-            secHead('A. Bases de referência (DCA/SICONFI, 2025)'),
-            rowSame('r₀²⁰²⁵ = ICMS_ES_2025 (DCA) × 75%', 'Base contrafactual estadual fixa', r0_2025),
-            rowSame('r₀ᵃᵛᵍ = média histórica deflacionada 2019–2025', 'Média(ICMS_ES_t × 75% × defl_t)', r0_avg),
-            rowStatic('λ_ES = r₀ᵃᵛᵍ / r₀²⁰²⁵', 'Razão histórica/2025; captura ajuste CPT do IBSt', `${lambda.toFixed(4).replace('.',',')} (${((lambda-1)*100).toFixed(2).replace('.', ',')}% vs. 2025)`),
+            secHead('A. Base comum e coeficientes de participação (DCA/SICONFI, 2025)'),
+            rowSame('TotalBR₂₀₂₅ = soma nacional ICMS+ISS', 'Base comum a todos os componentes (bolo constante)', TotalBR),
+            rowStatic('φ^neutro_ES = r₀²⁰²⁵ / TotalBR₂₀₂₅', 'Participação ES pelo critério de origem em 2025', `${(neutroES*100).toFixed(4).replace('.',',')}%  →  r₀²⁰²⁵ = ${fmtBi(TotalBR * neutroES)}`),
+            rowStatic('φ^CPT_ES = r₀ᵃᵛᵍ / TotalBR₂₀₂₅', 'Participação histórica deflacionada 2019–2025 (λ_ES embutido)', `${(cptES*100).toFixed(4).replace('.',',')}%  →  r₀ᵃᵛᵍ = ${fmtBi(TotalBR * cptES)}`),
+            rowStatic('λ_ES = φ^CPT_ES / φ^neutro_ES', 'ES cresceu acima da média nacional no período → λ < 1', `${lambda.toFixed(4).replace('.',',')} (${((lambda-1)*100).toFixed(2).replace('.', ',')}% vs. 2025)`),
 
-            secHead('B. Referência sem reforma: r₀²⁰²⁵ (receita estadual já no nível 75%)'),
-            rowSame('Receita estadual de referência (75% embutido em r₀²⁰²⁵)', 'r₀²⁰²⁵ × (1+g)⁰', rP.cntEstadual, 'row-total'),
+            secHead('B. Referência sem reforma: TotalBR × φ^neutro_ES (receita base 2025, sem crescimento)'),
+            rowSame('Receita estadual de referência sem reforma', 'TotalBR × φ^neutro_ES × (1+g)⁰', rP.cntEstadual, 'row-total'),
 
             secHead('C. Fator 1: ICMS residual — fa = 9/10 (art. 128 I ADCT)'),
             rowStatic('Fator fa em 2029', 'Art. 128 I ADCT', 'fa = 9/10 = 90%'),
-            rowSame('ICMS residual estadual = r₀²⁰²⁵ × fa', 'r₀²⁰²⁵ × 90%', rP.icmsReform, 'row-total'),
+            rowSame('ICMS residual = TotalBR × φ^neutro_ES × fa', 'TotalBR × φ^neutro × 90%', rP.icmsReform, 'row-total'),
 
             secHead('D. Fator 2: IBSt via CPT histórico — sa × αa = 8% (art. 131 §1º I ADCT) · igual nos três cenários'),
             rowStatic('φ_ES^CPT = r₀ᵃᵛᵍ / TotalBR₂₀₂₅', 'Coef. participação histórica IBSt', `${(cptES*100).toFixed(4).replace('.',',')}% (λ_ES = ${lambda.toFixed(4).replace('.',',')} embutido)`),
@@ -1113,7 +1178,6 @@
             rowSame('IBSt = TotalBR₂₀₂₅ × φ_ES^CPT × sa × αa', 'TotalBR × φ_CPT × 8%', rP.ibst, 'row-total'),
 
             secHead('E. Fator 4: IBSd via coeficiente de destino — sa × (1−αa) = 2% (art. 131 §1º I ADCT) · varia por cenário'),
-            rowStatic('TotalBR₂₀₂₅ = soma nacional ICMS+ISS (DCA 2025)', 'Bolo constante — premissa de alíquota neutra', fmtBi(TotalBR, 2)),
             rowStatic('φ_ES^dest (Tabela 6, Estudo 07) — coeficiente de destino ES ¹', 'Nota 1', `C1: ${(coefDests.pess*100).toFixed(4).replace('.',',')}% | C2: ${(coefDests.inter*100).toFixed(4).replace('.',',')}% | C3: ${(coefDests.neutro*100).toFixed(4).replace('.',',')}%`),
             rowScen('IBSd bruto = TotalBR × φ_ES^dest × sa × (1−αa)', 'TotalBR × φ × 2%', rP.ibsd_bruto, rI.ibsd_bruto, rN.ibsd_bruto),
             rowScen('Seguro Receita = IBSd bruto × ρ ²', '× 5% · art. 132 ADCT', rP.ibsSeguro, rI.ibsSeguro, rN.ibsSeguro),
@@ -1253,8 +1317,10 @@
         if (elVtLambda)  elVtLambda.textContent  = lambda.toFixed(4).replace('.',',') + ' (' + fmtPct(lambda-1, 1) + ')';
         const fmtCoef = v => (v * 100).toFixed(4).replace('.', ',') + '%';
         if (elVtDelta)   elVtDelta.textContent   = `${fmtCoef(coefDest_pleno)} (C1) / ${fmtCoef(coefDest_inter)} (C2) / ${fmtCoef(coefDest_neutro)} (C3)`;
-        const elVtCptES  = document.getElementById('vt-cptES');
-        if (elVtCptES)   elVtCptES.textContent   = fmtCoef(cptES);
+        const elVtCptES   = document.getElementById('vt-cptES');
+        if (elVtCptES)    elVtCptES.textContent   = fmtCoef(cptES);
+        const elVtNeutroES = document.getElementById('vt-neutroES');
+        if (elVtNeutroES)  elVtNeutroES.textContent = fmtCoef(coefDest_neutro);
 
         const elVtTotalBR = document.getElementById('vt-totalBR');
         if (elVtTotalBR) elVtTotalBR.textContent = fmtBi(total_br_2025, 2);
