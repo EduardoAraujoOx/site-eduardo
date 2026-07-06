@@ -200,10 +200,11 @@
 
                 <p class="meto-note">
                     A receita estadual de ICMS/IBS projetada para o ano \(a \in \{2029,\ldots,2033\}\)
-                    é decomposta em três parcelas — ICMS residual em extinção gradual, IBSt pelo critério
-                    histórico e IBSd pelo critério destino — todas derivadas de uma base comum:
-                    o bolo nacional \(\mathrm{TotalBR}_{2025}\) (ICMS + ISS, DCA 2025), conforme a
-                    premissa de neutralidade de receita do art. 130 ADCT.
+                    é decomposta em três parcelas: ICMS residual em extinção gradual, IBS distribuído
+                    pelo critério histórico (IBSt) e IBS distribuído pelo critério destino (IBSd).
+                    Todas derivam de uma base comum: o bolo nacional \(\mathrm{TotalBR}_{2025}\)
+                    (soma de ICMS e ISS, DCA 2025), conforme a premissa de neutralidade de receita
+                    do art. 130 ADCT.
                 </p>
 
                 <div class="meto-formula-box">
@@ -292,9 +293,9 @@ $$R_{a,\,\text{UF}} \;=\; \mathrm{TotalBR}_{2025}\cdot\Bigl[
                 <table class="param-table">
                     <thead><tr><th>Cenário</th><th>\(\varphi^{dest}_{\text{UF}}\)</th><th>Descrição</th></tr></thead>
                     <tbody>
-                        <tr><td>1 — Redistribuição integral</td><td>\(\varphi^{neutro}_{\text{UF}}\times(1+\mathrm{varRel}_{\text{UF}})\), normalizado</td><td>O IBSd é alocado conforme a redistribuição plena pelo critério destino. Cada estado recebe uma fração do bolo proporcional ao consumo final estimado por Gobetti e Monteiro (IPEA, 2023, Tabela 1), normalizada para conservar o agregado.</td></tr>
-                        <tr><td>2 — Redistribuição moderada</td><td>\((\varphi^{neutro}_{\text{UF}}+\varphi^{dest,pleno}_{\text{UF}})/2\)</td><td>Média aritmética entre os coeficientes do Cenário 3 (neutro) e do Cenário 1 (pleno). Por ser transformação linear de uma redistribuição soma-zero, o bolo total entre estados é conservado.</td></tr>
-                        <tr><td>3 — Neutro</td><td>\(\varphi^{neutro}_{\text{UF}} = r_0^{2025}/\mathrm{TotalBR}_{2025}\)</td><td>O IBSd é distribuído pelo mesmo critério histórico de origem de 2025, sem redistribuição por destino. Variações residuais decorrem exclusivamente do efeito CPT (\(\lambda\neq 1\)) e das deduções de CGIBS e Seguro-Receita.</td></tr>
+                        <tr><td>1: Redistribuição integral</td><td>\(\varphi^{neutro}_{\text{UF}}\times(1+\mathrm{varRel}_{\text{UF}})\), normalizado</td><td>O IBSd é alocado conforme a redistribuição plena pelo critério destino. Cada estado recebe uma fração do bolo proporcional ao consumo final estimado por Gobetti e Monteiro (IPEA, 2023, Tabela 1), normalizada para conservar o agregado nacional.</td></tr>
+                        <tr><td>2: Redistribuição moderada</td><td>\((\varphi^{neutro}_{\text{UF}}+\varphi^{dest,pleno}_{\text{UF}})/2\)</td><td>Média aritmética entre os coeficientes do Cenário 3 (neutro) e do Cenário 1 (pleno). Por ser transformação linear de uma redistribuição soma-zero, o bolo total entre estados é conservado.</td></tr>
+                        <tr><td>3: Neutro</td><td>\(\varphi^{neutro}_{\text{UF}} = r_0^{2025}/\mathrm{TotalBR}_{2025}\)</td><td>O IBSd é distribuído pelo critério de origem vigente em 2025, sem redistribuição por destino. Variações residuais decorrem do efeito CPT (\(\lambda\neq 1\)) e das deduções de CGIBS e Seguro-Receita sobre o IBSd.</td></tr>
                     </tbody>
                 </table>
 
@@ -330,7 +331,7 @@ $$R_{a,\,\text{UF}} \;=\; \mathrm{TotalBR}_{2025}\cdot\Bigl[
                     coeficientes \(\varphi^{neutro}\), \(\varphi^{CPT}\) e \(\varphi^{dest}\) derivados
                     da mesma fonte (Gobetti e Monteiro, IPEA 2023, tabela1_static) com a mesma
                     normalização. Os resultados projetados para o Espírito Santo nas tabelas abaixo
-                    são compatíveis com os exibidos no Estudo 03 — diferenças de centésimos decorrem
+                    são compatíveis com os exibidos no Estudo 03; eventuais diferenças de centésimos decorrem
                     apenas de arredondamentos de ponto flutuante.
                 </p>
             </div>
