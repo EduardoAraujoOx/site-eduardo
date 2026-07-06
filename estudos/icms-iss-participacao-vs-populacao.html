@@ -575,6 +575,106 @@
                 segundo Gobetti e Monteiro, a maior parte do golpe é absorvida pelo tesouro estadual.
             </div>
 
+            <!-- ═══════════════ PARTE 3D — COEFICIENTES ═══════════════ -->
+            <span class="section-label" style="margin-top:2.5rem">Tabela 5 e Gráfico 5: coeficiente de participação por esfera, atual x destino pleno</span>
+            <p class="section-intro">
+                A Tabela 4 mostra valores em reais; esta tabela traduz os mesmos dados para o formato de
+                coeficiente de participação, o mesmo tipo de número usado no estudo do Coeficiente de
+                Participação de Transição. Para cada UF e cada esfera de governo, calculamos a razão entre a
+                receita da UF e a soma nacional daquela esfera, tanto na situação atual (2022, cenário
+                pré-reforma) quanto no cenário de destino pleno de Gobetti e Monteiro (2023, cenário pós-reforma
+                estático, sem regra de transição). Por construção, a soma dos coeficientes de todas as 27 UFs é
+                sempre 100% em cada uma das quatro colunas de coeficiente, tanto hoje quanto no cenário simulado:
+                a reforma redistribui o bolo entre os entes, mas não altera o tamanho do bolo em si. A linha
+                "BRASIL", no rodapé da tabela, confirma essa soma.
+            </p>
+            <div id="status-gobetti-coef" class="status-bar">
+                <span class="status-dot"></span>
+                <span>Carregando dados…</span>
+            </div>
+            <div class="chart-panel">
+                <p class="chart-panel-title">Variação do coeficiente de participação (pontos percentuais), atual → destino pleno</p>
+                <div class="chart-canvas-wrap"><canvas id="chart-gobetti-coef"></canvas></div>
+                <div class="chart-legend-note">
+                    <span><span class="legend-swatch" style="background:#2a78d6"></span>Coeficiente estadual</span>
+                    <span><span class="legend-swatch" style="background:#1baf7a"></span>Coeficiente municipal</span>
+                </div>
+            </div>
+            <div class="data-table-wrap">
+                <table class="data-table" id="table-gobetti-coef">
+                    <thead>
+                        <tr>
+                            <th class="th-uf th-year" rowspan="2">UF</th>
+                            <th class="th-group" colspan="3" style="border-bottom:1px solid var(--border)">Coeficiente estadual (%)</th>
+                            <th class="th-group" colspan="3" style="border-bottom:1px solid var(--border)">Coeficiente municipal (%)</th>
+                        </tr>
+                        <tr>
+                            <th>Atual</th>
+                            <th>Destino pleno</th>
+                            <th>Δ (p.p.)</th>
+                            <th>Atual</th>
+                            <th>Destino pleno</th>
+                            <th>Δ (p.p.)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-gobetti-coef">
+                        <tr><td colspan="7" class="loading-cell">Aguardando dados…</td></tr>
+                    </tbody>
+                    <tfoot id="tfoot-gobetti-coef"></tfoot>
+                </table>
+            </div>
+
+            <div class="callout">
+                <strong>O coeficiente do ES cai quase pela metade nas duas esferas.</strong> Hoje, o governo
+                estadual capixaba responde por 2,42% do bolo nacional de receita estadual; no cenário de destino
+                pleno, essa fatia cairia para 1,59%, uma perda de 0,82 ponto percentual. Os municípios capixabas,
+                somados, saem de 2,14% do bolo municipal nacional para 1,68%, uma perda de 0,47 ponto percentual.
+                Um detalhe importante para quem acompanhou o estudo do Coeficiente de Participação de Transição:
+                o número "2,4%" citado ali como referência de destino do ES parece, à luz destes dados, ser na
+                verdade a participação <strong>atual</strong> do ES (origem), não a de destino. Pelos números do
+                próprio Gobetti e Monteiro, a participação combinada do ES (estado + municípios) no cenário de
+                destino pleno fica em torno de 1,6%, não 2,4%. Aquela nota de rodapé provavelmente precisa de
+                correção.
+            </div>
+
+            <!-- ═══════════════ PARTE 3E — VALIDAÇÃO ═══════════════ -->
+            <span class="section-label" style="margin-top:2.5rem">Verificação: os números da Tabela 4 são confiáveis?</span>
+            <p class="section-intro">
+                O saldo (a variação, em reais) de cada esfera na Tabela 4 vem inteiramente de números que o
+                próprio Gobetti publica: o saldo municipal é a Tabela 2 do paper, e o saldo estadual é o resíduo
+                entre a Tabela 1 e essa Tabela 2. Nenhum dado externo entra nessa conta. A única parte estimada é
+                o <em>ponto de partida</em> de cada esfera (quanto cada uma arrecadava antes da reforma), porque
+                o paper não divide o valor pré-reforma da Tabela 1 entre estado e município por UF. Para checar
+                se essa estimativa é confiável, comparamos o total de ICMS+ISS de 2022 que o SICONFI registra
+                para cada UF com o valor pré-reforma que o próprio Gobetti reporta na Tabela 1: quanto mais perto
+                de zero for essa diferença, mais confiável é a proporção estado/município que estimamos para
+                aquela UF. Para o Espírito Santo, a diferença é de apenas 1,3%, uma das menores do país: o total
+                de R$ 18,37 bilhões do SICONFI praticamente bate com os R$ 18,61 bilhões que Gobetti usa como
+                ponto de partida, o que dá confiança de que a queda de 34% na esfera estadual não é um artefato
+                da nossa estimativa. Já Mato Grosso e Tocantins, com diferenças de 52% e 46%, são os dois casos em
+                que a proporção estimada merece mais cautela.
+            </p>
+            <div id="status-validacao" class="status-bar">
+                <span class="status-dot"></span>
+                <span>Carregando dados…</span>
+            </div>
+            <div class="data-table-wrap">
+                <table class="data-table" id="table-validacao">
+                    <thead>
+                        <tr>
+                            <th class="th-uf">UF</th>
+                            <th>Total SICONFI 2022<br><small style="font-weight:400">(ICMS+ISS, R$ bi)</small></th>
+                            <th>Total Gobetti<br><small style="font-weight:400">(Tabela 1, R$ bi)</small></th>
+                            <th>Diferença<br><small style="font-weight:400">(%)</small></th>
+                            <th>Confiabilidade da<br><small style="font-weight:400">proporção estimada</small></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-validacao">
+                        <tr><td colspan="5" class="loading-cell">Aguardando dados…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
             <!-- Metodologia -->
             <div class="metodologia">
                 <h3>Como foram calculadas as participações (Partes 1 e 2)</h3>
@@ -648,6 +748,12 @@
                     de ICMS do SICONFI diverge mais do total reportado por Gobetti (Mato Grosso e Tocantins, onde
                     a base do DCA parece incompleta em 2022). Com o ponto de partida e o saldo de cada esfera,
                     o ponto de chegada é soma simples.
+                </p>
+                <p>
+                    A Tabela 5 não usa nenhum dado novo: ela recalcula a Tabela 4, dividindo a receita de cada UF
+                    pela soma nacional da mesma esfera e do mesmo cenário (atual ou destino pleno). É a mesma
+                    lógica de coeficiente de participação do primeiro estudo desta série, aplicada ao cenário
+                    estático de Gobetti em vez do critério histórico de origem.
                 </p>
             </div>
 
@@ -1218,10 +1324,168 @@
         });
     }
 
+    async function loadGobettiCoef() {
+        let data;
+        try {
+            const resp = await fetch('/data/gobetti-2023-perdas-ganhos-uf.json?t=' + Date.now());
+            if (!resp.ok) throw new Error('not found');
+            data = await resp.json();
+        } catch (e) {
+            document.getElementById('status-gobetti-coef').innerHTML =
+                '<span class="status-dot"></span> Dados não disponíveis.';
+            return;
+        }
+        const bloco = data.tabela5_coeficientes;
+        if (!bloco) {
+            document.getElementById('status-gobetti-coef').innerHTML =
+                '<span class="status-dot"></span> Dados não disponíveis.';
+            return;
+        }
+
+        document.getElementById('status-gobetti-coef').innerHTML =
+            '<span class="status-dot" style="background:#22c55e"></span> 27 UFs · soma verificada = 100% em cada coluna';
+
+        const rows = [...bloco.ufs].sort((a, b) => a.coef_estado_diff - b.coef_estado_diff);
+
+        const tbody = document.getElementById('tbody-gobetti-coef');
+        tbody.innerHTML = rows.map(r => `<tr${r.uf === 'ES' ? ' class="row-es"' : ''}>
+            <td class="td-uf">${r.uf} <small style="font-weight:400;color:var(--text-muted)">${NOMES_UF[r.uf]}</small></td>
+            <td>${fmtPct(r.coef_estado_atual, 2)}</td>
+            <td>${fmtPct(r.coef_estado_pleno, 2)}</td>
+            <td style="font-weight:600">${fmtDiff(r.coef_estado_diff, 2, ' p.p.')}</td>
+            <td>${fmtPct(r.coef_muni_atual, 2)}</td>
+            <td>${fmtPct(r.coef_muni_pleno, 2)}</td>
+            <td style="font-weight:600">${fmtDiff(r.coef_muni_diff, 2, ' p.p.')}</td>
+        </tr>`).join('');
+
+        const s = bloco.soma_verificacao;
+        document.getElementById('tfoot-gobetti-coef').innerHTML = `<tr>
+            <td class="td-uf">BRASIL (soma)</td>
+            <td>${fmtPct(s.coef_estado_atual, 2)}</td>
+            <td>${fmtPct(s.coef_estado_pleno, 2)}</td>
+            <td>–</td>
+            <td>${fmtPct(s.coef_muni_atual, 2)}</td>
+            <td>${fmtPct(s.coef_muni_pleno, 2)}</td>
+            <td>–</td>
+        </tr>`;
+
+        buildGobettiCoefChart(rows);
+    }
+
+    function buildGobettiCoefChart(rows) {
+        const el = document.getElementById('chart-gobetti-coef');
+        if (!el) return;
+
+        const sorted = [...rows].sort((a, b) => b.coef_estado_diff - a.coef_estado_diff);
+        el.parentElement.style.height = Math.max(420, sorted.length * 46) + 'px';
+
+        new Chart(el, {
+            type: 'bar',
+            data: {
+                labels: sorted.map(r => r.uf),
+                datasets: [
+                    {
+                        label: 'Coeficiente estadual',
+                        data: sorted.map(r => r.coef_estado_diff),
+                        backgroundColor: '#2a78d6',
+                        borderRadius: 3,
+                        datalabels: {
+                            anchor: 'end', align: 'end', clamp: true, clip: false,
+                            color: '#3a3a3a', font: { size: 8, family: "'JetBrains Mono', monospace" },
+                            formatter: v => (v >= 0 ? '+' : '') + v.toFixed(2)
+                        }
+                    },
+                    {
+                        label: 'Coeficiente municipal',
+                        data: sorted.map(r => r.coef_muni_diff),
+                        backgroundColor: '#1baf7a',
+                        borderRadius: 3,
+                        datalabels: {
+                            anchor: 'end', align: 'end', clamp: true, clip: false,
+                            color: '#3a3a3a', font: { size: 8, family: "'JetBrains Mono', monospace" },
+                            formatter: v => (v >= 0 ? '+' : '') + v.toFixed(2)
+                        }
+                    }
+                ]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: ctx => NOMES_UF[ctx[0].label] || ctx[0].label,
+                            label: ctx => `${ctx.dataset.label}: ${ctx.parsed.x >= 0 ? '+' : ''}${ctx.parsed.x.toFixed(3)} p.p.`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grace: '15%',
+                        title: { display: true, text: 'Variação do coeficiente de participação (p.p.), atual → destino pleno', color: '#6E6E6E', font: { size: 11 } },
+                        ticks: { color: '#6E6E6E' },
+                        grid: { color: 'rgba(0,0,0,0.06)' }
+                    },
+                    y: {
+                        ticks: {
+                            color: (ctx) => ctx.tick && ctx.tick.label === 'ES' ? '#b0342e' : '#3a3a3a',
+                            font: (ctx) => ({ size: 11, weight: ctx.tick && ctx.tick.label === 'ES' ? '700' : '400', family: "'JetBrains Mono', monospace" })
+                        },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+
+    async function loadValidacao() {
+        let data;
+        try {
+            const resp = await fetch('/data/gobetti-2023-perdas-ganhos-uf.json?t=' + Date.now());
+            if (!resp.ok) throw new Error('not found');
+            data = await resp.json();
+        } catch (e) {
+            document.getElementById('status-validacao').innerHTML =
+                '<span class="status-dot"></span> Dados não disponíveis.';
+            return;
+        }
+        const bloco = data.validacao_siconfi_gobetti;
+        if (!bloco) {
+            document.getElementById('status-validacao').innerHTML =
+                '<span class="status-dot"></span> Dados não disponíveis.';
+            return;
+        }
+
+        document.getElementById('status-validacao').innerHTML =
+            '<span class="status-dot" style="background:#22c55e"></span> 27 UFs · SICONFI/STN DCA Anexo I-C 2022 vs. Gobetti e Monteiro (2023), Tabela 1';
+
+        const rows = [...bloco.ufs].sort((a, b) => Math.abs(b.diff_pct) - Math.abs(a.diff_pct));
+
+        const tbody = document.getElementById('tbody-validacao');
+        tbody.innerHTML = rows.map(r => {
+            const absDiff = Math.abs(r.diff_pct);
+            let label, color;
+            if (absDiff <= 3) { label = 'Alta'; color = '#1a7a3c'; }
+            else if (absDiff <= 10) { label = 'Média'; color = '#b8860b'; }
+            else { label = 'Baixa'; color = '#b0342e'; }
+            return `<tr${r.uf === 'ES' ? ' class="row-es"' : ''}>
+            <td class="td-uf">${r.uf} <small style="font-weight:400;color:var(--text-muted)">${NOMES_UF[r.uf]}</small></td>
+            <td>${fmtBi(r.siconfi_total)}</td>
+            <td>${fmtBi(r.gobetti_total)}</td>
+            <td>${fmtDiff(r.diff_pct, 1, '%')}</td>
+            <td style="font-weight:600;color:${color}">${label}</td>
+        </tr>`;
+        }).join('');
+    }
+
     loadParticipacao();
     loadGobetti();
     loadGobettiMunis();
     loadGobettiEsferas();
+    loadGobettiCoef();
+    loadValidacao();
     </script>
 </body>
 </html>
