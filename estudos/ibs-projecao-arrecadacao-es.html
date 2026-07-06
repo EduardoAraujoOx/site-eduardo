@@ -416,7 +416,7 @@
             <div class="formula-box">
                 $$R_a = \underbrace{r_0^{2025}\cdot f_a}_{\text{Fator 1: ICMS residual}}
                 \;+\; s_a\cdot\Bigl[
-                \underbrace{r_0^{avg}\cdot\alpha_a}_{\substack{\text{Fator 2: IBSt} \\ \text{via CPT histórico}}}
+                \underbrace{\text{TotalBR}_{2025}\cdot\varphi^{CPT}_{ES}\cdot\alpha_a}_{\substack{\text{Fator 2: IBSt} \\ \text{via CPT histórico}}}
                 \;+\;\underbrace{\text{TotalBR}_{2025}\cdot\varphi^{dest}_{ES}\cdot(1-\alpha_a)\cdot(1-c_a)\cdot(1-\rho)}_{\text{Fatores 3 e 4: IBSd via coeficiente de destino}}
                 \Bigr]$$
             </div>
@@ -439,6 +439,7 @@
                     <tbody>
                         <tr><td>$r_0^{2025}$</td><td>ICMS_ES_2025 (DCA) × 75%: base contrafactual estadual, fixa em todos os anos</td><td id="vt-r0-2025">—</td></tr>
                         <tr><td>$r_0^{avg}$</td><td>Média histórica 2019–2025: média(ICMS_ES_t × 75% × defl_t), base IBSt via CPT</td><td id="vt-r0-avg">—</td></tr>
+                        <tr><td>$\varphi^{CPT}_{ES}$</td><td>$r_0^{avg}/\text{TotalBR}_{2025}$ — coeficiente de participação histórica IBSt no bolo nacional ($\lambda_{ES} &lt; 1$ embutido)</td><td id="vt-cptES">—</td></tr>
                         <tr><td>$\lambda_{ES}$</td><td>$r_0^{avg}/r_0^{2025}$ — razão histórica/2025; encoda o ajuste CPT do IBSt</td><td id="vt-lambda">—</td></tr>
                         <tr><td>$\text{TotalBR}_{2025}$</td><td>Soma nacional ICMS + ISS (DCA 2025): bolo constante — premissa de alíquota neutra em receita</td><td id="vt-totalBR">—</td></tr>
                         <tr><td>$\varphi^{dest}_{ES}$</td><td>Coeficiente de destino ES (Tabela 6, Estudo 07): participação do ES no bolo nacional por cenário</td><td id="vt-delta">—</td></tr>
@@ -821,12 +822,12 @@
 
     // ── Modelo de projeção ────────────────────────────────────────────────────
     // r0_2025 = ICMS_ES_2025 (DCA) × 75%: base contrafactual estadual (já parcela estadual)
-    // r0_avg  = média histórica 2019–2025 (ICMS_ES_t × 75% × defl_t): base IBSt via CPT
-    // λ_ES = r0_avg / r0_2025 captura perda estrutural do IBSt (Fator 2), já embutido em r0_avg
+    // cptES   = φ^CPT_ES = r0_avg / TotalBR_2025: coef. participação histórica IBSt (λ_ES < 1 embutido)
+    // IBSt: TotalBR_2025 × cptES × sa × αa — bolo constante nacional × φ^CPT_ES
     // IBSd: TotalBR_2025 × coefDest × sa × (1−αa) — bolo constante nacional × φ_ES^dest
     // coefDest (φ_ES^dest) é fração do bolo nacional atribuída ao ES via critério destino (Tabela 6, Estudo 07)
     // CGIBS (ca) aplica-se APENAS ao IBSd pós-Seguro Receita (art. 51 LC 227/2026)
-    function calcYear(r0_2025, r0_avg, TotalBR, gRate, coefDest, ano, baseYear) {
+    function calcYear(r0_2025, cptES, TotalBR, gRate, coefDest, ano, baseYear) {
         const a  = ADCT[ano];
         const gf = Math.pow(1 + gRate, ano - baseYear);
 
@@ -834,7 +835,7 @@
 
         const icmsReform    = r0_2025 * gf * a.fa;                  // Fator 1: ICMS residual
 
-        const ibst          = r0_avg  * gf * a.sa * a.alphaBIS;     // Fator 2: IBSt via CPT histórico
+        const ibst          = TotalBR * gf * a.sa * a.alphaBIS * cptES; // Fator 2: IBSt = TotalBR × φ^CPT_ES
 
         const ibsd_bruto    = TotalBR  * gf * a.sa * (1 - a.alphaBIS) * coefDest; // Fator 4
         const ibsSeguro     = ibsd_bruto * RHO;                      // Seguro Receita (art. 132)
@@ -963,10 +964,11 @@
     // ── Render ────────────────────────────────────────────────────────────────
     // coefDests: { pess, inter, neutro } — frações de TotalBR (Tabela 6, Estudo 07)
     function render(r0_2025, r0_avg, TotalBR, gRate, baseYear, coefDests) {
+        const cptES = TotalBR > 0 ? r0_avg / TotalBR : 0;  // φ^CPT_ES = r0_avg / TotalBR_2025
         const results = {};
         for (const sc of SCENARIOS) {
             results[sc.id] = {};
-            for (const ano of ANOS) results[sc.id][ano] = calcYear(r0_2025, r0_avg, TotalBR, gRate, coefDests[sc.id], ano, baseYear);
+            for (const ano of ANOS) results[sc.id][ano] = calcYear(r0_2025, cptES, TotalBR, gRate, coefDests[sc.id], ano, baseYear);
         }
 
         document.getElementById('p-cnt-estadual').textContent = fmtBi(results['pess'][2029].cntEstadual);
@@ -1106,9 +1108,9 @@
             rowSame('ICMS residual estadual = r₀²⁰²⁵ × fa', 'r₀²⁰²⁵ × 90%', rP.icmsReform, 'row-total'),
 
             secHead('D. Fator 2: IBSt via CPT histórico — sa × αa = 8% (art. 131 §1º I ADCT) · igual nos três cenários'),
-            rowStatic('sa × αa = 10% × 80%', 'Share IBS × fração IBSt', '8,00% aplicado sobre r₀ᵃᵛᵍ'),
-            rowStatic('λ_ES embutido em r₀ᵃᵛᵍ', 'λ = r₀ᵃᵛᵍ / r₀²⁰²⁵', `${lambda.toFixed(4).replace('.',',')} — IBSt = r₀ᵃᵛᵍ × 8%`),
-            rowSame('IBSt = r₀ᵃᵛᵍ × sa × αa', 'r₀ᵃᵛᵍ × 8%', rP.ibst, 'row-total'),
+            rowStatic('φ_ES^CPT = r₀ᵃᵛᵍ / TotalBR₂₀₂₅', 'Coef. participação histórica IBSt', `${(cptES*100).toFixed(4).replace('.',',')}% (λ_ES = ${lambda.toFixed(4).replace('.',',')} embutido)`),
+            rowStatic('sa × αa = 10% × 80%', 'Share IBS × fração IBSt', '8,00% sobre TotalBR₂₀₂₅ × φ_ES^CPT'),
+            rowSame('IBSt = TotalBR₂₀₂₅ × φ_ES^CPT × sa × αa', 'TotalBR × φ_CPT × 8%', rP.ibst, 'row-total'),
 
             secHead('E. Fator 4: IBSd via coeficiente de destino — sa × (1−αa) = 2% (art. 131 §1º I ADCT) · varia por cenário'),
             rowStatic('TotalBR₂₀₂₅ = soma nacional ICMS+ISS (DCA 2025)', 'Bolo constante — premissa de alíquota neutra', fmtBi(TotalBR, 2)),
@@ -1155,6 +1157,40 @@
             return;
         }
 
+        // ── Deflators: TotalBR_2025 / TotalBR_t (ICMS + ISS, DCA) ───────────
+        const dca_icms = data.dca_icms_por_uf || {};
+        const dca_iss  = data.dca_iss_por_uf  || {};
+        const totals_br = {};
+        for (const yr of ANOS_REF) {
+            const s_icms = Object.values(dca_icms[yr] || {}).reduce((s,v) => s+v, 0);
+            const s_iss  = Object.values(dca_iss[yr]  || {}).reduce((s,v) => s+v, 0);
+            totals_br[yr] = s_icms + s_iss;
+        }
+        const total_br_2025 = totals_br['2025'] || 1;
+        const deflators = {};
+        for (const yr of ANOS_REF) deflators[yr] = totals_br[yr] > 0 ? total_br_2025 / totals_br[yr] : 1;
+
+        // ── r0_2025 e r0_avg para ES (DCA 2025) ──────────────────────────────
+        const icms_es_2025 = dca_icms['2025']?.['ES'];
+        if (icms_es_2025 == null) {
+            document.getElementById('status-bar').innerHTML =
+                '<span class="status-dot pending"></span> ICMS ES 2025 não encontrado nos dados (DCA)';
+            return;
+        }
+        const r0_2025 = icms_es_2025 * 0.75;
+
+        let sum_r0 = 0, n_r = 0;
+        for (const yr of ANOS_REF) {
+            const icms = dca_icms[yr]?.['ES'];
+            if (icms != null) { sum_r0 += icms * 0.75 * deflators[yr]; n_r++; }
+        }
+        const r0_avg = n_r > 0 ? sum_r0 / n_r : r0_2025;
+        const lambda = r0_2025 > 0 ? r0_avg / r0_2025 : 1.0;
+
+        // ── φ^CPT_ES: coeficiente de participação histórica IBSt ──────────────
+        // cptES = r0_avg / TotalBR_2025; λ_ES < 1 embutido (ES cresceu menos que média nacional)
+        const cptES = r0_avg / total_br_2025;
+
         // ── φ_ES^dest: coeficiente de destino ES — replica Tabela 6 do Estudo 07 ──────
         // Metodologia: neutroEstado = ICMS_ES × 0.75 / TotalBR_2025
         //              plenoEstado  = neutroEstado × (1 + varRel_ES) × escala
@@ -1192,36 +1228,6 @@
         const coefDest_inter  = (coefDest_neutro + coefDest_pleno) / 2;
         const coefDests = { pess: coefDest_pleno, inter: coefDest_inter, neutro: coefDest_neutro };
 
-        // ── Deflators: TotalBR_2025 / TotalBR_t (ICMS + ISS, DCA) ───────────
-        const dca_icms = data.dca_icms_por_uf || {};
-        const dca_iss  = data.dca_iss_por_uf  || {};
-        const totals_br = {};
-        for (const yr of ANOS_REF) {
-            const s_icms = Object.values(dca_icms[yr] || {}).reduce((s,v) => s+v, 0);
-            const s_iss  = Object.values(dca_iss[yr]  || {}).reduce((s,v) => s+v, 0);
-            totals_br[yr] = s_icms + s_iss;
-        }
-        const total_br_2025 = totals_br['2025'] || 1;
-        const deflators = {};
-        for (const yr of ANOS_REF) deflators[yr] = totals_br[yr] > 0 ? total_br_2025 / totals_br[yr] : 1;
-
-        // ── r0_2025 e r0_avg para ES (DCA 2025) ──────────────────────────────
-        const icms_es_2025 = dca_icms['2025']?.['ES'];
-        if (icms_es_2025 == null) {
-            document.getElementById('status-bar').innerHTML =
-                '<span class="status-dot pending"></span> ICMS ES 2025 não encontrado nos dados (DCA)';
-            return;
-        }
-        const r0_2025 = icms_es_2025 * 0.75;
-
-        let sum_r0 = 0, n_r = 0;
-        for (const yr of ANOS_REF) {
-            const icms = dca_icms[yr]?.['ES'];
-            if (icms != null) { sum_r0 += icms * 0.75 * deflators[yr]; n_r++; }
-        }
-        const r0_avg = n_r > 0 ? sum_r0 / n_r : r0_2025;
-        const lambda = r0_2025 > 0 ? r0_avg / r0_2025 : 1.0;
-
         // ── UI estático ───────────────────────────────────────────────────────
         document.querySelectorAll('#base-year-label').forEach(el => el.textContent = '2025');
         document.getElementById('p-icms-bruto').textContent = fmtBi(icms_es_2025, 3);
@@ -1247,6 +1253,8 @@
         if (elVtLambda)  elVtLambda.textContent  = lambda.toFixed(4).replace('.',',') + ' (' + fmtPct(lambda-1, 1) + ')';
         const fmtCoef = v => (v * 100).toFixed(4).replace('.', ',') + '%';
         if (elVtDelta)   elVtDelta.textContent   = `${fmtCoef(coefDest_pleno)} (C1) / ${fmtCoef(coefDest_inter)} (C2) / ${fmtCoef(coefDest_neutro)} (C3)`;
+        const elVtCptES  = document.getElementById('vt-cptES');
+        if (elVtCptES)   elVtCptES.textContent   = fmtCoef(cptES);
 
         const elVtTotalBR = document.getElementById('vt-totalBR');
         if (elVtTotalBR) elVtTotalBR.textContent = fmtBi(total_br_2025, 2);
