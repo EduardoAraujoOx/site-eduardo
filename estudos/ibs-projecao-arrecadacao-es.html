@@ -392,11 +392,16 @@
                         <div class="factor-title">A mudança de critério de origem para destino no IBSd: magnitude incerta <span class="factor-badge badge-incerto">incerto</span></div>
                         <div class="factor-desc">
                             20% do IBS (2029–2032) ou 10% (2033) é distribuído ao estado de consumo
-                            (destino). O ES tem saldo exportador positivo: a migração origem→destino
-                            reduz a base do IBSd. A magnitude é o δ_ES — parâmetro incerto que
-                            diferencia os três cenários. A referência adotada é Gobetti e Monteiro
-                            (2023, tabela 4 — esfera estadual): δ_ES = <span id="delta1-display-factor">−34,25%</span>
-                            (Cenário 1); metade disso no Cenário 2; zero no Cenário 3 (neutro).
+                            (destino). O ES é estado exportador líquido: a migração origem→destino
+                            reduz sua participação no bolo nacional. O coeficiente de destino
+                            φ<sup>dest</sup><sub>ES</sub> — parâmetro incerto que diferencia os três cenários —
+                            expressa diretamente a participação do ES no bolo nacional de ICMS+ISS
+                            sob o critério de consumo. A referência é a Tabela 6 do
+                            <a href="/estudos/icms-iss-ibs-atual-potencial.html">Estudo 07</a>,
+                            construída a partir de Gobetti e Monteiro (IPEA, 2023):
+                            φ_ES = <span id="coef1-display-factor">1,1507%</span> no Cenário 1 (destino pleno);
+                            média aritmética com o neutro no Cenário 2; coeficiente vigente em 2025
+                            no Cenário 3 (neutro).
                         </div>
                     </div>
                 </li>
@@ -410,17 +415,21 @@
             </p>
             <div class="formula-box">
                 $$R_a = \underbrace{r_0^{2025}\cdot f_a}_{\text{Fator 1: ICMS residual}}
-                \;+\; r_0^{avg}\cdot s_a\cdot\Bigl[
-                \underbrace{\alpha_a}_{\text{Fator 2: IBSt via CPT}}
-                \;+\;\underbrace{(1-\alpha_a)\cdot(1-c_a)\cdot(1-\rho)\cdot(1+\delta_{\text{ES}})}_{\text{Fatores 3 e 4: IBSd via destino, net CGIBS e Seguro Receita}}
+                \;+\; s_a\cdot\Bigl[
+                \underbrace{r_0^{avg}\cdot\alpha_a}_{\substack{\text{Fator 2: IBSt} \\ \text{via CPT histórico}}}
+                \;+\;\underbrace{\text{TotalBR}_{2025}\cdot\varphi^{dest}_{ES}\cdot(1-\alpha_a)\cdot(1-c_a)\cdot(1-\rho)}_{\text{Fatores 3 e 4: IBSd via coeficiente de destino}}
                 \Bigr]$$
             </div>
             <p class="prose" style="font-size:0.85rem">
-                Dois valores-base distintos fundamentam o cálculo. <strong>r₀²⁰²⁵</strong> é o nível
-                contrafactual fixo: o que o estado receberia sem reforma. <strong>r₀ᵃᵛᵍ</strong> é
-                a média histórica deflacionada (2019–2025), que encoda o CPT do mecanismo de transição.
-                A razão λ_ES = r₀ᵃᵛᵍ / r₀²⁰²⁵ captura a perda estrutural do IBSt
-                (Fator 2): λ_ES &lt; 1 porque o ES cresceu acima da média nacional.
+                Três bases estruturam o modelo. <strong>r₀²⁰²⁵</strong> é o nível contrafactual
+                fixo: o que o estado receberia sem reforma. <strong>r₀ᵃᵛᵍ</strong> é a média
+                histórica deflacionada (2019–2025), base do IBSt via CPT — equivalente a
+                TotalBR<sub>2025</sub> × φ<sup>CPT</sup><sub>ES</sub>, onde λ_ES = r₀ᵃᵛᵍ / r₀²⁰²⁵
+                &lt; 1 porque o ES cresceu acima da média nacional. <strong>TotalBR<sub>2025</sub></strong>
+                é o bolo nacional constante (ICMS + ISS, DCA 2025): premissa de reforma neutra em receita,
+                com alíquotas calibradas para preservar a arrecadação agregada. O IBSd usa diretamente
+                o coeficiente de destino φ<sup>dest</sup><sub>ES</sub> (Tabela 6, Estudo 07), que expressa
+                a participação do ES no bolo nacional sob o critério de consumo.
             </p>
             <div class="var-table-wrap">
                 <table class="var-table">
@@ -429,14 +438,15 @@
                     </thead>
                     <tbody>
                         <tr><td>$r_0^{2025}$</td><td>ICMS_ES_2025 (DCA) × 75%: base contrafactual estadual, fixa em todos os anos</td><td id="vt-r0-2025">—</td></tr>
-                        <tr><td>$r_0^{avg}$</td><td>Média histórica 2019–2025: média(ICMS_ES_t × 75% × defl_t), base de distribuição do IBS</td><td id="vt-r0-avg">—</td></tr>
+                        <tr><td>$r_0^{avg}$</td><td>Média histórica 2019–2025: média(ICMS_ES_t × 75% × defl_t), base IBSt via CPT</td><td id="vt-r0-avg">—</td></tr>
                         <tr><td>$\lambda_{ES}$</td><td>$r_0^{avg}/r_0^{2025}$ — razão histórica/2025; encoda o ajuste CPT do IBSt</td><td id="vt-lambda">—</td></tr>
+                        <tr><td>$\text{TotalBR}_{2025}$</td><td>Soma nacional ICMS + ISS (DCA 2025): bolo constante — premissa de alíquota neutra em receita</td><td id="vt-totalBR">—</td></tr>
+                        <tr><td>$\varphi^{dest}_{ES}$</td><td>Coeficiente de destino ES (Tabela 6, Estudo 07): participação do ES no bolo nacional por cenário</td><td id="vt-delta">—</td></tr>
                         <tr><td>$f_a$</td><td>Fator de redução do ICMS (art. 128 ADCT): 9/10 em 2029; 0 em 2033</td><td>0,9 → 0</td></tr>
                         <tr><td>$s_a$</td><td>Share IBS total (art. 131 §1º ADCT): 10% em 2029; 100% em 2033</td><td>10% → 100%</td></tr>
                         <tr><td>$\alpha_a$</td><td>Fração IBSt (art. 131 §1º I–II ADCT): 80% para 2029–2032; 90% em 2033</td><td>80% / 90%</td></tr>
                         <tr><td>$c_a$</td><td>CGIBS (art. 51 LC 227/2026): apenas sobre IBSd pós-Seguro Receita</td><td>2,00% → 0,50%</td></tr>
                         <tr><td>$\rho$</td><td>Seguro Receita (art. 132 ADCT): 5% do IBSd bruto forma fundo de garantia</td><td>5,00%</td></tr>
-                        <tr><td>$\delta_{\text{ES}}$</td><td>Efeito destino IBSd (Gobetti e Monteiro, 2023, tabela 4): varia por cenário</td><td id="vt-delta">—</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -488,8 +498,9 @@
             <h2 class="section-heading">Os três cenários: diferenciados pelo Fator 4</h2>
             <p class="prose">
                 Os fatores 1, 2 e 3 são idênticos nos três cenários. A única variável que os diferencia
-                é a magnitude do efeito destino no IBSd (δ_ES, Fator 4), calibrada com base em
-                Gobetti e Monteiro (2023):
+                é o coeficiente de destino φ<sup>dest</sup><sub>ES</sub> (Fator 4), obtido da
+                <a href="/estudos/icms-iss-ibs-atual-potencial.html">Tabela 6 do Estudo 07</a>
+                (Gobetti e Monteiro, IPEA, 2023):
             </p>
 
             <div class="scenario-grid">
@@ -497,8 +508,9 @@
                     <div class="sc-tag">Cenário 1: Redistribuição integral</div>
                     <div class="sc-dest" id="sc-dest-pess">—</div>
                     <div class="sc-desc">
-                        δ_ES segundo Gobetti e Monteiro (2023, tabela 4, esfera estadual): estimativa
-                        completa do impacto da migração origem→destino para o Espírito Santo.
+                        Cenário de destino pleno segundo Gobetti e Monteiro (IPEA, 2023):
+                        φ_ES corresponde à participação do ES no bolo nacional sob critério
+                        de consumo integral, conforme a Tabela 6 do Estudo 07.
                     </div>
                     <div class="sc-res-label">Perda no 1.º ano (2029)</div>
                     <div class="sc-total" id="sc-pct29-pess">—</div>
@@ -511,8 +523,9 @@
                     <div class="sc-tag">Cenário 2: Redistribuição moderada</div>
                     <div class="sc-dest" id="sc-dest-inter">—</div>
                     <div class="sc-desc">
-                        Metade do δ_ES do Cenário 1. Hipótese de redistribuição parcial: a soma
-                        nacional δ_UF = 0 é preservada (escalonamento linear do conjunto de UFs).
+                        Média aritmética entre o coeficiente neutro (2025) e o de destino pleno
+                        (Cenário 1). Ponto de referência estilizado para redistribuição parcial,
+                        conforme a Tabela 6 do Estudo 07.
                     </div>
                     <div class="sc-res-label">Perda no 1.º ano (2029)</div>
                     <div class="sc-total" id="sc-pct29-inter">—</div>
@@ -723,12 +736,15 @@
 
             <!-- 8. NOTAS E FONTES -->
             <div class="footnote">
-                <p><sup>1</sup> <strong>Efeito destino (δ_ES, Fator 4):</strong> a parcela direta do IBS (20% em 2029–2032;
+                <p><sup>1</sup> <strong>Coeficiente de destino (φ_ES^dest, Fator 4):</strong> a parcela direta do IBS (20% em 2029–2032;
                 10% em 2033) é distribuída ao estado de consumo (destino). Para o ES, com saldo exportador positivo,
-                isso implica redução da base do IBSd em relação ao critério de origem do ICMS.
-                O Cenário 1 adota δ_ES = −34,25% conforme Gobetti e Monteiro (2023), tabela 4, esfera estadual
-                (<em>tabela4_esferas</em>); o Cenário 2 usa metade desse valor (−17,125%);
-                o Cenário 3 assume neutralidade plena (0%).</p>
+                isso implica redução de sua participação no bolo nacional em relação ao critério de origem do ICMS.
+                O modelo usa o coeficiente de destino φ<sup>dest</sup><sub>ES</sub> da
+                <a href="/estudos/icms-iss-ibs-atual-potencial.html">Tabela 6 do Estudo 07</a>, construída a partir de
+                Gobetti e Monteiro (IPEA, 2023). Cenário 1: φ_ES = 1,1507% (destino pleno);
+                Cenário 2: média aritmética entre neutro e pleno (1,3956%);
+                Cenário 3: coeficiente vigente em 2025 (1,6405%). Os valores exatos são calculados dinamicamente
+                a partir dos dados do DCA/SICONFI e do Gobetti JSON.</p>
 
                 <p><sup>2</sup> <strong>Seguro Receita (art. 132 ADCT):</strong> o mecanismo opera em duas direções.
                 A contribuição: 5% do IBSd é retido e forma um fundo de garantia; o modelo deduz essa fração do
@@ -805,11 +821,12 @@
 
     // ── Modelo de projeção ────────────────────────────────────────────────────
     // r0_2025 = ICMS_ES_2025 (DCA) × 75%: base contrafactual estadual (já parcela estadual)
-    // r0_avg  = média histórica 2019–2025 (ICMS_ES_t × 75% × defl_t): base IBS via CPT
+    // r0_avg  = média histórica 2019–2025 (ICMS_ES_t × 75% × defl_t): base IBSt via CPT
     // λ_ES = r0_avg / r0_2025 captura perda estrutural do IBSt (Fator 2), já embutido em r0_avg
-    // Fórmula: R_a = r0_2025·fa + r0_avg·sa·[αa + (1−αa)·(1−ca)·(1−ρ)·(1+δ_ES)]
+    // IBSd: TotalBR_2025 × coefDest × sa × (1−αa) — bolo constante nacional × φ_ES^dest
+    // coefDest (φ_ES^dest) é fração do bolo nacional atribuída ao ES via critério destino (Tabela 6, Estudo 07)
     // CGIBS (ca) aplica-se APENAS ao IBSd pós-Seguro Receita (art. 51 LC 227/2026)
-    function calcYear(r0_2025, r0_avg, gRate, destPct, ano, baseYear) {
+    function calcYear(r0_2025, r0_avg, TotalBR, gRate, coefDest, ano, baseYear) {
         const a  = ADCT[ano];
         const gf = Math.pow(1 + gRate, ano - baseYear);
 
@@ -819,7 +836,7 @@
 
         const ibst          = r0_avg  * gf * a.sa * a.alphaBIS;     // Fator 2: IBSt via CPT histórico
 
-        const ibsd_bruto    = r0_avg  * gf * a.sa * (1 - a.alphaBIS) * (1 + destPct); // Fator 4
+        const ibsd_bruto    = TotalBR  * gf * a.sa * (1 - a.alphaBIS) * coefDest; // Fator 4
         const ibsSeguro     = ibsd_bruto * RHO;                      // Seguro Receita (art. 132)
         const ibsd_psr      = ibsd_bruto * (1 - RHO);               // IBSd pós-Seguro Receita
 
@@ -944,12 +961,12 @@
     });
 
     // ── Render ────────────────────────────────────────────────────────────────
-    function render(r0_2025, r0_avg, gRate, baseYear, delta1) {
-        const deltas = { pess: delta1, inter: delta1 / 2, neutro: 0 };
+    // coefDests: { pess, inter, neutro } — frações de TotalBR (Tabela 6, Estudo 07)
+    function render(r0_2025, r0_avg, TotalBR, gRate, baseYear, coefDests) {
         const results = {};
         for (const sc of SCENARIOS) {
             results[sc.id] = {};
-            for (const ano of ANOS) results[sc.id][ano] = calcYear(r0_2025, r0_avg, gRate, deltas[sc.id], ano, baseYear);
+            for (const ano of ANOS) results[sc.id][ano] = calcYear(r0_2025, r0_avg, TotalBR, gRate, coefDests[sc.id], ano, baseYear);
         }
 
         document.getElementById('p-cnt-estadual').textContent = fmtBi(results['pess'][2029].cntEstadual);
@@ -1032,13 +1049,12 @@
                 return `<tr><td class="td-formula" style="padding-left:1.6rem"><em>${prefix} ${label}</em></td>${cells}<td style="border-left:2px solid var(--border)">${fmtPctCell(totalDiff / totalRef, 2)}</td></tr>`;
             }
 
-            const d1pct = (delta1*100).toFixed(2).replace('.',',');
-            const d2pct = (delta1/2*100).toFixed(2).replace('.',',');
+            const fC = v => (v*100).toFixed(4).replace('.',',') + '%';
             document.getElementById('tbody-sintese').innerHTML = [
                 valRow('(A)', `ICMS estadual: base de referência ${baseYear} (r₀²⁰²⁵ = ICMS DCA 2025 × 75%, sem crescimento real)`, refVals, 'td-cnt', ''),
-                valRow('(B)', `ICMS/IBS estadual, cenário 1 — redistribuição integral (δ_ES = ${d1pct}% no IBSd)`, pessVals, 'td-pess', 'row-separator'),
-                valRow('(C)', `ICMS/IBS estadual, cenário 2 — redistribuição moderada (δ_ES = ${d2pct}% no IBSd)`, interVals, 'td-inter', ''),
-                valRow('(D)', 'ICMS/IBS estadual, cenário 3 — neutro (0% no IBSd)', neutroVals, 'td-neutro', ''),
+                valRow('(B)', `ICMS/IBS estadual, cenário 1 — redistribuição integral (φ_ES = ${fC(coefDests.pess)} do bolo nacional)`, pessVals, 'td-pess', 'row-separator'),
+                valRow('(C)', `ICMS/IBS estadual, cenário 2 — redistribuição moderada (φ_ES = ${fC(coefDests.inter)} do bolo nacional)`, interVals, 'td-inter', ''),
+                valRow('(D)', `ICMS/IBS estadual, cenário 3 — neutro (φ_ES = ${fC(coefDests.neutro)} do bolo nacional)`, neutroVals, 'td-neutro', ''),
                 diffRow('(A−B)', 'Diferença: referência menos cenário 1 (R$ bi)', refVals, pessVals, 'row-separator'),
                 pctRow('', 'Variação percentual (A−B)/A', refVals, pessVals),
                 diffRow('(A−C)', 'Diferença: referência menos cenário 2 (R$ bi)', refVals, interVals, 'row-separator'),
@@ -1054,7 +1070,6 @@
 
         // Memória de cálculo 2029
         const rP = results['pess'][2029], rI = results['inter'][2029], rN = results['neutro'][2029];
-        const dP = deltas['pess'], dI = deltas['inter'];
         const lambda = r0_2025 > 0 ? r0_avg / r0_2025 : 1;
 
         function rowSame(label, rule, val, cls='') {
@@ -1095,10 +1110,10 @@
             rowStatic('λ_ES embutido em r₀ᵃᵛᵍ', 'λ = r₀ᵃᵛᵍ / r₀²⁰²⁵', `${lambda.toFixed(4).replace('.',',')} — IBSt = r₀ᵃᵛᵍ × 8%`),
             rowSame('IBSt = r₀ᵃᵛᵍ × sa × αa', 'r₀ᵃᵛᵍ × 8%', rP.ibst, 'row-total'),
 
-            secHead('E. Fator 4: IBSd via destino — sa × (1−αa) = 2% (art. 131 §1º I ADCT) · varia por cenário'),
-            rowStatic('sa × (1−αa) = 10% × 20%', 'Share IBS × fração IBSd', '2,00% aplicado sobre r₀ᵃᵛᵍ'),
-            rowStatic('δ_ES — efeito destino (Gobetti, tabela4_esferas) ¹', 'Nota 1', `C1: ${(dP*100).toFixed(2).replace('.',',')}% | C2: ${(dI*100).toFixed(2).replace('.',',')}% | C3: 0%`),
-            rowScen('IBSd bruto = r₀ᵃᵛᵍ × sa × (1−αa) × (1+δ)', 'r₀ᵃᵛᵍ × 2% × (1+δ)', rP.ibsd_bruto, rI.ibsd_bruto, rN.ibsd_bruto),
+            secHead('E. Fator 4: IBSd via coeficiente de destino — sa × (1−αa) = 2% (art. 131 §1º I ADCT) · varia por cenário'),
+            rowStatic('TotalBR₂₀₂₅ = soma nacional ICMS+ISS (DCA 2025)', 'Bolo constante — premissa de alíquota neutra', fmtBi(TotalBR, 2)),
+            rowStatic('φ_ES^dest (Tabela 6, Estudo 07) — coeficiente de destino ES ¹', 'Nota 1', `C1: ${(coefDests.pess*100).toFixed(4).replace('.',',')}% | C2: ${(coefDests.inter*100).toFixed(4).replace('.',',')}% | C3: ${(coefDests.neutro*100).toFixed(4).replace('.',',')}%`),
+            rowScen('IBSd bruto = TotalBR × φ_ES^dest × sa × (1−αa)', 'TotalBR × φ × 2%', rP.ibsd_bruto, rI.ibsd_bruto, rN.ibsd_bruto),
             rowScen('Seguro Receita = IBSd bruto × ρ ²', '× 5% · art. 132 ADCT', rP.ibsSeguro, rI.ibsSeguro, rN.ibsSeguro),
             rowScen('IBSd pós-Seguro Receita', '× (1−5%)', rP.ibsd_psr, rI.ibsd_psr, rN.ibsd_psr),
 
@@ -1140,12 +1155,42 @@
             return;
         }
 
-        // ── δ_ES: Gobetti tabela4_esferas ────────────────────────────────────
-        let delta1 = -0.3425;
-        if (gobetti?.tabela4_esferas?.ufs) {
-            const esRow = gobetti.tabela4_esferas.ufs.find(u => u.uf === 'ES');
-            if (esRow?.estado_pct != null) delta1 = esRow.estado_pct / 100;
+        // ── φ_ES^dest: coeficiente de destino ES — replica Tabela 6 do Estudo 07 ──────
+        // Metodologia: neutroEstado = ICMS_ES × 0.75 / TotalBR_2025
+        //              plenoEstado  = neutroEstado × (1 + varRel_ES) × escala
+        //              varRel_ES de gobetti.tabela1_static; escala normaliza soma = 1
+        //              intermediário = (neutro + pleno) / 2
+        const coefDest_neutro = r0_2025 / total_br_2025;  // φ neutro: ICMS_ES × 75% / TotalBR
+        let coefDest_pleno    = coefDest_neutro * (1 - 0.3011);  // fallback (varRel ≈ −30%)
+
+        if (gobetti?.tabela1_static?.ufs) {
+            const t1 = gobetti.tabela1_static;
+            const varRelByUf = {};
+            t1.ufs.forEach(u => {
+                const c0 = t1.total_pre > 0 ? u.pre / t1.total_pre : 0;
+                const c1 = t1.total_pos > 0 ? u.pos / t1.total_pos : 0;
+                varRelByUf[u.uf] = c0 > 0 ? (c1 - c0) / c0 : 0;
+            });
+
+            const ufs_2025 = dca_icms['2025'] || {};
+            const iss_2025 = dca_iss['2025']  || {};
+            let somaBruto = 0, brutoCandidato = null;
+
+            for (const uf of Object.keys(ufs_2025)) {
+                const icms = ufs_2025[uf] || 0;
+                const iss  = iss_2025[uf]  || 0;
+                const vr   = varRelByUf[uf] ?? 0;
+                const nEst = (icms * 0.75) / total_br_2025;
+                const nMun = (icms * 0.25 + iss) / total_br_2025;
+                somaBruto += nEst * (1 + vr) + nMun * (1 + vr);
+                if (uf === 'ES') brutoCandidato = nEst * (1 + vr);
+            }
+
+            if (brutoCandidato != null && somaBruto > 0) coefDest_pleno = brutoCandidato / somaBruto;
         }
+
+        const coefDest_inter  = (coefDest_neutro + coefDest_pleno) / 2;
+        const coefDests = { pess: coefDest_pleno, inter: coefDest_inter, neutro: coefDest_neutro };
 
         // ── Deflators: TotalBR_2025 / TotalBR_t (ICMS + ISS, DCA) ───────────
         const dca_icms = data.dca_icms_por_uf || {};
@@ -1182,7 +1227,7 @@
         document.getElementById('p-icms-bruto').textContent = fmtBi(icms_es_2025, 3);
         document.getElementById('p-cnt-estadual').textContent = fmtBi(r0_2025, 3);
         document.getElementById('status-bar').innerHTML =
-            `<span class="status-dot"></span> Base DCA 2025: r₀²⁰²⁵ = ${fmtBi(r0_2025, 3)} · λ_ES = ${lambda.toFixed(4).replace('.',',')} · δ_ES (C1) = ${fmtPct(delta1, 2)}`;
+            `<span class="status-dot"></span> Base DCA 2025: r₀²⁰²⁵ = ${fmtBi(r0_2025, 3)} · λ_ES = ${lambda.toFixed(4).replace('.',',')} · φ_ES (C1 destino pleno) = ${(coefDest_pleno*100).toFixed(4).replace('.',',')}%`;
 
         // CPT infobox
         const elR0_2025 = document.getElementById('cpt-r0-2025');
@@ -1200,22 +1245,26 @@
         if (elVtR0_2025) elVtR0_2025.textContent = fmtBi(r0_2025, 3);
         if (elVtR0_avg)  elVtR0_avg.textContent  = fmtBi(r0_avg,  3);
         if (elVtLambda)  elVtLambda.textContent  = lambda.toFixed(4).replace('.',',') + ' (' + fmtPct(lambda-1, 1) + ')';
-        if (elVtDelta)   elVtDelta.textContent   = fmtPct(delta1, 2) + ' (C1) / ' + fmtPct(delta1/2, 2) + ' (C2) / 0% (C3)';
+        const fmtCoef = v => (v * 100).toFixed(4).replace('.', ',') + '%';
+        if (elVtDelta)   elVtDelta.textContent   = `${fmtCoef(coefDest_pleno)} (C1) / ${fmtCoef(coefDest_inter)} (C2) / ${fmtCoef(coefDest_neutro)} (C3)`;
+
+        const elVtTotalBR = document.getElementById('vt-totalBR');
+        if (elVtTotalBR) elVtTotalBR.textContent = fmtBi(total_br_2025, 2);
 
         // Factor list dynamic values
         const elLambdaFactor = document.getElementById('lambda-display-factor');
-        const elDelta1Factor = document.getElementById('delta1-display-factor');
+        const elCoef1Factor  = document.getElementById('coef1-display-factor');
         if (elLambdaFactor) elLambdaFactor.textContent = fmtPct(lambda-1, 1);
-        if (elDelta1Factor) elDelta1Factor.textContent = fmtPct(delta1, 2);
+        if (elCoef1Factor)  elCoef1Factor.textContent  = fmtCoef(coefDest_pleno);
 
-        // Scenario cards dest% display
+        // Scenario cards coefDest display
         const elDestPess  = document.getElementById('sc-dest-pess');
         const elDestInter = document.getElementById('sc-dest-inter');
-        if (elDestPess)  elDestPess.textContent  = fmtPct(delta1,   2) + ' no IBSd';
-        if (elDestInter) elDestInter.textContent = fmtPct(delta1/2, 2) + ' no IBSd';
+        if (elDestPess)  elDestPess.textContent  = `φ_ES = ${fmtCoef(coefDest_pleno)} do bolo nacional`;
+        if (elDestInter) elDestInter.textContent = `φ_ES = ${fmtCoef(coefDest_inter)} do bolo nacional`;
 
         let gRate = 0;
-        function refresh() { render(r0_2025, r0_avg, gRate, 2025, delta1); }
+        function refresh() { render(r0_2025, r0_avg, total_br_2025, gRate, 2025, coefDests); }
 
         document.getElementById('range-growth').addEventListener('input', e => {
             gRate = parseFloat(e.target.value) / 100;
