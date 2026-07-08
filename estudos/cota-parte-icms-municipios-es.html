@@ -22,6 +22,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
     <link rel="stylesheet" href="/css/notas.css?v=4">
     <link rel="stylesheet" href="/css/search.css">
@@ -78,6 +79,15 @@
         .data-table tr:hover:not(tfoot tr) { background: var(--accent-bg); }
         .data-table td.td-badge-ok { color: var(--pos); font-family: var(--sans); font-size: 0.72rem; text-align: center; }
         .data-table td.td-badge-falso { color: var(--neg); font-family: var(--sans); font-size: 0.72rem; text-align: center; font-weight: 600; }
+
+        .table-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.75rem; }
+        .year-select { font-family: var(--sans); font-size: 0.8rem; font-weight: 600; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem 0.7rem; cursor: pointer; }
+        .share-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+        .btn-share { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--sans); font-size: 0.78rem; font-weight: 600; padding: 0.45rem 0.9rem; border-radius: 6px; border: 1px solid var(--border); background: var(--border-light); color: var(--text-secondary); cursor: pointer; transition: opacity 0.15s, background 0.15s; }
+        .btn-share:hover { opacity: 0.8; }
+        .btn-share:disabled { opacity: 0.5; cursor: default; }
+        .btn-share-wa { background: #25D366; color: #fff; border-color: #25D366; }
+        .btn-share svg { flex-shrink: 0; }
 
         .chart-panel { background: var(--border-light); border-radius: 8px; padding: 1.25rem 1.25rem 1.5rem; margin: 0 0 1.5rem; }
         .chart-panel-title { font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin: 0 0 1rem; }
@@ -230,7 +240,7 @@
             </div>
         </details>
 
-        <span class="section-label">Reconciliação agregada &middot; Espírito Santo, ICMS bruto, 2023-2025</span>
+        <span class="section-label">Tabela 1 &middot; Reconciliação agregada, Espírito Santo, ICMS bruto, 2023-2025</span>
         <div class="stat-row" id="stat-row-agregado">
             <div class="stat-tile"><span class="stat-label">Carregando...</span></div>
         </div>
@@ -256,10 +266,10 @@
             soma do que os municípios declararam ao SICONFI como Cota-Parte do ICMS praticamente coincidem, em
             todos os três anos &mdash; o que confirma que as duas fontes medem a mesma coisa e que o desvio
             agregado, sozinho, não distorce o coeficiente estadual da reforma. As divergências relevantes
-            aparecem apenas quando se olha município a município, na tabela abaixo.
+            aparecem apenas quando se olha município a município, na Tabela 2 abaixo.
         </div>
 
-        <span class="section-label">Maiores divergências por município &middot; oficial (SEFAZ) x declarado (SICONFI), 2023-2025</span>
+        <span class="section-label">Tabela 2 &middot; Maiores divergências por município, oficial (SEFAZ) x declarado (SICONFI), 2023-2025</span>
         <div class="table-wrap">
             <table class="data-table" id="table-top-divergencias">
                 <thead>
@@ -289,7 +299,27 @@
             </div>
         </div>
 
-        <span class="section-label">Todos os 78 municípios &middot; 2025 (ano mais recente)</span>
+        <span class="section-label">Tabela 3 &middot; Todos os 78 municípios, oficial (SEFAZ) x declarado (SICONFI)</span>
+        <div class="table-toolbar">
+            <label style="font-family:var(--sans);font-size:0.8rem;color:var(--text-secondary);display:flex;align-items:center;gap:0.5rem;">
+                Ano:
+                <select class="year-select" id="select-ano-completa">
+                    <option value="2025" selected>2025</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                </select>
+            </label>
+            <div class="share-row">
+                <button class="btn-share" id="btn-export-img" title="Baixar imagem PNG da Tabela 3">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Exportar imagem
+                </button>
+                <button class="btn-share btn-share-wa" id="btn-share-wa" style="display:none" title="Compartilhar pelo WhatsApp ou outro app">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                    Compartilhar
+                </button>
+            </div>
+        </div>
         <div class="table-wrap">
             <table class="data-table" id="table-completa-2025">
                 <thead>
@@ -308,7 +338,7 @@
             </table>
         </div>
 
-        <span class="section-label">Validação histórica interna &middot; DCA (SICONFI) x SIOPE x SIOPS concordam entre si? (2019-2025)</span>
+        <span class="section-label">Tabela 4 &middot; Validação histórica interna, DCA (SICONFI) x SIOPE x SIOPS concordam entre si? (2019-2025)</span>
         <div class="callout">
             Um segundo teste, independente do primeiro: em vez de comparar o declarado ao que a SEFAZ pagou,
             esta tabela compara os <strong>três sistemas federais entre si</strong>, para os 78 municípios do
@@ -333,7 +363,7 @@
             </table>
         </div>
 
-        <span class="section-label">Maiores divergências históricas entre DCA, SIOPE e SIOPS (2019-2025)</span>
+        <span class="section-label">Tabela 5 &middot; Maiores divergências históricas entre DCA, SIOPE e SIOPS (2019-2025)</span>
         <div class="table-wrap">
             <table class="data-table" id="table-top-internas">
                 <thead>
@@ -353,16 +383,72 @@
             </table>
         </div>
 
+        <span class="section-label">Tabela 6 &middot; Outras checagens de qualidade: dados faltantes, duplicados e saltos atípicos (2019-2025)</span>
+        <div class="callout">
+            Três checagens adicionais, no mesmo espírito de auditorias de dados feitas por outras
+            secretarias de fazenda estaduais: (i) quantos registros têm DCA, SIOPE ou SIOPS em branco; (ii)
+            se o mesmo valor, ao centavo, se repete para dois municípios diferentes no mesmo ano e base
+            &mdash; assinatura clássica de copiar e colar; e (iii) se algum município teve um salto forte de
+            um ano para o outro que reverteu quase por completo no ano seguinte, indício de erro de
+            competência (valor lançado no ano errado). Nenhuma das três é o foco principal desta página
+            &mdash; ao contrário da Tabela 2, não têm relação com o valor pago pela SEFAZ &mdash;, mas são um
+            complemento de transparência: no ES, o resultado é tranquilizador. Nenhum valor duplicado foi
+            encontrado entre os 78 municípios em nenhum ano, tipo ou base; os poucos casos faltantes ou de
+            saltos atípicos abaixo são pequenos em volume e têm explicação plausível (defasagem na entrega
+            de 2025 e volatilidade normal do ISS em municípios pequenos, respectivamente), não um padrão
+            sistêmico como o observado em levantamentos nacionais.
+        </div>
+        <div class="stat-row" id="stat-row-qualidade">
+            <div class="stat-tile"><span class="stat-label">Carregando...</span></div>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table" id="table-faltantes">
+                <thead>
+                    <tr>
+                        <th class="th-left">Município</th>
+                        <th>Ano</th>
+                        <th>Tipo</th>
+                        <th>DCA</th>
+                        <th>SIOPE</th>
+                        <th>SIOPS</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-faltantes">
+                    <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table" id="table-saltos">
+                <thead>
+                    <tr>
+                        <th class="th-left">Município</th>
+                        <th>Tipo</th>
+                        <th>Ano anterior</th>
+                        <th>Ano do pico</th>
+                        <th>Ano seguinte</th>
+                        <th>Subida (%)</th>
+                        <th>Queda seguinte (%)</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-saltos">
+                    <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
         <div class="footnotes">
             <p><strong>Fontes e notas metodológicas:</strong></p>
             <p>1. Lado oficial: SEFAZ-ES, Subsecretaria do Tesouro Estadual, boletins "Distribuição de ICMS/IPVA às Prefeituras Municipais" (<a href="https://sefaz.es.gov.br/transferencias-constitucionais-aos-municipios" target="_blank" rel="noopener">sefaz.es.gov.br/transferencias-constitucionais-aos-municipios</a>). Para 2023 e 2024, valor anual = soma dos 12 boletins mensais de cada ano (usando sempre a versão republicada/corrigida quando havia mais de uma para o mesmo mês); para 2025, demonstrativo "Transferências de impostos aos Municípios &mdash; Acumulado 2025", já consolidado pela SEFAZ. Extração via <code>pdfplumber</code>/<code>PyMuPDF</code>; ver <code>data/collect-cota-parte-es.py</code> no repositório do site para o código completo, incluindo os parsers dedicados aos boletins de abril e junho de 2023.</p>
             <p>2. Lado declarado: compilação, fornecida pelo autor, do valor de "Cota-Parte do ICMS" (tipo COTA) por município do ES e ano, na DCA (Declaração de Contas Anuais, SICONFI/Tesouro Nacional), no SIOPE (MEC) e no SIOPS (Ministério da Saúde), 2019-2025, com sinalização prévia (OK/FALSO) de divergência entre os três sistemas e o desvio médio entre eles.</p>
             <p>3. Todas as comparações desta página usam o valor <strong>bruto</strong> do ICMS (antes da retenção de 20% ao FUNDEB) tanto do lado oficial quanto do lado declarado, e não incluem o IPVA, que a base declarada não segrega como "Cota-Parte do ICMS". Diferença (R$) = oficial &minus; declarado; diferença (%) = diferença (R$) / declarado &times; 100.</p>
-            <p>4. Tabela "Maiores divergências por município": as 20 maiores divergências absolutas em %, entre os 234 pares Ano&times;Município (78 municípios &times; 3 anos) com dado oficial e declarado disponíveis. A coluna "DCA=SIOPE=SIOPS?" reproduz, para aquele município e ano, a validação interna da nota metodológica 2 &mdash; permite ver se a divergência com a SEFAZ coincide com uma divergência entre os próprios sistemas declarados.</p>
+            <p>4. Tabela 2 "Maiores divergências por município": as 20 maiores divergências absolutas em %, entre os 234 pares Ano&times;Município (78 municípios &times; 3 anos) com dado oficial e declarado disponíveis. A coluna "DCA=SIOPE=SIOPS?" reproduz, para aquele município e ano, a validação interna da nota metodológica 2 &mdash; permite ver se a divergência com a SEFAZ coincide com uma divergência entre os próprios sistemas declarados.</p>
             <p>5. Gráfico de dispersão: os 78 municípios em 2025, declarado (SICONFI) no eixo X contra oficial (SEFAZ) no eixo Y, em R$ milhões. Pontos destacados em vermelho são os municípios com divergência absoluta acima de 2% naquele ano. A linha tracejada marca onde os dois valores coincidiriam exatamente.</p>
-            <p>6. Tabela "Validação histórica interna": para cada ano de 2019 a 2025, quantos dos 78 municípios têm DCA, SIOPE e SIOPS idênticos (ou dentro de arredondamento) para a Cota-Parte do ICMS, e quantos têm ao menos uma divergência entre os três. Não depende do dado da SEFAZ e cobre um período mais longo que a comparação oficial x declarado.</p>
-            <p>7. Tabela "Maiores divergências históricas": as 15 maiores divergências absolutas (desvio médio entre DCA, SIOPE e SIOPS) entre 2019 e 2025, com a fonte apontada como divergente pela base original (tipicamente o sistema cujo valor destoa dos outros dois).</p>
-            <p>8. Dataset consolidado desta página: <code>data/cota-parte-municipal-es.json</code>. Planilha original da compilação declarada disponível em <code>data/raw/siconfi-siope-siops-es.zip</code>, no repositório do site.</p>
+            <p>6. Tabela 3 "Todos os 78 municípios": mesma comparação oficial x declarado da Tabela 2, para o ano selecionado (2023, 2024 ou 2025), ordenada alfabeticamente. O botão "Exportar imagem" gera um PNG da tabela do ano selecionado (via <code>html2canvas</code>) para download ou compartilhamento direto (Web Share API, quando suportada pelo navegador).</p>
+            <p>7. Tabela 4 "Validação histórica interna": para cada ano de 2019 a 2025, quantos dos 78 municípios têm DCA, SIOPE e SIOPS idênticos (ou dentro de arredondamento) para a Cota-Parte do ICMS, e quantos têm ao menos uma divergência entre os três. Não depende do dado da SEFAZ e cobre um período mais longo que a comparação oficial x declarado.</p>
+            <p>8. Tabela 5 "Maiores divergências históricas": as 15 maiores divergências absolutas (desvio médio entre DCA, SIOPE e SIOPS) entre 2019 e 2025, com a fonte apontada como divergente pela base original (tipicamente o sistema cujo valor destoa dos outros dois).</p>
+            <p>9. Tabela 6 "Outras checagens de qualidade": (i) dados faltantes &mdash; todo registro de COTA ou ISS, 2019-2025, com DCA, SIOPE ou SIOPS em branco; (ii) dados duplicados &mdash; para cada ano, tipo de receita (COTA/ISS) e base (DCA/SIOPE/SIOPS), municípios distintos cujo valor coincide ao centavo (nenhum encontrado no ES); (iii) saltos atípicos &mdash; município cuja série de DCA sobe mais de 50% de um ano para o seguinte e cai mais de 30% no ano posterior, calculado sobre COTA e ISS separadamente.</p>
+            <p>10. Dataset consolidado desta página: <code>data/cota-parte-municipal-es.json</code>. Planilha original da compilação declarada disponível em <code>data/raw/siconfi-siope-siops-es.zip</code>, no repositório do site.</p>
         </div>
     </div>
 
@@ -419,9 +505,9 @@
         </tr>`).join('');
     }
 
-    function buildTabelaCompleta2025(data) {
+    function buildTabelaCompleta(data, ano) {
         const comp = data.comparacao_municipio_sefaz_siconfi
-            .filter(r => r.ano === 2025)
+            .filter(r => r.ano === ano)
             .sort((a, b) => a.municipio.localeCompare(b.municipio, 'pt-BR'));
 
         document.getElementById('tbody-completa-2025').innerHTML = comp.map(r => `<tr>
@@ -435,12 +521,58 @@
         const somaOf = comp.reduce((s, r) => s + r.oficial_icms_bruto, 0);
         const somaDe = comp.reduce((s, r) => s + r.declarado_siconfi, 0);
         document.getElementById('tfoot-completa-2025').innerHTML = `<tr>
-            <td class="td-mun"><strong>Total</strong> <small>78 municípios</small></td>
+            <td class="td-mun"><strong>Total</strong> <small>78 municípios, ${ano}</small></td>
             <td>R$ ${fmtRS(somaOf)}</td>
             <td>R$ ${fmtRS(somaDe)}</td>
             <td>R$ ${fmtRS(somaOf - somaDe)}</td>
             <td>${fmtPct((somaOf - somaDe) / somaDe * 100, 3)}</td>
         </tr>`;
+    }
+
+    function buildQualidade(data) {
+        const faltantes = data.qualidade_dados_faltantes || [];
+        const duplicados = data.qualidade_dados_duplicados || [];
+        const saltos = data.qualidade_saltos_atipicos || [];
+
+        document.getElementById('stat-row-qualidade').innerHTML = `
+            <div class="stat-tile">
+                <span class="stat-label">Dados faltantes</span>
+                <div class="stat-value">${faltantes.length}</div>
+                <div class="stat-sub">registros COTA/ISS sem DCA, SIOPE ou SIOPS, 2019-2025</div>
+            </div>
+            <div class="stat-tile">
+                <span class="stat-label">Dados duplicados</span>
+                <div class="stat-value td-pos">${duplicados.length}</div>
+                <div class="stat-sub">valores idênticos entre municípios diferentes</div>
+            </div>
+            <div class="stat-tile">
+                <span class="stat-label">Saltos atípicos</span>
+                <div class="stat-value">${saltos.length}</div>
+                <div class="stat-sub">subida &gt;50% revertida &gt;30% no ano seguinte (DCA)</div>
+            </div>`;
+
+        document.getElementById('tbody-faltantes').innerHTML = faltantes.length
+            ? faltantes.map(r => `<tr>
+                <td class="td-mun">${r.municipio}</td>
+                <td>${r.ano}</td>
+                <td>${r.tipo}</td>
+                <td>${r.dca != null ? 'R$ ' + fmtRS(r.dca) : '&mdash;'}</td>
+                <td>${r.siope != null ? 'R$ ' + fmtRS(r.siope) : '&mdash;'}</td>
+                <td>${r.siops != null ? 'R$ ' + fmtRS(r.siops) : '&mdash;'}</td>
+            </tr>`).join('')
+            : '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted);font-family:var(--sans)">Nenhum dado faltante encontrado</td></tr>';
+
+        document.getElementById('tbody-saltos').innerHTML = saltos.length
+            ? saltos.map(r => `<tr>
+                <td class="td-mun">${r.municipio}</td>
+                <td>${r.tipo}</td>
+                <td>${r.ano_anterior} &middot; R$ ${fmtRS(r.valor_anterior)}</td>
+                <td>${r.ano_pico} &middot; R$ ${fmtRS(r.valor_pico)}</td>
+                <td>${r.ano_seguinte} &middot; R$ ${fmtRS(r.valor_seguinte)}</td>
+                <td class="td-pos">${fmtPct(r.variacao_subida_pct, 1)}</td>
+                <td class="td-neg">${fmtPct(r.variacao_queda_pct, 1)}</td>
+            </tr>`).join('')
+            : '<tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--text-muted);font-family:var(--sans)">Nenhum salto atípico encontrado</td></tr>';
     }
 
     function buildValidacaoAno(data) {
@@ -568,6 +700,58 @@
         });
     }
 
+    // ── Exportar Tabela 3 como imagem ──────────────────────────────────────────
+    async function exportTabela3Image(ano) {
+        const btn = document.getElementById('btn-export-img');
+        btn.disabled = true;
+        const original = btn.innerHTML;
+        btn.textContent = 'Gerando…';
+
+        const target = document.getElementById('table-completa-2025');
+
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'background:#fff;padding:20px 24px;font-family:monospace;display:inline-block;min-width:700px';
+        const title = document.createElement('p');
+        title.style.cssText = 'font-family:sans-serif;font-size:14px;font-weight:700;margin:0 0 12px;color:#222';
+        title.textContent = `Cota-parte do ICMS aos municípios do ES: oficial (SEFAZ) x declarado (SICONFI), ${ano}`;
+        wrap.appendChild(title);
+        wrap.appendChild(target.cloneNode(true));
+        const source = document.createElement('p');
+        source.style.cssText = 'font-size:10px;color:#888;margin:10px 0 0;font-family:sans-serif';
+        source.textContent = 'Fonte: SEFAZ-ES · SICONFI/SIOPE/SIOPS · eduardoreisaraujo.com.br/estudos/cota-parte-icms-municipios-es.html';
+        wrap.appendChild(source);
+
+        document.body.appendChild(wrap);
+        wrap.style.position = 'fixed';
+        wrap.style.top = '-9999px';
+        wrap.style.left = '0';
+
+        try {
+            const canvas = await html2canvas(wrap, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+            const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+            const url = URL.createObjectURL(blob);
+            const filename = `cota-parte-icms-es-${ano}.png`;
+
+            if (navigator.canShare && navigator.canShare({ files: [new File([blob], filename, { type: 'image/png' })] })) {
+                const waBtn = document.getElementById('btn-share-wa');
+                waBtn.style.display = 'inline-flex';
+                waBtn.onclick = async () => {
+                    const file = new File([blob], filename, { type: 'image/png' });
+                    await navigator.share({ files: [file], title: 'Cota-parte do ICMS aos municípios do ES', text: `Oficial (SEFAZ) x declarado (SICONFI), ${ano}` });
+                };
+            }
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+        } finally {
+            document.body.removeChild(wrap);
+            btn.disabled = false;
+            btn.innerHTML = original;
+        }
+    }
+
     (async function init() {
         const statusEl = document.getElementById('status-main');
         try {
@@ -578,9 +762,19 @@
             buildAgregado(data);
             buildTopDivergencias(data);
             buildScatter(data);
-            buildTabelaCompleta2025(data);
+            buildTabelaCompleta(data, 2025);
             buildValidacaoAno(data);
             buildTopInternas(data);
+            buildQualidade(data);
+
+            const selectAno = document.getElementById('select-ano-completa');
+            selectAno.addEventListener('change', () => {
+                buildTabelaCompleta(data, parseInt(selectAno.value, 10));
+                document.getElementById('btn-share-wa').style.display = 'none';
+            });
+            document.getElementById('btn-export-img').addEventListener('click', () => {
+                exportTabela3Image(parseInt(selectAno.value, 10));
+            });
 
             statusEl.innerHTML =
                 '<span class="status-dot" style="background:#22c55e"></span> ' +
