@@ -311,6 +311,60 @@ def load_siconfi():
     return rows, cod_to_name
 
 
+def check_data_quality(rows, cod_to_name):
+    """Três checagens adicionais, no mesmo espírito de relatórios de auditoria de
+    outras UFs: dados faltantes (DCA/SIOPE/SIOPS nulos), valores duplicados entre
+    municípios distintos (assinatura clássica de copiar-e-colar) e saltos ano a ano
+    que sobem forte e revertem no ano seguinte (possível erro de competência)."""
+    entes = [r for r in rows if r["cod"] != 32 and r["tipo"] in ("COTA", "ISS")]
+
+    faltantes = [
+        dict(ano=r["ano"], municipio=cod_to_name[r["cod"]], tipo=r["tipo"],
+             dca=r["dca"], siope=r["siope"], siops=r["siops"])
+        for r in entes
+        if r["dca"] is None or r["siope"] is None or r["siops"] is None
+    ]
+
+    duplicados = []
+    for tipo in ("COTA", "ISS"):
+        for fonte, idx_key in (("DCA", "dca"), ("SIOPE", "siope"), ("SIOPS", "siops")):
+            for ano in sorted(set(r["ano"] for r in entes)):
+                by_value = {}
+                for r in entes:
+                    if r["ano"] != ano or r["tipo"] != tipo:
+                        continue
+                    v = r[idx_key]
+                    if v is None:
+                        continue
+                    by_value.setdefault(round(v, 2), []).append(cod_to_name[r["cod"]])
+                for v, ents in by_value.items():
+                    if len(ents) > 1:
+                        duplicados.append(dict(ano=ano, tipo=tipo, fonte=fonte, valor=v, municipios=ents))
+
+    series = {}
+    for r in entes:
+        series.setdefault((r["cod"], r["tipo"]), {})[r["ano"]] = r["dca"]
+    anos_ordenados = sorted(set(r["ano"] for r in entes))
+    saltos_atipicos = []
+    for (cod, tipo), vals in series.items():
+        for i in range(1, len(anos_ordenados) - 1):
+            a0, a1, a2 = anos_ordenados[i - 1], anos_ordenados[i], anos_ordenados[i + 1]
+            if all(a in vals and vals[a] for a in (a0, a1, a2)):
+                g1 = (vals[a1] - vals[a0]) / vals[a0] * 100
+                g2 = (vals[a2] - vals[a1]) / vals[a1] * 100
+                if g1 > 50 and g2 < -30:
+                    saltos_atipicos.append(dict(
+                        municipio=cod_to_name[cod], tipo=tipo,
+                        ano_anterior=a0, ano_pico=a1, ano_seguinte=a2,
+                        valor_anterior=round(vals[a0], 2), valor_pico=round(vals[a1], 2),
+                        valor_seguinte=round(vals[a2], 2),
+                        variacao_subida_pct=round(g1, 2), variacao_queda_pct=round(g2, 2),
+                    ))
+    saltos_atipicos.sort(key=lambda o: -abs(o["variacao_subida_pct"]))
+
+    return dict(faltantes=faltantes, duplicados=duplicados, saltos_atipicos=saltos_atipicos)
+
+
 def main():
     print("=== Extraindo boletins oficiais da SEFAZ-ES (2023-2025) ===", file=sys.stderr)
     sefaz = collect_sefaz()
@@ -374,6 +428,8 @@ def main():
         falso = sum(1 for r in yr if r["validacao"] == "FALSO")
         resumo_por_ano[str(ano)] = dict(ok=ok, falso=falso, pct_divergente=round(falso / (ok + falso) * 100, 1))
 
+    qualidade = check_data_quality(rows, cod_to_name)
+
     output = dict(
         fonte_oficial=(
             "SEFAZ-ES, Subsecretaria do Tesouro Estadual — Distribuição de ICMS/IPVA aos "
@@ -391,6 +447,9 @@ def main():
         comparacao_municipio_sefaz_siconfi=municipio_comp,
         validacao_interna_dca_siope_siops=internal,
         resumo_validacao_interna_por_ano=resumo_por_ano,
+        qualidade_dados_faltantes=qualidade["faltantes"],
+        qualidade_dados_duplicados=qualidade["duplicados"],
+        qualidade_saltos_atipicos=qualidade["saltos_atipicos"],
     )
     OUTPUT.write_text(json.dumps(output, ensure_ascii=False, indent=2))
     print(f"Salvo em {OUTPUT} ({OUTPUT.stat().st_size / 1024:.1f} KB)", file=sys.stderr)
