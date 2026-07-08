@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cota-Parte do ICMS aos Municípios do ES: Declarado (SICONFI) x Oficial (SEFAZ) | Eduardo Reis Araújo</title>
+    <meta name="description" content="A cota-parte do ICMS que os 78 municípios do Espírito Santo declaram ao SICONFI, SIOPE e SIOPS bate com o que a SEFAZ-ES efetivamente repassou? Reconciliação agregada e divergências município a município, 2023-2025.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/cota-parte-icms-municipios-es.html">
+
+    <meta property="og:title" content="Cota-Parte do ICMS aos Municípios do ES: Declarado x Oficial">
+    <meta property="og:description" content="A cota-parte do ICMS declarada pelos municípios do ES ao SICONFI/SIOPE/SIOPS bate com o que a SEFAZ-ES efetivamente repassou? Reconciliação agregada e divergências município a município, 2023-2025.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/cota-parte-icms-municipios-es.html">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+
+    <link rel="stylesheet" href="/css/notas.css?v=4">
+    <link rel="stylesheet" href="/css/search.css">
+
+    <style>
+        .study-hero { max-width: 980px; margin: 0 auto; padding: 3rem 2rem 1.5rem; }
+        .study-hero-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+        .study-hero-tag { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); padding: 0.25rem 0.6rem; border-radius: 4px; }
+        .study-hero-topic { font-family: var(--sans); font-size: 0.73rem; color: var(--text-secondary); background: var(--border-light); padding: 0.2rem 0.55rem; border-radius: 4px; }
+        .study-hero-date { font-family: var(--sans); font-size: 0.73rem; color: var(--text-muted); margin-left: auto; }
+        .study-hero h1 { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 0.8rem; }
+        .study-hero .lead { font-family: var(--serif); font-size: 1rem; line-height: 1.72; color: var(--text-secondary); max-width: 760px; }
+        .study-hero .study-meta { font-family: var(--sans); font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem; }
+
+        .study-content { max-width: 980px; margin: 0 auto; padding: 0 2rem 5rem; }
+
+        .status-bar { display: flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #999; flex-shrink: 0; transition: background 0.3s; }
+
+        :root {
+            --neg:       #b03a2e;
+            --neg-bg:    #fdf3f2;
+            --pos:       #1e8449;
+            --pos-bg:    #f0faf4;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root { --neg: #e05a4f; --neg-bg: #2a1a1a; --pos: #4caf76; --pos-bg: #192a20; }
+        }
+        :root[data-theme="light"] { --neg:#b03a2e; --neg-bg:#fdf3f2; --pos:#1e8449; --pos-bg:#f0faf4; }
+        :root[data-theme="dark"]  { --neg:#e05a4f; --neg-bg:#2a1a1a; --pos:#4caf76; --pos-bg:#192a20; }
+
+        .methodology { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 2rem; background: var(--surface); }
+        .methodology summary { padding: 0.9rem 1.25rem; cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; list-style: none; display: flex; align-items: center; gap: 0.5rem; }
+        .methodology summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; }
+        .methodology[open] summary::before { transform: rotate(90deg); }
+        .methodology-body { padding: 0 1.5rem 1.5rem; }
+        .meto-section-title { font-family: var(--sans); font-size: 0.85rem; font-weight: 600; color: var(--text); margin: 1.25rem 0 0.4rem; }
+        .meto-note { font-family: var(--serif); font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; margin-top: 0.5rem; }
+        .meto-note:first-child { margin-top: 0; }
+
+        .section-label { display: block; font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 0.5rem; }
+
+        .table-wrap { overflow-x: auto; margin-bottom: 1.5rem; max-height: 640px; overflow-y: auto; }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
+        .data-table th { background: var(--bg); border: 1px solid var(--border); padding: 0.42rem 0.6rem; text-align: center; font-family: var(--sans); font-weight: 600; font-size: 0.76rem; white-space: nowrap; color: var(--text); position: sticky; top: 0; z-index: 1; }
+        .data-table th.th-left { text-align: left; }
+        .data-table td { border: 1px solid var(--border); padding: 0.36rem 0.6rem; text-align: right; font-family: var(--mono); font-size: 0.78rem; white-space: nowrap; color: var(--text); }
+        .data-table td.td-mun { text-align: left; font-family: var(--sans); font-weight: 600; font-size: 0.81rem; }
+        .data-table td.td-mun small { font-weight: 400; color: var(--text-muted); }
+        .data-table .td-neg { color: var(--neg); font-weight: 600; }
+        .data-table .td-pos { color: var(--pos); font-weight: 600; }
+        .data-table tfoot tr { background: var(--bg); border-top: 2px solid var(--border); }
+        .data-table tfoot td { font-weight: 700; }
+        .data-table tr:hover:not(tfoot tr) { background: var(--accent-bg); }
+        .data-table td.td-badge-ok { color: var(--pos); font-family: var(--sans); font-size: 0.72rem; text-align: center; }
+        .data-table td.td-badge-falso { color: var(--neg); font-family: var(--sans); font-size: 0.72rem; text-align: center; font-weight: 600; }
+
+        .chart-panel { background: var(--border-light); border-radius: 8px; padding: 1.25rem 1.25rem 1.5rem; margin: 0 0 1.5rem; }
+        .chart-panel-title { font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin: 0 0 1rem; }
+        .chart-legend-note { font-family: var(--sans); font-size: 0.75rem; color: var(--text-muted); margin: 0.75rem 0 0; display: flex; gap: 1.25rem; flex-wrap: wrap; }
+        .legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 0.35rem; vertical-align: middle; }
+
+        .callout { background: var(--accent-bg); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 0.75rem 1rem; font-family: var(--serif); font-size: 0.84rem; color: var(--text); margin: 1rem 0; line-height: 1.6; }
+
+        .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1rem 0 1.75rem; }
+        .stat-tile { border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem 1rem; background: var(--surface); }
+        .stat-tile .stat-label { font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 0.35rem; display: block; }
+        .stat-tile .stat-value { font-family: var(--sans); font-size: 1.35rem; font-weight: 700; color: var(--text); }
+        .stat-tile .stat-sub { font-family: var(--sans); font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+        .footnotes { margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+        .footnotes p { font-family: var(--serif); font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.4rem; }
+        .footnotes a { color: var(--accent); text-decoration: none; }
+        .footnotes a:hover { text-decoration: underline; }
+
+        @media (max-width: 640px) {
+            .study-hero { padding: 2rem 1.25rem 1rem; }
+            .study-content { padding: 0 1.25rem 3rem; }
+            .stat-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <div class="header-right-group">
+                <nav class="header-nav">
+                    <a href="/#publicacoes">Publicações</a>
+                    <a href="/ensino/">Ensino</a>
+                    <a href="/estudos/" class="active">Estudos</a>
+                    <a href="/#contato">Contato</a>
+                </nav>
+                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="study-hero">
+        <div class="study-hero-meta">
+            <span class="study-hero-tag">Estudo 08</span>
+            <span class="study-hero-topic">Reforma Tributária</span>
+            <span class="study-hero-topic">Federalismo Fiscal</span>
+            <span class="study-hero-topic">Municípios</span>
+            <span class="study-hero-date">Julho de 2026</span>
+        </div>
+        <h1>Cota-parte do ICMS aos municípios do ES: o declarado bate com o repassado?</h1>
+        <p class="lead">
+            O coeficiente de transição de participação federativa da reforma tributária (art. 115 da LC
+            227/2026, ver <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a>) é calculado a
+            partir de receitas que estados e municípios <strong>declaram</strong> ao Tesouro Nacional. Se essa
+            declaração não bate com o que foi de fato arrecadado e repassado, a repartição federativa do novo
+            IBS pode distorcer a favor ou contra entes específicos. Esta página testa essa hipótese para os 78
+            municípios do Espírito Santo, cruzando a cota-parte do ICMS que cada um declarou ao SICONFI (DCA),
+            ao SIOPE e ao SIOPS com o valor que a SEFAZ-ES efetivamente lhe repassou, mês a mês, entre 2023 e
+            2025.
+        </p>
+        <p class="study-meta">
+            Dados: SEFAZ-ES, Subsecretaria do Tesouro Estadual (boletins de distribuição de ICMS/IPVA aos
+            municípios, 2023-2025) &bull; compilação SICONFI (DCA/STN) x SIOPE (MEC) x SIOPS (MS) por
+            município do ES, 2019-2025, fornecida pelo autor.
+        </p>
+    </div>
+
+    <div class="study-content">
+
+        <div id="status-main" class="status-bar">
+            <span class="status-dot"></span>
+            <span>Carregando dados...</span>
+        </div>
+
+        <details class="methodology">
+            <summary>Metodologia: como foram cruzadas duas fontes que não conversam entre si</summary>
+            <div class="methodology-body">
+
+                <p class="meto-note">
+                    A pergunta parece simples &mdash; "o que o município disse que recebeu bate com o que o
+                    estado disse que pagou?" &mdash; mas as duas fontes não foram feitas para conversar entre
+                    si, e cruzá-las exigiu resolver três problemas na ordem abaixo.
+                </p>
+
+                <p class="meto-section-title">1. O lado "oficial": boletins em PDF, não planilha</p>
+                <p class="meto-note">
+                    A <a href="https://sefaz.es.gov.br/transferencias-constitucionais-aos-municipios" target="_blank" rel="noopener">página da SEFAZ-ES</a>
+                    que publica os repasses constitucionais de ICMS e IPVA aos municípios só disponibiliza PDFs
+                    &mdash; um boletim mensal por competência, sem CSV ou Excel nativo. Para 2025 há um
+                    demonstrativo acumulado anual já consolidado pela própria SEFAZ; para 2023 e 2024, esse
+                    demonstrativo não existe, e o valor anual de cada município foi obtido somando os 12
+                    boletins mensais de cada ano. A extração usou <code>pdfplumber</code>, localizando a linha
+                    de cabeçalho ("Valor BRUTO" / "Valor LÍQUIDO") e o grupo (ICMS-25% / IPVA-50%) ao qual cada
+                    coluna pertence, para não confundir os valores com as colunas de estorno presentes em
+                    alguns meses. Dois meses fugiram desse padrão e exigiram parsers específicos: o boletim de
+                    abril/2023 usa uma fonte com os códigos de caractere corrompidos (um deslocamento fixo de
+                    +29 na tabela de glifos, decifrado comparando com rótulos conhecidos como "Valor BRUTO"); o
+                    de junho/2023 só publica o valor líquido, e o valor bruto foi reconstituído por
+                    líquido&nbsp;/&nbsp;0,8, já que a retenção de 20% ao FUNDEB é sempre exata sobre o bruto.
+                </p>
+
+                <p class="meto-section-title">2. O lado "declarado": três sistemas, nem sempre coerentes entre si</p>
+                <p class="meto-note">
+                    A base declarada compila, para cada um dos 78 municípios do ES e cada ano de 2019 a 2025, o
+                    valor de "Cota-Parte do ICMS" registrado em três sistemas federais diferentes: a DCA
+                    (Declaração de Contas Anuais, SICONFI/Tesouro Nacional), o SIOPE (Sistema de Informações
+                    sobre Orçamentos Públicos em Educação, MEC) e o SIOPS (Sistema de Informações sobre
+                    Orçamentos Públicos em Saúde, Ministério da Saúde). Os três deveriam, em tese, reportar o
+                    mesmo número &mdash; é a mesma receita, apenas declarada a órgãos diferentes &mdash;, mas
+                    nem sempre reportam: a própria planilha de origem já sinaliza, para cada município e ano,
+                    se os três sistemas batem ("OK") ou não ("FALSO"), com o desvio médio entre eles.
+                </p>
+
+                <p class="meto-section-title">3. Bruto ou líquido? A armadilha que quase inviabilizou a comparação</p>
+                <p class="meto-note">
+                    A primeira tentativa de cruzamento comparou o valor declarado (COTA) à soma do ICMS e do
+                    IPVA <strong>líquidos</strong> (já descontados os 20% do FUNDEB) informados pela SEFAZ, e o
+                    resultado foi um Espírito Santo inteiro "devendo" cerca de 10% a mais do que declarava,
+                    todo ano, de forma quase idêntica em todos os 78 municípios &mdash; um padrão grande
+                    demais e uniforme demais para ser erro de preenchimento. A causa era outra: a contabilidade
+                    pública registra a Cota-Parte do ICMS como receita orçamentária pelo valor
+                    <strong>bruto</strong>, antes da dedução do FUNDEB (que entra como despesa/dedução em outra
+                    conta, não como receita líquida). Comparando o valor declarado apenas ao ICMS bruto da
+                    SEFAZ (sem o IPVA, que não é "Cota-Parte do ICMS"), o agregado do Espírito Santo reconcilia
+                    quase perfeitamente nos três anos &mdash; desvio de 0,01% a 0,07% &mdash;, o que valida a
+                    correspondência entre as duas fontes e isola o que sobra como divergência genuína,
+                    município a município.
+                </p>
+
+                <p class="meto-section-title">O que isso significa para o coeficiente da reforma</p>
+                <p class="meto-note">
+                    Como o agregado estadual reconcilia quase à perfeição, o coeficiente de transição do ES
+                    como um todo (Estudo 02) não deveria ser afetado de forma relevante por essas divergências.
+                    O risco identificado aqui é outro, mais fino: a <strong>distribuição interna</strong> entre
+                    municípios. Se um município específico declara sistematicamente mais ou menos do que
+                    recebeu, ou se os três sistemas federais (DCA/SIOPE/SIOPS) divergem entre si para aquele
+                    município, qualquer regra de rateio intramunicipal baseada nessas declarações (inclusive
+                    dentro da própria metodologia do coeficiente de participação municipal do IBS) herda esse
+                    erro. Este estudo não afirma haver má-fé em nenhum caso individual &mdash; erros de
+                    preenchimento, defasagem de competência e correções via republicação bastam para explicar a
+                    maioria das divergências abaixo &mdash; mas documenta a magnitude do problema.
+                </p>
+            </div>
+        </details>
+
+        <span class="section-label">Reconciliação agregada &middot; Espírito Santo, ICMS bruto, 2023-2025</span>
+        <div class="stat-row" id="stat-row-agregado">
+            <div class="stat-tile"><span class="stat-label">Carregando...</span></div>
+        </div>
+
+        <div class="table-wrap">
+            <table class="data-table" id="table-agregado">
+                <thead>
+                    <tr>
+                        <th class="th-left">Ano</th>
+                        <th>Oficial (SEFAZ), ICMS bruto</th>
+                        <th>Declarado (SICONFI/DCA)</th>
+                        <th>Diferença (R$)</th>
+                        <th>Diferença (%)</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-agregado">
+                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="callout">
+            No agregado dos 78 municípios, a soma do que a SEFAZ-ES efetivamente repassou de ICMS bruto e a
+            soma do que os municípios declararam ao SICONFI como Cota-Parte do ICMS praticamente coincidem, em
+            todos os três anos &mdash; o que confirma que as duas fontes medem a mesma coisa e que o desvio
+            agregado, sozinho, não distorce o coeficiente estadual da reforma. As divergências relevantes
+            aparecem apenas quando se olha município a município, na tabela abaixo.
+        </div>
+
+        <span class="section-label">Maiores divergências por município &middot; oficial (SEFAZ) x declarado (SICONFI), 2023-2025</span>
+        <div class="table-wrap">
+            <table class="data-table" id="table-top-divergencias">
+                <thead>
+                    <tr>
+                        <th class="th-left">Município</th>
+                        <th>Ano</th>
+                        <th>Oficial (SEFAZ)</th>
+                        <th>Declarado (SICONFI)</th>
+                        <th>Diferença (R$)</th>
+                        <th>Diferença (%)</th>
+                        <th>DCA=SIOPE=SIOPS?</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-top-divergencias">
+                    <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="chart-panel">
+            <p class="chart-panel-title">Declarado (SICONFI, eixo X) x oficial (SEFAZ, eixo Y), 78 municípios do ES, 2025 (R$ milhões)</p>
+            <canvas id="chart-scatter" style="max-height:480px"></canvas>
+            <div class="chart-legend-note">
+                <span><span class="legend-dot" style="background:#2a78d6"></span>Município</span>
+                <span><span class="legend-dot" style="background:#e34948"></span>Maior divergência (&gt;2%)</span>
+                <span>Linha tracejada: declarado e oficial coincidem exatamente</span>
+            </div>
+        </div>
+
+        <span class="section-label">Todos os 78 municípios &middot; 2025 (ano mais recente)</span>
+        <div class="table-wrap">
+            <table class="data-table" id="table-completa-2025">
+                <thead>
+                    <tr>
+                        <th class="th-left">Município</th>
+                        <th>Oficial (SEFAZ), ICMS bruto</th>
+                        <th>Declarado (SICONFI)</th>
+                        <th>Diferença (R$)</th>
+                        <th>Diferença (%)</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-completa-2025">
+                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+                <tfoot id="tfoot-completa-2025"></tfoot>
+            </table>
+        </div>
+
+        <span class="section-label">Validação histórica interna &middot; DCA (SICONFI) x SIOPE x SIOPS concordam entre si? (2019-2025)</span>
+        <div class="callout">
+            Um segundo teste, independente do primeiro: em vez de comparar o declarado ao que a SEFAZ pagou,
+            esta tabela compara os <strong>três sistemas federais entre si</strong>, para os 78 municípios do
+            ES, em todos os anos disponíveis (2019-2025) &mdash; não apenas os três anos com dado oficial da
+            SEFAZ. Uma divergência aqui não tem relação com a SEFAZ: é o próprio município (ou o órgão que
+            preenche em seu nome) declarando números diferentes para a mesma receita a dois ministérios
+            distintos.
+        </div>
+        <div class="table-wrap">
+            <table class="data-table" id="table-validacao-ano">
+                <thead>
+                    <tr>
+                        <th class="th-left">Ano</th>
+                        <th>Municípios OK</th>
+                        <th>Municípios com divergência</th>
+                        <th>% divergente</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-validacao-ano">
+                    <tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <span class="section-label">Maiores divergências históricas entre DCA, SIOPE e SIOPS (2019-2025)</span>
+        <div class="table-wrap">
+            <table class="data-table" id="table-top-internas">
+                <thead>
+                    <tr>
+                        <th class="th-left">Município</th>
+                        <th>Ano</th>
+                        <th>DCA</th>
+                        <th>SIOPE</th>
+                        <th>SIOPS</th>
+                        <th>Desvio médio (%)</th>
+                        <th>Fonte divergente</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-top-internas">
+                    <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footnotes">
+            <p><strong>Fontes e notas metodológicas:</strong></p>
+            <p>1. Lado oficial: SEFAZ-ES, Subsecretaria do Tesouro Estadual, boletins "Distribuição de ICMS/IPVA às Prefeituras Municipais" (<a href="https://sefaz.es.gov.br/transferencias-constitucionais-aos-municipios" target="_blank" rel="noopener">sefaz.es.gov.br/transferencias-constitucionais-aos-municipios</a>). Para 2023 e 2024, valor anual = soma dos 12 boletins mensais de cada ano (usando sempre a versão republicada/corrigida quando havia mais de uma para o mesmo mês); para 2025, demonstrativo "Transferências de impostos aos Municípios &mdash; Acumulado 2025", já consolidado pela SEFAZ. Extração via <code>pdfplumber</code>/<code>PyMuPDF</code>; ver <code>data/collect-cota-parte-es.py</code> no repositório do site para o código completo, incluindo os parsers dedicados aos boletins de abril e junho de 2023.</p>
+            <p>2. Lado declarado: compilação, fornecida pelo autor, do valor de "Cota-Parte do ICMS" (tipo COTA) por município do ES e ano, na DCA (Declaração de Contas Anuais, SICONFI/Tesouro Nacional), no SIOPE (MEC) e no SIOPS (Ministério da Saúde), 2019-2025, com sinalização prévia (OK/FALSO) de divergência entre os três sistemas e o desvio médio entre eles.</p>
+            <p>3. Todas as comparações desta página usam o valor <strong>bruto</strong> do ICMS (antes da retenção de 20% ao FUNDEB) tanto do lado oficial quanto do lado declarado, e não incluem o IPVA, que a base declarada não segrega como "Cota-Parte do ICMS". Diferença (R$) = oficial &minus; declarado; diferença (%) = diferença (R$) / declarado &times; 100.</p>
+            <p>4. Tabela "Maiores divergências por município": as 20 maiores divergências absolutas em %, entre os 234 pares Ano&times;Município (78 municípios &times; 3 anos) com dado oficial e declarado disponíveis. A coluna "DCA=SIOPE=SIOPS?" reproduz, para aquele município e ano, a validação interna da nota metodológica 2 &mdash; permite ver se a divergência com a SEFAZ coincide com uma divergência entre os próprios sistemas declarados.</p>
+            <p>5. Gráfico de dispersão: os 78 municípios em 2025, declarado (SICONFI) no eixo X contra oficial (SEFAZ) no eixo Y, em R$ milhões. Pontos destacados em vermelho são os municípios com divergência absoluta acima de 2% naquele ano. A linha tracejada marca onde os dois valores coincidiriam exatamente.</p>
+            <p>6. Tabela "Validação histórica interna": para cada ano de 2019 a 2025, quantos dos 78 municípios têm DCA, SIOPE e SIOPS idênticos (ou dentro de arredondamento) para a Cota-Parte do ICMS, e quantos têm ao menos uma divergência entre os três. Não depende do dado da SEFAZ e cobre um período mais longo que a comparação oficial x declarado.</p>
+            <p>7. Tabela "Maiores divergências históricas": as 15 maiores divergências absolutas (desvio médio entre DCA, SIOPE e SIOPS) entre 2019 e 2025, com a fonte apontada como divergente pela base original (tipicamente o sistema cujo valor destoa dos outros dois).</p>
+            <p>8. Dataset consolidado desta página: <code>data/cota-parte-municipal-es.json</code>. Planilha original da compilação declarada disponível em <code>data/raw/siconfi-siope-siops-es.zip</code>, no repositório do site.</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+
+    <script src="/js/search.js"></script>
+    <script>
+    const fmtRS  = (v) => v.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    const fmtPct = (v, d=2) => (v >= 0 ? '+' : '') + v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }) + '%';
+    const clsPct = v => v < -0.05 ? 'td-neg' : v > 0.05 ? 'td-pos' : '';
+    const badge  = v => v === 'OK'
+        ? '<td class="td-badge-ok">OK</td>'
+        : '<td class="td-badge-falso">FALSO</td>';
+
+    function buildAgregado(data) {
+        const anos = ['2023', '2024', '2025'];
+        const ag = data.agregado_es_por_ano;
+
+        document.getElementById('stat-row-agregado').innerHTML = anos.map(ano => {
+            const a = ag[ano];
+            return `<div class="stat-tile">
+                <span class="stat-label">${ano}</span>
+                <div class="stat-value ${clsPct(a.diff_pct)}">${fmtPct(a.diff_pct, 3)}</div>
+                <div class="stat-sub">diferença agregada, ${a.n_municipios} municípios</div>
+            </div>`;
+        }).join('');
+
+        document.getElementById('tbody-agregado').innerHTML = anos.map(ano => {
+            const a = ag[ano];
+            return `<tr>
+                <td class="td-mun">${ano}</td>
+                <td>R$ ${fmtRS(a.oficial_icms_bruto)}</td>
+                <td>R$ ${fmtRS(a.declarado_siconfi)}</td>
+                <td class="${clsPct(a.diff_pct)}">R$ ${a.diff_rs >= 0 ? '+' : ''}${fmtRS(a.diff_rs)}</td>
+                <td class="${clsPct(a.diff_pct)}">${fmtPct(a.diff_pct, 3)}</td>
+            </tr>`;
+        }).join('');
+    }
+
+    function buildTopDivergencias(data) {
+        const comp = data.comparacao_municipio_sefaz_siconfi;
+        const top = [...comp].sort((a, b) => Math.abs(b.diff_pct) - Math.abs(a.diff_pct)).slice(0, 20);
+
+        document.getElementById('tbody-top-divergencias').innerHTML = top.map(r => `<tr>
+            <td class="td-mun">${r.municipio}</td>
+            <td>${r.ano}</td>
+            <td>R$ ${fmtRS(r.oficial_icms_bruto)}</td>
+            <td>R$ ${fmtRS(r.declarado_siconfi)}</td>
+            <td class="${clsPct(r.diff_pct)}">R$ ${r.diff_rs >= 0 ? '+' : ''}${fmtRS(r.diff_rs)}</td>
+            <td class="${clsPct(r.diff_pct)}">${fmtPct(r.diff_pct, 2)}</td>
+            ${badge(r.validacao_interna)}
+        </tr>`).join('');
+    }
+
+    function buildTabelaCompleta2025(data) {
+        const comp = data.comparacao_municipio_sefaz_siconfi
+            .filter(r => r.ano === 2025)
+            .sort((a, b) => a.municipio.localeCompare(b.municipio, 'pt-BR'));
+
+        document.getElementById('tbody-completa-2025').innerHTML = comp.map(r => `<tr>
+            <td class="td-mun">${r.municipio}</td>
+            <td>R$ ${fmtRS(r.oficial_icms_bruto)}</td>
+            <td>R$ ${fmtRS(r.declarado_siconfi)}</td>
+            <td class="${clsPct(r.diff_pct)}">R$ ${r.diff_rs >= 0 ? '+' : ''}${fmtRS(r.diff_rs)}</td>
+            <td class="${clsPct(r.diff_pct)}">${fmtPct(r.diff_pct, 2)}</td>
+        </tr>`).join('');
+
+        const somaOf = comp.reduce((s, r) => s + r.oficial_icms_bruto, 0);
+        const somaDe = comp.reduce((s, r) => s + r.declarado_siconfi, 0);
+        document.getElementById('tfoot-completa-2025').innerHTML = `<tr>
+            <td class="td-mun"><strong>Total</strong> <small>78 municípios</small></td>
+            <td>R$ ${fmtRS(somaOf)}</td>
+            <td>R$ ${fmtRS(somaDe)}</td>
+            <td>R$ ${fmtRS(somaOf - somaDe)}</td>
+            <td>${fmtPct((somaOf - somaDe) / somaDe * 100, 3)}</td>
+        </tr>`;
+    }
+
+    function buildValidacaoAno(data) {
+        const resumo = data.resumo_validacao_interna_por_ano;
+        const anos = Object.keys(resumo).sort();
+        document.getElementById('tbody-validacao-ano').innerHTML = anos.map(ano => {
+            const r = resumo[ano];
+            return `<tr>
+                <td class="td-mun">${ano}</td>
+                <td>${r.ok}</td>
+                <td class="${r.falso > 0 ? 'td-neg' : ''}">${r.falso}</td>
+                <td class="${r.pct_divergente > 10 ? 'td-neg' : ''}">${r.pct_divergente.toLocaleString('pt-BR', {minimumFractionDigits:1,maximumFractionDigits:1})}%</td>
+            </tr>`;
+        }).join('');
+    }
+
+    function buildTopInternas(data) {
+        const internal = data.validacao_interna_dca_siope_siops;
+        const top = internal.filter(r => r.validacao === 'FALSO').slice(0, 15);
+        document.getElementById('tbody-top-internas').innerHTML = top.map(r => `<tr>
+            <td class="td-mun">${r.municipio}</td>
+            <td>${r.ano}</td>
+            <td>R$ ${fmtRS(r.dca)}</td>
+            <td>R$ ${fmtRS(r.siope || 0)}</td>
+            <td>R$ ${fmtRS(r.siops || 0)}</td>
+            <td class="td-neg">${fmtPct(r.desvio_medio_pct, 2)}</td>
+            <td>${r.base_divergencia}</td>
+        </tr>`).join('');
+    }
+
+    function buildScatter(data) {
+        const comp2025 = data.comparacao_municipio_sefaz_siconfi.filter(r => r.ano === 2025);
+        const regular = comp2025.filter(r => Math.abs(r.diff_pct) <= 2).map(r => ({
+            x: r.declarado_siconfi / 1e6, y: r.oficial_icms_bruto / 1e6, nome: r.municipio, pct: r.diff_pct
+        }));
+        const outliers = comp2025.filter(r => Math.abs(r.diff_pct) > 2).map(r => ({
+            x: r.declarado_siconfi / 1e6, y: r.oficial_icms_bruto / 1e6, nome: r.municipio, pct: r.diff_pct
+        }));
+
+        const el = document.getElementById('chart-scatter');
+        if (!el || typeof Chart === 'undefined') return;
+        if (window.ChartDataLabels) Chart.register(ChartDataLabels);
+
+        const maxVal = Math.max(...comp2025.map(r => Math.max(r.declarado_siconfi, r.oficial_icms_bruto))) / 1e6 * 1.05;
+        const gridColor = 'rgba(0,0,0,0.07)';
+        const textColor = '#6E6E6E';
+
+        new Chart(el, {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    {
+                        label: 'Linha de paridade',
+                        type: 'line',
+                        data: [{ x: 0, y: 0 }, { x: maxVal, y: maxVal }],
+                        borderColor: 'rgba(0,0,0,0.35)',
+                        borderWidth: 1.5,
+                        borderDash: [6, 4],
+                        pointRadius: 0,
+                        fill: false,
+                        datalabels: { display: false },
+                        order: 3
+                    },
+                    {
+                        label: 'Município',
+                        data: regular,
+                        backgroundColor: 'rgba(42,120,214,0.65)',
+                        borderColor: 'rgba(42,120,214,1)',
+                        borderWidth: 1,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        order: 2,
+                        datalabels: { display: false }
+                    },
+                    {
+                        label: 'Divergência > 2%',
+                        data: outliers,
+                        backgroundColor: 'rgba(227,73,72,0.85)',
+                        borderColor: 'rgba(227,73,72,1)',
+                        borderWidth: 1.5,
+                        pointRadius: 7,
+                        pointHoverRadius: 9,
+                        order: 1,
+                        datalabels: {
+                            align: 'top',
+                            offset: 4,
+                            color: '#b0342e',
+                            font: { size: 9, weight: '600', family: "'JetBrains Mono', monospace" },
+                            formatter: (v) => v.nome
+                        }
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                aspectRatio: 1.3,
+                interaction: { mode: 'nearest', intersect: true },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => {
+                                const d = ctx.raw;
+                                if (d.nome === undefined) return '';
+                                return `${d.nome}: declarado R$ ${fmtRS(d.x)} mi · oficial R$ ${fmtRS(d.y)} mi (${fmtPct(d.pct, 2)})`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        min: 0, max: maxVal,
+                        title: { display: true, text: 'Declarado, SICONFI (R$ milhões)', color: textColor, font: { size: 11 } },
+                        ticks: { color: textColor },
+                        grid: { color: gridColor }
+                    },
+                    y: {
+                        min: 0, max: maxVal,
+                        title: { display: true, text: 'Oficial, SEFAZ-ES (R$ milhões)', color: textColor, font: { size: 11 } },
+                        ticks: { color: textColor },
+                        grid: { color: gridColor }
+                    }
+                }
+            }
+        });
+    }
+
+    (async function init() {
+        const statusEl = document.getElementById('status-main');
+        try {
+            const resp = await fetch('/data/cota-parte-municipal-es.json?t=' + Date.now());
+            if (!resp.ok) throw new Error('Erro ao carregar dados');
+            const data = await resp.json();
+
+            buildAgregado(data);
+            buildTopDivergencias(data);
+            buildScatter(data);
+            buildTabelaCompleta2025(data);
+            buildValidacaoAno(data);
+            buildTopInternas(data);
+
+            statusEl.innerHTML =
+                '<span class="status-dot" style="background:#22c55e"></span> ' +
+                '78 municípios do ES · SEFAZ-ES 2023-2025 · SICONFI/SIOPE/SIOPS 2019-2025';
+        } catch (err) {
+            statusEl.innerHTML =
+                '<span class="status-dot" style="background:#ef4444"></span> Erro ao carregar dados: ' + err.message;
+        }
+    })();
+    </script>
+</body>
+</html>
