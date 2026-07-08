@@ -342,6 +342,7 @@ $$R_{a,\,\text{UF}} \;=\; \mathrm{TotalBR}_{2025}\cdot\Bigl[
                 <button class="tab-btn active" data-tab="sc1">Cenário 1: Redistribuição integral</button>
                 <button class="tab-btn" data-tab="sc2">Cenário 2: Redistribuição moderada</button>
                 <button class="tab-btn" data-tab="sc3">Cenário 3: Neutro</button>
+                <button class="tab-btn" data-tab="ineq">Receita vs. Gini/IDH</button>
             </div>
 
             <div id="tab-sc1" class="tab-panel active">
@@ -437,6 +438,44 @@ $$R_{a,\,\text{UF}} \;=\; \mathrm{TotalBR}_{2025}\cdot\Bigl[
                         <tfoot id="tfoot-sc3"></tfoot>
                     </table>
                 </div>
+            </div>
+
+            <div id="tab-ineq" class="tab-panel">
+                <span class="section-label">Variação de receita em 2033 vs. indicadores de bem-estar, por UF</span>
+                <div class="callout">
+                    Compara a variação percentual da receita projetada para 2033 em relação a
+                    \(r_0^{2025}\) — nos Cenários 1 (redistribuição integral) e 3 (neutro) — com o
+                    Índice de Gini do rendimento domiciliar per capita (IBGE, PNAD Contínua, 2023) e
+                    o IDHM (PNUD, Radar IDHM 2024) de cada estado. O objetivo é avaliar, de forma
+                    exploratória, se os estados que mais ganham ou perdem receita na transição são
+                    também os de maior ou menor indicador de qualidade de vida. Coeficientes de
+                    correlação de Pearson (\(r\)) são exibidos abaixo da tabela; com \(n=27\) UFs,
+                    devem ser lidos como indicativos, não como evidência causal.
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table" id="table-ineq">
+                        <thead>
+                            <tr>
+                                <th class="th-left">UF</th>
+                                <th>&#916;% 2033<br>(Cenário 1)</th>
+                                <th>&#916;% 2033<br>(Cenário 3)</th>
+                                <th>Gini<br>(2023)</th>
+                                <th>IDHM<br>(2024)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-ineq">
+                            <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                        </tbody>
+                        <tfoot id="tfoot-ineq"></tfoot>
+                    </table>
+                </div>
+                <p class="meto-note" id="corr-ineq"></p>
+                <p class="meto-note">
+                    Fontes: IBGE, PNAD Contínua, Tabela 7435 (SIDRA) — Índice de Gini do rendimento
+                    domiciliar per capita, 2023. PNUD Brasil (com Ipea e FJP),
+                    <em>Radar IDHM: evolução do IDHM e de seus componentes — período de 2012 a 2024</em>,
+                    maio de 2026.
+                </p>
             </div>
         </div>
 
@@ -648,6 +687,62 @@ $$R_{a,\,\text{UF}} \;=\; \mathrm{TotalBR}_{2025}\cdot\Bigl[
         </tr>`;
     }
 
+    function pearson(xs, ys) {
+        const n = xs.length;
+        const mx = xs.reduce((a, b) => a + b, 0) / n;
+        const my = ys.reduce((a, b) => a + b, 0) / n;
+        let num = 0, dx2 = 0, dy2 = 0;
+        for (let i = 0; i < n; i++) {
+            const dx = xs[i] - mx, dy = ys[i] - my;
+            num += dx * dy; dx2 += dx * dx; dy2 += dy * dy;
+        }
+        const den = Math.sqrt(dx2 * dy2);
+        return den > 0 ? num / den : 0;
+    }
+
+    function buildIneqTable(params, giniIdh) {
+        const rows = UFS.map(uf => {
+            const rC1 = project(uf, params, 'pleno')[2033].dpct;
+            const rC3 = project(uf, params, 'neutro')[2033].dpct;
+            const ind = giniIdh.ufs[uf] || {};
+            return { uf, dC1: rC1, dC3: rC3, gini: ind.gini_2023, idhm: ind.idhm_2024 };
+        }).sort((a, b) => a.dC1 - b.dC1);
+
+        const tbody = document.getElementById('tbody-ineq');
+        tbody.innerHTML = rows.map(({ uf, dC1, dC3, gini, idhm }) => {
+            const isES = uf === 'ES';
+            return `<tr${isES ? ' class="row-es"' : ''}>
+                <td class="td-uf">${uf} <small>${NOMES_UF[uf]}</small></td>
+                <td class="${clsPct(dC1)}">${fmtPct(dC1, 1)}</td>
+                <td class="${clsPct(dC3)}">${fmtPct(dC3, 1)}</td>
+                <td class="td-ref">${gini != null ? gini.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3}) : '—'}</td>
+                <td class="td-ref">${idhm != null ? idhm.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3}) : '—'}</td>
+            </tr>`;
+        }).join('');
+
+        document.getElementById('tfoot-ineq').innerHTML = `<tr>
+            <td class="td-uf"><strong>Brasil</strong> <small>27 UFs</small></td>
+            <td class="td-ref"></td>
+            <td class="td-ref"></td>
+            <td class="td-ref">${giniIdh.brasil.gini_2023.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3})}</td>
+            <td class="td-ref">${giniIdh.brasil.idhm_2024.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3})}</td>
+        </tr>`;
+
+        const withGini = rows.filter(r => r.gini != null);
+        const withIdhm = rows.filter(r => r.idhm != null);
+        const rGiniC1 = pearson(withGini.map(r => r.dC1), withGini.map(r => r.gini));
+        const rIdhmC1 = pearson(withIdhm.map(r => r.dC1), withIdhm.map(r => r.idhm));
+        const rGiniC3 = pearson(withGini.map(r => r.dC3), withGini.map(r => r.gini));
+        const rIdhmC3 = pearson(withIdhm.map(r => r.dC3), withIdhm.map(r => r.idhm));
+        const fmtR = v => v.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+        document.getElementById('corr-ineq').innerHTML =
+            `<strong>Correlação de Pearson (n=27):</strong> ` +
+            `&#916;%2033(C1) &times; Gini: r = ${fmtR(rGiniC1)} &nbsp;&bull;&nbsp; ` +
+            `&#916;%2033(C1) &times; IDHM: r = ${fmtR(rIdhmC1)} &nbsp;&bull;&nbsp; ` +
+            `&#916;%2033(C3) &times; Gini: r = ${fmtR(rGiniC3)} &nbsp;&bull;&nbsp; ` +
+            `&#916;%2033(C3) &times; IDHM: r = ${fmtR(rIdhmC3)}`;
+    }
+
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -660,13 +755,15 @@ $$R_{a,\,\text{UF}} \;=\; \mathrm{TotalBR}_{2025}\cdot\Bigl[
     (async function init() {
         const statusEl = document.getElementById('status-main');
         try {
-            const [refResp, gobettiResp] = await Promise.all([
+            const [refResp, gobettiResp, giniIdhResp] = await Promise.all([
                 fetch('/data/reforma-tributaria.json?t=' + Date.now()),
-                fetch('/data/gobetti-2023-perdas-ganhos-uf.json?t=' + Date.now())
+                fetch('/data/gobetti-2023-perdas-ganhos-uf.json?t=' + Date.now()),
+                fetch('/data/gini-idh-uf.json?t=' + Date.now())
             ]);
-            if (!refResp.ok || !gobettiResp.ok) throw new Error('Erro ao carregar dados');
+            if (!refResp.ok || !gobettiResp.ok || !giniIdhResp.ok) throw new Error('Erro ao carregar dados');
             const refData     = await refResp.json();
             const gobettiData = await gobettiResp.json();
+            const giniIdhData = await giniIdhResp.json();
 
             const dca_icms  = refData.dca_icms_por_uf;
             const dca_iss   = refData.dca_iss_por_uf;
@@ -678,6 +775,7 @@ $$R_{a,\,\text{UF}} \;=\; \mathrm{TotalBR}_{2025}\cdot\Bigl[
             for (const sc of SCENARIOS) {
                 buildTable('tbody-' + sc.id, 'tfoot-' + sc.id, params, sc.coefKey);
             }
+            buildIneqTable(params, giniIdhData);
 
             const esP = params['ES'];
             statusEl.innerHTML =
