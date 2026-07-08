@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cota-Parte do ICMS aos Municípios do ES: Declarado (SICONFI) x Oficial (SEFAZ) | Eduardo Reis Araújo</title>
-    <meta name="description" content="A cota-parte do ICMS que os 78 municípios do Espírito Santo declaram ao SICONFI, SIOPE e SIOPS bate com o que a SEFAZ-ES efetivamente repassou? Reconciliação agregada e divergências município a município, 2023-2025.">
+    <title>Cota-Parte do ICMS aos Municípios do ES: Reconciliação entre Declarado (SICONFI) e Repasse Oficial (SEFAZ) | Eduardo Reis Araújo</title>
+    <meta name="description" content="Reconciliação entre a cota-parte do ICMS declarada pelos 78 municípios do Espírito Santo ao SICONFI, ao SIOPE e ao SIOPS e o valor efetivamente repassado pela SEFAZ-ES: reconciliação agregada e divergências município a município, 2023-2025.">
     <meta name="author" content="Eduardo Reis Araujo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/cota-parte-icms-municipios-es.html">
 
-    <meta property="og:title" content="Cota-Parte do ICMS aos Municípios do ES: Declarado x Oficial">
-    <meta property="og:description" content="A cota-parte do ICMS declarada pelos municípios do ES ao SICONFI/SIOPE/SIOPS bate com o que a SEFAZ-ES efetivamente repassou? Reconciliação agregada e divergências município a município, 2023-2025.">
+    <meta property="og:title" content="Cota-Parte do ICMS aos Municípios do ES: Declarado x Repasse Oficial">
+    <meta property="og:description" content="Reconciliação entre a cota-parte do ICMS declarada pelos municípios do ES ao SICONFI/SIOPE/SIOPS e o valor efetivamente repassado pela SEFAZ-ES: reconciliação agregada e divergências município a município, 2023-2025.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/cota-parte-icms-municipios-es.html">
     <meta property="og:locale" content="pt_BR">
@@ -102,6 +102,12 @@
         .stat-tile .stat-value { font-family: var(--sans); font-size: 1.35rem; font-weight: 700; color: var(--text); }
         .stat-tile .stat-sub { font-family: var(--sans); font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; }
 
+        .download-box { display: flex; align-items: center; gap: 0.9rem; border: 1px solid var(--border); background: var(--surface); border-radius: 8px; padding: 0.9rem 1.1rem; margin-top: 1.1rem; }
+        .download-box svg { flex-shrink: 0; color: var(--accent); }
+        .download-box a { font-family: var(--sans); font-size: 0.88rem; font-weight: 700; color: var(--accent); text-decoration: none; }
+        .download-box a:hover { text-decoration: underline; }
+        .download-box p { font-family: var(--sans); font-size: 0.78rem; color: var(--text-muted); margin: 0.15rem 0 0; line-height: 1.5; }
+
         .footnotes { margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
         .footnotes p { font-family: var(--serif); font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.4rem; }
         .footnotes a { color: var(--accent); text-decoration: none; }
@@ -144,22 +150,29 @@
             <span class="study-hero-topic">Municípios</span>
             <span class="study-hero-date">Julho de 2026</span>
         </div>
-        <h1>Cota-parte do ICMS aos municípios do ES: o declarado bate com o repassado?</h1>
+        <h1>Cota-parte do ICMS aos municípios do Espírito Santo: reconciliação entre valores declarados e repasses oficiais</h1>
         <p class="lead">
             O coeficiente de transição de participação federativa da reforma tributária (art. 115 da LC
-            227/2026, ver <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a>) é calculado a
-            partir de receitas que estados e municípios <strong>declaram</strong> ao Tesouro Nacional. Se essa
-            declaração não bate com o que foi de fato arrecadado e repassado, a repartição federativa do novo
-            IBS pode distorcer a favor ou contra entes específicos. Esta página testa essa hipótese para os 78
-            municípios do Espírito Santo, cruzando a cota-parte do ICMS que cada um declarou ao SICONFI (DCA),
-            ao SIOPE e ao SIOPS com o valor que a SEFAZ-ES efetivamente lhe repassou, mês a mês, entre 2023 e
-            2025.
+            227/2026; ver <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a>) é calculado a
+            partir de receitas autodeclaradas por estados e municípios ao Tesouro Nacional. Divergências entre
+            o valor declarado e o valor efetivamente arrecadado e repassado podem distorcer a repartição
+            federativa do Imposto sobre Bens e Serviços (IBS) em favor ou em detrimento de entes específicos.
+            Este estudo examina essa hipótese para os 78 municípios do Espírito Santo, comparando a cota-parte
+            do ICMS declarada por cada ente ao SICONFI (DCA), ao SIOPE e ao SIOPS com o valor efetivamente
+            repassado pela SEFAZ-ES, mensalmente, entre 2023 e 2025.
         </p>
         <p class="study-meta">
             Dados: SEFAZ-ES, Subsecretaria do Tesouro Estadual (boletins de distribuição de ICMS/IPVA aos
             municípios, 2023-2025) &bull; compilação SICONFI (DCA/STN) x SIOPE (MEC) x SIOPS (MS) por
             município do ES, 2019-2025, fornecida pelo autor.
         </p>
+        <div class="download-box">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <div>
+                <a href="/materiais/cota-parte-icms-municipios-es.xlsx" download>Baixar a planilha completa (.xlsx)</a>
+                <p>Síntese executiva, metodologia e a comparação oficial x declarado dos 78 municípios, com uma aba por ano (2023, 2024 e 2025) &mdash; pronta para salvar e compartilhar. Compatível com Excel, LibreOffice e Google Sheets.</p>
+            </div>
+        </div>
     </div>
 
     <div class="study-content">
@@ -170,72 +183,77 @@
         </div>
 
         <details class="methodology">
-            <summary>Metodologia: como foram cruzadas duas fontes que não conversam entre si</summary>
+            <summary>Metodologia: reconciliação entre duas fontes independentes</summary>
             <div class="methodology-body">
 
                 <p class="meto-note">
-                    A pergunta parece simples &mdash; "o que o município disse que recebeu bate com o que o
-                    estado disse que pagou?" &mdash; mas as duas fontes não foram feitas para conversar entre
-                    si, e cruzá-las exigiu resolver três problemas na ordem abaixo.
+                    Embora a pergunta de pesquisa seja direta, as duas fontes utilizadas não foram concebidas
+                    para serem comparadas entre si. A reconciliação exigiu resolver três problemas
+                    metodológicos, apresentados a seguir na ordem em que foram identificados.
                 </p>
 
-                <p class="meto-section-title">1. O lado "oficial": boletins em PDF, não planilha</p>
+                <p class="meto-section-title">1. Fonte oficial: boletins em PDF, sem base estruturada</p>
                 <p class="meto-note">
                     A <a href="https://sefaz.es.gov.br/transferencias-constitucionais-aos-municipios" target="_blank" rel="noopener">página da SEFAZ-ES</a>
-                    que publica os repasses constitucionais de ICMS e IPVA aos municípios só disponibiliza PDFs
-                    &mdash; um boletim mensal por competência, sem CSV ou Excel nativo. Para 2025 há um
-                    demonstrativo acumulado anual já consolidado pela própria SEFAZ; para 2023 e 2024, esse
-                    demonstrativo não existe, e o valor anual de cada município foi obtido somando os 12
-                    boletins mensais de cada ano. A extração usou <code>pdfplumber</code>, localizando a linha
-                    de cabeçalho ("Valor BRUTO" / "Valor LÍQUIDO") e o grupo (ICMS-25% / IPVA-50%) ao qual cada
-                    coluna pertence, para não confundir os valores com as colunas de estorno presentes em
-                    alguns meses. Dois meses fugiram desse padrão e exigiram parsers específicos: o boletim de
-                    abril/2023 usa uma fonte com os códigos de caractere corrompidos (um deslocamento fixo de
-                    +29 na tabela de glifos, decifrado comparando com rótulos conhecidos como "Valor BRUTO"); o
-                    de junho/2023 só publica o valor líquido, e o valor bruto foi reconstituído por
-                    líquido&nbsp;/&nbsp;0,8, já que a retenção de 20% ao FUNDEB é sempre exata sobre o bruto.
+                    que publica os repasses constitucionais de ICMS e IPVA aos municípios disponibiliza
+                    exclusivamente arquivos em PDF &mdash; um boletim mensal por competência, sem CSV ou Excel
+                    nativo. Para 2025 há um demonstrativo acumulado anual já consolidado pela própria SEFAZ;
+                    para 2023 e 2024, esse demonstrativo não existe, e o valor anual de cada município foi
+                    obtido somando os 12 boletins mensais de cada ano. A extração empregou <code>pdfplumber</code>,
+                    identificando a linha de cabeçalho ("Valor BRUTO" / "Valor LÍQUIDO") e o grupo (ICMS-25% /
+                    IPVA-50%) ao qual cada coluna pertence, de modo a não confundir os valores com as colunas
+                    de estorno presentes em alguns meses. Dois meses distinguiram-se desse padrão e exigiram
+                    rotinas de extração específicas: o boletim de abril/2023 utiliza uma fonte tipográfica com
+                    os códigos de caractere corrompidos (um deslocamento fixo de +29 na tabela de glifos,
+                    decifrado por comparação com rótulos conhecidos como "Valor BRUTO"); o de junho/2023
+                    publica apenas o valor líquido, e o valor bruto foi reconstituído por
+                    líquido&nbsp;/&nbsp;0,8, uma vez que a retenção de 20% ao FUNDEB incide de forma exata
+                    sobre o valor bruto.
                 </p>
 
-                <p class="meto-section-title">2. O lado "declarado": três sistemas, nem sempre coerentes entre si</p>
+                <p class="meto-section-title">2. Fonte declarada: três sistemas federais, nem sempre coerentes entre si</p>
                 <p class="meto-note">
-                    A base declarada compila, para cada um dos 78 municípios do ES e cada ano de 2019 a 2025, o
-                    valor de "Cota-Parte do ICMS" registrado em três sistemas federais diferentes: a DCA
-                    (Declaração de Contas Anuais, SICONFI/Tesouro Nacional), o SIOPE (Sistema de Informações
-                    sobre Orçamentos Públicos em Educação, MEC) e o SIOPS (Sistema de Informações sobre
-                    Orçamentos Públicos em Saúde, Ministério da Saúde). Os três deveriam, em tese, reportar o
-                    mesmo número &mdash; é a mesma receita, apenas declarada a órgãos diferentes &mdash;, mas
-                    nem sempre reportam: a própria planilha de origem já sinaliza, para cada município e ano,
-                    se os três sistemas batem ("OK") ou não ("FALSO"), com o desvio médio entre eles.
+                    A base declarada compila, para cada um dos 78 municípios do Espírito Santo e cada ano de
+                    2019 a 2025, o valor de "Cota-Parte do ICMS" registrado em três sistemas federais
+                    distintos: a DCA (Declaração de Contas Anuais, SICONFI/Tesouro Nacional), o SIOPE (Sistema
+                    de Informações sobre Orçamentos Públicos em Educação, MEC) e o SIOPS (Sistema de
+                    Informações sobre Orçamentos Públicos em Saúde, Ministério da Saúde). Em princípio, os três
+                    sistemas deveriam reportar o mesmo valor, por se tratar da mesma receita declarada a órgãos
+                    distintos; na prática, isso nem sempre ocorre &mdash; a própria planilha de origem já
+                    sinaliza, para cada município e ano, se os três sistemas coincidem ("OK") ou não ("FALSO"),
+                    com o respectivo desvio médio.
                 </p>
 
-                <p class="meto-section-title">3. Bruto ou líquido? A armadilha que quase inviabilizou a comparação</p>
+                <p class="meto-section-title">3. Base bruta ou líquida: uma divergência conceitual entre as fontes</p>
                 <p class="meto-note">
-                    A primeira tentativa de cruzamento comparou o valor declarado (COTA) à soma do ICMS e do
-                    IPVA <strong>líquidos</strong> (já descontados os 20% do FUNDEB) informados pela SEFAZ, e o
-                    resultado foi um Espírito Santo inteiro "devendo" cerca de 10% a mais do que declarava,
-                    todo ano, de forma quase idêntica em todos os 78 municípios &mdash; um padrão grande
-                    demais e uniforme demais para ser erro de preenchimento. A causa era outra: a contabilidade
-                    pública registra a Cota-Parte do ICMS como receita orçamentária pelo valor
-                    <strong>bruto</strong>, antes da dedução do FUNDEB (que entra como despesa/dedução em outra
-                    conta, não como receita líquida). Comparando o valor declarado apenas ao ICMS bruto da
-                    SEFAZ (sem o IPVA, que não é "Cota-Parte do ICMS"), o agregado do Espírito Santo reconcilia
-                    quase perfeitamente nos três anos &mdash; desvio de 0,01% a 0,07% &mdash;, o que valida a
-                    correspondência entre as duas fontes e isola o que sobra como divergência genuína,
-                    município a município.
+                    A comparação inicial confrontou o valor declarado (COTA) com a soma do ICMS e do IPVA
+                    <strong>líquidos</strong> informados pela SEFAZ &mdash; já descontados os 20% destinados ao
+                    FUNDEB. O exercício indicava uma diferença agregada sistemática de aproximadamente 10% ao
+                    ano, com magnitude e uniformidade incompatíveis com erro de preenchimento pontual, replicada
+                    de forma quase idêntica nos 78 municípios. A causa identificada foi conceitual, não um erro
+                    de coleta: a contabilidade pública registra a Cota-Parte do ICMS como receita orçamentária
+                    pelo valor <strong>bruto</strong>, e a retenção ao FUNDEB é contabilizada como dedução em
+                    conta específica, não como redução da receita líquida reconhecida. Restringindo a
+                    comparação ao ICMS bruto da SEFAZ &mdash; excluído o IPVA, que a base declarada não segrega
+                    como Cota-Parte do ICMS &mdash;, o agregado estadual reconcilia de forma quase integral nos
+                    três anos analisados, com desvio entre 0,01% e 0,07%. Esse resultado confirma a
+                    correspondência conceitual entre as duas fontes e permite isolar, no nível municipal, a
+                    divergência genuína que subsiste.
                 </p>
 
-                <p class="meto-section-title">O que isso significa para o coeficiente da reforma</p>
+                <p class="meto-section-title">Implicações para o coeficiente da reforma tributária</p>
                 <p class="meto-note">
-                    Como o agregado estadual reconcilia quase à perfeição, o coeficiente de transição do ES
-                    como um todo (Estudo 02) não deveria ser afetado de forma relevante por essas divergências.
-                    O risco identificado aqui é outro, mais fino: a <strong>distribuição interna</strong> entre
-                    municípios. Se um município específico declara sistematicamente mais ou menos do que
-                    recebeu, ou se os três sistemas federais (DCA/SIOPE/SIOPS) divergem entre si para aquele
-                    município, qualquer regra de rateio intramunicipal baseada nessas declarações (inclusive
-                    dentro da própria metodologia do coeficiente de participação municipal do IBS) herda esse
-                    erro. Este estudo não afirma haver má-fé em nenhum caso individual &mdash; erros de
-                    preenchimento, defasagem de competência e correções via republicação bastam para explicar a
-                    maioria das divergências abaixo &mdash; mas documenta a magnitude do problema.
+                    Como o agregado estadual reconcilia de forma quase integral, o coeficiente de transição do
+                    Espírito Santo como um todo (Estudo 02) não deveria ser afetado de maneira relevante por
+                    essas divergências. O risco identificado é mais específico e refere-se à
+                    <strong>distribuição interna</strong> entre municípios: quando um ente declara valor
+                    sistematicamente distinto do recebido, ou quando os três sistemas federais (DCA, SIOPE e
+                    SIOPS) divergem entre si para aquele município, qualquer critério de rateio intramunicipal
+                    fundamentado nessas declarações &mdash; inclusive no âmbito da metodologia do coeficiente de
+                    participação municipal do IBS &mdash; incorpora o mesmo erro. Este estudo não pressupõe
+                    má-fé em nenhum caso individual: erros de preenchimento, defasagens de competência e
+                    correções por republicação explicam a maior parte das divergências documentadas a seguir. O
+                    objetivo é dimensionar a magnitude do problema, não atribuir responsabilidade.
                 </p>
             </div>
         </details>
@@ -262,11 +280,11 @@
             </table>
         </div>
         <div class="callout">
-            No agregado dos 78 municípios, a soma do que a SEFAZ-ES efetivamente repassou de ICMS bruto e a
-            soma do que os municípios declararam ao SICONFI como Cota-Parte do ICMS praticamente coincidem, em
-            todos os três anos &mdash; o que confirma que as duas fontes medem a mesma coisa e que o desvio
-            agregado, sozinho, não distorce o coeficiente estadual da reforma. As divergências relevantes
-            aparecem apenas quando se olha município a município, na Tabela 2 abaixo.
+            No agregado dos 78 municípios, o valor efetivamente repassado pela SEFAZ-ES a título de ICMS bruto
+            e o valor declarado pelos municípios ao SICONFI como Cota-Parte do ICMS praticamente coincidem nos
+            três anos analisados, o que confirma que as duas fontes mensuram a mesma grandeza e que a
+            divergência agregada, isoladamente, não compromete o coeficiente estadual da reforma. As
+            divergências relevantes emergem apenas na análise município a município, apresentada na Tabela 2.
         </div>
 
         <span class="section-label">Tabela 2 &middot; Maiores divergências por município, oficial (SEFAZ) x declarado (SICONFI), 2023-2025</span>
@@ -338,14 +356,14 @@
             </table>
         </div>
 
-        <span class="section-label">Tabela 4 &middot; Validação histórica interna, DCA (SICONFI) x SIOPE x SIOPS concordam entre si? (2019-2025)</span>
+        <span class="section-label">Tabela 4 &middot; Validação histórica interna: concordância entre DCA (SICONFI), SIOPE e SIOPS (2019-2025)</span>
         <div class="callout">
-            Um segundo teste, independente do primeiro: em vez de comparar o declarado ao que a SEFAZ pagou,
-            esta tabela compara os <strong>três sistemas federais entre si</strong>, para os 78 municípios do
-            ES, em todos os anos disponíveis (2019-2025) &mdash; não apenas os três anos com dado oficial da
-            SEFAZ. Uma divergência aqui não tem relação com a SEFAZ: é o próprio município (ou o órgão que
-            preenche em seu nome) declarando números diferentes para a mesma receita a dois ministérios
-            distintos.
+            Um segundo teste, independente do primeiro: em vez de comparar o valor declarado ao valor pago
+            pela SEFAZ, esta tabela compara os <strong>três sistemas federais entre si</strong>, para os 78
+            municípios do Espírito Santo, em todos os anos disponíveis (2019-2025) &mdash; período mais longo
+            que o dos três anos com dado oficial da SEFAZ. Uma divergência nesta tabela não guarda relação com
+            a SEFAZ: reflete o próprio município (ou o órgão responsável pelo preenchimento em seu nome)
+            declarando valores diferentes para a mesma receita a órgãos federais distintos.
         </div>
         <div class="table-wrap">
             <table class="data-table" id="table-validacao-ano">
@@ -385,18 +403,19 @@
 
         <span class="section-label">Tabela 6 &middot; Outras checagens de qualidade: dados faltantes, duplicados e saltos atípicos (2019-2025)</span>
         <div class="callout">
-            Três checagens adicionais, no mesmo espírito de auditorias de dados feitas por outras
-            secretarias de fazenda estaduais: (i) quantos registros têm DCA, SIOPE ou SIOPS em branco; (ii)
-            se o mesmo valor, ao centavo, se repete para dois municípios diferentes no mesmo ano e base
-            &mdash; assinatura clássica de copiar e colar; e (iii) se algum município teve um salto forte de
-            um ano para o outro que reverteu quase por completo no ano seguinte, indício de erro de
-            competência (valor lançado no ano errado). Nenhuma das três é o foco principal desta página
-            &mdash; ao contrário da Tabela 2, não têm relação com o valor pago pela SEFAZ &mdash;, mas são um
-            complemento de transparência: no ES, o resultado é tranquilizador. Nenhum valor duplicado foi
-            encontrado entre os 78 municípios em nenhum ano, tipo ou base; os poucos casos faltantes ou de
-            saltos atípicos abaixo são pequenos em volume e têm explicação plausível (defasagem na entrega
-            de 2025 e volatilidade normal do ISS em municípios pequenos, respectivamente), não um padrão
-            sistêmico como o observado em levantamentos nacionais.
+            Três checagens adicionais, no mesmo espírito de auditorias de dados realizadas por outras
+            secretarias de fazenda estaduais: (i) o número de registros com DCA, SIOPE ou SIOPS em branco;
+            (ii) a recorrência do mesmo valor, ao centavo, para municípios distintos no mesmo ano e na mesma
+            base &mdash; assinatura característica de erro de cópia; e (iii) a ocorrência de saltos expressivos
+            de um ano para o outro revertidos quase integralmente no ano seguinte, indício de erro de
+            competência (lançamento no exercício incorreto). Nenhuma das três checagens constitui o foco
+            principal deste estudo &mdash; ao contrário da Tabela 2, não guardam relação com o valor pago pela
+            SEFAZ &mdash;, mas complementam a transparência da análise. No Espírito Santo, os resultados são
+            favoráveis: não foi identificado nenhum valor duplicado entre os 78 municípios, em nenhum ano,
+            tipo de receita ou base; os casos de dados faltantes e de saltos atípicos, discriminados a seguir,
+            são reduzidos em volume e admitem explicação plausível &mdash; defasagem na entrega dos dados de
+            2025 e volatilidade usual do ISS em municípios de menor porte, respectivamente &mdash;, não
+            configurando um padrão sistêmico como o observado em levantamentos de outros estados.
         </div>
         <div class="stat-row" id="stat-row-qualidade">
             <div class="stat-tile"><span class="stat-label">Carregando...</span></div>
