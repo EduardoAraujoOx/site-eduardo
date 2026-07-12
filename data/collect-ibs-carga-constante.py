@@ -38,6 +38,12 @@ ANO_FIM_CAGR_PIB = 2025
 
 ANOS_PROJECAO = list(range(2027, 2034))  # 2027-2033
 
+# TotalBR_2025 usado como "bolo" fixo nos Estudos 03 e 06 desta página
+# (data/ibs-projecao-parametros.json), para a comparação de validade do
+# método de projeção com bolo constante.
+TOTAL_BR_2025_ESTUDOS_03_06 = 1029573688573.62
+ANO_TERMINAL_ESTUDOS_03_06 = 2033
+
 
 def fetch_json(url):
     with urllib.request.urlopen(url, timeout=30) as r:
@@ -96,6 +102,20 @@ def main():
         1 / (ANO_FIM_CAGR_PIB - ANO_INICIO_CAGR_PIB)
     ) - 1
 
+    # ── Crescimento REAL do PIB (BCB/SGS série 7326, variação real anual %) ──
+    # Duas janelas: a média 2012-2021, mesmo período usado pelo art. 130, §3º,
+    # I e II do ADCT para o "Teto de Referência"; e a média 2022-2025 (ritmo
+    # recente), para comparar a sensibilidade do exercício de validade do
+    # "bolo fixo" dos Estudos 03 e 06 a cada uma dessas janelas.
+    pib_real_var = bcb_serie(7326, "01/01/2012", "31/12/2025")
+    pib_real_var_ano = {int(r["data"].split("/")[2]): float(r["valor"]) for r in pib_real_var}
+    g_real_2012_2021 = sum(pib_real_var_ano[y] for y in range(2012, 2022)) / 10 / 100
+    g_real_2022_2025 = sum(pib_real_var_ano[y] for y in range(2022, 2026)) / 4 / 100
+
+    n_terminal = ANO_TERMINAL_ESTUDOS_03_06 - 2025
+    bolo_2033_baixo = TOTAL_BR_2025_ESTUDOS_03_06 * (1 + g_real_2012_2021) ** n_terminal
+    bolo_2033_alto = TOTAL_BR_2025_ESTUDOS_03_06 * (1 + g_real_2022_2025) ** n_terminal
+
     # ── Série histórica: bolo nominal, real (reais de abr/2026) e % do PIB ──
     historico = []
     for y in range(2019, 2027):
@@ -153,11 +173,25 @@ def main():
         },
         "historico": historico,
         "projecao": projecao,
+        "validade_bolo_fixo": {
+            "descricao": "Comparação entre o 'bolo' fixo em preços de 2025 usado nos Estudos 03 e 06 desta página (TotalBR_2025, sem correção) e o que a meta de proporcionalidade ao PIB do art. 130 do ADCT implicaria em 2033, sob duas janelas de crescimento real do PIB.",
+            "total_br_2025": TOTAL_BR_2025_ESTUDOS_03_06,
+            "ano_terminal": ANO_TERMINAL_ESTUDOS_03_06,
+            "g_real_2012_2021": round(g_real_2012_2021, 6),
+            "g_real_2012_2021_fonte": "BCB/SGS série 7326 (variação real anual do PIB), média 2012-2021 — mesma janela do 'Teto de Referência' no art. 130, §3º, I e II, do ADCT",
+            "g_real_2022_2025": round(g_real_2022_2025, 6),
+            "g_real_2022_2025_fonte": "BCB/SGS série 7326, média 2022-2025 (ritmo recente)",
+            "bolo_2033_flat": round(TOTAL_BR_2025_ESTUDOS_03_06, 2),
+            "bolo_2033_baixo": round(bolo_2033_baixo, 2),
+            "bolo_2033_alto": round(bolo_2033_alto, 2),
+        },
     }
 
     OUTPUT.write_text(json.dumps(output, ensure_ascii=False, indent=2))
     print(f"Gravado em {OUTPUT}")
     print(f"g_pib_proj={g_pib_proj:.4%}  ipca_12m={ipca_acum_12m:.4%}  base_2026=R$ {base_tributavel_2026/1e9:.1f} bi")
+    print(f"g_real_2012_2021={g_real_2012_2021:.4%}  g_real_2022_2025={g_real_2022_2025:.4%}")
+    print(f"bolo_2033: flat={TOTAL_BR_2025_ESTUDOS_03_06/1e9:.1f}  baixo={bolo_2033_baixo/1e9:.1f}  alto={bolo_2033_alto/1e9:.1f}")
 
 
 if __name__ == "__main__":
