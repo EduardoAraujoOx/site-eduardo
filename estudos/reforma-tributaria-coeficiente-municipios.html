@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coeficiente de Participação de Transição por Município: todas as UFs | Eduardo Reis Araújo</title>
+    <meta name="description" content="Cálculo do Coeficiente de Participação de Transição (CPT, LC 227/2026, art. 115) para os municípios de qualquer UF do Brasil, com tratamento explícito de dados faltantes no DCA/SICONFI.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/reforma-tributaria-coeficiente-municipios.html">
+
+    <meta property="og:title" content="Coeficiente de Participação de Transição por Município: todas as UFs">
+    <meta property="og:description" content="Selecione uma UF e obtenha o Coeficiente de Participação de Transição (LC 227/2026) de cada um dos seus municípios, com tratamento explícito de dados faltantes.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/reforma-tributaria-coeficiente-municipios.html">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+    <link rel="stylesheet" href="/css/notas.css?v=4">
+    <link rel="stylesheet" href="/css/search.css">
+
+    <style>
+        .study-hero { max-width: 980px; margin: 0 auto; padding: 3rem 2rem 1.5rem; }
+        .study-hero-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+        .study-hero-tag { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); padding: 0.25rem 0.6rem; border-radius: 4px; }
+        .study-hero-topic { font-family: var(--sans); font-size: 0.73rem; color: var(--text-secondary); background: var(--border-light); padding: 0.2rem 0.55rem; border-radius: 4px; }
+        .study-hero-date { font-family: var(--sans); font-size: 0.73rem; color: var(--text-muted); margin-left: auto; }
+        .study-hero h1 { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 0.8rem; }
+        .study-hero .lead { font-family: var(--serif); font-size: 1rem; line-height: 1.72; color: var(--text-secondary); max-width: 760px; }
+        .study-hero .study-meta { font-family: var(--sans); font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem; }
+
+        .study-content { max-width: 980px; margin: 0 auto; padding: 0 2rem 5rem; }
+
+        .status-bar { display: flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #999; flex-shrink: 0; transition: background 0.3s; }
+        .status-dot.ok { background: #22c55e; }
+        .status-dot.pending { background: #f59e0b; }
+
+        :root {
+            --neg:       #b03a2e;
+            --neg-bg:    #fdf3f2;
+            --pos:       #1e8449;
+            --pos-bg:    #f0faf4;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root { --neg: #e05a4f; --neg-bg: #2a1a1a; --pos: #4caf76; --pos-bg: #192a20; }
+        }
+        :root[data-theme="light"] { --neg:#b03a2e; --neg-bg:#fdf3f2; --pos:#1e8449; --pos-bg:#f0faf4; }
+        :root[data-theme="dark"]  { --neg:#e05a4f; --neg-bg:#2a1a1a; --pos:#4caf76; --pos-bg:#192a20; }
+
+        /* UF selector */
+        .uf-picker { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .uf-select { font-family: var(--sans); font-size: 0.95rem; font-weight: 600; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem 0.9rem; cursor: pointer; min-width: 260px; }
+        .uf-picker-hint { font-family: var(--sans); font-size: 0.78rem; color: var(--text-muted); }
+
+        .empty-state { border: 1px dashed var(--border); border-radius: 8px; padding: 2.5rem 1.5rem; text-align: center; font-family: var(--sans); color: var(--text-muted); font-size: 0.9rem; }
+
+        .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 0 0 1.5rem; }
+        .stat-tile { border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem 1rem; background: var(--surface); }
+        .stat-tile .stat-label { font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 0.35rem; display: block; }
+        .stat-tile .stat-value { font-family: var(--sans); font-size: 1.35rem; font-weight: 700; color: var(--text); }
+        .stat-tile .stat-sub { font-family: var(--sans); font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; }
+        .stat-tile.stat-warn .stat-value { color: var(--neg); }
+
+        .callout { background: var(--accent-bg); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 0.75rem 1rem; font-family: var(--serif); font-size: 0.84rem; color: var(--text); margin: 1rem 0 1.5rem; line-height: 1.6; }
+
+        .section-label { display: block; font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 0.5rem; }
+
+        .table-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.75rem; }
+        .search-input { font-family: var(--sans); font-size: 0.85rem; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.45rem 0.8rem; min-width: 220px; }
+        .share-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+        .btn-share { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--sans); font-size: 0.78rem; font-weight: 600; padding: 0.45rem 0.9rem; border-radius: 6px; border: 1px solid var(--border); background: var(--border-light); color: var(--text-secondary); cursor: pointer; transition: opacity 0.15s, background 0.15s; }
+        .btn-share:hover { opacity: 0.8; }
+        .btn-share:disabled { opacity: 0.5; cursor: default; }
+        .btn-share-wa { background: #25D366; color: #fff; border-color: #25D366; }
+        .btn-share svg { flex-shrink: 0; }
+
+        .table-wrap { overflow-x: auto; margin-bottom: 1.5rem; max-height: 640px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
+        .data-table th { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0.5rem 0.7rem; text-align: right; font-family: var(--sans); font-weight: 600; font-size: 0.74rem; white-space: nowrap; color: var(--text); position: sticky; top: 0; z-index: 1; }
+        .data-table th.th-left { text-align: left; }
+        .data-table td { border-bottom: 1px solid var(--border-light); padding: 0.4rem 0.7rem; text-align: right; font-family: var(--mono); font-size: 0.78rem; white-space: nowrap; color: var(--text); }
+        .data-table td.td-mun { text-align: left; font-family: var(--sans); font-weight: 600; font-size: 0.81rem; }
+        .data-table td.td-mun small { font-weight: 400; color: var(--text-muted); font-family: var(--mono); }
+        .data-table .td-neg { color: var(--neg); font-weight: 600; }
+        .data-table .td-pos { color: var(--pos); font-weight: 600; }
+        .data-table .td-coeff { font-weight: 700; color: var(--accent); }
+        .data-table .td-cov-full { color: var(--text-muted); }
+        .data-table .td-cov-est { color: #b8860b; }
+        .data-table tfoot tr { background: var(--bg); border-top: 2px solid var(--border); }
+        .data-table tfoot td { font-weight: 700; }
+        .data-table tbody tr:hover { background: var(--accent-bg); }
+        .row-hidden { display: none; }
+
+        .methodology { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 2rem; background: var(--surface); }
+        .methodology summary { padding: 0.9rem 1.25rem; cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; list-style: none; display: flex; align-items: center; gap: 0.5rem; }
+        .methodology summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; }
+        .methodology[open] summary::before { transform: rotate(90deg); }
+        .methodology-body { padding: 0 1.5rem 1.5rem; }
+        .meto-section-title { font-family: var(--sans); font-size: 0.85rem; font-weight: 600; color: var(--text); margin: 1.25rem 0 0.4rem; }
+        .meto-note { font-family: var(--serif); font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; margin-top: 0.5rem; }
+        .meto-note:first-child { margin-top: 0; }
+        .meto-note code { font-family: var(--mono); font-size: 0.85em; }
+
+        .footnotes { margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+        .footnotes p { font-family: var(--serif); font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.4rem; }
+        .footnotes a { color: var(--accent); text-decoration: none; }
+        .footnotes a:hover { text-decoration: underline; }
+
+        @media (max-width: 640px) {
+            .study-hero { padding: 2rem 1.25rem 1rem; }
+            .study-content { padding: 0 1.25rem 3rem; }
+            .stat-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <div class="header-right-group">
+                <nav class="header-nav">
+                    <a href="/#publicacoes">Publicações</a>
+                    <a href="/ensino/">Ensino</a>
+                    <a href="/estudos/" class="active">Estudos</a>
+                    <a href="/#contato">Contato</a>
+                </nav>
+                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="study-hero">
+        <div class="study-hero-meta">
+            <span class="study-hero-tag">Estudo 10</span>
+            <span class="study-hero-topic">Reforma Tributária</span>
+            <span class="study-hero-topic">Federalismo Fiscal</span>
+            <span class="study-hero-topic">Municípios</span>
+            <span class="study-hero-date">Julho de 2026</span>
+        </div>
+        <h1>Coeficiente de Participação de Transição por município: as 27 UFs do Brasil</h1>
+        <p class="lead">
+            O <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a> calculou o Coeficiente de
+            Participação de Transição (CPT, art. 115 da LC 227/2026) para os 26 estados e o Distrito Federal,
+            e para os municípios do Espírito Santo. Esta página generaliza o cálculo municipal para
+            <strong>qualquer UF</strong>: selecione um estado e obtenha o CPT individual de cada um dos seus
+            municípios, a partir do mesmo Demonstrativo de Contas Anuais (DCA/SICONFI) usado no Estudo 02.
+        </p>
+        <p class="study-meta">
+            Diferente de um estado, um município nem sempre entrega o DCA em todos os anos. Como o CPT
+            municipal é uma fatia de um total fixo, um município ausente altera a fatia calculada para os
+            demais &mdash; por isso esta página trata dados faltantes de forma explícita (ver metodologia
+            abaixo) em vez de ignorá-los silenciosamente.
+        </p>
+    </div>
+
+    <div class="study-content">
+
+        <div id="status-main" class="status-bar">
+            <span class="status-dot pending" id="status-dot"></span>
+            <span id="status-text">Carregando dados do SICONFI…</span>
+        </div>
+
+        <div class="uf-picker">
+            <select class="uf-select" id="select-uf">
+                <option value="" disabled selected>Selecione uma UF…</option>
+            </select>
+            <span class="uf-picker-hint" id="uf-hint">Aguardando carregamento dos dados…</span>
+        </div>
+
+        <div id="empty-state" class="empty-state">
+            Escolha uma UF acima para calcular o Coeficiente de Participação de Transição de cada um dos
+            seus municípios.
+        </div>
+
+        <div id="uf-results" style="display:none">
+
+            <div class="stat-row">
+                <div class="stat-tile">
+                    <span class="stat-label">Municípios com dado no DCA</span>
+                    <div class="stat-value" id="stat-cobertura-total">—</div>
+                    <div class="stat-sub" id="stat-cobertura-total-sub">de algum ano em 2019–2025</div>
+                </div>
+                <div class="stat-tile" id="stat-tile-2025">
+                    <span class="stat-label">Reportando em 2025</span>
+                    <div class="stat-value" id="stat-cobertura-2025">—</div>
+                    <div class="stat-sub" id="stat-cobertura-2025-sub">dos municípios com dado no período</div>
+                </div>
+                <div class="stat-tile">
+                    <span class="stat-label">CPT total dos municípios da UF</span>
+                    <div class="stat-value" id="stat-cpt-total">—</div>
+                    <div class="stat-sub">soma dos coeficientes individuais</div>
+                </div>
+            </div>
+
+            <div class="callout" id="callout-cobertura"></div>
+
+            <span class="section-label">Coeficiente de Participação de Transição por município (DCA 2019–2025)</span>
+            <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
+                Base = ISS bruto do município + cota-parte do ICMS (25% do ICMS bruto do estado, distribuído
+                proporcionalmente ao rateio do DCA entre os municípios da UF), corrigida pelo mesmo índice de
+                atualização usado no Estudo 02, média aritmética de 2019–2025. Municípios marcados com
+                <strong>†</strong> tiveram ao menos um ano estimado por ausência de dado (ver coluna "Anos c/
+                dado" e a metodologia abaixo).
+            </p>
+
+            <div class="table-toolbar">
+                <input type="text" class="search-input" id="search-municipio" placeholder="Buscar município…">
+                <div class="share-row">
+                    <button class="btn-share" id="btn-export-img" title="Baixar imagem PNG da tabela">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Exportar imagem
+                    </button>
+                    <button class="btn-share btn-share-wa" id="btn-share-wa" style="display:none" title="Compartilhar pelo WhatsApp ou outro app">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                        Compartilhar
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table class="data-table" id="table-munis">
+                    <thead>
+                        <tr>
+                            <th class="th-left">Município</th>
+                            <th>CPT histórico<br><small style="font-weight:400">média 2019–2025</small></th>
+                            <th>CPT 2025<br><small style="font-weight:400">índice pontual</small></th>
+                            <th>Diferença<br><small style="font-weight:400">hist. − 2025</small></th>
+                            <th>Anos c/ dado<br><small style="font-weight:400">de 7 (2019–2025)</small></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-munis"></tbody>
+                    <tfoot id="tfoot-munis"></tfoot>
+                </table>
+            </div>
+
+        </div>
+
+        <details class="methodology">
+            <summary>Metodologia: cálculo municipal e tratamento de dados faltantes</summary>
+            <div class="methodology-body">
+
+                <p class="meto-note">
+                    O procedimento reaproveita integralmente a metodologia do
+                    <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a> (LC 227/2026, arts.
+                    114, 115 e 129): índice de atualização único Índice_t = Total_BR_2025 / Total_BR_t (Total_BR
+                    = ICMS + ISS agregados nacionais), aplicado à receita de cada ano antes de tirar a média
+                    aritmética simples de 2019–2025. Fonte: SICONFI/STN, DCA Anexo I-C. Aqui o procedimento é
+                    generalizado para qualquer UF, no nível de município.
+                </p>
+
+                <p class="meto-section-title">1. Numerador de cada município</p>
+                <p class="meto-note">
+                    Para cada ano t: ISS bruto do município (DCA) + cota-parte do ICMS. A cota-parte teórica de
+                    todos os municípios da UF é <code>ICMS_UF_t × 0,25</code> (art. 158, IV, CF); ela é
+                    distribuída entre os municípios proporcionalmente ao rateio real do DCA
+                    (<code>cota_parte_icms</code> declarada por cada um), preservando a participação relativa de
+                    cada ente. O resultado é multiplicado pelo Índice_t e a média dos 7 anos corrigidos, dividida
+                    pelo Total_BR_2025, é o CPT do município.
+                </p>
+
+                <p class="meto-section-title">2. O problema: um município ausente distorce os demais</p>
+                <p class="meto-note">
+                    O denominador do rateio (soma da <code>cota_parte_icms</code> declarada por todos os
+                    municípios da UF naquele ano) é calculado apenas com quem entregou o DCA naquele ano. Como a
+                    cota-parte teórica (<code>ICMS_UF × 0,25</code>) é um total fixo, a ausência de um município
+                    reduz artificialmente esse denominador &mdash; e infla, na mesma proporção, a fatia calculada
+                    para os municípios que reportaram. O mesmo problema afeta o ISS: se um município não
+                    reportou naquele ano, seu numerador ficaria zerado se nada fosse feito.
+                </p>
+
+                <p class="meto-section-title">3. Tratamento adotado: reposição pelo ano disponível mais próximo</p>
+                <p class="meto-note">
+                    Para cada município e cada ano sem dado, esta página usa o valor (ISS e cota-parte) do ano
+                    disponível mais próximo daquele município &mdash; anterior ou posterior, o que estiver a
+                    menor distância &mdash; tanto para recompor o numerador do próprio município quanto para
+                    recompor o denominador do rateio daquele ano. Isso evita zerar o município ausente e evita
+                    inflar artificialmente os demais. A célula/linha correspondente é sinalizada com
+                    <strong>†</strong> e a coluna "Anos c/ dado" mostra quantos dos 7 anos são declaração real
+                    (não estimada) daquele município. Municípios que nunca entregaram o DCA em nenhum dos 7 anos
+                    não aparecem na tabela &mdash; não há, nesse caso, nenhum ano-base para estimar.
+                </p>
+
+                <p class="meto-section-title">4. Uma limitação que persiste, mesmo com a reposição</p>
+                <p class="meto-note">
+                    A reposição reduz a distorção, mas não a elimina: um valor "estimado" pelo ano mais próximo
+                    ainda é uma aproximação, não a declaração real daquele ano. Em UFs ou anos com muitos
+                    municípios ausentes (tipicamente o ano mais recente, por atraso na entrega), a tabela abaixo
+                    mostra explicitamente essa cobertura para que o leitor avalie o grau de confiança do
+                    coeficiente. Note-se que o próprio Estudo 02 registrava "78/78 municípios" cobertos para o
+                    Espírito Santo; na prática, o dado bruto do DCA cobre apenas 73/78 em vários anos recentes
+                    &mdash; a mesma limitação que esta página agora trata de forma explícita para as 27 UFs.
+                </p>
+
+                <p class="meto-section-title">5. Total oficial de municípios por UF</p>
+                <p class="meto-note">
+                    O número de municípios "com dado no DCA" exibido nesta página é comparado ao total oficial de
+                    municípios de cada UF (IBGE, 5.570 municípios no Brasil). Isso permite diferenciar duas
+                    situações distintas: municípios que nunca reportaram (fora da tabela, cobertura zero) e
+                    municípios que reportaram em alguns anos, mas não em todos (na tabela, com anos estimados
+                    sinalizados por †).
+                </p>
+
+            </div>
+        </details>
+
+        <div class="footnotes">
+            <p><strong>Fontes e notas metodológicas:</strong></p>
+            <p>1. Fonte primária: <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">SICONFI: API Data Lake STN</a>, DCA Anexo I-C, 2019–2025. Coleta via GitHub Actions (27 jobs paralelos por UF); ver <code>data/reforma-tributaria.json</code> (campo <code>dca_detalhes</code>) e os workflows <code>collect-dca-municipios.yml</code> / <code>collect-siconfi-iss.yml</code> no repositório do site.</p>
+            <p>2. Total oficial de municípios por UF: IBGE (Divisão Territorial Brasileira), 5.570 municípios em 27 UFs (26 estados + DF); número estável desde o final da década de 1990.</p>
+            <p>3. Diferente da comparação SEFAZ x SICONFI x SIOPE x SIOPS feita para o ES no <a href="/estudos/cota-parte-icms-municipios-es.html">Estudo 08</a>, esta página usa exclusivamente o DCA/SICONFI &mdash; não há, hoje, um pipeline automatizado de coleta de SIOPE (FNDE) e SIOPS (DATASUS/MS) em nível nacional, pois ambos os sistemas expõem apenas relatórios individuais por município, sem extrato agregado para todo o Brasil.</p>
+            <p>4. O botão "Exportar imagem" gera um PNG da tabela da UF selecionada (via <code>html2canvas</code>) para download ou compartilhamento direto (Web Share API, quando suportada pelo navegador).</p>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+
+    <script src="/js/search.js"></script>
+    <script>
+    const ANOS = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
+
+    const UF_NOMES = {
+        AC: 'Acre', AL: 'Alagoas', AP: 'Amapá', AM: 'Amazonas', BA: 'Bahia', CE: 'Ceará',
+        DF: 'Distrito Federal', ES: 'Espírito Santo', GO: 'Goiás', MA: 'Maranhão',
+        MT: 'Mato Grosso', MS: 'Mato Grosso do Sul', MG: 'Minas Gerais', PA: 'Pará',
+        PB: 'Paraíba', PR: 'Paraná', PE: 'Pernambuco', PI: 'Piauí', RJ: 'Rio de Janeiro',
+        RN: 'Rio Grande do Norte', RS: 'Rio Grande do Sul', RO: 'Rondônia', RR: 'Roraima',
+        SC: 'Santa Catarina', SP: 'São Paulo', SE: 'Sergipe', TO: 'Tocantins'
+    };
+
+    // Total oficial de municípios por UF (IBGE, Divisão Territorial Brasileira). Soma = 5.570.
+    const UF_TOTAL_MUNICIPIOS = {
+        AC: 22, AL: 102, AP: 16, AM: 62, BA: 417, CE: 184, DF: 1, ES: 78, GO: 246,
+        MA: 217, MT: 141, MS: 79, MG: 853, PA: 144, PB: 223, PR: 399, PE: 185, PI: 224,
+        RJ: 92, RN: 167, RS: 497, RO: 52, RR: 15, SC: 295, SP: 645, SE: 75, TO: 139
+    };
+
+    const STATE = {};
+
+    function fmtPct(val, digits = 4) {
+        if (val == null) return '—';
+        return val.toFixed(digits).replace('.', ',') + '%';
+    }
+    function fmtVar(v, digits = 5) {
+        if (v == null) return '—';
+        const s = (v >= 0 ? '+' : '') + v.toFixed(digits).replace('.', ',') + '%';
+        return `<span class="${v > 0 ? 'td-pos' : v < 0 ? 'td-neg' : ''}">${s}</span>`;
+    }
+
+    async function loadData() {
+        let data;
+        try {
+            const resp = await fetch('/data/reforma-tributaria.json?t=' + Date.now());
+            if (!resp.ok) throw new Error('not found');
+            data = await resp.json();
+        } catch (e) {
+            document.getElementById('status-text').textContent = 'Dados ainda não disponíveis.';
+            return;
+        }
+
+        const dca_iss_br_raw  = data.dca_iss_br  || {};
+        const dca_icms_br_raw = data.dca_icms_br || {};
+        const iss_br = {}, icms_br = {};
+        for (const ano of ANOS) {
+            const s = String(ano);
+            iss_br[ano]  = dca_iss_br_raw[s]  ?? null;
+            icms_br[ano] = dca_icms_br_raw[s] ?? null;
+        }
+        const totalBR = {};
+        for (const ano of ANOS) {
+            totalBR[ano] = (icms_br[ano] != null && iss_br[ano] != null) ? icms_br[ano] + iss_br[ano] : null;
+        }
+        const totalB = totalBR[2025];
+        const deflators = {};
+        for (const ano of ANOS) {
+            if (ano === 2025) { deflators[ano] = 1; continue; }
+            deflators[ano] = (totalB != null && totalBR[ano] != null) ? totalB / totalBR[ano] : null;
+        }
+
+        STATE.totalB = totalB;
+        STATE.deflators = deflators;
+        STATE.dca_icms_uf_raw = data.dca_icms_por_uf || {};
+        STATE.dca_detalhes = data.dca_detalhes || {};
+
+        // UFs presentes nos dados
+        const ufsPresentes = new Set();
+        for (const ano of ANOS) {
+            for (const v of Object.values(STATE.dca_detalhes[String(ano)] || {})) {
+                if (v.uf) ufsPresentes.add(v.uf);
+            }
+        }
+        const ufsOrdenadas = [...ufsPresentes].sort((a, b) => (UF_NOMES[a] || a).localeCompare(UF_NOMES[b] || b, 'pt-BR'));
+
+        const select = document.getElementById('select-uf');
+        for (const uf of ufsOrdenadas) {
+            const opt = document.createElement('option');
+            opt.value = uf;
+            opt.textContent = `${UF_NOMES[uf] || uf} (${uf})`;
+            select.appendChild(opt);
+        }
+
+        document.getElementById('status-dot').classList.remove('pending');
+        document.getElementById('status-dot').classList.add('ok');
+        document.getElementById('status-text').textContent =
+            totalB != null ? `Dados carregados: ${ufsOrdenadas.length} UFs disponíveis.` : 'Dados parcialmente disponíveis.';
+        document.getElementById('uf-hint').textContent = `${ufsOrdenadas.length} UFs com dado municipal no DCA (2019–2025).`;
+
+        select.addEventListener('change', () => {
+            const uf = select.value;
+            if (uf) {
+                const url = new URL(window.location);
+                url.searchParams.set('uf', uf);
+                window.history.replaceState({}, '', url);
+            }
+            renderUF(uf);
+        });
+
+        // Preseleciona a UF vinda da URL (?uf=SP), se existir e for válida
+        const ufParam = new URLSearchParams(window.location.search).get('uf');
+        if (ufParam && ufsPresentes.has(ufParam.toUpperCase())) {
+            select.value = ufParam.toUpperCase();
+            renderUF(select.value);
+        }
+    }
+
+    function renderUF(uf) {
+        const emptyState = document.getElementById('empty-state');
+        const results = document.getElementById('uf-results');
+        if (!uf) {
+            emptyState.style.display = '';
+            results.style.display = 'none';
+            return;
+        }
+
+        const { totalB, deflators, dca_icms_uf_raw, dca_detalhes } = STATE;
+
+        const icmsUF = {};
+        for (const ano of ANOS) icmsUF[ano] = dca_icms_uf_raw[String(ano)]?.[uf] ?? null;
+
+        // Monta o mapa bruto de municípios: cod -> {nome, raw:{ano:{iss,cota}}}
+        const muniMap = {};
+        for (const ano of ANOS) {
+            for (const [cod, v] of Object.entries(dca_detalhes[String(ano)] || {})) {
+                if (v.uf !== uf) continue;
+                if (!muniMap[cod]) muniMap[cod] = { nome: v.ente, raw: {} };
+                muniMap[cod].raw[ano] = { iss: v.valor || 0, cota: v.cota_parte_icms || 0 };
+            }
+        }
+
+        const codes = Object.keys(muniMap);
+        if (codes.length === 0) {
+            emptyState.style.display = '';
+            emptyState.textContent = `Nenhum dado municipal disponível no DCA para ${UF_NOMES[uf] || uf}.`;
+            results.style.display = 'none';
+            return;
+        }
+        emptyState.style.display = 'none';
+        results.style.display = '';
+
+        // Reposição por ano mais próximo disponível (carry-forward), por município
+        for (const cod of codes) {
+            const m = muniMap[cod];
+            const anosDisponiveis = ANOS.filter(a => m.raw[a] != null);
+            m.resolved = {};
+            for (const ano of ANOS) {
+                if (m.raw[ano] != null) {
+                    m.resolved[ano] = { iss: m.raw[ano].iss, cota: m.raw[ano].cota, estimado: false };
+                } else {
+                    let melhor = null;
+                    for (const a of anosDisponiveis) {
+                        if (melhor == null || Math.abs(a - ano) < Math.abs(melhor - ano)) melhor = a;
+                    }
+                    m.resolved[ano] = melhor == null ? null
+                        : { iss: m.raw[melhor].iss, cota: m.raw[melhor].cota, estimado: true, anoFonte: melhor };
+                }
+            }
+        }
+
+        // Denominador do rateio por ano, recomputado com os valores repostos (carry-forward incluso)
+        const cotaTotalDCA = {};
+        const reportantesPorAno = {};
+        for (const ano of ANOS) {
+            let soma = 0, reportando = 0;
+            for (const cod of codes) {
+                const r = muniMap[cod].resolved[ano];
+                if (r) soma += r.cota;
+                if (muniMap[cod].raw[ano] != null) reportando++;
+            }
+            cotaTotalDCA[ano] = soma;
+            reportantesPorAno[ano] = reportando;
+        }
+
+        function cptDoAno(r, ano) {
+            const def = deflators[ano];
+            if (!r || def == null) return null;
+            const icms = icmsUF[ano];
+            const cotaTeo = icms != null ? icms * 0.25 : null;
+            const cotaTotal = cotaTotalDCA[ano];
+            const cotaMuni = (cotaTeo != null && cotaTotal > 0) ? cotaTeo * (r.cota / cotaTotal) : r.cota;
+            return (r.iss + cotaMuni) * def;
+        }
+
+        const muniRows = codes.map(cod => {
+            const m = muniMap[cod];
+            let soma = 0, anosEstimados = 0, anosComDado = 0;
+            for (const ano of ANOS) {
+                const r = m.resolved[ano];
+                const v = cptDoAno(r, ano);
+                if (v != null) soma += v;
+                if (r && r.estimado) anosEstimados++;
+                if (m.raw[ano] != null) anosComDado++;
+            }
+            const cpt = totalB != null ? (soma / ANOS.length) / totalB * 100 : null;
+
+            const r2025 = m.resolved[2025];
+            const v2025 = cptDoAno(r2025, 2025);
+            const cpt2025 = (v2025 != null && totalB != null) ? v2025 / totalB * 100 : null;
+            const varMuni = (cpt != null && cpt2025 != null) ? cpt - cpt2025 : null;
+
+            return { cod, nome: m.nome, cpt, cpt2025, varMuni, anosEstimados, anosComDado };
+        }).sort((a, b) => (b.cpt ?? 0) - (a.cpt ?? 0));
+
+        renderStats(uf, muniRows, reportantesPorAno);
+        renderTable(muniRows);
+    }
+
+    function renderStats(uf, muniRows, reportantesPorAno) {
+        const totalOficial = UF_TOTAL_MUNICIPIOS[uf] ?? null;
+        const comDado = muniRows.length;
+        const reportando2025 = reportantesPorAno[2025];
+
+        document.getElementById('stat-cobertura-total').textContent =
+            totalOficial != null ? `${comDado}/${totalOficial}` : String(comDado);
+        document.getElementById('stat-cobertura-total-sub').textContent =
+            totalOficial != null ? `municípios oficiais de ${UF_NOMES[uf] || uf} (IBGE)` : 'de algum ano em 2019–2025';
+
+        document.getElementById('stat-cobertura-2025').textContent = `${reportando2025}/${comDado}`;
+        const tile2025 = document.getElementById('stat-tile-2025');
+        tile2025.classList.toggle('stat-warn', comDado > 0 && reportando2025 / comDado < 0.9);
+
+        const somaCpt = muniRows.reduce((s, r) => s + (r.cpt ?? 0), 0);
+        document.getElementById('stat-cpt-total').textContent = fmtPct(somaCpt);
+
+        const faltantesOficial = totalOficial != null ? totalOficial - comDado : null;
+        const comEstimativa = muniRows.filter(r => r.anosEstimados > 0).length;
+        let callout = `Em <strong>${UF_NOMES[uf] || uf}</strong>, ${comDado} municípios têm ao menos um ano de dado no DCA entre 2019 e 2025`;
+        if (totalOficial != null && faltantesOficial > 0) {
+            callout += `, de um total oficial de ${totalOficial} (${faltantesOficial} nunca reportaram nesse período e não aparecem na tabela)`;
+        }
+        callout += `. No ano mais recente (2025), ${reportando2025} de ${comDado} reportaram diretamente; os demais tiveram o dado reposto pelo ano disponível mais próximo (marcados com †). `;
+        callout += `${comEstimativa} de ${comDado} municípios têm ao menos um ano estimado no período completo.`;
+        document.getElementById('callout-cobertura').innerHTML = callout;
+    }
+
+    let currentRows = [];
+
+    function renderTable(muniRows) {
+        currentRows = muniRows;
+        const tbody = document.getElementById('tbody-munis');
+        tbody.innerHTML = muniRows.map(r => {
+            const marca = r.anosEstimados > 0 ? ' <span title="Ao menos um ano estimado por ausência de dado">†</span>' : '';
+            const covClass = r.anosComDado === 7 ? 'td-cov-full' : 'td-cov-est';
+            return `<tr data-nome="${r.nome.toLowerCase()}">
+                <td class="td-mun">${r.nome}${marca}</td>
+                <td class="td-coeff">${fmtPct(r.cpt, 5)}</td>
+                <td>${fmtPct(r.cpt2025, 5)}</td>
+                <td>${fmtVar(r.varMuni)}</td>
+                <td class="${covClass}">${r.anosComDado}/7</td>
+            </tr>`;
+        }).join('');
+
+        const somaCpt = muniRows.reduce((s, r) => s + (r.cpt ?? 0), 0);
+        const somaCpt2025 = muniRows.reduce((s, r) => s + (r.cpt2025 ?? 0), 0);
+        const somaVar = muniRows.reduce((s, r) => s + (r.varMuni ?? 0), 0);
+        document.getElementById('tfoot-munis').innerHTML = `
+            <tr>
+                <td class="td-mun">TOTAL (${muniRows.length} municípios)</td>
+                <td class="td-coeff">${fmtPct(somaCpt, 5)}</td>
+                <td>${fmtPct(somaCpt2025, 5)}</td>
+                <td>${fmtVar(somaVar)}</td>
+                <td></td>
+            </tr>`;
+    }
+
+    document.getElementById('search-municipio').addEventListener('input', (e) => {
+        const q = e.target.value.trim().toLowerCase();
+        document.querySelectorAll('#tbody-munis tr').forEach(tr => {
+            const nome = tr.getAttribute('data-nome') || '';
+            tr.classList.toggle('row-hidden', q.length > 0 && !nome.includes(q));
+        });
+    });
+
+    loadData();
+
+    // ── Exportar como imagem ──────────────────────────────────────────────────
+    async function exportImage() {
+        const btn = document.getElementById('btn-export-img');
+        btn.disabled = true;
+        btn.textContent = 'Gerando…';
+
+        const uf = document.getElementById('select-uf').value;
+        const target = document.getElementById('table-munis');
+
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'background:#fff;padding:20px 24px;font-family:monospace;display:inline-block;min-width:640px';
+        const title = document.createElement('p');
+        title.style.cssText = 'font-family:serif;font-size:13px;font-weight:700;margin:0 0 10px;color:#333';
+        title.textContent = `CPT por município: ${UF_NOMES[uf] || uf} (LC 227/2026, art. 115)`;
+        wrap.appendChild(title);
+        wrap.appendChild(target.cloneNode(true));
+        const source = document.createElement('p');
+        source.style.cssText = 'font-size:10px;color:#888;margin:8px 0 0;font-family:sans-serif';
+        source.textContent = 'Fonte: SICONFI/STN, DCA Anexo I-C · eduardoreisaraujo.com.br';
+        wrap.appendChild(source);
+
+        document.body.appendChild(wrap);
+        wrap.style.position = 'fixed';
+        wrap.style.top = '-9999px';
+        wrap.style.left = '0';
+
+        try {
+            const canvas = await html2canvas(wrap, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+            const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+            const url = URL.createObjectURL(blob);
+
+            if (navigator.canShare && navigator.canShare({ files: [new File([blob], 'cpt-municipios.png', { type: 'image/png' })] })) {
+                document.getElementById('btn-share-wa').style.display = 'inline-flex';
+                document.getElementById('btn-share-wa').onclick = async () => {
+                    const file = new File([blob], 'cpt-municipios.png', { type: 'image/png' });
+                    await navigator.share({ files: [file], title: `CPT por município: ${UF_NOMES[uf] || uf}`, text: 'Coeficiente de Participação de Transição por município (LC 227/2026)' });
+                };
+            }
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `cpt-municipios-${uf || 'uf'}.png`;
+            a.click();
+        } finally {
+            document.body.removeChild(wrap);
+            btn.disabled = false;
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar imagem';
+        }
+    }
+
+    document.getElementById('btn-export-img').addEventListener('click', exportImage);
+    </script>
+</body>
+</html>
