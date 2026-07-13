@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Trava da Carga Tributária Constante no IBS: Legislação, Alíquota de Referência e Simulação | Eduardo Reis Araújo</title>
-    <meta name="description" content="A Reforma Tributária prevê que a alíquota do IBS seja recalculada todo ano para manter a carga de ICMS e ISS aproximadamente constante em proporção ao PIB (art. 130 do ADCT, texto literal incluído). Como se chegou à estimativa de 26,5%, o histórico do 'bolo' ICMS+ISS desde 2019, uma simulação de ajuste de alíquota até 2033 e um teste de validade da premissa de bolo fixo usada nos Estudos 03 e 06 desta página.">
+    <title>Receita-Base de Referência de Estados e Municípios com IBS/ICMS, 2029–2033 | Eduardo Reis Araújo</title>
+    <meta name="description" content="Qual seria a Receita-Base de referência de estados e municípios com IBS/ICMS entre 2029 e 2033 (art. 130, §3º, IV, do ADCT), a partir de dados históricos de 2019-2025, sob a hipótese de que não há inflação nem crescimento do PIB a partir de hoje?">
     <meta name="author" content="Eduardo Reis Araujo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/ibs-aliquota-carga-constante.html">
 
-    <meta property="og:title" content="A trava da carga tributária constante no IBS: legislação, alíquota de referência e simulação">
-    <meta property="og:description" content="O que diz o art. 130 do ADCT sobre manter a carga de ICMS/ISS constante em proporção ao PIB, como se chegou à alíquota de referência estimada, e uma simulação de como ela se ajustaria sob diferentes premissas.">
+    <meta property="og:title" content="Receita-Base de referência de estados e municípios com IBS/ICMS, 2029–2033">
+    <meta property="og:description" content="A partir de dados históricos de 2019-2025, qual seria essa receita-base entre 2029 e 2033 sob a hipótese de que não há inflação nem crescimento do PIB a partir de hoje?">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/ibs-aliquota-carga-constante.html">
     <meta property="og:locale" content="pt_BR">
@@ -21,7 +21,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 
     <link rel="stylesheet" href="/css/notas.css?v=4">
     <link rel="stylesheet" href="/css/search.css">
@@ -43,19 +42,16 @@
         .status-bar { display: flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.5rem; }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #999; flex-shrink: 0; transition: background 0.3s; }
 
-        /* ── Cores pos/neg/destaque (mesma paleta usada nos demais estudos) ── */
-        :root {
-            --neg:       #b03a2e;
-            --neg-bg:    #fdf3f2;
-            --pos:       #1e8449;
-            --pos-bg:    #f0faf4;
-            --amber:     #d4a017;
-        }
-        @media (prefers-color-scheme: dark) {
-            :root { --neg: #e05a4f; --neg-bg: #2a1a1a; --pos: #4caf76; --pos-bg: #192a20; --amber: #c0940a; }
-        }
-        :root[data-theme="light"] { --neg:#b03a2e; --neg-bg:#fdf3f2; --pos:#1e8449; --pos-bg:#f0faf4; --amber:#d4a017; }
-        :root[data-theme="dark"]  { --neg:#e05a4f; --neg-bg:#2a1a1a; --pos:#4caf76; --pos-bg:#192a20; --amber:#c0940a; }
+        :root { --pos: #1e8449; --pos-bg: #f0faf4; }
+        @media (prefers-color-scheme: dark) { :root { --pos: #4caf76; --pos-bg: #192a20; } }
+        :root[data-theme="light"] { --pos:#1e8449; --pos-bg:#f0faf4; }
+        :root[data-theme="dark"]  { --pos:#4caf76; --pos-bg:#192a20; }
+
+        /* ── Resposta em destaque ── */
+        .resposta-box { border: 2px solid var(--pos); background: var(--pos-bg); border-radius: 10px; padding: 1.5rem 1.75rem; margin: 0.5rem 0 2rem; }
+        .resposta-label { font-family: var(--mono); font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.09em; color: var(--pos); margin-bottom: 0.6rem; }
+        .resposta-numero { font-family: var(--display); font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 700; color: var(--text); line-height: 1.15; margin-bottom: 0.4rem; }
+        .resposta-sub { font-family: var(--sans); font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
 
         /* ── Metodologia ── */
         .methodology { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 2rem; background: var(--surface); }
@@ -63,32 +59,12 @@
         .methodology summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; }
         .methodology[open] summary::before { transform: rotate(90deg); }
         .methodology-body { padding: 0 1.5rem 1.5rem; }
-        .meto-section-title { font-family: var(--sans); font-size: 0.85rem; font-weight: 600; color: var(--text); margin: 1.25rem 0 0.4rem; }
         .meto-note { font-family: var(--serif); font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; margin-top: 0.5rem; }
         .meto-note:first-child { margin-top: 0; }
 
-        .quadro-box { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin: 0.85rem 0 1.1rem; }
-        .quadro-row { display: grid; grid-template-columns: 1fr 1fr; }
-        .quadro-cell { padding: 0.7rem 0.9rem; font-family: var(--sans); font-size: 0.82rem; line-height: 1.55; }
-        .quadro-cell.head { font-weight: 700; background: var(--bg); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
-        .quadro-cell.esq { border-right: 1px solid var(--border); }
-        .quadro-row:not(:last-child) .quadro-cell { border-bottom: 1px solid var(--border-light); }
-
-        /* ── Texto literal da lei ── */
         .lei-box { border-left: 3px solid var(--accent); background: var(--bg); border-radius: 0 6px 6px 0; padding: 1rem 1.25rem; margin: 0.75rem 0 1.25rem; }
-        .lei-box p { font-family: var(--serif); font-size: 0.81rem; line-height: 1.75; color: var(--text); margin-bottom: 0.65rem; }
-        .lei-box p:last-child { margin-bottom: 0; }
+        .lei-box p { font-family: var(--serif); font-size: 0.81rem; line-height: 1.75; color: var(--text); margin: 0; }
         .lei-box .lei-artigo { font-weight: 700; }
-        .lei-box-fonte { font-family: var(--mono); font-size: 0.66rem; color: var(--text-muted); margin-top: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
-
-        /* ── Passos numerados ── */
-        .passo-list { counter-reset: passo; margin: 0.85rem 0 1.25rem; }
-        .passo-item { display: grid; grid-template-columns: 2.2rem 1fr; gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid var(--border-light); }
-        .passo-item:last-child { border-bottom: none; }
-        .passo-num { counter-increment: passo; font-family: var(--mono); font-weight: 700; color: var(--accent); font-size: 0.85rem; }
-        .passo-num::before { content: counter(passo); }
-        .passo-body { font-family: var(--sans); font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
-        .passo-body strong { color: var(--text); }
 
         /* ── Label de seção ── */
         .section-label { display: block; font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 0.5rem; }
@@ -100,13 +76,9 @@
         .data-table th.th-left { text-align: left; }
         .data-table td { border: 1px solid var(--border); padding: 0.36rem 0.6rem; text-align: right; font-family: var(--mono); font-size: 0.78rem; white-space: nowrap; color: var(--text); }
         .data-table td.td-left { text-align: left; font-family: var(--sans); font-weight: 600; }
-        .data-table td.td-note { text-align: left; font-family: var(--sans); font-weight: 400; font-size: 0.76rem; color: var(--text-secondary); white-space: normal; }
-        .data-table .td-neg { color: var(--neg); font-weight: 600; }
-        .data-table .td-pos { color: var(--pos); font-weight: 600; }
-        .data-table .td-amber { color: var(--amber); font-weight: 600; }
-        .data-table tfoot tr { background: var(--bg); border-top: 2px solid var(--border); }
-        .data-table tfoot td { font-weight: 700; }
-        .data-table tr:hover:not(tfoot tr) { background: var(--accent-bg); }
+        .data-table tr.row-resposta { background: var(--pos-bg); }
+        .data-table tr.row-resposta td { color: var(--text); font-weight: 600; }
+        .data-table tr:hover:not(.row-resposta) { background: var(--accent-bg); }
 
         /* ── Gráficos ── */
         .chart-panel { background: var(--border-light); border-radius: 8px; padding: 1.25rem 1.25rem 1.5rem; margin: 0 0 1.5rem; }
@@ -130,8 +102,6 @@
         @media (max-width: 640px) {
             .study-hero { padding: 2rem 1.25rem 1rem; }
             .study-content { padding: 0 1.25rem 3rem; }
-            .quadro-row { grid-template-columns: 1fr; }
-            .quadro-cell.esq { border-right: none; border-bottom: 1px solid var(--border); }
         }
     </style>
 </head>
@@ -162,28 +132,21 @@
             <span class="study-hero-tag">Estudo 09</span>
             <span class="study-hero-topic">Reforma Tributária</span>
             <span class="study-hero-topic">IBS</span>
-            <span class="study-hero-topic">Alíquota de Referência</span>
+            <span class="study-hero-topic">Receita-Base</span>
             <span class="study-hero-date">Julho de 2026</span>
         </div>
-        <h1>A trava da carga tributária constante: legislação, alíquota de referência e simulação do IBS</h1>
+        <h1>Qual seria a Receita-Base de referência de estados e municípios com IBS/ICMS entre 2029 e 2033?</h1>
         <p class="lead">
-            A Reforma Tributária não fixou na Constituição um número para a alíquota do novo Imposto
-            sobre Bens e Serviços (IBS). Em vez disso, criou um mecanismo: todo ano, a alíquota de
-            referência é recalculada para que a arrecadação de IBS e CBS, somada, mantenha
-            aproximadamente a mesma carga tributária de hoje &mdash; a de ICMS, ISS, PIS, Cofins e IPI
-            &mdash; em proporção ao PIB. Esta página reúne, de forma acessível, o que a lei efetivamente
-            diz sobre essa trava &mdash; com o texto literal do art. 130 do ADCT e a decomposição de como
-            se chegou à estimativa de 26,5% &mdash;, a trajetória histórica do "bolo" de ICMS e ISS desde
-            2019 &mdash; nominal, deflacionada pelo IPCA e como fração do PIB &mdash; e uma simulação de
-            como a alíquota do IBS precisaria se mover até 2033 sob três premissas diferentes de correção
-            desse bolo. A última seção usa esses mesmos dados para testar uma premissa usada em outros
-            dois estudos desta página, os Estudos 03 e 06: projetar a receita de ICMS/IBS partindo de um
-            "bolo" nacional fixo em termos reais. Essa simplificação faz sentido? Em que medida?
+            O art. 130, &sect;3&ordm;, IV, do ADCT define a "Receita-Base dos Entes Subnacionais": a
+            receita de estados, do Distrito Federal e dos municípios com o IBS &mdash; sucessor do ICMS e
+            do ISS &mdash;, medida como proporção do PIB. Esta página responde a uma única pergunta: a
+            partir dos dados históricos de arrecadação de ICMS e ISS entre 2019 e 2025, qual seria essa
+            receita-base em cada ano entre 2029 e 2033, sob a hipótese de que, a partir de hoje, não há
+            inflação nem crescimento do PIB?
         </p>
         <p class="study-meta">
-            Dados: SICONFI/STN (ICMS+ISS) &bull; Banco Central do Brasil, SGS (PIB nominal, IPCA) &bull;
-            Secretaria Extraordinária da Reforma Tributária/MF, Nota Técnica de alíquotas (jul. 2024) &bull;
-            Base legal: EC 132/2023 (art. 130 ADCT), LC 214/2025
+            Dados: SICONFI/STN, DCA Anexo&nbsp;I-C (mesma base dos Estudos 03 e 06 desta página) &bull;
+            Banco Central do Brasil, SGS (PIB nominal, IPCA) &bull; Base legal: art. 130, &sect;3&ordm;, IV, do ADCT
         </p>
     </div>
 
@@ -194,326 +157,57 @@
             <span>Carregando dados...</span>
         </div>
 
-        <details class="methodology" open>
-            <summary>O que a lei diz e por que a alíquota é recalculada todo ano</summary>
-            <div class="methodology-body">
-
-                <p class="meto-note">
-                    O IBS e a CBS não têm uma alíquota fixada em número pela Constituição ou pela lei.
-                    Em vez disso, a Emenda Constitucional 132/2023 criou um <strong>mecanismo de
-                    cálculo anual</strong>: uma "alíquota de referência", recalculada todo ano por um
-                    procedimento formal, com o objetivo declarado de preservar, em proporção ao PIB, a
-                    mesma carga tributária hoje gerada por ICMS, ISS, PIS, Cofins e IPI. Não é uma meta
-                    política informal &mdash; é uma regra escrita no art. 156-A, &sect;1&ordm;, XII da
-                    Constituição e detalhada no art. 130 do Ato das Disposições Constitucionais
-                    Transitórias (ADCT), regulamentado pela Lei Complementar 214/2025.
-                </p>
-
-                <div class="quadro-box">
-                    <div class="quadro-row">
-                        <div class="quadro-cell esq head">Quem calcula</div>
-                        <div class="quadro-cell head">O que faz</div>
-                    </div>
-                    <div class="quadro-row">
-                        <div class="quadro-cell esq">Receita Federal (CBS) e Comitê Gestor do IBS &mdash; CGIBS (IBS)</div>
-                        <div class="quadro-cell">Calculam a alíquota de referência de cada tributo e enviam o resultado ao TCU até 31 de julho do ano anterior ao da vigência (LC 214/2025, arts. 18&ndash;20).</div>
-                    </div>
-                    <div class="quadro-row">
-                        <div class="quadro-cell esq">Tribunal de Contas da União (TCU)</div>
-                        <div class="quadro-cell">Homologa a metodologia, refaz o cálculo de forma independente e remete o resultado ao Senado até 15 de setembro. Em junho de 2026, o TCU editou resolução regulamentando esse processo anual de análise.</div>
-                    </div>
-                    <div class="quadro-row">
-                        <div class="quadro-cell esq">Senado Federal</div>
-                        <div class="quadro-cell">Fixa a alíquota de referência definitiva por Resolução, com base no cálculo do TCU (art. 130, &sect;1&ordm;, ADCT). Estados, municípios e a União podem fixar alíquotas próprias diferentes da referência, desde que somem, em cada ente, o total de sua alíquota de referência específica.</div>
-                    </div>
-                </div>
-
-                <p class="meto-section-title">A "trava": manter a carga tributária como proporção do PIB</p>
-                <p class="meto-note">
-                    O núcleo do mecanismo está no &sect;1&ordm; do art. 130 do ADCT: a alíquota de
-                    referência deve ser calculada com o objetivo de manter a carga tributária atual
-                    &mdash; a dos tributos extintos pela reforma &mdash; <strong>em proporção ao Produto
-                    Interno Bruto</strong>, e não em valor nominal fixo. Na prática, isso significa que,
-                    se a economia crescer, o valor arrecadado em reais também deve crescer
-                    proporcionalmente, para que a fatia do PIB destinada a esses tributos permaneça
-                    estável; não há, na lei, a intenção de congelar a arrecadação em reais.
-                </p>
-                <p class="meto-note">
-                    A Constituição vai além de uma diretriz genérica e prevê <strong>duas cláusulas de
-                    redução obrigatória</strong>, caso a carga efetivamente observada supere um "Teto de
-                    Referência" calculado com base na arrecadação média de 2012 a 2021 (também em
-                    proporção ao PIB): uma em 2030, que compara a arrecadação média de 2027&ndash;2028
-                    e se aplica apenas à CBS; e outra em 2035, que compara a arrecadação média de
-                    2029&ndash;2033 da União, dos estados e dos municípios com esses tributos, e se
-                    aplica tanto à CBS quanto ao IBS. Nos dois casos, o mecanismo só reduz a alíquota se
-                    a carga observada ficar acima do teto histórico &mdash; não há, na Constituição, uma
-                    cláusula simétrica de aumento automático caso a arrecadação fique abaixo dele.
-                </p>
-                <p class="meto-note">
-                    <strong>Uma ressalva importante:</strong> não existe, no texto constitucional, um
-                    número explícito como "26,5%" ou "28%" funcionando como teto legal da soma de
-                    IBS e CBS. Esses percentuais, discutidos a seguir, são estimativas técnicas
-                    calculadas com base na metodologia da lei &mdash; e mudam à medida que o desenho de
-                    regimes diferenciados, isenções, cashback e hipóteses de sonegação são
-                    revistos. O que a Constituição garante é o <em>mecanismo</em> de recálculo anual e o
-                    objetivo de neutralidade de carga, não um valor fixo.
-                </p>
-            </div>
-        </details>
+        <div class="resposta-box">
+            <div class="resposta-label">A resposta</div>
+            <div class="resposta-numero" id="resposta-numero">Calculando...</div>
+            <div class="resposta-sub" id="resposta-sub"></div>
+        </div>
 
         <details class="methodology">
-            <summary>O texto literal do art. 130 do ADCT (o que a Constituição diz, palavra por palavra)</summary>
+            <summary>O que essa pergunta está pedindo, e por quê</summary>
             <div class="methodology-body">
                 <p class="meto-note">
-                    A reconstrução acima é uma leitura interpretativa. Para quem quiser conferir a fonte
-                    primária, o texto abaixo é a transcrição literal e integral do art. 130 do ADCT, na
-                    redação dada pela Emenda Constitucional 132/2023 &mdash; o dispositivo que efetivamente
-                    cria a alíquota de referência e a trava de carga tributária.
+                    A Constituição não fixa um valor em reais para a Receita-Base &mdash; ela é medida
+                    como proporção do PIB, e o texto legal define exatamente o que entra nessa conta:
                 </p>
                 <div class="lei-box">
-                    <p><span class="lei-artigo">Art. 130.</span> Resolução do Senado Federal fixará, para todas as esferas federativas, as alíquotas de referência dos tributos previstos nos arts. 156-A e 195, V, da Constituição Federal, observados a forma de cálculo e os limites previstos em lei complementar, de forma a assegurar:</p>
-                    <p><span class="lei-artigo">I</span> &mdash; de 2027 a 2033, que a receita da União com a contribuição prevista no art. 195, V, e com o imposto previsto no art. 153, VIII, todos da Constituição Federal, seja equivalente à redução da receita:<br>
-                    a) das contribuições previstas no art. 195, I, &ldquo;b&rdquo;, e IV, e da contribuição para o Programa de Integração Social de que trata o art. 239, todos da Constituição Federal;<br>
-                    b) do imposto previsto no art. 153, IV; e<br>
-                    c) do imposto previsto no art. 153, V, da Constituição Federal, sobre operações de seguros;</p>
-                    <p><span class="lei-artigo">II</span> &mdash; de 2029 a 2033, que a receita dos Estados e do Distrito Federal com o imposto previsto no art. 156-A da Constituição Federal seja equivalente à redução:<br>
-                    a) da receita do imposto previsto no art. 155, II, da Constituição Federal; e<br>
-                    b) das receitas destinadas a fundos estaduais financiados por contribuições estabelecidas como condição à aplicação de diferimento, regime especial ou outro tratamento diferenciado, relativos ao imposto de que trata o art. 155, II, da Constituição Federal, em funcionamento em 30 de abril de 2023, excetuadas as receitas dos fundos mantidas na forma do art. 136 deste Ato das Disposições Constitucionais Transitórias;</p>
-                    <p><span class="lei-artigo">III</span> &mdash; de 2029 a 2033, que a receita dos Municípios e do Distrito Federal com o imposto previsto no art. 156-A seja equivalente à redução da receita do imposto previsto no art. 156, III, ambos da Constituição Federal.</p>
-                    <p><span class="lei-artigo">&sect; 1&ordm;</span> As alíquotas de referência serão fixadas no ano anterior ao de sua vigência, não se aplicando o disposto no art. 150, III, &ldquo;c&rdquo;, da Constituição Federal, com base em cálculo realizado pelo Tribunal de Contas da União.</p>
-                    <p><span class="lei-artigo">&sect; 2&ordm;</span> Na fixação das alíquotas de referência, deverão ser considerados os efeitos sobre a arrecadação dos regimes específicos, diferenciados ou favorecidos e de qualquer outro regime que resulte em arrecadação menor do que a que seria obtida com a aplicação da alíquota padrão.</p>
-                    <p><span class="lei-artigo">&sect; 3&ordm;</span> Para fins do disposto nos &sect;&sect; 4&ordm; a 6&ordm;, entende-se por:<br>
-                    <span class="lei-artigo">I</span> &mdash; Teto de Referência da União: a média da receita no período de 2012 a 2021, apurada como proporção do PIB, do imposto previsto no art. 153, IV, das contribuições previstas no art. 195, I, &ldquo;b&rdquo;, e IV, da contribuição para o Programa de Integração Social de que trata o art. 239 e do imposto previsto no art. 153, V, sobre operações de seguro, todos da Constituição Federal;<br>
-                    <span class="lei-artigo">II</span> &mdash; Teto de Referência Total: a média da receita no período de 2012 a 2021, apurada como proporção do PIB, dos impostos previstos nos arts. 153, IV, 155, II e 156, III, das contribuições previstas no art. 195, I, &ldquo;b&rdquo;, e IV, da contribuição para o Programa de Integração Social de que trata o art. 239 e do imposto previsto no art. 153, V, sobre operações de seguro, todos da Constituição Federal;<br>
-                    <span class="lei-artigo">III</span> &mdash; Receita-Base da União: a receita da União com a contribuição prevista no art. 195, V, e com o imposto previsto no art. 153, VIII, ambos da Constituição Federal, apurada como proporção do PIB;<br>
-                    <span class="lei-artigo">IV</span> &mdash; Receita-Base dos Entes Subnacionais: a receita dos Estados, do Distrito Federal e dos Municípios com o imposto previsto no art. 156-A da Constituição Federal, deduzida da parcela a que se refere a alínea &ldquo;b&rdquo; do inciso II do caput, apurada como proporção do PIB;<br>
-                    <span class="lei-artigo">V</span> &mdash; Receita-Base Total: a soma da Receita-Base da União com a Receita-Base dos Entes Subnacionais, sendo essa última: a) multiplicada por 10 (dez) em 2029; b) multiplicada por 5 (cinco) em 2030; c) multiplicada por 10 (dez) e dividida por 3 (três) em 2031; d) multiplicada por 10 (dez) e dividida por 4 (quatro) em 2032; e) multiplicada por 1 (um) em 2033.</p>
-                    <p><span class="lei-artigo">&sect; 4&ordm;</span> A alíquota de referência da contribuição a que se refere o art. 195, V, da Constituição Federal será reduzida em 2030 caso a média da Receita-Base da União em 2027 e 2028 exceda o Teto de Referência da União.</p>
-                    <p><span class="lei-artigo">&sect; 5&ordm;</span> As alíquotas de referência da contribuição a que se refere o art. 195, V, e do imposto a que se refere o art. 156-A, ambos da Constituição Federal, serão reduzidas em 2035 caso a média da Receita-Base Total entre 2029 e 2033 exceda o Teto de Referência Total.</p>
-                    <p><span class="lei-artigo">&sect; 6&ordm;</span> As reduções de que tratam os &sect;&sect; 4&ordm; e 5&ordm; serão: <span class="lei-artigo">I</span> &mdash; definidas de forma a que a Receita-Base seja igual ao respectivo Teto de Referência; <span class="lei-artigo">II</span> &mdash; no caso do &sect; 5&ordm;, proporcionais para as alíquotas de referência federal, estadual e municipal.</p>
-                    <p class="lei-box-fonte">Ato das Disposições Constitucionais Transitórias, art. 130, incluído pela Emenda Constitucional 132, de 20 de dezembro de 2023. Fonte: Diário Oficial da União, 21 dez. 2023.</p>
+                    <p><span class="lei-artigo">Art. 130, &sect;3&ordm;, IV, ADCT</span> &mdash; Receita-Base dos Entes Subnacionais: a receita dos Estados, do Distrito Federal e dos Municípios com o imposto previsto no art. 156-A da Constituição Federal, deduzida da parcela a que se refere a alínea "b" do inciso II do caput, apurada como proporção do PIB.</p>
                 </div>
                 <p class="meto-note">
-                    Duas coisas valem destacar nessa leitura literal. Primeiro, o &sect;3&ordm; define o
-                    "Teto de Referência" &mdash; o parâmetro que efetivamente ancora a trava de carga
-                    tributária &mdash; sempre <strong>"apurada como proporção do PIB"</strong>: a lei nunca
-                    fala em preservar um valor em reais, nominal ou real. Segundo, o &sect;2&ordm; deixa
-                    explícito que a alíquota de referência precisa compensar a arrecadação perdida com
-                    "regimes específicos, diferenciados ou favorecidos" &mdash; a raiz jurídica do motivo
-                    pelo qual mais isenções e regimes especiais aprovados no Congresso <em>elevam</em> a
-                    alíquota de referência estimada, e não o contrário.
+                    Como o IBS ainda não existe, a única forma de estimar essa receita-base é olhar para
+                    o histórico do imposto que ele substitui: a soma nacional de ICMS e ISS. A pergunta
+                    pede um cenário contrafactual simples &mdash; sem inflação, sem crescimento do PIB a
+                    partir de hoje &mdash; que elimina qualquer necessidade de projeção: se nada cresce,
+                    nem em termos nominais nem em termos reais nem em proporção ao PIB, o valor observado
+                    hoje simplesmente se repete, sem alteração, em cada ano de 2029 a 2033. O ano-base
+                    usado é 2025 (o mesmo <code>TotalBR_2025</code> dos Estudos 03 e 06 desta página,
+                    SICONFI/STN, DCA Anexo I-C), por ser o último ano fechado disponível nessa mesma base
+                    de dados.
+                </p>
+                <p class="meto-note">
+                    A ressalva relevante: a receita bruta de ICMS+ISS é um limite superior da
+                    Receita-Base tal como definida em lei, que ainda desconta a parcela de fundos
+                    estaduais financiados por contribuições condicionadas a regimes diferenciados do ICMS
+                    (por exemplo, o Fundap, no Espírito Santo). Não há estatística nacional consolidada
+                    dessa dedução; o valor bruto de ICMS+ISS é a melhor aproximação disponível com dados
+                    públicos.
                 </p>
             </div>
         </details>
 
-        <span class="section-label">Estimando a Receita-Base dos Entes Subnacionais (art. 130, &sect;3&ordm;, IV, do ADCT)</span>
-        <div class="callout">
-            Entre os conceitos definidos no &sect;3&ordm; do art. 130, um merece atenção à parte: a
-            <strong>Receita-Base dos Entes Subnacionais</strong> é, em conjunto com a Receita-Base da
-            União, o insumo que efetivamente entra no teste do &sect;5&ordm; &mdash; a comparação com o
-            Teto de Referência Total que decide se as alíquotas de referência serão reduzidas em 2035. É,
-            portanto, a variável mais próxima do "bolo ICMS+ISS/IBS" que esta página vem acompanhando,
-            só que com uma definição mais estreita que a arrecadação bruta:
-        </div>
-        <div class="lei-box">
-            <p><span class="lei-artigo">&sect; 3&ordm;, IV</span> &mdash; Receita-Base dos Entes Subnacionais: a receita dos Estados, do Distrito Federal e dos Municípios com o imposto previsto no art. 156-A da Constituição Federal, <strong>deduzida da parcela a que se refere a alínea &ldquo;b&rdquo; do inciso II do caput</strong>, apurada como proporção do PIB.</p>
-        </div>
-        <div class="callout">
-            Traduzindo: é a arrecadação de IBS de estados, DF e municípios &mdash; sucessor do ICMS e do
-            ISS &mdash;, <strong>menos</strong> a parcela do inciso II, "b": as receitas destinadas a
-            fundos estaduais financiados por contribuições cobradas como <em>condição</em> para a
-            aplicação de diferimento, regime especial ou outro tratamento diferenciado do ICMS, desde que
-            esses fundos já estivessem em funcionamento em 30 de abril de 2023 (excluídos os mantidos na
-            forma do art. 136 do ADCT). Como o IBS ainda não existe, a melhor aproximação empírica
-            disponível para o período anterior a 2029 é a série de ICMS+ISS/PIB que esta página já
-            constrói &mdash; mas ela é um <em>limite superior</em>, não a própria Receita-Base: falta
-            deduzir exatamente essa parcela de fundos estaduais condicionados.
-        </div>
-        <div class="callout">
-            <strong>De onde vem essa dedução, na prática?</strong> Desde a "guerra fiscal" dos anos 1990 e
-            2000, vários estados condicionaram benefícios de ICMS (diferimento na importação, regimes
-            especiais de apuração) ao recolhimento de uma contribuição para um fundo estadual de
-            desenvolvimento &mdash; um mecanismo formalizado nacionalmente pela LC 160/2017 e pelo
-            Convênio ICMS 190/2017, que exigiu o registro desses benefícios no Confaz para que
-            permanecessem válidos. O exemplo mais antigo e mais estudado é o <strong>Fundap</strong>, do
-            Espírito Santo, criado em 1970: empresas importadoras recolhem uma contribuição sobre o ICMS
-            diferido nas operações de comércio exterior, hoje administrada pelo Bandes. Segundo o
-            Planejamento Anual da Receita Estadual 2026 da Sefaz-ES, a receita do Fundap em 2022 foi de
-            cerca de <strong>R$&nbsp;942&nbsp;milhões</strong> &mdash; frente a um ICMS bruto do Espírito
-            Santo de R$&nbsp;16,65&nbsp;bi naquele ano, ou seja, <strong>cerca de 5,7%</strong> do ICMS
-            bruto do estado. Fundos análogos existem em outros estados (por exemplo, Fomentar/Produzir em
-            Goiás, Prodepe em Pernambuco, Desenvolve em Bahia, FDI no Ceará), cada um com regras e escalas
-            próprias.
-        </div>
-        <div class="callout">
-            Não localizamos uma estatística consolidada, em nível nacional, do total anual arrecadado por
-            esse conjunto de fundos &mdash; o que, aliás, é parte do motivo pelo qual a EC 132/2023 previu
-            o Fundo de Compensação de Benefícios Fiscais (FCBF, ADCT art. 65, regulamentado pela LC
-            214/2025) para lidar com a extinção desses benefícios de forma centralizada: sem um
-            cadastro nacional único desses fundos, uma dedução nacional precisa não pode ser calculada com
-            os dados públicos disponíveis. O que dá para dizer, com a única referência concreta
-            encontrada (Fundap-ES, cerca de 5,7% do ICMS bruto do estado em 2022), é uma <strong>ordem de
-            grandeza ilustrativa</strong>: se essa proporção se repetisse, de forma aproximada, no
-            agregado nacional &mdash; o que não está confirmado, e a proporção certamente varia muito de
-            estado para estado, sendo nula em muitos deles &mdash; a Receita-Base dos Entes Subnacionais
-            ficaria alguns pontos percentuais <em>abaixo</em> da série bruta de ICMS+ISS/PIB desta página,
-            e não muito mais do que isso. Em outras palavras: a série de ICMS+ISS/PIB já construída nesta
-            página (7,4% a 8,1% do PIB desde 2019) é uma aproximação razoável, e provavelmente
-            ligeiramente otimista, da Receita-Base dos Entes Subnacionais &mdash; não um número idêntico
-            a ela.
-        </div>
-
-        <span class="section-label">Como se chegou à alíquota de referência estimada: linha do tempo das estimativas publicadas</span>
-        <div class="callout">
-            A alíquota de referência combinada (CBS + IBS) não foi definida de uma vez: ela foi
-            reestimada diversas vezes desde 2024, à medida que o desenho legal da reforma mudou no
-            Congresso e a metodologia de cálculo foi refinada. A tabela abaixo reúne as principais
-            estimativas publicadas, na ordem em que vieram a público.
-        </div>
-        <div class="table-wrap">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th class="th-left">Data</th>
-                        <th class="th-left">Fonte</th>
-                        <th>Alíquota total estimada</th>
-                        <th class="th-left">Observação</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="td-left">Jul. 2024</td>
-                        <td class="td-left">Nota Técnica, Secretaria Extraordinária da Reforma Tributária (SERT/MF)</td>
-                        <td class="td-amber">26,5%</td>
-                        <td class="td-note">Estimativa inicial do governo: 17,7 p.p. de IBS (estadual + municipal) e 8,8 p.p. de CBS (federal), com base na arrecadação histórica de ICMS, ISS, PIS, Cofins e IPI.</td>
-                    </tr>
-                    <tr>
-                        <td class="td-left">2024, após emendas na Câmara</td>
-                        <td class="td-left">Projeção da equipe econômica sobre o texto do PLP 68/2024 aprovado</td>
-                        <td class="td-neg">27,97%</td>
-                        <td class="td-note">Alta de 1,47 p.p. sobre a estimativa inicial, atribuída à ampliação de regimes diferenciados, isenções e reduções setoriais incluídos durante a tramitação.</td>
-                    </tr>
-                    <tr>
-                        <td class="td-left">2024&ndash;2025, simulações pós-cashback</td>
-                        <td class="td-left">Diversas simulações técnicas (MF, mercado)</td>
-                        <td>25,65% a 27,29%</td>
-                        <td class="td-note">Faixa de sensibilidade a partir do desenho final do cashback e de premissas de elisão/sonegação na transição para o novo sistema.</td>
-                    </tr>
-                    <tr>
-                        <td class="td-left">LC 214/2025</td>
-                        <td class="td-left">Alíquota de referência formal da CBS, vigência a partir de 2027</td>
-                        <td class="td-pos">8,8%</td>
-                        <td class="td-note">Componente federal fixado como referência inicial; sujeito a recálculo anual pelo mecanismo do art. 130 do ADCT, homologado pelo TCU e aprovado por Resolução do Senado.</td>
-                    </tr>
-                    <tr>
-                        <td class="td-left">Jun. 2026</td>
-                        <td class="td-left">Tribunal de Contas da União (TCU)</td>
-                        <td>&mdash;</td>
-                        <td class="td-note">Resolução do TCU regulamenta o processo anual de cálculo e revisão das alíquotas de referência de CBS e IBS, em regime de urgência; não publica, nesta data, um novo número consolidado.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="callout">
-            A variação de mais de 2 pontos percentuais entre a primeira estimativa (26,5%) e a
-            projeção pós-emendas (27,97%) ilustra o ponto central desta página: a alíquota de
-            referência não é um número fixado por decreto uma única vez. Ela é uma <em>função</em> do
-            desenho de regimes diferenciados, isenções, cashback e da própria arrecadação observada
-            &mdash; recalculada ano a ano pelo TCU e aprovada pelo Senado, exatamente para preservar a
-            trava de carga tributária constante do art. 130 do ADCT à medida que esses parâmetros
-            mudam. O restante desta página foca no componente subnacional dessa conta &mdash; o IBS,
-            sucessor do ICMS e do ISS &mdash;, cuja estimativa inicial é de <strong>17,7%</strong>.
-        </div>
-
-        <span class="section-label">Como se chega aos 26,5%: a decomposição do cálculo</span>
-        <div class="callout">
-            A tabela anterior mostra <em>quais</em> números foram publicados; esta seção explica, em
-            linhas gerais, <em>como</em> a Secretaria Extraordinária da Reforma Tributária (SERT/MF)
-            chegou à estimativa inicial de 26,5%. A conta segue quatro passos, descritos na Nota Técnica
-            de agosto de 2023 e atualizados em julho de 2024.
-        </div>
-        <div class="passo-list">
-            <div class="passo-item">
-                <div class="passo-num"></div>
-                <div class="passo-body">
-                    <strong>Ponto de partida: a carga tributária histórica dos tributos extintos, em
-                    proporção ao PIB.</strong> A SERT/MF tomou a arrecadação média de ICMS, ISS, PIS,
-                    Cofins e IPI na década de 2013 a 2022, medida como fração do PIB: cerca de
-                    <strong>12,45% do PIB</strong>. É o mesmo tipo de métrica que o art. 130 do ADCT usa
-                    para o "Teto de Referência" &mdash; só que ali a janela de referência legal é
-                    2012&ndash;2021, não 2013&ndash;2022.
-                </div>
-            </div>
-            <div class="passo-item">
-                <div class="passo-num"></div>
-                <div class="passo-body">
-                    <strong>Ajuste pelo "hiato de conformidade" (Tax Gap).</strong> Nem toda a base
-                    tributável potencial é hoje efetivamente arrecadada: sonegação, elisão fiscal e
-                    inadimplência abrem uma distância entre a arrecadação potencial e a observada. A
-                    SERT/MF adaptou um modelo de hiato de conformidade da própria Receita Federal e
-                    arbitrou hipóteses de quanto esse hiato deve <em>diminuir</em> com a reforma &mdash;
-                    principalmente por causa do split payment e da não cumulatividade plena do IBS/CBS,
-                    que dificultam a sonegação estrutural do sistema atual. Um hiato menor significa mais
-                    arrecadação à mesma alíquota, o que empurra a alíquota necessária para baixo.
-                </div>
-            </div>
-            <div class="passo-item">
-                <div class="passo-num"></div>
-                <div class="passo-body">
-                    <strong>Ajuste pelos regimes diferenciados, isenções e cashback.</strong> Cesta
-                    básica, Simples Nacional, saúde, educação, Zona Franca de Manaus e outros regimes
-                    retiram parte da base do alcance da alíquota padrão (ou a tributam com alíquota
-                    reduzida). Essa fatia da base precisa ser compensada por uma alíquota
-                    <em>maior</em> sobre o restante &mdash; e foi justamente a ampliação desses regimes
-                    durante a tramitação no Congresso que empurrou a estimativa de 26,5% para 27,97%.
-                </div>
-            </div>
-            <div class="passo-item">
-                <div class="passo-num"></div>
-                <div class="passo-body">
-                    <strong>Alíquota = arrecadação-alvo &divide; base tributável efetiva.</strong> Somados
-                    os três passos anteriores, a SERT/MF estima uma base de consumo efetivamente
-                    tributável de cerca de <strong>47% do PIB</strong> (após excluir investimento,
-                    exportações, boa parte das compras governamentais e a fatia coberta por regimes
-                    diferenciados). Dividindo a arrecadação-alvo (~12,45% do PIB, ajustada pelo hiato de
-                    conformidade) por essa base, chega-se à alíquota padrão estimada de
-                    <strong>26,5%</strong>. É essa mesma lógica &mdash; arrecadação-alvo dividida pela
-                    base &mdash; que a simulação mais adiante nesta página reaplica, de forma
-                    simplificada, para projetar como a alíquota se moveria até 2033.
-                </div>
-            </div>
-        </div>
-        <div class="callout">
-            Os parâmetros exatos do hiato de conformidade (quanto ele é hoje e quanto se espera que
-            caia) não são de conhecimento público em detalhe: são hipóteses internas do modelo da
-            SERT/MF e da Receita Federal, sujeitas a revisão pelo TCU. É por isso que a estimativa de
-            alíquota mudou repetidamente desde 2024 &mdash; e por isso que a simulação desta página
-            (adiante) parte diretamente da alíquota estimada, sem tentar reproduzir o modelo de hiato de
-            conformidade por trás dela.
-        </div>
-
-        <span class="section-label">O "bolo" ICMS + ISS desde 2019: nominal, deflacionado pelo IPCA e como proporção do PIB</span>
-        <div class="callout">
-            Antes de simular o futuro, vale ver o passado. O gráfico à esquerda mostra a arrecadação
-            nacional agregada de ICMS e ISS em valores nominais e em valores reais (deflacionados pelo
-            IPCA para reais de abril de 2026): a distância entre as duas linhas é, por definição, o
-            efeito da inflação acumulada. O gráfico à direita mostra a mesma arrecadação como fração do
-            PIB nominal &mdash; a métrica que efetivamente importa para o art. 130 do ADCT, já que a lei
-            fala em manter a carga tributária constante <em>em proporção ao PIB</em>, não em reais
-            constantes.
-        </div>
+        <span class="section-label">Dados históricos usados: ICMS + ISS, Brasil, 2019&ndash;2025</span>
         <div class="chart-grid-2">
             <div class="chart-panel">
-                <p class="chart-panel-title">ICMS + ISS, Brasil (R$ bi, 2019&ndash;2026)</p>
-                <canvas id="chart-bolo-nominal-real" style="max-height:320px"></canvas>
+                <p class="chart-panel-title">ICMS + ISS, Brasil (R$ bi, 2019&ndash;2025)</p>
+                <canvas id="chart-bolo-nominal-real" style="max-height:300px"></canvas>
                 <div class="chart-legend-note">
                     <span><span class="legend-dot" style="background:#2a78d6"></span>Nominal</span>
-                    <span><span class="legend-dot" style="background:#7aa8d6"></span>Real (reais de abr/2026, IPCA)</span>
+                    <span><span class="legend-dot" style="background:#7aa8d6"></span>Real (reais de 2025, IPCA)</span>
                 </div>
             </div>
             <div class="chart-panel">
-                <p class="chart-panel-title">ICMS + ISS como % do PIB (2019&ndash;2026)</p>
-                <canvas id="chart-bolo-pib" style="max-height:320px"></canvas>
+                <p class="chart-panel-title">ICMS + ISS como % do PIB (2019&ndash;2025)</p>
+                <canvas id="chart-bolo-pib" style="max-height:300px"></canvas>
                 <div class="chart-legend-note">
                     <span><span class="legend-dot" style="background:#1A3A5C"></span>ICMS+ISS / PIB</span>
                 </div>
@@ -525,7 +219,7 @@
                     <tr>
                         <th class="th-left">Ano</th>
                         <th>ICMS+ISS nominal (R$ bi)</th>
-                        <th>ICMS+ISS real, reais de abr/2026 (R$ bi)</th>
+                        <th>ICMS+ISS real, reais de 2025 (R$ bi)</th>
                         <th>PIB nominal (R$ bi)</th>
                         <th>ICMS+ISS / PIB (%)</th>
                     </tr>
@@ -535,134 +229,36 @@
                 </tbody>
             </table>
         </div>
-        <div class="callout" id="callout-historico">
-            Calculando variações...
-        </div>
 
-        <span class="section-label">Simulação: como a alíquota do IBS se ajustaria sob três premissas de correção do bolo, 2027&ndash;2033</span>
+        <span class="section-label">Receita-Base de referência estimada, 2029&ndash;2033 (bolo congelado em 2025)</span>
         <div class="callout">
-            Uma alíquota é, por definição, uma razão: arrecadação dividida pela base tributável. Se a
-            base de consumo tende a crescer no tempo &mdash; aqui, por hipótese simplificadora, na mesma
-            taxa do PIB nominal &mdash;, então o que se decide manter constante no numerador (o "bolo"
-            de arrecadação-alvo) determina sozinho a trajetória da alíquota necessária no denominador.
-            Esta simulação estilizada projeta a base tributável implícita do IBS a partir da alíquota de
-            referência inicial estimada (17,7%, SERT/MF, jul. 2024) e do bolo ICMS+ISS observado em
-            2026, e então recalcula, ano a ano até 2033, qual alíquota seria necessária sob três
-            cenários de indexação desse bolo: <strong>congelado em termos nominais</strong> (o valor de
-            2026 em reais correntes, sem qualquer correção); <strong>corrigido pelo IPCA</strong>
-            (preservando o poder de compra, mas não acompanhando o crescimento real da economia); e
-            <strong>corrigido pelo PIB nominal</strong> &mdash; o cenário que, por construção, corresponde
-            à leitura literal do art. 130 do ADCT, e por isso mantém a alíquota estável ao longo de toda
-            a simulação.
-        </div>
-        <div class="chart-panel">
-            <p class="chart-panel-title">Alíquota do IBS necessária para cada cenário de indexação do bolo (%), 2026&ndash;2033</p>
-            <canvas id="chart-simulacao" style="max-height:380px"></canvas>
-            <div class="chart-legend-note">
-                <span><span class="legend-dot" style="background:var(--neg)"></span>Bolo nominal congelado em 2026</span>
-                <span><span class="legend-dot" style="background:var(--amber)"></span>Bolo corrigido pelo IPCA</span>
-                <span><span class="legend-dot" style="background:var(--pos)"></span>Bolo corrigido pelo PIB nominal (art. 130 ADCT)</span>
-            </div>
+            Sem inflação e sem crescimento do PIB a partir de 2025, o valor de 2025 se repete, sem
+            qualquer correção, em cada um dos cinco anos seguintes &mdash; por isso a tabela abaixo tem o
+            mesmo número em todas as linhas. É exatamente esse resultado invariável que o cenário
+            contrafactual da pergunta implica.
         </div>
         <div class="table-wrap">
             <table class="data-table">
                 <thead>
                     <tr>
                         <th class="th-left">Ano</th>
-                        <th>Base tributável projetada (R$ bi)</th>
-                        <th>Alíquota &mdash; nominal congelado (%)</th>
-                        <th>Alíquota &mdash; corrigido IPCA (%)</th>
-                        <th>Alíquota &mdash; corrigido PIB (%)</th>
+                        <th>Receita-Base de referência estimada (R$ bi)</th>
+                        <th>Em % do PIB</th>
                     </tr>
                 </thead>
-                <tbody id="tbody-simulacao">
-                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                <tbody id="tbody-resposta">
+                    <tr><td colspan="3" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
                 </tbody>
             </table>
-        </div>
-        <div class="callout" id="callout-simulacao">
-            Calculando cenários...
-        </div>
-
-        <span class="section-label">Essa premissa faz sentido? O "bolo fixo" dos Estudos 03 e 06 desta página, à luz do art. 130 do ADCT</span>
-        <div class="callout">
-            Os <a href="/estudos/ibs-projecao-arrecadacao-es.html">Estudo 03</a> e
-            <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> desta página projetam a
-            receita estadual de ICMS/IBS entre 2029 e 2033 partindo de uma base comum,
-            <code>TotalBR_2025</code> &mdash; a soma nacional de ICMS + ISS em 2025, cerca de
-            R$&nbsp;1.029,6&nbsp;bi &mdash;, mantida <strong>fixa em todos os anos da projeção, expressa em
-            "preços de 2025"</strong>. O texto desses estudos descreve isso como o "bolo agregado
-            preservado em termos reais", derivado "diretamente da premissa de neutralidade de receita do
-            art. 130 ADCT". Depois de ler o texto literal do artigo nesta página, dá para testar essa
-            afirmação com mais precisão &mdash; e ela precisa de uma qualificação importante.
-        </div>
-        <div class="callout">
-            O art. 130 do ADCT não fala, em nenhum momento, em preservar um valor em <strong>reais
-            constantes</strong>. O &sect;3&ordm;, incisos I e II, define o Teto de Referência
-            <strong>"apurada como proporção do PIB"</strong>, com base na média de 2012 a 2021. Isso é uma
-            meta diferente de "manter o mesmo valor real de 2025": se o PIB cresce em termos reais entre
-            2025 e 2033, a meta de proporcionalidade ao PIB permite &mdash; e, na leitura mais literal do
-            artigo, pressupõe &mdash; que a arrecadação também cresça em termos reais, não que fique
-            estacionária. "Bolo real fixo" e "bolo proporcional ao PIB" só coincidem se o PIB real também
-            ficar estagnado, o que historicamente não costuma acontecer por muitos anos seguidos.
-        </div>
-        <div class="callout">
-            O gráfico de %PIB desta página ajuda a quantificar o tamanho do problema. A série histórica
-            de ICMS+ISS/PIB oscilou, sem tendência clara, numa faixa estreita (entre 7,4% e 8,1% do PIB
-            desde 2019) &mdash; e é justamente essa estabilidade que valida a meta de proporcionalidade
-            ao PIB como a leitura correta da lei: se a fração do PIB é razoavelmente estável ano a ano,
-            então a arrecadação nominal e real tende a acompanhar o próprio PIB, crescendo com ele. É
-            exatamente esse acompanhamento que o "bolo fixo em preços de 2025" dos Estudos 03 e 06 deixa
-            de fora quando o horizonte de projeção chega a 2033, oito anos à frente da base de 2025.
-        </div>
-        <div class="table-wrap">
-            <table class="data-table" id="table-validade">
-                <thead>
-                    <tr>
-                        <th class="th-left">Cenário de crescimento real do PIB usado na projeção</th>
-                        <th>Crescimento real médio (% a.a.)</th>
-                        <th>"Bolo" em 2033, preços de 2025 (R$ bi)</th>
-                        <th>Diferença vs. bolo fixo dos Estudos 03/06</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody-validade">
-                    <tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="callout" id="callout-validade">
-            Calculando comparação...
-        </div>
-        <div class="callout">
-            <strong>Em que medida a simplificação faz sentido, então?</strong> Depende do que se está
-            lendo nos Estudos 03 e 06. Para os <strong>coeficientes de participação de cada UF</strong>
-            &mdash; a fatia percentual do bolo nacional que cabe a cada estado, que é o principal produto
-            desses dois estudos &mdash; o bolo fixo é inofensivo: os coeficientes são razões internas ao
-            próprio bolo, e continuam corretos qualquer que seja o tamanho do bolo agregado, desde que a
-            distribuição relativa entre UFs não mude. Já para os <strong>valores em reais</strong>
-            projetados para os anos finais da transição (2032 e 2033, especialmente), o bolo fixo tende a
-            <em>subestimar</em> a receita esperada, na medida em que a economia brasileira efetivamente
-            cresça em termos reais entre 2025 e 2033 &mdash; o que a década de referência da própria lei
-            (2012&ndash;2021, marcada por duas recessões) fez muito pouco, mas o período mais recente
-            (2022&ndash;2025) fez a um ritmo bem mais rápido. A leitura mais literal do art. 130 do ADCT
-            é o Cenário C da simulação desta página (corrigido pelo PIB nominal); o "bolo fixo" dos
-            Estudos 03 e 06 está, na prática, mais próximo do Cenário B (corrigido apenas pelo IPCA) do
-            que de um congelamento nominal &mdash; mas ainda assim mais conservador do que a leitura mais
-            literal da trava constitucional.
         </div>
 
         <div class="footnotes">
             <p><strong>Fontes e notas metodológicas:</strong></p>
-            <p>1. Base legal: Constituição Federal, art. 156-A, &sect;1&ordm;, XII (redação da EC 132/2023); ADCT, art. 130 e parágrafos (mecanismo da alíquota de referência, "Teto de Referência" 2012&ndash;2021 e cláusulas de redução obrigatória de 2030 e 2035); Lei Complementar 214/2025, arts. 18 a 20 (papéis da Receita Federal, do CGIBS, do TCU e do Senado Federal no cálculo e na fixação anual das alíquotas de referência).</p>
-            <p>2. Estimativas de alíquota de referência: Secretaria Extraordinária da Reforma Tributária, Ministério da Fazenda, <em>Nota Técnica &mdash; Alíquotas de referência do IBS e da CBS: estimativas atualizadas</em>, jul. 2024 (estimativa inicial de 26,5%, decomposta em 17,7% de IBS e 8,8% de CBS); projeções técnicas divulgadas após a aprovação do PLP 68/2024 na Câmara dos Deputados (27,97%); simulações de sensibilidade pós-desenho do cashback (faixa de 25,65% a 27,29%); Tribunal de Contas da União, Resolução de jun. 2026 sobre o processo de análise das alíquotas de referência (<a href="https://sites.tcu.gov.br/reforma-tributaria/aliquotas-referencia.html" target="_blank" rel="noopener">sites.tcu.gov.br/reforma-tributaria</a>).</p>
-            <p>1a. Receita-Base dos Entes Subnacionais (art. 130, &sect;3&ordm;, IV, do ADCT): a dedução da alínea "b" do inciso II do caput refere-se a fundos estaduais financiados por contribuições condicionadas a diferimento, regime especial ou outro tratamento diferenciado do ICMS, formalizados nacionalmente pela Lei Complementar 160/2017 e pelo Convênio ICMS 190/2017 (Confaz). Dado concreto usado como referência de ordem de grandeza: Fundap (Espírito Santo, criado pela Lei estadual 2.508/1970), receita de aproximadamente R$&nbsp;942 milhões em 2022, conforme Secretaria de Estado da Fazenda do Espírito Santo, <em>Planejamento Anual da Receita Estadual 2026</em>; ICMS bruto do Espírito Santo em 2022, R$&nbsp;16,65 bi, de <code>data/reforma-tributaria.json</code> (mesma base da nota 3). Não há, até onde pesquisado, estatística nacional consolidada do total desses fundos em todos os estados; a extrapolação nacional apresentada nesta página é expressamente ilustrativa, não uma estimativa oficial. Fundo de Compensação de Benefícios Fiscais (FCBF): ADCT, art. 65, incluído pela EC 132/2023, regulamentado pela LC 214/2025 &mdash; mecanismo distinto, de compensação centralizada pela União, não o mesmo conceito da dedução do art. 130, &sect;3&ordm;, IV.</p>
-            <p>2a. Decomposição do cálculo da alíquota-padrão: Secretaria Extraordinária da Reforma Tributária, Ministério da Fazenda, <em>Detalhamento metodológico &mdash; Alíquota-padrão da tributação do consumo de bens e serviços no âmbito da Reforma Tributária</em>, ago. 2023 (base histórica de 12,45% do PIB, média 2013&ndash;2022 de ICMS, ISS, PIS, Cofins e IPI; modelo de hiato de conformidade adaptado da Receita Federal; base tributável efetiva estimada em cerca de 47% do PIB). Os parâmetros internos do modelo de hiato de conformidade (sonegação, elisão, inadimplência) não são detalhados publicamente pela SERT/MF; a descrição desta página é qualitativa, a partir do documento citado e de notícias técnicas que o resumem.</p>
-            <p>3. ICMS e ISS nacionais, 2019&ndash;2026: SICONFI/STN, RREO Anexo 3, coluna "Total Últimos 12 Meses" (mesma base de <code>data/reforma-tributaria.json</code>, usada nos Estudos 02, 03, 06 e 07 desta página). O valor de 2026 é o total dos últimos 12 meses até o bimestre mar&ndash;abr/2026 (período mais recente disponível no SICONFI nesta data), não o ano-calendário completo.</p>
-            <p>4. PIB nominal: Banco Central do Brasil, Sistema Gerenciador de Séries Temporais (SGS), série 1207 (PIB anual a preços correntes, Contas Nacionais Trimestrais/IBGE) para 2019&ndash;2025, e série 4382 (PIB acumulado em 12 meses, valores correntes) para o período mar&ndash;abr/2026, pareado ao mesmo período-base do dado de ICMS+ISS de 2026.</p>
-            <p>5. IPCA: Banco Central do Brasil, SGS, série 433 (variação mensal). A série "real" do gráfico histórico deflaciona cada ano para reais de abril de 2026 pelo produtório dos fatores mensais (1 + IPCA/100) entre o mês de referência e abril de 2026.</p>
-            <p>6. Simulação (base tributável e alíquota ajustada): elaboração própria, exercício estilizado e não oficial &mdash; não reproduz o cálculo técnico do TCU nem da Receita Federal/CGIBS. Base tributável implícita de 2026 = ICMS+ISS de 2026 &divide; 17,7% (alíquota de referência inicial estimada para o IBS, nota 2). A base é projetada para 2027&ndash;2033 crescendo à mesma taxa nominal composta do PIB observada entre 2022 e 2025 (CAGR, BCB/SGS 1207) &mdash; premissa simplificadora de que a base de consumo tributável mantém participação constante no PIB, o que a própria reforma pode alterar (por exemplo, via ampliação de regimes diferenciados). Os três cenários de "bolo-alvo" aplicam ao valor de 2026: (i) nenhuma correção (nominal congelado); (ii) o IPCA acumulado nos 12 meses findos em jun. 2026 (BCB/SGS 433), composto ano a ano; e (iii) a mesma taxa de crescimento nominal do PIB usada na projeção da base &mdash; por construção, esse último cenário resulta em alíquota constante de 17,7% em todos os anos, o que ilustra e não pressupõe o objetivo do art. 130 do ADCT. A alíquota ajustada de cada cenário, ano a ano, é o bolo-alvo dividido pela base tributável projetada.</p>
-            <p>7. Simplificações e mecanismos não modelados: a simulação não incorpora o cronograma de transição do art. 128 do ADCT (extinção gradual do ICMS entre 2029 e 2033), o Seguro-Receita, o financiamento do Comitê Gestor do IBS, o cashback, nem eventuais alterações no desenho de regimes diferenciados e isenções &mdash; todos fatores que, na prática, também pressionam a alíquota de referência efetivamente calculada pelo TCU. É um exercício didático sobre a mecânica de "arrecadação-alvo &divide; base tributável = alíquota", não uma projeção da alíquota que será de fato fixada.</p>
-            <p>8. Comparação com os Estudos 03 e 06 (seção "Essa premissa faz sentido?"): crescimento real do PIB, Banco Central do Brasil, SGS, série 7326 (taxa de variação real anual do PIB), médias aritméticas simples de 2012 a 2021 (mesma janela do "Teto de Referência" do art. 130, &sect;3&ordm;, I e II, do ADCT) e de 2022 a 2025. O "bolo" de 2033 sob cada cenário aplica essa taxa média, composta ano a ano, aos R$&nbsp;1.029,57 bi de <code>TotalBR_2025</code> (mesmo valor-base dos <a href="/estudos/ibs-projecao-arrecadacao-es.html">Estudo 03</a> e <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>, de <code>data/ibs-projecao-parametros.json</code>), por 8 anos (2025 a 2033), inteiramente em termos reais (preços de 2025) &mdash; sem qualquer deflator nominal adicional. É uma comparação de sensibilidade, não uma correção retroativa dos Estudos 03 e 06: os coeficientes de participação por UF publicados ali continuam válidos, por serem razões internas ao bolo, invariantes à sua escala agregada.</p>
+            <p>1. Base legal: art. 130, &sect;3&ordm;, IV, do ADCT (incluído pela Emenda Constitucional 132/2023). Fonte: Diário Oficial da União, 21 dez. 2023.</p>
+            <p>2. ICMS e ISS nacionais, 2019&ndash;2025: SICONFI/STN, DCA Anexo I-C, mesma base de <code>data/ibs-projecao-parametros.json</code> (<code>total_br_2025</code>), usada nos <a href="/estudos/ibs-projecao-arrecadacao-es.html">Estudo 03</a> e <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> desta página. Ano-base da resposta: 2025.</p>
+            <p>3. PIB nominal: Banco Central do Brasil, Sistema Gerenciador de Séries Temporais (SGS), série 1207 (PIB anual a preços correntes, Contas Nacionais Trimestrais/IBGE), 2019&ndash;2025.</p>
+            <p>4. IPCA: Banco Central do Brasil, SGS, série 433 (variação mensal). A série "real" do gráfico histórico deflaciona cada ano para reais de 2025 pelo produtório dos fatores mensais (1 + IPCA/100) entre o mês de referência e dezembro de 2025.</p>
+            <p>5. A Receita-Base dos Entes Subnacionais (art. 130, &sect;3&ordm;, IV, ADCT) desconta, do valor de IBS de estados e municípios, a parcela de fundos estaduais financiados por contribuições condicionadas a regimes diferenciados do ICMS (art. 130, II, "b", ADCT) &mdash; por exemplo, o Fundap, no Espírito Santo (receita de cerca de R$ 942 milhões em 2022, Sefaz-ES, <em>Planejamento Anual da Receita Estadual 2026</em>, cerca de 5,7% do ICMS bruto do estado naquele ano). Não há estatística nacional consolidada dessa dedução; a série de ICMS+ISS usada nesta página é a arrecadação bruta, um limite superior da Receita-Base tal como definida em lei.</p>
         </div>
     </div>
 
@@ -681,18 +277,23 @@
             const res = await fetch('/data/ibs-carga-constante.json?t=' + Date.now());
             const data = await res.json();
 
+            buildResposta(data);
             buildHistoricoTable(data);
-            buildSimulacaoTable(data);
-            buildValidadeTable(data);
+            buildRespostaTable(data);
             buildChartNominalReal(data);
             buildChartPib(data);
-            buildChartSimulacao(data);
 
             statusEl.innerHTML = '<span class="status-dot" style="background:var(--pos)"></span><span>Dados carregados &middot; ' + new Date().toLocaleDateString('pt-BR') + '</span>';
         } catch (e) {
             console.error(e);
-            statusEl.innerHTML = '<span class="status-dot" style="background:var(--neg)"></span><span>Erro ao carregar dados.</span>';
+            statusEl.innerHTML = '<span class="status-dot" style="background:#b03a2e"></span><span>Erro ao carregar dados.</span>';
         }
+    }
+
+    function buildResposta(data) {
+        const r = data.resposta;
+        document.getElementById('resposta-numero').textContent = `R$ ${fmtNum(r.bolo_base / 1e9, 1)} bi por ano, em 2029, 2030, 2031, 2032 e 2033`;
+        document.getElementById('resposta-sub').innerHTML = `Equivalente a ${fmtPct(r.bolo_pct_pib_base, 2)} do PIB, ano-base ${r.ano_base}. Sem inflação nem crescimento do PIB a partir de ${r.ano_base}, esse valor não muda de um ano para o outro: o mesmo número de ${r.ano_base} se repete em todos os cinco anos da transição do IBS (2029&ndash;2033).`;
     }
 
     function buildHistoricoTable(data) {
@@ -700,57 +301,24 @@
         document.getElementById('tbody-historico').innerHTML = rows.map(r => `<tr>
             <td class="td-left">${r.ano}</td>
             <td>${fmtNum(r.bolo_nominal / 1e9, 1)}</td>
-            <td>${fmtNum(r.bolo_real_abr2026 / 1e9, 1)}</td>
+            <td>${fmtNum(r.bolo_real_2025 / 1e9, 1)}</td>
             <td>${fmtNum(r.pib_nominal / 1e9, 1)}</td>
             <td>${fmtPct(r.bolo_pct_pib, 2)}</td>
         </tr>`).join('');
-
-        const first = rows[0], last = rows[rows.length - 1];
-        const varNominal = (last.bolo_nominal / first.bolo_nominal - 1) * 100;
-        const varReal = (last.bolo_real_abr2026 / first.bolo_real_abr2026 - 1) * 100;
-        const pctMin = Math.min(...rows.map(r => r.bolo_pct_pib));
-        const pctMax = Math.max(...rows.map(r => r.bolo_pct_pib));
-        document.getElementById('callout-historico').innerHTML = `Entre ${first.ano} e ${last.ano}, o bolo ICMS+ISS cresceu <strong>${fmtPct(varNominal,1)}</strong> em termos nominais, mas apenas <strong>${fmtPct(varReal,1)}</strong> em termos reais (reais de abr/2026) &mdash; a diferença é integralmente efeito da inflação acumulada no período. Como proporção do PIB, o bolo oscilou entre ${fmtPct(pctMin,2)} e ${fmtPct(pctMax,2)} ao longo desses ${last.ano - first.ano} anos, sem uma tendência de alta ou de queda muito pronunciada: é essa faixa, de cerca de 7,4% a 8,1% do PIB, que a trava do art. 130 do ADCT toma como referência para calibrar a alíquota do IBS e da CBS daqui em diante.`;
     }
 
-    function buildSimulacaoTable(data) {
-        const rows = data.projecao;
-        document.getElementById('tbody-simulacao').innerHTML = rows.map(r => `<tr>
+    function buildRespostaTable(data) {
+        const rows = data.resposta.anos;
+        document.getElementById('tbody-resposta').innerHTML = rows.map(r => `<tr class="row-resposta">
             <td class="td-left">${r.ano}</td>
-            <td>${fmtNum(r.base_tributavel_projetada / 1e9, 1)}</td>
-            <td class="td-neg">${fmtPct(r.aliquota_nominal_congelado, 2)}</td>
-            <td class="td-amber">${fmtPct(r.aliquota_corrigido_ipca, 2)}</td>
-            <td class="td-pos">${fmtPct(r.aliquota_corrigido_pib, 2)}</td>
-        </tr>`).join('');
-
-        const last = rows[rows.length - 1];
-        const ref = data._meta.parametros.aliquota_ibs_referencia_2026 * 100;
-        document.getElementById('callout-simulacao').innerHTML = `Partindo de uma alíquota de referência estimada de <strong>${fmtPct(ref,1)}</strong> em 2026, os três cenários divergem de forma acentuada até ${last.ano}: se o bolo de arrecadação-alvo ficasse <strong>congelado em reais nominais</strong>, a alíquota implícita cairia para cerca de <strong>${fmtPct(last.aliquota_nominal_congelado,1)}</strong> &mdash; uma queda que dificilmente corresponde à intenção da lei. Corrigido apenas pelo <strong>IPCA</strong>, cairia de forma mais moderada, para perto de <strong>${fmtPct(last.aliquota_corrigido_ipca,1)}</strong>, já que o poder de compra do bolo é preservado, mas ele não acompanha o crescimento real da base tributável. Só o cenário <strong>indexado ao PIB nominal</strong> mantém a alíquota estável em ${fmtPct(last.aliquota_corrigido_pib,1)} durante toda a simulação &mdash; o que é, por construção, a leitura mais literal do objetivo declarado do art. 130 do ADCT: preservar a carga tributária como proporção do PIB, não em reais fixos, nominais ou reais.`;
-    }
-
-    function buildValidadeTable(data) {
-        const v = data.validade_bolo_fixo;
-        const rows = [
-            { label: `Bolo fixo (Estudos 03 e 06), sem correção`, g: null, bolo: v.bolo_2033_flat, diff: 0 },
-            { label: `Corrigido pelo PIB real, ritmo 2012–2021 (janela do Teto de Referência, art. 130 ADCT)`, g: v.g_real_2012_2021, bolo: v.bolo_2033_baixo, diff: v.bolo_2033_baixo / v.bolo_2033_flat - 1 },
-            { label: `Corrigido pelo PIB real, ritmo 2022–2025 (recente)`, g: v.g_real_2022_2025, bolo: v.bolo_2033_alto, diff: v.bolo_2033_alto / v.bolo_2033_flat - 1 },
-        ];
-        document.getElementById('tbody-validade').innerHTML = rows.map(r => `<tr>
-            <td class="td-left">${r.label}</td>
-            <td>${r.g === null ? '&mdash;' : fmtPct(r.g * 100, 2)}</td>
             <td>${fmtNum(r.bolo / 1e9, 1)}</td>
-            <td class="${r.diff > 0.005 ? 'td-pos' : ''}">${r.diff === 0 ? '&mdash;' : '+' + fmtPct(r.diff * 100, 1)}</td>
+            <td>${fmtPct(r.bolo_pct_pib, 2)}</td>
         </tr>`).join('');
-
-        document.getElementById('callout-validade').innerHTML = `Se o PIB real crescer no ritmo da década usada pela própria lei como referência (2012&ndash;2021, média de ${fmtPct(v.g_real_2012_2021 * 100, 2)} ao ano &mdash; uma década marcada por duas recessões), a diferença até 2033 é pequena: o bolo consistente com a meta de proporcionalidade ao PIB fica apenas <strong>${fmtPct((v.bolo_2033_baixo / v.bolo_2033_flat - 1) * 100, 1)}</strong> acima do bolo fixo dos Estudos 03 e 06. Mas se o ritmo mais recente (2022&ndash;2025, média de ${fmtPct(v.g_real_2022_2025 * 100, 2)} ao ano) se mantiver até 2033, a diferença sobe para <strong>${fmtPct((v.bolo_2033_alto / v.bolo_2033_flat - 1) * 100, 1)}</strong> &mdash; uma subestimativa de primeira ordem, não um detalhe de arredondamento. A validade do "bolo fixo" como simplificação depende, portanto, de qual desses dois regimes de crescimento se acredita mais provável para a economia brasileira entre 2025 e 2033.`;
     }
 
     function themeColors() {
         const css = getComputedStyle(document.documentElement);
         return {
-            neg: css.getPropertyValue('--neg').trim() || '#b03a2e',
-            pos: css.getPropertyValue('--pos').trim() || '#1e8449',
-            amber: css.getPropertyValue('--amber').trim() || '#d4a017',
             grid: 'rgba(128,128,128,0.15)',
             text: css.getPropertyValue('--text-muted').trim() || '#9A9A9A'
         };
@@ -770,15 +338,13 @@
                         label: 'Nominal',
                         data: data.historico.map(r => r.bolo_nominal / 1e9),
                         borderColor: '#2a78d6', backgroundColor: '#2a78d6',
-                        borderWidth: 2.5, pointRadius: 3, pointHoverRadius: 5, tension: 0.15,
-                        datalabels: { display: false }
+                        borderWidth: 2.5, pointRadius: 3, pointHoverRadius: 5, tension: 0.15
                     },
                     {
-                        label: 'Real (reais de abr/2026)',
-                        data: data.historico.map(r => r.bolo_real_abr2026 / 1e9),
+                        label: 'Real (reais de 2025)',
+                        data: data.historico.map(r => r.bolo_real_2025 / 1e9),
                         borderColor: '#7aa8d6', backgroundColor: '#7aa8d6',
-                        borderWidth: 2, borderDash: [5, 4], pointRadius: 3, pointHoverRadius: 5, tension: 0.15,
-                        datalabels: { display: false }
+                        borderWidth: 2, borderDash: [5, 4], pointRadius: 3, pointHoverRadius: 5, tension: 0.15
                     }
                 ]
             },
@@ -810,8 +376,7 @@
                     label: 'ICMS+ISS / PIB',
                     data: data.historico.map(r => r.bolo_pct_pib),
                     borderColor: '#1A3A5C', backgroundColor: 'rgba(26,58,92,0.12)',
-                    borderWidth: 2.5, pointRadius: 3, pointHoverRadius: 5, tension: 0.15, fill: true,
-                    datalabels: { display: false }
+                    borderWidth: 2.5, pointRadius: 3, pointHoverRadius: 5, tension: 0.15, fill: true
                 }]
             },
             options: {
@@ -824,57 +389,6 @@
                 scales: {
                     x: { grid: { display: false }, ticks: { color: c.text, font: { size: 10 } } },
                     y: { grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 }, callback: v => v.toFixed(1) + '%' }, title: { display: true, text: '% do PIB', color: c.text, font: { size: 10 } } }
-                }
-            }
-        });
-    }
-
-    function buildChartSimulacao(data) {
-        const el = document.getElementById('chart-simulacao');
-        if (!el || typeof Chart === 'undefined') return;
-        const c = themeColors();
-        const anoRef = data.historico[data.historico.length - 1].ano;
-        const aliquotaRef = data._meta.parametros.aliquota_ibs_referencia_2026 * 100;
-        const anos = [anoRef, ...data.projecao.map(r => r.ano)];
-        const congelado = [aliquotaRef, ...data.projecao.map(r => r.aliquota_nominal_congelado)];
-        const ipca = [aliquotaRef, ...data.projecao.map(r => r.aliquota_corrigido_ipca)];
-        const pib = [aliquotaRef, ...data.projecao.map(r => r.aliquota_corrigido_pib)];
-
-        new Chart(el, {
-            type: 'line',
-            data: {
-                labels: anos,
-                datasets: [
-                    {
-                        label: 'Nominal congelado', data: congelado,
-                        borderColor: c.neg, backgroundColor: c.neg,
-                        borderWidth: 2.5, pointRadius: 3, pointHoverRadius: 5, tension: 0.1,
-                        datalabels: { display: false }
-                    },
-                    {
-                        label: 'Corrigido pelo IPCA', data: ipca,
-                        borderColor: c.amber, backgroundColor: c.amber,
-                        borderWidth: 2.5, borderDash: [6, 4], pointRadius: 3, pointHoverRadius: 5, tension: 0.1,
-                        datalabels: { display: false }
-                    },
-                    {
-                        label: 'Corrigido pelo PIB nominal (art. 130 ADCT)', data: pib,
-                        borderColor: c.pos, backgroundColor: c.pos,
-                        borderWidth: 2.5, borderDash: [2, 2], pointRadius: 3, pointHoverRadius: 5, tension: 0.1,
-                        datalabels: { display: false }
-                    }
-                ]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: true, aspectRatio: 1.9,
-                interaction: { mode: 'index', intersect: false },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${fmtPct(ctx.raw,2)}` } }
-                },
-                scales: {
-                    x: { grid: { display: false }, ticks: { color: c.text, font: { size: 10 } } },
-                    y: { grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 }, callback: v => v.toFixed(1) + '%' }, title: { display: true, text: 'Alíquota do IBS (%)', color: c.text, font: { size: 10 } } }
                 }
             }
         });

@@ -1,162 +1,94 @@
 {
   "_meta": {
-    "descricao": "Bolo ICMS+ISS 2019-2026 (nominal, real e %PIB) e projeção estilizada 2027-2033 da alíquota de referência do IBS sob três cenários de indexação, ilustrando a premissa de neutralidade de carga tributária do art. 130 do ADCT (EC 132/2023, LC 214/2025).",
+    "descricao": "Bolo ICMS+ISS 2019-2025 (nominal, real e %PIB, base DCA) e a Receita-Base de referência estimada para 2029-2033 sob a hipótese de bolo congelado (sem inflação, sem crescimento do PIB a partir de 2025).",
     "fontes": {
-      "icms_iss": "data/reforma-tributaria.json (SICONFI/STN, RREO Anexo 3, Total Últimos 12 Meses)",
+      "icms_iss": "data/ibs-projecao-parametros.json (SICONFI/STN, DCA Anexo I-C) — mesma base de TotalBR_2025 usada nos Estudos 03 e 06 desta página",
       "pib_anual": "BCB/SGS série 1207 (Contas Nacionais Trimestrais, IBGE), 2019-2025",
-      "pib_12m_2026": "BCB/SGS série 4382 (PIB acumulado 12 meses, valores correntes), período mar-abr/2026",
       "ipca": "BCB/SGS série 433 (IPCA, variação mensal)"
-    },
-    "parametros": {
-      "aliquota_ibs_referencia_2026": 0.177,
-      "aliquota_ibs_referencia_2026_fonte": "Nota Técnica SERT/MF, jul/2024: alíquota total estimada 26,5% = 17,7% (IBS) + 8,8% (CBS)",
-      "g_pib_nominal_proj": 0.081163,
-      "g_pib_nominal_proj_janela": "CAGR nominal do PIB, 2022-2025 (BCB/SGS 1207)",
-      "ipca_acumulado_12m": 0.046413,
-      "ipca_acumulado_12m_janela": "jul/2025-jun/2026 (BCB/SGS 433)",
-      "base_tributavel_implicita_2026": 5742083558018.81
     }
   },
   "historico": [
     {
       "ano": 2019,
-      "bolo_nominal": 566112093776.81,
-      "bolo_real_abr2026": 808275852198.82,
+      "bolo_nominal": 585076903934.26,
+      "bolo_real_2025": 814150513197.07,
       "pib_nominal": 7389130999453.28,
-      "bolo_pct_pib": 7.6614
+      "bolo_pct_pib": 7.9181
     },
     {
       "ano": 2020,
-      "bolo_nominal": 577474566595.97,
-      "bolo_real_abr2026": 788863166434.61,
+      "bolo_nominal": 598220120124.39,
+      "bolo_real_2025": 796460803566.97,
       "pib_nominal": 7609597000575.82,
-      "bolo_pct_pib": 7.5888
+      "bolo_pct_pib": 7.8614
     },
     {
       "ano": 2021,
-      "bolo_nominal": 732133892417.71,
-      "bolo_real_abr2026": 908710733353.44,
+      "bolo_nominal": 745529117618.77,
+      "bolo_real_2025": 901850044265.15,
       "pib_nominal": 9012141999284.48,
-      "bolo_pct_pib": 8.1239
+      "bolo_pct_pib": 8.2725
     },
     {
       "ano": 2022,
-      "bolo_nominal": 783478002177.09,
-      "bolo_real_abr2026": 919260314432.7,
+      "bolo_nominal": 800163395825.64,
+      "bolo_real_2025": 915008144239.53,
       "pib_nominal": 10079676679176.0,
-      "bolo_pct_pib": 7.7728
+      "bolo_pct_pib": 7.9384
     },
     {
       "ano": 2023,
-      "bolo_nominal": 805794506200.23,
-      "bolo_real_abr2026": 903684153098.73,
+      "bolo_nominal": 829514414782.24,
+      "bolo_real_2025": 906673404756.58,
       "pib_nominal": 10943344667905.0,
-      "bolo_pct_pib": 7.3633
+      "bolo_pct_pib": 7.5801
     },
     {
       "ano": 2024,
-      "bolo_nominal": 928106519815.92,
-      "bolo_real_abr2026": 992885650136.44,
+      "bolo_nominal": 954338315489.55,
+      "bolo_real_2025": 995034974553.8,
       "pib_nominal": 11779250581628.3,
-      "bolo_pct_pib": 7.8792
+      "bolo_pct_pib": 8.1019
     },
     {
       "ano": 2025,
-      "bolo_nominal": 951099375386.22,
-      "bolo_real_abr2026": 975868548928.95,
+      "bolo_nominal": 1029573688573.62,
+      "bolo_real_2025": 1029573688573.62,
       "pib_nominal": 12738565613881.1,
-      "bolo_pct_pib": 7.4663
-    },
-    {
-      "ano": 2026,
-      "bolo_nominal": 1016348789769.33,
-      "bolo_real_abr2026": 1016348789769.33,
-      "pib_nominal": 13022841200000.0,
-      "bolo_pct_pib": 7.8044
+      "bolo_pct_pib": 8.0823
     }
   ],
-  "projecao": [
-    {
-      "ano": 2027,
-      "base_tributavel_projetada": 6208130204524.9,
-      "bolo_nominal_congelado": 1016348789769.33,
-      "bolo_corrigido_ipca": 1063520866178.94,
-      "bolo_corrigido_pib": 1098839046200.91,
-      "aliquota_nominal_congelado": 16.3713,
-      "aliquota_corrigido_ipca": 17.1311,
-      "aliquota_corrigido_pib": 17.7
-    },
-    {
-      "ano": 2028,
-      "base_tributavel_projetada": 6712002750728.37,
-      "bolo_nominal_congelado": 1016348789769.33,
-      "bolo_corrigido_ipca": 1112882353168.07,
-      "bolo_corrigido_pib": 1188024486878.92,
-      "aliquota_nominal_congelado": 15.1423,
-      "aliquota_corrigido_ipca": 16.5805,
-      "aliquota_corrigido_pib": 17.7
-    },
-    {
-      "ano": 2029,
-      "base_tributavel_projetada": 7256771272765.67,
-      "bolo_nominal_congelado": 1016348789769.33,
-      "bolo_corrigido_ipca": 1164534868453.17,
-      "bolo_corrigido_pib": 1284448515279.52,
-      "aliquota_nominal_congelado": 14.0055,
-      "aliquota_corrigido_ipca": 16.0476,
-      "aliquota_corrigido_pib": 17.7
-    },
-    {
-      "ano": 2030,
-      "base_tributavel_projetada": 7845755024388.59,
-      "bolo_nominal_congelado": 1016348789769.33,
-      "bolo_corrigido_ipca": 1218584746161.79,
-      "bolo_corrigido_pib": 1388698639316.78,
-      "aliquota_nominal_congelado": 12.9541,
-      "aliquota_corrigido_ipca": 15.5318,
-      "aliquota_corrigido_pib": 17.7
-    },
-    {
-      "ano": 2031,
-      "base_tributavel_projetada": 8482542661050.25,
-      "bolo_nominal_congelado": 1016348789769.33,
-      "bolo_corrigido_ipca": 1275143255736.62,
-      "bolo_corrigido_pib": 1501410051005.9,
-      "aliquota_nominal_congelado": 11.9817,
-      "aliquota_corrigido_ipca": 15.0326,
-      "aliquota_corrigido_pib": 17.7
-    },
-    {
-      "ano": 2032,
-      "base_tributavel_projetada": 9171014105445.49,
-      "bolo_nominal_congelado": 1016348789769.33,
-      "bolo_corrigido_ipca": 1334326830999.66,
-      "bolo_corrigido_pib": 1623269496663.85,
-      "aliquota_nominal_congelado": 11.0822,
-      "aliquota_corrigido_ipca": 14.5494,
-      "aliquota_corrigido_pib": 17.7
-    },
-    {
-      "ano": 2033,
-      "base_tributavel_projetada": 9915364187731.23,
-      "bolo_nominal_congelado": 1016348789769.33,
-      "bolo_corrigido_ipca": 1396257309847.97,
-      "bolo_corrigido_pib": 1755019461228.43,
-      "aliquota_nominal_congelado": 10.2502,
-      "aliquota_corrigido_ipca": 14.0818,
-      "aliquota_corrigido_pib": 17.7
-    }
-  ],
-  "validade_bolo_fixo": {
-    "descricao": "Comparação entre o 'bolo' fixo em preços de 2025 usado nos Estudos 03 e 06 desta página (TotalBR_2025, sem correção) e o que a meta de proporcionalidade ao PIB do art. 130 do ADCT implicaria em 2033, sob duas janelas de crescimento real do PIB.",
-    "total_br_2025": 1029573688573.62,
-    "ano_terminal": 2033,
-    "g_real_2012_2021": 0.00439,
-    "g_real_2012_2021_fonte": "BCB/SGS série 7326 (variação real anual do PIB), média 2012-2021 — mesma janela do 'Teto de Referência' no art. 130, §3º, I e II, do ADCT",
-    "g_real_2022_2025": 0.029925,
-    "g_real_2022_2025_fonte": "BCB/SGS série 7326, média 2022-2025 (ritmo recente)",
-    "bolo_2033_flat": 1029573688573.62,
-    "bolo_2033_baixo": 1066292798665.59,
-    "bolo_2033_alto": 1303473591402.45
+  "resposta": {
+    "ano_base": 2025,
+    "bolo_base": 1029573688573.62,
+    "pib_base": 12738565613881.1,
+    "bolo_pct_pib_base": 8.0823,
+    "anos": [
+      {
+        "ano": 2029,
+        "bolo": 1029573688573.62,
+        "bolo_pct_pib": 8.0823
+      },
+      {
+        "ano": 2030,
+        "bolo": 1029573688573.62,
+        "bolo_pct_pib": 8.0823
+      },
+      {
+        "ano": 2031,
+        "bolo": 1029573688573.62,
+        "bolo_pct_pib": 8.0823
+      },
+      {
+        "ano": 2032,
+        "bolo": 1029573688573.62,
+        "bolo_pct_pib": 8.0823
+      },
+      {
+        "ano": 2033,
+        "bolo": 1029573688573.62,
+        "bolo_pct_pib": 8.0823
+      }
+    ]
   }
 }
