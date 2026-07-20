@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taxas de Juros — Notas de Aula | Eduardo Reis Araújo</title>
+    <meta name="description" content="Valor presente, rendimento até o vencimento, taxa corrente, rendimento de retorno e taxa real de Fisher.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/ensino/em-cap4-taxas-de-juros.html">
+    <meta property="og:title" content="Taxas de Juros — Notas de Aula | Eduardo Reis Araújo">
+    <meta property="og:description" content="Valor presente, rendimento até o vencimento, taxa corrente, rendimento de retorno e taxa real de Fisher.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/ensino/em-cap4-taxas-de-juros.html">
+    <meta property="og:image" content="https://www.eduardoreisaraujo.com.br/images/og-share.jpg">
+    <meta property="og:image:width" content="850">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Taxas de Juros — Notas de Aula | Eduardo Reis Araújo">
+    <meta name="twitter:description" content="Valor presente, rendimento até o vencimento, taxa corrente, rendimento de retorno e taxa real de Fisher.">
+    <meta name="twitter:image" content="https://www.eduardoreisaraujo.com.br/images/og-share.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/notas.css?v=3">
+    <link rel="stylesheet" href="/css/search.css">
+    <style>
+        :root { --em: #1d4ed8; }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <div class="header-right-group">
+                <nav class="header-nav">
+                    <a href="/#publicacoes">Publicações</a>
+                    <a href="/ensino/" class="active">Ensino</a>
+                    <a href="/#contato">Contato</a>
+                </nav>
+                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <section class="article-hero">
+        <a href="/ensino/" class="back-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Voltar às notas
+        </a>
+        <div class="unit-label" style="color: var(--em);">Economia Monetária · Capítulo 4</div>
+        <h1>Taxas de Juros</h1>
+        <p class="lead" style="border-left-color: var(--em);">A taxa de juros não é um número abstrato — é o preço do tempo. Medi-la corretamente exige distinguir rendimento, preço de mercado e horizonte do ativo.</p>
+        <div class="article-meta">
+            <span>Prof. Eduardo Araujo</span>
+            <span class="divider"></span>
+            <span>Mishkin, Cap. 4</span>
+            <span class="divider"></span>
+            <span>~20 min de leitura</span>
+            <div class="share-buttons">
+                <a href="#" class="share-btn" id="shareWhatsApp" aria-label="Compartilhar no WhatsApp">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    WhatsApp
+                </a>
+                <button class="share-btn" id="copyLink" aria-label="Copiar link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                    Copiar link
+                </button>
+            </div>
+        </div>
+    </section>
+    <div class="article-layout">
+        <div class="article-spacer"></div>
+        <article class="article-content">
+
+<h2 id="s1">Capítulo 4 de Mishkin, *The Economics of Money, Banking, and Financial Markets*</h2>
+<p>A taxa de juros é provavelmente o preço mais importante de uma economia de mercado. Ela determina o custo do crédito para empresas e famílias, influencia o valor de todos os ativos financeiros, orienta decisões de poupança e investimento e serve de instrumento central da política monetária. Mas "taxa de juros" não é um conceito único. Existem maneiras diferentes de calcular e expressar esse preço, e a escolha do método muda o número obtido. O capítulo 4 de Mishkin estabelece as bases conceituais para entender essas distinções e introduz a medida que, do ponto de vista econômico, é mais precisa.</p>
+
+<h2 id="s2">1. O valor presente e a lógica do desconto</h2>
+<p>O ponto de partida é um princípio simples: um dólar hoje vale mais do que um dólar no futuro. Isso não é apenas uma observação sobre preferências subjetivas. É uma consequência do fato de que um dólar disponível hoje pode ser investido e render juros durante o período até que o dólar futuro esteja disponível.</p>
+<p>O <strong>valor presente</strong> de um fluxo de caixa futuro é o valor que esse fluxo tem em termos de moeda de hoje. Para um pagamento único de $CF$ recebido daqui a $n$ períodos, com uma taxa de juros $i$, o valor presente é $CF / (1 + i)^n$. Quanto maior a taxa de juros e quanto mais distante o pagamento no tempo, menor é seu valor presente.</p>
+<p>Esse princípio se generaliza para qualquer sequência de pagamentos futuros. O valor de qualquer instrumento financeiro, seja ele um empréstimo bancário, um bond do governo ou uma debênture corporativa, pode ser calculado somando os valores presentes de todos os fluxos de caixa que ele promete. Essa é a lógica que unifica a análise de instrumentos aparentemente muito diferentes.</p>
+
+<h2 id="s3">2. Os tipos de instrumento de crédito</h2>
+<p>Mishkin distingue quatro tipos de instrumento de crédito com estruturas de pagamento distintas.</p>
+<p>O <strong>empréstimo simples</strong> é o mais intuitivo: o credor fornece um valor principal ao tomador, que o devolve acrescido de juros no vencimento. Os empréstimos comerciais de curto prazo operam frequentemente nesse formato.</p>
+<p>O <strong>empréstimo de pagamento fixo</strong> exige que o tomador faça pagamentos iguais e periódicos durante toda a vida do contrato. Cada pagamento inclui uma parcela de principal e uma parcela de juros, de modo que ao final do prazo a dívida está completamente liquidada. As hipotecas imobiliárias e os financiamentos de veículos funcionam assim.</p>
+<p>O <strong>título de cupom</strong> paga ao portador um valor fixo periodicamente, chamado de cupom, e devolve o valor de face no vencimento. Os bonds do Tesouro americano e as debêntures corporativas são exemplos. A taxa de cupom é o valor anual do cupom dividido pelo valor de face. Ela descreve o contrato original, mas não necessariamente o retorno que um comprador no mercado secundário vai obter.</p>
+<p>O <strong>título de desconto</strong> não paga nenhum fluxo intermediário. É vendido abaixo do valor de face e paga o valor de face no vencimento. O ganho do investidor é inteiramente a diferença entre o preço pago e o valor recebido. As letras do Tesouro americano, os chamados T-bills, são o exemplo mais conhecido.</p>
+
+<h2 id="s4">3. A taxa de retorno até o vencimento</h2>
+<p>A medida de taxa de juros que Mishkin considera mais adequada é a <strong>yield to maturity</strong>, geralmente traduzida como taxa de retorno até o vencimento ou simplesmente YTM. Ela é definida como a taxa de desconto que iguala o valor presente de todos os fluxos de caixa futuros do instrumento ao seu preço corrente de mercado.</p>
+<p>Para um empréstimo simples, a YTM coincide com a taxa de juros contratual. Para um bond de cupom, é preciso resolver uma equação que iguala o preço de mercado à soma dos valores presentes de todos os cupons futuros e do valor de face. O cálculo exige iteração numérica, mas o princípio é o mesmo do valor presente.</p>
+<p>A propriedade mais importante da YTM para fins de análise de política monetária é sua relação inversa com o preço do bond. Quando o preço de um bond sobe, a YTM cai. Quando o preço cai, a YTM sobe. Essa relação não é uma convenção: ela é uma consequência matemática da definição de valor presente. Se você paga mais por um fluxo de caixa fixo, sua taxa de retorno implícita é menor.</p>
+<p>Três casos especiais ajudam a calibrar a intuição. Se o preço de mercado de um bond de cupom é igual ao seu valor de face, então a YTM é igual à taxa de cupom. Se o preço está abaixo do valor de face, a YTM é maior do que a taxa de cupom. Se está acima, a YTM é menor. Esses casos especiais se seguem diretamente da álgebra do valor presente.</p>
+
+<h2 id="s5">4. Medidas alternativas e suas limitações</h2>
+<p>Além da YTM, existem outras medidas de taxa de juros que aparecem na prática financeira e que Mishkin examina criticamente.</p>
+<p>A <strong>taxa de desconto bancário</strong> é a convenção usada para cotar T-bills nos Estados Unidos. Ela calcula o desconto como fração do valor de face, não do preço pago. Isso produz um número sistematicamente menor do que a YTM correspondente. A diferença é pequena para prazos muito curtos, mas se torna relevante quando se comparam instrumentos com prazos diferentes ou quando se quer saber o verdadeiro retorno obtido pelo investidor.</p>
+<p>O <strong>rendimento corrente</strong> é uma aproximação da YTM obtida dividindo o cupom anual pelo preço corrente de mercado. Para bonds de prazo muito longo cujo preço está próximo do valor de face, essa aproximação é razoável. Para prazos mais curtos ou quando o preço se afasta significativamente do valor de face, a diferença pode ser substancial.</p>
+<p>Essas distinções não são meramente técnicas. Quando analistas financeiros ou jornalistas citam "a taxa de juros" de um título, é necessário saber qual das muitas medidas possíveis estão usando para avaliar se o número é comparável a outros que aparecem no contexto.</p>
+
+<h2 id="s6">5. Taxa de retorno e risco de taxa de juros</h2>
+<p>A YTM mede o retorno que um investidor obtém se mantiver o bond até o vencimento. Mas o que acontece se ele precisar vender antes? A <strong>taxa de retorno</strong> de um período captura esse caso. Ela é a soma do rendimento corrente com o ganho ou a perda de capital obtida durante o período em que o bond foi mantido.</p>
+<p>Para bonds de longo prazo, a variação de preço pode dominar completamente o rendimento do cupom. Um bond com vinte anos de prazo é muito mais sensível a variações nas taxas de juros do que um bond com dois anos de prazo. Se as taxas de juros sobem inesperadamente, um investidor que mantém bonds longos pode sofrer perdas de capital que superam em muito os cupons recebidos durante o período.</p>
+<p>Esse fenômeno define o <strong>risco de taxa de juros</strong>: a volatilidade dos retornos causada por variações nas taxas de juros de mercado. O risco de taxa de juros é crescente com o prazo do instrumento. Essa é uma razão importante pela qual investidores conservadores tendem a preferir instrumentos de prazo mais curto, mesmo que aceitem retornos menores em troca de menor volatilidade.</p>
+
+<h2 id="s7">6. Taxa nominal e taxa real</h2>
+<p>Uma última distinção fundamental é entre a taxa de juros nominal e a taxa de juros real. A taxa nominal é o número que aparece nos contratos e é observável diretamente no mercado. A taxa real é a taxa nominal descontada da inflação esperada.</p>
+<p>A relação entre as duas é conhecida como <strong>efeito Fisher</strong>: a taxa nominal é aproximadamente igual à taxa real mais a inflação esperada. Se os credores esperam inflação de quatro por cento ao ano, eles exigirão taxas nominais correspondentemente mais altas para manter seu retorno em termos reais. Do mesmo modo, tomadores aceitam pagar taxas nominais mais altas quando esperam que a inflação reduza o valor real de suas dívidas futuras.</p>
+<p>O efeito Fisher tem implicações diretas para a política monetária. O banco central controla diretamente a taxa de juros nominal de curto prazo. Mas as decisões de investimento das empresas dependem da taxa real: uma empresa que avalia um projeto não se preocupa com o valor nominal dos juros que pagará, mas com quanto desses juros representam em poder de compra. Quando a inflação esperada é alta e instável, a taxa real se torna difícil de estimar, e o custo efetivo do crédito fica obscuro para tomadores e credores. Essa incerteza tem custos reais para a alocação de recursos na economia.</p>
+
+            <div class="article-reference">
+                <strong>Referência</strong><br><br>
+                <span>Mishkin, Frederic S. <em>The Economics of Money, Banking, and Financial Markets</em>, capítulo 4. 12ª ed.</span>
+            </div>
+
+            <nav class="unit-nav">
+                <a href="/ensino/em-cap3-moeda.html" class="prev">
+                    <span class="nav-label">← Anterior</span>
+                    <span class="nav-title">Cap. 3: O que é Dinheiro?</span>
+                </a>
+                <a href="/ensino/em-cap5-comportamento-taxas-juros.html" class="next">
+                    <span class="nav-label">Próximo →</span>
+                    <span class="nav-title">Cap. 5: O Comportamento das Taxas de Juros</span>
+                </a>
+            </nav>
+        </article>
+        <aside class="toc" id="toc">
+            <div class="toc-title">Neste capítulo</div>
+            <button class="toc-toggle" id="tocToggle" aria-expanded="false">
+                Neste capítulo
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="toc-links" id="tocLinks">
+                <a href="#s1" data-section="s1">Capítulo 4 de Mishkin, *The Economics of Money, Banking, and Financial Markets*</a>
+                <a href="#s2" data-section="s2">1. O valor presente e a lógica do desconto</a>
+                <a href="#s3" data-section="s3">2. Os tipos de instrumento de crédito</a>
+                <a href="#s4" data-section="s4">3. A taxa de retorno até o vencimento</a>
+                <a href="#s5" data-section="s5">4. Medidas alternativas e suas limitações</a>
+                <a href="#s6" data-section="s6">5. Taxa de retorno e risco de taxa de juros</a>
+                <a href="#s7" data-section="s7">6. Taxa nominal e taxa real</a>
+            </div>
+        </aside>
+    </div>
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+    <script>
+        var progressBar = document.getElementById('progressBar');
+        function updateProgress() {
+            var scrollTop = window.scrollY;
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            progressBar.style.width = progress + '%';
+        }
+        var tocLinkEls = document.querySelectorAll('.toc a');
+        var sects = [];
+        tocLinkEls.forEach(function(link) {
+            var id = link.getAttribute('data-section');
+            var el = document.getElementById(id);
+            if (el) sects.push({ el: el, link: link });
+        });
+        function updateToc() {
+            var current = sects[0];
+            var scrollPos = window.scrollY + 130;
+            for (var i = 0; i < sects.length; i++) {
+                if (sects[i].el.offsetTop <= scrollPos) current = sects[i];
+            }
+            tocLinkEls.forEach(function(l) { l.classList.remove('active'); });
+            if (current) current.link.classList.add('active');
+        }
+        window.addEventListener('scroll', function() { updateProgress(); updateToc(); });
+        updateProgress(); updateToc();
+        var tocToggle = document.getElementById('tocToggle');
+        var tocLinksContainer = document.getElementById('tocLinks');
+        if (tocToggle && tocLinksContainer) {
+            tocToggle.addEventListener('click', function() {
+                var isOpen = tocToggle.classList.toggle('open');
+                tocLinksContainer.classList.toggle('open');
+                tocToggle.setAttribute('aria-expanded', isOpen);
+            });
+        }
+        var shareWA = document.getElementById('shareWhatsApp');
+        if (shareWA) {
+            shareWA.addEventListener('click', function(e) {
+                e.preventDefault();
+                var text = document.title + ' ' + window.location.href;
+                window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+            });
+        }
+        var copyBtn = document.getElementById('copyLink');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', function() {
+                navigator.clipboard.writeText(window.location.href).then(function() {
+                    copyBtn.classList.add('copied');
+                    var svgEl = copyBtn.querySelector('svg').outerHTML;
+                    copyBtn.innerHTML = svgEl + ' Copiado!';
+                    setTimeout(function() {
+                        copyBtn.innerHTML = svgEl + ' Copiar link';
+                        copyBtn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        }
+    </script>
+    <script src="/js/search.js"></script>
+</body>
+</html>

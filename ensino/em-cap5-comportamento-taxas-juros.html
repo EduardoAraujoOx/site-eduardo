@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Comportamento das Taxas de Juros — Notas de Aula | Eduardo Reis Araújo</title>
+    <meta name="description" content="Oferta e demanda de bonds, efeito Fisher, preferência pela liquidez e determinantes das taxas de juros.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/ensino/em-cap5-comportamento-taxas-juros.html">
+    <meta property="og:title" content="O Comportamento das Taxas de Juros — Notas de Aula | Eduardo Reis Araújo">
+    <meta property="og:description" content="Oferta e demanda de bonds, efeito Fisher, preferência pela liquidez e determinantes das taxas de juros.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/ensino/em-cap5-comportamento-taxas-juros.html">
+    <meta property="og:image" content="https://www.eduardoreisaraujo.com.br/images/og-share.jpg">
+    <meta property="og:image:width" content="850">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="O Comportamento das Taxas de Juros — Notas de Aula | Eduardo Reis Araújo">
+    <meta name="twitter:description" content="Oferta e demanda de bonds, efeito Fisher, preferência pela liquidez e determinantes das taxas de juros.">
+    <meta name="twitter:image" content="https://www.eduardoreisaraujo.com.br/images/og-share.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/notas.css?v=3">
+    <link rel="stylesheet" href="/css/search.css">
+    <style>
+        :root { --em: #1d4ed8; }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <div class="header-right-group">
+                <nav class="header-nav">
+                    <a href="/#publicacoes">Publicações</a>
+                    <a href="/ensino/" class="active">Ensino</a>
+                    <a href="/#contato">Contato</a>
+                </nav>
+                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <section class="article-hero">
+        <a href="/ensino/" class="back-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Voltar às notas
+        </a>
+        <div class="unit-label" style="color: var(--em);">Economia Monetária · Capítulo 5</div>
+        <h1>O Comportamento das Taxas de Juros</h1>
+        <p class="lead" style="border-left-color: var(--em);">O nível das taxas de juros não é arbitrário — ele emerge da interação entre quem quer emprestar e quem quer tomar emprestado, e se move quando as expectativas ou as condições macroeconômicas mudam.</p>
+        <div class="article-meta">
+            <span>Prof. Eduardo Araujo</span>
+            <span class="divider"></span>
+            <span>Mishkin, Cap. 5</span>
+            <span class="divider"></span>
+            <span>~22 min de leitura</span>
+            <div class="share-buttons">
+                <a href="#" class="share-btn" id="shareWhatsApp" aria-label="Compartilhar no WhatsApp">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    WhatsApp
+                </a>
+                <button class="share-btn" id="copyLink" aria-label="Copiar link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                    Copiar link
+                </button>
+            </div>
+        </div>
+    </section>
+    <div class="article-layout">
+        <div class="article-spacer"></div>
+        <article class="article-content">
+
+<h2 id="s1">Capítulo 5 de Mishkin, *The Economics of Money, Banking, and Financial Markets*</h2>
+<p>O capítulo anterior estabeleceu como medir a taxa de juros. Este capítulo passa a uma pergunta diferente: o que determina o nível das taxas de juros e por que elas sobem e descem? A resposta exige um modelo de oferta e demanda aplicado aos mercados financeiros. Mishkin apresenta dois frameworks alternativos que, corretamente interpretados, chegam às mesmas conclusões sobre os determinantes das taxas.</p>
+
+<h2 id="s2">1. Os determinantes da demanda por ativos</h2>
+<p>Antes de analisar o mercado de bonds especificamente, é útil identificar os fatores gerais que determinam a demanda por qualquer ativo financeiro.</p>
+<p>A <strong>riqueza</strong> é o primeiro fator. Quando a riqueza total das famílias aumenta, elas destinam mais recursos a ativos financeiros, incluindo bonds. O efeito é direto: mais riqueza, mais demanda por bonds, tudo o mais constante.</p>
+<p>O <strong>retorno esperado</strong> relativo é o segundo. Um investidor escolhe entre diferentes ativos comparando seus retornos esperados. Se o retorno esperado de bonds sobe em relação ao de ações ou imóveis, a demanda por bonds aumenta. Mas o que importa é o retorno relativo, não o absoluto: um aumento geral nos retornos de todos os ativos não necessariamente desloca a demanda para nenhum deles em particular.</p>
+<p>O <strong>risco</strong> relativo é o terceiro fator, com sinal oposto ao do retorno. Investidores avessos ao risco preferem ativos com menor volatilidade de retorno. Se os bonds ficam relativamente mais arriscados em comparação com outros ativos, sua demanda cai. Se ficam relativamente mais seguros, sua demanda sobe.</p>
+<p>A <strong>liquidez</strong> relativa é o quarto fator. Ativos mais líquidos são preferidos porque podem ser convertidos em outros bens e serviços com menor custo e mais rapidez. Melhorias na liquidez do mercado secundário de bonds elevam sua demanda.</p>
+
+<h2 id="s3">2. O mercado de bonds: oferta, demanda e equilíbrio</h2>
+<p>Mishkin analisa o mercado de bonds como qualquer outro mercado, com uma curva de oferta e uma de demanda, cujo cruzamento determina o preço de equilíbrio e, consequentemente, a taxa de juros.</p>
+<p>A <strong>curva de demanda de bonds</strong> tem inclinação negativa no espaço em que o eixo horizontal mede a quantidade de bonds e o eixo vertical mede o preço: quando o preço dos bonds sobe, a quantidade demandada cai. Há outra forma de apresentar a mesma relação que é talvez mais intuitiva: no espaço em que o eixo vertical mede a taxa de juros, a demanda tem inclinação positiva, porque quando a taxa de juros sobe o bond fica mais atrativo do ponto de vista do retorno esperado.</p>
+<p>A <strong>curva de oferta de bonds</strong> vem dos emissores: empresas e governos que se financiam emitindo dívida. Quando o preço dos bonds é mais alto, o custo efetivo de emitir dívida é menor, então os emissores oferecem mais bonds. No espaço em que o eixo vertical mede a taxa de juros, a oferta de bonds tem inclinação negativa: taxas mais altas encarecem o financiamento e reduzem a quantidade ofertada.</p>
+<p>O equilíbrio é o ponto em que a oferta e a demanda se igualam. A taxa de juros de equilíbrio não é fixada por nenhuma autoridade: ela emerge da interação entre as decisões de quem quer emprestar e de quem quer tomar emprestado.</p>
+
+<h2 id="s4">3. Deslocamentos da demanda de bonds</h2>
+<p>Os quatro fatores identificados na seção anterior afetam a posição da curva de demanda de bonds, não apenas o movimento ao longo dela.</p>
+<p>Uma expansão econômica aumenta a riqueza das famílias e desloca a demanda de bonds para a direita: para qualquer preço ou taxa de juros, há mais compradores. O efeito sobre a taxa de equilíbrio é uma queda.</p>
+<p>Uma elevação da inflação esperada reduz o retorno real esperado dos bonds e desloca a demanda para a esquerda. Isso eleva a taxa de juros de equilíbrio, um resultado que Mishkin chama de efeito Fisher pelo lado da demanda.</p>
+<p>Se os bonds se tornam mais arriscados em relação a outros ativos, por exemplo porque a volatilidade do mercado de bonds aumenta ou porque a percepção de risco de crédito dos emissores piora, a demanda cai e a taxa de juros sobe. O oposto ocorre quando crises em outros mercados tornam os bonds relativamente mais seguros: a chamada "fuga para a qualidade" desloca a demanda para bonds governamentais, elevando seus preços e reduzindo suas taxas.</p>
+
+<h2 id="s5">4. Deslocamentos da oferta de bonds</h2>
+<p>A oferta de bonds também se desloca em resposta a condições econômicas.</p>
+<p>Quando as perspectivas de investimento melhoram, empresas emitem mais dívida para financiar projetos. Isso desloca a oferta para a direita e eleva a taxa de juros de equilíbrio. Durante expansões econômicas, portanto, tanto a oferta quanto a demanda de bonds tendem a aumentar, e o efeito líquido sobre as taxas depende de qual deslocamento domina.</p>
+<p>O aumento do déficit público eleva a oferta de bonds governamentais, com o mesmo efeito de pressão para cima nas taxas. Esse mecanismo está no centro dos debates sobre sustentabilidade fiscal: déficits persistentes financiados por emissão de dívida tendem a elevar as taxas de juros e a deslocar o investimento privado, fenômeno conhecido como efeito <em>crowding out</em>.</p>
+<p>A inflação esperada afeta também a oferta de bonds: quando os tomadores esperam que a inflação reduza o valor real de suas dívidas futuras, o incentivo para emitir dívida nominal aumenta. Isso desloca a oferta para a direita e contribui adicionalmente para a elevação das taxas nominais.</p>
+
+<h2 id="s6">5. O efeito Fisher revisitado</h2>
+<p>A combinação dos deslocamentos de oferta e demanda causados pela inflação esperada produz um resultado claro: quando a inflação esperada sobe, a taxa de juros nominal tende a subir proporcionalmente. Do lado da demanda, os credores exigem taxas mais altas para compensar a perda de poder de compra esperada. Do lado da oferta, os tomadores aceitam pagar taxas nominais mais altas porque o custo real da dívida ficará menor. Os dois efeitos empurram a taxa nominal na mesma direção.</p>
+<p>Esse é o <strong>efeito Fisher</strong> completo: um aumento de um ponto percentual na inflação esperada tende a elevar a taxa de juros nominal em um ponto percentual, mantendo a taxa real aproximadamente constante. Na prática, a relação não é exata, porque a transmissão das expectativas para as taxas de mercado é gradual e depende da credibilidade da política monetária. Mas a direção do efeito é robusta e está bem documentada empiricamente.</p>
+
+<h2 id="s7">6. O framework da preferência pela liquidez</h2>
+<p>Keynes propôs uma abordagem alternativa para determinar a taxa de juros de curto prazo que analisa o mercado de moeda em vez do mercado de bonds. No modelo de preferência pela liquidez, a taxa de juros é o preço que equilibra a oferta e a demanda de moeda.</p>
+<p>A demanda de moeda depende negativamente da taxa de juros. Quando a taxa sobe, o custo de oportunidade de manter moeda aumenta, porque o portador abre mão de um rendimento cada vez maior ao manter ativos sem rendimento. A demanda de moeda também depende positivamente da renda: quando a renda cresce, as pessoas precisam de mais moeda para realizar transações.</p>
+<p>A oferta de moeda é fixada pelo banco central, pelo menos em primeira aproximação. Isso torna a curva de oferta de moeda vertical no espaço que coloca taxa de juros no eixo vertical e quantidade de moeda no horizontal.</p>
+<p>O equilíbrio no mercado de moeda determina a taxa de juros de curto prazo. Uma expansão da oferta de moeda desloca a curva de oferta para a direita, reduz a taxa de juros e estimula o investimento: é o <strong>efeito liquidez</strong>. Mas esse é apenas o impacto inicial. No médio prazo, a expansão monetária tende a elevar a renda e o nível de preços, o que aumenta a demanda de moeda e empurra a taxa de volta para cima. No longo prazo, a inflação gerada pela expansão monetária eleva as expectativas inflacionárias, e o efeito Fisher se manifesta: a taxa nominal pode acabar mais alta do que estava antes da expansão.</p>
+<p>O resultado depende de quais efeitos dominam e em que sequência temporal. Essa ambiguidade é empiricamente relevante e tem implicações diretas para a condução da política monetária. Uma autoridade monetária que expande a oferta de moeda esperando reduzir duravelmente as taxas de juros pode estar alimentando, no longo prazo, exatamente o oposto do que deseja. Esse paradoxo permanece no centro dos debates sobre eficácia e limites da política monetária.</p>
+
+            <div class="article-reference">
+                <strong>Referência</strong><br><br>
+                <span>Mishkin, Frederic S. <em>The Economics of Money, Banking, and Financial Markets</em>, capítulo 5. 12ª ed.</span>
+            </div>
+
+            <nav class="unit-nav">
+                <a href="/ensino/em-cap4-taxas-de-juros.html" class="prev">
+                    <span class="nav-label">← Anterior</span>
+                    <span class="nav-title">Cap. 4: Taxas de Juros</span>
+                </a>
+                <a href="/ensino/em-cap14-bancos-centrais.html" class="next">
+                    <span class="nav-label">Próximo →</span>
+                    <span class="nav-title">Cap. 14: Bancos Centrais e Política Monetária</span>
+                </a>
+            </nav>
+        </article>
+        <aside class="toc" id="toc">
+            <div class="toc-title">Neste capítulo</div>
+            <button class="toc-toggle" id="tocToggle" aria-expanded="false">
+                Neste capítulo
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="toc-links" id="tocLinks">
+                <a href="#s1" data-section="s1">Capítulo 5 de Mishkin, *The Economics of Money, Banking, and Financial Markets*</a>
+                <a href="#s2" data-section="s2">1. Os determinantes da demanda por ativos</a>
+                <a href="#s3" data-section="s3">2. O mercado de bonds: oferta, demanda e equilíbrio</a>
+                <a href="#s4" data-section="s4">3. Deslocamentos da demanda de bonds</a>
+                <a href="#s5" data-section="s5">4. Deslocamentos da oferta de bonds</a>
+                <a href="#s6" data-section="s6">5. O efeito Fisher revisitado</a>
+                <a href="#s7" data-section="s7">6. O framework da preferência pela liquidez</a>
+            </div>
+        </aside>
+    </div>
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+    <script>
+        var progressBar = document.getElementById('progressBar');
+        function updateProgress() {
+            var scrollTop = window.scrollY;
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            progressBar.style.width = progress + '%';
+        }
+        var tocLinkEls = document.querySelectorAll('.toc a');
+        var sects = [];
+        tocLinkEls.forEach(function(link) {
+            var id = link.getAttribute('data-section');
+            var el = document.getElementById(id);
+            if (el) sects.push({ el: el, link: link });
+        });
+        function updateToc() {
+            var current = sects[0];
+            var scrollPos = window.scrollY + 130;
+            for (var i = 0; i < sects.length; i++) {
+                if (sects[i].el.offsetTop <= scrollPos) current = sects[i];
+            }
+            tocLinkEls.forEach(function(l) { l.classList.remove('active'); });
+            if (current) current.link.classList.add('active');
+        }
+        window.addEventListener('scroll', function() { updateProgress(); updateToc(); });
+        updateProgress(); updateToc();
+        var tocToggle = document.getElementById('tocToggle');
+        var tocLinksContainer = document.getElementById('tocLinks');
+        if (tocToggle && tocLinksContainer) {
+            tocToggle.addEventListener('click', function() {
+                var isOpen = tocToggle.classList.toggle('open');
+                tocLinksContainer.classList.toggle('open');
+                tocToggle.setAttribute('aria-expanded', isOpen);
+            });
+        }
+        var shareWA = document.getElementById('shareWhatsApp');
+        if (shareWA) {
+            shareWA.addEventListener('click', function(e) {
+                e.preventDefault();
+                var text = document.title + ' ' + window.location.href;
+                window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+            });
+        }
+        var copyBtn = document.getElementById('copyLink');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', function() {
+                navigator.clipboard.writeText(window.location.href).then(function() {
+                    copyBtn.classList.add('copied');
+                    var svgEl = copyBtn.querySelector('svg').outerHTML;
+                    copyBtn.innerHTML = svgEl + ' Copiado!';
+                    setTimeout(function() {
+                        copyBtn.innerHTML = svgEl + ' Copiar link';
+                        copyBtn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        }
+    </script>
+    <script src="/js/search.js"></script>
+</body>
+</html>
