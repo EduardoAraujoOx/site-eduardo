@@ -28,6 +28,26 @@
     <link rel="stylesheet" href="/css/search.css">
     <style>
         :root { --em: #1d4ed8; }
+        .concept-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--em);
+            padding: 1rem 1.25rem;
+            margin: 1.75rem 0;
+            border-radius: 0 6px 6px 0;
+        }
+        .concept-box .concept-label {
+            font-weight: 700;
+            color: var(--em);
+            margin: 0 0 0.4rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .concept-box p {
+            margin: 0;
+            font-style: italic;
+            line-height: 1.55;
+        }
     </style>
 </head>
 <body>
@@ -81,11 +101,10 @@
         <article class="article-content">
 
 <h2 id="s1">Capítulo 2 de Mishkin, *The Economics of Money, Banking, and Financial Markets*</h2>
-<p>Este capítulo abre a disciplina de Economia Monetária porque o sistema financeiro é a estrutura sobre a qual toda a política monetária opera. Antes de perguntar como o Banco Central influencia a economia, é preciso entender como os recursos circulam entre quem poupa e quem investe, e por que a maior parte desse fluxo passa por bancos em vez de ocorrer diretamente entre as partes. Sem essa base, não é possível compreender por que uma variação na Selic se propaga para o crédito, o consumo e o investimento, assunto dos capítulos seguintes.</p>
 <p>Uma economia de mercado produz continuamente uma separação que, à primeira vista, parece paradoxal: as pessoas e empresas com as melhores oportunidades de investimento frequentemente não são as mesmas que dispõem de recursos para financiá-las. O agricultor que enxerga uma expansão rentável não tem o capital para executá-la. A startup tecnológica que desenvolveu um produto promissor precisa de recursos que estão dispersos entre milhares de poupadores. O sistema financeiro existe para resolver esse problema de coordenação, e a qualidade com que o resolve tem consequências diretas sobre o crescimento econômico e o bem-estar.</p>
-<p>O capítulo 2 de Mishkin começa com essa função central: os mercados financeiros canalizam fundos de agentes com superávit, que pouparam mais do que gastam, para agentes com déficit, que desejam gastar além de sua renda corrente. Essa transferência pode ocorrer por dois caminhos distintos.</p>
-
-<h2 id="s2">1. Financiamento direto e financiamento indireto</h2>
+<p>Mais do que uma introdução institucional, o capítulo 2 estabelece a lógica que vai sustentar toda a disciplina: o sistema financeiro é a correia de transmissão da política monetária. Quando o Banco Central do Brasil sobe a Selic, o efeito sobre a inflação e o emprego não é direto. Ele passa pelo sistema financeiro, que encarece o crédito, desestimula o investimento e restringe o consumo. Entender como esse sistema funciona é o pré-requisito para entender como a política monetária age.</p>
+<p><div class="concept-box"><p class="concept-label">A função do sistema financeiro O sistema financeiro existe para resolver um problema de informação: poupadores não sabem quem são os bons tomadores, e os bons tomadores não conseguem credenciar-se sozinhos. O valor de um intermediário financeiro está precisamente na sua capacidade de resolver essa assimetria de forma escalável e barata. :::</p></p><p><h2 id="s2">1. Financiamento direto e financiamento indireto</h2>
+<p>O capítulo começa com a função central do sistema: os mercados financeiros canalizam fundos de agentes com superávit, que pouparam mais do que gastam, para agentes com déficit, que desejam gastar além de sua renda corrente. Essa transferência pode ocorrer por dois caminhos distintos.</p>
 <p>No <strong>financiamento direto</strong>, os tomadores emitem títulos, como ações ou bonds, que os poupadores adquirem diretamente nos mercados financeiros. Um bond é uma promessa de pagamentos futuros, representando um passivo para quem emite e um ativo para quem compra. Uma ação confere ao portador uma participação nos lucros e nos ativos da empresa, mas sem prazo de vencimento e sem promessa de pagamento fixo.</p>
 <p>No <strong>financiamento indireto</strong>, um intermediário financeiro se interpõe entre poupadores e tomadores. O banco capta recursos de quem poupa, oferecendo depósitos com liquidez e baixo risco, e os repassa como empréstimos a empresas e famílias. Esse rearranjo cria ativos com características que poupadores individuais dificilmente conseguiriam obter negociando diretamente com tomadores.</p>
 <p>A distinção entre os dois canais não é apenas descritiva. Ela tem implicações sobre quem suporta o risco, sobre quais projetos conseguem financiamento e sobre a eficiência com que os recursos são alocados na economia.</p>
@@ -93,46 +112,33 @@
 <h2 id="s3">2. A estrutura dos mercados financeiros</h2>
 <p>Os mercados financeiros podem ser organizados segundo critérios diferentes, e cada critério revela algo sobre o funcionamento do sistema.</p>
 <p>A primeira distinção é entre <strong>mercado primário</strong> e <strong>mercado secundário</strong>. O mercado primário é onde novos títulos são criados: quando o governo emite bonds ou quando uma empresa faz uma oferta pública de ações, o emissor recebe os recursos diretamente. O mercado secundário é onde esses títulos são negociados depois de emitidos. O emissor não participa dessas transações subsequentes, mas elas são essenciais porque tornam os títulos líquidos. Um poupador que compra um bond de dez anos só aceita comprometê-lo se souber que pode vendê-lo antes do vencimento, se necessário. A liquidez do mercado secundário é, portanto, condição para o funcionamento do mercado primário.</p>
-
-<div class="concept-box" style="border-left-color: var(--em);">
-    <p class="concept-label">Liquidez não é luxo</p>
-    <p>Ninguém compraria um título de dez anos sem poder revendê-lo amanhã. O mercado secundário não é um apêndice do mercado primário. É a condição sem a qual o mercado primário simplesmente não existiria.</p>
-</div>
-<p>A segunda distinção é entre <strong>mercado monetário</strong> e <strong>mercado de capitais</strong>. O mercado monetário negocia instrumentos de dívida com prazo inferior a um ano, como as letras do Tesouro americano, os certificados de depósito e o <em>commercial paper</em> emitido por grandes empresas. Esses ativos têm menor risco de taxa de juros porque seu prazo é curto e seu preço flutua pouco. O mercado de capitais negocia instrumentos de prazo mais longo, incluindo bonds governamentais, debêntures corporativas e ações. A rentabilidade esperada tende a ser maior, mas a volatilidade de preço também.</p>
+<p>A segunda distinção é entre <strong>mercado monetário</strong> e <strong>mercado de capitais</strong>. O mercado monetário negocia instrumentos de dívida com prazo inferior a um ano. Esses ativos têm menor risco de taxa de juros porque seu prazo é curto e seu preço flutua pouco. O mercado de capitais negocia instrumentos de prazo mais longo, incluindo bonds governamentais, debêntures corporativas e ações. A rentabilidade esperada tende a ser maior, mas a volatilidade de preço também.</p>
 <p>A terceira distinção é entre bolsas de valores organizadas, com negociação centralizada, e os mercados de balcão, onde <em>dealers</em> em diferentes localidades negociam bilateralmente. O mercado americano de bonds do governo opera predominantemente no formato de balcão, enquanto as ações são negociadas em bolsas como a NYSE e a Nasdaq.</p>
 
 <h2 id="s4">3. Por que existem intermediários financeiros</h2>
 <p>Se os mercados financeiros permitem que poupadores e tomadores se encontrem, a pergunta natural é por que a maior parte do financiamento passa por intermediários. A resposta envolve três problemas que os mercados diretos resolvem com dificuldade.</p>
 <p>O primeiro é o custo de transação. Negociar diretamente um empréstimo exige tempo, conhecimento jurídico e capacidade de avaliar riscos. Para um poupador individual, esses custos podem ser proibitivos quando comparados ao retorno esperado. Os intermediários têm economias de escala: ao reunir recursos de milhares de clientes, diluem esses custos e tornam disponíveis instrumentos financeiros que poupadores individuais não conseguiriam criar por conta própria.</p>
-<p>O segundo é o compartilhamento de risco. Um banco que empresta a centenas de tomadores simultaneamente consegue diversificar sua carteira. Cada depositante individual, ao colocar recursos no banco, acaba indiretamente participando de um portfólio muito mais diversificado do que poderia montar sozinho. O intermediário transforma ativos arriscados em passivos mais seguros para os depositantes.</p>
-<p>O terceiro é a assimetria de informação. Quem toma empréstimos sempre sabe mais sobre sua própria situação financeira do que quem empresta. Essa assimetria cria dois problemas centrais: a <strong>seleção adversa</strong>, que ocorre antes da transação quando tomadores de maior risco têm mais incentivo a buscar crédito, e o <strong>risco moral</strong>, que ocorre depois quando o tomador pode mudar seu comportamento sabendo que o custo do fracasso recai parcialmente sobre o credor. Os intermediários financeiros desenvolvem expertise para avaliar mutuários, monitorar contratos e mitigar esses problemas de uma forma que poupadores individuais não conseguiriam fazer.</p>
-
-<div class="concept-box" style="border-left-color: var(--em);">
-    <p class="concept-label">Dois problemas, dois remédios</p>
-    <p>Seleção adversa é o problema de saber quem está pedindo o empréstimo, antes de concedê-lo. Risco moral é o problema de saber o que ele fará depois de recebê-lo. O primeiro exige triagem; o segundo exige monitoramento. É por dominar as duas tarefas que o banco substitui o credor individual.</p>
-</div>
+<p>O segundo é o compartilhamento de risco. Um banco que empresta a centenas de tomadores simultaneamente consegue diversificar sua carteira. Cada depositante individual, ao colocar recursos no banco, acaba indiretamente participando de um portfólio muito mais diversificado do que poderia montar sozinho.</p>
+<p></p></div>concept Assimetria de informação: o problema que organiza o sistema financeiro A <strong>seleção adversa</strong> ocorre antes da transação: tomadores de maior risco têm mais incentivo a buscar crédito. O <strong>risco moral</strong> ocorre depois: o tomador pode mudar seu comportamento sabendo que parte do custo do fracasso recai sobre o credor. Os intermediários financeiros existem, em grande medida, para mitigar esses dois problemas de forma que poupadores individuais não poderiam. :::</p>
+<p>O terceiro é a assimetria de informação. Quem toma empréstimos sempre sabe mais sobre sua própria situação financeira do que quem empresta. Os intermediários financeiros desenvolvem expertise para avaliar mutuários, monitorar contratos e mitigar esses problemas. A qualidade dessa expertise determina tanto a eficiência do sistema quanto sua estabilidade.</p>
 
 <h2 id="s5">4. Os tipos de intermediários</h2>
-<p>Os intermediários financeiros se organizam em categorias com lógicas diferentes de captação e aplicação.</p>
-<p>As <strong>instituições depositárias</strong>, os bancos na linguagem comum, captam depósitos à vista e a prazo e fazem empréstimos a empresas e famílias. Sua característica central é transformar passivos de curto prazo, os depósitos, em ativos de longo prazo, os empréstimos. Essa transformação de maturidade é a origem de sua vulnerabilidade a corridas bancárias, mas também é a razão de sua utilidade econômica. É também o mecanismo, estudado com mais detalhe no capítulo sobre a oferta de moeda, pelo qual o sistema bancário cria moeda ao emprestar parte dos depósitos que recebe.</p>
-
-<div class="concept-box" style="border-left-color: var(--em);">
-    <p class="concept-label">O que o banco realmente faz</p>
-    <p>O banco não guarda o seu dinheiro. Ele o transforma: recebe depósitos resgatáveis a qualquer momento e os converte em empréstimos de longo prazo para a casa, a fábrica, a safra. Essa transformação é ao mesmo tempo a fonte da fragilidade bancária e a razão de sua utilidade econômica.</p>
-</div>
-<p>As <strong>instituições de poupança contratual</strong>, como seguradoras de vida e fundos de pensão, captam recursos por meio de contratos de longo prazo e os aplicam predominantemente em ativos de prazo mais longo. Sua estrutura de passivos é mais previsível do que a dos bancos, o que lhes permite assumir compromissos de longo prazo com os aplicadores.</p>
-<p>Os <strong>intermediários de investimento</strong>, como fundos mútuos e fundos do mercado monetário, agregam recursos de muitos investidores e os aplicam em portfólios diversificados, transferindo ao investidor o benefício da diversificação sem exigir que ele disponha do capital necessário para montar esse portfólio individualmente.</p>
+<p>As <strong>instituições depositárias</strong> captam depósitos à vista e a prazo e fazem empréstimos a empresas e famílias. Sua característica central é transformar passivos de curto prazo, os depósitos, em ativos de longo prazo, os empréstimos. Essa transformação de maturidade é a origem de sua vulnerabilidade a corridas bancárias, mas também a razão de sua utilidade econômica.</p>
+<p>As <strong>instituições de poupança contratual</strong>, como seguradoras de vida e fundos de pensão, captam recursos por meio de contratos de longo prazo. Sua estrutura de passivos é mais previsível do que a dos bancos, o que lhes permite assumir compromissos de longo prazo com os aplicadores.</p>
+<p>Os <strong>intermediários de investimento</strong>, como fundos mútuos, agregam recursos de muitos investidores e os aplicam em portfólios diversificados, transferindo ao investidor o benefício da diversificação sem exigir capital suficiente para montar esse portfólio individualmente.</p>
 
 <h2 id="s6">5. Regulação e falha de mercado</h2>
 <p>O sistema financeiro é um dos setores mais regulados das economias modernas, e essa intensidade regulatória tem razões econômicas precisas.</p>
-<p>A <strong>assimetria de informação</strong> é a primeira delas. Investidores e depositantes individuais frequentemente não têm condições de avaliar a solidez dos intermediários com quem lidam. A regulação responde a esse problema exigindo divulgação de informações, estabelecendo padrões contábeis e limitando certos tipos de operação. Nos Estados Unidos, a SEC exige que empresas de capital aberto divulguem regularmente sua situação financeira, reduzindo a vantagem informacional dos <em>insiders</em>.</p>
-<p>O <strong>risco sistêmico</strong> é a segunda razão. O sistema bancário é interconectado, e a falência de um banco pode deflagrar uma cadeia de problemas que afeta outros bancos e a economia como um todo. O seguro de depósitos, administrado pelo FDIC nos Estados Unidos, reduz o incentivo para corridas bancárias ao garantir que depositantes individuais recuperem seus recursos mesmo em caso de falência bancária. Os requisitos de capital determinam que os bancos mantenham patrimônio suficiente para absorver perdas sem comprometer os depósitos. No Brasil, o Fundo Garantidor de Créditos cumpre função equivalente. Quando essas salvaguardas não bastam, é o Banco Central que atua como emprestador de última instância, tema retomado no capítulo sobre bancos centrais.</p>
+<p>A assimetria de informação entre investidores individuais e os intermediários com quem lidam justifica exigências de divulgação, padrões contábeis e restrições operacionais. Nos Estados Unidos, a SEC exige que empresas de capital aberto divulguem regularmente sua situação financeira, reduzindo a vantagem informacional dos <em>insiders</em>.</p>
+<p>O <strong>risco sistêmico</strong> é a segunda razão. O sistema bancário é interconectado, e a falência de um banco pode deflagrar uma cadeia de problemas que afeta outros bancos e a economia como um todo. O seguro de depósitos, administrado pelo FDIC nos Estados Unidos, reduz o incentivo para corridas bancárias ao garantir que depositantes individuais recuperem seus recursos mesmo em caso de falência bancária.</p>
 <p>A crise de 2008 demonstrou o custo de um sistema financeiro mal regulado. Quando os mercados financeiros se deterioram, o crédito se contrai, o investimento cai e a atividade econômica entra em colapso muito além do que a deterioração dos fundamentos por si só justificaria. O sistema financeiro não é neutro: ele amplifica tanto os períodos de expansão quanto as contrações.</p>
 
 <h2 id="s7">6. O mercado de capitais brasileiro</h2>
-<p>As mesmas distinções conceituais se aplicam ao sistema financeiro brasileiro. O mercado primário de ações opera por meio de IPOs e emissões subsequentes na B3. O mercado secundário, onde as ações já emitidas são negociadas, fornece a liquidez que viabiliza o mercado primário. Os títulos públicos federais, como as LTNs, as NTN-Bs e as LFTs, constituem o principal instrumento do mercado de capitais de dívida.</p>
-<p>O sistema bancário brasileiro é caracterizado por alta concentração entre poucos grandes bancos, o que levanta questões sobre o grau de competição e os custos de intermediação. A presença de bancos públicos com mandato de crédito direcionado, como o BNDES e a Caixa Econômica Federal, adiciona uma dimensão de política econômica que não está presente no modelo americano descrito por Mishkin.</p>
-<p>A pergunta que organiza o capítulo permanece relevante independentemente do sistema específico analisado: quão eficientemente os recursos fluem de quem poupa para quem tem as melhores oportunidades de investimento? A resposta a essa pergunta determina em boa medida o ritmo de crescimento e a distribuição de oportunidades em uma economia.</p>
+<p>As mesmas distinções conceituais se aplicam ao sistema financeiro brasileiro. O mercado primário de ações opera por meio de IPOs e emissões subsequentes na B3. O mercado secundário fornece a liquidez que viabiliza o mercado primário. Os títulos públicos federais, como as LTNs, as NTN-Bs e as LFTs, constituem o principal instrumento do mercado de capitais de dívida.</p>
+<p>O Banco Central do Brasil ocupa o centro do sistema: controla as condições de liquidez, supervisiona as instituições depositárias e usa os instrumentos de política monetária para influenciar as taxas de juros que o sistema financeiro transmite ao restante da economia. O que aprendemos neste capítulo sobre assimetria de informação, risco moral e risco sistêmico é o que explica por que essa posição central do banco central é necessária, e os capítulos seguintes analisarão como ele a exerce.</p>
+
+<h2 id="s8">Síntese</h2>
+<p>O argumento central deste capítulo é que o sistema financeiro existe porque a informação é assimétrica: poupadores não sabem quem são os bons tomadores, e intermediários têm vantagens comparativas para resolver esse problema. Isso importa porque sem esse canal de alocação eficiente, a política monetária não teria onde agir. Ao sair deste capítulo, o aluno deve conseguir explicar por que intermediários financeiros existem mesmo quando mercados diretos estão disponíveis, e como a assimetria de informação determina tanto a estrutura do sistema quanto sua fragilidade.</p>
 
             <div class="article-reference">
                 <strong>Referência</strong><br><br>
@@ -164,6 +170,7 @@
                 <a href="#s5" data-section="s5">4. Os tipos de intermediários</a>
                 <a href="#s6" data-section="s6">5. Regulação e falha de mercado</a>
                 <a href="#s7" data-section="s7">6. O mercado de capitais brasileiro</a>
+                <a href="#s8" data-section="s8">Síntese</a>
             </div>
         </aside>
     </div>

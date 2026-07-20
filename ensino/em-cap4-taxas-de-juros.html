@@ -28,6 +28,26 @@
     <link rel="stylesheet" href="/css/search.css">
     <style>
         :root { --em: #1d4ed8; }
+        .concept-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--em);
+            padding: 1rem 1.25rem;
+            margin: 1.75rem 0;
+            border-radius: 0 6px 6px 0;
+        }
+        .concept-box .concept-label {
+            font-weight: 700;
+            color: var(--em);
+            margin: 0 0 0.4rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .concept-box p {
+            margin: 0;
+            font-style: italic;
+            line-height: 1.55;
+        }
     </style>
 </head>
 <body>
@@ -81,57 +101,43 @@
         <article class="article-content">
 
 <h2 id="s1">Capítulo 4 de Mishkin, *The Economics of Money, Banking, and Financial Markets*</h2>
-<p>Os capítulos anteriores estabeleceram o que é moeda e como o sistema financeiro transfere fundos de poupadores a tomadores. Falta ainda o preço que rege essa transferência: a taxa de juros. É por meio dela que o Banco Central se comunica com o resto da economia, e é a partir da definição correta desse preço que se torna possível entender, mais adiante, por que a autoridade monetária consegue afetar decisões de consumo e investimento controlando apenas uma taxa de curtíssimo prazo.</p>
 <p>A taxa de juros é provavelmente o preço mais importante de uma economia de mercado. Ela determina o custo do crédito para empresas e famílias, influencia o valor de todos os ativos financeiros, orienta decisões de poupança e investimento e serve de instrumento central da política monetária. Mas "taxa de juros" não é um conceito único. Existem maneiras diferentes de calcular e expressar esse preço, e a escolha do método muda o número obtido. O capítulo 4 de Mishkin estabelece as bases conceituais para entender essas distinções e introduz a medida que, do ponto de vista econômico, é mais precisa.</p>
-
-<h2 id="s2">1. O valor presente e a lógica do desconto</h2>
-<p>O ponto de partida é um princípio simples: um dólar hoje vale mais do que um dólar no futuro. Isso não é apenas uma observação sobre preferências subjetivas. É uma consequência do fato de que um dólar disponível hoje pode ser investido e render juros durante o período até que o dólar futuro esteja disponível.</p>
-<p>O <strong>valor presente</strong> de um fluxo de caixa futuro é o valor que esse fluxo tem em termos de moeda de hoje. Para um pagamento único de $CF$ recebido daqui a $n$ períodos, com uma taxa de juros $i$, o valor presente é $CF / (1 + i)^n$. Quanto maior a taxa de juros e quanto mais distante o pagamento no tempo, menor é seu valor presente.</p>
+<p>Este capítulo é fundacional por uma razão específica: todos os instrumentos de política monetária que estudaremos nos capítulos 15 e 16 operam sobre taxas de juros. O banco central que sobe a Selic não está mudando a quantidade de moeda diretamente: está mudando o preço do crédito de curto prazo, que se propaga pelo sistema financeiro e afeta todas as demais taxas. Para entender esse mecanismo, é preciso saber o que uma taxa de juros mede.</p>
+<p><div class="concept-box"><p class="concept-label">A taxa de juros é o preço do tempo Trazer um pagamento futuro para o presente custa algo: esse custo é a taxa de juros. O valor presente de qualquer fluxo de caixa futuro é obtido descontando-o por essa taxa. Quanto maior a taxa, menor o valor presente de um dado fluxo futuro — e menor o preço que alguém estaria disposto a pagar hoje por um ativo que promete rendimentos futuros. :::</p></p><p><h2 id="s2">1. O valor presente e a lógica do desconto</h2>
+<p>O ponto de partida é um princípio simples: um real hoje vale mais do que um real no futuro. Isso não é apenas uma observação sobre preferências subjetivas. É uma consequência do fato de que um real disponível hoje pode ser investido e render juros durante o período até que o real futuro esteja disponível.</p>
+<p>O <strong>valor presente</strong> de um fluxo de caixa futuro é o valor que esse fluxo tem em termos de moeda de hoje. Para um pagamento único de CF recebido daqui a n períodos, com uma taxa de juros i, o valor presente é CF / (1 + i)^n. Quanto maior a taxa de juros e quanto mais distante o pagamento no tempo, menor é seu valor presente.</p>
 <p>Esse princípio se generaliza para qualquer sequência de pagamentos futuros. O valor de qualquer instrumento financeiro, seja ele um empréstimo bancário, um bond do governo ou uma debênture corporativa, pode ser calculado somando os valores presentes de todos os fluxos de caixa que ele promete. Essa é a lógica que unifica a análise de instrumentos aparentemente muito diferentes.</p>
-
-<div class="concept-box" style="border-left-color: var(--em);">
-    <p class="concept-label">A lógica que precifica tudo</p>
-    <p>Um real hoje vale mais que um real amanhã não por impaciência, mas porque pode ser investido e virar mais que um real amanhã. Essa única ideia, aplicada a cada fluxo de caixa futuro, é o que precifica um empréstimo bancário, um bond do governo e uma debênture corporativa com a mesma régua.</p>
-</div>
 
 <h2 id="s3">2. Os tipos de instrumento de crédito</h2>
 <p>Mishkin distingue quatro tipos de instrumento de crédito com estruturas de pagamento distintas.</p>
-<p>O <strong>empréstimo simples</strong> é o mais intuitivo: o credor fornece um valor principal ao tomador, que o devolve acrescido de juros no vencimento. Os empréstimos comerciais de curto prazo operam frequentemente nesse formato.</p>
+<p>O <strong>empréstimo simples</strong> é o mais intuitivo: o credor fornece um valor principal ao tomador, que o devolve acrescido de juros no vencimento.</p>
 <p>O <strong>empréstimo de pagamento fixo</strong> exige que o tomador faça pagamentos iguais e periódicos durante toda a vida do contrato. Cada pagamento inclui uma parcela de principal e uma parcela de juros, de modo que ao final do prazo a dívida está completamente liquidada. As hipotecas imobiliárias e os financiamentos de veículos funcionam assim.</p>
-<p>O <strong>título de cupom</strong> paga ao portador um valor fixo periodicamente, chamado de cupom, e devolve o valor de face no vencimento. Os bonds do Tesouro americano e as debêntures corporativas são exemplos. A taxa de cupom é o valor anual do cupom dividido pelo valor de face. Ela descreve o contrato original, mas não necessariamente o retorno que um comprador no mercado secundário vai obter.</p>
-<p>O <strong>título de desconto</strong> não paga nenhum fluxo intermediário. É vendido abaixo do valor de face e paga o valor de face no vencimento. O ganho do investidor é inteiramente a diferença entre o preço pago e o valor recebido. As letras do Tesouro americano, os chamados T-bills, são o exemplo mais conhecido.</p>
+<p>O <strong>título de cupom</strong> paga ao portador um valor fixo periodicamente, chamado de cupom, e devolve o valor de face no vencimento. Os bonds do Tesouro americano e as debêntures corporativas são exemplos.</p>
+<p>O <strong>título de desconto</strong> não paga nenhum fluxo intermediário. É vendido abaixo do valor de face e paga o valor de face no vencimento. O ganho do investidor é inteiramente a diferença entre o preço pago e o valor recebido.</p>
 
 <h2 id="s4">3. A taxa de retorno até o vencimento</h2>
-<p>A medida de taxa de juros que Mishkin considera mais adequada é a <strong>yield to maturity</strong>, geralmente traduzida como taxa de retorno até o vencimento ou simplesmente YTM. Ela é definida como a taxa de desconto que iguala o valor presente de todos os fluxos de caixa futuros do instrumento ao seu preço corrente de mercado.</p>
-<p>Para um empréstimo simples, a YTM coincide com a taxa de juros contratual. Para um bond de cupom, é preciso resolver uma equação que iguala o preço de mercado à soma dos valores presentes de todos os cupons futuros e do valor de face. O cálculo exige iteração numérica, mas o princípio é o mesmo do valor presente.</p>
-<p>A propriedade mais importante da YTM para fins de análise de política monetária é sua relação inversa com o preço do bond. Quando o preço de um bond sobe, a YTM cai. Quando o preço cai, a YTM sobe. Essa relação não é uma convenção: ela é uma consequência matemática da definição de valor presente. Se você paga mais por um fluxo de caixa fixo, sua taxa de retorno implícita é menor.</p>
-<p>Três casos especiais ajudam a calibrar a intuição. Se o preço de mercado de um bond de cupom é igual ao seu valor de face, então a YTM é igual à taxa de cupom. Se o preço está abaixo do valor de face, a YTM é maior do que a taxa de cupom. Se está acima, a YTM é menor. Esses casos especiais se seguem diretamente da álgebra do valor presente.</p>
+<p>A medida de taxa de juros que Mishkin considera mais adequada é a <strong>yield to maturity</strong> (YTM). Ela é definida como a taxa de desconto que iguala o valor presente de todos os fluxos de caixa futuros do instrumento ao seu preço corrente de mercado.</p>
+<p></p></div>concept Preço e taxa de juros movem-se sempre em direções opostas Se você paga mais por um fluxo de caixa fixo, sua taxa de retorno implícita é menor. Se o preço de um bond sobe, a YTM cai; se o preço cai, a YTM sobe. Essa relação inversa não é uma convenção contábil: é uma consequência matemática da definição de valor presente, e ela reaparece em toda a análise de política monetária — quando o banco central quer subir as taxas de juros, ele vende títulos, reduz seus preços e eleva os rendimentos. :::</p>
+<p>Três casos especiais ajudam a calibrar a intuição. Se o preço de mercado de um bond de cupom é igual ao seu valor de face, a YTM é igual à taxa de cupom. Se o preço está abaixo do valor de face, a YTM é maior do que a taxa de cupom. Se está acima, a YTM é menor.</p>
 
 <h2 id="s5">4. Medidas alternativas e suas limitações</h2>
 <p>Além da YTM, existem outras medidas de taxa de juros que aparecem na prática financeira e que Mishkin examina criticamente.</p>
-<p>A <strong>taxa de desconto bancário</strong> é a convenção usada para cotar T-bills nos Estados Unidos. Ela calcula o desconto como fração do valor de face, não do preço pago. Isso produz um número sistematicamente menor do que a YTM correspondente. A diferença é pequena para prazos muito curtos, mas se torna relevante quando se comparam instrumentos com prazos diferentes ou quando se quer saber o verdadeiro retorno obtido pelo investidor.</p>
+<p>A <strong>taxa de desconto bancária</strong> é a convenção usada para cotar T-bills nos Estados Unidos. Ela calcula o desconto como fração do valor de face, não do preço pago. Isso produz um número sistematicamente menor do que a YTM correspondente.</p>
 <p>O <strong>rendimento corrente</strong> é uma aproximação da YTM obtida dividindo o cupom anual pelo preço corrente de mercado. Para bonds de prazo muito longo cujo preço está próximo do valor de face, essa aproximação é razoável. Para prazos mais curtos ou quando o preço se afasta significativamente do valor de face, a diferença pode ser substancial.</p>
 <p>Essas distinções não são meramente técnicas. Quando analistas financeiros ou jornalistas citam "a taxa de juros" de um título, é necessário saber qual das muitas medidas possíveis estão usando para avaliar se o número é comparável a outros que aparecem no contexto.</p>
 
 <h2 id="s6">5. Taxa de retorno e risco de taxa de juros</h2>
 <p>A YTM mede o retorno que um investidor obtém se mantiver o bond até o vencimento. Mas o que acontece se ele precisar vender antes? A <strong>taxa de retorno</strong> de um período captura esse caso. Ela é a soma do rendimento corrente com o ganho ou a perda de capital obtida durante o período em que o bond foi mantido.</p>
-<p>Para bonds de longo prazo, a variação de preço pode dominar completamente o rendimento do cupom. Um bond com vinte anos de prazo é muito mais sensível a variações nas taxas de juros do que um bond com dois anos de prazo. Se as taxas de juros sobem inesperadamente, um investidor que mantém bonds longos pode sofrer perdas de capital que superam em muito os cupons recebidos durante o período.</p>
-<p>Esse fenômeno define o <strong>risco de taxa de juros</strong>: a volatilidade dos retornos causada por variações nas taxas de juros de mercado. O risco de taxa de juros é crescente com o prazo do instrumento. Essa é uma razão importante pela qual investidores conservadores tendem a preferir instrumentos de prazo mais curto, mesmo que aceitem retornos menores em troca de menor volatilidade.</p>
-
-<div class="concept-box" style="border-left-color: var(--em);">
-    <p class="concept-label">Prazo longo é alavancagem, não paciência</p>
-    <p>Um bond de vinte anos não é apenas um empréstimo mais longo. É uma aposta amplificada sobre a direção futura dos juros: quanto mais distante o vencimento, maior o efeito de qualquer surpresa na taxa sobre o preço de hoje.</p>
-</div>
+<p>Para bonds de longo prazo, a variação de preço pode dominar completamente o rendimento do cupom. Um bond com vinte anos de prazo é muito mais sensível a variações nas taxas de juros do que um bond com dois anos de prazo. Se as taxas de juros sobem inesperadamente, um investidor que mantém bonds longos pode sofrer perdas de capital que superam em muito os cupons recebidos.</p>
+<p>Esse fenômeno define o <strong>risco de taxa de juros</strong>: a volatilidade dos retornos causada por variações nas taxas de juros de mercado. O risco de taxa de juros é crescente com o prazo do instrumento. Como veremos no capítulo 5, essa propriedade é central para entender como o banco central influencia as taxas de diferentes prazos.</p>
 
 <h2 id="s7">6. Taxa nominal e taxa real</h2>
-<p>Uma última distinção fundamental é entre a taxa de juros nominal e a taxa de juros real. A taxa nominal é o número que aparece nos contratos e é observável diretamente no mercado. A taxa real é a taxa nominal descontada da inflação esperada.</p>
-<p>A relação entre as duas é conhecida como <strong>efeito Fisher</strong>: a taxa nominal é aproximadamente igual à taxa real mais a inflação esperada. Se os credores esperam inflação de quatro por cento ao ano, eles exigirão taxas nominais correspondentemente mais altas para manter seu retorno em termos reais. Do mesmo modo, tomadores aceitam pagar taxas nominais mais altas quando esperam que a inflação reduza o valor real de suas dívidas futuras.</p>
-<p>O efeito Fisher tem implicações diretas para a política monetária. O banco central controla diretamente a taxa de juros nominal de curto prazo. Mas as decisões de investimento das empresas dependem da taxa real: uma empresa que avalia um projeto não se preocupa com o valor nominal dos juros que pagará, mas com quanto desses juros representam em poder de compra. Quando a inflação esperada é alta e instável, a taxa real se torna difícil de estimar, e o custo efetivo do crédito fica obscuro para tomadores e credores. Essa incerteza tem custos reais para a alocação de recursos na economia.</p>
+<p>Uma última distinção fundamental é entre a taxa de juros nominal e a taxa de juros real. A taxa nominal é o número que aparece nos contratos. A taxa real é a taxa nominal descontada da inflação esperada.</p>
+<p>A relação entre as duas é conhecida como <strong>efeito Fisher</strong>: a taxa nominal é aproximadamente igual à taxa real mais a inflação esperada. Se os credores esperam inflação de quatro por cento ao ano, eles exigirão taxas nominais correspondentemente mais altas para manter seu retorno em termos reais.</p>
+<p>O efeito Fisher tem implicações diretas para a política monetária. O banco central controla diretamente a taxa de juros nominal de curto prazo. Mas as decisões de investimento das empresas dependem da taxa real. Quando a inflação esperada é alta e instável, a taxa real se torna difícil de estimar, e o custo efetivo do crédito fica obscuro para tomadores e credores. Essa incerteza tem custos reais para a alocação de recursos na economia, e explica por que a estabilidade de preços é tratada como precondição para o funcionamento eficiente dos mercados financeiros.</p>
 
-<div class="concept-box" style="border-left-color: var(--em);">
-    <p class="concept-label">Dois preços, uma taxa</p>
-    <p>A taxa de juros é o preço do tempo. O efeito Fisher é o preço da inflação sobre esse preço. Separar os dois é o que permite entender por que a Selic nominal pode subir sem que o crédito fique necessariamente mais caro em termos reais, e por que expectativas de inflação, tema retomado no capítulo sobre condução da política monetária, são tão centrais para essa conta.</p>
-</div>
+<h2 id="s8">Síntese</h2>
+<p>O argumento central é que a taxa de juros é o preço do tempo, e medi-la corretamente exige distinguir horizonte, tipo de instrumento e tratamento da inflação. A identidade de Fisher — taxa nominal = taxa real + inflação esperada — percorre toda a análise de política monetária da disciplina: ela conecta as expectativas dos agentes às decisões do banco central e ao investimento real. Ao sair, o aluno deve conseguir calcular o rendimento até o vencimento de um instrumento simples, explicar o efeito Fisher em termos intuitivos, e entender por que preço e taxa de juros de um bond se movem em direções opostas.</p>
 
             <div class="article-reference">
                 <strong>Referência</strong><br><br>
@@ -163,6 +169,7 @@
                 <a href="#s5" data-section="s5">4. Medidas alternativas e suas limitações</a>
                 <a href="#s6" data-section="s6">5. Taxa de retorno e risco de taxa de juros</a>
                 <a href="#s7" data-section="s7">6. Taxa nominal e taxa real</a>
+                <a href="#s8" data-section="s8">Síntese</a>
             </div>
         </aside>
     </div>
