@@ -1,0 +1,44 @@
+name: Temp - exportar tabelas CPT em CSV
+
+on:
+  push:
+    branches:
+      - temp/cpt-nota-audit-extract
+    paths:
+      - '.github/workflows/temp-export-cpt-csv.yml'
+      - 'data/_tmp_cpt_nota_compact.json'
+
+permissions:
+  contents: write
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: temp/cpt-nota-audit-extract
+      - name: Gerar CSVs
+        run: |
+          python3 - <<'PY'
+          import csv, json
+          from pathlib import Path
+          d=json.loads(Path('data/_tmp_cpt_nota_compact.json').read_text())
+          with open('data/_tmp_cpt_ufs_estado.csv','w',newline='',encoding='utf-8') as f:
+              w=csv.writer(f,delimiter=';')
+              w.writerow(['UF','Receita média','Coeficiente','Participação 2025','Diferença p.p.','Tratamento'])
+              for r in d['ufs_estado']:
+                  w.writerow([r['uf'],f"{r['receita_media']:.6f}",f"{r['coeficiente']:.9f}",f"{r['participacao_2025']:.9f}",f"{r['diferenca_pp']:.9f}",r['tratamento']])
+          with open('data/_tmp_cpt_municipios_es.csv','w',newline='',encoding='utf-8') as f:
+              w=csv.writer(f,delimiter=';')
+              w.writerow(['Código','Município','Receita média','Coeficiente','Participação 2025','Diferença p.p.','Anos estimados'])
+              for r in d['municipios_es']:
+                  w.writerow([r['codigo'],r['municipio'],f"{r['receita_media']:.6f}",f"{r['coeficiente']:.9f}",f"{r['participacao_2025']:.9f}",f"{r['diferenca_pp']:.9f}",r['anos_estimados']])
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/_tmp_cpt_ufs_estado.csv data/_tmp_cpt_municipios_es.csv
+          git commit -m 'chore: exporta CSVs temporários CPT' || exit 0
+          git push origin HEAD:temp/cpt-nota-audit-extract
