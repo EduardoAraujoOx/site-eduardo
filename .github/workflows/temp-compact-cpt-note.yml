@@ -1,0 +1,38 @@
+name: Temp - compactar dados CPT para nota
+
+on:
+  push:
+    branches:
+      - temp/cpt-nota-audit-extract
+    paths:
+      - '.github/workflows/temp-compact-cpt-note.yml'
+      - 'data/_tmp_cpt_nota_audit_extract.json'
+
+permissions:
+  contents: write
+
+jobs:
+  compact:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: temp/cpt-nota-audit-extract
+      - name: Gerar extrato compacto
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('data/_tmp_cpt_nota_audit_extract.json')
+          d=json.loads(p.read_text())
+          for r in d.get('municipios_es', []):
+              r.pop('anuais', None)
+          Path('data/_tmp_cpt_nota_compact.json').write_text(json.dumps(d, ensure_ascii=False, indent=2))
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/_tmp_cpt_nota_compact.json
+          git commit -m 'chore: gera extrato compacto temporário CPT' || exit 0
+          git push origin HEAD:temp/cpt-nota-audit-extract
