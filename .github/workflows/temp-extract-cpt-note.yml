@@ -1,0 +1,166 @@
+name: Temp - extrair dados CPT para nota
+
+on:
+  push:
+    branches:
+      - temp/cpt-nota-audit-extract
+    paths:
+      - '.github/workflows/temp-extract-cpt-note.yml'
+      - 'data/reforma-tributaria.json'
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: temp/cpt-nota-audit-extract
+      - name: Extrair tabelas de auditoria
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          ANOS = list(range(2019, 2026))
+          src = Path('data/reforma-tributaria.json')
+          data = json.loads(src.read_text())
+
+          icms_br_raw = data.get('dca_icms_br') or data.get('icms_br') or {}
+          iss_br_raw = data.get('dca_iss_br') or data.get('iss_br') or {}
+          icms_uf_raw = data.get('dca_icms_por_uf') or data.get('icms_por_uf') or {}
+          iss_uf_raw = data.get('dca_iss_por_uf') or {}
+          detalhes = data.get('dca_detalhes') or {}
+
+          icms_br = {a: icms_br_raw.get(str(a), icms_br_raw.get(a)) for a in ANOS}
+          iss_br = {a: iss_br_raw.get(str(a), iss_br_raw.get(a)) for a in ANOS}
+          total_br = {a: (icms_br[a] + iss_br[a]) if icms_br[a] is not None and iss_br[a] is not None else None for a in ANOS}
+          total_b = total_br[2025]
+          indice = {a: total_b / total_br[a] for a in ANOS}
+
+          # UFs presentes no DCA de ICMS.
+          ufs = sorted(set().union(*(set((icms_uf_raw.get(str(a)) or {}).keys()) for a in ANOS)))
+          uf_rows = []
+          for uf in ufs:
+              is_df = uf == 'DF'
+              icms_vals = {a: (icms_uf_raw.get(str(a)) or {}).get(uf) for a in ANOS}
+              iss_vals = {a: (iss_uf_raw.get(str(a)) or {}).get(uf) for a in ANOS}
+              if any(icms_vals[a] is None for a in ANOS):
+                  continue
+              media_icms = sum(icms_vals[a] * indice[a] for a in ANOS) / len(ANOS)
+              if is_df:
+                  media_iss = sum((iss_vals[a] or 0) * indice[a] for a in ANOS) / len(ANOS)
+                  receita_media = media_icms + media_iss
+                  receita_2025 = icms_vals[2025] + (iss_vals[2025] or 0)
+              else:
+                  receita_media = 0.75 * media_icms
+                  receita_2025 = 0.75 * icms_vals[2025]
+              coef = receita_media / total_b * 100
+              part_2025 = receita_2025 / total_b * 100
+              uf_rows.append({
+                  'uf': uf,
+                  'receita_media': receita_media,
+                  'coeficiente': coef,
+                  'participacao_2025': part_2025,
+                  'diferenca_pp': coef - part_2025,
+                  'tratamento': 'DF_unificado' if is_df else 'componente_estadual_75pct_icms'
+              })
+
+          # Municípios capixabas: ISS + cota teórica de 25% rateada pela participação observada no DCA.
+          muni = {}
+          for a in ANOS:
+              for cod, v in (detalhes.get(str(a)) or {}).items():
+                  if v.get('uf') != 'ES':
+                      continue
+                  m = muni.setdefault(str(cod), {'codigo': str(cod), 'municipio': v.get('ente') or str(cod), 'raw': {}})
+                  m['raw'][a] = {
+                      'iss': v.get('valor') or 0,
+                      'cota': v.get('cota_parte_icms') or 0
+                  }
+
+          # Reposição pelo exercício disponível mais próximo, coerente com a página municipal.
+          for m in muni.values():
+              disponiveis = sorted(m['raw'])
+              m['resolved'] = {}
+              for a in ANOS:
+                  if a in m['raw']:
+                      m['resolved'][a] = dict(m['raw'][a], estimado=False, ano_fonte=a)
+                  elif disponiveis:
+                      fonte = min(disponiveis, key=lambda x: (abs(x-a), x))
+                      m['resolved'][a] = dict(m['raw'][fonte], estimado=True, ano_fonte=fonte)
+                  else:
+                      m['resolved'][a] = None
+
+          cota_total = {}
+          for a in ANOS:
+              cota_total[a] = sum((m['resolved'][a] or {}).get('cota', 0) for m in muni.values())
+
+          icms_es = {a: (icms_uf_raw.get(str(a)) or {}).get('ES') for a in ANOS}
+          muni_rows = []
+          for m in muni.values():
+              anuais = []
+              estimados = 0
+              for a in ANOS:
+                  r = m['resolved'][a]
+                  if not r:
+                      valor = 0
+                      cota_ajustada = 0
+                      iss = 0
+                  else:
+                      iss = r['iss']
+                      cota_ajustada = (0.25 * icms_es[a] * r['cota'] / cota_total[a]) if cota_total[a] else r['cota']
+                      valor = (iss + cota_ajustada) * indice[a]
+                      estimados += int(r['estimado'])
+                  anuais.append({
+                      'ano': a,
+                      'iss': iss,
+                      'cota_ajustada': cota_ajustada,
+                      'indice': indice[a],
+                      'receita_atualizada': valor,
+                      'estimado': bool(r and r['estimado']),
+                      'ano_fonte': r['ano_fonte'] if r else None
+                  })
+              receita_media = sum(x['receita_atualizada'] for x in anuais) / len(ANOS)
+              coef = receita_media / total_b * 100
+              r25 = m['resolved'][2025]
+              cota25 = (0.25 * icms_es[2025] * r25['cota'] / cota_total[2025]) if r25 and cota_total[2025] else (r25['cota'] if r25 else 0)
+              receita25 = (r25['iss'] if r25 else 0) + cota25
+              part25 = receita25 / total_b * 100
+              muni_rows.append({
+                  'codigo': m['codigo'],
+                  'municipio': m['municipio'],
+                  'receita_media': receita_media,
+                  'coeficiente': coef,
+                  'participacao_2025': part25,
+                  'diferenca_pp': coef - part25,
+                  'anos_estimados': estimados,
+                  'anuais': anuais
+              })
+          muni_rows.sort(key=lambda x: x['municipio'])
+
+          out = {
+              'periodo': ANOS,
+              'total_br': total_br,
+              'indice': indice,
+              'denominador_2025': total_b,
+              'icms_es': icms_es,
+              'ufs_estado': sorted(uf_rows, key=lambda x: x['uf']),
+              'municipios_es': muni_rows,
+              'controles': {
+                  'n_ufs': len(uf_rows),
+                  'n_municipios_es': len(muni_rows),
+                  'soma_coef_municipios_es': sum(x['coeficiente'] for x in muni_rows),
+                  'soma_participacao_2025_municipios_es': sum(x['participacao_2025'] for x in muni_rows)
+              }
+          }
+          Path('data/_tmp_cpt_nota_audit_extract.json').write_text(json.dumps(out, ensure_ascii=False, indent=2))
+          PY
+      - name: Commit do extrato temporário
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/_tmp_cpt_nota_audit_extract.json
+          git commit -m 'chore: gera extrato temporário de auditoria CPT' || exit 0
+          git push origin HEAD:temp/cpt-nota-audit-extract
