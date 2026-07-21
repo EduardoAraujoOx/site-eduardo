@@ -21,6 +21,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="/css/notas.css?v=4">
     <link rel="stylesheet" href="/css/search.css">
 
@@ -308,14 +309,17 @@
         <section class="study-content">
 
             <!-- Result highlight -->
+            <!-- Estado e municípios são entes federativos distintos, com repasses distintos
+                 no regime do IBS (art. 115, I e III da LC 227/2026); por isso os dois
+                 coeficientes são exibidos lado a lado, nunca somados num único número. -->
             <div class="result-box" id="result-box" style="display:none">
                 <div>
-                    <div class="result-label">CPT_ES (critério origem)</div>
+                    <div class="result-label">CPT_ES — Estado (art. 115, I)</div>
                     <div class="result-value" id="coeff-main">—</div>
                 </div>
                 <div>
-                    <div class="result-label">Receita Média de Referência ES (R$ bi)</div>
-                    <div class="result-value" id="total-es">—</div>
+                    <div class="result-label">CPT_ES — Municípios (art. 115, III)</div>
+                    <div class="result-value" id="coeff-mun">—</div>
                 </div>
                 <div>
                     <div class="result-label">Denominador: Total_BR_2025 (R$ bi)</div>
@@ -328,6 +332,10 @@
                 <button class="btn-share" id="btn-export-img" title="Baixar imagem PNG da tabela de auditoria">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                     Exportar imagem
+                </button>
+                <button class="btn-share" id="btn-export-xlsx" disabled title="Baixar planilha (.xlsx) com a auditoria completa do cálculo">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Baixar planilha (auditoria)
                 </button>
                 <button class="btn-share btn-share-wa" id="btn-share-wa" style="display:none" title="Compartilhar pelo WhatsApp ou outro app">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
@@ -388,6 +396,8 @@
                 o <strong>índice anual municípios</strong> = (ISS_ES + ICMS_ES × 0,25) / TotalBR_t.
                 Permite ver se o ES vem crescendo acima ou abaixo da média nacional ao longo do período,
                 e contextualizar o CPT histórico (média das setes fotos) em relação à trajetória.
+                Estado e municípios são exibidos separadamente: cada um tem repasse próprio no
+                regime do IBS, e somá-los não corresponde a nenhum coeficiente da LC 227/2026.
                 Fonte: DCA Anexo I-C para ICMS estadual e ISS municipal. ²
             </p>
             <div class="data-table-wrap">
@@ -400,11 +410,10 @@
                             <th class="th-group">ISS_ES + cota<br><small style="font-weight:400;font-size:0.65em">numerador munis (R$ bi)</small></th>
                             <th class="th-group">Índice anual<br>estado (%)</th>
                             <th class="th-group">Índice anual<br>municípios (%)</th>
-                            <th class="th-group">Índice anual<br>total ES (%)</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-context">
-                        <tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                        <tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Aguardando dados…</td></tr>
                     </tbody>
                     <tfoot id="tfoot-context"></tfoot>
                 </table>
@@ -434,6 +443,10 @@
                 <strong>parcela estado</strong> (ICMS×0,75 × índice, média dos 7 anos ÷ Total_BR_2025) e
                 <strong>parcela municípios</strong> (ISS + cota-parte ICMS×0,25 × índice, mesma média e denominador).
                 A soma da coluna <strong>Total UF</strong> deve ser exatamente 100%.
+                <strong>Exceção — Distrito Federal:</strong> por exercer simultaneamente as competências
+                estadual e municipal, o DF não tem dedução de 25% nem parcela municipal separada; sua coluna
+                "Estado" traz o coeficiente unificado (ICMS + ISS integrais) e a coluna "Municípios" é
+                marcada como "n/a" (não aplicável), sem prejuízo do Total, que permanece correto.
             </p>
             <div class="data-table-wrap" style="overflow-x:auto">
                 <table class="data-table" id="table-ufs" style="min-width:860px;font-size:0.8rem">
@@ -540,13 +553,15 @@
             <div class="metodologia">
                 <strong>Metodologia: LC 227/2026, arts. 114, 115 e 129</strong>
                 <ul>
+                    <li><strong>Período de apuração:</strong> a LC 227/2026 (arts. 114 e 115) prevê os exercícios de 2019 a 2026 (8 observações), com atualização para a base de 2026. Como os dados de 2026 ainda não estão disponíveis no SICONFI, esta estimativa usa 2019–2025 (7 observações) e adota 2025 como base provisória de atualização. Os coeficientes oficiais, apurados com o exercício de 2026, poderão diferir dos apresentados aqui.</li>
                     <li><strong>Fonte dos dados:</strong> SICONFI/STN. Para o ISS municipal e ICMS estadual: <em>DCA: Demonstrativo das Contas Anuais, Anexo I-C</em> para 2019–2025 (cobertura ISS: ~5.200 municípios/ano nacionalmente; 78/78 municípios do ES; ICMS: 26 estados + DF). Códigos PCASP: ISS <code>RO1.1.1.4.51.1.0</code> (2022–2025) e <code>RO1.1.1.8.02.3.0</code> (2019–2021); ICMS <code>RO1.1.1.4.50.1.0</code> (2022–2025) e <code>RO1.1.1.8.02.1.0</code> (2019–2021). Coluna "Receitas Brutas Realizadas", bruto incluindo Simples Nacional e dívida ativa, alinhado ao art. 115, §1º da LC 227/2026.</li>
-                    <li><strong>Passo 1: Índice de atualização:</strong> para cada ano t (2019–2025), somar o ICMS bruto dos 26 estados e do DF mais o ISS bruto de todos os municípios do Brasil. Esse agregado é o Total_BR_t. O índice de atualização é Índice_t = Total_BR_2025 / Total_BR_t. O índice de 2025 é 1,0000 por definição. Esse índice é único e idêntico para todos os entes: estados e municípios usam o mesmo fator de correção em cada ano.</li>
+                    <li><strong>Passo 1: Índice de atualização:</strong> para cada ano t (2019–2025), somar o ICMS bruto dos 26 estados e do DF mais o ISS bruto de todos os municípios do Brasil e do DF. Esse agregado é o Total_BR_t. O índice de atualização é Índice_t = Total_BR_2025 / Total_BR_t. O índice de 2025 é 1,0000 por definição. Esse índice é único e idêntico para todos os entes: estados e municípios usam o mesmo fator de correção em cada ano.</li>
                     <li><strong>Passo 2: Receita Média de Referência do estado ES:</strong> para cada ano t, tomar o ICMS bruto do ES, multiplicar por 0,75 para deduzir a cota-parte municipal de 25% (art. 115, I, "a", e art. 158, IV, "a", CF), e multiplicar pelo Índice_t. Isso produz o valor corrigido na base de 2025. A Receita Média de Referência do estado ES é a média aritmética simples dos 7 valores corrigidos.</li>
                     <li><strong>Passo 3: Receita Média de Referência dos municípios ES:</strong> para cada município capixaba, tomar o ISS bruto de cada ano, acrescentar a cota-parte do ICMS recebida do estado (art. 115, III, "b"), e multiplicar pelo Índice_t. A Receita Média de Referência do conjunto dos municípios ES é a média aritmética simples dos 7 valores corrigidos.</li>
                     <li><strong>Passo 4: Denominador:</strong> somar as Receitas Médias de Referência de todos os 26 estados, do DF e de todos os municípios do Brasil. Esse total é o denominador comum a todos os coeficientes. Algebricamente equivale a Total_BR_2025 (ver nota abaixo).</li>
                     <li><strong>Passo 5: CPT_ES estado:</strong> dividir a Receita Média de Referência do estado ES (Passo 2) pelo denominador do Passo 4. Esse é o coeficiente que determina o repasse ao governo estadual no regime IBS.</li>
                     <li><strong>Passo 5b: CPT_ES municípios:</strong> dividir a Receita Média de Referência dos municípios ES (Passo 3) pelo denominador do Passo 4. Esse coeficiente distribui o repasse entre o conjunto dos municípios capixabas. Como verificação, a soma dos coeficientes de todos os entes (estados + municípios de todo o Brasil) deve ser exatamente 100%.</li>
+                    <li><strong>Distrito Federal (Tabela 3):</strong> por exercer simultaneamente as competências estadual e municipal, o DF não se enquadra na dedução de 25% do Passo 2 nem tem parcela municipal própria (Passo 3). Sua receita de referência é o ICMS + ISS integrais, apurados como um único ente; a Tabela 3 marca sua coluna "Municípios" como não aplicável.</li>
                 </ul>
                 <p style="margin-top:0.75rem;font-size:0.82rem"><strong>Nota: por que o denominador = Total_BR_2025:</strong>
                 Denominador = Σ_entes(Média_t(Receita_ente_t × Índice_t)). Como Índice_t = Total_BR_2025 / Total_BR_t, ao somar todos os entes em cada ano t: Σ_entes(Receita_ente_t) = Total_BR_t, e Total_BR_t × (Total_BR_2025 / Total_BR_t) = Total_BR_2025. A média de 7 valores iguais a Total_BR_2025 é Total_BR_2025.</p>
@@ -573,6 +588,7 @@
     // deflator_t = TotalBR_2025 / TotalBR_t,  TotalBR = ICMS_BR + ISS_BR
     const ANOS = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
     const COTA_PARTE_MUN = 0.25; // art. 158, IV, "a", CF — 25% ICMS vai aos municípios
+    let AUDIT_DATA = null; // snapshot dos dados computados, usado pela exportação em .xlsx
 
     function fmtBi(val, digits = 2) {
         if (val == null) return '<span class="na-cell">aguard.</span>';
@@ -670,7 +686,6 @@
 
         const coeff    = totalB != null ? totalA    / totalB : null;
         const coeffMun = totalB != null ? totalAMun / totalB : null;
-        const coeffUF  = (coeff != null && coeffMun != null) ? coeff + coeffMun : null;
 
         // ── Tabela 1 (auditoria) ──────────────────────────────────────────────
         const tbody = document.getElementById('tbody-nominal');
@@ -733,11 +748,6 @@
                 <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">Rec. Média de Referência municípios ÷ Denominador</td>
                 <td></td>
                 <td style="text-align:right;font-size:1rem;font-weight:700;color:var(--accent)">${coeffMun != null ? fmtPct(coeffMun * 100) : '<span class="na-cell">aguard.</span>'}</td>
-            </tr>
-            <tr style="background:rgba(112,161,112,0.1)">
-                <td class="td-year" style="color:var(--accent)">CPT_ES: total UF (estado + municípios)</td>
-                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">participação do ES no IBS durante o período de transição de 50 anos</td>
-                <td colspan="2" style="text-align:right;font-size:1.1rem;font-weight:700;color:var(--accent)">${coeffUF != null ? fmtPct(coeffUF * 100) : '<span class="na-cell">aguard.</span>'}</td>
             </tr>`;
 
         // ── Tabela 2: trajetória anual pontual (sem deflação) ────────────────
@@ -753,8 +763,7 @@
             const numMun  = (ie != null && ise != null) ? ise + ie * 0.25 : null;
             const idxEst  = (numEst != null && tBR) ? numEst / tBR * 100 : null;
             const idxMun  = (numMun != null && tBR) ? numMun / tBR * 100 : null;
-            const idxTot  = (idxEst != null && idxMun != null) ? idxEst + idxMun : null;
-            snapshots[ano] = { numEst, numMun, tBR, idxEst, idxMun, idxTot };
+            snapshots[ano] = { numEst, numMun, tBR, idxEst, idxMun };
         }
 
         const tbody2 = document.getElementById('tbody-context');
@@ -768,7 +777,6 @@
                 <td style="text-align:right">${fmtBi(s.numMun, 3)}</td>
                 <td style="text-align:right" class="${s.idxEst != null ? 'td-coeff' : ''}">${fmtPct(s.idxEst, 4)}</td>
                 <td style="text-align:right" class="${s.idxMun != null ? 'td-coeff' : ''}">${fmtPct(s.idxMun, 4)}</td>
-                <td style="text-align:right" class="${s.idxTot != null ? 'td-coeff' : ''}">${fmtPct(s.idxTot, 4)}</td>
             </tr>`;
         }).join('');
 
@@ -780,7 +788,6 @@
                     <td colspan="3" style="text-align:center;color:var(--text-muted);font-size:0.8rem">← referência: média aritmética dos valores corrigidos pelo Índice_t, base 2025</td>
                     <td style="text-align:right;color:var(--accent)">${fmtPct(coeff * 100, 4)}</td>
                     <td style="text-align:right;color:var(--accent)">${fmtPct(coeffMun * 100, 4)}</td>
-                    <td style="text-align:right;color:var(--accent)">${fmtPct(coeffUF * 100, 4)}</td>
                 </tr>`;
         }
 
@@ -802,11 +809,17 @@
             ...Object.keys(icms_por_uf_rreo_tab3)
         ])].sort();
 
+        let ufRows = [];
         if (ufs.length > 0 && totalB != null) {
-            const ufRows = ufs.map(uf => {
-                // Receita Média Estado = média(ICMS_UF × 0,75 × deflator_t)
-                let somaEstado = 0, nEstado = 0;
-                // Receita Média ISS municípios = média(ISS_UF × deflator_t)
+            ufRows = ufs.map(uf => {
+                // O Distrito Federal exerce simultaneamente as competências estadual e
+                // municipal; a LC 227/2026 (art. 115) não prevê, para o DF, dedução de
+                // 25% nem coeficiente municipal separado — sua receita de referência é
+                // o ICMS + ISS integrais, como um único ente (sem parcela "municípios").
+                const isDF = uf === 'DF';
+
+                // Receita Média ICMS = média(ICMS_UF × deflator_t); Receita Média ISS = média(ISS_UF × deflator_t)
+                let somaICMS = 0, nICMS = 0;
                 let somaISS = 0, nISS = 0;
 
                 for (const ano of ANOS) {
@@ -816,18 +829,23 @@
                         ? (dca_icms_uf_raw[String(ano)]?.[uf] ?? null)
                         : (icms_por_uf_rreo_tab3[uf]?.[ano] ?? icms_por_uf_rreo_tab3[uf]?.[String(ano)] ?? null);
                     const issVal  = iss_por_uf?.[ano]?.[uf] ?? iss_por_uf?.[String(ano)]?.[uf] ?? null;
-                    if (icmsVal != null) { somaEstado += icmsVal * 0.75 * d; nEstado++; }
-                    if (issVal  != null) { somaISS    += issVal * d;          nISS++;    }
+                    if (icmsVal != null) { somaICMS += icmsVal * d; nICMS++; }
+                    if (issVal  != null) { somaISS  += issVal  * d; nISS++;  }
                 }
 
-                const mediaEstado = nEstado > 0 ? somaEstado / ANOS.length : null;
-                // cota-parte = ICMS_UF × 0,25 (mesmo deflator, mesma média)
-                const mediaCota   = mediaEstado != null ? mediaEstado / 3 : null; // 0.25/0.75 = 1/3
-                const mediaISS    = nISS > 0 ? somaISS / ANOS.length : null;
-                const mediaMunis  = (mediaISS != null && mediaCota != null) ? mediaISS + mediaCota
-                                  : mediaISS ?? mediaCota ?? null;
-                const mediaTotal  = (mediaEstado != null && mediaMunis != null)
-                                  ? mediaEstado + mediaMunis : null;
+                const mediaICMS = nICMS > 0 ? somaICMS / ANOS.length : null;
+                const mediaISS  = nISS  > 0 ? somaISS  / ANOS.length : null;
+
+                // Estado: ICMS × 0,75 (dedução da cota-parte municipal); DF: ICMS integral (sem dedução)
+                const mediaEstado = mediaICMS != null ? mediaICMS * (isDF ? 1 : 0.75) : null;
+                // Municípios: ISS + cota-parte (ICMS × 0,25); não se aplica ao DF
+                const mediaMunis  = isDF ? null
+                                  : (mediaISS != null || mediaICMS != null)
+                                    ? (mediaISS ?? 0) + (mediaICMS != null ? mediaICMS * 0.25 : 0)
+                                    : null;
+                const mediaTotal  = isDF
+                    ? ((mediaEstado != null || mediaISS != null) ? (mediaEstado ?? 0) + (mediaISS ?? 0) : null)
+                    : ((mediaEstado != null && mediaMunis != null) ? mediaEstado + mediaMunis : null);
 
                 const cptEstado = mediaEstado != null ? mediaEstado / totalB * 100 : null;
                 const cptMunis  = mediaMunis  != null ? mediaMunis  / totalB * 100 : null;
@@ -841,11 +859,14 @@
                 const iss2025   = iss_por_uf?.['2025']?.[uf] ?? null;
                 const totalBR2025 = totalB; // deflator 2025 = 1, so totalB = totalBR[2025]
                 const idx2025Est  = (icms2025 != null && totalBR2025)
-                    ? icms2025 * 0.75 / totalBR2025 * 100 : null;
-                const idx2025Mun  = (icms2025 != null && iss2025 != null && totalBR2025)
-                    ? (iss2025 + icms2025 * 0.25) / totalBR2025 * 100 : null;
-                const idx2025Tot  = (idx2025Est != null && idx2025Mun != null)
-                    ? idx2025Est + idx2025Mun : null;
+                    ? icms2025 * (isDF ? 1 : 0.75) / totalBR2025 * 100 : null;
+                const idx2025Mun  = isDF ? null
+                    : (icms2025 != null && iss2025 != null && totalBR2025)
+                        ? (iss2025 + icms2025 * 0.25) / totalBR2025 * 100 : null;
+                const idx2025Tot  = isDF
+                    ? ((icms2025 != null && iss2025 != null && totalBR2025)
+                        ? (icms2025 + iss2025) / totalBR2025 * 100 : idx2025Est)
+                    : ((idx2025Est != null && idx2025Mun != null) ? idx2025Est + idx2025Mun : null);
 
                 // Variação: CPT histórico − índice pontual 2025
                 const varEstado = (cptEstado != null && idx2025Est != null) ? cptEstado - idx2025Est : null;
@@ -853,7 +874,7 @@
                 const varTotal  = (cptTotal  != null && idx2025Tot != null) ? cptTotal  - idx2025Tot : null;
 
                 const isES = uf === 'ES';
-                return { uf, cptEstado, cptMunis, cptTotal,
+                return { uf, isDF, cptEstado, cptMunis, cptTotal,
                          idx2025Est, idx2025Mun, idx2025Tot,
                          varEstado, varMunis, varTotal, isES };
             });
@@ -864,19 +885,22 @@
                 const color = v > 0 ? 'color:#2a7a2a' : v < 0 ? 'color:#b03030' : '';
                 return `<span style="${color}">${s}</span>`;
             };
+            const naDF = '<span class="na-cell" title="Não aplicável ao DF: sem esfera municipal separada (art. 115, LC 227/2026)">n/a</span>';
+            const fmtMun = r => r.isDF ? naDF : fmtPct(r.cptMunis);
+            const fmtMun25 = r => r.isDF ? naDF : fmtPct(r.idx2025Mun);
 
             // ── Tabela 3: 10 colunas completas ──────────────────────────────────
             const tbody3 = document.getElementById('tbody-ufs');
             tbody3.innerHTML = ufRows.map(r => `<tr${r.isES ? ' style="background:rgba(112,161,112,0.12);font-weight:600"' : ''}>
                 <td class="td-year" style="padding:3px 6px">${r.uf}</td>
-                <td style="text-align:right;padding:3px 6px">${fmtPct(r.cptEstado)}</td>
-                <td style="text-align:right;padding:3px 6px">${fmtPct(r.cptMunis)}</td>
+                <td style="text-align:right;padding:3px 6px"${r.isDF ? ' title="DF: coeficiente unificado (ICMS+ISS), sem dedução de 25%"' : ''}>${fmtPct(r.cptEstado)}</td>
+                <td style="text-align:right;padding:3px 6px">${fmtMun(r)}</td>
                 <td style="text-align:right;font-weight:700;padding:3px 6px">${fmtPct(r.cptTotal)}</td>
                 <td style="text-align:right;padding:3px 6px">${fmtPct(r.idx2025Est)}</td>
-                <td style="text-align:right;padding:3px 6px">${fmtPct(r.idx2025Mun)}</td>
+                <td style="text-align:right;padding:3px 6px">${fmtMun25(r)}</td>
                 <td style="text-align:right;font-weight:700;padding:3px 6px">${fmtPct(r.idx2025Tot)}</td>
                 <td style="text-align:right;padding:3px 6px">${fmtVar(r.varEstado)}</td>
-                <td style="text-align:right;padding:3px 6px">${fmtVar(r.varMunis)}</td>
+                <td style="text-align:right;padding:3px 6px">${r.isDF ? naDF : fmtVar(r.varMunis)}</td>
                 <td style="text-align:right;font-weight:700;padding:3px 6px">${fmtVar(r.varTotal)}</td>
             </tr>`).join('');
 
@@ -907,12 +931,12 @@
             if (tbody31) {
                 tbody31.innerHTML = ufRows.map(r => `<tr${r.isES ? ' style="background:rgba(112,161,112,0.12);font-weight:600"' : ''}>
                     <td class="td-year">${r.uf}</td>
-                    <td style="text-align:right">${fmtPct(r.cptEstado)}</td>
+                    <td style="text-align:right"${r.isDF ? ' title="DF: coeficiente unificado (ICMS+ISS), sem dedução de 25%"' : ''}>${fmtPct(r.cptEstado)}</td>
                     <td style="text-align:right">${fmtPct(r.idx2025Est)}</td>
                     <td style="text-align:right">${fmtVar(r.varEstado)}</td>
-                    <td style="text-align:right">${fmtPct(r.cptMunis)}</td>
-                    <td style="text-align:right">${fmtPct(r.idx2025Mun)}</td>
-                    <td style="text-align:right">${fmtVar(r.varMunis)}</td>
+                    <td style="text-align:right">${fmtMun(r)}</td>
+                    <td style="text-align:right">${fmtMun25(r)}</td>
+                    <td style="text-align:right">${r.isDF ? naDF : fmtVar(r.varMunis)}</td>
                 </tr>`).join('');
                 document.getElementById('tfoot-ufs-compact').innerHTML = `<tr style="font-weight:700;border-top:2px solid var(--border)">
                     <td class="td-year">BRASIL</td>
@@ -1047,13 +1071,25 @@
             `<span class="status-dot ${allOK ? '' : 'pending'}"></span> ${statusMsg.join(' · ')}`;
 
         // ── Result box ────────────────────────────────────────────────────────
-        if (coeffUF != null) {
-            document.getElementById('coeff-main').textContent = fmtPct(coeffUF * 100).replace(/<[^>]+>/g, '');
-            document.getElementById('total-es').textContent = 'R$ ' + fmtBi(totalA + totalAMun, 3).replace(/<[^>]+>/g, '') + 'B';
+        // Estado e municípios são mantidos separados: são entes federativos distintos,
+        // com repasses distintos no IBS (art. 115, I e III da LC 227/2026); um número
+        // único somando os dois não corresponde a nenhum coeficiente legal e confundiria o leitor.
+        if (coeff != null && coeffMun != null) {
+            document.getElementById('coeff-main').textContent = fmtPct(coeff * 100).replace(/<[^>]+>/g, '');
+            document.getElementById('coeff-mun').textContent = fmtPct(coeffMun * 100).replace(/<[^>]+>/g, '');
             document.getElementById('total-br').textContent = 'R$ ' + fmtBi(totalB, 3).replace(/<[^>]+>/g, '') + 'B';
             document.getElementById('result-box').style.display = 'flex';
             document.getElementById('share-row').style.display = 'flex';
         }
+
+        // ── Snapshot para exportação em planilha (.xlsx) ──────────────────────
+        AUDIT_DATA = {
+            anos: ANOS,
+            icms_es, iss_es, icmsEsCota, icmsEsLiq, issCota, totalBR, deflators,
+            corEstado, corMunis, totalA, totalAMun, totalB, coeff, coeffMun,
+            snapshots, ufRows, muniRows,
+        };
+        document.getElementById('btn-export-xlsx').disabled = false;
     }
 
     loadData();
@@ -1215,6 +1251,133 @@
     }
 
     document.getElementById('btn-export-img').addEventListener('click', exportImage);
+
+    // ── Exportar planilha de auditoria (.xlsx) ────────────────────────────────
+    // Reproduz, em abas separadas, todo o cálculo do CPT_ES tal como exibido nas
+    // Tabelas 1–4 da página, para que qualquer pessoa possa conferir os números
+    // e as fórmulas de forma independente. Estado e municípios sempre em colunas
+    // separadas — nunca somados num único coeficiente.
+    function sumYears(obj, anos) {
+        const vals = anos.map(a => obj[a]).filter(v => v != null);
+        return vals.length ? vals.reduce((s, v) => s + v, 0) : null;
+    }
+
+    function buildAuditWorkbook() {
+        if (!AUDIT_DATA || typeof XLSX === 'undefined') return null;
+        const d = AUDIT_DATA;
+        const wb = XLSX.utils.book_new();
+
+        const readme = [
+            ['CPT_ES — Coeficiente de Participação de Transição do Espírito Santo (LC 227/2026, arts. 114, 115 e 129)'],
+            ['Fonte: SICONFI/STN, DCA Anexo I-C (ICMS estadual e ISS municipal, 2019–2025).'],
+            [],
+            ['A LC 227/2026 prevê os exercícios de 2019 a 2026 (8 observações), atualizados para a base de 2026.'],
+            ['Os dados de 2026 ainda não estão disponíveis no SICONFI; esta estimativa usa 2019–2025 (7 observações)'],
+            ['e adota 2025 como base provisória de atualização. Os coeficientes oficiais podem diferir.'],
+            [],
+            ['Estado e municípios são entes federativos distintos, com repasses distintos no regime do IBS (art. 115, I e III).'],
+            ['Por isso este arquivo nunca soma o coeficiente do estado com o dos municípios num único número:'],
+            ['o que importa para cada ente é o seu próprio índice — ver colunas separadas na aba "Tabela 1".'],
+            [],
+            ['Passo 1: Índice_t = Total_BR_2025 / Total_BR_t, onde Total_BR_t = ICMS bruto de todas as UFs + ISS bruto de todos os municípios do Brasil e do DF no ano t.'],
+            ['Passo 2: Receita Média de Referência do estado ES = média dos 7 anos de (ICMS_ES bruto × 0,75 × Índice_t).'],
+            ['Passo 3: Receita Média de Referência dos municípios ES = média dos 7 anos de ((ISS_ES + ICMS_ES × 0,25) × Índice_t).'],
+            ['Passo 4: Denominador = Total_BR_2025 (equivale à soma das Receitas Médias de Referência de todos os entes do país).'],
+            ['Passo 5: CPT_ES estado = Receita Média Estado ÷ Denominador. CPT_ES municípios = Receita Média Municípios ÷ Denominador.'],
+            ['Distrito Federal: por acumular as competências estadual e municipal, o DF não tem dedução de 25% nem parcela'],
+            ['municipal própria — sua receita de referência é o ICMS + ISS integrais, apurados como um único ente (ver Tabela 3).'],
+            [],
+            ['Abas:'],
+            ['Tabela 1 - Auditoria ES: reconstrução ano a ano do cálculo do CPT_ES, estado e municípios em colunas separadas.'],
+            ['Tabela 2 - Trajetória anual: índice de cada ano isolado (sem deflação/média), para checar a tendência.'],
+            ['Tabela 3 - CPT por UF: mesmo cálculo replicado para as 26 UFs + DF (a coluna Total soma estado+municípios apenas para conferir que o total nacional fecha em 100%; para o DF, que não tem parcela municipal, a coluna Municípios vem em branco e a coluna Estado traz o coeficiente unificado).'],
+            ['Tabela 4 - Municípios ES: coeficiente individual de cada um dos municípios capixabas.'],
+            [],
+            ['Gerado em: ' + new Date().toISOString() + ' · eduardoreisaraujo.com.br'],
+        ];
+        const wsReadme = XLSX.utils.aoa_to_sheet(readme);
+        wsReadme['!cols'] = [{ wch: 118 }];
+        XLSX.utils.book_append_sheet(wb, wsReadme, 'Leia-me');
+
+        // Tabela 1: auditoria ano a ano
+        const t1header = ['Ano', 'ICMS ES bruto (R$)', 'Repasse municipal 25% (R$)', 'ICMS ES líquido, 75% (R$)',
+            'ISS municípios ES (R$)', 'Cota-parte ICMS 25% (R$)', 'Total_BR_t, ICMS+ISS nacional (R$)', 'Índice_t (BR2025/BRt)',
+            'Estado: ICMS líq. × Índice_t (R$)', 'Municípios: (ISS+cota) × Índice_t (R$)'];
+        const t1rows = d.anos.map(ano => [
+            ano,
+            d.icms_es[ano] ?? null,
+            d.icmsEsCota[ano] ?? null,
+            d.icmsEsLiq[ano] ?? null,
+            d.iss_es[ano] ?? null,
+            d.icmsEsCota[ano] ?? null,
+            d.totalBR[ano] ?? null,
+            d.deflators[ano] ?? null,
+            d.corEstado[ano] ?? null,
+            d.corMunis[ano] ?? null,
+        ]);
+        const somaEstado = sumYears(d.corEstado, d.anos);
+        const somaMunis = sumYears(d.corMunis, d.anos);
+        const t1footer = [
+            [],
+            ['Soma 2019–2025 (valores corrigidos p/ base 2025)', '', '', '', '', '', '', '', somaEstado, somaMunis],
+            ['÷ ' + d.anos.length + ' = Receita Média de Referência', '', '', '', '', '', '', '', d.totalA, d.totalAMun],
+            ['Denominador (Total_BR_2025)', '', '', '', '', '', '', '', d.totalB, d.totalB],
+            ['CPT_ES — Estado (art. 115, I), %', '', '', '', '', '', '', '', d.coeff != null ? d.coeff * 100 : null, ''],
+            ['CPT_ES — Municípios (art. 115, III), %', '', '', '', '', '', '', '', '', d.coeffMun != null ? d.coeffMun * 100 : null],
+        ];
+        const wsT1 = XLSX.utils.aoa_to_sheet([t1header, ...t1rows, ...t1footer]);
+        wsT1['!cols'] = t1header.map(() => ({ wch: 22 }));
+        XLSX.utils.book_append_sheet(wb, wsT1, 'Tabela 1 - Auditoria ES');
+
+        // Tabela 2: trajetória anual pontual (sem deflação)
+        const t2header = ['Ano', 'Total_BR_t (R$)', 'Numerador estado: ICMS_ES×0,75 (R$)',
+            'Numerador municípios: ISS_ES+cota (R$)', 'Índice anual estado (%)', 'Índice anual municípios (%)'];
+        const t2rows = d.anos.map(ano => {
+            const s = d.snapshots[ano] || {};
+            return [ano, s.tBR ?? null, s.numEst ?? null, s.numMun ?? null, s.idxEst ?? null, s.idxMun ?? null];
+        });
+        const t2footer = [
+            [],
+            ['CPT histórico (média 7 anos deflacionada)', '', '', '',
+                d.coeff != null ? d.coeff * 100 : null, d.coeffMun != null ? d.coeffMun * 100 : null],
+        ];
+        const wsT2 = XLSX.utils.aoa_to_sheet([t2header, ...t2rows, ...t2footer]);
+        wsT2['!cols'] = t2header.map(() => ({ wch: 24 }));
+        XLSX.utils.book_append_sheet(wb, wsT2, 'Tabela 2 - Trajetória anual');
+
+        // Tabela 3: CPT por UF (estado e municípios sempre em colunas separadas)
+        const t3header = ['UF', 'CPT histórico — Estado (%)', 'CPT histórico — Municípios (%)', 'CPT histórico — Total UF (%)',
+            'Índice 2025 — Estado (%)', 'Índice 2025 — Municípios (%)', 'Índice 2025 — Total UF (%)',
+            'Variação — Estado (p.p.)', 'Variação — Municípios (p.p.)', 'Variação — Total UF (p.p.)'];
+        const t3rows = (d.ufRows || []).map(r => [r.uf, r.cptEstado, r.cptMunis, r.cptTotal,
+            r.idx2025Est, r.idx2025Mun, r.idx2025Tot, r.varEstado, r.varMunis, r.varTotal]);
+        const wsT3 = XLSX.utils.aoa_to_sheet([t3header, ...t3rows]);
+        wsT3['!cols'] = t3header.map(() => ({ wch: 22 }));
+        XLSX.utils.book_append_sheet(wb, wsT3, 'Tabela 3 - CPT por UF');
+
+        // Tabela 4: municípios ES
+        const t4header = ['Município', 'CPT histórico (%)', 'CPT 2025, índice pontual (%)', 'Variação, hist.−2025 (p.p.)'];
+        const t4rows = (d.muniRows || []).map(r => [r.nome, r.cpt, r.cpt2025, r.varMuni]);
+        const wsT4 = XLSX.utils.aoa_to_sheet([t4header, ...t4rows]);
+        wsT4['!cols'] = [{ wch: 28 }, { wch: 18 }, { wch: 22 }, { wch: 20 }];
+        XLSX.utils.book_append_sheet(wb, wsT4, 'Tabela 4 - Municípios ES');
+
+        return wb;
+    }
+
+    function exportXlsx() {
+        const btn = document.getElementById('btn-export-xlsx');
+        const wb = buildAuditWorkbook();
+        if (!wb) return;
+        btn.disabled = true;
+        try {
+            XLSX.writeFile(wb, 'cpt-es-auditoria.xlsx');
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    document.getElementById('btn-export-xlsx').addEventListener('click', exportXlsx);
     </script>
 </body>
 </html>
