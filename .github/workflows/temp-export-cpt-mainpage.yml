@@ -1,0 +1,79 @@
+name: Temp - exportar CPT conforme página principal
+
+on:
+  push:
+    branches:
+      - temp/cpt-nota-audit-extract
+    paths:
+      - '.github/workflows/temp-export-cpt-mainpage.yml'
+      - 'data/reforma-tributaria.json'
+
+permissions:
+  contents: write
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: temp/cpt-nota-audit-extract
+      - name: Calcular e exportar
+        run: |
+          python3 - <<'PY'
+          import csv, json
+          from pathlib import Path
+          ANOS=list(range(2019,2026))
+          d=json.loads(Path('data/reforma-tributaria.json').read_text())
+          icms_br_raw=d.get('dca_icms_br') or {}
+          iss_br_raw=d.get('dca_iss_br') or {}
+          icms_uf=d.get('dca_icms_por_uf') or {}
+          det=d.get('dca_detalhes') or {}
+          cota_uf=d.get('dca_cota_icms_por_uf') or {}
+          total={a:icms_br_raw[str(a)]+iss_br_raw[str(a)] for a in ANOS}
+          B=total[2025]
+          idx={a:B/total[a] for a in ANOS}
+          icms_es={a:icms_uf[str(a)]['ES'] for a in ANOS}
+          cota_total={a:(cota_uf.get(str(a)) or {}).get('ES') for a in ANOS}
+          mm={}
+          for a in ANOS:
+              for cod,v in (det.get(str(a)) or {}).items():
+                  if v.get('uf')!='ES': continue
+                  m=mm.setdefault(str(cod),{'municipio':v.get('ente') or str(cod),'dados':{}})
+                  m['dados'][a]={'iss':v.get('valor') or 0,'cota':v.get('cota_parte_icms') or 0}
+          rows=[]
+          for cod,m in mm.items():
+              soma=0.0
+              anos_presentes=0
+              for a in ANOS:
+                  r=m['dados'].get(a)
+                  if not r: continue
+                  anos_presentes += 1
+                  ct=cota_total[a]
+                  cota=(0.25*icms_es[a]*(r['cota']/ct)) if ct and ct>0 else r['cota']
+                  soma += (r['iss']+cota)*idx[a]
+              coef=(soma/len(ANOS))/B*100
+              r=m['dados'].get(2025)
+              if r:
+                  ct=cota_total[2025]
+                  cota=(0.25*icms_es[2025]*(r['cota']/ct)) if ct and ct>0 else r['cota']
+                  p25=(r['iss']+cota)/B*100
+                  dif=coef-p25
+              else:
+                  p25=None;dif=None
+              rows.append((cod,m['municipio'],coef,p25,dif,anos_presentes))
+          rows.sort(key=lambda x:x[1])
+          with open('data/_tmp_cpt_municipios_es_mainpage.csv','w',newline='',encoding='utf-8') as f:
+              w=csv.writer(f,delimiter=';')
+              w.writerow(['Código','Município','Coeficiente','Participação 2025','Diferença p.p.','Anos presentes'])
+              for cod,n,c,p,dif,np in rows:
+                  w.writerow([cod,n,f'{c:.9f}', '' if p is None else f'{p:.9f}', '' if dif is None else f'{dif:.9f}',np])
+              w.writerow(['TOTAL','',f'{sum(r[2] for r in rows):.9f}',f'{sum((r[3] or 0) for r in rows):.9f}',f'{sum((r[4] or 0) for r in rows):.9f}',''])
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/_tmp_cpt_municipios_es_mainpage.csv
+          git commit -m 'chore: exporta CPT municipal conforme página principal' || exit 0
+          git push origin HEAD:temp/cpt-nota-audit-extract
