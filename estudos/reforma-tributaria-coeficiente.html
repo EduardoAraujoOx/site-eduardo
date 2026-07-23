@@ -300,9 +300,9 @@
                 que o Espírito Santo receberá durante os 50 anos de transição da reforma tributária,
                 conforme o art. 115 da LC 227/2026. É calculado como a razão entre a Receita Média
                 de Referência do ES (média dos valores anuais de ICMS, deduzida a cota-parte
-                municipal de 25%, e ISS, atualizados para a base de 2025) e a soma das Receitas
-                Médias de Referência de todos os entes da federação. Fonte: SICONFI/STN,
-                DCA Anexo I-C (ICMS e ISS 2019–2025). Premissas explícitas, fontes primárias e metodologia replicável.
+                municipal declarada e somado o FECOP, e ISS, atualizados para a base de 2025) e a soma
+                das Receitas Médias de Referência de todos os entes da federação. Fonte: SICONFI/STN,
+                DCA Anexo I-C (ICMS, FECOP e ISS 2019–2025). Premissas explícitas, fontes primárias e metodologia replicável.
             </p>
         </section>
 
@@ -348,10 +348,17 @@
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
                 Reprodução passo a passo do cálculo do CPT_ES. Para cada ano do período de referência
                 (2019–2025): <strong>(i)</strong> ICMS bruto arrecadado pelo ES, extraído do DCA Anexo I-C
-                (código <code>RO1.1.1.4.50.1.0</code> para 2022–2025; <code>RO1.1.1.8.02.1.0</code> para 2019–2021); <strong>(ii)</strong> dedução dos 25% constitucionalmente
-                destinados aos municípios (art. 158, IV, "a", CF); <strong>(iii)</strong> ISS bruto dos municípios
+                (código <code>RO1.1.1.4.50.1.0</code> para 2022–2025; <code>RO1.1.1.8.02.1.0</code> para 2019–2021); <strong>(ii)</strong> dedução da cota-parte
+                municipal (art. 158, IV, "a", CF) pelo valor que o próprio Estado declara ter transferido
+                aos municípios ("Deduções - Transferências Constitucionais", DCA Anexo I-C) — não uma
+                presunção de 25%, embora o valor declarado bata quase exatamente com 25% do ICMS bruto
+                em todos os anos disponíveis ⁷; <strong>(iii)</strong> soma do FECOP-ES
+                (adicional de até 2 p.p. no ICMS para o Fundo Estadual de Combate à Pobreza, art. 82 do ADCT),
+                que a LC 227/2026 manda incluir na receita do Estado (art. 115, §1º, II) e que, por não se
+                submeter à cota-parte municipal (art. 82, §1º, ADCT), não é dividido com os municípios;
+                <strong>(iv)</strong> ISS bruto dos municípios
                 capixabas (DCA Anexo I-C 2019–2025 ⁵),
-                acrescido da cota-parte ICMS recebida; <strong>(iv)</strong> índice de atualização
+                acrescido da mesma cota-parte declarada do item (ii); <strong>(v)</strong> índice de atualização
                 = Total_BR_2025 / Total_BR_t, único e idêntico para todos os entes. A Receita Média
                 de Referência é a média aritmética simples dos 7 valores anuais corrigidos.
             </p>
@@ -364,25 +371,26 @@
                     <thead>
                         <tr>
                             <th class="th-group th-year" rowspan="2">Ano</th>
-                            <th class="th-group" colspan="3">Estado ES, nominal (R$ bi)</th>
+                            <th class="th-group" colspan="4">Estado ES, nominal (R$ bi)</th>
                             <th class="th-group" colspan="2">Municípios ES, nominal (R$ bi)</th>
                             <th class="th-group" colspan="2">Agregado nacional</th>
                             <th class="th-group" colspan="2">Receita corrigida, base 2025 (R$ bi)</th>
                         </tr>
                         <tr>
                             <th>ICMS ES bruto<br><small style="font-weight:400;font-size:0.65em">(DCA An.I-C)</small></th>
-                            <th>− Repasse mun.<br><small style="font-weight:400;font-size:0.65em">(art. 158 IV CF)</small></th>
-                            <th>= ICMS ES<br>líquido (×0,75)</th>
+                            <th>− Cota-parte mun.<br><small style="font-weight:400;font-size:0.65em">(declarada, art. 158 IV CF) ⁷</small></th>
+                            <th>= ICMS ES<br>líquido</th>
+                            <th>+ FECOP-ES<br><small style="font-weight:400;font-size:0.65em">(art. 82 ADCT)</small></th>
                             <th>ISS municípios<br>ES</th>
-                            <th>+ Cota-parte<br>ICMS (×0,25)</th>
-                            <th>Total_BR_t<br><small style="font-weight:400;font-size:0.65em">(ICMS+ISS, R$ bi)</small></th>
+                            <th>+ Cota-parte<br>mun. declarada ⁷</th>
+                            <th>Total_BR_t<br><small style="font-weight:400;font-size:0.65em">(ICMS+ISS+FECOP, R$ bi)</small></th>
                             <th>Índice_t<br><small style="font-weight:400;font-size:0.65em">(BR₂₀₂₅ / BR_t)</small></th>
-                            <th>ICMS liq.<br>× Índice_t</th>
+                            <th>(ICMS liq.+FECOP)<br>× Índice_t</th>
                             <th>(ISS + cota)<br>× Índice_t</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-nominal">
-                        <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                        <tr><td colspan="11" style="text-align:center;padding:2rem;color:var(--text-muted)">Aguardando dados…</td></tr>
                     </tbody>
                     <tfoot id="tfoot-nominal"></tfoot>
                 </table>
@@ -392,8 +400,8 @@
             <span class="section-label" style="margin-top:2rem">Tabela 2: Trajetória anual do índice pontual do ES (2019–2025)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
                 Para cada ano, mostra qual seria o coeficiente do ES se apenas aquele ano fosse considerado,
-                sem deflação e sem média. O <strong>índice anual estado</strong> = ICMS_ES × 0,75 / TotalBR_t;
-                o <strong>índice anual municípios</strong> = (ISS_ES + ICMS_ES × 0,25) / TotalBR_t.
+                sem deflação e sem média. O <strong>índice anual estado</strong> = (ICMS_ES − cota-parte + FECOP_ES) / TotalBR_t;
+                o <strong>índice anual municípios</strong> = (ISS_ES + cota-parte) / TotalBR_t.
                 Permite ver se o ES vem crescendo acima ou abaixo da média nacional ao longo do período,
                 e contextualizar o CPT histórico (média das setes fotos) em relação à trajetória.
                 Estado e municípios são exibidos separadamente: cada um tem repasse próprio no
@@ -405,8 +413,8 @@
                     <thead>
                         <tr>
                             <th class="th-group th-year">Ano</th>
-                            <th class="th-group">TotalBR_t<br><small style="font-weight:400;font-size:0.65em">ICMS+ISS nac. (R$ bi)</small></th>
-                            <th class="th-group">ICMS_ES × 0,75<br><small style="font-weight:400;font-size:0.65em">numerador estado (R$ bi)</small></th>
+                            <th class="th-group">TotalBR_t<br><small style="font-weight:400;font-size:0.65em">ICMS+ISS+FECOP nac. (R$ bi)</small></th>
+                            <th class="th-group">ICMS_ES−cota+FECOP<br><small style="font-weight:400;font-size:0.65em">numerador estado (R$ bi)</small></th>
                             <th class="th-group">ISS_ES + cota<br><small style="font-weight:400;font-size:0.65em">numerador munis (R$ bi)</small></th>
                             <th class="th-group">Índice anual<br>estado (%)</th>
                             <th class="th-group">Índice anual<br>municípios (%)</th>
@@ -440,12 +448,19 @@
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
                 Coeficientes de Participação de Transição calculados para todas as 26 UFs e o DF,
                 pelo mesmo procedimento aplicado ao ES. Cada linha decompõe o CPT da UF em
-                <strong>parcela estado</strong> (ICMS×0,75 × índice, média dos 7 anos ÷ Total_BR_2025) e
-                <strong>parcela municípios</strong> (ISS + cota-parte ICMS×0,25 × índice, mesma média e denominador).
-                A soma da coluna <strong>Total UF</strong> deve ser exatamente 100%.
-                <strong>Exceção — Distrito Federal:</strong> por exercer simultaneamente as competências
-                estadual e municipal, o DF não tem dedução de 25% nem parcela municipal separada; sua coluna
-                "Estado" traz o coeficiente unificado (ICMS + ISS integrais) e a coluna "Municípios" é
+                <strong>parcela estado</strong> ((ICMS − cota-parte + FECOP) × índice, média dos 7 anos ÷ Total_BR_2025) e
+                <strong>parcela municípios</strong> (ISS + cota-parte × índice, mesma média e denominador). A
+                cota-parte usada é a que o próprio Estado declara ter transferido, ano a ano; nos anos/UFs
+                em que essa declaração não existe no DCA — caso de AC, SP e DF em toda a série, e de outras
+                UFs em anos isolados, sobretudo antes de 2022 — a estimativa usa 25% do ICMS bruto daquele
+                ano/UF ⁷ (a planilha de auditoria mostra, UF a UF, em quantos dos 7 anos a cota-parte é
+                declarada). O FECOP (Fundo Estadual de Combate à Pobreza, art. 82 do
+                ADCT) entra integralmente na parcela estado, sem dedução, porque não se submete à cota-parte
+                municipal (art. 82, §1º, ADCT). A soma da coluna <strong>Total UF</strong> deve ser exatamente 100%.
+                <strong>Exceção — Distrito Federal:</strong> por não ter municípios, o DF não se submete à
+                dedução de cota-parte do art. 158, IV, CF — o cálculo nem tenta apurá-la, diferente dos demais
+                entes, para os quais ela é sempre declarada ou presumida; sua coluna
+                "Estado" traz o coeficiente unificado (ICMS + FECOP + ISS integrais) e a coluna "Municípios" é
                 marcada como "n/a" (não aplicável), sem prejuízo do Total, que permanece correto.
             </p>
             <div class="data-table-wrap" style="overflow-x:auto">
@@ -508,7 +523,7 @@
             <!-- Tabela 4: CPT por município ES -->
             <span class="section-label" style="margin-top:2rem">Tabela 4: Coeficiente de Participação na Transição por município capixaba (DCA 2019–2025)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
-                Coeficiente individual de cada município capixaba (art. 115, III). Base = ISS bruto + cota-parte ICMS (25% do ICMS_ES bruto, conforme art. 115, III, "b" c/c art. 158, IV, CF, distribuído proporcionalmente ao rateio real do DCA entre os municípios), corrigida pelo Índice_t, média 2019–2025. A soma dos coeficientes é igual à parcela municipal do CPT_ES da Tabela 3. ⁶
+                Coeficiente individual de cada município capixaba (art. 115, III). Base = ISS bruto + cota-parte ICMS (valor declarado pelo Estado como transferência constitucional ⁷, ou 25% do ICMS_ES bruto na ausência dessa declaração, distribuído proporcionalmente ao rateio real do DCA entre os municípios ⁶), corrigida pelo Índice_t, média 2019–2025. A soma dos coeficientes é igual à parcela municipal do CPT_ES da Tabela 3.
             </p>
             <div class="data-table-wrap">
                 <table class="data-table" id="table-munis-es">
@@ -555,13 +570,13 @@
                 <ul>
                     <li><strong>Período de apuração:</strong> a LC 227/2026 (arts. 114 e 115) prevê os exercícios de 2019 a 2026 (8 observações), com atualização para a base de 2026. Como os dados de 2026 ainda não estão disponíveis no SICONFI, esta estimativa usa 2019–2025 (7 observações) e adota 2025 como base provisória de atualização. Os coeficientes oficiais, apurados com o exercício de 2026, poderão diferir dos apresentados aqui.</li>
                     <li><strong>Fonte dos dados:</strong> SICONFI/STN. Para o ISS municipal e ICMS estadual: <em>DCA: Demonstrativo das Contas Anuais, Anexo I-C</em> para 2019–2025 (cobertura ISS: ~5.200 municípios/ano nacionalmente; 78/78 municípios do ES; ICMS: 26 estados + DF). Códigos PCASP: ISS <code>RO1.1.1.4.51.1.0</code> (2022–2025) e <code>RO1.1.1.8.02.3.0</code> (2019–2021); ICMS <code>RO1.1.1.4.50.1.0</code> (2022–2025) e <code>RO1.1.1.8.02.1.0</code> (2019–2021). Coluna "Receitas Brutas Realizadas", bruto incluindo Simples Nacional e dívida ativa, alinhado ao art. 115, §1º da LC 227/2026.</li>
-                    <li><strong>Passo 1: Índice de atualização:</strong> para cada ano t (2019–2025), somar o ICMS bruto dos 26 estados e do DF mais o ISS bruto de todos os municípios do Brasil e do DF. Esse agregado é o Total_BR_t. O índice de atualização é Índice_t = Total_BR_2025 / Total_BR_t. O índice de 2025 é 1,0000 por definição. Esse índice é único e idêntico para todos os entes: estados e municípios usam o mesmo fator de correção em cada ano.</li>
-                    <li><strong>Passo 2: Receita Média de Referência do estado ES:</strong> para cada ano t, tomar o ICMS bruto do ES, multiplicar por 0,75 para deduzir a cota-parte municipal de 25% (art. 115, I, "a", e art. 158, IV, "a", CF), e multiplicar pelo Índice_t. Isso produz o valor corrigido na base de 2025. A Receita Média de Referência do estado ES é a média aritmética simples dos 7 valores corrigidos.</li>
-                    <li><strong>Passo 3: Receita Média de Referência dos municípios ES:</strong> para cada município capixaba, tomar o ISS bruto de cada ano, acrescentar a cota-parte do ICMS recebida do estado (art. 115, III, "b"), e multiplicar pelo Índice_t. A Receita Média de Referência do conjunto dos municípios ES é a média aritmética simples dos 7 valores corrigidos.</li>
+                    <li><strong>Passo 1: Índice de atualização:</strong> para cada ano t (2019–2025), somar o ICMS bruto dos 26 estados e do DF, o FECOP de todas as UFs (art. 82 do ADCT — ver Passo 2) e o ISS bruto de todos os municípios do Brasil e do DF. Esse agregado é o Total_BR_t. O índice de atualização é Índice_t = Total_BR_2025 / Total_BR_t. O índice de 2025 é 1,0000 por definição. Esse índice é único e idêntico para todos os entes: estados e municípios usam o mesmo fator de correção em cada ano.</li>
+                    <li><strong>Passo 2: Receita Média de Referência do estado ES:</strong> para cada ano t, tomar o ICMS bruto do ES e deduzir a cota-parte municipal (art. 115, I, "a", e art. 158, IV, "a", CF) — usando o valor que o próprio Estado declara ter transferido aos municípios ("Deduções - Transferências Constitucionais", DCA Anexo I-C; na ausência dessa declaração, 25% do ICMS bruto do mesmo ano/UF ⁷) —, somar o FECOP-ES do mesmo ano (Fundo Estadual de Combate à Pobreza, adicional de até 2 p.p. no ICMS — art. 82 do ADCT, cuja inclusão na receita do Estado é exigida pelo art. 115, §1º, II da LC 227/2026) e multiplicar o total pelo Índice_t. O FECOP entra sem dedução, porque o art. 82, §1º, do ADCT o exclui da cota-parte municipal do art. 158, IV, CF. Isso produz o valor corrigido na base de 2025. A Receita Média de Referência do estado ES é a média aritmética simples dos 7 valores corrigidos.</li>
+                    <li><strong>Passo 3: Receita Média de Referência dos municípios ES:</strong> para cada município capixaba, tomar o ISS bruto de cada ano, acrescentar a mesma cota-parte declarada (ou teórica) do Passo 2 (art. 115, III, "b") — que não inclui o FECOP, pelo mesmo motivo do Passo 2 —, e multiplicar pelo Índice_t. A Receita Média de Referência do conjunto dos municípios ES é a média aritmética simples dos 7 valores corrigidos.</li>
                     <li><strong>Passo 4: Denominador:</strong> somar as Receitas Médias de Referência de todos os 26 estados, do DF e de todos os municípios do Brasil. Esse total é o denominador comum a todos os coeficientes. Algebricamente equivale a Total_BR_2025 (ver nota abaixo).</li>
                     <li><strong>Passo 5: CPT_ES estado:</strong> dividir a Receita Média de Referência do estado ES (Passo 2) pelo denominador do Passo 4. Esse é o coeficiente que determina o repasse ao governo estadual no regime IBS.</li>
                     <li><strong>Passo 5b: CPT_ES municípios:</strong> dividir a Receita Média de Referência dos municípios ES (Passo 3) pelo denominador do Passo 4. Esse coeficiente distribui o repasse entre o conjunto dos municípios capixabas. Como verificação, a soma dos coeficientes de todos os entes (estados + municípios de todo o Brasil) deve ser exatamente 100%.</li>
-                    <li><strong>Distrito Federal (Tabela 3):</strong> por exercer simultaneamente as competências estadual e municipal, o DF não se enquadra na dedução de 25% do Passo 2 nem tem parcela municipal própria (Passo 3). Sua receita de referência é o ICMS + ISS integrais, apurados como um único ente; a Tabela 3 marca sua coluna "Municípios" como não aplicável.</li>
+                    <li><strong>Distrito Federal (Tabela 3):</strong> por exercer simultaneamente as competências estadual e municipal, o DF não se enquadra na dedução de 25% do Passo 2 nem tem parcela municipal própria (Passo 3). Sua receita de referência é o ICMS + FECOP + ISS integrais, apurados como um único ente (art. 115, II); a Tabela 3 marca sua coluna "Municípios" como não aplicável.</li>
                 </ul>
                 <p style="margin-top:0.75rem;font-size:0.82rem"><strong>Nota: por que o denominador = Total_BR_2025:</strong>
                 Denominador = Σ_entes(Média_t(Receita_ente_t × Índice_t)). Como Índice_t = Total_BR_2025 / Total_BR_t, ao somar todos os entes em cada ano t: Σ_entes(Receita_ente_t) = Total_BR_t, e Total_BR_t × (Total_BR_2025 / Total_BR_t) = Total_BR_2025. A média de 7 valores iguais a Total_BR_2025 é Total_BR_2025.</p>
@@ -570,9 +585,10 @@
             <div class="footnote">
                 <p>² SC 2025: o 6º bimestre não estava disponível no SICONFI na data de coleta; foi utilizado o 5º bimestre como aproximação. O valor foi incorporado ao Total_BR_2025 para evitar distorção no índice de atualização desse ano.</p>
                 <p>³ <strong>Referência de destino (corrigida):</strong> recalculando a partir da própria Tabela 1 de Gobetti e Monteiro (2023) — ver Tabela 5 do estudo <a href="/estudos/icms-iss-participacao-vs-populacao.html">ICMS+ISS por UF vs. população</a> —, a participação combinada do ES (estado + municípios) no critério de destino, cenário estático de IBS pleno, fica em torno de <strong>1,6%</strong>, partindo de uma participação atual (critério de origem) de aproximadamente 2,3%. Uma versão anterior desta nota citava 2,4% como o valor de destino; esse número corresponde, na verdade, à participação atual do ES no critério de origem, não ao critério de destino. A diferença real entre o CPT_ES calculado (critério histórico de origem) e o valor de destino (~1,6%) representa o núcleo do impacto fiscal estrutural da transição para o ES ao longo dos 50 anos.</p>
-                <p>⁴ Possíveis acréscimos ao numerador (art. 115, I, "b"): FUNDAP-ES (fundo estadual vinculado a diferimento de ICMS nas exportações) e adicional do Fundo de Combate à Pobreza (art. 82 ADCT), conforme art. 129, §1º, I da LC 227/2026 (não incluídos nesta versão).</p>
+                <p>⁴ <strong>FECOP (Fundo Estadual de Combate à Pobreza, art. 82 do ADCT):</strong> a partir desta versão, o adicional de até 2 p.p. no ICMS destinado ao FECOP passou a ser somado à receita do Estado (art. 115, §1º, II, da LC 227/2026 — não ao art. 129, §1º, I, como constava em versão anterior desta nota, que trata de um mecanismo distinto e posterior, de destinação de parte do IBS já distribuído ao financiamento do fundo a partir de 2033). O FECOP é registrado pelo SICONFI/DCA em conta própria, separada do ICMS "comum", e, por força do art. 82, §1º, do ADCT, não se submete à cota-parte municipal do art. 158, IV, CF — por isso entra inteiro na parcela do Estado, sem o desconto de 25%. <strong>Ainda não incluído nesta versão:</strong> a contribuição a fundos estaduais vinculados a diferimento de ICMS nas exportações, como o FUNDAP-ES (art. 115, I, "b"), cujo cálculo usa um período de referência distinto (2021–2023, art. 115, §3º) e ainda depende de identificação mais precisa da fonte de dados.</p>
                 <p>⁵ <strong>Fonte do ISS municipal (2019–2025):</strong> DCA: Demonstrativo das Contas Anuais, Anexo I-C (SICONFI/STN). Cobertura nacional: ~5.200 municípios por ano (~93% do total); ES: 78/78 municípios em todos os anos. O DCA reporta a arrecadação bruta total ("Receitas Brutas Realizadas"), alinhada ao art. 115, §1º da LC 227/2026 que exige o "montante total da arrecadação", incluindo Simples Nacional (LC 123/2006) e dívida ativa. Revisão do PCASP em 2022 alterou o código do ISS de <code>RO1.1.1.8.02.3.0</code> (2019–2021) para <code>RO1.1.1.4.51.1.0</code> (2022–2025).</p>
-                <p>⁶ <strong>Cota-parte ICMS nos coeficientes municipais:</strong> o art. 115, III, "b" da LC 227/2026 remete ao percentual constitucionalmente destinado aos municípios (art. 158, IV, CF = 25% do ICMS bruto estadual). Por isso, adotamos <em>ICMS_ES × 25%</em> como base de cálculo, não o valor efetivamente repassado. A <code>cota_parte_icms</code> registrada pelos municípios no DCA tende a ser cerca de 11% menor que o montante constitucional porque: (i) o FUNDAP-ES (fundo de incentivo à exportação) retém parte do ICMS antes do repasse; e (ii) há erros de escrituração nos registros municipais. A distribuição do total <em>ICMS_ES × 25%</em> entre os municípios é feita proporcionalmente ao rateio real constante do DCA, preservando a participação relativa de cada ente. Auditor da SEFAZ-BA chegou ao mesmo ajuste metodológico de forma independente.</p>
+                <p>⁶ <strong>Distribuição da cota-parte entre os municípios:</strong> o total atribuído ao conjunto dos municípios capixabas (nota ⁷) é rateado entre eles proporcionalmente ao que cada um individualmente declarou ter recebido de cota-parte ICMS no DCA. A partir de 2022, a soma dessas declarações individuais passou a ficar sistematicamente abaixo do valor que o Estado declara ter transferido — no ES, por volta de 89% dele —, um padrão que aparece (em graus variados) em vários outros estados. Isso é tratado como um problema de escrituração municipal — provavelmente ligado à revisão do código de conta do PCASP em 2022 (nota ⁷) — e não como uma retenção real, porque o valor declarado pelo próprio Estado permanece em linha com os 25% constitucionais nesses mesmos anos. Essa divergência afeta apenas o rateio relativo entre municípios, preservando o total do conjunto: a soma dos coeficientes municipais (Tabela 4) continua igual à parcela municipal do CPT_ES (Tabela 3).</p>
+                <p>⁷ <strong>Cota-parte municipal: valor declarado pelo Estado, não presunção de 25%:</strong> em vez de presumir que a cota-parte do art. 158, IV, "a", CF equivale a exatamente 25% do ICMS bruto, usamos o valor que o próprio Estado declara ter deduzido do ICMS a título de "Deduções - Transferências Constitucionais" (DCA Anexo I-C, mesma conta do ICMS). Para o ES, esse valor declarado bateu entre 99,9% e 100,0% do teórico em todos os 7 anos da série (2019–2025) — inclusive nos anos em que a soma das declarações individuais dos municípios caiu para ~89% (nota ⁶). Isso confirma que a divergência está do lado do registro municipal, não de uma retenção do Estado além do previsto constitucionalmente. Quando um ente não preenche essa conta no DCA (nem todos preenchem — ausente, por exemplo, para SP, AC e DF em toda a série), a estimativa cai de volta à presunção de 25% do ICMS bruto daquele ano/UF.</p>
                 <p>Fonte primária: <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">SICONFI: API Data Lake STN</a>. Coleta via GitHub Actions (27 jobs paralelos por estado). Scripts disponíveis no repositório.</p>
             </div>
         </section>
@@ -639,12 +655,51 @@
             icms_br[ano] = dca_icms_br_raw[s] ?? null;
         }
 
-        // TotalBR por ano — necessário para deflator
+        // FECOP — Fundo Estadual de Combate à Pobreza (adicional de até 2 p.p. no ICMS, art. 82 ADCT).
+        // O art. 115, §1º, II da LC 227/2026 exige que essa receita seja incluída na arrecadação
+        // de ICMS do Estado (art. 115, I, "a"). O PCASP registra o FECOP em conta própria, separada
+        // do ICMS "comum" — por isso ele não aparece nos valores de ICMS acima e precisa ser somado
+        // à parte. Ausência de registro para um exercício/UF é tratada como zero (o ente não
+        // instituiu o fundo naquele ano), não como dado faltante — o art. 82 ADCT determina que essa
+        // receita não se submete à cota-parte municipal do art. 158, IV, CF, então ela integra
+        // inteiramente a parcela do Estado, sem o desconto de 25% aplicado ao ICMS "comum".
+        const dca_fecop_br_raw = data.dca_fecop_br     || {};
+        const dca_fecop_uf_raw = data.dca_fecop_por_uf || {};
+
+        const fecop_es = {};
+        const fecop_br = {};
+        for (const ano of ANOS) {
+            const s = String(ano);
+            fecop_es[ano] = dca_fecop_uf_raw[s]?.['ES'] ?? 0;
+            fecop_br[ano] = dca_fecop_br_raw[s] ?? 0;
+        }
+
+        // Cota-parte municipal do ICMS (art. 158, IV, "a", CF): em vez de presumir 25% do ICMS
+        // bruto, usamos o valor que o próprio Estado declara ter deduzido do seu ICMS — conta DCA
+        // "Deduções - Transferências Constitucionais" (Anexo I-C). Checagem ano a ano mostra que
+        // esse valor bate quase exatamente com 25% do ICMS bruto sempre que existe (inclusive nos
+        // anos em que a cota-parte somada pelos próprios municípios diverge, a partir de 2022) — ou
+        // seja, a divergência está do lado do registro municipal (troca de código PCASP em 2022),
+        // não de uma retenção real do Estado. Quando o Estado não preenche essa conta (nem todos
+        // preenchem), caímos de volta à presunção constitucional de 25% do ICMS bruto.
+        const dca_transf_uf_raw = data.dca_transf_munis_por_uf || {};
+
+        const cotaMunEs = {};       // dedução real declarada pelo Estado (fallback: ICMS×0,25)
+        const cotaMunEsIsReal = {}; // true = veio do dado declarado; false = caiu no fallback teórico
+        for (const ano of ANOS) {
+            const s = String(ano);
+            const real  = dca_transf_uf_raw[s]?.['ES'] ?? null;
+            const bruto = icms_es[ano] ?? null;
+            cotaMunEsIsReal[ano] = real != null;
+            cotaMunEs[ano] = real != null ? real : (bruto != null ? bruto * 0.25 : null);
+        }
+
+        // TotalBR por ano — necessário para deflator (ICMS + ISS + FECOP, art. 115 §§1º-2º)
         const totalBR = {};
         for (const ano of ANOS) {
             const ib = icms_br[ano] ?? null;
             const is = iss_br[ano] ?? null;
-            totalBR[ano] = (ib != null && is != null) ? ib + is : null;
+            totalBR[ano] = (ib != null && is != null) ? ib + is + (fecop_br[ano] ?? 0) : null;
         }
 
         // Denominador = TotalBR_2025 (deflator base 2025 = 1)
@@ -659,23 +714,27 @@
         }
 
         // ── Numeradores ES ────────────────────────────────────────────────────
-        // Estado: ICMS_ES × 0,75 × deflator
-        // Municípios: (ISS_ES + ICMS_ES × 0,25) × deflator
-        const icmsEsLiq = {};   // ICMS_ES × 0,75
-        const icmsEsCota = {};  // ICMS_ES × 0,25 (cota-parte p/ municípios)
+        // Estado: (ICMS_ES − cota-parte declarada + FECOP_ES) × deflator — art. 115, I, "a" c/c §1º, II
+        // Municípios: (ISS_ES + cota-parte declarada) × deflator — FECOP não entra aqui (art. 82, §1º, ADCT)
+        const icmsEsLiq = {};   // ICMS_ES − cota-parte municipal (declarada ou, na ausência, 25% teórico)
+        const icmsEsCota = {};  // cota-parte municipal (declarada ou, na ausência, ICMS×0,25 teórico)
         const issCota = {};     // ISS_ES + cota-parte
-        const corEstado = {};   // ICMS_ES × 0,75 × deflator
+        const estadoEsBase = {}; // ICMS_ES líquido + FECOP_ES (base do Estado antes do deflator)
+        const corEstado = {};   // (ICMS_ES líquido + FECOP_ES) × deflator
         const corMunis = {};    // (ISS_ES + cota) × deflator
 
         for (const ano of ANOS) {
             const bruto = icms_es[ano] ?? null;
             const iss   = iss_es[ano]  ?? null;
+            const fecop = fecop_es[ano] ?? 0;
+            const cota  = cotaMunEs[ano];
             const def   = deflators[ano];
-            icmsEsLiq[ano]  = bruto != null ? bruto * 0.75 : null;
-            icmsEsCota[ano] = bruto != null ? bruto * 0.25 : null;
-            issCota[ano]    = (iss != null && bruto != null) ? iss + bruto * 0.25 : null;
-            corEstado[ano]  = (icmsEsLiq[ano] != null && def != null) ? icmsEsLiq[ano] * def : null;
-            corMunis[ano]   = (issCota[ano]   != null && def != null) ? issCota[ano]   * def : null;
+            icmsEsLiq[ano]    = (bruto != null && cota != null) ? bruto - cota : null;
+            icmsEsCota[ano]   = cota;
+            issCota[ano]      = (iss != null && cota != null) ? iss + cota : null;
+            estadoEsBase[ano] = icmsEsLiq[ano] != null ? icmsEsLiq[ano] + fecop : null;
+            corEstado[ano]    = (estadoEsBase[ano] != null && def != null) ? estadoEsBase[ano] * def : null;
+            corMunis[ano]     = (issCota[ano]      != null && def != null) ? issCota[ano]      * def : null;
         }
 
         // Receita Média = soma / 8 (divide sempre por ANOS.length)
@@ -695,6 +754,7 @@
             const bruto  = icms_es[ano]  ?? null;
             const cota   = icmsEsCota[ano];
             const liq    = icmsEsLiq[ano];
+            const fecop  = fecop_es[ano] ?? 0;
             const iss    = iss_es[ano]   ?? null;
             const issC   = issCota[ano];
             const tBR    = totalBR[ano];
@@ -707,6 +767,7 @@
                 <td style="text-align:right">${fmtBi(bruto)}</td>
                 <td style="text-align:right;color:var(--text-muted)">− ${fmtBi(cota)}</td>
                 <td style="text-align:right;font-weight:600">${fmtBi(liq)}</td>
+                <td style="text-align:right">+ ${fmtBi(fecop, 3)}</td>
                 <td style="text-align:right">${fmtBi(iss)}</td>
                 <td style="text-align:right">+ ${fmtBi(cota)}</td>
                 <td style="text-align:right;color:var(--text-muted)">${fmtBi(tBR)}</td>
@@ -718,49 +779,50 @@
 
         tbody.innerHTML = rows.join('');
 
-        const cs = 'colspan="9"';
         tfoot.innerHTML = `
             <tr style="border-top:2px solid var(--border)">
                 <td class="td-year">Σ 2019–2025 corrigidos</td>
-                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">soma dos ${ANOS.length} valores anuais atualizados para a base de 2025</td>
+                <td colspan="8" style="font-style:italic;color:var(--text-muted);text-align:center">soma dos ${ANOS.length} valores anuais atualizados para a base de 2025</td>
                 <td style="text-align:right;font-weight:700">${fmtBi(somaEstado, 3)}</td>
                 <td style="text-align:right;font-weight:700">${fmtBi(somaMunis, 3)}</td>
             </tr>
             <tr>
                 <td class="td-year">÷ ${ANOS.length} = Rec. Média de Referência</td>
-                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">numerador do CPT_ES: parcela estado ES (esq.) e parcela municípios ES (dir.)</td>
+                <td colspan="8" style="font-style:italic;color:var(--text-muted);text-align:center">numerador do CPT_ES: parcela estado ES (esq.) e parcela municípios ES (dir.)</td>
                 <td style="text-align:right;font-weight:700;color:var(--accent)">${fmtBi(totalA, 3)}</td>
                 <td style="text-align:right;font-weight:700;color:var(--accent)">${fmtBi(totalAMun, 3)}</td>
             </tr>
             <tr>
                 <td class="td-year">Denominador (Total_BR_2025)</td>
-                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">ICMS_BR_2025 + ISS_BR_2025 = Σ Receitas Médias de Referência de todos os entes da federação</td>
+                <td colspan="8" style="font-style:italic;color:var(--text-muted);text-align:center">ICMS_BR_2025 + ISS_BR_2025 + FECOP_BR_2025 = Σ Receitas Médias de Referência de todos os entes da federação</td>
                 <td colspan="2" style="text-align:right;font-weight:700">${fmtBi(totalB, 3)}</td>
             </tr>
             <tr>
                 <td class="td-year" style="color:var(--accent)">CPT_ES: parcela estado (art. 115, I)</td>
-                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">Rec. Média de Referência estado ÷ Denominador</td>
+                <td colspan="8" style="font-style:italic;color:var(--text-muted);text-align:center">Rec. Média de Referência estado ÷ Denominador</td>
                 <td style="text-align:right;font-size:1rem;font-weight:700;color:var(--accent)">${coeff != null ? fmtPct(coeff * 100) : '<span class="na-cell">aguard.</span>'}</td>
                 <td></td>
             </tr>
             <tr>
                 <td class="td-year" style="color:var(--accent)">CPT_ES: parcela municípios (art. 115, III)</td>
-                <td colspan="7" style="font-style:italic;color:var(--text-muted);text-align:center">Rec. Média de Referência municípios ÷ Denominador</td>
+                <td colspan="8" style="font-style:italic;color:var(--text-muted);text-align:center">Rec. Média de Referência municípios ÷ Denominador</td>
                 <td></td>
                 <td style="text-align:right;font-size:1rem;font-weight:700;color:var(--accent)">${coeffMun != null ? fmtPct(coeffMun * 100) : '<span class="na-cell">aguard.</span>'}</td>
             </tr>`;
 
         // ── Tabela 2: trajetória anual pontual (sem deflação) ────────────────
-        // Para cada ano: índice_estado_t = ICMS_ES×0.75 / TotalBR_t
-        //                índice_munis_t  = (ISS_ES + ICMS_ES×0.25) / TotalBR_t
+        // Para cada ano: índice_estado_t = (ICMS_ES − cota-parte + FECOP_ES) / TotalBR_t
+        //                índice_munis_t  = (ISS_ES + cota-parte) / TotalBR_t
         const snapshots = {};  // {ano: {estado, munis, total, tBR}}
         for (const ano of ANOS) {
-            const ie  = icms_es[ano] ?? null;
-            const ise = iss_es[ano]  ?? null;
+            const ie   = icms_es[ano] ?? null;
+            const ise  = iss_es[ano]  ?? null;
+            const fe   = fecop_es[ano] ?? 0;
+            const cota = cotaMunEs[ano];
             const tBR = (icms_br[ano] != null && iss_br[ano] != null)
-                ? icms_br[ano] + iss_br[ano] : null;
-            const numEst  = ie  != null ? ie * 0.75 : null;
-            const numMun  = (ie != null && ise != null) ? ise + ie * 0.25 : null;
+                ? icms_br[ano] + iss_br[ano] + (fecop_br[ano] ?? 0) : null;
+            const numEst  = (ie != null && cota != null) ? ie - cota + fe : null;
+            const numMun  = (ise != null && cota != null) ? ise + cota : null;
             const idxEst  = (numEst != null && tBR) ? numEst / tBR * 100 : null;
             const idxMun  = (numMun != null && tBR) ? numMun / tBR * 100 : null;
             snapshots[ano] = { numEst, numMun, tBR, idxEst, idxMun };
@@ -819,8 +881,13 @@
                 const isDF = uf === 'DF';
 
                 // Receita Média ICMS = média(ICMS_UF × deflator_t); Receita Média ISS = média(ISS_UF × deflator_t)
+                // Receita Média FECOP = média(FECOP_UF × deflator_t) — ausência de registro = 0 (fundo inexistente)
+                // Receita Média Cota = média(cota-parte declarada pelo Estado × deflator_t); na ausência
+                // da declaração, cai no fallback teórico de 25% do ICMS bruto do mesmo ano (ver cotaMunEs).
                 let somaICMS = 0, nICMS = 0;
                 let somaISS = 0, nISS = 0;
+                let somaFECOP = 0;
+                let somaCota = 0, nCota = 0, nCotaDeclarada = 0;
 
                 for (const ano of ANOS) {
                     const d = deflators[ano];
@@ -828,20 +895,35 @@
                     const icmsVal = ano <= 2025
                         ? (dca_icms_uf_raw[String(ano)]?.[uf] ?? null)
                         : (icms_por_uf_rreo_tab3[uf]?.[ano] ?? icms_por_uf_rreo_tab3[uf]?.[String(ano)] ?? null);
-                    const issVal  = iss_por_uf?.[ano]?.[uf] ?? iss_por_uf?.[String(ano)]?.[uf] ?? null;
+                    const issVal   = iss_por_uf?.[ano]?.[uf] ?? iss_por_uf?.[String(ano)]?.[uf] ?? null;
+                    const fecopVal = dca_fecop_uf_raw[String(ano)]?.[uf] ?? 0;
                     if (icmsVal != null) { somaICMS += icmsVal * d; nICMS++; }
                     if (issVal  != null) { somaISS  += issVal  * d; nISS++;  }
+                    somaFECOP += fecopVal * d;
+                    // Cota-parte municipal (art. 158, IV, "a", CF) não existe para o DF: sem
+                    // municípios, não há o que deduzir do ICMS nem parcela a repassar (art. 115, II).
+                    if (!isDF) {
+                        const cotaDeclarada = dca_transf_uf_raw[String(ano)]?.[uf] ?? null;
+                        const cotaVal = cotaDeclarada ?? (icmsVal != null ? icmsVal * 0.25 : null);
+                        if (cotaDeclarada != null) nCotaDeclarada++;
+                        if (cotaVal != null) { somaCota += cotaVal * d; nCota++; }
+                    }
                 }
 
-                const mediaICMS = nICMS > 0 ? somaICMS / ANOS.length : null;
-                const mediaISS  = nISS  > 0 ? somaISS  / ANOS.length : null;
+                const mediaICMS  = nICMS > 0 ? somaICMS  / ANOS.length : null;
+                const mediaISS   = nISS  > 0 ? somaISS   / ANOS.length : null;
+                const mediaFECOP = somaFECOP / ANOS.length;
+                const mediaCota  = (!isDF && nCota > 0) ? somaCota / ANOS.length : null;
 
-                // Estado: ICMS × 0,75 (dedução da cota-parte municipal); DF: ICMS integral (sem dedução)
-                const mediaEstado = mediaICMS != null ? mediaICMS * (isDF ? 1 : 0.75) : null;
-                // Municípios: ISS + cota-parte (ICMS × 0,25); não se aplica ao DF
+                // Estado: ICMS − cota-parte (declarada, ou 25% teórico) + FECOP integral (art. 115, I "a"
+                // c/c §1º II; art. 82 §1º ADCT); DF: ICMS integral + FECOP (sem dedução — art. 115, II)
+                const mediaEstado = isDF
+                    ? (mediaICMS != null ? mediaICMS + mediaFECOP : null)
+                    : ((mediaICMS != null && mediaCota != null) ? mediaICMS - mediaCota + mediaFECOP : null);
+                // Municípios: ISS + cota-parte (declarada ou teórica); FECOP não entra aqui; não se aplica ao DF
                 const mediaMunis  = isDF ? null
-                                  : (mediaISS != null || mediaICMS != null)
-                                    ? (mediaISS ?? 0) + (mediaICMS != null ? mediaICMS * 0.25 : 0)
+                                  : (mediaISS != null || mediaCota != null)
+                                    ? (mediaISS ?? 0) + (mediaCota ?? 0)
                                     : null;
                 const mediaTotal  = isDF
                     ? ((mediaEstado != null || mediaISS != null) ? (mediaEstado ?? 0) + (mediaISS ?? 0) : null)
@@ -856,16 +938,22 @@
                                 ?? icms_por_uf_rreo_tab3[uf]?.[2025]
                                 ?? icms_por_uf_rreo_tab3[uf]?.['2025']
                                 ?? null;
-                const iss2025   = iss_por_uf?.['2025']?.[uf] ?? null;
+                const iss2025    = iss_por_uf?.['2025']?.[uf] ?? null;
+                const fecop2025  = dca_fecop_uf_raw['2025']?.[uf] ?? 0;
+                // Cota-parte não se aplica ao DF (sem municípios) — ver nota acima.
+                const cota2025   = isDF ? null : (dca_transf_uf_raw['2025']?.[uf]
+                                ?? (icms2025 != null ? icms2025 * 0.25 : null));
                 const totalBR2025 = totalB; // deflator 2025 = 1, so totalB = totalBR[2025]
-                const idx2025Est  = (icms2025 != null && totalBR2025)
-                    ? icms2025 * (isDF ? 1 : 0.75) / totalBR2025 * 100 : null;
+                const idx2025Est  = isDF
+                    ? ((icms2025 != null && totalBR2025) ? (icms2025 + fecop2025) / totalBR2025 * 100 : null)
+                    : ((icms2025 != null && cota2025 != null && totalBR2025)
+                        ? (icms2025 - cota2025 + fecop2025) / totalBR2025 * 100 : null);
                 const idx2025Mun  = isDF ? null
-                    : (icms2025 != null && iss2025 != null && totalBR2025)
-                        ? (iss2025 + icms2025 * 0.25) / totalBR2025 * 100 : null;
+                    : (iss2025 != null && cota2025 != null && totalBR2025)
+                        ? (iss2025 + cota2025) / totalBR2025 * 100 : null;
+                const idx2025IssPct = (iss2025 != null && totalBR2025) ? iss2025 / totalBR2025 * 100 : null;
                 const idx2025Tot  = isDF
-                    ? ((icms2025 != null && iss2025 != null && totalBR2025)
-                        ? (icms2025 + iss2025) / totalBR2025 * 100 : idx2025Est)
+                    ? ((idx2025Est != null && idx2025IssPct != null) ? idx2025Est + idx2025IssPct : idx2025Est)
                     : ((idx2025Est != null && idx2025Mun != null) ? idx2025Est + idx2025Mun : null);
 
                 // Variação: CPT histórico − índice pontual 2025
@@ -876,7 +964,8 @@
                 const isES = uf === 'ES';
                 return { uf, isDF, cptEstado, cptMunis, cptTotal,
                          idx2025Est, idx2025Mun, idx2025Tot,
-                         varEstado, varMunis, varTotal, isES };
+                         varEstado, varMunis, varTotal, isES,
+                         nCotaDeclarada: isDF ? null : nCotaDeclarada }; // nº de anos (de 7) com cota-parte DECLARADA no DCA (exclui fallback teórico)
             });
 
             const fmtVar = v => {
@@ -951,9 +1040,10 @@
         }
 
         // ── Tabela 4: CPT por município ES (DCA 2019–2025) ───────────────────
-        // A cota-parte de cada município é proporcionalizada pelo total real do DCA,
-        // mas reescalada para ICMS_ES × 0.25 (fórmula art. 115, III, "b").
-        // Isso garante que Σ CPT_muni = CPT_ES_munis da Tabela 3.
+        // A cota-parte de cada município é proporcionalizada pelo total real do DCA (distribuição
+        // relativa entre municípios), mas reescalada para o total declarado pelo Estado (ou, na
+        // ausência dele, para ICMS_ES × 0,25 — ver cotaMunEs acima). Isso garante que Σ CPT_muni
+        // = CPT_ES_munis da Tabela 3.
         const dca_det = data.dca_detalhes || {};
         const dca_cota_por_uf_raw = data.dca_cota_icms_por_uf || {};
 
@@ -977,13 +1067,12 @@
             for (const ano of ANOS) {
                 const d_ano = m.dados[ano];
                 const def   = deflators[ano];
-                const icms  = icms_es[ano];
                 if (!d_ano || def == null) continue;
-                const cotaTeo = icms != null ? icms * 0.25 : null;
+                const cotaBase = cotaMunEs[ano];
                 const cotaTotal = cotaTotalDCA[ano];
-                // Cota do município: proporcional ao DCA, mas reescalada para ICMS×0.25
-                const cotaMuni = (cotaTeo != null && cotaTotal != null && cotaTotal > 0)
-                    ? cotaTeo * (d_ano.cotaDCA / cotaTotal)
+                // Cota do município: proporcional ao DCA, mas reescalada para cotaMunEs (declarado/teórico)
+                const cotaMuni = (cotaBase != null && cotaTotal != null && cotaTotal > 0)
+                    ? cotaBase * (d_ano.cotaDCA / cotaTotal)
                     : d_ano.cotaDCA;  // fallback: DCA direto
                 soma += (d_ano.iss + cotaMuni) * def;
             }
@@ -991,13 +1080,12 @@
 
             // Índice pontual 2025 (deflator 2025 = 1, sem deflação)
             const d2025  = m.dados[2025];
-            const icms25 = icms_es[2025];
+            const cota25Base = cotaMunEs[2025];
             const cota25Tot = cotaTotalDCA[2025];
             let cpt2025 = null;
             if (d2025 != null && totalB != null) {
-                const cotaTeo25 = icms25 != null ? icms25 * 0.25 : null;
-                const cotaMuni25 = (cotaTeo25 != null && cota25Tot != null && cota25Tot > 0)
-                    ? cotaTeo25 * (d2025.cotaDCA / cota25Tot)
+                const cotaMuni25 = (cota25Base != null && cota25Tot != null && cota25Tot > 0)
+                    ? cota25Base * (d2025.cotaDCA / cota25Tot)
                     : d2025.cotaDCA;
                 cpt2025 = (d2025.iss + cotaMuni25) / totalB * 100;
             }
@@ -1085,9 +1173,9 @@
         // ── Snapshot para exportação em planilha (.xlsx) ──────────────────────
         AUDIT_DATA = {
             anos: ANOS,
-            icms_es, iss_es, icmsEsCota, icmsEsLiq, issCota, totalBR, deflators,
+            icms_es, iss_es, fecop_es, icmsEsCota, icmsEsLiq, issCota, estadoEsBase, totalBR, deflators,
             corEstado, corMunis, totalA, totalAMun, totalB, coeff, coeffMun,
-            snapshots, ufRows, muniRows,
+            snapshots, ufRows, muniRows, cotaMunEsIsReal,
         };
         document.getElementById('btn-export-xlsx').disabled = false;
     }
@@ -1279,18 +1367,30 @@
             ['Por isso este arquivo nunca soma o coeficiente do estado com o dos municípios num único número:'],
             ['o que importa para cada ente é o seu próprio índice — ver colunas separadas na aba "Tabela 1".'],
             [],
-            ['Passo 1: Índice_t = Total_BR_2025 / Total_BR_t, onde Total_BR_t = ICMS bruto de todas as UFs + ISS bruto de todos os municípios do Brasil e do DF no ano t.'],
-            ['Passo 2: Receita Média de Referência do estado ES = média dos 7 anos de (ICMS_ES bruto × 0,75 × Índice_t).'],
-            ['Passo 3: Receita Média de Referência dos municípios ES = média dos 7 anos de ((ISS_ES + ICMS_ES × 0,25) × Índice_t).'],
+            ['Passo 1: Índice_t = Total_BR_2025 / Total_BR_t, onde Total_BR_t = ICMS bruto de todas as UFs + ISS bruto de todos os municípios do Brasil e do DF + FECOP de todas as UFs, no ano t.'],
+            ['Passo 2: Receita Média de Referência do estado ES = média dos 7 anos de ((ICMS_ES bruto − cota-parte + FECOP-ES) × Índice_t).'],
+            ['Passo 3: Receita Média de Referência dos municípios ES = média dos 7 anos de ((ISS_ES + cota-parte) × Índice_t).'],
             ['Passo 4: Denominador = Total_BR_2025 (equivale à soma das Receitas Médias de Referência de todos os entes do país).'],
             ['Passo 5: CPT_ES estado = Receita Média Estado ÷ Denominador. CPT_ES municípios = Receita Média Municípios ÷ Denominador.'],
-            ['Distrito Federal: por acumular as competências estadual e municipal, o DF não tem dedução de 25% nem parcela'],
-            ['municipal própria — sua receita de referência é o ICMS + ISS integrais, apurados como um único ente (ver Tabela 3).'],
+            ['Distrito Federal: por acumular as competências estadual e municipal, o DF não tem dedução de cota-parte nem parcela'],
+            ['municipal própria — sua receita de referência é o ICMS + FECOP + ISS integrais, apurados como um único ente (ver Tabela 3).'],
+            [],
+            ['Cota-parte municipal (art. 158, IV, "a", CF): em vez de presumir 25% do ICMS bruto, usamos o valor que o próprio'],
+            ['Estado declara ter deduzido do ICMS ("Deduções - Transferências Constitucionais", DCA Anexo I-C). Para o ES, esse'],
+            ['valor bateu entre 99,9% e 100,0% da presunção teórica em todos os 7 anos da série — inclusive nos anos em que a soma'],
+            ['das declarações individuais dos municípios caiu para ~89% dele, o que indica um problema de escrituração municipal'],
+            ['(não uma retenção real do Estado). Quando o Estado não declara essa dedução, a estimativa usa 25% do ICMS bruto.'],
+            [],
+            ['FECOP (Fundo Estadual de Combate à Pobreza, art. 82 do ADCT): adicional de até 2 p.p. na alíquota do ICMS,'],
+            ['registrado pelo SICONFI/DCA em conta própria (código PCASP RO1.1.1.4.50.2.0 / RO1.1.1.8.02.2.0), separada do'],
+            ['ICMS "comum". O art. 115, §1º, II da LC 227/2026 exige incluí-lo na receita do Estado; como o art. 82, §1º, do ADCT'],
+            ['determina que essa receita não se submete à cota-parte municipal do art. 158, IV, CF, ela entra inteira na parcela'],
+            ['estado, sem o desconto de 25%. Sem esse ajuste, o Estado recebia um coeficiente levemente subestimado.'],
             [],
             ['Abas:'],
             ['Tabela 1 - Auditoria ES: reconstrução ano a ano do cálculo do CPT_ES, estado e municípios em colunas separadas.'],
             ['Tabela 2 - Trajetória anual: índice de cada ano isolado (sem deflação/média), para checar a tendência.'],
-            ['Tabela 3 - CPT por UF: mesmo cálculo replicado para as 26 UFs + DF (a coluna Total soma estado+municípios apenas para conferir que o total nacional fecha em 100%; para o DF, que não tem parcela municipal, a coluna Municípios vem em branco e a coluna Estado traz o coeficiente unificado).'],
+            ['Tabela 3 - CPT por UF: mesmo cálculo replicado para as 26 UFs + DF (a coluna Total soma estado+municípios apenas para conferir que o total nacional fecha em 100%; para o DF, que não tem parcela municipal, a coluna Municípios vem em branco e a coluna Estado traz o coeficiente unificado, incluindo FECOP).'],
             ['Tabela 4 - Municípios ES: coeficiente individual de cada um dos municípios capixabas.'],
             [],
             ['Gerado em: ' + new Date().toISOString() + ' · eduardoreisaraujo.com.br'],
@@ -1300,14 +1400,17 @@
         XLSX.utils.book_append_sheet(wb, wsReadme, 'Leia-me');
 
         // Tabela 1: auditoria ano a ano
-        const t1header = ['Ano', 'ICMS ES bruto (R$)', 'Repasse municipal 25% (R$)', 'ICMS ES líquido, 75% (R$)',
-            'ISS municípios ES (R$)', 'Cota-parte ICMS 25% (R$)', 'Total_BR_t, ICMS+ISS nacional (R$)', 'Índice_t (BR2025/BRt)',
-            'Estado: ICMS líq. × Índice_t (R$)', 'Municípios: (ISS+cota) × Índice_t (R$)'];
+        const t1header = ['Ano', 'ICMS ES bruto (R$)', 'Cota-parte mun. (R$)', 'Fonte da cota-parte',
+            'ICMS ES líquido (R$)', 'FECOP-ES, art. 82 ADCT (R$)', 'ISS municípios ES (R$)', 'Cota-parte mun. (R$)',
+            'Total_BR_t, ICMS+ISS+FECOP nacional (R$)', 'Índice_t (BR2025/BRt)',
+            'Estado: (ICMS líq.+FECOP) × Índice_t (R$)', 'Municípios: (ISS+cota) × Índice_t (R$)'];
         const t1rows = d.anos.map(ano => [
             ano,
             d.icms_es[ano] ?? null,
             d.icmsEsCota[ano] ?? null,
+            d.cotaMunEsIsReal[ano] ? 'declarada (DCA)' : 'teórica (25% ICMS)',
             d.icmsEsLiq[ano] ?? null,
+            d.fecop_es[ano] ?? 0,
             d.iss_es[ano] ?? null,
             d.icmsEsCota[ano] ?? null,
             d.totalBR[ano] ?? null,
@@ -1319,18 +1422,18 @@
         const somaMunis = sumYears(d.corMunis, d.anos);
         const t1footer = [
             [],
-            ['Soma 2019–2025 (valores corrigidos p/ base 2025)', '', '', '', '', '', '', '', somaEstado, somaMunis],
-            ['÷ ' + d.anos.length + ' = Receita Média de Referência', '', '', '', '', '', '', '', d.totalA, d.totalAMun],
-            ['Denominador (Total_BR_2025)', '', '', '', '', '', '', '', d.totalB, d.totalB],
-            ['CPT_ES — Estado (art. 115, I), %', '', '', '', '', '', '', '', d.coeff != null ? d.coeff * 100 : null, ''],
-            ['CPT_ES — Municípios (art. 115, III), %', '', '', '', '', '', '', '', '', d.coeffMun != null ? d.coeffMun * 100 : null],
+            ['Soma 2019–2025 (valores corrigidos p/ base 2025)', '', '', '', '', '', '', '', '', '', somaEstado, somaMunis],
+            ['÷ ' + d.anos.length + ' = Receita Média de Referência', '', '', '', '', '', '', '', '', '', d.totalA, d.totalAMun],
+            ['Denominador (Total_BR_2025)', '', '', '', '', '', '', '', '', '', d.totalB, d.totalB],
+            ['CPT_ES — Estado (art. 115, I), %', '', '', '', '', '', '', '', '', '', d.coeff != null ? d.coeff * 100 : null, ''],
+            ['CPT_ES — Municípios (art. 115, III), %', '', '', '', '', '', '', '', '', '', '', d.coeffMun != null ? d.coeffMun * 100 : null],
         ];
         const wsT1 = XLSX.utils.aoa_to_sheet([t1header, ...t1rows, ...t1footer]);
         wsT1['!cols'] = t1header.map(() => ({ wch: 22 }));
         XLSX.utils.book_append_sheet(wb, wsT1, 'Tabela 1 - Auditoria ES');
 
         // Tabela 2: trajetória anual pontual (sem deflação)
-        const t2header = ['Ano', 'Total_BR_t (R$)', 'Numerador estado: ICMS_ES×0,75 (R$)',
+        const t2header = ['Ano', 'Total_BR_t (R$)', 'Numerador estado: ICMS_ES−cota+FECOP (R$)',
             'Numerador municípios: ISS_ES+cota (R$)', 'Índice anual estado (%)', 'Índice anual municípios (%)'];
         const t2rows = d.anos.map(ano => {
             const s = d.snapshots[ano] || {};
@@ -1348,9 +1451,11 @@
         // Tabela 3: CPT por UF (estado e municípios sempre em colunas separadas)
         const t3header = ['UF', 'CPT histórico — Estado (%)', 'CPT histórico — Municípios (%)', 'CPT histórico — Total UF (%)',
             'Índice 2025 — Estado (%)', 'Índice 2025 — Municípios (%)', 'Índice 2025 — Total UF (%)',
-            'Variação — Estado (p.p.)', 'Variação — Municípios (p.p.)', 'Variação — Total UF (p.p.)'];
+            'Variação — Estado (p.p.)', 'Variação — Municípios (p.p.)', 'Variação — Total UF (p.p.)',
+            'Cota-parte declarada (anos de 7)'];
         const t3rows = (d.ufRows || []).map(r => [r.uf, r.cptEstado, r.cptMunis, r.cptTotal,
-            r.idx2025Est, r.idx2025Mun, r.idx2025Tot, r.varEstado, r.varMunis, r.varTotal]);
+            r.idx2025Est, r.idx2025Mun, r.idx2025Tot, r.varEstado, r.varMunis, r.varTotal,
+            r.isDF ? 'n/a (DF sem municípios)' : `${r.nCotaDeclarada}/7`]);
         const wsT3 = XLSX.utils.aoa_to_sheet([t3header, ...t3rows]);
         wsT3['!cols'] = t3header.map(() => ({ wch: 22 }));
         XLSX.utils.book_append_sheet(wb, wsT3, 'Tabela 3 - CPT por UF');
