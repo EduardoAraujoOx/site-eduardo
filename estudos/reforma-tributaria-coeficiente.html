@@ -210,6 +210,43 @@
             font-size: 0.7rem;
         }
 
+        /* Tabela 1: memória de cálculo do Estado — estilo mais próximo da Nota Técnica original */
+        #table-nominal thead th {
+            background: var(--accent);
+            color: #fff;
+            text-align: right;
+            vertical-align: top;
+            font-weight: 700;
+            padding: 0.7rem 0.85rem;
+            white-space: normal;
+            line-height: 1.35;
+            border-bottom: none;
+        }
+        #table-nominal thead th:first-child { text-align: left; }
+        #table-nominal thead .th-label { display: block; font-size: 0.78rem; }
+        #table-nominal thead .th-notation {
+            display: block;
+            font-style: italic;
+            font-weight: 400;
+            font-family: var(--serif);
+            font-size: 0.78rem;
+            opacity: 0.9;
+            margin-top: 0.2rem;
+        }
+        #table-nominal thead .th-unit {
+            display: block;
+            font-weight: 400;
+            font-size: 0.65rem;
+            opacity: 0.75;
+            margin-top: 0.3rem;
+        }
+        #table-nominal tbody tr:nth-child(even) { background: var(--bg-secondary, #f7f7f5); }
+        #table-nominal tfoot tr:first-child td { border-top: 2px solid var(--border); }
+        #table-nominal tfoot td.tf-label { text-align: right; font-weight: 600; color: var(--text-secondary); }
+        #table-nominal tfoot td.tf-value { font-weight: 700; }
+        #table-nominal tfoot tr.tf-final td { background: var(--accent-light); }
+        #table-nominal tfoot tr.tf-final td.tf-value { color: var(--accent); font-size: 0.95rem; }
+
         /* result highlight */
         .result-box {
             background: var(--accent-light);
@@ -344,58 +381,49 @@
             </div>
 
             <!-- Main table -->
-            <span class="section-label">Tabela 1: Auditoria CPT_ES, Espírito Santo (LC 227/2026, art. 115)</span>
+            <span class="section-label">Tabela 1: Memória de cálculo — CPT_ES, Estado do Espírito Santo (LC 227/2026, art. 115)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
-                Reprodução passo a passo do cálculo do CPT_ES. Para cada ano do período de referência
-                (2019–2025): <strong>(i)</strong> ICMS bruto arrecadado pelo ES, extraído do DCA Anexo I-C
-                (código <code>RO1.1.1.4.50.1.0</code> para 2022–2025; <code>RO1.1.1.8.02.1.0</code> para 2019–2021); <strong>(ii)</strong> dedução da cota-parte
-                municipal (art. 158, IV, "a", CF) pelo valor que o próprio Estado declara ter transferido
-                aos municípios ("Deduções - Transferências Constitucionais", DCA Anexo I-C) — não uma
-                presunção de 25%, embora o valor declarado bata quase exatamente com 25% do ICMS bruto
-                em todos os anos disponíveis ⁷; <strong>(iii)</strong> soma do FECOP-ES
-                (arrecadação efetiva do adicional de ICMS destinado ao Fundo de Combate à Pobreza,
-                art. 82 do ADCT — valor arrecadado, não uma estimativa sobre a alíquota máxima de 2 p.p. ⁴),
-                que a LC 227/2026 manda incluir na receita do Estado (art. 115, §1º, II) e que, por não se
-                submeter à cota-parte municipal (art. 82, §1º, ADCT), não é dividido com os municípios;
-                <strong>(iv)</strong> ISS bruto dos municípios
-                capixabas (DCA Anexo I-C 2019–2025 ⁵),
-                acrescido da mesma cota-parte declarada do item (ii); <strong>(v)</strong> índice de atualização
-                = Total_BR_2025 / Total_BR_t, único e idêntico para todos os entes. A Receita Média
-                de Referência é a média aritmética simples dos 7 valores anuais corrigidos.
+                Reprodução passo a passo do cálculo da receita de referência e do coeficiente do
+                <strong>Estado</strong> do ES (a parcela dos municípios capixabas aparece nas Tabelas 2 a 4).
+                Para cada ano t do período de referência (2019–2025), a receita de referência é
+                R<sub>ES,t</sub> = ICMS<sub>ES,t</sub> − Q<sub>t</sub> + FECOP<sub>ES,t</sub>, em que
+                ICMS<sub>ES,t</sub> é o ICMS bruto do ES (DCA Anexo I-C), Q<sub>t</sub> é a cota-parte
+                municipal (art. 158, IV, "a", CF) — o valor que o próprio Estado declara ter transferido
+                aos municípios, ou 25% do ICMS bruto quando essa declaração não existe ⁷ — e
+                FECOP<sub>ES,t</sub> é a arrecadação do Fundo de Combate à Pobreza (art. 82 do ADCT),
+                que a LC 227/2026 manda somar à receita do Estado, sem dedução, por não se submeter à
+                cota-parte municipal (art. 115, §1º, II ⁴). A razão de atualização A<sub>2025</sub>/A<sub>t</sub>
+                usa o mesmo agregado nacional (ICMS+ISS+FECOP) de todos os entes. A receita média de
+                referência é a média aritmética simples dos 7 valores anuais atualizados.
             </p>
             <div id="status-nominal" class="status-bar">
                 <span class="status-dot pending"></span>
                 <span>Carregando dados do SICONFI…</span>
             </div>
             <div class="data-table-wrap" style="overflow-x:auto">
-                <table class="data-table" id="table-nominal" style="min-width:1000px">
+                <table class="data-table" id="table-nominal" style="min-width:820px">
                     <thead>
                         <tr>
-                            <th class="th-group th-year" rowspan="2">Ano</th>
-                            <th class="th-group" colspan="4">Estado ES, nominal (R$ bi)</th>
-                            <th class="th-group" colspan="2">Municípios ES, nominal (R$ bi)</th>
-                            <th class="th-group" colspan="2">Agregado nacional</th>
-                            <th class="th-group" colspan="2">Receita corrigida, base 2025 (R$ bi)</th>
-                        </tr>
-                        <tr>
-                            <th>ICMS ES bruto<br><small style="font-weight:400;font-size:0.65em">(DCA An.I-C)</small></th>
-                            <th>− Cota-parte mun.<br><small style="font-weight:400;font-size:0.65em">(declarada, art. 158 IV CF) ⁷</small></th>
-                            <th>= ICMS ES<br>líquido</th>
-                            <th>+ FECOP-ES<br><small style="font-weight:400;font-size:0.65em">(art. 82 ADCT)</small></th>
-                            <th>ISS municípios<br>ES</th>
-                            <th>+ Cota-parte<br>mun. declarada ⁷</th>
-                            <th>Total_BR_t<br><small style="font-weight:400;font-size:0.65em">(ICMS+ISS+FECOP, R$ bi)</small></th>
-                            <th>Índice_t<br><small style="font-weight:400;font-size:0.65em">(BR₂₀₂₅ / BR_t)</small></th>
-                            <th>(ICMS liq.+FECOP)<br>× Índice_t</th>
-                            <th>(ISS + cota)<br>× Índice_t</th>
+                            <th>Ano</th>
+                            <th><span class="th-label">ICMS bruto do ES</span><span class="th-notation">ICMS<sub>ES,t</sub></span><span class="th-unit">R$ bi</span></th>
+                            <th><span class="th-label">Receita de referência</span><span class="th-notation">R<sub>ES,t</sub></span><span class="th-unit">R$ bi</span></th>
+                            <th><span class="th-label">Arrecadação nacional</span><span class="th-notation">A<sub>t</sub></span><span class="th-unit">R$ bi</span></th>
+                            <th><span class="th-label">Razão de atualização</span><span class="th-notation">A<sub>2025</sub>/A<sub>t</sub></span></th>
+                            <th><span class="th-label">Receita de referência atualizada</span><span class="th-notation">R<sub>ES,t</sub>(A<sub>2025</sub>/A<sub>t</sub>)</span><span class="th-unit">R$ bi, base 2025</span></th>
                         </tr>
                     </thead>
                     <tbody id="tbody-nominal">
-                        <tr><td colspan="11" style="text-align:center;padding:2rem;color:var(--text-muted)">Aguardando dados…</td></tr>
+                        <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted)">Aguardando dados…</td></tr>
                     </tbody>
                     <tfoot id="tfoot-nominal"></tfoot>
                 </table>
             </div>
+            <p style="font-size:0.78rem;color:var(--text-muted);margin:0 0 2rem;line-height:1.6">
+                <strong>Fonte:</strong> elaboração própria com dados do DCA/SICONFI. &nbsp;
+                <strong>Nota:</strong> R<sub>ES,t</sub> = ICMS<sub>ES,t</sub> − Q<sub>t</sub> + FECOP<sub>ES,t</sub>,
+                conforme metodologia descrita acima (notas ⁴ e ⁷). Valores em R$ bilhões, salvo indicação em
+                contrário; os resultados exibidos foram arredondados, o cálculo usa os valores sem arredondamento.
+            </p>
 
             <!-- Secondary info table -->
             <span class="section-label" style="margin-top:2rem">Tabela 2: Trajetória anual do índice pontual do ES (2019–2025)</span>
@@ -767,68 +795,45 @@
         const coeff    = totalB != null ? totalA    / totalB : null;
         const coeffMun = totalB != null ? totalAMun / totalB : null;
 
-        // ── Tabela 1 (auditoria) ──────────────────────────────────────────────
+        // ── Tabela 1 (memória de cálculo — Estado) ────────────────────────────
         const tbody = document.getElementById('tbody-nominal');
         const tfoot = document.getElementById('tfoot-nominal');
 
         const rows = ANOS.map(ano => {
-            const bruto  = icms_es[ano]  ?? null;
-            const cota   = icmsEsCota[ano];
-            const liq    = icmsEsLiq[ano];
-            const fecop  = fecop_es[ano] ?? 0;
-            const iss    = iss_es[ano]   ?? null;
-            const issC   = issCota[ano];
-            const tBR    = totalBR[ano];
-            const def    = deflators[ano];
-            const cEst   = corEstado[ano];
-            const cMun   = corMunis[ano];
+            const bruto = icms_es[ano] ?? null;
+            const ref   = estadoEsBase[ano];  // R_ES,t = ICMS − cota-parte + FECOP
+            const tBR   = totalBR[ano];
+            const def   = deflators[ano];
+            const refAt = corEstado[ano];     // R_ES,t × (A_2025/A_t)
 
             return `<tr>
                 <td class="td-year">${ano}</td>
                 <td style="text-align:right">${fmtBi(bruto)}</td>
-                <td style="text-align:right;color:var(--text-muted)">− ${fmtBi(cota)}</td>
-                <td style="text-align:right;font-weight:600">${fmtBi(liq)}</td>
-                <td style="text-align:right">+ ${fmtBi(fecop, 3)}</td>
-                <td style="text-align:right">${fmtBi(iss)}</td>
-                <td style="text-align:right">+ ${fmtBi(cota)}</td>
+                <td style="text-align:right">${fmtBi(ref, 3)}</td>
                 <td style="text-align:right;color:var(--text-muted)">${fmtBi(tBR)}</td>
-                <td style="text-align:right;font-weight:600">${def != null ? fmtDeflator(def) : '<span class="na-cell">aguard.</span>'}</td>
-                <td style="text-align:right" class="${cEst != null ? 'td-coeff' : ''}">${fmtBi(cEst, 3)}</td>
-                <td style="text-align:right" class="${cMun != null ? 'td-coeff' : ''}">${fmtBi(cMun, 3)}</td>
+                <td style="text-align:right">${def != null ? fmtDeflator(def) : '<span class="na-cell">aguard.</span>'}</td>
+                <td style="text-align:right" class="${refAt != null ? 'td-coeff' : ''}">${fmtBi(refAt, 3)}</td>
             </tr>`;
         });
 
         tbody.innerHTML = rows.join('');
 
         tfoot.innerHTML = `
-            <tr style="border-top:2px solid var(--border)">
-                <td class="td-year">Σ 2019–2025 corrigidos</td>
-                <td colspan="8" style="font-style:italic;color:var(--text-muted);text-align:center">soma dos ${ANOS.length} valores anuais atualizados para a base de 2025</td>
-                <td style="text-align:right;font-weight:700">${fmtBi(somaEstado, 3)}</td>
-                <td style="text-align:right;font-weight:700">${fmtBi(somaMunis, 3)}</td>
+            <tr>
+                <td class="tf-label" colspan="5">Soma das receitas de referência atualizadas</td>
+                <td class="tf-value" style="text-align:right">${fmtBi(somaEstado, 3)}</td>
             </tr>
             <tr>
-                <td class="td-year">÷ ${ANOS.length} = Rec. Média de Referência</td>
-                <td colspan="8" style="font-style:italic;color:var(--text-muted);text-align:center">numerador do CPT_ES: parcela estado ES (esq.) e parcela municípios ES (dir.)</td>
-                <td style="text-align:right;font-weight:700;color:var(--accent)">${fmtBi(totalA, 3)}</td>
-                <td style="text-align:right;font-weight:700;color:var(--accent)">${fmtBi(totalAMun, 3)}</td>
+                <td class="tf-label" colspan="5">÷ ${ANOS.length} = Receita média de referência do Estado</td>
+                <td class="tf-value" style="text-align:right">${fmtBi(totalA, 3)}</td>
             </tr>
             <tr>
-                <td class="td-year">Denominador (Total_BR_2025)</td>
-                <td colspan="8" style="font-style:italic;color:var(--text-muted);text-align:center">ICMS_BR_2025 + ISS_BR_2025 + FECOP_BR_2025 = Σ Receitas Médias de Referência de todos os entes da federação</td>
-                <td colspan="2" style="text-align:right;font-weight:700">${fmtBi(totalB, 3)}</td>
+                <td class="tf-label" colspan="5">Receita média total (denominador, todos os entes)</td>
+                <td class="tf-value" style="text-align:right">${fmtBi(totalB, 3)}</td>
             </tr>
-            <tr>
-                <td class="td-year" style="color:var(--accent)">CPT_ES: parcela estado (art. 115, I)</td>
-                <td colspan="8" style="font-style:italic;color:var(--text-muted);text-align:center">Rec. Média de Referência estado ÷ Denominador</td>
-                <td style="text-align:right;font-size:1rem;font-weight:700;color:var(--accent)">${coeff != null ? fmtPct(coeff * 100) : '<span class="na-cell">aguard.</span>'}</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td class="td-year" style="color:var(--accent)">CPT_ES: parcela municípios (art. 115, III)</td>
-                <td colspan="8" style="font-style:italic;color:var(--text-muted);text-align:center">Rec. Média de Referência municípios ÷ Denominador</td>
-                <td></td>
-                <td style="text-align:right;font-size:1rem;font-weight:700;color:var(--accent)">${coeffMun != null ? fmtPct(coeffMun * 100) : '<span class="na-cell">aguard.</span>'}</td>
+            <tr class="tf-final">
+                <td class="tf-label" colspan="5">Coeficiente de participação do Estado, C_ES = R̄_ES / R̄_T</td>
+                <td class="tf-value" style="text-align:right">${coeff != null ? fmtPct(coeff * 100) : '<span class="na-cell">aguard.</span>'}</td>
             </tr>`;
 
         // ── Tabela 2: trajetória anual pontual (sem deflação) ────────────────
