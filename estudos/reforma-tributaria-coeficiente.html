@@ -450,12 +450,16 @@
                 pelo mesmo procedimento aplicado ao ES. Cada linha decompõe o CPT da UF em
                 <strong>parcela estado</strong> ((ICMS − cota-parte + FECOP) × índice, média dos 7 anos ÷ Total_BR_2025) e
                 <strong>parcela municípios</strong> (ISS + cota-parte × índice, mesma média e denominador). A
-                cota-parte usada é a que o próprio Estado declara ter transferido (ou, na ausência dessa
-                declaração, 25% do ICMS bruto ⁷). O FECOP (Fundo Estadual de Combate à Pobreza, art. 82 do
+                cota-parte usada é a que o próprio Estado declara ter transferido, ano a ano; nos anos/UFs
+                em que essa declaração não existe no DCA — caso de AC, SP e DF em toda a série, e de outras
+                UFs em anos isolados, sobretudo antes de 2022 — a estimativa usa 25% do ICMS bruto daquele
+                ano/UF ⁷ (a planilha de auditoria mostra, UF a UF, em quantos dos 7 anos a cota-parte é
+                declarada). O FECOP (Fundo Estadual de Combate à Pobreza, art. 82 do
                 ADCT) entra integralmente na parcela estado, sem dedução, porque não se submete à cota-parte
                 municipal (art. 82, §1º, ADCT). A soma da coluna <strong>Total UF</strong> deve ser exatamente 100%.
-                <strong>Exceção — Distrito Federal:</strong> por exercer simultaneamente as competências
-                estadual e municipal, o DF não tem dedução de cota-parte nem parcela municipal separada; sua coluna
+                <strong>Exceção — Distrito Federal:</strong> por não ter municípios, o DF não se submete à
+                dedução de cota-parte do art. 158, IV, CF — o cálculo nem tenta apurá-la, diferente dos demais
+                entes, para os quais ela é sempre declarada ou presumida; sua coluna
                 "Estado" traz o coeficiente unificado (ICMS + FECOP + ISS integrais) e a coluna "Municípios" é
                 marcada como "n/a" (não aplicável), sem prejuízo do Total, que permanece correto.
             </p>
@@ -883,7 +887,7 @@
                 let somaICMS = 0, nICMS = 0;
                 let somaISS = 0, nISS = 0;
                 let somaFECOP = 0;
-                let somaCota = 0, nCota = 0;
+                let somaCota = 0, nCota = 0, nCotaDeclarada = 0;
 
                 for (const ano of ANOS) {
                     const d = deflators[ano];
@@ -893,18 +897,23 @@
                         : (icms_por_uf_rreo_tab3[uf]?.[ano] ?? icms_por_uf_rreo_tab3[uf]?.[String(ano)] ?? null);
                     const issVal   = iss_por_uf?.[ano]?.[uf] ?? iss_por_uf?.[String(ano)]?.[uf] ?? null;
                     const fecopVal = dca_fecop_uf_raw[String(ano)]?.[uf] ?? 0;
-                    const cotaVal  = dca_transf_uf_raw[String(ano)]?.[uf]
-                                  ?? (icmsVal != null ? icmsVal * 0.25 : null);
                     if (icmsVal != null) { somaICMS += icmsVal * d; nICMS++; }
                     if (issVal  != null) { somaISS  += issVal  * d; nISS++;  }
-                    if (cotaVal != null) { somaCota += cotaVal * d; nCota++; }
                     somaFECOP += fecopVal * d;
+                    // Cota-parte municipal (art. 158, IV, "a", CF) não existe para o DF: sem
+                    // municípios, não há o que deduzir do ICMS nem parcela a repassar (art. 115, II).
+                    if (!isDF) {
+                        const cotaDeclarada = dca_transf_uf_raw[String(ano)]?.[uf] ?? null;
+                        const cotaVal = cotaDeclarada ?? (icmsVal != null ? icmsVal * 0.25 : null);
+                        if (cotaDeclarada != null) nCotaDeclarada++;
+                        if (cotaVal != null) { somaCota += cotaVal * d; nCota++; }
+                    }
                 }
 
                 const mediaICMS  = nICMS > 0 ? somaICMS  / ANOS.length : null;
                 const mediaISS   = nISS  > 0 ? somaISS   / ANOS.length : null;
                 const mediaFECOP = somaFECOP / ANOS.length;
-                const mediaCota  = nCota > 0 ? somaCota  / ANOS.length : null;
+                const mediaCota  = (!isDF && nCota > 0) ? somaCota / ANOS.length : null;
 
                 // Estado: ICMS − cota-parte (declarada, ou 25% teórico) + FECOP integral (art. 115, I "a"
                 // c/c §1º II; art. 82 §1º ADCT); DF: ICMS integral + FECOP (sem dedução — art. 115, II)
@@ -931,8 +940,9 @@
                                 ?? null;
                 const iss2025    = iss_por_uf?.['2025']?.[uf] ?? null;
                 const fecop2025  = dca_fecop_uf_raw['2025']?.[uf] ?? 0;
-                const cota2025   = dca_transf_uf_raw['2025']?.[uf]
-                                ?? (icms2025 != null ? icms2025 * 0.25 : null);
+                // Cota-parte não se aplica ao DF (sem municípios) — ver nota acima.
+                const cota2025   = isDF ? null : (dca_transf_uf_raw['2025']?.[uf]
+                                ?? (icms2025 != null ? icms2025 * 0.25 : null));
                 const totalBR2025 = totalB; // deflator 2025 = 1, so totalB = totalBR[2025]
                 const idx2025Est  = isDF
                     ? ((icms2025 != null && totalBR2025) ? (icms2025 + fecop2025) / totalBR2025 * 100 : null)
@@ -954,7 +964,8 @@
                 const isES = uf === 'ES';
                 return { uf, isDF, cptEstado, cptMunis, cptTotal,
                          idx2025Est, idx2025Mun, idx2025Tot,
-                         varEstado, varMunis, varTotal, isES };
+                         varEstado, varMunis, varTotal, isES,
+                         nCotaDeclarada: isDF ? null : nCotaDeclarada }; // nº de anos (de 7) com cota-parte DECLARADA no DCA (exclui fallback teórico)
             });
 
             const fmtVar = v => {
@@ -1440,9 +1451,11 @@
         // Tabela 3: CPT por UF (estado e municípios sempre em colunas separadas)
         const t3header = ['UF', 'CPT histórico — Estado (%)', 'CPT histórico — Municípios (%)', 'CPT histórico — Total UF (%)',
             'Índice 2025 — Estado (%)', 'Índice 2025 — Municípios (%)', 'Índice 2025 — Total UF (%)',
-            'Variação — Estado (p.p.)', 'Variação — Municípios (p.p.)', 'Variação — Total UF (p.p.)'];
+            'Variação — Estado (p.p.)', 'Variação — Municípios (p.p.)', 'Variação — Total UF (p.p.)',
+            'Cota-parte declarada (anos de 7)'];
         const t3rows = (d.ufRows || []).map(r => [r.uf, r.cptEstado, r.cptMunis, r.cptTotal,
-            r.idx2025Est, r.idx2025Mun, r.idx2025Tot, r.varEstado, r.varMunis, r.varTotal]);
+            r.idx2025Est, r.idx2025Mun, r.idx2025Tot, r.varEstado, r.varMunis, r.varTotal,
+            r.isDF ? 'n/a (DF sem municípios)' : `${r.nCotaDeclarada}/7`]);
         const wsT3 = XLSX.utils.aoa_to_sheet([t3header, ...t3rows]);
         wsT3['!cols'] = t3header.map(() => ({ wch: 22 }));
         XLSX.utils.book_append_sheet(wb, wsT3, 'Tabela 3 - CPT por UF');
