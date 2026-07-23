@@ -353,7 +353,8 @@
                 aos municípios ("Deduções - Transferências Constitucionais", DCA Anexo I-C) — não uma
                 presunção de 25%, embora o valor declarado bata quase exatamente com 25% do ICMS bruto
                 em todos os anos disponíveis ⁷; <strong>(iii)</strong> soma do FECOP-ES
-                (adicional de até 2 p.p. no ICMS para o Fundo Estadual de Combate à Pobreza, art. 82 do ADCT),
+                (arrecadação efetiva do adicional de ICMS destinado ao Fundo de Combate à Pobreza,
+                art. 82 do ADCT — valor arrecadado, não uma estimativa sobre a alíquota máxima de 2 p.p. ⁴),
                 que a LC 227/2026 manda incluir na receita do Estado (art. 115, §1º, II) e que, por não se
                 submeter à cota-parte municipal (art. 82, §1º, ADCT), não é dividido com os municípios;
                 <strong>(iv)</strong> ISS bruto dos municípios
@@ -585,8 +586,8 @@
             <div class="footnote">
                 <p>² SC 2025: o 6º bimestre não estava disponível no SICONFI na data de coleta; foi utilizado o 5º bimestre como aproximação. O valor foi incorporado ao Total_BR_2025 para evitar distorção no índice de atualização desse ano.</p>
                 <p>³ <strong>Referência de destino (corrigida):</strong> recalculando a partir da própria Tabela 1 de Gobetti e Monteiro (2023) — ver Tabela 5 do estudo <a href="/estudos/icms-iss-participacao-vs-populacao.html">ICMS+ISS por UF vs. população</a> —, a participação combinada do ES (estado + municípios) no critério de destino, cenário estático de IBS pleno, fica em torno de <strong>1,6%</strong>, partindo de uma participação atual (critério de origem) de aproximadamente 2,3%. Uma versão anterior desta nota citava 2,4% como o valor de destino; esse número corresponde, na verdade, à participação atual do ES no critério de origem, não ao critério de destino. A diferença real entre o CPT_ES calculado (critério histórico de origem) e o valor de destino (~1,6%) representa o núcleo do impacto fiscal estrutural da transição para o ES ao longo dos 50 anos.</p>
-                <p>⁴ <strong>FECOP (Fundo Estadual de Combate à Pobreza, art. 82 do ADCT):</strong> a partir desta versão, o adicional de até 2 p.p. no ICMS destinado ao FECOP passou a ser somado à receita do Estado (art. 115, §1º, II, da LC 227/2026 — não ao art. 129, §1º, I, como constava em versão anterior desta nota, que trata de um mecanismo distinto e posterior, de destinação de parte do IBS já distribuído ao financiamento do fundo a partir de 2033). O FECOP é registrado pelo SICONFI/DCA em conta própria, separada do ICMS "comum", e, por força do art. 82, §1º, do ADCT, não se submete à cota-parte municipal do art. 158, IV, CF — por isso entra inteiro na parcela do Estado, sem o desconto de 25%. <strong>Ainda não incluído nesta versão:</strong> a contribuição a fundos estaduais vinculados a diferimento de ICMS nas exportações, como o FUNDAP-ES (art. 115, I, "b"), cujo cálculo usa um período de referência distinto (2021–2023, art. 115, §3º) e ainda depende de identificação mais precisa da fonte de dados.</p>
-                <p>⁵ <strong>Fonte do ISS municipal (2019–2025):</strong> DCA: Demonstrativo das Contas Anuais, Anexo I-C (SICONFI/STN). Cobertura nacional: ~5.200 municípios por ano (~93% do total); ES: 78/78 municípios em todos os anos. O DCA reporta a arrecadação bruta total ("Receitas Brutas Realizadas"), alinhada ao art. 115, §1º da LC 227/2026 que exige o "montante total da arrecadação", incluindo Simples Nacional (LC 123/2006) e dívida ativa. Revisão do PCASP em 2022 alterou o código do ISS de <code>RO1.1.1.8.02.3.0</code> (2019–2021) para <code>RO1.1.1.4.51.1.0</code> (2022–2025).</p>
+                <p>⁴ <strong>FECOP (Fundo Estadual de Combate à Pobreza, art. 82 do ADCT):</strong> a partir desta versão, incorpora-se a arrecadação efetivamente realizada com o adicional de ICMS destinado ao FECOP (a lei faculta às UFs instituir um adicional de até 2 p.p.; usamos o valor arrecadado, registrado pelo SICONFI/DCA, e não uma estimativa sobre a alíquota máxima) à receita do Estado (art. 115, §1º, II, da LC 227/2026 — não ao art. 129, §1º, I, como constava em versão anterior desta nota, que trata de um mecanismo distinto e posterior, de destinação de parte do IBS já distribuído ao financiamento do fundo a partir de 2033). O FECOP é registrado pelo SICONFI/DCA em conta própria (código PCASP <code>RO1.1.1.4.50.2.0</code>/<code>RO1.1.1.8.02.2.0</code>), separada do ICMS "comum" (<code>RO1.1.1.4.50.1.0</code>/<code>RO1.1.1.8.02.1.0</code>) — checagem cruzada com a cota-parte declarada pelos próprios Estados (nota ⁷) confirma que o ICMS "comum" não inclui o FECOP: em RJ, AL e SE, onde o FECOP chega a 4%–12% do ICMS, a cota-parte declarada bate com 25% do ICMS "comum" e erraria por 8 a 14 pontos percentuais se o FECOP já estivesse incluído nele. Por força do art. 82, §1º, do ADCT, o FECOP não se submete à cota-parte municipal do art. 158, IV, CF — por isso entra inteiro na parcela do Estado, sem o desconto de 25%. <strong>Ausência de FECOP:</strong> só é tratada como zero quando confirmada — a coleta obteve resposta válida da API do SICONFI (com o ICMS do mesmo ano presente) e a conta do FECOP simplesmente não consta; se a coleta falhasse, isso ficaria registrado à parte, não viraria zero silenciosamente (ver planilha de auditoria, coluna "FECOP: cobertura"). Nesta versão, todos os casos hoje ausentes (AC, AP, PA, RR e SC em toda a série 2019–2025; AM até 2021) foram reconferidos manualmente, direto na API do SICONFI: em todos, a resposta veio completa e a ausência do FECOP se confirmou real. <strong>Ainda não incluído nesta versão:</strong> a contribuição a fundos estaduais vinculados a diferimento de ICMS nas exportações, como o FUNDAP-ES (art. 115, I, "b"), cujo cálculo usa um período de referência distinto (2021–2023, art. 115, §3º) e cuja fonte de dados não foi localizada nas contas do DCA Anexo I-C consultadas — pesquisa realizada nas 379 contas do ES para 2024 sem retorno.</p>
+                <p>⁵ <strong>Fonte do ISS municipal (2019–2025):</strong> DCA: Demonstrativo das Contas Anuais, Anexo I-C (SICONFI/STN). Cobertura nacional: ~5.200 municípios por ano (~93% do total); ES: 78/78 municípios em todos os anos. O DCA reporta a arrecadação bruta total ("Receitas Brutas Realizadas"), que a LC 227/2026, art. 115, §1º, exige que inclua Simples Nacional (LC 123/2006), dívida ativa, juros e multas. Não há, nas contas do DCA Anexo I-C consultadas, nenhuma conta específica e separada para "Simples Nacional" ou "Dívida Ativa" vinculada ao ICMS/ISS — o que indica que esses valores já compõem a própria conta bruta do imposto (não há outro lugar no demonstrativo onde poderiam estar), mas essa leitura decorre da ausência de conta alternativa, não de uma confirmação direta e positiva de que estão incluídos; segue como item a revalidar. Revisão do PCASP em 2022 alterou o código do ISS de <code>RO1.1.1.8.02.3.0</code> (2019–2021) para <code>RO1.1.1.4.51.1.0</code> (2022–2025).</p>
                 <p>⁶ <strong>Distribuição da cota-parte entre os municípios:</strong> o total atribuído ao conjunto dos municípios capixabas (nota ⁷) é rateado entre eles proporcionalmente ao que cada um individualmente declarou ter recebido de cota-parte ICMS no DCA. A partir de 2022, a soma dessas declarações individuais passou a ficar sistematicamente abaixo do valor que o Estado declara ter transferido — no ES, por volta de 89% dele —, um padrão que aparece (em graus variados) em vários outros estados. Isso é tratado como um problema de escrituração municipal — provavelmente ligado à revisão do código de conta do PCASP em 2022 (nota ⁷) — e não como uma retenção real, porque o valor declarado pelo próprio Estado permanece em linha com os 25% constitucionais nesses mesmos anos. Essa divergência afeta apenas o rateio relativo entre municípios, preservando o total do conjunto: a soma dos coeficientes municipais (Tabela 4) continua igual à parcela municipal do CPT_ES (Tabela 3).</p>
                 <p>⁷ <strong>Cota-parte municipal: valor declarado pelo Estado, não presunção de 25%:</strong> em vez de presumir que a cota-parte do art. 158, IV, "a", CF equivale a exatamente 25% do ICMS bruto, usamos o valor que o próprio Estado declara ter deduzido do ICMS a título de "Deduções - Transferências Constitucionais" (DCA Anexo I-C, mesma conta do ICMS). Para o ES, esse valor declarado bateu entre 99,9% e 100,0% do teórico em todos os 7 anos da série (2019–2025) — inclusive nos anos em que a soma das declarações individuais dos municípios caiu para ~89% (nota ⁶). Isso confirma que a divergência está do lado do registro municipal, não de uma retenção do Estado além do previsto constitucionalmente. Quando um ente não preenche essa conta no DCA (nem todos preenchem — ausente, por exemplo, para SP, AC e DF em toda a série), a estimativa cai de volta à presunção de 25% do ICMS bruto daquele ano/UF.</p>
                 <p>Fonte primária: <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">SICONFI: API Data Lake STN</a>. Coleta via GitHub Actions (27 jobs paralelos por estado). Scripts disponíveis no repositório.</p>
@@ -659,12 +660,15 @@
         // O art. 115, §1º, II da LC 227/2026 exige que essa receita seja incluída na arrecadação
         // de ICMS do Estado (art. 115, I, "a"). O PCASP registra o FECOP em conta própria, separada
         // do ICMS "comum" — por isso ele não aparece nos valores de ICMS acima e precisa ser somado
-        // à parte. Ausência de registro para um exercício/UF é tratada como zero (o ente não
-        // instituiu o fundo naquele ano), não como dado faltante — o art. 82 ADCT determina que essa
-        // receita não se submete à cota-parte municipal do art. 158, IV, CF, então ela integra
-        // inteiramente a parcela do Estado, sem o desconto de 25% aplicado ao ICMS "comum".
+        // à parte. Ausência de registro para um exercício/UF só é tratada como zero quando a coleta
+        // confirma que a conta simplesmente não existe naquele ano (ente sem o fundo instituído);
+        // se a própria coleta falhar (erro de rede/API), o valor NÃO deve virar zero silenciosamente —
+        // por isso a fonte de dados carrega um status por UF/ano (dca_fecop_status_por_uf: "ok" ou
+        // "fetch_failed"), verificado manualmente nesta versão para todos os anos/UFs hoje ausentes
+        // (ver nota ⁴ e planilha de auditoria, aba Tabela 3, coluna "FECOP: cobertura").
         const dca_fecop_br_raw = data.dca_fecop_br     || {};
         const dca_fecop_uf_raw = data.dca_fecop_por_uf || {};
+        const dca_fecop_status_uf_raw = data.dca_fecop_status_por_uf || {};
 
         const fecop_es = {};
         const fecop_br = {};
@@ -672,6 +676,23 @@
             const s = String(ano);
             fecop_es[ano] = dca_fecop_uf_raw[s]?.['ES'] ?? 0;
             fecop_br[ano] = dca_fecop_br_raw[s] ?? 0;
+        }
+
+        // Resumo de cobertura do FECOP por UF, para a planilha de auditoria: quantos dos 7 anos
+        // têm arrecadação positiva registrada, e se algum ano/UF teve falha de coleta confirmada
+        // (status ausente no arquivo é tratado como "ok", pois os dados atuais já foram conferidos
+        // manualmente direto na API do SICONFI — ver nota ⁴).
+        function fecopCoverage(uf) {
+            let nPositivo = 0, nFalha = 0;
+            for (const ano of ANOS) {
+                const s = String(ano);
+                const val = dca_fecop_uf_raw[s]?.[uf];
+                const status = dca_fecop_status_uf_raw[s]?.[uf] ?? 'ok';
+                if (val != null && val > 0) nPositivo++;
+                if (status === 'fetch_failed') nFalha++;
+            }
+            if (nFalha > 0) return `ATENÇÃO: falha de coleta em ${nFalha}/7 anos — não tratar ausência como zero`;
+            return `${nPositivo}/7 anos com arrecadação; demais anos, ausência confirmada`;
         }
 
         // Cota-parte municipal do ICMS (art. 158, IV, "a", CF): em vez de presumir 25% do ICMS
@@ -965,7 +986,8 @@
                 return { uf, isDF, cptEstado, cptMunis, cptTotal,
                          idx2025Est, idx2025Mun, idx2025Tot,
                          varEstado, varMunis, varTotal, isES,
-                         nCotaDeclarada: isDF ? null : nCotaDeclarada }; // nº de anos (de 7) com cota-parte DECLARADA no DCA (exclui fallback teórico)
+                         nCotaDeclarada: isDF ? null : nCotaDeclarada, // nº de anos (de 7) com cota-parte DECLARADA no DCA (exclui fallback teórico)
+                         fecopCobertura: fecopCoverage(uf) }; // cobertura do FECOP: anos com arrecadação vs. ausência confirmada vs. falha de coleta
             });
 
             const fmtVar = v => {
@@ -1387,6 +1409,13 @@
             ['determina que essa receita não se submete à cota-parte municipal do art. 158, IV, CF, ela entra inteira na parcela'],
             ['estado, sem o desconto de 25%. Sem esse ajuste, o Estado recebia um coeficiente levemente subestimado.'],
             [],
+            ['Ausência de FECOP por UF/ano: tratada como zero SOMENTE quando confirmada (a coleta obteve resposta da'],
+            ['API do SICONFI e a conta simplesmente não consta); se a coleta falhar, isso é registrado à parte e não vira zero'],
+            ['silenciosamente. A coluna "FECOP: cobertura" da Tabela 3 mostra essa distinção por UF. Nesta versão, todos os'],
+            ['anos/UFs hoje ausentes (AC, AP, PA, RR e SC em toda a série; AM até 2021) foram conferidos manualmente,'],
+            ['reconsultando a API do SICONFI diretamente — em todos os casos a resposta veio completa, com o ICMS'],
+            ['presente e a conta do FECOP realmente ausente, confirmando ausência real e não falha de coleta.'],
+            [],
             ['Abas:'],
             ['Tabela 1 - Auditoria ES: reconstrução ano a ano do cálculo do CPT_ES, estado e municípios em colunas separadas.'],
             ['Tabela 2 - Trajetória anual: índice de cada ano isolado (sem deflação/média), para checar a tendência.'],
@@ -1452,10 +1481,10 @@
         const t3header = ['UF', 'CPT histórico — Estado (%)', 'CPT histórico — Municípios (%)', 'CPT histórico — Total UF (%)',
             'Índice 2025 — Estado (%)', 'Índice 2025 — Municípios (%)', 'Índice 2025 — Total UF (%)',
             'Variação — Estado (p.p.)', 'Variação — Municípios (p.p.)', 'Variação — Total UF (p.p.)',
-            'Cota-parte declarada (anos de 7)'];
+            'Cota-parte declarada (anos de 7)', 'FECOP: cobertura'];
         const t3rows = (d.ufRows || []).map(r => [r.uf, r.cptEstado, r.cptMunis, r.cptTotal,
             r.idx2025Est, r.idx2025Mun, r.idx2025Tot, r.varEstado, r.varMunis, r.varTotal,
-            r.isDF ? 'n/a (DF sem municípios)' : `${r.nCotaDeclarada}/7`]);
+            r.isDF ? 'n/a (DF sem municípios)' : `${r.nCotaDeclarada}/7`, r.fecopCobertura]);
         const wsT3 = XLSX.utils.aoa_to_sheet([t3header, ...t3rows]);
         wsT3['!cols'] = t3header.map(() => ({ wch: 22 }));
         XLSX.utils.book_append_sheet(wb, wsT3, 'Tabela 3 - CPT por UF');

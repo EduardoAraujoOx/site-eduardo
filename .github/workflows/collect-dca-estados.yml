@@ -51,16 +51,19 @@ jobs:
           }
 
           def fetch(url, retries=4):
+              """Retorna (sucesso, dados). sucesso=False só quando todas as tentativas de
+              rede falharem — distinto de uma resposta bem-sucedida sem a conta procurada,
+              que deve ser tratada como ausência confirmada, não como falha de coleta."""
               for i in range(retries):
                   try:
                       with urllib.request.urlopen(url, timeout=30) as r:
-                          return json.loads(r.read())
+                          return True, json.loads(r.read())
                   except Exception as e:
                       if i < retries - 1:
                           time.sleep(2 ** i)
-              return None
+              return False, None
 
-          results = {}  # {ano: {uf: {icms, fecop, transf_munis}}}
+          results = {}  # {ano: {uf: {icms, fecop, transf_munis, fecop_status, transf_status}}}
 
           for uf, cod in ESTADOS.items():
               esfera = "D" if uf == "DF" else "E"
@@ -75,10 +78,10 @@ jobs:
                       f"&no_anexo=DCA-Anexo%20I-C"
                       f"&co_esfera={esfera}&id_ente={cod}"
                   )
-                  resp = fetch(url)
+                  ok, resp = fetch(url)
 
                   icms = fecop = transf = None
-                  if resp:
+                  if ok and resp:
                       for item in resp.get("items", []):
                           cc  = item.get("cod_conta")
                           col = item.get("coluna")
@@ -89,16 +92,20 @@ jobs:
                           elif cc == FECOP_COD and col == COL_BRUTA:
                               fecop = val
 
-                  entry = {"uf": uf}
+                  # status: "ok" = a API respondeu e a conta, se ausente, está confirmadamente
+                  # ausente (não instituída/sem arrecadação); "fetch_failed" = todas as tentativas
+                  # de rede falharam, então a ausência do valor NÃO deve ser lida como zero.
+                  status = "ok" if ok else "fetch_failed"
+
+                  entry = {"uf": uf, "fecop_status": status, "transf_status": status}
                   if icms   is not None: entry["icms"]        = icms
                   if fecop  is not None: entry["fecop"]       = fecop
                   if transf is not None: entry["transf_munis"] = transf
 
-                  if len(entry) > 1:
-                      results.setdefault(str(ano), {})[uf] = entry
+                  results.setdefault(str(ano), {})[uf] = entry
 
                   icms_s  = f"R$ {icms/1e9:.2f}B"   if icms  else "N/A"
-                  fecop_s = f"R$ {fecop/1e6:.0f}M"  if fecop else "N/A"
+                  fecop_s = f"R$ {fecop/1e6:.0f}M"  if fecop else ("N/A" if ok else "FALHA DE COLETA")
                   print(f"  {uf} {ano}: ICMS={icms_s} FECOP={fecop_s}")
                   time.sleep(0.2)
 
@@ -123,6 +130,8 @@ jobs:
           fecop_br_new  = {}
           fecop_uf_new  = {}
           transf_uf_new = {}
+          fecop_status_uf_new  = {}  # {ano: {uf: "ok"|"fetch_failed"}}
+          transf_status_uf_new = {}
 
           for ano_s, ufs in new_data.items():
               icms_br_new [ano_s] = sum(v.get("icms",  0) or 0 for v in ufs.values())
@@ -130,6 +139,8 @@ jobs:
               icms_uf_new [ano_s] = {uf: v.get("icms")  for uf, v in ufs.items() if v.get("icms")  is not None}
               fecop_uf_new[ano_s] = {uf: v.get("fecop") for uf, v in ufs.items() if v.get("fecop") is not None}
               transf_uf_new[ano_s]= {uf: v.get("transf_munis") for uf, v in ufs.items() if v.get("transf_munis") is not None}
+              fecop_status_uf_new [ano_s] = {uf: v.get("fecop_status",  "ok") for uf, v in ufs.items()}
+              transf_status_uf_new[ano_s] = {uf: v.get("transf_status", "ok") for uf, v in ufs.items()}
 
           out_file = Path("data/reforma-tributaria.json")
           existing = json.loads(out_file.read_text()) if out_file.exists() else {}
@@ -139,6 +150,8 @@ jobs:
           dca_fecop_br  = dict(existing.get("dca_fecop_br")  or {})
           dca_fecop_uf  = dict(existing.get("dca_fecop_por_uf") or {})
           dca_transf_uf = dict(existing.get("dca_transf_munis_por_uf") or {})
+          dca_fecop_status_uf  = dict(existing.get("dca_fecop_status_por_uf")  or {})
+          dca_transf_status_uf = dict(existing.get("dca_transf_status_por_uf") or {})
 
           for ano, val in icms_br_new.items():
               dca_icms_br[ano]   = val
@@ -150,12 +163,20 @@ jobs:
               dca_fecop_uf[ano]  = val
           for ano, val in transf_uf_new.items():
               dca_transf_uf[ano] = val
+          for ano, val in fecop_status_uf_new.items():
+              dca_fecop_status_uf[ano] = val
+          for ano, val in transf_status_uf_new.items():
+              dca_transf_status_uf[ano] = val
 
           existing["dca_icms_br"]              = {str(a): dca_icms_br .get(str(a)) for a in ALL_ANOS}
           existing["dca_icms_por_uf"]          = dca_icms_uf
           existing["dca_fecop_br"]             = {str(a): dca_fecop_br.get(str(a)) for a in ALL_ANOS}
           existing["dca_fecop_por_uf"]         = dca_fecop_uf
           existing["dca_transf_munis_por_uf"]  = dca_transf_uf
+          # "ok" = a API confirmou ausência (sem FECOP/sem declaração de cota-parte naquele ano);
+          # "fetch_failed" = a coleta falhou e o valor não deve ser tratado como zero.
+          existing["dca_fecop_status_por_uf"]  = dca_fecop_status_uf
+          existing["dca_transf_status_por_uf"] = dca_transf_status_uf
 
           out_file.write_text(json.dumps(existing, ensure_ascii=False, indent=2))
 
