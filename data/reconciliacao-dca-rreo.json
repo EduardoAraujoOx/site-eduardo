@@ -1,2435 +1,2538 @@
 {
-  "status": "RASCUNHO_NAO_VALIDADO",
-  "aviso": "Divergências sistemáticas de 25-35% em várias UFs indicam possível comparação bruto x líquido, não erro de dado -- ver docstring do script para a hipótese investigada. Não usar como fonte canônica até confirmar a definição exata de ICMSLiquidoExcetoTransferenciasEFUNDEB no RREO Anexo 3.",
-  "fonte_dca": "STN/DCA Anexo I-C — PCASP RO1.1.1.8.02.1.0 / RO1.1.1.4.50.1.0 (ICMS bruto)",
-  "fonte_rreo": "SICONFI RREO Anexo 3 — ICMSLiquidoExcetoTransferenciasEFUNDEB",
-  "metodo": "icms_liquido_dca = icms_bruto_dca - transf_munis_dca (dedução declarada pelo estado); comparado a icms_liquido_rreo",
+  "fonte_dca": "STN/DCA Anexo I-C — PCASP RO1.1.1.8.02.1.0 / RO1.1.1.4.50.1.0 (ICMS bruto, coluna Receitas Brutas Realizadas)",
+  "fonte_rreo": "SICONFI RREO Anexo 3 — conta ICMSLiquidoExcetoTransferenciasEFUNDEB",
+  "achado_metodologico": "Apesar do nome, ICMSLiquidoExcetoTransferenciasEFUNDEB do RREO é ICMS BRUTO do estado, não líquido da cota-parte municipal. Validado contra o ICMS bruto implícito do ES (cota-parte oficial SEFAZ-ES ÷ 25%): RREO bate com o bruto (diff < 1% em 2023-2025), não com o líquido (que seria ~20% menor). A reconciliação correta é bruto (RREO) x bruto (DCA).",
+  "metodo": "diff_rel_bruto = (icms_bruto_dca - icms_bruto_rreo) / icms_bruto_rreo",
   "limiar_divergencia": 0.02,
-  "fonte_canonica_recomendada": null,
+  "fonte_canonica_recomendada": "dca",
+  "motivo_fonte_canonica": "Art. 116 da LC 227/2026 cita o Siconfi como base do coeficiente; o DCA Anexo I-C separa ICMS bruto e transferência a municípios declarados pelo próprio estado, permitindo replicar a memória de cálculo linha a linha (bruto − transferência = líquido). O RREO Anexo 3 não quebra a dedução por imposto, só serve como validação cruzada do valor bruto.",
   "por_uf_ano": {
-    "AC": {},
+    "AC": {
+      "2019": {
+        "icms_bruto_dca": 1413047877.27,
+        "icms_bruto_rreo": 1413047877.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 335660492.83,
+        "fecop_dca": null,
+        "diff_abs_bruto": 0.26999998092651367,
+        "diff_rel_bruto": 1.9107631476701455e-10
+      },
+      "2020": {
+        "icms_bruto_dca": 1374411190.82,
+        "icms_bruto_rreo": 1374411191.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 359151368.89,
+        "fecop_dca": null,
+        "diff_abs_bruto": -0.18000006675720215,
+        "diff_rel_bruto": -1.3096522200625923e-10
+      },
+      "2021": {
+        "icms_bruto_dca": 1699401407.4,
+        "icms_bruto_rreo": 1699401407.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 422837029.3600001,
+        "fecop_dca": null,
+        "diff_abs_bruto": 0.40000009536743164,
+        "diff_rel_bruto": 2.3537705319048945e-10
+      },
+      "2022": {
+        "icms_bruto_dca": 1791035053.8,
+        "icms_bruto_rreo": 1791035054.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 441611611.04,
+        "fecop_dca": null,
+        "diff_abs_bruto": -0.20000004768371582,
+        "diff_rel_bruto": -1.1166729944064837e-10
+      },
+      "2023": {
+        "icms_bruto_dca": 1912132558.42,
+        "icms_bruto_rreo": 1912132558.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 482221208.99,
+        "fecop_dca": null,
+        "diff_abs_bruto": 0.4200000762939453,
+        "diff_rel_bruto": 2.1965008363920412e-10
+      },
+      "2024": {
+        "icms_bruto_dca": 2159968117.18,
+        "icms_bruto_rreo": 2159968117.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 552583919.1299999,
+        "fecop_dca": null,
+        "diff_abs_bruto": 0.17999982833862305,
+        "diff_rel_bruto": 8.333448393146955e-11
+      },
+      "2025": {
+        "icms_bruto_dca": 2220306998.18,
+        "icms_bruto_rreo": 2220306998.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 514884047.67,
+        "fecop_dca": null,
+        "diff_abs_bruto": 0.17999982833862305,
+        "diff_rel_bruto": 8.106979282629052e-11
+      }
+    },
     "AL": {
       "2019": {
         "icms_bruto_dca": 4226777273.03,
+        "icms_bruto_rreo": 4524018870.0,
         "transf_munis_dca": 1054603030.99,
-        "cota_parte_declarada_munis_dca": 1077758636.0200002,
         "icms_liquido_dca": 3172174242.04,
+        "cota_parte_declarada_munis_dca": 1077758636.0200002,
         "fecop_dca": 305624113.78,
-        "icms_liquido_rreo": 4524018870.0,
-        "diff_transf_vs_cota_munis_rel": 0.02195670252176601,
-        "diff_abs": -1351844627.96,
-        "diff_rel": -0.298814984376933
+        "diff_abs_bruto": -297241596.9699998,
+        "diff_rel_bruto": -0.06570299671849066,
+        "diff_transf_vs_cota_munis_rel": 0.02195670252176601
       },
       "2020": {
         "icms_bruto_dca": 4383218946.36,
+        "icms_bruto_rreo": 4694975122.0,
         "transf_munis_dca": 1092119595.92,
-        "cota_parte_declarada_munis_dca": 1047575989.9399999,
         "icms_liquido_dca": 3291099350.4399996,
+        "cota_parte_declarada_munis_dca": 1047575989.9399999,
         "fecop_dca": 326503192.71,
-        "icms_liquido_rreo": 4694975122.0,
-        "diff_transf_vs_cota_munis_rel": -0.040786381039593624,
-        "diff_abs": -1403875771.5600004,
-        "diff_rel": -0.2990166582526996
+        "diff_abs_bruto": -311756175.64000034,
+        "diff_rel_bruto": -0.06640209320367946,
+        "diff_transf_vs_cota_munis_rel": -0.040786381039593624
       },
       "2021": {
         "icms_bruto_dca": 5415183504.77,
+        "icms_bruto_rreo": 5814528596.0,
         "transf_munis_dca": 1350472606.35,
-        "cota_parte_declarada_munis_dca": 1339850551.8400004,
         "icms_liquido_dca": 4064710898.4200006,
+        "cota_parte_declarada_munis_dca": 1339850551.8400004,
         "fecop_dca": 412648570.63,
-        "icms_liquido_rreo": 5814528596.0,
-        "diff_transf_vs_cota_munis_rel": -0.007865435004052656,
-        "diff_abs": -1749817697.5799994,
-        "diff_rel": -0.30093887555798676
+        "diff_abs_bruto": -399345091.22999954,
+        "diff_rel_bruto": -0.0686805619125722,
+        "diff_transf_vs_cota_munis_rel": -0.007865435004052656
       },
       "2022": {
         "icms_bruto_dca": 5821913159.86,
+        "icms_bruto_rreo": 6278856330.0,
         "transf_munis_dca": 1451488925.96,
-        "cota_parte_declarada_munis_dca": 1416934965.82,
         "icms_liquido_dca": 4370424233.9,
+        "cota_parte_declarada_munis_dca": 1416934965.82,
         "fecop_dca": 472906997.01,
-        "icms_liquido_rreo": 6278856330.0,
-        "diff_transf_vs_cota_munis_rel": -0.02380587238524501,
-        "diff_abs": -1908432096.1000004,
-        "diff_rel": -0.30394581366380785
+        "diff_abs_bruto": -456943170.14000034,
+        "diff_rel_bruto": -0.07277490455654372,
+        "diff_transf_vs_cota_munis_rel": -0.02380587238524501
       },
       "2023": {
         "icms_bruto_dca": 6816688921.5,
+        "icms_bruto_rreo": 7338987309.0,
         "transf_munis_dca": 1700236810.42,
-        "cota_parte_declarada_munis_dca": 1563531283.55,
         "icms_liquido_dca": 5116452111.08,
+        "cota_parte_declarada_munis_dca": 1563531283.55,
         "fecop_dca": 538073284.07,
-        "icms_liquido_rreo": 7338987309.0,
-        "diff_transf_vs_cota_munis_rel": -0.08040381553451399,
-        "diff_abs": -2222535197.92,
-        "diff_rel": -0.3028394932900953
+        "diff_abs_bruto": -522298387.5,
+        "diff_rel_bruto": -0.07116763737409537,
+        "diff_transf_vs_cota_munis_rel": -0.08040381553451399
       },
       "2024": {
         "icms_bruto_dca": 7905240380.21,
+        "icms_bruto_rreo": 8488852336.0,
         "transf_munis_dca": 1973922798.98,
-        "cota_parte_declarada_munis_dca": 1864260409.75,
         "icms_liquido_dca": 5931317581.23,
+        "cota_parte_declarada_munis_dca": 1864260409.75,
         "fecop_dca": 593191468.91,
-        "icms_liquido_rreo": 8488852336.0,
-        "diff_transf_vs_cota_munis_rel": -0.05555556138602112,
-        "diff_abs": -2557534754.7700005,
-        "diff_rel": -0.3012815694677435
+        "diff_abs_bruto": -583611955.79,
+        "diff_rel_bruto": -0.06875039554110109,
+        "diff_transf_vs_cota_munis_rel": -0.05555556138602112
       },
       "2025": {
         "icms_bruto_dca": 8393295012.36,
+        "icms_bruto_rreo": 9008104971.0,
         "transf_munis_dca": 2093361111.66,
-        "cota_parte_declarada_munis_dca": 1812496258.0100007,
         "icms_liquido_dca": 6299933900.7,
+        "cota_parte_declarada_munis_dca": 1812496258.0100007,
         "fecop_dca": 634677859,
-        "icms_liquido_rreo": 9008104971.0,
-        "diff_transf_vs_cota_munis_rel": -0.13416932801779158,
-        "diff_abs": -2708171070.3,
-        "diff_rel": -0.3006371572065909
+        "diff_abs_bruto": -614809958.6400003,
+        "diff_rel_bruto": -0.0682507542506745,
+        "diff_transf_vs_cota_munis_rel": -0.13416932801779158
       }
     },
     "AM": {
+      "2019": {
+        "icms_bruto_dca": 10074255068.13,
+        "icms_bruto_rreo": 10074255068.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 2529466023.589999,
+        "fecop_dca": null,
+        "diff_abs_bruto": 0.12999916076660156,
+        "diff_rel_bruto": 1.2904096619464466e-11
+      },
+      "2020": {
+        "icms_bruto_dca": 10841227593.64,
+        "icms_bruto_rreo": 10841227594.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 2696043560.67,
+        "fecop_dca": null,
+        "diff_abs_bruto": -0.3600006103515625,
+        "diff_rel_bruto": -3.3206627868489934e-11
+      },
+      "2021": {
+        "icms_bruto_dca": 13052900720.35,
+        "icms_bruto_rreo": 13052900720.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 3250365217.12,
+        "fecop_dca": null,
+        "diff_abs_bruto": 0.35000038146972656,
+        "diff_rel_bruto": 2.681399245866068e-11
+      },
+      "2022": {
+        "icms_bruto_dca": 13948573127.13,
+        "icms_bruto_rreo": 13996287720.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 3459281372.7000003,
+        "fecop_dca": 47714593.23,
+        "diff_abs_bruto": -47714592.87000084,
+        "diff_rel_bruto": -0.00340908916882432
+      },
       "2023": {
         "icms_bruto_dca": 14213754044.19,
+        "icms_bruto_rreo": 14246214071.0,
         "transf_munis_dca": 12187697.96,
-        "cota_parte_declarada_munis_dca": 3586043292.1800003,
         "icms_liquido_dca": 14201566346.230001,
+        "cota_parte_declarada_munis_dca": 3586043292.1800003,
         "fecop_dca": 40842322.84,
-        "icms_liquido_rreo": 14246214071.0,
-        "diff_transf_vs_cota_munis_rel": 293.2346703987403,
-        "diff_abs": -44647724.76999855,
-        "diff_rel": -0.003134006308446869
+        "diff_abs_bruto": -32460026.809999466,
+        "diff_rel_bruto": -0.002278501968889828,
+        "diff_transf_vs_cota_munis_rel": 293.2346703987403
+      },
+      "2024": {
+        "icms_bruto_dca": 15630527022.24,
+        "icms_bruto_rreo": 15698510025.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 3891636194.5899997,
+        "fecop_dca": 77740611.31,
+        "diff_abs_bruto": -67983002.76000023,
+        "diff_rel_bruto": -0.0043305385448515026
+      },
+      "2025": {
+        "icms_bruto_dca": 16904534360.06,
+        "icms_bruto_rreo": 16924101052.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 4160518327.41,
+        "fecop_dca": 62084156.09,
+        "diff_abs_bruto": -19566691.940000534,
+        "diff_rel_bruto": -0.001156143648627544
       }
     },
     "AP": {
       "2019": {
         "icms_bruto_dca": 945433657.44,
+        "icms_bruto_rreo": 945433657.0,
         "transf_munis_dca": 235627393.99,
-        "cota_parte_declarada_munis_dca": 227460800.24,
         "icms_liquido_dca": 709806263.45,
+        "cota_parte_declarada_munis_dca": 227460800.24,
         "fecop_dca": null,
-        "icms_liquido_rreo": 945433657.0,
-        "diff_transf_vs_cota_munis_rel": -0.03465893167899904,
-        "diff_abs": -235627393.54999995,
-        "diff_rel": -0.24922678794584097
+        "diff_abs_bruto": 0.440000057220459,
+        "diff_rel_bruto": 4.65394958136612e-10,
+        "diff_transf_vs_cota_munis_rel": -0.03465893167899904
       },
       "2020": {
         "icms_bruto_dca": 1014898818.82,
+        "icms_bruto_rreo": 1014886218.0,
         "transf_munis_dca": 253715397.84,
-        "cota_parte_declarada_munis_dca": 214436272.23,
         "icms_liquido_dca": 761183420.98,
+        "cota_parte_declarada_munis_dca": 214436272.23,
         "fecop_dca": null,
-        "icms_liquido_rreo": 1014886218.0,
-        "diff_transf_vs_cota_munis_rel": -0.15481569484706847,
-        "diff_abs": -253702797.01999998,
-        "diff_rel": -0.24998151765225762
+        "diff_abs_bruto": 12600.820000052452,
+        "diff_rel_bruto": 1.2415992824185195e-05,
+        "diff_transf_vs_cota_munis_rel": -0.15481569484706847
       },
       "2021": {
         "icms_bruto_dca": 1280255160.26,
+        "icms_bruto_rreo": 1280215545.0,
         "transf_munis_dca": 320048885.67,
-        "cota_parte_declarada_munis_dca": 289383540.27000004,
         "icms_liquido_dca": 960206274.5899999,
+        "cota_parte_declarada_munis_dca": 289383540.27000004,
         "fecop_dca": null,
-        "icms_liquido_rreo": 1280215545.0,
-        "diff_transf_vs_cota_munis_rel": -0.09581456700217598,
-        "diff_abs": -320009270.4100001,
-        "diff_rel": -0.24996514974359266
+        "diff_abs_bruto": 39615.25999999046,
+        "diff_rel_bruto": 3.094421103907972e-05,
+        "diff_transf_vs_cota_munis_rel": -0.09581456700217598
       },
       "2022": {
         "icms_bruto_dca": 1353174948.29,
+        "icms_bruto_rreo": 1353113642.0,
         "transf_munis_dca": 338272167.56,
-        "cota_parte_declarada_munis_dca": 224435511.66,
         "icms_liquido_dca": 1014902780.73,
+        "cota_parte_declarada_munis_dca": 224435511.66,
         "fecop_dca": null,
-        "icms_liquido_rreo": 1353113642.0,
-        "diff_transf_vs_cota_munis_rel": -0.33652386101144005,
-        "diff_abs": -338210861.27,
-        "diff_rel": -0.24995007867195826
+        "diff_abs_bruto": 61306.28999996185,
+        "diff_rel_bruto": 4.530756922186278e-05,
+        "diff_transf_vs_cota_munis_rel": -0.33652386101144005
       },
       "2023": {
         "icms_bruto_dca": 1372271792.38,
+        "icms_bruto_rreo": 1372246908.0,
         "transf_munis_dca": 343055728.74,
-        "cota_parte_declarada_munis_dca": 225254711.18,
         "icms_liquido_dca": 1029216063.6400001,
+        "cota_parte_declarada_munis_dca": 225254711.18,
         "fecop_dca": null,
-        "icms_liquido_rreo": 1372246908.0,
-        "diff_transf_vs_cota_munis_rel": -0.3433874081994437,
-        "diff_abs": -343030844.3599999,
-        "diff_rel": -0.24997749483724827
+        "diff_abs_bruto": 24884.38000011444,
+        "diff_rel_bruto": 1.8134039767218364e-05,
+        "diff_transf_vs_cota_munis_rel": -0.3433874081994437
       },
       "2024": {
         "icms_bruto_dca": 1517451622.31,
+        "icms_bruto_rreo": 1517410287.0,
         "transf_munis_dca": 379345403.88,
-        "cota_parte_declarada_munis_dca": 277176872.03000003,
         "icms_liquido_dca": 1138106218.4299998,
+        "cota_parte_declarada_munis_dca": 277176872.03000003,
         "fecop_dca": null,
-        "icms_liquido_rreo": 1517410287.0,
-        "diff_transf_vs_cota_munis_rel": -0.2693285085439427,
-        "diff_abs": -379304068.5700002,
-        "diff_rel": -0.24996803555345884
+        "diff_abs_bruto": 41335.30999994278,
+        "diff_rel_bruto": 2.7240694460866522e-05,
+        "diff_transf_vs_cota_munis_rel": -0.2693285085439427
       },
       "2025": {
         "icms_bruto_dca": 1702929834.08,
+        "icms_bruto_rreo": 1702927683.0,
         "transf_munis_dca": 425712257.3,
-        "cota_parte_declarada_munis_dca": 289066703.59,
         "icms_liquido_dca": 1277217576.78,
+        "cota_parte_declarada_munis_dca": 289066703.59,
         "fecop_dca": null,
-        "icms_liquido_rreo": 1702927683.0,
-        "diff_transf_vs_cota_munis_rel": -0.3209810179689182,
-        "diff_abs": -425710106.22,
-        "diff_rel": -0.24998718998450858
+        "diff_abs_bruto": 2151.079999923706,
+        "diff_rel_bruto": 1.2631657946473738e-06,
+        "diff_transf_vs_cota_munis_rel": -0.3209810179689182
       }
     },
     "BA": {
+      "2019": {
+        "icms_bruto_dca": 23799996079.42,
+        "icms_bruto_rreo": 24717072877.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 5933056594.57,
+        "fecop_dca": 919539368.73,
+        "diff_abs_bruto": -917076797.5800018,
+        "diff_rel_bruto": -0.037102969358211106
+      },
+      "2020": {
+        "icms_bruto_dca": 23919488925.08,
+        "icms_bruto_rreo": 24902441199.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 5922900598.699999,
+        "fecop_dca": 984737702.79,
+        "diff_abs_bruto": -982952273.9199982,
+        "diff_rel_bruto": -0.03947212508464713
+      },
+      "2021": {
+        "icms_bruto_dca": 30004498565.05,
+        "icms_bruto_rreo": 31192924695.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 7486654164.31,
+        "fecop_dca": 1191768728.21,
+        "diff_abs_bruto": -1188426129.9500008,
+        "diff_rel_bruto": -0.03809922094738673
+      },
+      "2022": {
+        "icms_bruto_dca": 32548661107.93,
+        "icms_bruto_rreo": 33249026669.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 7592594572.369999,
+        "fecop_dca": 706586399.13,
+        "diff_abs_bruto": -700365561.0699997,
+        "diff_rel_bruto": -0.02106424251278884
+      },
+      "2023": {
+        "icms_bruto_dca": 33744504991.29,
+        "icms_bruto_rreo": 34491946020.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 7837150283.000004,
+        "fecop_dca": 751391460.29,
+        "diff_abs_bruto": -747441028.7099991,
+        "diff_rel_bruto": -0.021670016190927552
+      },
       "2024": {
         "icms_bruto_dca": 38966149326.04,
+        "icms_bruto_rreo": 39497020152.0,
         "transf_munis_dca": 9740883095.96,
-        "cota_parte_declarada_munis_dca": 9152204904.060009,
         "icms_liquido_dca": 29225266230.08,
+        "cota_parte_declarada_munis_dca": 9152204904.060009,
         "fecop_dca": 533487811.28,
-        "icms_liquido_rreo": 39497020152.0,
-        "diff_transf_vs_cota_munis_rel": -0.060433760070905944,
-        "diff_abs": -10271753921.919998,
-        "diff_rel": -0.2600640221057251
+        "diff_abs_bruto": -530870825.9599991,
+        "diff_rel_bruto": -0.013440781707506042,
+        "diff_transf_vs_cota_munis_rel": -0.060433760070905944
       },
       "2025": {
         "icms_bruto_dca": 41451495168.11,
+        "icms_bruto_rreo": 41998968647.0,
         "transf_munis_dca": 10361981614.45,
-        "cota_parte_declarada_munis_dca": 10040377741.539997,
         "icms_liquido_dca": 31089513553.66,
+        "cota_parte_declarada_munis_dca": 10040377741.539997,
         "fecop_dca": 551055735.64,
-        "icms_liquido_rreo": 41998968647.0,
-        "diff_transf_vs_cota_munis_rel": -0.031036908274525436,
-        "diff_abs": -10909455093.34,
-        "diff_rel": -0.2597553093513706
+        "diff_abs_bruto": -547473478.8899994,
+        "diff_rel_bruto": -0.013035402928378946,
+        "diff_transf_vs_cota_munis_rel": -0.031036908274525436
       }
     },
     "CE": {
       "2019": {
         "icms_bruto_dca": 12552458762.17,
+        "icms_bruto_rreo": 13147344027.0,
         "transf_munis_dca": 3115495932.02,
-        "cota_parte_declarada_munis_dca": 3122933391.1600013,
         "icms_liquido_dca": 9436962830.15,
+        "cota_parte_declarada_munis_dca": 3122933391.1600013,
         "fecop_dca": 602799334.53,
-        "icms_liquido_rreo": 13147344027.0,
-        "diff_transf_vs_cota_munis_rel": 0.0023872472640909716,
-        "diff_abs": -3710381196.8500004,
-        "diff_rel": -0.28221526638613764
+        "diff_abs_bruto": -594885264.8299999,
+        "diff_rel_bruto": -0.04524756206335787,
+        "diff_transf_vs_cota_munis_rel": 0.0023872472640909716
+      },
+      "2020": {
+        "icms_bruto_dca": 12638845204.13,
+        "icms_bruto_rreo": 13222260499.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 3129599818.3700004,
+        "fecop_dca": 589937731.01,
+        "diff_abs_bruto": -583415294.8700008,
+        "diff_rel_bruto": -0.0441237180975314
+      },
+      "2021": {
+        "icms_bruto_dca": 15551015984.1,
+        "icms_bruto_rreo": 16231219820.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 3856445078.4800005,
+        "fecop_dca": 688747560.11,
+        "diff_abs_bruto": -680203835.8999996,
+        "diff_rel_bruto": -0.04190712980560198
       },
       "2022": {
         "icms_bruto_dca": 16456359492.17,
+        "icms_bruto_rreo": 17124667700.0,
         "transf_munis_dca": 4100059554.15,
-        "cota_parte_declarada_munis_dca": 3970374388.369999,
         "icms_liquido_dca": 12356299938.02,
+        "cota_parte_declarada_munis_dca": 3970374388.369999,
         "fecop_dca": 697934566.46,
-        "icms_liquido_rreo": 17124667700.0,
-        "diff_transf_vs_cota_munis_rel": -0.031630068799546184,
-        "diff_abs": -4768367761.98,
-        "diff_rel": -0.27845023597041824
+        "diff_abs_bruto": -668308207.8299999,
+        "diff_rel_bruto": -0.03902605408395749,
+        "diff_transf_vs_cota_munis_rel": -0.031630068799546184
       },
       "2023": {
         "icms_bruto_dca": 16467273244.53,
+        "icms_bruto_rreo": 17053549032.0,
         "transf_munis_dca": 4102437636.78,
-        "cota_parte_declarada_munis_dca": 4009511170.49,
         "icms_liquido_dca": 12364835607.75,
+        "cota_parte_declarada_munis_dca": 4009511170.49,
         "fecop_dca": 610452897.64,
-        "icms_liquido_rreo": 17053549032.0,
-        "diff_transf_vs_cota_munis_rel": -0.02265152441486919,
-        "diff_abs": -4688713424.25,
-        "diff_rel": -0.27494062470233616
+        "diff_abs_bruto": -586275787.4699993,
+        "diff_rel_bruto": -0.03437852064516815,
+        "diff_transf_vs_cota_munis_rel": -0.02265152441486919
       },
       "2024": {
         "icms_bruto_dca": 19942107760.57,
+        "icms_bruto_rreo": 20202084845.0,
         "transf_munis_dca": 4965876328.9,
-        "cota_parte_declarada_munis_dca": 4817690991.420003,
         "icms_liquido_dca": 14976231431.67,
+        "cota_parte_declarada_munis_dca": 4817690991.420003,
         "fecop_dca": 294198692.61,
-        "icms_liquido_rreo": 20202084845.0,
-        "diff_transf_vs_cota_munis_rel": -0.02984072249596709,
-        "diff_abs": -5225853413.33,
-        "diff_rel": -0.2586789162319252
+        "diff_abs_bruto": -259977084.4300003,
+        "diff_rel_bruto": -0.012868824501266484,
+        "diff_transf_vs_cota_munis_rel": -0.02984072249596709
       },
       "2025": {
         "icms_bruto_dca": 21227268364.23,
+        "icms_bruto_rreo": 21447585488.0,
         "transf_munis_dca": 5286216842.83,
-        "cota_parte_declarada_munis_dca": 5150108727.160002,
         "icms_liquido_dca": 15941051521.4,
+        "cota_parte_declarada_munis_dca": 5150108727.160002,
         "fecop_dca": 242717625.2,
-        "icms_liquido_rreo": 21447585488.0,
-        "diff_transf_vs_cota_munis_rel": -0.025747735992822436,
-        "diff_abs": -5506533966.6,
-        "diff_rel": -0.25674377051351194
+        "diff_abs_bruto": -220317123.77000046,
+        "diff_rel_bruto": -0.010272350885057372,
+        "diff_transf_vs_cota_munis_rel": -0.025747735992822436
       }
     },
-    "DF": {},
+    "DF": {
+      "2019": {
+        "icms_bruto_dca": 8118507636.42,
+        "icms_bruto_rreo": null,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 0,
+        "fecop_dca": 55970181.82
+      },
+      "2020": {
+        "icms_bruto_dca": 8585381849.65,
+        "icms_bruto_rreo": null,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 0,
+        "fecop_dca": 67127188.39
+      },
+      "2021": {
+        "icms_bruto_dca": 9781532459.79,
+        "icms_bruto_rreo": null,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 0,
+        "fecop_dca": 112218510.06
+      },
+      "2022": {
+        "icms_bruto_dca": 10018767689.66,
+        "icms_bruto_rreo": null,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 0,
+        "fecop_dca": 88975951.65
+      },
+      "2023": {
+        "icms_bruto_dca": 9912523183.4,
+        "icms_bruto_rreo": null,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 0,
+        "fecop_dca": 94159660.33
+      },
+      "2024": {
+        "icms_bruto_dca": 11618930329.17,
+        "icms_bruto_rreo": null,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 0,
+        "fecop_dca": 99663888.56
+      },
+      "2025": {
+        "icms_bruto_dca": 12495978651.6,
+        "icms_bruto_rreo": null,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 0,
+        "fecop_dca": 102870659.48
+      }
+    },
     "ES": {
       "2019": {
         "icms_bruto_dca": 11359781521.95,
+        "icms_bruto_rreo": 11412477440.0,
         "transf_munis_dca": 2839473411.96,
-        "cota_parte_declarada_munis_dca": 2841891424.1100006,
         "icms_liquido_dca": 8520308109.990001,
+        "cota_parte_declarada_munis_dca": 2841891424.1100006,
         "fecop_dca": 54469347.97,
-        "icms_liquido_rreo": 11412477440.0,
-        "diff_transf_vs_cota_munis_rel": 0.0008515706256715726,
-        "diff_abs": -2892169330.0099993,
-        "diff_rel": -0.2534216908830971
+        "diff_abs_bruto": -52695918.04999924,
+        "diff_rel_bruto": -0.004617395156051168,
+        "diff_transf_vs_cota_munis_rel": 0.0008515706256715726
       },
       "2020": {
         "icms_bruto_dca": 11871457440.3,
+        "icms_bruto_rreo": 11924539408.0,
         "transf_munis_dca": 2966318241.27,
-        "cota_parte_declarada_munis_dca": 2966680531.91,
         "icms_liquido_dca": 8905139199.029999,
+        "cota_parte_declarada_munis_dca": 2966680531.91,
         "fecop_dca": 59235098.05,
-        "icms_liquido_rreo": 11924539408.0,
-        "diff_transf_vs_cota_munis_rel": 0.00012213478478450624,
-        "diff_abs": -3019400208.970001,
-        "diff_rel": -0.253208958909082
+        "diff_abs_bruto": -53081967.70000076,
+        "diff_rel_bruto": -0.004451489980769307,
+        "diff_transf_vs_cota_munis_rel": 0.00012213478478450624
       },
       "2021": {
         "icms_bruto_dca": 15333611913.86,
+        "icms_bruto_rreo": 15398157881.0,
         "transf_munis_dca": 3832577371.99,
-        "cota_parte_declarada_munis_dca": 3830540266.759999,
         "icms_liquido_dca": 11501034541.87,
+        "cota_parte_declarada_munis_dca": 3830540266.759999,
         "fecop_dca": 67809300.66,
-        "icms_liquido_rreo": 15398157881.0,
-        "diff_transf_vs_cota_munis_rel": -0.0005315235759854317,
-        "diff_abs": -3897123339.129999,
-        "diff_rel": -0.2530902312632288
+        "diff_abs_bruto": -64545967.13999939,
+        "diff_rel_bruto": -0.0041917979825134505,
+        "diff_transf_vs_cota_munis_rel": -0.0005315235759854317
       },
       "2022": {
         "icms_bruto_dca": 16575624991.09,
+        "icms_bruto_rreo": 16651163707.0,
         "transf_munis_dca": 4143826876.73,
-        "cota_parte_declarada_munis_dca": 3706343570.97,
         "icms_liquido_dca": 12431798114.36,
+        "cota_parte_declarada_munis_dca": 3706343570.97,
         "fecop_dca": 76417553.12,
-        "icms_liquido_rreo": 16651163707.0,
-        "diff_transf_vs_cota_munis_rel": -0.10557470637026939,
-        "diff_abs": -4219365592.6399994,
-        "diff_rel": -0.25339764036228984
+        "diff_abs_bruto": -75538715.90999985,
+        "diff_rel_bruto": -0.004536542744952057,
+        "diff_transf_vs_cota_munis_rel": -0.10557470637026939
       },
       "2023": {
         "icms_bruto_dca": 17656415017.17,
+        "icms_bruto_rreo": 17733378621.0,
         "transf_munis_dca": 4412852207.82,
-        "cota_parte_declarada_munis_dca": 3954558665.5900006,
         "icms_liquido_dca": 13243562809.349998,
+        "cota_parte_declarada_munis_dca": 3954558665.5900006,
         "fecop_dca": 81912269.07,
-        "icms_liquido_rreo": 17733378621.0,
-        "diff_transf_vs_cota_munis_rel": -0.10385426944910113,
-        "diff_abs": -4489815811.650002,
-        "diff_rel": -0.25318445557425406
+        "diff_abs_bruto": -76963603.83000183,
+        "diff_rel_bruto": -0.0043400417638893105,
+        "diff_transf_vs_cota_munis_rel": -0.10385426944910113
       },
       "2024": {
         "icms_bruto_dca": 20804357747.13,
+        "icms_bruto_rreo": 20888555332.0,
         "transf_munis_dca": 5198679321.32,
-        "cota_parte_declarada_munis_dca": 4655977548.68,
         "icms_liquido_dca": 15605678425.810001,
+        "cota_parte_declarada_munis_dca": 4655977548.68,
         "fecop_dca": 93811827.41,
-        "icms_liquido_rreo": 20888555332.0,
-        "diff_transf_vs_cota_munis_rel": -0.10439223870077097,
-        "diff_abs": -5282876906.189999,
-        "diff_rel": -0.2529077201474509
+        "diff_abs_bruto": -84197584.86999893,
+        "diff_rel_bruto": -0.004030799810315907,
+        "diff_transf_vs_cota_munis_rel": -0.10439223870077097
       },
       "2025": {
         "icms_bruto_dca": 22519755234.49,
+        "icms_bruto_rreo": 22615846717.0,
         "transf_munis_dca": 5627628497.14,
-        "cota_parte_declarada_munis_dca": 4986766784.2,
         "icms_liquido_dca": 16892126737.350002,
+        "cota_parte_declarada_munis_dca": 4986766784.2,
         "fecop_dca": 105362495.84,
-        "icms_liquido_rreo": 22615846717.0,
-        "diff_transf_vs_cota_munis_rel": -0.11387775743649228,
-        "diff_abs": -5723719979.649998,
-        "diff_rel": -0.25308448767242314
+        "diff_abs_bruto": -96091482.50999832,
+        "diff_rel_bruto": -0.0042488562870285,
+        "diff_transf_vs_cota_munis_rel": -0.11387775743649228
       }
     },
     "GO": {
       "2019": {
         "icms_bruto_dca": 23819504146.31,
+        "icms_bruto_rreo": 17025786285.0,
         "transf_munis_dca": 3990504661.84,
-        "cota_parte_declarada_munis_dca": 3920149024.1100016,
         "icms_liquido_dca": 19828999484.47,
+        "cota_parte_declarada_munis_dca": 3920149024.1100016,
         "fecop_dca": 1042874829.7,
-        "icms_liquido_rreo": 17025786285.0,
-        "diff_transf_vs_cota_munis_rel": -0.017630761944169234,
-        "diff_abs": 2803213199.470001,
-        "diff_rel": 0.1646451536831329
+        "diff_abs_bruto": 6793717861.310001,
+        "diff_rel_bruto": 0.3990252049208077,
+        "diff_transf_vs_cota_munis_rel": -0.017630761944169234
       },
       "2020": {
         "icms_bruto_dca": 24903000194.17,
+        "icms_bruto_rreo": 17816879619.0,
         "transf_munis_dca": 4183710322.32,
-        "cota_parte_declarada_munis_dca": 4138367899.4900007,
         "icms_liquido_dca": 20719289871.85,
+        "cota_parte_declarada_munis_dca": 4138367899.4900007,
         "fecop_dca": 1522859081.3,
-        "icms_liquido_rreo": 17816879619.0,
-        "diff_transf_vs_cota_munis_rel": -0.010837849501218725,
-        "diff_abs": 2902410252.8499985,
-        "diff_rel": 0.16290227665650583
+        "diff_abs_bruto": 7086120575.169998,
+        "diff_rel_bruto": 0.3977195068216843,
+        "diff_transf_vs_cota_munis_rel": -0.010837849501218725
       },
       "2021": {
         "icms_bruto_dca": 21807013798.09,
+        "icms_bruto_rreo": 23176424978.0,
         "transf_munis_dca": 5451661947.7,
-        "cota_parte_declarada_munis_dca": 5503774630.759997,
         "icms_liquido_dca": 16355351850.39,
+        "cota_parte_declarada_munis_dca": 5503774630.759997,
         "fecop_dca": 2148337396.79,
-        "icms_liquido_rreo": 23176424978.0,
-        "diff_transf_vs_cota_munis_rel": 0.009559045215924176,
-        "diff_abs": -6821073127.610001,
-        "diff_rel": -0.2943108410414824
+        "diff_abs_bruto": -1369411179.9099998,
+        "diff_rel_bruto": -0.059086385463241214,
+        "diff_transf_vs_cota_munis_rel": 0.009559045215924176
       },
       "2022": {
         "icms_bruto_dca": 23130835169.04,
+        "icms_bruto_rreo": 24065860418.0,
         "transf_munis_dca": 5782336345.66,
-        "cota_parte_declarada_munis_dca": 5571836653.8600025,
         "icms_liquido_dca": 17348498823.38,
+        "cota_parte_declarada_munis_dca": 5571836653.8600025,
         "fecop_dca": 1235007174.73,
-        "icms_liquido_rreo": 24065860418.0,
-        "diff_transf_vs_cota_munis_rel": -0.036403916897361104,
-        "diff_abs": -6717361594.619999,
-        "diff_rel": -0.2791240985340281
+        "diff_abs_bruto": -935025248.9599991,
+        "diff_rel_bruto": -0.03885276623064968,
+        "diff_transf_vs_cota_munis_rel": -0.036403916897361104
       },
       "2023": {
         "icms_bruto_dca": 24044402217.05,
+        "icms_bruto_rreo": 24349471727.0,
         "transf_munis_dca": 6109973703.97,
-        "cota_parte_declarada_munis_dca": 5718160598.999998,
         "icms_liquido_dca": 17934428513.079998,
+        "cota_parte_declarada_munis_dca": 5718160598.999998,
         "fecop_dca": 413623160.36,
-        "icms_liquido_rreo": 24349471727.0,
-        "diff_transf_vs_cota_munis_rel": -0.06412680707863255,
-        "diff_abs": -6415043213.920002,
-        "diff_rel": -0.2634571823916269
+        "diff_abs_bruto": -305069509.95000076,
+        "diff_rel_bruto": -0.012528793781251662,
+        "diff_transf_vs_cota_munis_rel": -0.06412680707863255
       },
       "2024": {
         "icms_bruto_dca": 28830085210.35,
+        "icms_bruto_rreo": 29215644410.0,
         "transf_munis_dca": 7204749723.9,
-        "cota_parte_declarada_munis_dca": 6902350482.470002,
         "icms_liquido_dca": 21625335486.449997,
+        "cota_parte_declarada_munis_dca": 6902350482.470002,
         "fecop_dca": 488842102.28,
-        "icms_liquido_rreo": 29215644410.0,
-        "diff_transf_vs_cota_munis_rel": -0.041972206255390346,
-        "diff_abs": -7590308923.550003,
-        "diff_rel": -0.25980289248564287
+        "diff_abs_bruto": -385559199.6500015,
+        "diff_rel_bruto": -0.013197011650307169,
+        "diff_transf_vs_cota_munis_rel": -0.041972206255390346
       },
       "2025": {
         "icms_bruto_dca": 30158958605.76,
+        "icms_bruto_rreo": 30532863823.0,
         "transf_munis_dca": 7621831147.07,
-        "cota_parte_declarada_munis_dca": 7342367822.389997,
         "icms_liquido_dca": 22537127458.69,
+        "cota_parte_declarada_munis_dca": 7342367822.389997,
         "fecop_dca": 483804047.45,
-        "icms_liquido_rreo": 30532863823.0,
-        "diff_transf_vs_cota_munis_rel": -0.03666616581862156,
-        "diff_abs": -7995736364.310001,
-        "diff_rel": -0.2618731217176857
+        "diff_abs_bruto": -373905217.2400017,
+        "diff_rel_bruto": -0.012245992364409127,
+        "diff_transf_vs_cota_munis_rel": -0.03666616581862156
       }
     },
     "MA": {
       "2019": {
         "icms_bruto_dca": 7202840367.19,
+        "icms_bruto_rreo": 7831039575.0,
         "transf_munis_dca": 1773127873.12,
-        "cota_parte_declarada_munis_dca": 1774563054.56,
         "icms_liquido_dca": 5429712494.07,
+        "cota_parte_declarada_munis_dca": 1774563054.56,
         "fecop_dca": 628199208.27,
-        "icms_liquido_rreo": 7831039575.0,
-        "diff_transf_vs_cota_munis_rel": 0.0008094066207840435,
-        "diff_abs": -2401327080.9300003,
-        "diff_rel": -0.3066421843398742
+        "diff_abs_bruto": -628199207.8100004,
+        "diff_rel_bruto": -0.08021913333390356,
+        "diff_transf_vs_cota_munis_rel": 0.0008094066207840435
       },
       "2020": {
         "icms_bruto_dca": 7432782154.73,
+        "icms_bruto_rreo": 8143958001.0,
         "transf_munis_dca": 1848434307.51,
-        "cota_parte_declarada_munis_dca": 1847331485.0900004,
         "icms_liquido_dca": 5584347847.219999,
+        "cota_parte_declarada_munis_dca": 1847331485.0900004,
         "fecop_dca": 711183428.76,
-        "icms_liquido_rreo": 8143958001.0,
-        "diff_transf_vs_cota_munis_rel": -0.0005966251629927796,
-        "diff_abs": -2559610153.7800007,
-        "diff_rel": -0.3142955984627751
+        "diff_abs_bruto": -711175846.2700005,
+        "diff_rel_bruto": -0.08732557881348048,
+        "diff_transf_vs_cota_munis_rel": -0.0005966251629927796
       },
       "2021": {
         "icms_bruto_dca": 9081236098.58,
+        "icms_bruto_rreo": 9939309949.0,
         "transf_munis_dca": 2259405748.28,
-        "cota_parte_declarada_munis_dca": 2266881328.5600014,
         "icms_liquido_dca": 6821830350.299999,
+        "cota_parte_declarada_munis_dca": 2266881328.5600014,
         "fecop_dca": 858079232.63,
-        "icms_liquido_rreo": 9939309949.0,
-        "diff_transf_vs_cota_munis_rel": 0.0033086488718071286,
-        "diff_abs": -3117479598.700001,
-        "diff_rel": -0.3136515124989791
+        "diff_abs_bruto": -858073850.4200001,
+        "diff_rel_bruto": -0.08633133032603851,
+        "diff_transf_vs_cota_munis_rel": 0.0033086488718071286
       },
       "2022": {
         "icms_bruto_dca": 10894122236.81,
+        "icms_bruto_rreo": 11469444478.0,
         "transf_munis_dca": 2713491889.96,
-        "cota_parte_declarada_munis_dca": 2511696514.74,
         "icms_liquido_dca": 8180630346.849999,
+        "cota_parte_declarada_munis_dca": 2511696514.74,
         "fecop_dca": 575322241.42,
-        "icms_liquido_rreo": 11469444478.0,
-        "diff_transf_vs_cota_munis_rel": -0.07436741416720245,
-        "diff_abs": -3288814131.1500006,
-        "diff_rel": -0.2867457214216788
+        "diff_abs_bruto": -575322241.1900005,
+        "diff_rel_bruto": -0.050161299642153476,
+        "diff_transf_vs_cota_munis_rel": -0.07436741416720245
       },
       "2023": {
         "icms_bruto_dca": 10714069840.2,
+        "icms_bruto_rreo": 10880745024.0,
         "transf_munis_dca": 2667008477.86,
-        "cota_parte_declarada_munis_dca": 2442491001.549999,
         "icms_liquido_dca": 8047061362.34,
+        "cota_parte_declarada_munis_dca": 2442491001.549999,
         "fecop_dca": 166675183.36,
-        "icms_liquido_rreo": 10880745024.0,
-        "diff_transf_vs_cota_munis_rel": -0.08418326307314669,
-        "diff_abs": -2833683661.66,
-        "diff_rel": -0.26043103256345546
+        "diff_abs_bruto": -166675183.79999924,
+        "diff_rel_bruto": -0.015318361328416259,
+        "diff_transf_vs_cota_munis_rel": -0.08418326307314669
       },
       "2024": {
         "icms_bruto_dca": 13654153518.91,
+        "icms_bruto_rreo": 13870071546.0,
         "transf_munis_dca": 3506657331.29,
-        "cota_parte_declarada_munis_dca": 3164719207.73,
         "icms_liquido_dca": 10147496187.619999,
+        "cota_parte_declarada_munis_dca": 3164719207.73,
         "fecop_dca": 215918027.46,
-        "icms_liquido_rreo": 13870071546.0,
-        "diff_transf_vs_cota_munis_rel": -0.0975111313297928,
-        "diff_abs": -3722575358.380001,
-        "diff_rel": -0.268389052358822
+        "diff_abs_bruto": -215918027.09000015,
+        "diff_rel_bruto": -0.015567189136257117,
+        "diff_transf_vs_cota_munis_rel": -0.0975111313297928
       },
       "2025": {
         "icms_bruto_dca": 15564067525.43,
+        "icms_bruto_rreo": 15813244158.0,
         "transf_munis_dca": 3875277554.34,
-        "cota_parte_declarada_munis_dca": 3485071283.960002,
         "icms_liquido_dca": 11688789971.09,
+        "cota_parte_declarada_munis_dca": 3485071283.960002,
         "fecop_dca": 249176632.15,
-        "icms_liquido_rreo": 15813244158.0,
-        "diff_transf_vs_cota_munis_rel": -0.10069118015637318,
-        "diff_abs": -4124454186.91,
-        "diff_rel": -0.26082277271507365
+        "diff_abs_bruto": -249176632.5699997,
+        "diff_rel_bruto": -0.015757464444380944,
+        "diff_transf_vs_cota_munis_rel": -0.10069118015637318
       }
     },
     "MG": {
+      "2019": {
+        "icms_bruto_dca": 51312219431.78,
+        "icms_bruto_rreo": 51981254181.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 12474362229.780006,
+        "fecop_dca": 669034749.02,
+        "diff_abs_bruto": -669034749.2200012,
+        "diff_rel_bruto": -0.012870692709537284
+      },
+      "2020": {
+        "icms_bruto_dca": 51780327901.84,
+        "icms_bruto_rreo": 52523561883.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 13608838632.339987,
+        "fecop_dca": 743233981.14,
+        "diff_abs_bruto": -743233981.1600037,
+        "diff_rel_bruto": -0.014150487029337626
+      },
+      "2021": {
+        "icms_bruto_dca": 67163094135.37,
+        "icms_bruto_rreo": 67951276113.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 17071403447.370007,
+        "fecop_dca": 788181978.11,
+        "diff_abs_bruto": -788181977.6299973,
+        "diff_rel_bruto": -0.011599222600607017
+      },
       "2022": {
         "icms_bruto_dca": 69829494004.02,
+        "icms_bruto_rreo": 70717964393.0,
         "transf_munis_dca": 17457373501.01,
-        "cota_parte_declarada_munis_dca": 20085667615.919968,
         "icms_liquido_dca": 52372120503.01001,
+        "cota_parte_declarada_munis_dca": 20085667615.919968,
         "fecop_dca": 888470388.59,
-        "icms_liquido_rreo": 70717964393.0,
-        "diff_transf_vs_cota_munis_rel": 0.1505549568930234,
-        "diff_abs": -18345843889.98999,
-        "diff_rel": -0.25942268060823803
+        "diff_abs_bruto": -888470388.9799957,
+        "diff_rel_bruto": -0.012563574144223258,
+        "diff_transf_vs_cota_munis_rel": 0.1505549568930234
       },
       "2023": {
         "icms_bruto_dca": 71903704940.41,
+        "icms_bruto_rreo": 72002914431.0,
         "transf_munis_dca": 17975926235.1,
-        "cota_parte_declarada_munis_dca": 20221375269.21001,
         "icms_liquido_dca": 53927778705.310005,
+        "cota_parte_declarada_munis_dca": 20221375269.21001,
         "fecop_dca": 110118969.27,
-        "icms_liquido_rreo": 72002914431.0,
-        "diff_transf_vs_cota_munis_rel": 0.12491423277680805,
-        "diff_abs": -18075135725.689995,
-        "diff_rel": -0.2510333903638206
+        "diff_abs_bruto": -99209490.58999634,
+        "diff_rel_bruto": -0.0013778538184738098,
+        "diff_transf_vs_cota_munis_rel": 0.12491423277680805
       },
       "2024": {
         "icms_bruto_dca": 80562667364.45,
+        "icms_bruto_rreo": 81523297331.0,
         "transf_munis_dca": 20140666841.11,
-        "cota_parte_declarada_munis_dca": 19763790690.240017,
         "icms_liquido_dca": 60422000523.34,
+        "cota_parte_declarada_munis_dca": 19763790690.240017,
         "fecop_dca": 969232274.57,
-        "icms_liquido_rreo": 81523297331.0,
-        "diff_transf_vs_cota_munis_rel": -0.018712198252578468,
-        "diff_abs": -21101296807.660004,
-        "diff_rel": -0.258837626770477
+        "diff_abs_bruto": -960629966.550003,
+        "diff_rel_bruto": -0.011783502360676896,
+        "diff_transf_vs_cota_munis_rel": -0.018712198252578468
       },
       "2025": {
         "icms_bruto_dca": 86617805155.56,
+        "icms_bruto_rreo": 87712076044.0,
         "transf_munis_dca": 21654451288.89,
-        "cota_parte_declarada_munis_dca": 20851452082.88002,
         "icms_liquido_dca": 64963353866.67,
+        "cota_parte_declarada_munis_dca": 20851452082.88002,
         "fecop_dca": 1104839360.82,
-        "icms_liquido_rreo": 87712076044.0,
-        "diff_transf_vs_cota_munis_rel": -0.037082408383257666,
-        "diff_abs": -22748722177.33,
-        "diff_rel": -0.2593567864693831
+        "diff_abs_bruto": -1094270888.4400024,
+        "diff_rel_bruto": -0.012475715292510816,
+        "diff_transf_vs_cota_munis_rel": -0.037082408383257666
       }
     },
     "MS": {
       "2019": {
         "icms_bruto_dca": 9021941428.56,
+        "icms_bruto_rreo": 9105261630.0,
         "transf_munis_dca": 2255485357.14,
-        "cota_parte_declarada_munis_dca": 2291689658.47,
         "icms_liquido_dca": 6766456071.42,
+        "cota_parte_declarada_munis_dca": 2291689658.47,
         "fecop_dca": 83320201.28,
-        "icms_liquido_rreo": 9105261630.0,
-        "diff_transf_vs_cota_munis_rel": 0.016051667644567506,
-        "diff_abs": -2338805558.58,
-        "diff_rel": -0.256863081328065
+        "diff_abs_bruto": -83320201.44000053,
+        "diff_rel_bruto": -0.009150775104086772,
+        "diff_transf_vs_cota_munis_rel": 0.016051667644567506
       },
       "2020": {
         "icms_bruto_dca": 10063863625.15,
+        "icms_bruto_rreo": 10161119076.0,
         "transf_munis_dca": 2515965906.51,
-        "cota_parte_declarada_munis_dca": 2503639611.8199997,
         "icms_liquido_dca": 7547897718.639999,
+        "cota_parte_declarada_munis_dca": 2503639611.8199997,
         "fecop_dca": 97255451.12,
-        "icms_liquido_rreo": 10161119076.0,
-        "diff_transf_vs_cota_munis_rel": -0.004899229619171924,
-        "diff_abs": -2613221357.3600006,
-        "diff_rel": -0.257178499515106
+        "diff_abs_bruto": -97255450.85000038,
+        "diff_rel_bruto": -0.009571332657611736,
+        "diff_transf_vs_cota_munis_rel": -0.004899229619171924
       },
       "2021": {
         "icms_bruto_dca": 12632319291.27,
+        "icms_bruto_rreo": 12729194728.0,
         "transf_munis_dca": 3157586248.95,
-        "cota_parte_declarada_munis_dca": 3144578375.6,
         "icms_liquido_dca": 9474733042.32,
+        "cota_parte_declarada_munis_dca": 3144578375.6,
         "fecop_dca": 98849881.69,
-        "icms_liquido_rreo": 12729194728.0,
-        "diff_transf_vs_cota_munis_rel": -0.004119562325281042,
-        "diff_abs": -3254461685.6800003,
-        "diff_rel": -0.25566909417461153
+        "diff_abs_bruto": -96875436.72999954,
+        "diff_rel_bruto": -0.007610492163884159,
+        "diff_transf_vs_cota_munis_rel": -0.004119562325281042
       },
       "2022": {
         "icms_bruto_dca": 14013779725.4,
+        "icms_bruto_rreo": 14085685560.0,
         "transf_munis_dca": 3496624517.44,
-        "cota_parte_declarada_munis_dca": 3241710120.689999,
         "icms_liquido_dca": 10517155207.96,
+        "cota_parte_declarada_munis_dca": 3241710120.689999,
         "fecop_dca": 99188647.93,
-        "icms_liquido_rreo": 14085685560.0,
-        "diff_transf_vs_cota_munis_rel": -0.07290299415295315,
-        "diff_abs": -3568530352.040001,
-        "diff_rel": -0.2533444564582486
+        "diff_abs_bruto": -71905834.60000038,
+        "diff_rel_bruto": -0.005104887106396572,
+        "diff_transf_vs_cota_munis_rel": -0.07290299415295315
       },
       "2023": {
         "icms_bruto_dca": 19137161138.55,
+        "icms_bruto_rreo": 15341904903.0,
         "transf_munis_dca": 3828618802.3,
-        "cota_parte_declarada_munis_dca": 3606682660.2600007,
         "icms_liquido_dca": 15308542336.25,
+        "cota_parte_declarada_munis_dca": 3606682660.2600007,
         "fecop_dca": 105829793.37,
-        "icms_liquido_rreo": 15341904903.0,
-        "diff_transf_vs_cota_munis_rel": -0.05796767803226422,
-        "diff_abs": -33362566.75,
-        "diff_rel": -0.0021746039335360625
+        "diff_abs_bruto": 3795256235.549999,
+        "diff_rel_bruto": 0.24737842266300739,
+        "diff_transf_vs_cota_munis_rel": -0.05796767803226422
       },
       "2024": {
         "icms_bruto_dca": 23364281571.17,
+        "icms_bruto_rreo": 17030658703.0,
         "transf_munis_dca": 4235651570.27,
-        "cota_parte_declarada_munis_dca": 3957217472.8100004,
         "icms_liquido_dca": 19128630000.899998,
+        "cota_parte_declarada_munis_dca": 3957217472.8100004,
         "fecop_dca": 88055884.05,
-        "icms_liquido_rreo": 17030658703.0,
-        "diff_transf_vs_cota_munis_rel": -0.06573583611417096,
-        "diff_abs": 2097971297.8999977,
-        "diff_rel": 0.12318791272180411
+        "diff_abs_bruto": 6333622868.169998,
+        "diff_rel_bruto": 0.37189535523099365,
+        "diff_transf_vs_cota_munis_rel": -0.06573583611417096
       },
       "2025": {
         "icms_bruto_dca": 25144810779.77,
+        "icms_bruto_rreo": 17621634611.0,
         "transf_munis_dca": 4385034803.78,
-        "cota_parte_declarada_munis_dca": 4086522941.6400013,
         "icms_liquido_dca": 20759775975.99,
+        "cota_parte_declarada_munis_dca": 4086522941.6400013,
         "fecop_dca": 81501844.37,
-        "icms_liquido_rreo": 17621634611.0,
-        "diff_transf_vs_cota_munis_rel": -0.06807514090485084,
-        "diff_abs": 3138141364.9900017,
-        "diff_rel": 0.1780845780919252
+        "diff_abs_bruto": 7523176168.77,
+        "diff_rel_bruto": 0.42692839426336693,
+        "diff_transf_vs_cota_munis_rel": -0.06807514090485084
       }
     },
     "MT": {
       "2019": {
         "icms_bruto_dca": 14542506316.32,
+        "icms_bruto_rreo": 11314668509.0,
         "transf_munis_dca": 2781020315.21,
-        "cota_parte_declarada_munis_dca": 2794849235.410002,
         "icms_liquido_dca": 11761486001.11,
+        "cota_parte_declarada_munis_dca": 2794849235.410002,
         "fecop_dca": 193535583.99,
-        "icms_liquido_rreo": 11314668509.0,
-        "diff_transf_vs_cota_munis_rel": 0.004972606681212951,
-        "diff_abs": 446817492.1100006,
-        "diff_rel": 0.03949010894615159
+        "diff_abs_bruto": 3227837807.3199997,
+        "diff_rel_bruto": 0.285279043283724,
+        "diff_transf_vs_cota_munis_rel": 0.004972606681212951
       },
       "2020": {
         "icms_bruto_dca": 17176564913.46,
+        "icms_bruto_rreo": 12826040161.0,
         "transf_munis_dca": 3171839904.87,
-        "cota_parte_declarada_munis_dca": 3164122947.5900006,
         "icms_liquido_dca": 14004725008.59,
+        "cota_parte_declarada_munis_dca": 3164122947.5900006,
         "fecop_dca": 162146125.43,
-        "icms_liquido_rreo": 12826040161.0,
-        "diff_transf_vs_cota_munis_rel": -0.0024329592638489554,
-        "diff_abs": 1178684847.5900002,
-        "diff_rel": 0.09189779797930263
+        "diff_abs_bruto": 4350524752.459999,
+        "diff_rel_bruto": 0.339194692816306,
+        "diff_transf_vs_cota_munis_rel": -0.0024329592638489554
       },
       "2021": {
         "icms_bruto_dca": 27670965852.77,
+        "icms_bruto_rreo": 18663854526.0,
         "transf_munis_dca": 4632068501.87,
-        "cota_parte_declarada_munis_dca": 4603348451.570001,
         "icms_liquido_dca": 23038897350.9,
+        "cota_parte_declarada_munis_dca": 4603348451.570001,
         "fecop_dca": 170767368.15,
-        "icms_liquido_rreo": 18663854526.0,
-        "diff_transf_vs_cota_munis_rel": -0.006200264587711677,
-        "diff_abs": 4375042824.900002,
-        "diff_rel": 0.23441260854263912
+        "diff_abs_bruto": 9007111326.77,
+        "diff_rel_bruto": 0.48259652443296164,
+        "diff_transf_vs_cota_munis_rel": -0.006200264587711677
       },
       "2022": {
         "icms_bruto_dca": 30802346201.52,
+        "icms_bruto_rreo": 19699173746.0,
         "transf_munis_dca": 4881288106.71,
-        "cota_parte_declarada_munis_dca": 4586560892.33,
         "icms_liquido_dca": 25921058094.81,
+        "cota_parte_declarada_munis_dca": 4586560892.33,
         "fecop_dca": 190081469.33,
-        "icms_liquido_rreo": 19699173746.0,
-        "diff_transf_vs_cota_munis_rel": -0.06037898356682883,
-        "diff_abs": 6221884348.810001,
-        "diff_rel": 0.31584493994695495
+        "diff_abs_bruto": 11103172455.52,
+        "diff_rel_bruto": 0.5636364549439311,
+        "diff_transf_vs_cota_munis_rel": -0.06037898356682883
       },
       "2023": {
         "icms_bruto_dca": 31085194819.13,
+        "icms_bruto_rreo": 20820000395.0,
         "transf_munis_dca": 5204872938.82,
-        "cota_parte_declarada_munis_dca": 4736379485.74,
         "icms_liquido_dca": 25880321880.31,
+        "cota_parte_declarada_munis_dca": 4736379485.74,
         "fecop_dca": 203223295.26,
-        "icms_liquido_rreo": 20820000395.0,
-        "diff_transf_vs_cota_munis_rel": -0.09001054561501215,
-        "diff_abs": 5060321485.310001,
-        "diff_rel": 0.24305097931339406
+        "diff_abs_bruto": 10265194424.130001,
+        "diff_rel_bruto": 0.4930448717280152,
+        "diff_transf_vs_cota_munis_rel": -0.09001054561501215
       },
       "2024": {
         "icms_bruto_dca": 33003111069.92,
+        "icms_bruto_rreo": 23086882922.0,
         "transf_munis_dca": 5736605316.36,
-        "cota_parte_declarada_munis_dca": 5229137515.480001,
         "icms_liquido_dca": 27266505753.559998,
+        "cota_parte_declarada_munis_dca": 5229137515.480001,
         "fecop_dca": 197933515.69,
-        "icms_liquido_rreo": 23086882922.0,
-        "diff_transf_vs_cota_munis_rel": -0.0884613413150057,
-        "diff_abs": 4179622831.5599976,
-        "diff_rel": 0.18103885421349553
+        "diff_abs_bruto": 9916228147.919998,
+        "diff_rel_bruto": 0.4295178427257759,
+        "diff_transf_vs_cota_munis_rel": -0.0884613413150057
       },
       "2025": {
         "icms_bruto_dca": 41011897180.52,
+        "icms_bruto_rreo": 26030429022.0,
         "transf_munis_dca": 6532669761.03,
-        "cota_parte_declarada_munis_dca": 5624843970.960001,
         "icms_liquido_dca": 34479227419.49,
+        "cota_parte_declarada_munis_dca": 5624843970.960001,
         "fecop_dca": 181277704.78,
-        "icms_liquido_rreo": 26030429022.0,
-        "diff_transf_vs_cota_munis_rel": -0.13896704154334333,
-        "diff_abs": 8448798397.489998,
-        "diff_rel": 0.324573920404822
+        "diff_abs_bruto": 14981468158.519997,
+        "diff_rel_bruto": 0.57553673609675,
+        "diff_transf_vs_cota_munis_rel": -0.13896704154334333
       }
     },
     "PA": {
+      "2019": {
+        "icms_bruto_dca": 12201373399.84,
+        "icms_bruto_rreo": 12201125161.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 3037975196.3999996,
+        "fecop_dca": null,
+        "diff_abs_bruto": 248238.8400001526,
+        "diff_rel_bruto": 2.0345569504821556e-05
+      },
+      "2020": {
+        "icms_bruto_dca": 13834526514.63,
+        "icms_bruto_rreo": 13833806281.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 3338473012.4799995,
+        "fecop_dca": null,
+        "diff_abs_bruto": 720233.6299991608,
+        "diff_rel_bruto": 5.2063301695091936e-05
+      },
+      "2021": {
+        "icms_bruto_dca": 16943956449.82,
+        "icms_bruto_rreo": 16943385590.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 4220474449.71,
+        "fecop_dca": null,
+        "diff_abs_bruto": 570859.8199996948,
+        "diff_rel_bruto": 3.3692193155104536e-05
+      },
       "2022": {
         "icms_bruto_dca": 19974288585.74,
+        "icms_bruto_rreo": 19972649936.0,
         "transf_munis_dca": 4993162483.96,
-        "cota_parte_declarada_munis_dca": 4792753332.970001,
         "icms_liquido_dca": 14981126101.780003,
+        "cota_parte_declarada_munis_dca": 4792753332.970001,
         "fecop_dca": null,
-        "icms_liquido_rreo": 19972649936.0,
-        "diff_transf_vs_cota_munis_rel": -0.04013671728764921,
-        "diff_abs": -4991523834.219997,
-        "diff_rel": -0.2499179553146301
+        "diff_abs_bruto": 1638649.7400016785,
+        "diff_rel_bruto": 8.204468336713147e-05,
+        "diff_transf_vs_cota_munis_rel": -0.04013671728764921
       },
       "2023": {
         "icms_bruto_dca": 20796381269.24,
+        "icms_bruto_rreo": 20795796348.0,
         "transf_munis_dca": 5209618188.91,
-        "cota_parte_declarada_munis_dca": 5044948180.6900015,
         "icms_liquido_dca": 15586763080.330002,
+        "cota_parte_declarada_munis_dca": 5044948180.6900015,
         "fecop_dca": null,
-        "icms_liquido_rreo": 20795796348.0,
-        "diff_transf_vs_cota_munis_rel": -0.03160884392075804,
-        "diff_abs": -5209033267.669998,
-        "diff_rel": -0.2504849143789085
+        "diff_abs_bruto": 584921.2400016785,
+        "diff_rel_bruto": 2.8126897869815516e-05,
+        "diff_transf_vs_cota_munis_rel": -0.03160884392075804
       },
       "2024": {
         "icms_bruto_dca": 24399067014.81,
+        "icms_bruto_rreo": 24394691448.0,
         "transf_munis_dca": 6098672862.01,
-        "cota_parte_declarada_munis_dca": 5797308007.33,
         "icms_liquido_dca": 18300394152.800003,
+        "cota_parte_declarada_munis_dca": 5797308007.33,
         "fecop_dca": null,
-        "icms_liquido_rreo": 24394691448.0,
-        "diff_transf_vs_cota_munis_rel": -0.04941482540525653,
-        "diff_abs": -6094297295.199997,
-        "diff_rel": -0.2498206344683912
+        "diff_abs_bruto": 4375566.810001373,
+        "diff_rel_bruto": 0.00017936553201865172,
+        "diff_transf_vs_cota_munis_rel": -0.04941482540525653
       },
       "2025": {
         "icms_bruto_dca": 25081072565.66,
+        "icms_bruto_rreo": 25079145958.0,
         "transf_munis_dca": 6324366489.04,
-        "cota_parte_declarada_munis_dca": 5378847671.230001,
         "icms_liquido_dca": 18756706076.62,
+        "cota_parte_declarada_munis_dca": 5378847671.230001,
         "fecop_dca": null,
-        "icms_liquido_rreo": 25079145958.0,
-        "diff_transf_vs_cota_munis_rel": -0.1495041154633533,
-        "diff_abs": -6322439881.380001,
-        "diff_rel": -0.25209948903236895
+        "diff_abs_bruto": 1926607.6599998474,
+        "diff_rel_bruto": 7.682110320767437e-05,
+        "diff_transf_vs_cota_munis_rel": -0.1495041154633533
       }
     },
     "PB": {
       "2019": {
         "icms_bruto_dca": 5729587431.77,
+        "icms_bruto_rreo": 5883211654.0,
         "transf_munis_dca": 1432075762.41,
-        "cota_parte_declarada_munis_dca": 1429380019.0699995,
         "icms_liquido_dca": 4297511669.360001,
+        "cota_parte_declarada_munis_dca": 1429380019.0699995,
         "fecop_dca": 154908604.65,
-        "icms_liquido_rreo": 5883211654.0,
-        "diff_transf_vs_cota_munis_rel": -0.0018824027406650879,
-        "diff_abs": -1585699984.6399994,
-        "diff_rel": -0.2695296511322826
+        "diff_abs_bruto": -153624222.22999954,
+        "diff_rel_bruto": -0.026112305873875932,
+        "diff_transf_vs_cota_munis_rel": -0.0018824027406650879
       },
       "2020": {
         "icms_bruto_dca": 5938652064.75,
+        "icms_bruto_rreo": 6099027762.0,
         "transf_munis_dca": 1484614330.88,
-        "cota_parte_declarada_munis_dca": 1458714801.7200007,
         "icms_liquido_dca": 4454037733.87,
+        "cota_parte_declarada_munis_dca": 1458714801.7200007,
         "fecop_dca": 160570438.3,
-        "icms_liquido_rreo": 6099027762.0,
-        "diff_transf_vs_cota_munis_rel": -0.017445291090951217,
-        "diff_abs": -1644990028.13,
-        "diff_rel": -0.26971348423417785
+        "diff_abs_bruto": -160375697.25,
+        "diff_rel_bruto": -0.02629528893920126,
+        "diff_transf_vs_cota_munis_rel": -0.017445291090951217
       },
       "2021": {
         "icms_bruto_dca": 7304599114.62,
+        "icms_bruto_rreo": 7495184696.0,
         "transf_munis_dca": 1825911222.18,
-        "cota_parte_declarada_munis_dca": 1679339668.990001,
         "icms_liquido_dca": 5478687892.44,
+        "cota_parte_declarada_munis_dca": 1679339668.990001,
         "fecop_dca": 191539807.68,
-        "icms_liquido_rreo": 7495184696.0,
-        "diff_transf_vs_cota_munis_rel": -0.0802730994856386,
-        "diff_abs": -2016496803.5600004,
-        "diff_rel": -0.2690389744012788
+        "diff_abs_bruto": -190585581.3800001,
+        "diff_rel_bruto": -0.025427736488163002,
+        "diff_transf_vs_cota_munis_rel": -0.0802730994856386
       },
       "2022": {
         "icms_bruto_dca": 7492969227.48,
+        "icms_bruto_rreo": 7672335351.0,
         "transf_munis_dca": 1872532230.78,
-        "cota_parte_declarada_munis_dca": 1308970643.4499996,
         "icms_liquido_dca": 5620436996.7,
+        "cota_parte_declarada_munis_dca": 1308970643.4499996,
         "fecop_dca": 182313803.79,
-        "icms_liquido_rreo": 7672335351.0,
-        "diff_transf_vs_cota_munis_rel": -0.3009622894956792,
-        "diff_abs": -2051898354.3000002,
-        "diff_rel": -0.26744117148536256
+        "diff_abs_bruto": -179366123.52000046,
+        "diff_rel_bruto": -0.023378295566371738,
+        "diff_transf_vs_cota_munis_rel": -0.3009622894956792
       },
       "2023": {
         "icms_bruto_dca": 7915047895.58,
+        "icms_bruto_rreo": 8045036216.0,
         "transf_munis_dca": 1987009964.89,
-        "cota_parte_declarada_munis_dca": 1437021673.85,
         "icms_liquido_dca": 5928037930.69,
+        "cota_parte_declarada_munis_dca": 1437021673.85,
         "fecop_dca": 131138699.17,
-        "icms_liquido_rreo": 8045036216.0,
-        "diff_transf_vs_cota_munis_rel": -0.2767919138596002,
-        "diff_abs": -2116998285.3100004,
-        "diff_rel": -0.2631434127169876
+        "diff_abs_bruto": -129988320.42000008,
+        "diff_rel_bruto": -0.016157580516726423,
+        "diff_transf_vs_cota_munis_rel": -0.2767919138596002
       },
       "2024": {
         "icms_bruto_dca": 9587948823.7,
+        "icms_bruto_rreo": 9713259973.0,
         "transf_munis_dca": 2396385537.79,
-        "cota_parte_declarada_munis_dca": 1746573518.1700006,
         "icms_liquido_dca": 7191563285.910001,
+        "cota_parte_declarada_munis_dca": 1746573518.1700006,
         "fecop_dca": 127722366.2,
-        "icms_liquido_rreo": 9713259973.0,
-        "diff_transf_vs_cota_munis_rel": -0.27116338726500183,
-        "diff_abs": -2521696687.089999,
-        "diff_rel": -0.25961383655946335
+        "diff_abs_bruto": -125311149.29999924,
+        "diff_rel_bruto": -0.012901039367661044,
+        "diff_transf_vs_cota_munis_rel": -0.27116338726500183
       },
       "2025": {
         "icms_bruto_dca": 10419713017.45,
+        "icms_bruto_rreo": 10554097792.0,
         "transf_munis_dca": 2604121793.38,
-        "cota_parte_declarada_munis_dca": 1824719430.449999,
         "icms_liquido_dca": 7815591224.070001,
+        "cota_parte_declarada_munis_dca": 1824719430.449999,
         "fecop_dca": 137689182.88,
-        "icms_liquido_rreo": 10554097792.0,
-        "diff_transf_vs_cota_munis_rel": -0.2992956646311007,
-        "diff_abs": -2738506567.9299994,
-        "diff_rel": -0.25947329860879115
+        "diff_abs_bruto": -134384774.54999924,
+        "diff_rel_bruto": -0.01273294763782299,
+        "diff_transf_vs_cota_munis_rel": -0.2992956646311007
       }
     },
     "PE": {
+      "2019": {
+        "icms_bruto_dca": 16935116110.69,
+        "icms_bruto_rreo": 17294848289.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 4171523730.0800004,
+        "fecop_dca": 364036209.9,
+        "diff_abs_bruto": -359732178.30999947,
+        "diff_rel_bruto": -0.020799961485571346
+      },
+      "2020": {
+        "icms_bruto_dca": 16880888346.31,
+        "icms_bruto_rreo": 17277441458.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 4251002882.1900005,
+        "fecop_dca": 397382395.15,
+        "diff_abs_bruto": -396553111.69000053,
+        "diff_rel_bruto": -0.022952073815673903
+      },
+      "2021": {
+        "icms_bruto_dca": 20685147970.21,
+        "icms_bruto_rreo": 21029665935.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 5126471400.99,
+        "fecop_dca": 459448672.82,
+        "diff_abs_bruto": -344517964.7900009,
+        "diff_rel_bruto": -0.01638247444609257
+      },
+      "2022": {
+        "icms_bruto_dca": 20826564777.47,
+        "icms_bruto_rreo": 21348483645.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 5185902613.51,
+        "fecop_dca": 541015931.75,
+        "diff_abs_bruto": -521918867.5299988,
+        "diff_rel_bruto": -0.02444758495305294
+      },
+      "2023": {
+        "icms_bruto_dca": 21015434764.59,
+        "icms_bruto_rreo": 21327078192.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 5134281732.860001,
+        "fecop_dca": 412094895.91,
+        "diff_abs_bruto": -311643427.40999985,
+        "diff_rel_bruto": -0.014612570207901259
+      },
       "2024": {
         "icms_bruto_dca": 25908490948.15,
+        "icms_bruto_rreo": 26156973043.0,
         "transf_munis_dca": 6437309155.38,
-        "cota_parte_declarada_munis_dca": 6313924599.09,
         "icms_liquido_dca": 19471181792.77,
+        "cota_parte_declarada_munis_dca": 6313924599.09,
         "fecop_dca": 407643079.79,
-        "icms_liquido_rreo": 26156973043.0,
-        "diff_transf_vs_cota_munis_rel": -0.019167101239324656,
-        "diff_abs": -6685791250.23,
-        "diff_rel": -0.25560263564285846
+        "diff_abs_bruto": -248482094.84999847,
+        "diff_rel_bruto": -0.009499650224875544,
+        "diff_transf_vs_cota_munis_rel": -0.019167101239324656
       },
       "2025": {
         "icms_bruto_dca": 27414254125.54,
+        "icms_bruto_rreo": 27634962928.0,
         "transf_munis_dca": 6797226364.76,
-        "cota_parte_declarada_munis_dca": 6587622365.879997,
         "icms_liquido_dca": 20617027760.78,
+        "cota_parte_declarada_munis_dca": 6587622365.879997,
         "fecop_dca": 445915226.64,
-        "icms_liquido_rreo": 27634962928.0,
-        "diff_transf_vs_cota_munis_rel": -0.030836695386031003,
-        "diff_abs": -7017935167.220001,
-        "diff_rel": -0.25395131469886517
+        "diff_abs_bruto": -220708802.45999908,
+        "diff_rel_bruto": -0.00798657856118833,
+        "diff_transf_vs_cota_munis_rel": -0.030836695386031003
       }
     },
     "PI": {
       "2019": {
         "icms_bruto_dca": 4285513871.35,
+        "icms_bruto_rreo": 4480942492.0,
         "transf_munis_dca": 1070863084.17,
-        "cota_parte_declarada_munis_dca": 1083363548.48,
         "icms_liquido_dca": 3214650787.18,
+        "cota_parte_declarada_munis_dca": 1083363548.48,
         "fecop_dca": 197490155.62,
-        "icms_liquido_rreo": 4480942492.0,
-        "diff_transf_vs_cota_munis_rel": 0.011673261031020477,
-        "diff_abs": -1266291704.8200002,
-        "diff_rel": -0.2825949467284527
+        "diff_abs_bruto": -195428620.6500001,
+        "diff_rel_bruto": -0.04361328470492678,
+        "diff_transf_vs_cota_munis_rel": 0.011673261031020477
       },
       "2020": {
         "icms_bruto_dca": 4512820489.12,
+        "icms_bruto_rreo": 4724378652.0,
         "transf_munis_dca": 1128020932.43,
-        "cota_parte_declarada_munis_dca": 1121046342.8799999,
         "icms_liquido_dca": 3384799556.6899996,
+        "cota_parte_declarada_munis_dca": 1121046342.8799999,
         "fecop_dca": 212294922.14,
-        "icms_liquido_rreo": 4724378652.0,
-        "diff_transf_vs_cota_munis_rel": -0.00618303202492477,
-        "diff_abs": -1339579095.3100004,
-        "diff_rel": -0.283546090181173
+        "diff_abs_bruto": -211558162.8800001,
+        "diff_rel_bruto": -0.0447801030491999,
+        "diff_transf_vs_cota_munis_rel": -0.00618303202492477
       },
       "2021": {
         "icms_bruto_dca": 5440270723.02,
+        "icms_bruto_rreo": 5698763328.0,
         "transf_munis_dca": 1359727974.21,
-        "cota_parte_declarada_munis_dca": 1353851225.4300005,
         "icms_liquido_dca": 4080542748.8100004,
+        "cota_parte_declarada_munis_dca": 1353851225.4300005,
         "fecop_dca": 259851430.78,
-        "icms_liquido_rreo": 5698763328.0,
-        "diff_transf_vs_cota_munis_rel": -0.004322003291440611,
-        "diff_abs": -1618220579.1899996,
-        "diff_rel": -0.28395995517819117
+        "diff_abs_bruto": -258492604.97999954,
+        "diff_rel_bruto": -0.045359421001032935,
+        "diff_transf_vs_cota_munis_rel": -0.004322003291440611
       },
       "2022": {
         "icms_bruto_dca": 5487945299.87,
+        "icms_bruto_rreo": 5772556806.0,
         "transf_munis_dca": 1371986319.82,
-        "cota_parte_declarada_munis_dca": 1329281969.4,
         "icms_liquido_dca": 4115958980.05,
+        "cota_parte_declarada_munis_dca": 1329281969.4,
         "fecop_dca": 288379673.87,
-        "icms_liquido_rreo": 5772556806.0,
-        "diff_transf_vs_cota_munis_rel": -0.03112593019557404,
-        "diff_abs": -1656597825.9499998,
-        "diff_rel": -0.2869781765037168
+        "diff_abs_bruto": -284611506.1300001,
+        "diff_rel_bruto": -0.04930423652724815,
+        "diff_transf_vs_cota_munis_rel": -0.03112593019557404
       },
       "2023": {
         "icms_bruto_dca": 6625280138.37,
+        "icms_bruto_rreo": 6729290554.0,
         "transf_munis_dca": 1656320035.19,
-        "cota_parte_declarada_munis_dca": 1640481695.66,
         "icms_liquido_dca": 4968960103.18,
+        "cota_parte_declarada_munis_dca": 1640481695.66,
         "fecop_dca": 109388245.94,
-        "icms_liquido_rreo": 6729290554.0,
-        "diff_transf_vs_cota_munis_rel": -0.009562366688502395,
-        "diff_abs": -1760330450.8199997,
-        "diff_rel": -0.2615922788136456
+        "diff_abs_bruto": -104010415.63000011,
+        "diff_rel_bruto": -0.015456371633139638,
+        "diff_transf_vs_cota_munis_rel": -0.009562366688502395
       },
       "2024": {
         "icms_bruto_dca": 7635618836.89,
+        "icms_bruto_rreo": 7713816236.0,
         "transf_munis_dca": 1908904705.44,
-        "cota_parte_declarada_munis_dca": 1842638631.0300014,
         "icms_liquido_dca": 5726714131.450001,
+        "cota_parte_declarada_munis_dca": 1842638631.0300014,
         "fecop_dca": 83083393.03,
-        "icms_liquido_rreo": 7713816236.0,
-        "diff_transf_vs_cota_munis_rel": -0.034714186738161144,
-        "diff_abs": -1987102104.5499992,
-        "diff_rel": -0.2576029871279914
+        "diff_abs_bruto": -78197399.10999966,
+        "diff_rel_bruto": -0.010137316824460538,
+        "diff_transf_vs_cota_munis_rel": -0.034714186738161144
       },
       "2025": {
         "icms_bruto_dca": 8395199810.99,
+        "icms_bruto_rreo": 8476783763.0,
         "transf_munis_dca": 2098799956.48,
-        "cota_parte_declarada_munis_dca": 1997201313.41,
         "icms_liquido_dca": 6296399854.51,
+        "cota_parte_declarada_munis_dca": 1997201313.41,
         "fecop_dca": 88101586.81,
-        "icms_liquido_rreo": 8476783763.0,
-        "diff_transf_vs_cota_munis_rel": -0.04840796892353475,
-        "diff_abs": -2180383908.49,
-        "diff_rel": -0.2572182999414326
+        "diff_abs_bruto": -81583952.01000023,
+        "diff_rel_bruto": -0.009624399334816467,
+        "diff_transf_vs_cota_munis_rel": -0.04840796892353475
       }
     },
     "PR": {
+      "2019": {
+        "icms_bruto_dca": 31199208571.24,
+        "icms_bruto_rreo": 30896531541.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 7660063931.790005,
+        "fecop_dca": 520130907.33,
+        "diff_abs_bruto": 302677030.2400017,
+        "diff_rel_bruto": 0.009796472780070679
+      },
       "2020": {
         "icms_bruto_dca": 31144784546.11,
+        "icms_bruto_rreo": 31392396858.0,
         "transf_munis_dca": 7708960055.35,
-        "cota_parte_declarada_munis_dca": 7695537600.659998,
         "icms_liquido_dca": 23435824490.760002,
+        "cota_parte_declarada_munis_dca": 7695537600.659998,
         "fecop_dca": 501243078.73,
-        "icms_liquido_rreo": 31392396858.0,
-        "diff_transf_vs_cota_munis_rel": -0.0017411498559636834,
-        "diff_abs": -7956572367.239998,
-        "diff_rel": -0.25345539568802805
+        "diff_abs_bruto": -247612311.8899994,
+        "diff_rel_bruto": -0.00788765231944684,
+        "diff_transf_vs_cota_munis_rel": -0.0017411498559636834
       },
       "2021": {
         "icms_bruto_dca": 38476286534.12,
+        "icms_bruto_rreo": 39072064259.0,
         "transf_munis_dca": 9559701359.25,
-        "cota_parte_declarada_munis_dca": 9517797413.210007,
         "icms_liquido_dca": 28916585174.870003,
+        "cota_parte_declarada_munis_dca": 9517797413.210007,
         "fecop_dca": 816115723.83,
-        "icms_liquido_rreo": 39072064259.0,
-        "diff_transf_vs_cota_munis_rel": -0.004383394884971682,
-        "diff_abs": -10155479084.129997,
-        "diff_rel": -0.25991662525971476
+        "diff_abs_bruto": -595777724.8799973,
+        "diff_rel_bruto": -0.015248176316734115,
+        "diff_transf_vs_cota_munis_rel": -0.004383394884971682
       },
       "2022": {
         "icms_bruto_dca": 41284608405.42,
+        "icms_bruto_rreo": 42216673875.0,
         "transf_munis_dca": 10221938715.87,
-        "cota_parte_declarada_munis_dca": 9665839430.329994,
         "icms_liquido_dca": 31062669689.549995,
+        "cota_parte_declarada_munis_dca": 9665839430.329994,
         "fecop_dca": 1211969280.29,
-        "icms_liquido_rreo": 42216673875.0,
-        "diff_transf_vs_cota_munis_rel": -0.05440252588059822,
-        "diff_abs": -11154004185.450005,
-        "diff_rel": -0.2642085025096024
+        "diff_abs_bruto": -932065469.5800018,
+        "diff_rel_bruto": -0.022078136054483326,
+        "diff_transf_vs_cota_munis_rel": -0.05440252588059822
       },
       "2023": {
         "icms_bruto_dca": 44084211768.32,
+        "icms_bruto_rreo": 44609334809.0,
         "transf_munis_dca": 11338218292.01,
-        "cota_parte_declarada_munis_dca": 10618840809.819998,
         "icms_liquido_dca": 32745993476.309998,
+        "cota_parte_declarada_munis_dca": 10618840809.819998,
         "fecop_dca": 818125369.57,
-        "icms_liquido_rreo": 44609334809.0,
-        "diff_transf_vs_cota_munis_rel": -0.0634471363721181,
-        "diff_abs": -11863341332.690002,
-        "diff_rel": -0.26593853917536014
+        "diff_abs_bruto": -525123040.6800003,
+        "diff_rel_bruto": -0.011771595405499208,
+        "diff_transf_vs_cota_munis_rel": -0.0634471363721181
       },
       "2024": {
         "icms_bruto_dca": 51045873290.26,
+        "icms_bruto_rreo": 51674948955.0,
         "transf_munis_dca": 12693501394.73,
-        "cota_parte_declarada_munis_dca": 12052195640.699999,
         "icms_liquido_dca": 38352371895.53,
+        "cota_parte_declarada_munis_dca": 12052195640.699999,
         "fecop_dca": 905843174.07,
-        "icms_liquido_rreo": 51674948955.0,
-        "diff_transf_vs_cota_munis_rel": -0.050522368422022124,
-        "diff_abs": -13322577059.470001,
-        "diff_rel": -0.257815001831384
+        "diff_abs_bruto": -629075664.7399979,
+        "diff_rel_bruto": -0.01217370655339814,
+        "diff_transf_vs_cota_munis_rel": -0.050522368422022124
       },
       "2025": {
         "icms_bruto_dca": 52742155677.36,
+        "icms_bruto_rreo": 53382822594.0,
         "transf_munis_dca": 13247321791.73,
-        "cota_parte_declarada_munis_dca": 12058722525.49,
         "icms_liquido_dca": 39494833885.630005,
+        "cota_parte_declarada_munis_dca": 12058722525.49,
         "fecop_dca": 861230961.67,
-        "icms_liquido_rreo": 53382822594.0,
-        "diff_transf_vs_cota_munis_rel": -0.0897237407626057,
-        "diff_abs": -13887988708.369995,
-        "diff_rel": -0.2601583811705555
+        "diff_abs_bruto": -640666916.6399994,
+        "diff_rel_bruto": -0.01200136833364086,
+        "diff_transf_vs_cota_munis_rel": -0.0897237407626057
       }
     },
     "RJ": {
       "2019": {
         "icms_bruto_dca": 36953658209.33,
+        "icms_bruto_rreo": 36950382072.0,
         "transf_munis_dca": 9237387540.52,
-        "cota_parte_declarada_munis_dca": 9248370807.229996,
         "icms_liquido_dca": 27716270668.81,
+        "cota_parte_declarada_munis_dca": 9248370807.229996,
         "fecop_dca": 4568785482.6,
-        "icms_liquido_rreo": 36950382072.0,
-        "diff_transf_vs_cota_munis_rel": 0.0011890013991311865,
-        "diff_abs": -9234111403.189999,
-        "diff_rel": -0.24990570828731318
+        "diff_abs_bruto": 3276137.330001831,
+        "diff_rel_bruto": 8.8663151672372e-05,
+        "diff_transf_vs_cota_munis_rel": 0.0011890013991311865
       },
       "2020": {
         "icms_bruto_dca": 38696169428.05,
+        "icms_bruto_rreo": 38692926605.0,
         "transf_munis_dca": 9673165815.34,
-        "cota_parte_declarada_munis_dca": 9477203023.560003,
         "icms_liquido_dca": 29023003612.710003,
+        "cota_parte_declarada_munis_dca": 9477203023.560003,
         "fecop_dca": 4890332653.97,
-        "icms_liquido_rreo": 38692926605.0,
-        "diff_transf_vs_cota_munis_rel": -0.020258392704199605,
-        "diff_abs": -9669922992.289997,
-        "diff_rel": -0.24991448930721163
+        "diff_abs_bruto": 3242823.0500030518,
+        "diff_rel_bruto": 8.380919549218088e-05,
+        "diff_transf_vs_cota_munis_rel": -0.020258392704199605
       },
       "2021": {
         "icms_bruto_dca": 47020359957.94,
+        "icms_bruto_rreo": 53067624798.0,
         "transf_munis_dca": 11856514124.26,
-        "cota_parte_declarada_munis_dca": 12085916290.899998,
         "icms_liquido_dca": 35163845833.68,
+        "cota_parte_declarada_munis_dca": 12085916290.899998,
         "fecop_dca": 6049626373.01,
-        "icms_liquido_rreo": 53067624798.0,
-        "diff_transf_vs_cota_munis_rel": 0.01934819663147115,
-        "diff_abs": -17903778964.32,
-        "diff_rel": -0.3373766780116896
+        "diff_abs_bruto": -6047264840.059998,
+        "diff_rel_bruto": -0.1139539382642184,
+        "diff_transf_vs_cota_munis_rel": 0.01934819663147115
       },
       "2022": {
         "icms_bruto_dca": 44887689828.32,
+        "icms_bruto_rreo": 50773538277.0,
         "transf_munis_dca": 11221255159.38,
-        "cota_parte_declarada_munis_dca": 11196047297.609997,
         "icms_liquido_dca": 33666434668.940002,
+        "cota_parte_declarada_munis_dca": 11196047297.609997,
         "fecop_dca": 5888159450.1,
-        "icms_liquido_rreo": 50773538277.0,
-        "diff_transf_vs_cota_munis_rel": -0.0022464386926386547,
-        "diff_abs": -17107103608.059998,
-        "diff_rel": -0.3369295146367488
+        "diff_abs_bruto": -5885848448.68,
+        "diff_rel_bruto": -0.11592354301898715,
+        "diff_transf_vs_cota_munis_rel": -0.0022464386926386547
       },
       "2023": {
         "icms_bruto_dca": 43884126245.26,
+        "icms_bruto_rreo": 49775817400.0,
         "transf_munis_dca": 10969274045.47,
-        "cota_parte_declarada_munis_dca": 11266466498.179996,
         "icms_liquido_dca": 32914852199.79,
+        "cota_parte_declarada_munis_dca": 11266466498.179996,
         "fecop_dca": 5898930844.26,
-        "icms_liquido_rreo": 49775817400.0,
-        "diff_transf_vs_cota_munis_rel": 0.02709317421354144,
-        "diff_abs": -16860965200.21,
-        "diff_rel": -0.33873808770863095
+        "diff_abs_bruto": -5891691154.739998,
+        "diff_rel_bruto": -0.11836452844951166,
+        "diff_transf_vs_cota_munis_rel": 0.02709317421354144
       },
       "2024": {
         "icms_bruto_dca": 50255279323.68,
+        "icms_bruto_rreo": 56894602954.0,
         "transf_munis_dca": 12558214518.56,
-        "cota_parte_declarada_munis_dca": 12572569291.27,
         "icms_liquido_dca": 37697064805.12,
+        "cota_parte_declarada_munis_dca": 12572569291.27,
         "fecop_dca": 6661853131.81,
-        "icms_liquido_rreo": 56894602954.0,
-        "diff_transf_vs_cota_munis_rel": 0.0011430584092018677,
-        "diff_abs": -19197538148.879997,
-        "diff_rel": -0.3374228336631762
+        "diff_abs_bruto": -6639323630.32,
+        "diff_rel_bruto": -0.1166951395317404,
+        "diff_transf_vs_cota_munis_rel": 0.0011430584092018677
       },
       "2025": {
         "icms_bruto_dca": 55603869791.94,
+        "icms_bruto_rreo": 62386507273.0,
         "transf_munis_dca": 13895903874.91,
-        "cota_parte_declarada_munis_dca": 13474251283.319998,
         "icms_liquido_dca": 41707965917.03,
+        "cota_parte_declarada_munis_dca": 13474251283.319998,
         "fecop_dca": 6803255253.59,
-        "icms_liquido_rreo": 62386507273.0,
-        "diff_transf_vs_cota_munis_rel": -0.03034366064889989,
-        "diff_abs": -20678541355.97,
-        "diff_rel": -0.33145855185451906
+        "diff_abs_bruto": -6782637481.059998,
+        "diff_rel_bruto": -0.10871962187880692,
+        "diff_transf_vs_cota_munis_rel": -0.03034366064889989
       }
     },
     "RN": {
       "2019": {
         "icms_bruto_dca": 5587326047.52,
+        "icms_bruto_rreo": 5739341693.0,
         "transf_munis_dca": 1391116025.9,
-        "cota_parte_declarada_munis_dca": 1343822191.7700002,
         "icms_liquido_dca": 4196210021.6200004,
+        "cota_parte_declarada_munis_dca": 1343822191.7700002,
         "fecop_dca": 152015645.91,
-        "icms_liquido_rreo": 5739341693.0,
-        "diff_transf_vs_cota_munis_rel": -0.033997044998027776,
-        "diff_abs": -1543131671.3799996,
-        "diff_rel": -0.2688691062360137
+        "diff_abs_bruto": -152015645.47999954,
+        "diff_rel_bruto": -0.026486599615667725,
+        "diff_transf_vs_cota_munis_rel": -0.033997044998027776
       },
       "2020": {
         "icms_bruto_dca": 5735650889.35,
+        "icms_bruto_rreo": 5881117295.0,
         "transf_munis_dca": 1420520767.85,
-        "cota_parte_declarada_munis_dca": 1393384622.1000006,
         "icms_liquido_dca": 4315130121.5,
+        "cota_parte_declarada_munis_dca": 1393384622.1000006,
         "fecop_dca": 146161345.22,
-        "icms_liquido_rreo": 5881117295.0,
-        "diff_transf_vs_cota_munis_rel": -0.019102956017370054,
-        "diff_abs": -1565987173.5,
-        "diff_rel": -0.2662737529195972
+        "diff_abs_bruto": -145466405.64999962,
+        "diff_rel_bruto": -0.024734484682642197,
+        "diff_transf_vs_cota_munis_rel": -0.019102956017370054
       },
       "2021": {
         "icms_bruto_dca": 6657216966.55,
+        "icms_bruto_rreo": 6827095461.0,
         "transf_munis_dca": 1656946146.84,
-        "cota_parte_declarada_munis_dca": 1690222379.2499995,
         "icms_liquido_dca": 5000270819.71,
+        "cota_parte_declarada_munis_dca": 1690222379.2499995,
         "fecop_dca": 171506595.29,
-        "icms_liquido_rreo": 6827095461.0,
-        "diff_transf_vs_cota_munis_rel": 0.020082869001784683,
-        "diff_abs": -1826824641.29,
-        "diff_rel": -0.2675844583872884
+        "diff_abs_bruto": -169878494.4499998,
+        "diff_rel_bruto": -0.024882982143788104,
+        "diff_transf_vs_cota_munis_rel": 0.020082869001784683
       },
       "2022": {
         "icms_bruto_dca": 7067552568.99,
+        "icms_bruto_rreo": 7185173927.0,
         "transf_munis_dca": 1770317627.56,
-        "cota_parte_declarada_munis_dca": 1719733962.7199998,
         "icms_liquido_dca": 5297234941.43,
+        "cota_parte_declarada_munis_dca": 1719733962.7199998,
         "fecop_dca": 121772703.55,
-        "icms_liquido_rreo": 7185173927.0,
-        "diff_transf_vs_cota_munis_rel": -0.02857321423710772,
-        "diff_abs": -1887938985.5699997,
-        "diff_rel": -0.2627548065991305
+        "diff_abs_bruto": -117621358.01000023,
+        "diff_rel_bruto": -0.01637000846534974,
+        "diff_transf_vs_cota_munis_rel": -0.02857321423710772
       },
       "2023": {
         "icms_bruto_dca": 8230958416.29,
+        "icms_bruto_rreo": 8274531189.0,
         "transf_munis_dca": 2066540707.56,
-        "cota_parte_declarada_munis_dca": 2008313317.4900005,
         "icms_liquido_dca": 6164417708.73,
+        "cota_parte_declarada_munis_dca": 2008313317.4900005,
         "fecop_dca": 44030151.65,
-        "icms_liquido_rreo": 8274531189.0,
-        "diff_transf_vs_cota_munis_rel": -0.028176260867732693,
-        "diff_abs": -2110113480.2700005,
-        "diff_rel": -0.2550130553710577
+        "diff_abs_bruto": -43572772.71000004,
+        "diff_rel_bruto": -0.005265890201480518,
+        "diff_transf_vs_cota_munis_rel": -0.028176260867732693
       },
       "2024": {
         "icms_bruto_dca": 8414485940.02,
+        "icms_bruto_rreo": 8459893757.0,
         "transf_munis_dca": 2093798525.02,
-        "cota_parte_declarada_munis_dca": 1991511242.6599994,
         "icms_liquido_dca": 6320687415.0,
+        "cota_parte_declarada_munis_dca": 1991511242.6599994,
         "fecop_dca": 45626466.86,
-        "icms_liquido_rreo": 8459893757.0,
-        "diff_transf_vs_cota_munis_rel": -0.048852495184093014,
-        "diff_abs": -2139206342.0,
-        "diff_rel": -0.252864445281
+        "diff_abs_bruto": -45407816.97999954,
+        "diff_rel_bruto": -0.005367421658508133,
+        "diff_transf_vs_cota_munis_rel": -0.048852495184093014
       },
       "2025": {
         "icms_bruto_dca": 9383667432.4,
+        "icms_bruto_rreo": 9448358871.0,
         "transf_munis_dca": 2345916858.21,
-        "cota_parte_declarada_munis_dca": 2238262276.06,
         "icms_liquido_dca": 7037750574.19,
+        "cota_parte_declarada_munis_dca": 2238262276.06,
         "fecop_dca": 64805050.2,
-        "icms_liquido_rreo": 9448358871.0,
-        "diff_transf_vs_cota_munis_rel": -0.045890195031099076,
-        "diff_abs": -2410608296.8100004,
-        "diff_rel": -0.25513513296038315
+        "diff_abs_bruto": -64691438.60000038,
+        "diff_rel_bruto": -0.006846843931654507,
+        "diff_transf_vs_cota_munis_rel": -0.045890195031099076
       }
     },
     "RO": {
       "2019": {
         "icms_bruto_dca": 4599197573.45,
+        "icms_bruto_rreo": 4085334904.0,
         "transf_munis_dca": 1023565607.04,
-        "cota_parte_declarada_munis_dca": 1019481651.3199998,
         "icms_liquido_dca": 3575631966.41,
+        "cota_parte_declarada_munis_dca": 1019481651.3199998,
         "fecop_dca": 21510344.98,
-        "icms_liquido_rreo": 4085334904.0,
-        "diff_transf_vs_cota_munis_rel": -0.003989930583746695,
-        "diff_abs": -509702937.59000015,
-        "diff_rel": -0.12476405229126844
+        "diff_abs_bruto": 513862669.4499998,
+        "diff_rel_bruto": 0.1257822630274132,
+        "diff_transf_vs_cota_munis_rel": -0.003989930583746695
       },
       "2020": {
         "icms_bruto_dca": 5005919260.04,
+        "icms_bruto_rreo": 4446389853.0,
         "transf_munis_dca": 1100877873.48,
-        "cota_parte_declarada_munis_dca": 1083199892.48,
         "icms_liquido_dca": 3905041386.56,
+        "cota_parte_declarada_munis_dca": 1083199892.48,
         "fecop_dca": 26619142.09,
-        "icms_liquido_rreo": 4446389853.0,
-        "diff_transf_vs_cota_munis_rel": -0.016058076400534686,
-        "diff_abs": -541348466.44,
-        "diff_rel": -0.12175011286397878
+        "diff_abs_bruto": 559529407.04,
+        "diff_rel_bruto": 0.12583903470868235,
+        "diff_transf_vs_cota_munis_rel": -0.016058076400534686
       },
       "2021": {
         "icms_bruto_dca": 6531079285.43,
+        "icms_bruto_rreo": 5816879406.0,
         "transf_munis_dca": 1444805990.83,
-        "cota_parte_declarada_munis_dca": 1439657743.71,
         "icms_liquido_dca": 5086273294.6,
+        "cota_parte_declarada_munis_dca": 1439657743.71,
         "fecop_dca": 32455503.28,
-        "icms_liquido_rreo": 5816879406.0,
-        "diff_transf_vs_cota_munis_rel": -0.0035632791895072115,
-        "diff_abs": -730606111.3999996,
-        "diff_rel": -0.12560104145298137
+        "diff_abs_bruto": 714199879.4300003,
+        "diff_rel_bruto": 0.12278058896894385,
+        "diff_transf_vs_cota_munis_rel": -0.0035632791895072115
       },
       "2022": {
         "icms_bruto_dca": 6634840989.65,
+        "icms_bruto_rreo": 6016430599.0,
         "transf_munis_dca": 1500208374.45,
-        "cota_parte_declarada_munis_dca": 1443670124.8299994,
         "icms_liquido_dca": 5134632615.2,
+        "cota_parte_declarada_munis_dca": 1443670124.8299994,
         "fecop_dca": 33449436.72,
-        "icms_liquido_rreo": 6016430599.0,
-        "diff_transf_vs_cota_munis_rel": -0.03768693108430914,
-        "diff_abs": -881797983.8000002,
-        "diff_rel": -0.14656497225224624
+        "diff_abs_bruto": 618410390.6499996,
+        "diff_rel_bruto": 0.10278692332174272,
+        "diff_transf_vs_cota_munis_rel": -0.03768693108430914
       },
       "2023": {
         "icms_bruto_dca": 6715411074.61,
+        "icms_bruto_rreo": 6113516376.0,
         "transf_munis_dca": 1542666170.75,
-        "cota_parte_declarada_munis_dca": 1510645523.9800003,
         "icms_liquido_dca": 5172744903.86,
+        "cota_parte_declarada_munis_dca": 1510645523.9800003,
         "fecop_dca": 33774196.91,
-        "icms_liquido_rreo": 6113516376.0,
-        "diff_transf_vs_cota_munis_rel": -0.020756692132836634,
-        "diff_abs": -940771472.1400003,
-        "diff_rel": -0.15388385575169355
+        "diff_abs_bruto": 601894698.6099997,
+        "diff_rel_bruto": 0.09845310973123002,
+        "diff_transf_vs_cota_munis_rel": -0.020756692132836634
       },
       "2024": {
         "icms_bruto_dca": 8160076835.42,
+        "icms_bruto_rreo": 7507448778.0,
         "transf_munis_dca": 1867303387.27,
-        "cota_parte_declarada_munis_dca": 1816560076.8500001,
         "icms_liquido_dca": 6292773448.15,
+        "cota_parte_declarada_munis_dca": 1816560076.8500001,
         "fecop_dca": 38235652.14,
-        "icms_liquido_rreo": 7507448778.0,
-        "diff_transf_vs_cota_munis_rel": -0.027174647015548246,
-        "diff_abs": -1214675329.8500004,
-        "diff_rel": -0.16179601962913323
+        "diff_abs_bruto": 652628057.4200001,
+        "diff_rel_bruto": 0.08693073728754251,
+        "diff_transf_vs_cota_munis_rel": -0.027174647015548246
       },
       "2025": {
         "icms_bruto_dca": 8914247539.32,
+        "icms_bruto_rreo": 8125984783.0,
         "transf_munis_dca": 2020552356.55,
-        "cota_parte_declarada_munis_dca": 1998769336.5900004,
         "icms_liquido_dca": 6893695182.7699995,
+        "cota_parte_declarada_munis_dca": 1998769336.5900004,
         "fecop_dca": 43775356.92,
-        "icms_liquido_rreo": 8125984783.0,
-        "diff_transf_vs_cota_munis_rel": -0.010780725324630074,
-        "diff_abs": -1232289600.2300005,
-        "diff_rel": -0.15164803197859994
+        "diff_abs_bruto": 788262756.3199997,
+        "diff_rel_bruto": 0.09700519720010897,
+        "diff_transf_vs_cota_munis_rel": -0.010780725324630074
       }
     },
     "RR": {
+      "2019": {
+        "icms_bruto_dca": 1117103859.69,
+        "icms_bruto_rreo": 1117103860.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 270824965.67,
+        "fecop_dca": null,
+        "diff_abs_bruto": -0.309999942779541,
+        "diff_rel_bruto": -2.775032419810464e-10
+      },
       "2020": {
         "icms_bruto_dca": 1239989996.07,
+        "icms_bruto_rreo": 1239989996.0,
         "transf_munis_dca": 246799634.63,
-        "cota_parte_declarada_munis_dca": 309043286.72,
         "icms_liquido_dca": 993190361.4399999,
+        "cota_parte_declarada_munis_dca": 309043286.72,
         "fecop_dca": null,
-        "icms_liquido_rreo": 1239989996.0,
-        "diff_transf_vs_cota_munis_rel": 0.2522031776234807,
-        "diff_abs": -246799634.56000006,
-        "diff_rel": -0.19903356910631081
+        "diff_abs_bruto": 0.06999993324279785,
+        "diff_rel_bruto": 5.645201450705724e-11,
+        "diff_transf_vs_cota_munis_rel": 0.2522031776234807
       },
       "2021": {
         "icms_bruto_dca": 1569336033.07,
+        "icms_bruto_rreo": 1569326635.0,
         "transf_munis_dca": 392339647.32,
-        "cota_parte_declarada_munis_dca": 391821428.36999995,
         "icms_liquido_dca": 1176996385.75,
+        "cota_parte_declarada_munis_dca": 391821428.36999995,
         "fecop_dca": null,
-        "icms_liquido_rreo": 1569326635.0,
-        "diff_transf_vs_cota_munis_rel": -0.001320842676848761,
-        "diff_abs": -392330249.25,
-        "diff_rel": -0.24999910184408486
+        "diff_abs_bruto": 9398.069999933243,
+        "diff_rel_bruto": 5.9886003272564364e-06,
+        "diff_transf_vs_cota_munis_rel": -0.001320842676848761
       },
       "2022": {
         "icms_bruto_dca": 1596730781.55,
+        "icms_bruto_rreo": 1593763457.0,
         "transf_munis_dca": 398440864.43,
-        "cota_parte_declarada_munis_dca": 399591733.84999996,
         "icms_liquido_dca": 1198289917.12,
+        "cota_parte_declarada_munis_dca": 399591733.84999996,
         "fecop_dca": null,
-        "icms_liquido_rreo": 1593763457.0,
-        "diff_transf_vs_cota_munis_rel": 0.0028884321934356896,
-        "diff_abs": -395473539.8800001,
-        "diff_rel": -0.2481381651355055
+        "diff_abs_bruto": 2967324.5499999523,
+        "diff_rel_bruto": 0.0018618349774347676,
+        "diff_transf_vs_cota_munis_rel": 0.0028884321934356896
       },
       "2023": {
         "icms_bruto_dca": 1701621013.58,
+        "icms_bruto_rreo": 1701621014.0,
         "transf_munis_dca": 447330253.45,
-        "cota_parte_declarada_munis_dca": 445445597.32,
         "icms_liquido_dca": 1254290760.1299999,
+        "cota_parte_declarada_munis_dca": 445445597.32,
         "fecop_dca": null,
-        "icms_liquido_rreo": 1701621014.0,
-        "diff_transf_vs_cota_munis_rel": -0.004213120206971763,
-        "diff_abs": -447330253.8700001,
-        "diff_rel": -0.26288477292511864
+        "diff_abs_bruto": -0.4200000762939453,
+        "diff_rel_bruto": -2.4682351289647704e-10,
+        "diff_transf_vs_cota_munis_rel": -0.004213120206971763
       },
       "2024": {
         "icms_bruto_dca": 2010717523.69,
+        "icms_bruto_rreo": 2010397365.0,
         "transf_munis_dca": 502599341.04,
-        "cota_parte_declarada_munis_dca": 503160007.05999994,
         "icms_liquido_dca": 1508118182.65,
+        "cota_parte_declarada_munis_dca": 503160007.05999994,
         "fecop_dca": null,
-        "icms_liquido_rreo": 2010397365.0,
-        "diff_transf_vs_cota_munis_rel": 0.0011155327399350887,
-        "diff_abs": -502279182.3499999,
-        "diff_rel": -0.2498407484482551
+        "diff_abs_bruto": 320158.6900000572,
+        "diff_rel_bruto": 0.00015925144728791326,
+        "diff_transf_vs_cota_munis_rel": 0.0011155327399350887
       },
       "2025": {
         "icms_bruto_dca": 2143083290.43,
+        "icms_bruto_rreo": 2142489273.0,
         "transf_munis_dca": 535622318.42,
-        "cota_parte_declarada_munis_dca": 507763819.29,
         "icms_liquido_dca": 1607460972.01,
+        "cota_parte_declarada_munis_dca": 507763819.29,
         "fecop_dca": null,
-        "icms_liquido_rreo": 2142489273.0,
-        "diff_transf_vs_cota_munis_rel": -0.05201146063550545,
-        "diff_abs": -535028300.99,
-        "diff_rel": -0.2497227443481347
+        "diff_abs_bruto": 594017.4300000668,
+        "diff_rel_bruto": 0.00027725573121227325,
+        "diff_transf_vs_cota_munis_rel": -0.05201146063550545
       }
     },
     "RS": {
+      "2019": {
+        "icms_bruto_dca": 36230211989.81,
+        "icms_bruto_rreo": 36528755011.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 8817366029.82,
+        "fecop_dca": 301071552.99,
+        "diff_abs_bruto": -298543021.19000244,
+        "diff_rel_bruto": -0.008172822235526544
+      },
       "2020": {
         "icms_bruto_dca": 36077349368.41,
+        "icms_bruto_rreo": 36370809093.0,
         "transf_munis_dca": 8988150325.7,
-        "cota_parte_declarada_munis_dca": 8971726921.520004,
         "icms_liquido_dca": 27089199042.710003,
+        "cota_parte_declarada_munis_dca": 8971726921.520004,
         "fecop_dca": 303377849.19,
-        "icms_liquido_rreo": 36370809093.0,
-        "diff_transf_vs_cota_munis_rel": -0.0018272284713615344,
-        "diff_abs": -9281610050.289997,
-        "diff_rel": -0.2551939393637618
+        "diff_abs_bruto": -293459724.58999634,
+        "diff_rel_bruto": -0.008068550904095124,
+        "diff_transf_vs_cota_munis_rel": -0.0018272284713615344
       },
       "2021": {
         "icms_bruto_dca": 47236775080.92,
+        "icms_bruto_rreo": 47560078646.0,
         "transf_munis_dca": 11751662026.75,
-        "cota_parte_declarada_munis_dca": 11728988521.540003,
         "icms_liquido_dca": 35485113054.17,
+        "cota_parte_declarada_munis_dca": 11728988521.540003,
         "fecop_dca": 323303565.47,
-        "icms_liquido_rreo": 47560078646.0,
-        "diff_transf_vs_cota_munis_rel": -0.0019293871078308814,
-        "diff_abs": -12074965591.830002,
-        "diff_rel": -0.25388868007781473
+        "diff_abs_bruto": -323303565.08000183,
+        "diff_rel_bruto": -0.0067977929028759715,
+        "diff_transf_vs_cota_munis_rel": -0.0019293871078308814
       },
       "2022": {
         "icms_bruto_dca": 43020537284.55,
+        "icms_bruto_rreo": 43382235770.0,
         "transf_munis_dca": 10721758443.1,
-        "cota_parte_declarada_munis_dca": 10464044579.32,
         "icms_liquido_dca": 32298778841.450005,
+        "cota_parte_declarada_munis_dca": 10464044579.32,
         "fecop_dca": 361698485.32,
-        "icms_liquido_rreo": 43382235770.0,
-        "diff_transf_vs_cota_munis_rel": -0.02403652956254137,
-        "diff_abs": -11083456928.549995,
-        "diff_rel": -0.25548376499798814
+        "diff_abs_bruto": -361698485.44999695,
+        "diff_rel_bruto": -0.008337479132417636,
+        "diff_transf_vs_cota_munis_rel": -0.02403652956254137
       },
       "2023": {
         "icms_bruto_dca": 44470419416.48,
+        "icms_bruto_rreo": 44865768615.0,
         "transf_munis_dca": 11085841413.22,
-        "cota_parte_declarada_munis_dca": 10748157874.779995,
         "icms_liquido_dca": 33384578003.260002,
+        "cota_parte_declarada_munis_dca": 10748157874.779995,
         "fecop_dca": 395349198.87,
-        "icms_liquido_rreo": 44865768615.0,
-        "diff_transf_vs_cota_munis_rel": -0.030460794616573954,
-        "diff_abs": -11481190611.739998,
-        "diff_rel": -0.25590090098002877
+        "diff_abs_bruto": -395349198.51999664,
+        "diff_rel_bruto": -0.00881182270413215,
+        "diff_transf_vs_cota_munis_rel": -0.030460794616573954
       },
       "2024": {
         "icms_bruto_dca": 50413517104.36,
+        "icms_bruto_rreo": 50610915120.0,
         "transf_munis_dca": 12580733741.48,
-        "cota_parte_declarada_munis_dca": 12292354376.349997,
         "icms_liquido_dca": 37832783362.880005,
+        "cota_parte_declarada_munis_dca": 12292354376.349997,
         "fecop_dca": 431293336.08,
-        "icms_liquido_rreo": 50610915120.0,
-        "diff_transf_vs_cota_munis_rel": -0.022922300960808505,
-        "diff_abs": -12778131757.119995,
-        "diff_rel": -0.25247778521338055
+        "diff_abs_bruto": -197398015.6399994,
+        "diff_rel_bruto": -0.0039003052043608136,
+        "diff_transf_vs_cota_munis_rel": -0.022922300960808505
       },
       "2025": {
         "icms_bruto_dca": 53501249510.32,
+        "icms_bruto_rreo": 53696398855.0,
         "transf_munis_dca": 13217505629.6,
-        "cota_parte_declarada_munis_dca": 12792885712.04999,
         "icms_liquido_dca": 40283743880.72,
+        "cota_parte_declarada_munis_dca": 12792885712.04999,
         "fecop_dca": 453427907.51,
-        "icms_liquido_rreo": 53696398855.0,
-        "diff_transf_vs_cota_munis_rel": -0.03212557115157143,
-        "diff_abs": -13412654974.279999,
-        "diff_rel": -0.24978686206684164
+        "diff_abs_bruto": -195149344.6800003,
+        "diff_rel_bruto": -0.0036343097273054607,
+        "diff_transf_vs_cota_munis_rel": -0.03212557115157143
       }
     },
     "SC": {
       "2019": {
         "icms_bruto_dca": 23750227231.99,
+        "icms_bruto_rreo": 23744802846.0,
         "transf_munis_dca": 6025655732.23,
-        "cota_parte_declarada_munis_dca": 5972694835.82,
         "icms_liquido_dca": 17724571499.760002,
+        "cota_parte_declarada_munis_dca": 5972694835.82,
         "fecop_dca": null,
-        "icms_liquido_rreo": 23744802846.0,
-        "diff_transf_vs_cota_munis_rel": -0.008789233697292537,
-        "diff_abs": -6020231346.239998,
-        "diff_rel": -0.253538906399223
+        "diff_abs_bruto": 5424385.9900016785,
+        "diff_rel_bruto": 0.00022844518967717853,
+        "diff_transf_vs_cota_munis_rel": -0.008789233697292537
       },
       "2020": {
         "icms_bruto_dca": 23959562688.46,
+        "icms_bruto_rreo": 23938422018.0,
         "transf_munis_dca": 5997695988.4,
-        "cota_parte_declarada_munis_dca": 6036667962.950005,
         "icms_liquido_dca": 17961866700.059998,
+        "cota_parte_declarada_munis_dca": 6036667962.950005,
         "fecop_dca": null,
-        "icms_liquido_rreo": 23938422018.0,
-        "diff_transf_vs_cota_munis_rel": 0.006497824268749153,
-        "diff_abs": -5976555317.940002,
-        "diff_rel": -0.24966371273119237
+        "diff_abs_bruto": 21140670.459999084,
+        "diff_rel_bruto": 0.000883127151994513,
+        "diff_transf_vs_cota_munis_rel": 0.006497824268749153
       },
       "2021": {
         "icms_bruto_dca": 29054764210.07,
+        "icms_bruto_rreo": 29050783066.0,
         "transf_munis_dca": 7262695676.16,
-        "cota_parte_declarada_munis_dca": 7272579900.429997,
         "icms_liquido_dca": 21792068533.91,
+        "cota_parte_declarada_munis_dca": 7272579900.429997,
         "fecop_dca": null,
-        "icms_liquido_rreo": 29050783066.0,
-        "diff_transf_vs_cota_munis_rel": 0.0013609580671874821,
-        "diff_abs": -7258714532.09,
-        "diff_rel": -0.24986295603801953
+        "diff_abs_bruto": 3981144.069999695,
+        "diff_rel_bruto": 0.0001370408522536208,
+        "diff_transf_vs_cota_munis_rel": 0.0013609580671874821
       },
       "2022": {
         "icms_bruto_dca": 34599944836.25,
+        "icms_bruto_rreo": 34592343274.0,
         "transf_munis_dca": 8681897309.48,
-        "cota_parte_declarada_munis_dca": 8404347569.650004,
         "icms_liquido_dca": 25918047526.77,
+        "cota_parte_declarada_munis_dca": 8404347569.650004,
         "fecop_dca": null,
-        "icms_liquido_rreo": 34592343274.0,
-        "diff_transf_vs_cota_munis_rel": -0.03196878861109438,
-        "diff_abs": -8674295747.23,
-        "diff_rel": -0.2507576800600756
+        "diff_abs_bruto": 7601562.25,
+        "diff_rel_bruto": 0.00021974695931378032,
+        "diff_transf_vs_cota_munis_rel": -0.03196878861109438
       },
       "2023": {
         "icms_bruto_dca": 36269946425.5,
+        "icms_bruto_rreo": 36258395880.0,
         "transf_munis_dca": 9173087527.72,
-        "cota_parte_declarada_munis_dca": 8890403118.079996,
         "icms_liquido_dca": 27096858897.78,
+        "cota_parte_declarada_munis_dca": 8890403118.079996,
         "fecop_dca": null,
-        "icms_liquido_rreo": 36258395880.0,
-        "diff_transf_vs_cota_munis_rel": -0.030816713433264857,
-        "diff_abs": -9161536982.220001,
-        "diff_rel": -0.252673532843009
+        "diff_abs_bruto": 11550545.5,
+        "diff_rel_bruto": 0.00031856195564269955,
+        "diff_transf_vs_cota_munis_rel": -0.030816713433264857
       },
       "2024": {
         "icms_bruto_dca": 42729136259.93,
+        "icms_bruto_rreo": 42724622758.0,
         "transf_munis_dca": 10681113310.91,
-        "cota_parte_declarada_munis_dca": 10258673570.789995,
         "icms_liquido_dca": 32048022949.02,
+        "cota_parte_declarada_munis_dca": 10258673570.789995,
         "fecop_dca": null,
-        "icms_liquido_rreo": 42724622758.0,
-        "diff_transf_vs_cota_munis_rel": -0.03955015997148091,
-        "diff_abs": -10676599808.98,
-        "diff_rel": -0.24989336639563078
+        "diff_abs_bruto": 4513501.930000305,
+        "diff_rel_bruto": 0.00010564170351053998,
+        "diff_transf_vs_cota_munis_rel": -0.03955015997148091
       },
       "2025": {
         "icms_bruto_dca": 45170526262.28,
+        "icms_bruto_rreo": null,
         "transf_munis_dca": 11364874541.51,
-        "cota_parte_declarada_munis_dca": 10814434245.8,
         "icms_liquido_dca": 33805651720.769997,
+        "cota_parte_declarada_munis_dca": 10814434245.8,
         "fecop_dca": null,
-        "icms_liquido_rreo": null,
         "diff_transf_vs_cota_munis_rel": -0.04843346872853965
       }
     },
     "SE": {
       "2019": {
         "icms_bruto_dca": 3417325233.61,
+        "icms_bruto_rreo": 3518877397.0,
         "transf_munis_dca": 854331308.46,
-        "cota_parte_declarada_munis_dca": 872733018.9999998,
         "icms_liquido_dca": 2562993925.15,
+        "cota_parte_declarada_munis_dca": 872733018.9999998,
         "fecop_dca": 101552163.24,
-        "icms_liquido_rreo": 3518877397.0,
-        "diff_transf_vs_cota_munis_rel": 0.021539314265762152,
-        "diff_abs": -955883471.8499999,
-        "diff_rel": -0.27164443770190266
+        "diff_abs_bruto": -101552163.38999987,
+        "diff_rel_bruto": -0.0288592502474163,
+        "diff_transf_vs_cota_munis_rel": 0.021539314265762152
       },
       "2020": {
         "icms_bruto_dca": 3397604245.66,
+        "icms_bruto_rreo": 3498299445.0,
         "transf_munis_dca": 849401061.42,
-        "cota_parte_declarada_munis_dca": 845176872.1599998,
         "icms_liquido_dca": 2548203184.24,
+        "cota_parte_declarada_munis_dca": 845176872.1599998,
         "fecop_dca": 100695199.06,
-        "icms_liquido_rreo": 3498299445.0,
-        "diff_transf_vs_cota_munis_rel": -0.0049731386642468435,
-        "diff_abs": -950096260.7600002,
-        "diff_rel": -0.2715880317558122
+        "diff_abs_bruto": -100695199.34000015,
+        "diff_rel_bruto": -0.028784042339177213,
+        "diff_transf_vs_cota_munis_rel": -0.0049731386642468435
       },
       "2021": {
         "icms_bruto_dca": 4140053113.18,
+        "icms_bruto_rreo": 4246252466.0,
         "transf_munis_dca": 1035013278.3,
-        "cota_parte_declarada_munis_dca": 1024661588.2899997,
         "icms_liquido_dca": 3105039834.88,
+        "cota_parte_declarada_munis_dca": 1024661588.2899997,
         "fecop_dca": 106199352.91,
-        "icms_liquido_rreo": 4246252466.0,
-        "diff_transf_vs_cota_munis_rel": -0.010001504547847722,
-        "diff_abs": -1141212631.12,
-        "diff_rel": -0.2687576022051817
+        "diff_abs_bruto": -106199352.82000017,
+        "diff_rel_bruto": -0.02501013627200568,
+        "diff_transf_vs_cota_munis_rel": -0.010001504547847722
       },
       "2022": {
         "icms_bruto_dca": 4471823565.75,
+        "icms_bruto_rreo": 4563523938.0,
         "transf_munis_dca": 1117955891.44,
-        "cota_parte_declarada_munis_dca": 1108145035.34,
         "icms_liquido_dca": 3353867674.31,
+        "cota_parte_declarada_munis_dca": 1108145035.34,
         "fecop_dca": 91700371.79,
-        "icms_liquido_rreo": 4563523938.0,
-        "diff_transf_vs_cota_munis_rel": -0.008775709466822632,
-        "diff_abs": -1209656263.69,
-        "diff_rel": -0.26507065156760007
+        "diff_abs_bruto": -91700372.25,
+        "diff_rel_bruto": -0.020094202089402956,
+        "diff_transf_vs_cota_munis_rel": -0.008775709466822632
       },
       "2023": {
         "icms_bruto_dca": 4894829499.1,
+        "icms_bruto_rreo": 5026932174.0,
         "transf_munis_dca": 1239994874.78,
-        "cota_parte_declarada_munis_dca": 1247767254.7,
         "icms_liquido_dca": 3654834624.3200006,
+        "cota_parte_declarada_munis_dca": 1247767254.7,
         "fecop_dca": 132358966.84,
-        "icms_liquido_rreo": 5026932174.0,
-        "diff_transf_vs_cota_munis_rel": 0.00626807423004797,
-        "diff_abs": -1372097549.6799994,
-        "diff_rel": -0.27294928640109384
+        "diff_abs_bruto": -132102674.89999962,
+        "diff_rel_bruto": -0.02627898494100502,
+        "diff_transf_vs_cota_munis_rel": 0.00626807423004797
       },
       "2024": {
         "icms_bruto_dca": 5382660989.44,
+        "icms_bruto_rreo": 5608879033.0,
         "transf_munis_dca": 1345665247.36,
-        "cota_parte_declarada_munis_dca": 1359453844.6,
         "icms_liquido_dca": 4036995742.08,
+        "cota_parte_declarada_munis_dca": 1359453844.6,
         "fecop_dca": 226912651.56,
-        "icms_liquido_rreo": 5608879033.0,
-        "diff_transf_vs_cota_munis_rel": 0.01024667707444421,
-        "diff_abs": -1571883290.92,
-        "diff_rel": -0.28024909820158
+        "diff_abs_bruto": -226218043.56000042,
+        "diff_rel_bruto": -0.04033213093544006,
+        "diff_transf_vs_cota_munis_rel": 0.01024667707444421
       },
       "2025": {
         "icms_bruto_dca": 5843793660.31,
+        "icms_bruto_rreo": 6095788957.0,
         "transf_munis_dca": 1460948415.09,
-        "cota_parte_declarada_munis_dca": 1452841299.63,
         "icms_liquido_dca": 4382845245.22,
+        "cota_parte_declarada_munis_dca": 1452841299.63,
         "fecop_dca": 252579860.14,
-        "icms_liquido_rreo": 6095788957.0,
-        "diff_transf_vs_cota_munis_rel": -0.0055492140422359615,
-        "diff_abs": -1712943711.7799997,
-        "diff_rel": -0.2810044317254404
+        "diff_abs_bruto": -251995296.68999958,
+        "diff_rel_bruto": -0.04133924229785299,
+        "diff_transf_vs_cota_munis_rel": -0.0055492140422359615
       }
     },
-    "SP": {},
+    "SP": {
+      "2019": {
+        "icms_bruto_dca": 148368899499.47,
+        "icms_bruto_rreo": 149065122716.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 37483644013.83005,
+        "fecop_dca": 696223216.73,
+        "diff_abs_bruto": -696223216.5299988,
+        "diff_rel_bruto": -0.004670597681366744
+      },
+      "2020": {
+        "icms_bruto_dca": 148634090672.31,
+        "icms_bruto_rreo": 149339299258.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 36668257588.91002,
+        "fecop_dca": 705208586.09,
+        "diff_abs_bruto": -705208585.6900024,
+        "diff_rel_bruto": -0.004722190268695967
+      },
+      "2021": {
+        "icms_bruto_dca": 187590684882.66,
+        "icms_bruto_rreo": 188360756435.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 46842336315.08997,
+        "fecop_dca": 770071552.27,
+        "diff_abs_bruto": -770071552.3399963,
+        "diff_rel_bruto": -0.0040882802071658415
+      },
+      "2022": {
+        "icms_bruto_dca": 203110603677.82,
+        "icms_bruto_rreo": 203977683842.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 50372578368.51995,
+        "fecop_dca": 867080164,
+        "diff_abs_bruto": -867080164.1799927,
+        "diff_rel_bruto": -0.004250857975481417
+      },
+      "2023": {
+        "icms_bruto_dca": 195782456800.39,
+        "icms_bruto_rreo": 196690936766.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 49185432687.72999,
+        "fecop_dca": 908479965.39,
+        "diff_abs_bruto": -908479965.6099854,
+        "diff_rel_bruto": -0.004618819659651065
+      },
+      "2024": {
+        "icms_bruto_dca": 222848196633.32,
+        "icms_bruto_rreo": 223844100208.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 54926827085.59996,
+        "fecop_dca": 995903574.71,
+        "diff_abs_bruto": -995903574.6799927,
+        "diff_rel_bruto": -0.00444909458750345
+      },
+      "2025": {
+        "icms_bruto_dca": 237071553843.02,
+        "icms_bruto_rreo": 238061225357.0,
+        "transf_munis_dca": null,
+        "icms_liquido_dca": null,
+        "cota_parte_declarada_munis_dca": 58370963703.70001,
+        "fecop_dca": 989671514,
+        "diff_abs_bruto": -989671513.980011,
+        "diff_rel_bruto": -0.0041572142313217346
+      }
+    },
     "TO": {
       "2019": {
         "icms_bruto_dca": 3737146961.94,
+        "icms_bruto_rreo": 3015156616.0,
         "transf_munis_dca": 737311376.46,
-        "cota_parte_declarada_munis_dca": 710717956.74,
         "icms_liquido_dca": 2999835585.48,
+        "cota_parte_declarada_munis_dca": 710717956.74,
         "fecop_dca": 65912185.64,
-        "icms_liquido_rreo": 3015156616.0,
-        "diff_transf_vs_cota_munis_rel": -0.036068099000019636,
-        "diff_abs": -15321030.51999998,
-        "diff_rel": -0.005081338209331671
+        "diff_abs_bruto": 721990345.94,
+        "diff_rel_bruto": 0.23945367949006072,
+        "diff_transf_vs_cota_munis_rel": -0.036068099000019636
       },
       "2020": {
         "icms_bruto_dca": 4236986303.83,
+        "icms_bruto_rreo": 3286800375.0,
         "transf_munis_dca": 804839690.47,
-        "cota_parte_declarada_munis_dca": 777900881.21,
         "icms_liquido_dca": 3432146613.3599997,
+        "cota_parte_declarada_munis_dca": 777900881.21,
         "fecop_dca": 67441624.63,
-        "icms_liquido_rreo": 3286800375.0,
-        "diff_transf_vs_cota_munis_rel": -0.033471024825165625,
-        "diff_abs": 145346238.35999966,
-        "diff_rel": 0.04422119440703778
+        "diff_abs_bruto": 950185928.8299999,
+        "diff_rel_bruto": 0.28909146294897814,
+        "diff_transf_vs_cota_munis_rel": -0.033471024825165625
       },
       "2021": {
         "icms_bruto_dca": 6089862984.16,
+        "icms_bruto_rreo": 4195029337.0,
         "transf_munis_dca": 1028789407.41,
-        "cota_parte_declarada_munis_dca": 1007637952.3199998,
         "icms_liquido_dca": 5061073576.75,
+        "cota_parte_declarada_munis_dca": 1007637952.3199998,
         "fecop_dca": 79878179.28,
-        "icms_liquido_rreo": 4195029337.0,
-        "diff_transf_vs_cota_munis_rel": -0.02055955760980219,
-        "diff_abs": 866044239.75,
-        "diff_rel": 0.20644533570040205
+        "diff_abs_bruto": 1894833647.1599998,
+        "diff_rel_bruto": 0.4516854341035565,
+        "diff_transf_vs_cota_munis_rel": -0.02055955760980219
       },
       "2022": {
         "icms_bruto_dca": 6783919684.12,
+        "icms_bruto_rreo": 4504435587.0,
         "transf_munis_dca": 1109570016.78,
-        "cota_parte_declarada_munis_dca": 1057748743.0699998,
         "icms_liquido_dca": 5674349667.34,
+        "cota_parte_declarada_munis_dca": 1057748743.0699998,
         "fecop_dca": 66155498.51,
-        "icms_liquido_rreo": 4504435587.0,
-        "diff_transf_vs_cota_munis_rel": -0.04670392397623252,
-        "diff_abs": 1169914080.3400002,
-        "diff_rel": 0.2597248995448895
+        "diff_abs_bruto": 2279484097.12,
+        "diff_rel_bruto": 0.5060532120158832,
+        "diff_transf_vs_cota_munis_rel": -0.04670392397623252
       },
       "2023": {
         "icms_bruto_dca": 7165351659.13,
+        "icms_bruto_rreo": 5025473342.0,
         "transf_munis_dca": 1246934135.33,
-        "cota_parte_declarada_munis_dca": 1178728551.3800006,
         "icms_liquido_dca": 5918417523.8,
+        "cota_parte_declarada_munis_dca": 1178728551.3800006,
         "fecop_dca": 37749843.95,
-        "icms_liquido_rreo": 5025473342.0,
-        "diff_transf_vs_cota_munis_rel": -0.05469862602802897,
-        "diff_abs": 892944181.8000002,
-        "diff_rel": 0.17768359735137565
+        "diff_abs_bruto": 2139878317.13,
+        "diff_rel_bruto": 0.4258063214157629,
+        "diff_transf_vs_cota_munis_rel": -0.05469862602802897
       },
       "2024": {
         "icms_bruto_dca": 7777473808.26,
+        "icms_bruto_rreo": 5947178599.0,
         "transf_munis_dca": 1476244247.09,
-        "cota_parte_declarada_munis_dca": 1409945648.4699998,
         "icms_liquido_dca": 6301229561.17,
+        "cota_parte_declarada_munis_dca": 1409945648.4699998,
         "fecop_dca": 42200579.9,
-        "icms_liquido_rreo": 5947178599.0,
-        "diff_transf_vs_cota_munis_rel": -0.04491031802541426,
-        "diff_abs": 354050962.1700001,
-        "diff_rel": 0.05953259285496028
+        "diff_abs_bruto": 1830295209.2600002,
+        "diff_rel_bruto": 0.3077585747244515,
+        "diff_transf_vs_cota_munis_rel": -0.04491031802541426
       },
       "2025": {
         "icms_bruto_dca": 8686212320.91,
+        "icms_bruto_rreo": 6400909147.0,
         "transf_munis_dca": 1589769042.51,
-        "cota_parte_declarada_munis_dca": 1415144083.7799997,
         "icms_liquido_dca": 7096443278.4,
+        "cota_parte_declarada_munis_dca": 1415144083.7799997,
         "fecop_dca": 41937480.36,
-        "icms_liquido_rreo": 6400909147.0,
-        "diff_transf_vs_cota_munis_rel": -0.10984297345122182,
-        "diff_abs": 695534131.3999996,
-        "diff_rel": 0.10866177216809661
+        "diff_abs_bruto": 2285303173.91,
+        "diff_rel_bruto": 0.3570279036035191,
+        "diff_transf_vs_cota_munis_rel": -0.10984297345122182
       }
     }
   },
   "divergencias_acima_do_limiar": [
     {
-      "uf": "RJ",
-      "ano": "2023",
-      "diff_rel": -0.33873808770863095,
-      "diff_abs": -16860965200.21
-    },
-    {
-      "uf": "RJ",
-      "ano": "2024",
-      "diff_rel": -0.3374228336631762,
-      "diff_abs": -19197538148.879997
-    },
-    {
-      "uf": "RJ",
-      "ano": "2021",
-      "diff_rel": -0.3373766780116896,
-      "diff_abs": -17903778964.32
-    },
-    {
-      "uf": "RJ",
-      "ano": "2022",
-      "diff_rel": -0.3369295146367488,
-      "diff_abs": -17107103608.059998
-    },
-    {
-      "uf": "RJ",
-      "ano": "2025",
-      "diff_rel": -0.33145855185451906,
-      "diff_abs": -20678541355.97
-    },
-    {
       "uf": "MT",
       "ano": "2025",
-      "diff_rel": 0.324573920404822,
-      "diff_abs": 8448798397.489998
+      "diff_rel": 0.57553673609675,
+      "diff_abs": 14981468158.519997
     },
     {
       "uf": "MT",
       "ano": "2022",
-      "diff_rel": 0.31584493994695495,
-      "diff_abs": 6221884348.810001
+      "diff_rel": 0.5636364549439311,
+      "diff_abs": 11103172455.52
+    },
+    {
+      "uf": "TO",
+      "ano": "2022",
+      "diff_rel": 0.5060532120158832,
+      "diff_abs": 2279484097.12
+    },
+    {
+      "uf": "MT",
+      "ano": "2023",
+      "diff_rel": 0.4930448717280152,
+      "diff_abs": 10265194424.130001
+    },
+    {
+      "uf": "MT",
+      "ano": "2021",
+      "diff_rel": 0.48259652443296164,
+      "diff_abs": 9007111326.77
+    },
+    {
+      "uf": "TO",
+      "ano": "2021",
+      "diff_rel": 0.4516854341035565,
+      "diff_abs": 1894833647.1599998
+    },
+    {
+      "uf": "MT",
+      "ano": "2024",
+      "diff_rel": 0.4295178427257759,
+      "diff_abs": 9916228147.919998
+    },
+    {
+      "uf": "MS",
+      "ano": "2025",
+      "diff_rel": 0.42692839426336693,
+      "diff_abs": 7523176168.77
+    },
+    {
+      "uf": "TO",
+      "ano": "2023",
+      "diff_rel": 0.4258063214157629,
+      "diff_abs": 2139878317.13
+    },
+    {
+      "uf": "GO",
+      "ano": "2019",
+      "diff_rel": 0.3990252049208077,
+      "diff_abs": 6793717861.310001
+    },
+    {
+      "uf": "GO",
+      "ano": "2020",
+      "diff_rel": 0.3977195068216843,
+      "diff_abs": 7086120575.169998
+    },
+    {
+      "uf": "MS",
+      "ano": "2024",
+      "diff_rel": 0.37189535523099365,
+      "diff_abs": 6333622868.169998
+    },
+    {
+      "uf": "TO",
+      "ano": "2025",
+      "diff_rel": 0.3570279036035191,
+      "diff_abs": 2285303173.91
+    },
+    {
+      "uf": "MT",
+      "ano": "2020",
+      "diff_rel": 0.339194692816306,
+      "diff_abs": 4350524752.459999
+    },
+    {
+      "uf": "TO",
+      "ano": "2024",
+      "diff_rel": 0.3077585747244515,
+      "diff_abs": 1830295209.2600002
+    },
+    {
+      "uf": "TO",
+      "ano": "2020",
+      "diff_rel": 0.28909146294897814,
+      "diff_abs": 950185928.8299999
+    },
+    {
+      "uf": "MT",
+      "ano": "2019",
+      "diff_rel": 0.285279043283724,
+      "diff_abs": 3227837807.3199997
+    },
+    {
+      "uf": "MS",
+      "ano": "2023",
+      "diff_rel": 0.24737842266300739,
+      "diff_abs": 3795256235.549999
+    },
+    {
+      "uf": "TO",
+      "ano": "2019",
+      "diff_rel": 0.23945367949006072,
+      "diff_abs": 721990345.94
+    },
+    {
+      "uf": "RO",
+      "ano": "2020",
+      "diff_rel": 0.12583903470868235,
+      "diff_abs": 559529407.04
+    },
+    {
+      "uf": "RO",
+      "ano": "2019",
+      "diff_rel": 0.1257822630274132,
+      "diff_abs": 513862669.4499998
+    },
+    {
+      "uf": "RO",
+      "ano": "2021",
+      "diff_rel": 0.12278058896894385,
+      "diff_abs": 714199879.4300003
+    },
+    {
+      "uf": "RJ",
+      "ano": "2023",
+      "diff_rel": -0.11836452844951166,
+      "diff_abs": -5891691154.739998
+    },
+    {
+      "uf": "RJ",
+      "ano": "2024",
+      "diff_rel": -0.1166951395317404,
+      "diff_abs": -6639323630.32
+    },
+    {
+      "uf": "RJ",
+      "ano": "2022",
+      "diff_rel": -0.11592354301898715,
+      "diff_abs": -5885848448.68
+    },
+    {
+      "uf": "RJ",
+      "ano": "2021",
+      "diff_rel": -0.1139539382642184,
+      "diff_abs": -6047264840.059998
+    },
+    {
+      "uf": "RJ",
+      "ano": "2025",
+      "diff_rel": -0.10871962187880692,
+      "diff_abs": -6782637481.059998
+    },
+    {
+      "uf": "RO",
+      "ano": "2022",
+      "diff_rel": 0.10278692332174272,
+      "diff_abs": 618410390.6499996
+    },
+    {
+      "uf": "RO",
+      "ano": "2023",
+      "diff_rel": 0.09845310973123002,
+      "diff_abs": 601894698.6099997
+    },
+    {
+      "uf": "RO",
+      "ano": "2025",
+      "diff_rel": 0.09700519720010897,
+      "diff_abs": 788262756.3199997
     },
     {
       "uf": "MA",
       "ano": "2020",
-      "diff_rel": -0.3142955984627751,
-      "diff_abs": -2559610153.7800007
+      "diff_rel": -0.08732557881348048,
+      "diff_abs": -711175846.2700005
+    },
+    {
+      "uf": "RO",
+      "ano": "2024",
+      "diff_rel": 0.08693073728754251,
+      "diff_abs": 652628057.4200001
     },
     {
       "uf": "MA",
       "ano": "2021",
-      "diff_rel": -0.3136515124989791,
-      "diff_abs": -3117479598.700001
+      "diff_rel": -0.08633133032603851,
+      "diff_abs": -858073850.4200001
     },
     {
       "uf": "MA",
       "ano": "2019",
-      "diff_rel": -0.3066421843398742,
-      "diff_abs": -2401327080.9300003
+      "diff_rel": -0.08021913333390356,
+      "diff_abs": -628199207.8100004
     },
     {
       "uf": "AL",
       "ano": "2022",
-      "diff_rel": -0.30394581366380785,
-      "diff_abs": -1908432096.1000004
+      "diff_rel": -0.07277490455654372,
+      "diff_abs": -456943170.14000034
     },
     {
       "uf": "AL",
       "ano": "2023",
-      "diff_rel": -0.3028394932900953,
-      "diff_abs": -2222535197.92
+      "diff_rel": -0.07116763737409537,
+      "diff_abs": -522298387.5
     },
     {
       "uf": "AL",
       "ano": "2024",
-      "diff_rel": -0.3012815694677435,
-      "diff_abs": -2557534754.7700005
+      "diff_rel": -0.06875039554110109,
+      "diff_abs": -583611955.79
     },
     {
       "uf": "AL",
       "ano": "2021",
-      "diff_rel": -0.30093887555798676,
-      "diff_abs": -1749817697.5799994
+      "diff_rel": -0.0686805619125722,
+      "diff_abs": -399345091.22999954
     },
     {
       "uf": "AL",
       "ano": "2025",
-      "diff_rel": -0.3006371572065909,
-      "diff_abs": -2708171070.3
+      "diff_rel": -0.0682507542506745,
+      "diff_abs": -614809958.6400003
     },
     {
       "uf": "AL",
       "ano": "2020",
-      "diff_rel": -0.2990166582526996,
-      "diff_abs": -1403875771.5600004
+      "diff_rel": -0.06640209320367946,
+      "diff_abs": -311756175.64000034
     },
     {
       "uf": "AL",
       "ano": "2019",
-      "diff_rel": -0.298814984376933,
-      "diff_abs": -1351844627.96
+      "diff_rel": -0.06570299671849066,
+      "diff_abs": -297241596.9699998
     },
     {
       "uf": "GO",
       "ano": "2021",
-      "diff_rel": -0.2943108410414824,
-      "diff_abs": -6821073127.610001
-    },
-    {
-      "uf": "PI",
-      "ano": "2022",
-      "diff_rel": -0.2869781765037168,
-      "diff_abs": -1656597825.9499998
+      "diff_rel": -0.059086385463241214,
+      "diff_abs": -1369411179.9099998
     },
     {
       "uf": "MA",
       "ano": "2022",
-      "diff_rel": -0.2867457214216788,
-      "diff_abs": -3288814131.1500006
+      "diff_rel": -0.050161299642153476,
+      "diff_abs": -575322241.1900005
+    },
+    {
+      "uf": "PI",
+      "ano": "2022",
+      "diff_rel": -0.04930423652724815,
+      "diff_abs": -284611506.1300001
     },
     {
       "uf": "PI",
       "ano": "2021",
-      "diff_rel": -0.28395995517819117,
-      "diff_abs": -1618220579.1899996
-    },
-    {
-      "uf": "PI",
-      "ano": "2020",
-      "diff_rel": -0.283546090181173,
-      "diff_abs": -1339579095.3100004
-    },
-    {
-      "uf": "PI",
-      "ano": "2019",
-      "diff_rel": -0.2825949467284527,
-      "diff_abs": -1266291704.8200002
+      "diff_rel": -0.045359421001032935,
+      "diff_abs": -258492604.97999954
     },
     {
       "uf": "CE",
       "ano": "2019",
-      "diff_rel": -0.28221526638613764,
-      "diff_abs": -3710381196.8500004
+      "diff_rel": -0.04524756206335787,
+      "diff_abs": -594885264.8299999
+    },
+    {
+      "uf": "PI",
+      "ano": "2020",
+      "diff_rel": -0.0447801030491999,
+      "diff_abs": -211558162.8800001
+    },
+    {
+      "uf": "CE",
+      "ano": "2020",
+      "diff_rel": -0.0441237180975314,
+      "diff_abs": -583415294.8700008
+    },
+    {
+      "uf": "PI",
+      "ano": "2019",
+      "diff_rel": -0.04361328470492678,
+      "diff_abs": -195428620.6500001
+    },
+    {
+      "uf": "CE",
+      "ano": "2021",
+      "diff_rel": -0.04190712980560198,
+      "diff_abs": -680203835.8999996
     },
     {
       "uf": "SE",
       "ano": "2025",
-      "diff_rel": -0.2810044317254404,
-      "diff_abs": -1712943711.7799997
+      "diff_rel": -0.04133924229785299,
+      "diff_abs": -251995296.68999958
     },
     {
       "uf": "SE",
       "ano": "2024",
-      "diff_rel": -0.28024909820158,
-      "diff_abs": -1571883290.92
-    },
-    {
-      "uf": "GO",
-      "ano": "2022",
-      "diff_rel": -0.2791240985340281,
-      "diff_abs": -6717361594.619999
-    },
-    {
-      "uf": "CE",
-      "ano": "2022",
-      "diff_rel": -0.27845023597041824,
-      "diff_abs": -4768367761.98
-    },
-    {
-      "uf": "CE",
-      "ano": "2023",
-      "diff_rel": -0.27494062470233616,
-      "diff_abs": -4688713424.25
-    },
-    {
-      "uf": "SE",
-      "ano": "2023",
-      "diff_rel": -0.27294928640109384,
-      "diff_abs": -1372097549.6799994
-    },
-    {
-      "uf": "SE",
-      "ano": "2019",
-      "diff_rel": -0.27164443770190266,
-      "diff_abs": -955883471.8499999
-    },
-    {
-      "uf": "SE",
-      "ano": "2020",
-      "diff_rel": -0.2715880317558122,
-      "diff_abs": -950096260.7600002
-    },
-    {
-      "uf": "PB",
-      "ano": "2020",
-      "diff_rel": -0.26971348423417785,
-      "diff_abs": -1644990028.13
-    },
-    {
-      "uf": "PB",
-      "ano": "2019",
-      "diff_rel": -0.2695296511322826,
-      "diff_abs": -1585699984.6399994
-    },
-    {
-      "uf": "PB",
-      "ano": "2021",
-      "diff_rel": -0.2690389744012788,
-      "diff_abs": -2016496803.5600004
-    },
-    {
-      "uf": "RN",
-      "ano": "2019",
-      "diff_rel": -0.2688691062360137,
-      "diff_abs": -1543131671.3799996
-    },
-    {
-      "uf": "SE",
-      "ano": "2021",
-      "diff_rel": -0.2687576022051817,
-      "diff_abs": -1141212631.12
-    },
-    {
-      "uf": "MA",
-      "ano": "2024",
-      "diff_rel": -0.268389052358822,
-      "diff_abs": -3722575358.380001
-    },
-    {
-      "uf": "RN",
-      "ano": "2021",
-      "diff_rel": -0.2675844583872884,
-      "diff_abs": -1826824641.29
-    },
-    {
-      "uf": "PB",
-      "ano": "2022",
-      "diff_rel": -0.26744117148536256,
-      "diff_abs": -2051898354.3000002
-    },
-    {
-      "uf": "RN",
-      "ano": "2020",
-      "diff_rel": -0.2662737529195972,
-      "diff_abs": -1565987173.5
-    },
-    {
-      "uf": "PR",
-      "ano": "2023",
-      "diff_rel": -0.26593853917536014,
-      "diff_abs": -11863341332.690002
-    },
-    {
-      "uf": "SE",
-      "ano": "2022",
-      "diff_rel": -0.26507065156760007,
-      "diff_abs": -1209656263.69
-    },
-    {
-      "uf": "PR",
-      "ano": "2022",
-      "diff_rel": -0.2642085025096024,
-      "diff_abs": -11154004185.450005
-    },
-    {
-      "uf": "GO",
-      "ano": "2023",
-      "diff_rel": -0.2634571823916269,
-      "diff_abs": -6415043213.920002
-    },
-    {
-      "uf": "PB",
-      "ano": "2023",
-      "diff_rel": -0.2631434127169876,
-      "diff_abs": -2116998285.3100004
-    },
-    {
-      "uf": "RR",
-      "ano": "2023",
-      "diff_rel": -0.26288477292511864,
-      "diff_abs": -447330253.8700001
-    },
-    {
-      "uf": "RN",
-      "ano": "2022",
-      "diff_rel": -0.2627548065991305,
-      "diff_abs": -1887938985.5699997
-    },
-    {
-      "uf": "GO",
-      "ano": "2025",
-      "diff_rel": -0.2618731217176857,
-      "diff_abs": -7995736364.310001
-    },
-    {
-      "uf": "PI",
-      "ano": "2023",
-      "diff_rel": -0.2615922788136456,
-      "diff_abs": -1760330450.8199997
-    },
-    {
-      "uf": "MA",
-      "ano": "2025",
-      "diff_rel": -0.26082277271507365,
-      "diff_abs": -4124454186.91
-    },
-    {
-      "uf": "MA",
-      "ano": "2023",
-      "diff_rel": -0.26043103256345546,
-      "diff_abs": -2833683661.66
-    },
-    {
-      "uf": "PR",
-      "ano": "2025",
-      "diff_rel": -0.2601583811705555,
-      "diff_abs": -13887988708.369995
+      "diff_rel": -0.04033213093544006,
+      "diff_abs": -226218043.56000042
     },
     {
       "uf": "BA",
-      "ano": "2024",
-      "diff_rel": -0.2600640221057251,
-      "diff_abs": -10271753921.919998
+      "ano": "2020",
+      "diff_rel": -0.03947212508464713,
+      "diff_abs": -982952273.9199982
     },
     {
-      "uf": "PR",
-      "ano": "2021",
-      "diff_rel": -0.25991662525971476,
-      "diff_abs": -10155479084.129997
+      "uf": "CE",
+      "ano": "2022",
+      "diff_rel": -0.03902605408395749,
+      "diff_abs": -668308207.8299999
     },
     {
       "uf": "GO",
-      "ano": "2024",
-      "diff_rel": -0.25980289248564287,
-      "diff_abs": -7590308923.550003
+      "ano": "2022",
+      "diff_rel": -0.03885276623064968,
+      "diff_abs": -935025248.9599991
     },
     {
       "uf": "BA",
-      "ano": "2025",
-      "diff_rel": -0.2597553093513706,
-      "diff_abs": -10909455093.34
+      "ano": "2021",
+      "diff_rel": -0.03809922094738673,
+      "diff_abs": -1188426129.9500008
     },
     {
-      "uf": "TO",
-      "ano": "2022",
-      "diff_rel": 0.2597248995448895,
-      "diff_abs": 1169914080.3400002
-    },
-    {
-      "uf": "PB",
-      "ano": "2024",
-      "diff_rel": -0.25961383655946335,
-      "diff_abs": -2521696687.089999
-    },
-    {
-      "uf": "PB",
-      "ano": "2025",
-      "diff_rel": -0.25947329860879115,
-      "diff_abs": -2738506567.9299994
-    },
-    {
-      "uf": "MG",
-      "ano": "2022",
-      "diff_rel": -0.25942268060823803,
-      "diff_abs": -18345843889.98999
-    },
-    {
-      "uf": "MG",
-      "ano": "2025",
-      "diff_rel": -0.2593567864693831,
-      "diff_abs": -22748722177.33
-    },
-    {
-      "uf": "MG",
-      "ano": "2024",
-      "diff_rel": -0.258837626770477,
-      "diff_abs": -21101296807.660004
+      "uf": "BA",
+      "ano": "2019",
+      "diff_rel": -0.037102969358211106,
+      "diff_abs": -917076797.5800018
     },
     {
       "uf": "CE",
-      "ano": "2024",
-      "diff_rel": -0.2586789162319252,
-      "diff_abs": -5225853413.33
-    },
-    {
-      "uf": "PR",
-      "ano": "2024",
-      "diff_rel": -0.257815001831384,
-      "diff_abs": -13322577059.470001
-    },
-    {
-      "uf": "PI",
-      "ano": "2024",
-      "diff_rel": -0.2576029871279914,
-      "diff_abs": -1987102104.5499992
-    },
-    {
-      "uf": "PI",
-      "ano": "2025",
-      "diff_rel": -0.2572182999414326,
-      "diff_abs": -2180383908.49
-    },
-    {
-      "uf": "MS",
-      "ano": "2020",
-      "diff_rel": -0.257178499515106,
-      "diff_abs": -2613221357.3600006
-    },
-    {
-      "uf": "MS",
-      "ano": "2019",
-      "diff_rel": -0.256863081328065,
-      "diff_abs": -2338805558.58
-    },
-    {
-      "uf": "CE",
-      "ano": "2025",
-      "diff_rel": -0.25674377051351194,
-      "diff_abs": -5506533966.6
-    },
-    {
-      "uf": "RS",
       "ano": "2023",
-      "diff_rel": -0.25590090098002877,
-      "diff_abs": -11481190611.739998
+      "diff_rel": -0.03437852064516815,
+      "diff_abs": -586275787.4699993
     },
     {
-      "uf": "MS",
+      "uf": "SE",
+      "ano": "2019",
+      "diff_rel": -0.0288592502474163,
+      "diff_abs": -101552163.38999987
+    },
+    {
+      "uf": "SE",
+      "ano": "2020",
+      "diff_rel": -0.028784042339177213,
+      "diff_abs": -100695199.34000015
+    },
+    {
+      "uf": "RN",
+      "ano": "2019",
+      "diff_rel": -0.026486599615667725,
+      "diff_abs": -152015645.47999954
+    },
+    {
+      "uf": "PB",
+      "ano": "2020",
+      "diff_rel": -0.02629528893920126,
+      "diff_abs": -160375697.25
+    },
+    {
+      "uf": "SE",
+      "ano": "2023",
+      "diff_rel": -0.02627898494100502,
+      "diff_abs": -132102674.89999962
+    },
+    {
+      "uf": "PB",
+      "ano": "2019",
+      "diff_rel": -0.026112305873875932,
+      "diff_abs": -153624222.22999954
+    },
+    {
+      "uf": "PB",
       "ano": "2021",
-      "diff_rel": -0.25566909417461153,
-      "diff_abs": -3254461685.6800003
+      "diff_rel": -0.025427736488163002,
+      "diff_abs": -190585581.3800001
+    },
+    {
+      "uf": "SE",
+      "ano": "2021",
+      "diff_rel": -0.02501013627200568,
+      "diff_abs": -106199352.82000017
+    },
+    {
+      "uf": "RN",
+      "ano": "2021",
+      "diff_rel": -0.024882982143788104,
+      "diff_abs": -169878494.4499998
+    },
+    {
+      "uf": "RN",
+      "ano": "2020",
+      "diff_rel": -0.024734484682642197,
+      "diff_abs": -145466405.64999962
     },
     {
       "uf": "PE",
-      "ano": "2024",
-      "diff_rel": -0.25560263564285846,
-      "diff_abs": -6685791250.23
-    },
-    {
-      "uf": "RS",
       "ano": "2022",
-      "diff_rel": -0.25548376499798814,
-      "diff_abs": -11083456928.549995
+      "diff_rel": -0.02444758495305294,
+      "diff_abs": -521918867.5299988
     },
     {
-      "uf": "RS",
-      "ano": "2020",
-      "diff_rel": -0.2551939393637618,
-      "diff_abs": -9281610050.289997
-    },
-    {
-      "uf": "RN",
-      "ano": "2025",
-      "diff_rel": -0.25513513296038315,
-      "diff_abs": -2410608296.8100004
-    },
-    {
-      "uf": "RN",
-      "ano": "2023",
-      "diff_rel": -0.2550130553710577,
-      "diff_abs": -2110113480.2700005
+      "uf": "PB",
+      "ano": "2022",
+      "diff_rel": -0.023378295566371738,
+      "diff_abs": -179366123.52000046
     },
     {
       "uf": "PE",
-      "ano": "2025",
-      "diff_rel": -0.25395131469886517,
-      "diff_abs": -7017935167.220001
-    },
-    {
-      "uf": "RS",
-      "ano": "2021",
-      "diff_rel": -0.25388868007781473,
-      "diff_abs": -12074965591.830002
-    },
-    {
-      "uf": "SC",
-      "ano": "2019",
-      "diff_rel": -0.253538906399223,
-      "diff_abs": -6020231346.239998
+      "ano": "2020",
+      "diff_rel": -0.022952073815673903,
+      "diff_abs": -396553111.69000053
     },
     {
       "uf": "PR",
-      "ano": "2020",
-      "diff_rel": -0.25345539568802805,
-      "diff_abs": -7956572367.239998
+      "ano": "2022",
+      "diff_rel": -0.022078136054483326,
+      "diff_abs": -932065469.5800018
     },
     {
-      "uf": "ES",
+      "uf": "BA",
+      "ano": "2023",
+      "diff_rel": -0.021670016190927552,
+      "diff_abs": -747441028.7099991
+    },
+    {
+      "uf": "BA",
+      "ano": "2022",
+      "diff_rel": -0.02106424251278884,
+      "diff_abs": -700365561.0699997
+    },
+    {
+      "uf": "PE",
       "ano": "2019",
-      "diff_rel": -0.2534216908830971,
-      "diff_abs": -2892169330.0099993
+      "diff_rel": -0.020799961485571346,
+      "diff_abs": -359732178.30999947
     },
     {
-      "uf": "ES",
+      "uf": "SE",
       "ano": "2022",
-      "diff_rel": -0.25339764036228984,
-      "diff_abs": -4219365592.6399994
-    },
-    {
-      "uf": "MS",
-      "ano": "2022",
-      "diff_rel": -0.2533444564582486,
-      "diff_abs": -3568530352.040001
-    },
-    {
-      "uf": "ES",
-      "ano": "2020",
-      "diff_rel": -0.253208958909082,
-      "diff_abs": -3019400208.970001
-    },
-    {
-      "uf": "ES",
-      "ano": "2023",
-      "diff_rel": -0.25318445557425406,
-      "diff_abs": -4489815811.650002
-    },
-    {
-      "uf": "ES",
-      "ano": "2021",
-      "diff_rel": -0.2530902312632288,
-      "diff_abs": -3897123339.129999
-    },
-    {
-      "uf": "ES",
-      "ano": "2025",
-      "diff_rel": -0.25308448767242314,
-      "diff_abs": -5723719979.649998
-    },
-    {
-      "uf": "ES",
-      "ano": "2024",
-      "diff_rel": -0.2529077201474509,
-      "diff_abs": -5282876906.189999
-    },
-    {
-      "uf": "RN",
-      "ano": "2024",
-      "diff_rel": -0.252864445281,
-      "diff_abs": -2139206342.0
-    },
-    {
-      "uf": "SC",
-      "ano": "2023",
-      "diff_rel": -0.252673532843009,
-      "diff_abs": -9161536982.220001
-    },
-    {
-      "uf": "RS",
-      "ano": "2024",
-      "diff_rel": -0.25247778521338055,
-      "diff_abs": -12778131757.119995
-    },
-    {
-      "uf": "PA",
-      "ano": "2025",
-      "diff_rel": -0.25209948903236895,
-      "diff_abs": -6322439881.380001
-    },
-    {
-      "uf": "MG",
-      "ano": "2023",
-      "diff_rel": -0.2510333903638206,
-      "diff_abs": -18075135725.689995
-    },
-    {
-      "uf": "SC",
-      "ano": "2022",
-      "diff_rel": -0.2507576800600756,
-      "diff_abs": -8674295747.23
-    },
-    {
-      "uf": "PA",
-      "ano": "2023",
-      "diff_rel": -0.2504849143789085,
-      "diff_abs": -5209033267.669998
-    },
-    {
-      "uf": "RR",
-      "ano": "2021",
-      "diff_rel": -0.24999910184408486,
-      "diff_abs": -392330249.25
-    },
-    {
-      "uf": "AP",
-      "ano": "2025",
-      "diff_rel": -0.24998718998450858,
-      "diff_abs": -425710106.22
-    },
-    {
-      "uf": "AP",
-      "ano": "2020",
-      "diff_rel": -0.24998151765225762,
-      "diff_abs": -253702797.01999998
-    },
-    {
-      "uf": "AP",
-      "ano": "2023",
-      "diff_rel": -0.24997749483724827,
-      "diff_abs": -343030844.3599999
-    },
-    {
-      "uf": "AP",
-      "ano": "2024",
-      "diff_rel": -0.24996803555345884,
-      "diff_abs": -379304068.5700002
-    },
-    {
-      "uf": "AP",
-      "ano": "2021",
-      "diff_rel": -0.24996514974359266,
-      "diff_abs": -320009270.4100001
-    },
-    {
-      "uf": "AP",
-      "ano": "2022",
-      "diff_rel": -0.24995007867195826,
-      "diff_abs": -338210861.27
-    },
-    {
-      "uf": "PA",
-      "ano": "2022",
-      "diff_rel": -0.2499179553146301,
-      "diff_abs": -4991523834.219997
-    },
-    {
-      "uf": "RJ",
-      "ano": "2020",
-      "diff_rel": -0.24991448930721163,
-      "diff_abs": -9669922992.289997
-    },
-    {
-      "uf": "RJ",
-      "ano": "2019",
-      "diff_rel": -0.24990570828731318,
-      "diff_abs": -9234111403.189999
-    },
-    {
-      "uf": "SC",
-      "ano": "2024",
-      "diff_rel": -0.24989336639563078,
-      "diff_abs": -10676599808.98
-    },
-    {
-      "uf": "SC",
-      "ano": "2021",
-      "diff_rel": -0.24986295603801953,
-      "diff_abs": -7258714532.09
-    },
-    {
-      "uf": "RR",
-      "ano": "2024",
-      "diff_rel": -0.2498407484482551,
-      "diff_abs": -502279182.3499999
-    },
-    {
-      "uf": "PA",
-      "ano": "2024",
-      "diff_rel": -0.2498206344683912,
-      "diff_abs": -6094297295.199997
-    },
-    {
-      "uf": "RS",
-      "ano": "2025",
-      "diff_rel": -0.24978686206684164,
-      "diff_abs": -13412654974.279999
-    },
-    {
-      "uf": "RR",
-      "ano": "2025",
-      "diff_rel": -0.2497227443481347,
-      "diff_abs": -535028300.99
-    },
-    {
-      "uf": "SC",
-      "ano": "2020",
-      "diff_rel": -0.24966371273119237,
-      "diff_abs": -5976555317.940002
-    },
-    {
-      "uf": "AP",
-      "ano": "2019",
-      "diff_rel": -0.24922678794584097,
-      "diff_abs": -235627393.54999995
-    },
-    {
-      "uf": "RR",
-      "ano": "2022",
-      "diff_rel": -0.2481381651355055,
-      "diff_abs": -395473539.8800001
-    },
-    {
-      "uf": "MT",
-      "ano": "2023",
-      "diff_rel": 0.24305097931339406,
-      "diff_abs": 5060321485.310001
-    },
-    {
-      "uf": "MT",
-      "ano": "2021",
-      "diff_rel": 0.23441260854263912,
-      "diff_abs": 4375042824.900002
-    },
-    {
-      "uf": "TO",
-      "ano": "2021",
-      "diff_rel": 0.20644533570040205,
-      "diff_abs": 866044239.75
-    },
-    {
-      "uf": "RR",
-      "ano": "2020",
-      "diff_rel": -0.19903356910631081,
-      "diff_abs": -246799634.56000006
-    },
-    {
-      "uf": "MT",
-      "ano": "2024",
-      "diff_rel": 0.18103885421349553,
-      "diff_abs": 4179622831.5599976
-    },
-    {
-      "uf": "MS",
-      "ano": "2025",
-      "diff_rel": 0.1780845780919252,
-      "diff_abs": 3138141364.9900017
-    },
-    {
-      "uf": "TO",
-      "ano": "2023",
-      "diff_rel": 0.17768359735137565,
-      "diff_abs": 892944181.8000002
-    },
-    {
-      "uf": "GO",
-      "ano": "2019",
-      "diff_rel": 0.1646451536831329,
-      "diff_abs": 2803213199.470001
-    },
-    {
-      "uf": "GO",
-      "ano": "2020",
-      "diff_rel": 0.16290227665650583,
-      "diff_abs": 2902410252.8499985
-    },
-    {
-      "uf": "RO",
-      "ano": "2024",
-      "diff_rel": -0.16179601962913323,
-      "diff_abs": -1214675329.8500004
-    },
-    {
-      "uf": "RO",
-      "ano": "2023",
-      "diff_rel": -0.15388385575169355,
-      "diff_abs": -940771472.1400003
-    },
-    {
-      "uf": "RO",
-      "ano": "2025",
-      "diff_rel": -0.15164803197859994,
-      "diff_abs": -1232289600.2300005
-    },
-    {
-      "uf": "RO",
-      "ano": "2022",
-      "diff_rel": -0.14656497225224624,
-      "diff_abs": -881797983.8000002
-    },
-    {
-      "uf": "RO",
-      "ano": "2021",
-      "diff_rel": -0.12560104145298137,
-      "diff_abs": -730606111.3999996
-    },
-    {
-      "uf": "RO",
-      "ano": "2019",
-      "diff_rel": -0.12476405229126844,
-      "diff_abs": -509702937.59000015
-    },
-    {
-      "uf": "MS",
-      "ano": "2024",
-      "diff_rel": 0.12318791272180411,
-      "diff_abs": 2097971297.8999977
-    },
-    {
-      "uf": "RO",
-      "ano": "2020",
-      "diff_rel": -0.12175011286397878,
-      "diff_abs": -541348466.44
-    },
-    {
-      "uf": "TO",
-      "ano": "2025",
-      "diff_rel": 0.10866177216809661,
-      "diff_abs": 695534131.3999996
-    },
-    {
-      "uf": "MT",
-      "ano": "2020",
-      "diff_rel": 0.09189779797930263,
-      "diff_abs": 1178684847.5900002
-    },
-    {
-      "uf": "TO",
-      "ano": "2024",
-      "diff_rel": 0.05953259285496028,
-      "diff_abs": 354050962.1700001
-    },
-    {
-      "uf": "TO",
-      "ano": "2020",
-      "diff_rel": 0.04422119440703778,
-      "diff_abs": 145346238.35999966
-    },
-    {
-      "uf": "MT",
-      "ano": "2019",
-      "diff_rel": 0.03949010894615159,
-      "diff_abs": 446817492.1100006
+      "diff_rel": -0.020094202089402956,
+      "diff_abs": -91700372.25
     }
   ]
 }
