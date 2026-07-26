@@ -338,8 +338,8 @@
                 tributária (art. 115 da LC 227/2026). A conta, em essência, é simples: quanto o ES
                 arrecadou de ICMS e ISS entre 2019 e 2025, atualizado para valores de 2025, dividido
                 pelo que todos os estados e municípios do país arrecadaram no mesmo período.
-                Esta página reproduz esse cálculo passo a passo — com premissas explícitas, fontes
-                primárias (SICONFI/STN, DCA Anexo I-C) e metodologia replicável — para o Estado e
+                Esta página reproduz esse cálculo passo a passo, com premissas explícitas, fontes
+                primárias (SICONFI/STN, DCA Anexo I-C) e metodologia replicável, para o Estado e
                 para os municípios capixabas.
             </p>
         </section>
@@ -352,11 +352,11 @@
                  coeficientes são exibidos lado a lado, nunca somados num único número. -->
             <div class="result-box" id="result-box" style="display:none">
                 <div>
-                    <div class="result-label">CPT_ES — Estado (art. 115, I)</div>
+                    <div class="result-label">CPT_ES: Estado (art. 115, I)</div>
                     <div class="result-value" id="coeff-main">—</div>
                 </div>
                 <div>
-                    <div class="result-label">CPT_ES — Municípios (art. 115, III)</div>
+                    <div class="result-label">CPT_ES: Municípios (art. 115, III)</div>
                     <div class="result-value" id="coeff-mun">—</div>
                 </div>
                 <div>
@@ -382,20 +382,20 @@
             </div>
 
             <!-- Main table -->
-            <span class="section-label">Tabela 1: Memória de cálculo — CPT_ES, Estado do Espírito Santo (LC 227/2026, art. 115)</span>
+            <span class="section-label">Tabela 1: Memória de cálculo do CPT_ES, Estado do Espírito Santo (LC 227/2026, art. 115)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
-                Como se chega, ano a ano, à receita de referência do <strong>Estado</strong> do ES —
+                Como se chega, ano a ano, à receita de referência do <strong>Estado</strong> do ES:
                 a base do coeficiente (a parcela dos municípios capixabas está nas Tabelas 2 a 4).
                 Em cada ano, parte-se do ICMS bruto do Estado, subtrai-se a cota-parte que cabe aos
-                municípios e soma-se a arrecadação do FECOP, o Fundo de Combate à Pobreza — que entra
+                municípios e soma-se a arrecadação do FECOP, o Fundo de Combate à Pobreza, que entra
                 inteira, sem dedução, por não se submeter à cota-parte municipal (art. 115, §1º, II
                 da LC 227/2026 ⁴). Formalmente: R<sub>ES,t</sub> = ICMS<sub>ES,t</sub> − Q<sub>t</sub> +
                 FECOP<sub>ES,t</sub>, em que Q<sub>t</sub> é o valor que o próprio Estado declara ter
                 repassado aos municípios (art. 158, IV, "a", CF), ou 25% do ICMS bruto quando essa
                 declaração não existe ⁷. Cada valor anual é então atualizado pela razão
-                A<sub>2025</sub>/A<sub>t</sub> — calculada sobre o total nacional de ICMS+ISS+FECOP,
-                a mesma para todos os entes — e a receita de referência final é a média simples dos
-                7 anos corrigidos.
+                A<sub>2025</sub>/A<sub>t</sub>, calculada sobre o total nacional de ICMS+ISS+FECOP e
+                igual para todos os entes; a receita de referência final é a média simples dos 7
+                anos corrigidos.
             </p>
             <div id="status-nominal" class="status-bar">
                 <span class="status-dot pending"></span>
@@ -434,7 +434,7 @@
                 = (ICMS_ES − cota-parte + FECOP_ES) / TotalBR_t; o <strong>índice anual municípios</strong>
                 = (ISS_ES + cota-parte) / TotalBR_t. Comparar essas fotos anuais ao CPT histórico (a
                 média das sete) mostra se o ES vem crescendo acima ou abaixo da média nacional ao
-                longo do período. Estado e municípios aparecem em colunas separadas — cada um tem
+                longo do período. Estado e municípios aparecem em colunas separadas: cada um tem
                 repasse próprio no regime do IBS, e somá-los não corresponde a nenhum coeficiente da
                 LC 227/2026. Fonte: DCA Anexo I-C para ICMS estadual e ISS municipal. ²
             </p>
@@ -482,15 +482,15 @@
                 <strong>parcela municípios</strong> (ISS + cota-parte × índice, mesma média e
                 denominador); a soma da coluna <strong>Total UF</strong> deve dar exatamente 100%
                 para todas as UFs somadas. A cota-parte usada é a que o próprio Estado declara ter
-                transferido, ano a ano; onde essa declaração não existe no DCA — caso de AC, SP e DF
-                em toda a série, e de outras UFs em anos isolados, sobretudo antes de 2022 — a
+                transferido, ano a ano; onde essa declaração não existe no DCA (caso de AC, SP e DF
+                em toda a série, e de outras UFs em anos isolados, sobretudo antes de 2022), a
                 estimativa usa 25% do ICMS bruto daquele ano/UF ⁷ (a planilha de auditoria mostra, UF
                 a UF, em quantos dos 7 anos a cota-parte é declarada). O FECOP, Fundo Estadual de
                 Combate à Pobreza (art. 82 do ADCT), entra integralmente na parcela estado, sem
                 dedução, por não se submeter à cota-parte municipal (art. 82, §1º, ADCT).
-                <strong>Exceção — Distrito Federal:</strong> por não ter municípios, o DF não se
-                submete à dedução de cota-parte do art. 158, IV, CF, e o cálculo nem tenta apurá-la
-                — diferente dos demais entes, para os quais ela é sempre declarada ou presumida.
+                <strong>Exceção: Distrito Federal.</strong> Por não ter municípios, o DF não se
+                submete à dedução de cota-parte do art. 158, IV, CF, e o cálculo nem tenta apurá-la,
+                diferente dos demais entes, para os quais ela é sempre declarada ou presumida.
                 Por isso sua coluna "Estado" traz o coeficiente unificado (ICMS + FECOP + ISS
                 integrais) e a coluna "Municípios" aparece como "n/a" (não aplicável), sem prejuízo
                 do Total, que permanece correto.
@@ -558,10 +558,10 @@
             <span class="section-label" style="margin-top:2rem">Tabela 4: Coeficiente de Participação na Transição por município capixaba (DCA 2019–2025)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
                 O coeficiente individual de cada um dos 78 municípios capixabas (art. 115, III).
-                A base é o ISS bruto do município somado à sua fatia da cota-parte do ICMS — o valor
+                A base é o ISS bruto do município somado à sua fatia da cota-parte do ICMS: o valor
                 que o Estado declara ter transferido como transferência constitucional ⁷, ou 25% do
                 ICMS_ES bruto quando essa declaração não existe, dividido entre os municípios na
-                mesma proporção do rateio real do DCA ⁶ — corrigida pelo Índice_t e com a média de
+                mesma proporção do rateio real do DCA ⁶, corrigida pelo Índice_t e com a média de
                 2019–2025. Somados, os 78 coeficientes desta tabela fecham exatamente com a parcela
                 municipal do CPT_ES na Tabela 3.
             </p>
@@ -583,7 +583,7 @@
             </div>
 
             <!-- Tabela 4.1: histórico vs. 2025 por município ES -->
-            <span class="section-label" style="margin-top:2rem">Tabela 4.1 — Municípios capixabas: CPT histórico vs. índice pontual 2025</span>
+            <span class="section-label" style="margin-top:2rem">Tabela 4.1: Municípios capixabas, CPT histórico vs. índice pontual 2025</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
                 CPT histórico = média 2019–2025 deflacionada (mesma base da Tabela 4); CPT 2025 =
                 índice pontual do ano, sem deflação. Diferença positiva (verde): o município ganha
@@ -617,9 +617,9 @@
                 <ul>
                     <li><strong>Período de apuração:</strong> a LC 227/2026 (arts. 114 e 115) prevê os exercícios de 2019 a 2026 (8 observações), com atualização para a base de 2026. Como os dados de 2026 ainda não estão disponíveis no SICONFI, esta estimativa usa 2019–2025 (7 observações) e adota 2025 como base provisória de atualização. Os coeficientes oficiais, apurados com o exercício de 2026, poderão diferir dos apresentados aqui.</li>
                     <li><strong>Fonte dos dados:</strong> SICONFI/STN. Para o ISS municipal e ICMS estadual: <em>DCA: Demonstrativo das Contas Anuais, Anexo I-C</em> para 2019–2025 (cobertura ISS: ~5.200 municípios/ano nacionalmente; 78/78 municípios do ES; ICMS: 26 estados + DF). Códigos PCASP: ISS <code>RO1.1.1.4.51.1.0</code> (2022–2025) e <code>RO1.1.1.8.02.3.0</code> (2019–2021); ICMS <code>RO1.1.1.4.50.1.0</code> (2022–2025) e <code>RO1.1.1.8.02.1.0</code> (2019–2021). Coluna "Receitas Brutas Realizadas", bruto incluindo Simples Nacional e dívida ativa, alinhado ao art. 115, §1º da LC 227/2026.</li>
-                    <li><strong>Passo 1: Índice de atualização:</strong> para cada ano t (2019–2025), somar o ICMS bruto dos 26 estados e do DF, o FECOP de todas as UFs (art. 82 do ADCT — ver Passo 2) e o ISS bruto de todos os municípios do Brasil e do DF. Esse agregado é o Total_BR_t. O índice de atualização é Índice_t = Total_BR_2025 / Total_BR_t. O índice de 2025 é 1,0000 por definição. Esse índice é único e idêntico para todos os entes: estados e municípios usam o mesmo fator de correção em cada ano.</li>
-                    <li><strong>Passo 2: Receita Média de Referência do estado ES:</strong> para cada ano t, tomar o ICMS bruto do ES e deduzir a cota-parte municipal (art. 115, I, "a", e art. 158, IV, "a", CF) — usando o valor que o próprio Estado declara ter transferido aos municípios ("Deduções - Transferências Constitucionais", DCA Anexo I-C; na ausência dessa declaração, 25% do ICMS bruto do mesmo ano/UF ⁷) —, somar o FECOP-ES do mesmo ano (Fundo Estadual de Combate à Pobreza, adicional de até 2 p.p. no ICMS — art. 82 do ADCT, cuja inclusão na receita do Estado é exigida pelo art. 115, §1º, II da LC 227/2026) e multiplicar o total pelo Índice_t. O FECOP entra sem dedução, porque o art. 82, §1º, do ADCT o exclui da cota-parte municipal do art. 158, IV, CF. Isso produz o valor corrigido na base de 2025. A Receita Média de Referência do estado ES é a média aritmética simples dos 7 valores corrigidos.</li>
-                    <li><strong>Passo 3: Receita Média de Referência dos municípios ES:</strong> para cada município capixaba, tomar o ISS bruto de cada ano, acrescentar a mesma cota-parte declarada (ou teórica) do Passo 2 (art. 115, III, "b") — que não inclui o FECOP, pelo mesmo motivo do Passo 2 —, e multiplicar pelo Índice_t. A Receita Média de Referência do conjunto dos municípios ES é a média aritmética simples dos 7 valores corrigidos.</li>
+                    <li><strong>Passo 1: Índice de atualização:</strong> para cada ano t (2019–2025), somar o ICMS bruto dos 26 estados e do DF, o FECOP de todas as UFs (art. 82 do ADCT; ver Passo 2) e o ISS bruto de todos os municípios do Brasil e do DF. Esse agregado é o Total_BR_t. O índice de atualização é Índice_t = Total_BR_2025 / Total_BR_t. O índice de 2025 é 1,0000 por definição. Esse índice é único e idêntico para todos os entes: estados e municípios usam o mesmo fator de correção em cada ano.</li>
+                    <li><strong>Passo 2: Receita Média de Referência do estado ES:</strong> para cada ano t, tomar o ICMS bruto do ES e deduzir a cota-parte municipal (art. 115, I, "a", e art. 158, IV, "a", CF), usando o valor que o próprio Estado declara ter transferido aos municípios ("Deduções - Transferências Constitucionais", DCA Anexo I-C; na ausência dessa declaração, 25% do ICMS bruto do mesmo ano/UF ⁷); somar o FECOP-ES do mesmo ano (Fundo Estadual de Combate à Pobreza, adicional de até 2 p.p. no ICMS, art. 82 do ADCT, cuja inclusão na receita do Estado é exigida pelo art. 115, §1º, II da LC 227/2026); e multiplicar o total pelo Índice_t. O FECOP entra sem dedução, porque o art. 82, §1º, do ADCT o exclui da cota-parte municipal do art. 158, IV, CF. Isso produz o valor corrigido na base de 2025. A Receita Média de Referência do estado ES é a média aritmética simples dos 7 valores corrigidos.</li>
+                    <li><strong>Passo 3: Receita Média de Referência dos municípios ES:</strong> para cada município capixaba, tomar o ISS bruto de cada ano, acrescentar a mesma cota-parte declarada (ou teórica) do Passo 2 (art. 115, III, "b"), que não inclui o FECOP pelo mesmo motivo do Passo 2, e multiplicar pelo Índice_t. A Receita Média de Referência do conjunto dos municípios ES é a média aritmética simples dos 7 valores corrigidos.</li>
                     <li><strong>Passo 4: Denominador:</strong> somar as Receitas Médias de Referência de todos os 26 estados, do DF e de todos os municípios do Brasil. Esse total é o denominador comum a todos os coeficientes. Algebricamente equivale a Total_BR_2025 (ver nota abaixo).</li>
                     <li><strong>Passo 5: CPT_ES estado:</strong> dividir a Receita Média de Referência do estado ES (Passo 2) pelo denominador do Passo 4. Esse é o coeficiente que determina o repasse ao governo estadual no regime IBS.</li>
                     <li><strong>Passo 5b: CPT_ES municípios:</strong> dividir a Receita Média de Referência dos municípios ES (Passo 3) pelo denominador do Passo 4. Esse coeficiente distribui o repasse entre o conjunto dos municípios capixabas. Como verificação, a soma dos coeficientes de todos os entes (estados + municípios de todo o Brasil) deve ser exatamente 100%.</li>
@@ -631,14 +631,14 @@
 
             <div class="footnote">
                 <p>² SC 2025: o 6º bimestre não estava disponível no SICONFI na data de coleta; foi utilizado o 5º bimestre como aproximação. O valor foi incorporado ao Total_BR_2025 para evitar distorção no índice de atualização desse ano.</p>
-                <p>³ <strong>Referência de destino (corrigida):</strong> o CPT_ES calculado nesta página reflete o critério histórico de origem — onde o imposto foi arrecadado. Ao final da transição, porém, o IBS passa a ser partilhado pelo critério de destino — onde o consumo ocorre —, que tende a ser menos favorável ao ES. Recalculando a partir da própria Tabela 1 de Gobetti e Monteiro (2023) — ver Tabela 5 do estudo <a href="/estudos/icms-iss-participacao-vs-populacao.html">ICMS+ISS por UF vs. população</a> —, a participação combinada do ES (estado + municípios) no critério de destino, em cenário estático de IBS pleno, fica em torno de <strong>1,6%</strong>, partindo de uma participação atual no critério de origem de aproximadamente 2,3%. (Correção: uma versão anterior desta nota citava 2,4% como valor de destino; esse número era, na verdade, a participação atual do ES no critério de origem.) A diferença entre o CPT_ES histórico e esse ~1,6% de destino é o núcleo do impacto fiscal estrutural que a transição representa para o ES ao longo dos 50 anos.</p>
-                <p>⁴ <strong>FECOP (Fundo Estadual de Combate à Pobreza, art. 82 do ADCT):</strong> este cálculo soma à receita do Estado a arrecadação efetivamente realizada com o adicional de ICMS destinado ao FECOP — a lei faculta às UFs instituir um adicional de até 2 p.p., e usamos o valor de fato arrecadado (registrado pelo SICONFI/DCA), não uma estimativa sobre a alíquota máxima. A base legal é o art. 115, §1º, II, da LC 227/2026 (não o art. 129, §1º, I, como constava em versão anterior desta nota — este último trata de um mecanismo distinto e posterior, de destinação de parte do IBS já distribuído ao financiamento do fundo a partir de 2033).</p>
-                <p style="margin-top:-0.2rem">O SICONFI/DCA registra o FECOP em conta própria (código PCASP <code>RO1.1.1.4.50.2.0</code>/<code>RO1.1.1.8.02.2.0</code>), separada do ICMS "comum" (<code>RO1.1.1.4.50.1.0</code>/<code>RO1.1.1.8.02.1.0</code>). Uma checagem cruzada com a cota-parte declarada pelos próprios Estados (nota ⁷) confirma que essa separação é real: em RJ, AL e SE, onde o FECOP chega a 4%–12% do ICMS, a cota-parte declarada bate com 25% do ICMS "comum" — e erraria por 8 a 14 pontos percentuais se o FECOP já estivesse embutido nele. Por força do art. 82, §1º, do ADCT, o FECOP não se submete à cota-parte municipal do art. 158, IV, CF, e por isso entra inteiro na parcela do Estado, sem o desconto de 25%.</p>
-                <p style="margin-top:-0.2rem"><strong>Ausência de FECOP:</strong> só é tratada como zero quando confirmada — isto é, quando a coleta obteve resposta válida da API do SICONFI (com o ICMS do mesmo ano presente) e a conta do FECOP simplesmente não consta. Se a coleta falhasse, isso ficaria registrado à parte, e não viraria zero silenciosamente (ver planilha de auditoria, coluna "FECOP: cobertura"). Nesta versão, todos os casos hoje ausentes — AC, AP, PA, RR e SC em toda a série 2019–2025; AM até 2021 — foram reconferidos manualmente, direto na API do SICONFI: em todos, a resposta veio completa e a ausência do FECOP se confirmou real.</p>
-                <p style="margin-top:-0.2rem"><strong>Ainda não incluído nesta versão:</strong> a contribuição a fundos estaduais vinculados a diferimento de ICMS nas exportações, como o FUNDAP-ES (art. 115, I, "b"). Seu cálculo usa um período de referência distinto (2021–2023, art. 115, §3º), e sua fonte de dados não foi localizada nas contas do DCA Anexo I-C consultadas — pesquisa realizada nas 379 contas do ES para 2024, sem retorno.</p>
-                <p>⁵ <strong>Fonte do ISS municipal (2019–2025):</strong> DCA, Demonstrativo das Contas Anuais, Anexo I-C (SICONFI/STN). Cobertura nacional de ~5.200 municípios por ano (~93% do total); no ES, 78/78 municípios em todos os anos. O DCA reporta a arrecadação bruta total ("Receitas Brutas Realizadas"), que o art. 115, §1º da LC 227/2026 exige que inclua Simples Nacional (LC 123/2006), dívida ativa, juros e multas. Nas contas do DCA Anexo I-C consultadas não há conta específica e separada para "Simples Nacional" ou "Dívida Ativa" vinculada ao ICMS/ISS, o que sugere que esses valores já compõem a própria conta bruta do imposto — não há outro lugar no demonstrativo onde poderiam estar. Essa leitura, porém, decorre da ausência de conta alternativa, não de confirmação direta, e segue como item a revalidar. Nota técnica: uma revisão do PCASP em 2022 alterou o código do ISS de <code>RO1.1.1.8.02.3.0</code> (2019–2021) para <code>RO1.1.1.4.51.1.0</code> (2022–2025).</p>
-                <p>⁶ <strong>Como a cota-parte é distribuída entre os municípios:</strong> o total atribuído ao conjunto dos municípios capixabas (nota ⁷) é rateado entre eles na proporção do que cada um individualmente declarou ter recebido de cota-parte ICMS no DCA. A partir de 2022, a soma dessas declarações individuais passou a ficar sistematicamente abaixo do valor que o Estado declara ter transferido — no ES, por volta de 89% dele —, um padrão que aparece, em graus variados, em vários outros estados. Tratamos isso como um problema de escrituração municipal, provavelmente ligado à mesma revisão do código de conta do PCASP em 2022 (nota ⁷), e não como retenção real: o valor declarado pelo próprio Estado permanece em linha com os 25% constitucionais nesses mesmos anos. A divergência afeta apenas o rateio relativo entre municípios — o total do conjunto fica preservado, e a soma dos coeficientes municipais (Tabela 4) continua igual à parcela municipal do CPT_ES (Tabela 3).</p>
-                <p>⁷ <strong>Cota-parte municipal: o valor declarado pelo Estado, não uma presunção de 25%:</strong> em vez de presumir que a cota-parte do art. 158, IV, "a", CF equivale a exatamente 25% do ICMS bruto, usamos o valor que o próprio Estado declara ter deduzido do ICMS a título de "Deduções - Transferências Constitucionais" (DCA Anexo I-C, mesma conta do ICMS). Para o ES, esse valor declarado bateu entre 99,9% e 100,0% do teórico em todos os 7 anos da série (2019–2025) — inclusive nos anos em que a soma das declarações individuais dos municípios caiu para ~89% (nota ⁶), o que confirma que a divergência está do lado do registro municipal, não de uma retenção do Estado além do previsto constitucionalmente. Quando um ente não preenche essa conta no DCA — o que acontece, por exemplo, com SP, AC e DF em toda a série —, a estimativa cai de volta à presunção de 25% do ICMS bruto daquele ano/UF.</p>
+                <p>³ <strong>Referência de destino (corrigida):</strong> o CPT_ES calculado nesta página reflete o critério histórico de origem, isto é, onde o imposto foi arrecadado. Ao final da transição, porém, o IBS passa a ser partilhado pelo critério de destino (onde o consumo ocorre), que tende a ser menos favorável ao ES. Recalculando a partir da própria Tabela 1 de Gobetti e Monteiro (2023) (ver Tabela 5 do estudo <a href="/estudos/icms-iss-participacao-vs-populacao.html">ICMS+ISS por UF vs. população</a>), a participação combinada do ES (estado + municípios) no critério de destino, em cenário estático de IBS pleno, fica em torno de <strong>1,6%</strong>, partindo de uma participação atual no critério de origem de aproximadamente 2,3%. (Correção: uma versão anterior desta nota citava 2,4% como valor de destino; esse número era, na verdade, a participação atual do ES no critério de origem.) A diferença entre o CPT_ES histórico e esse ~1,6% de destino é o núcleo do impacto fiscal estrutural que a transição representa para o ES ao longo dos 50 anos.</p>
+                <p>⁴ <strong>FECOP (Fundo Estadual de Combate à Pobreza, art. 82 do ADCT):</strong> este cálculo soma à receita do Estado a arrecadação efetivamente realizada com o adicional de ICMS destinado ao FECOP. A lei faculta às UFs instituir um adicional de até 2 p.p., e usamos o valor de fato arrecadado (registrado pelo SICONFI/DCA), não uma estimativa sobre a alíquota máxima. A base legal é o art. 115, §1º, II, da LC 227/2026 (não o art. 129, §1º, I, como constava em versão anterior desta nota; este último trata de um mecanismo distinto e posterior, de destinação de parte do IBS já distribuído ao financiamento do fundo a partir de 2033).</p>
+                <p style="margin-top:-0.2rem">O SICONFI/DCA registra o FECOP em conta própria (código PCASP <code>RO1.1.1.4.50.2.0</code>/<code>RO1.1.1.8.02.2.0</code>), separada do ICMS "comum" (<code>RO1.1.1.4.50.1.0</code>/<code>RO1.1.1.8.02.1.0</code>). Uma checagem cruzada com a cota-parte declarada pelos próprios Estados (nota ⁷) confirma que essa separação é real: em RJ, AL e SE, onde o FECOP chega a 4%–12% do ICMS, a cota-parte declarada bate com 25% do ICMS "comum", e erraria por 8 a 14 pontos percentuais se o FECOP já estivesse embutido nele. Por força do art. 82, §1º, do ADCT, o FECOP não se submete à cota-parte municipal do art. 158, IV, CF, e por isso entra inteiro na parcela do Estado, sem o desconto de 25%.</p>
+                <p style="margin-top:-0.2rem"><strong>Ausência de FECOP:</strong> só é tratada como zero quando confirmada: quando a coleta obteve resposta válida da API do SICONFI (com o ICMS do mesmo ano presente) e a conta do FECOP simplesmente não consta. Se a coleta falhasse, isso ficaria registrado à parte, e não viraria zero silenciosamente (ver planilha de auditoria, coluna "FECOP: cobertura"). Nesta versão, todos os casos hoje ausentes (AC, AP, PA, RR e SC em toda a série 2019–2025; AM até 2021) foram reconferidos manualmente, direto na API do SICONFI: em todos, a resposta veio completa e a ausência do FECOP se confirmou real.</p>
+                <p style="margin-top:-0.2rem"><strong>Ainda não incluído nesta versão:</strong> a contribuição a fundos estaduais vinculados a diferimento de ICMS nas exportações, como o FUNDAP-ES (art. 115, I, "b"). Seu cálculo usa um período de referência distinto (2021–2023, art. 115, §3º), e sua fonte de dados não foi localizada nas contas do DCA Anexo I-C consultadas (pesquisa realizada nas 379 contas do ES para 2024, sem retorno).</p>
+                <p>⁵ <strong>Fonte do ISS municipal (2019–2025):</strong> DCA, Demonstrativo das Contas Anuais, Anexo I-C (SICONFI/STN). Cobertura nacional de ~5.200 municípios por ano (~93% do total); no ES, 78/78 municípios em todos os anos. O DCA reporta a arrecadação bruta total ("Receitas Brutas Realizadas"), que o art. 115, §1º da LC 227/2026 exige que inclua Simples Nacional (LC 123/2006), dívida ativa, juros e multas. Nas contas do DCA Anexo I-C consultadas não há conta específica e separada para "Simples Nacional" ou "Dívida Ativa" vinculada ao ICMS/ISS, o que sugere que esses valores já compõem a própria conta bruta do imposto, já que não há outro lugar no demonstrativo onde poderiam estar. Essa leitura, porém, decorre da ausência de conta alternativa, não de confirmação direta, e segue como item a revalidar. Nota técnica: uma revisão do PCASP em 2022 alterou o código do ISS de <code>RO1.1.1.8.02.3.0</code> (2019–2021) para <code>RO1.1.1.4.51.1.0</code> (2022–2025).</p>
+                <p>⁶ <strong>Como a cota-parte é distribuída entre os municípios:</strong> o total atribuído ao conjunto dos municípios capixabas (nota ⁷) é rateado entre eles na proporção do que cada um individualmente declarou ter recebido de cota-parte ICMS no DCA. A partir de 2022, a soma dessas declarações individuais passou a ficar sistematicamente abaixo do valor que o Estado declara ter transferido (no ES, por volta de 89% dele), um padrão que aparece, em graus variados, em vários outros estados. Tratamos isso como um problema de escrituração municipal, provavelmente ligado à mesma revisão do código de conta do PCASP em 2022 (nota ⁷), e não como retenção real: o valor declarado pelo próprio Estado permanece em linha com os 25% constitucionais nesses mesmos anos. A divergência afeta apenas o rateio relativo entre municípios: o total do conjunto fica preservado, e a soma dos coeficientes municipais (Tabela 4) continua igual à parcela municipal do CPT_ES (Tabela 3).</p>
+                <p>⁷ <strong>Cota-parte municipal: o valor declarado pelo Estado, não uma presunção de 25%:</strong> em vez de presumir que a cota-parte do art. 158, IV, "a", CF equivale a exatamente 25% do ICMS bruto, usamos o valor que o próprio Estado declara ter deduzido do ICMS a título de "Deduções - Transferências Constitucionais" (DCA Anexo I-C, mesma conta do ICMS). Para o ES, esse valor declarado bateu entre 99,9% e 100,0% do teórico em todos os 7 anos da série (2019–2025), inclusive nos anos em que a soma das declarações individuais dos municípios caiu para ~89% (nota ⁶), o que confirma que a divergência está do lado do registro municipal, não de uma retenção do Estado além do previsto constitucionalmente. Quando um ente não preenche essa conta no DCA (o que acontece, por exemplo, com SP, AC e DF em toda a série), a estimativa cai de volta à presunção de 25% do ICMS bruto daquele ano/UF.</p>
                 <p>Fonte primária: <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">SICONFI: API Data Lake STN</a>. Coleta via GitHub Actions (27 jobs paralelos por estado). Scripts disponíveis no repositório.</p>
             </div>
         </section>
@@ -740,7 +740,7 @@
                 if (val != null && val > 0) nPositivo++;
                 if (status === 'fetch_failed') nFalha++;
             }
-            if (nFalha > 0) return `ATENÇÃO: falha de coleta em ${nFalha}/7 anos — não tratar ausência como zero`;
+            if (nFalha > 0) return `ATENÇÃO: falha de coleta em ${nFalha}/7 anos; não tratar ausência como zero`;
             return `${nPositivo}/7 anos com arrecadação; demais anos, ausência confirmada`;
         }
 
@@ -1404,7 +1404,7 @@
         const wb = XLSX.utils.book_new();
 
         const readme = [
-            ['CPT_ES — Coeficiente de Participação de Transição do Espírito Santo (LC 227/2026, arts. 114, 115 e 129)'],
+            ['CPT_ES: Coeficiente de Participação de Transição do Espírito Santo (LC 227/2026, arts. 114, 115 e 129)'],
             ['Fonte: SICONFI/STN, DCA Anexo I-C (ICMS estadual e ISS municipal, 2019–2025).'],
             [],
             ['A LC 227/2026 prevê os exercícios de 2019 a 2026 (8 observações), atualizados para a base de 2026.'],
@@ -1413,7 +1413,7 @@
             [],
             ['Estado e municípios são entes federativos distintos, com repasses distintos no regime do IBS (art. 115, I e III).'],
             ['Por isso este arquivo nunca soma o coeficiente do estado com o dos municípios num único número:'],
-            ['o que importa para cada ente é o seu próprio índice — ver colunas separadas na aba "Tabela 1".'],
+            ['o que importa para cada ente é o seu próprio índice; ver colunas separadas na aba "Tabela 1".'],
             [],
             ['Passo 1: Índice_t = Total_BR_2025 / Total_BR_t, onde Total_BR_t = ICMS bruto de todas as UFs + ISS bruto de todos os municípios do Brasil e do DF + FECOP de todas as UFs, no ano t.'],
             ['Passo 2: Receita Média de Referência do estado ES = média dos 7 anos de ((ICMS_ES bruto − cota-parte + FECOP-ES) × Índice_t).'],
@@ -1421,11 +1421,11 @@
             ['Passo 4: Denominador = Total_BR_2025 (equivale à soma das Receitas Médias de Referência de todos os entes do país).'],
             ['Passo 5: CPT_ES estado = Receita Média Estado ÷ Denominador. CPT_ES municípios = Receita Média Municípios ÷ Denominador.'],
             ['Distrito Federal: por acumular as competências estadual e municipal, o DF não tem dedução de cota-parte nem parcela'],
-            ['municipal própria — sua receita de referência é o ICMS + FECOP + ISS integrais, apurados como um único ente (ver Tabela 3).'],
+            ['municipal própria; sua receita de referência é o ICMS + FECOP + ISS integrais, apurados como um único ente (ver Tabela 3).'],
             [],
             ['Cota-parte municipal (art. 158, IV, "a", CF): em vez de presumir 25% do ICMS bruto, usamos o valor que o próprio'],
             ['Estado declara ter deduzido do ICMS ("Deduções - Transferências Constitucionais", DCA Anexo I-C). Para o ES, esse'],
-            ['valor bateu entre 99,9% e 100,0% da presunção teórica em todos os 7 anos da série — inclusive nos anos em que a soma'],
+            ['valor bateu entre 99,9% e 100,0% da presunção teórica em todos os 7 anos da série, inclusive nos anos em que a soma'],
             ['das declarações individuais dos municípios caiu para ~89% dele, o que indica um problema de escrituração municipal'],
             ['(não uma retenção real do Estado). Quando o Estado não declara essa dedução, a estimativa usa 25% do ICMS bruto.'],
             [],
@@ -1439,7 +1439,7 @@
             ['API do SICONFI e a conta simplesmente não consta); se a coleta falhar, isso é registrado à parte e não vira zero'],
             ['silenciosamente. A coluna "FECOP: cobertura" da Tabela 3 mostra essa distinção por UF. Nesta versão, todos os'],
             ['anos/UFs hoje ausentes (AC, AP, PA, RR e SC em toda a série; AM até 2021) foram conferidos manualmente,'],
-            ['reconsultando a API do SICONFI diretamente — em todos os casos a resposta veio completa, com o ICMS'],
+            ['reconsultando a API do SICONFI diretamente; em todos os casos a resposta veio completa, com o ICMS'],
             ['presente e a conta do FECOP realmente ausente, confirmando ausência real e não falha de coleta.'],
             [],
             ['Abas:'],
@@ -1480,8 +1480,8 @@
             ['Soma 2019–2025 (valores corrigidos p/ base 2025)', '', '', '', '', '', '', '', '', '', somaEstado, somaMunis],
             ['÷ ' + d.anos.length + ' = Receita Média de Referência', '', '', '', '', '', '', '', '', '', d.totalA, d.totalAMun],
             ['Denominador (Total_BR_2025)', '', '', '', '', '', '', '', '', '', d.totalB, d.totalB],
-            ['CPT_ES — Estado (art. 115, I), %', '', '', '', '', '', '', '', '', '', d.coeff != null ? d.coeff * 100 : null, ''],
-            ['CPT_ES — Municípios (art. 115, III), %', '', '', '', '', '', '', '', '', '', '', d.coeffMun != null ? d.coeffMun * 100 : null],
+            ['CPT_ES: Estado (art. 115, I), %', '', '', '', '', '', '', '', '', '', d.coeff != null ? d.coeff * 100 : null, ''],
+            ['CPT_ES: Municípios (art. 115, III), %', '', '', '', '', '', '', '', '', '', '', d.coeffMun != null ? d.coeffMun * 100 : null],
         ];
         const wsT1 = XLSX.utils.aoa_to_sheet([t1header, ...t1rows, ...t1footer]);
         wsT1['!cols'] = t1header.map(() => ({ wch: 22 }));
@@ -1504,9 +1504,9 @@
         XLSX.utils.book_append_sheet(wb, wsT2, 'Tabela 2 - Trajetória anual');
 
         // Tabela 3: CPT por UF (estado e municípios sempre em colunas separadas)
-        const t3header = ['UF', 'CPT histórico — Estado (%)', 'CPT histórico — Municípios (%)', 'CPT histórico — Total UF (%)',
-            'Índice 2025 — Estado (%)', 'Índice 2025 — Municípios (%)', 'Índice 2025 — Total UF (%)',
-            'Variação — Estado (p.p.)', 'Variação — Municípios (p.p.)', 'Variação — Total UF (p.p.)',
+        const t3header = ['UF', 'CPT histórico: Estado (%)', 'CPT histórico: Municípios (%)', 'CPT histórico: Total UF (%)',
+            'Índice 2025: Estado (%)', 'Índice 2025: Municípios (%)', 'Índice 2025: Total UF (%)',
+            'Variação: Estado (p.p.)', 'Variação: Municípios (p.p.)', 'Variação: Total UF (p.p.)',
             'Cota-parte declarada (anos de 7)', 'FECOP: cobertura'];
         const t3rows = (d.ufRows || []).map(r => [r.uf, r.cptEstado, r.cptMunis, r.cptTotal,
             r.idx2025Est, r.idx2025Mun, r.idx2025Tot, r.varEstado, r.varMunis, r.varTotal,

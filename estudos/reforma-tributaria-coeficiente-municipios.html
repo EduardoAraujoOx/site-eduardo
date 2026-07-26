@@ -21,6 +21,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <link rel="stylesheet" href="/css/notas.css?v=4">
     <link rel="stylesheet" href="/css/search.css">
@@ -153,8 +154,8 @@
         <h1>Coeficiente de Participação de Transição por município: as 27 UFs do Brasil</h1>
         <p class="lead">
             O <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a> calculou o Coeficiente de
-            Participação de Transição (CPT, art. 115 da LC 227/2026) — a fatia do IBS que cada ente vai
-            receber durante os 50 anos de transição da reforma tributária — para os 26 estados, o Distrito
+            Participação de Transição (CPT, art. 115 da LC 227/2026), a fatia do IBS que cada ente vai
+            receber durante os 50 anos de transição da reforma tributária, para os 26 estados, o Distrito
             Federal e os municípios do Espírito Santo. Esta página estende esse mesmo cálculo a
             <strong>qualquer UF</strong>: escolha um estado abaixo e veja o CPT individual de cada um dos
             seus municípios, a partir do mesmo Demonstrativo de Contas Anuais (DCA/SICONFI) usado no Estudo 02.
@@ -162,8 +163,8 @@
         <p class="study-meta">
             Uma diferença em relação ao Estudo 02: nem todo município entrega o DCA em todos os anos, e
             como o CPT municipal é uma fatia de um total fixo, um município ausente altera a fatia
-            calculada para os demais. Por isso esta página trata dados faltantes de forma explícita — e
-            sinalizada na tabela — em vez de ignorá-los silenciosamente (ver metodologia abaixo).
+            calculada para os demais. Por isso esta página trata dados faltantes de forma explícita, e
+            sinalizada na tabela, em vez de ignorá-los silenciosamente (ver metodologia abaixo).
         </p>
     </div>
 
@@ -179,6 +180,10 @@
                 <option value="" disabled selected>Selecione uma UF…</option>
             </select>
             <span class="uf-picker-hint" id="uf-hint">Aguardando carregamento dos dados…</span>
+            <button class="btn-share" id="btn-export-all" disabled title="Baixar planilha (.xlsx) com o CPT de todos os municípios de todas as UFs">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Baixar planilha: todos os municípios (27 UFs)
+            </button>
         </div>
 
         <div id="empty-state" class="empty-state">
@@ -210,11 +215,12 @@
 
             <span class="section-label">Coeficiente de Participação de Transição por município (DCA 2019–2025)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
-                A base de cada município é o seu ISS bruto somado à sua fatia da cota-parte do ICMS —
-                25% do ICMS bruto do estado, dividido entre os municípios na proporção do rateio real
-                do DCA — corrigida pelo mesmo índice de atualização do Estudo 02, com a média
-                aritmética de 2019–2025. Municípios marcados com <strong>†</strong> tiveram ao menos um
-                ano estimado por ausência de dado (ver a coluna "Anos c/ dado" e a metodologia abaixo).
+                A base de cada município é o seu ISS bruto somado à sua fatia da cota-parte do ICMS
+                (25% do ICMS bruto do estado, dividido entre os municípios na proporção do rateio real
+                do DCA), corrigida pelo mesmo índice de atualização do Estudo 02, com a média
+                aritmética de 2019–2025. Municípios marcados com <strong>†</strong> não têm dado do DCA
+                em todos os 7 anos; os anos faltantes contam como zero na média, sem estimativa (ver a
+                coluna "Anos c/ dado" e a metodologia abaixo).
             </p>
 
             <div class="table-toolbar">
@@ -274,35 +280,44 @@
 
                 <p class="meto-section-title">2. Por que um município ausente distorce os demais</p>
                 <p class="meto-note">
-                    O denominador do rateio — a soma da <code>cota_parte_icms</code> declarada por todos os
-                    municípios da UF naquele ano — é calculado apenas com quem entregou o DCA naquele ano.
+                    O denominador do rateio (a soma da <code>cota_parte_icms</code> declarada por todos os
+                    municípios da UF naquele ano) é calculado apenas com quem entregou o DCA naquele ano.
                     Como a cota-parte teórica (<code>ICMS_UF × 0,25</code>) é um total fixo, a ausência de
                     um município reduz artificialmente esse denominador, e infla, na mesma proporção, a
-                    fatia calculada para os municípios que reportaram. O mesmo vale para o ISS: se um
-                    município não reportou naquele ano, seu numerador ficaria zerado se nada fosse feito.
+                    fatia calculada para os municípios que reportaram naquele ano. O item 4 explica até que
+                    ponto essa distorção é tratada.
                 </p>
 
-                <p class="meto-section-title">3. Como tratamos isso: reposição pelo ano disponível mais próximo</p>
+                <p class="meto-section-title">3. Como tratamos a ausência: zero na média, sem estimativa</p>
                 <p class="meto-note">
-                    Para cada município e cada ano sem dado, esta página usa o valor (ISS e cota-parte) do
-                    ano disponível mais próximo daquele mesmo município — anterior ou posterior, o que
-                    estiver a menor distância — tanto para recompor o numerador do próprio município quanto
-                    o denominador do rateio daquele ano. Isso evita zerar o município ausente sem inflar
-                    artificialmente os demais. A linha correspondente é sinalizada com <strong>†</strong>,
-                    e a coluna "Anos c/ dado" mostra quantos dos 7 anos são declaração real (não estimada)
-                    daquele município. Municípios que nunca entregaram o DCA em nenhum dos 7 anos não
-                    aparecem na tabela: não há, nesse caso, nenhum ano-base do qual estimar.
+                    Para cada município e cada ano sem dado no DCA, esse ano simplesmente não entra na
+                    soma daquele município, que continua sendo dividida sempre por 7 (mesmo critério do
+                    Estudo 02 e da Nota Técnica). Isso deixa o CPT histórico de um município com poucos
+                    anos de dado mais baixo, refletindo a cobertura real da série, em vez de estimar os
+                    anos ausentes a partir do ano disponível mais próximo. A linha correspondente é
+                    sinalizada com <strong>†</strong>, e a coluna "Anos c/ dado" mostra quantos dos 7 anos
+                    têm declaração real. Quando o ano mais recente (2025) falta, a coluna "CPT 2025" fica
+                    em branco para aquele município, em vez de trazer um valor extrapolado. Municípios que
+                    nunca entregaram o DCA em nenhum dos 7 anos não aparecem na tabela.
+                </p>
+                <p class="meto-note" style="margin-top:0.5rem">
+                    <strong>Correção:</strong> uma versão anterior desta página repunha o ano ausente pelo
+                    valor do ano disponível mais próximo. Para municípios que pararam de reportar há vários
+                    anos, isso chegou a dobrar o coeficiente calculado (ex.: Cariacica/ES saía em 0,041%,
+                    ante 0,018% na Nota Técnica nº 02/2026 e no Estudo 02): o valor do último ano
+                    disponível, já mais alto, era estendido por anos seguidos sem correspondência real. O
+                    critério atual, sem reposição, corrige essa distorção.
                 </p>
 
-                <p class="meto-section-title">4. O que a reposição não resolve</p>
+                <p class="meto-section-title">4. Uma distorção menor que permanece</p>
                 <p class="meto-note">
-                    A reposição reduz a distorção, mas não a elimina — um valor "estimado" pelo ano mais
-                    próximo continua sendo uma aproximação, não a declaração real daquele ano. Em UFs ou
-                    anos com muitos municípios ausentes (tipicamente o ano mais recente, por atraso na
-                    entrega), a tabela abaixo mostra essa cobertura de forma explícita, para que o leitor
-                    avalie o grau de confiança do coeficiente. Vale notar: o próprio Estudo 02 registrava
+                    O denominador do rateio de cada ano (item 2) segue calculado apenas com quem reportou
+                    naquele ano específico: se um município não reportou em determinado ano, o total
+                    teórico daquele ano é dividido por uma base menor, o que infla ligeiramente a fatia dos
+                    que reportaram, só para a contribuição daquele ano. Ao longo da média de 7 anos, esse
+                    efeito tende a ser pequeno, mas não é nulo. Vale notar: o próprio Estudo 02 registrava
                     "78/78 municípios" cobertos para o Espírito Santo, mas na prática o dado bruto do DCA
-                    cobre apenas 73/78 em vários anos recentes — a mesma limitação que esta página agora
+                    cobre apenas 73/78 em vários anos recentes, a mesma limitação que esta página agora
                     trata de forma explícita para as 27 UFs.
                 </p>
 
@@ -312,7 +327,7 @@
                     municípios de cada UF (IBGE, 5.570 municípios no Brasil). Essa comparação separa duas
                     situações distintas: municípios que nunca reportaram (ficam fora da tabela, cobertura
                     zero) e municípios que reportaram em alguns anos mas não em todos (aparecem na tabela,
-                    com os anos estimados sinalizados por †).
+                    com os anos faltantes sinalizados por †).
                 </p>
 
             </div>
@@ -407,6 +422,7 @@
             }
         }
         const ufsOrdenadas = [...ufsPresentes].sort((a, b) => (UF_NOMES[a] || a).localeCompare(UF_NOMES[b] || b, 'pt-BR'));
+        STATE.ufsOrdenadas = ufsOrdenadas;
 
         const select = document.getElementById('select-uf');
         for (const uf of ufsOrdenadas) {
@@ -421,6 +437,7 @@
         document.getElementById('status-text').textContent =
             totalB != null ? `Dados carregados: ${ufsOrdenadas.length} UFs disponíveis.` : 'Dados parcialmente disponíveis.';
         document.getElementById('uf-hint').textContent = `${ufsOrdenadas.length} UFs com dado municipal no DCA (2019–2025).`;
+        document.getElementById('btn-export-all').disabled = false;
 
         select.addEventListener('change', () => {
             const uf = select.value;
@@ -440,15 +457,9 @@
         }
     }
 
-    function renderUF(uf) {
-        const emptyState = document.getElementById('empty-state');
-        const results = document.getElementById('uf-results');
-        if (!uf) {
-            emptyState.style.display = '';
-            results.style.display = 'none';
-            return;
-        }
-
+    // Cálculo puro do CPT de cada município de uma UF (sem tocar no DOM), reaproveitado
+    // tanto pela tela por-UF (renderUF) quanto pela exportação de todas as UFs (exportAllUFs).
+    function computeMuniRows(uf) {
         const { totalB, deflators, dca_icms_uf_raw, dca_detalhes } = STATE;
 
         const icmsUF = {};
@@ -465,43 +476,17 @@
         }
 
         const codes = Object.keys(muniMap);
-        if (codes.length === 0) {
-            emptyState.style.display = '';
-            emptyState.textContent = `Nenhum dado municipal disponível no DCA para ${UF_NOMES[uf] || uf}.`;
-            results.style.display = 'none';
-            return;
-        }
-        emptyState.style.display = 'none';
-        results.style.display = '';
+        if (codes.length === 0) return { muniRows: [], reportantesPorAno: {} };
 
-        // Reposição por ano mais próximo disponível (carry-forward), por município
-        for (const cod of codes) {
-            const m = muniMap[cod];
-            const anosDisponiveis = ANOS.filter(a => m.raw[a] != null);
-            m.resolved = {};
-            for (const ano of ANOS) {
-                if (m.raw[ano] != null) {
-                    m.resolved[ano] = { iss: m.raw[ano].iss, cota: m.raw[ano].cota, estimado: false };
-                } else {
-                    let melhor = null;
-                    for (const a of anosDisponiveis) {
-                        if (melhor == null || Math.abs(a - ano) < Math.abs(melhor - ano)) melhor = a;
-                    }
-                    m.resolved[ano] = melhor == null ? null
-                        : { iss: m.raw[melhor].iss, cota: m.raw[melhor].cota, estimado: true, anoFonte: melhor };
-                }
-            }
-        }
-
-        // Denominador do rateio por ano, recomputado com os valores repostos (carry-forward incluso)
+        // Denominador do rateio por ano: soma da cota-parte só de quem reportou naquele ano
+        // (sem estimar município ausente; mesmo critério do Estudo 02 e da Nota Técnica).
         const cotaTotalDCA = {};
         const reportantesPorAno = {};
         for (const ano of ANOS) {
             let soma = 0, reportando = 0;
             for (const cod of codes) {
-                const r = muniMap[cod].resolved[ano];
-                if (r) soma += r.cota;
-                if (muniMap[cod].raw[ano] != null) reportando++;
+                const r = muniMap[cod].raw[ano];
+                if (r) { soma += r.cota; reportando++; }
             }
             cotaTotalDCA[ano] = soma;
             reportantesPorAno[ano] = reportando;
@@ -517,25 +502,51 @@
             return (r.iss + cotaMuni) * def;
         }
 
+        // Anos sem dado no DCA para um dado município simplesmente não entram na soma; o
+        // resultado divide sempre por 7 (ANOS.length), tratando o ano ausente como
+        // contribuição zero, e não como uma média só dos anos disponíveis. Isso evita
+        // extrapolar (via reposição) o dado de um município para anos em que ele não
+        // reportou, e é o mesmo critério usado no Estudo 02 e na Nota Técnica.
         const muniRows = codes.map(cod => {
             const m = muniMap[cod];
-            let soma = 0, anosEstimados = 0, anosComDado = 0;
+            let soma = 0, anosComDado = 0;
             for (const ano of ANOS) {
-                const r = m.resolved[ano];
+                const r = m.raw[ano];
                 const v = cptDoAno(r, ano);
                 if (v != null) soma += v;
-                if (r && r.estimado) anosEstimados++;
-                if (m.raw[ano] != null) anosComDado++;
+                if (r != null) anosComDado++;
             }
             const cpt = totalB != null ? (soma / ANOS.length) / totalB * 100 : null;
 
-            const r2025 = m.resolved[2025];
-            const v2025 = cptDoAno(r2025, 2025);
+            const v2025 = cptDoAno(m.raw[2025], 2025);
             const cpt2025 = (v2025 != null && totalB != null) ? v2025 / totalB * 100 : null;
             const varMuni = (cpt != null && cpt2025 != null) ? cpt - cpt2025 : null;
 
-            return { cod, nome: m.nome, cpt, cpt2025, varMuni, anosEstimados, anosComDado };
+            return { cod, nome: m.nome, cpt, cpt2025, varMuni, anosComDado };
         }).sort((a, b) => (b.cpt ?? 0) - (a.cpt ?? 0));
+
+        return { muniRows, reportantesPorAno };
+    }
+
+    function renderUF(uf) {
+        const emptyState = document.getElementById('empty-state');
+        const results = document.getElementById('uf-results');
+        if (!uf) {
+            emptyState.style.display = '';
+            results.style.display = 'none';
+            return;
+        }
+
+        const { muniRows, reportantesPorAno } = computeMuniRows(uf);
+
+        if (muniRows.length === 0) {
+            emptyState.style.display = '';
+            emptyState.textContent = `Nenhum dado municipal disponível no DCA para ${UF_NOMES[uf] || uf}.`;
+            results.style.display = 'none';
+            return;
+        }
+        emptyState.style.display = 'none';
+        results.style.display = '';
 
         renderStats(uf, muniRows, reportantesPorAno);
         renderTable(muniRows);
@@ -559,13 +570,13 @@
         document.getElementById('stat-cpt-total').textContent = fmtPct(somaCpt);
 
         const faltantesOficial = totalOficial != null ? totalOficial - comDado : null;
-        const comEstimativa = muniRows.filter(r => r.anosEstimados > 0).length;
+        const comLacuna = muniRows.filter(r => r.anosComDado < 7).length;
         let callout = `Em <strong>${UF_NOMES[uf] || uf}</strong>, ${comDado} municípios têm ao menos um ano de dado no DCA entre 2019 e 2025`;
         if (totalOficial != null && faltantesOficial > 0) {
             callout += `, de um total oficial de ${totalOficial} (${faltantesOficial} nunca reportaram nesse período e não aparecem na tabela)`;
         }
-        callout += `. No ano mais recente (2025), ${reportando2025} de ${comDado} reportaram diretamente; os demais tiveram o dado reposto pelo ano disponível mais próximo (marcados com †). `;
-        callout += `${comEstimativa} de ${comDado} municípios têm ao menos um ano estimado no período completo.`;
+        callout += `. No ano mais recente (2025), ${reportando2025} de ${comDado} reportaram diretamente; os demais têm o CPT 2025 em branco, por falta de dado nesse ano. `;
+        callout += `${comLacuna} de ${comDado} municípios têm ao menos um ano faltante no período 2019–2025 (marcados com †); para esses, os anos sem dado contam como zero na média, sem estimativa.`;
         document.getElementById('callout-cobertura').innerHTML = callout;
     }
 
@@ -575,7 +586,7 @@
         currentRows = muniRows;
         const tbody = document.getElementById('tbody-munis');
         tbody.innerHTML = muniRows.map(r => {
-            const marca = r.anosEstimados > 0 ? ' <span title="Ao menos um ano estimado por ausência de dado">†</span>' : '';
+            const marca = r.anosComDado < 7 ? ' <span title="Não reportou ao DCA em todos os 7 anos; anos sem dado contam como zero na média">†</span>' : '';
             const covClass = r.anosComDado === 7 ? 'td-cov-full' : 'td-cov-est';
             return `<tr data-nome="${r.nome.toLowerCase()}">
                 <td class="td-mun">${r.nome}${marca}</td>
@@ -660,6 +671,57 @@
     }
 
     document.getElementById('btn-export-img').addEventListener('click', exportImage);
+
+    // ── Exportar planilha com o CPT de todos os municípios, de todas as UFs ────
+    function exportAllUFs() {
+        const btn = document.getElementById('btn-export-all');
+        if (typeof XLSX === 'undefined' || !STATE.ufsOrdenadas) return;
+        btn.disabled = true;
+        const label = btn.innerHTML;
+        btn.textContent = 'Gerando…';
+
+        try {
+            const linhas = [['UF', 'Município', 'CPT histórico (%, média 2019–2025)', 'CPT 2025 (%, índice pontual)',
+                'Diferença (p.p., hist. − 2025)', 'Anos com dado (de 7)']];
+            for (const uf of STATE.ufsOrdenadas) {
+                const { muniRows } = computeMuniRows(uf);
+                for (const r of muniRows) {
+                    linhas.push([uf, r.nome, r.cpt, r.cpt2025, r.varMuni, r.anosComDado]);
+                }
+            }
+
+            const wb = XLSX.utils.book_new();
+
+            const readme = [
+                ['Coeficiente de Participação de Transição (CPT) por município, todas as UFs (LC 227/2026, art. 115)'],
+                ['Fonte: SICONFI/STN, DCA Anexo I-C (ISS municipal e cota-parte do ICMS, 2019–2025).'],
+                [],
+                ['CPT histórico: média aritmética de 2019–2025, com cada ano corrigido pelo mesmo índice de'],
+                ['atualização usado no Estudo 02 (Índice_t = Total_BR_2025 / Total_BR_t).'],
+                ['CPT 2025: índice pontual do último ano, sem deflação nem média.'],
+                [],
+                ['Municípios que não entregaram o DCA em algum dos 7 anos têm o ano faltante reposto pelo ano'],
+                ['disponível mais próximo (ver metodologia na página). "Anos com dado" mostra quantos dos 7 anos'],
+                ['são declaração real (não estimada) daquele município.'],
+                [],
+                ['Municípios que nunca entregaram o DCA em nenhum dos 7 anos não aparecem nesta planilha.'],
+            ];
+            const wsReadme = XLSX.utils.aoa_to_sheet(readme);
+            wsReadme['!cols'] = [{ wch: 100 }];
+            XLSX.utils.book_append_sheet(wb, wsReadme, 'Leia-me');
+
+            const ws = XLSX.utils.aoa_to_sheet(linhas);
+            ws['!cols'] = [{ wch: 6 }, { wch: 28 }, { wch: 16 }, { wch: 16 }, { wch: 14 }, { wch: 10 }];
+            XLSX.utils.book_append_sheet(wb, ws, 'CPT por município (27 UFs)');
+
+            XLSX.writeFile(wb, 'cpt-municipios-todas-ufs.xlsx');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = label;
+        }
+    }
+
+    document.getElementById('btn-export-all').addEventListener('click', exportAllUFs);
     </script>
 </body>
 </html>
