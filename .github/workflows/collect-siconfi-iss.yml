@@ -7,6 +7,12 @@ on:
         description: 'Anos para coletar (separados por vírgula)'
         required: false
         default: '2018,2019,2020,2021,2022,2023,2024,2025,2026'
+  schedule:
+    # Semanal: SICONFI aceita retificações, e municípios pendentes podem publicar depois.
+    - cron: '0 6 * * 1'
+  push:
+    paths:
+      - '.github/ISS_COLLECT_TRIGGER'
 
 permissions:
   contents: write
@@ -49,7 +55,7 @@ jobs:
           from pathlib import Path
 
           UF = "${{ matrix.uf }}"
-          ANOS = [int(a) for a in "${{ inputs.anos }}".split(",")]
+          ANOS = [int(a) for a in "${{ inputs.anos || '2018,2019,2020,2021,2022,2023,2024,2025,2026' }}".split(",")]
           # 2026: use period 2 (mar-abr, most recent); others: period 6 (nov-dez, full year)
           PERIODO_POR_ANO = {a: 2 if a == 2026 else 6 for a in ANOS}
           BASE_URL = "https://apidatalake.tesouro.gov.br/ords/siconfi/tt"
@@ -266,4 +272,4 @@ jobs:
             exit 0
           fi
           git commit -m "dados: coleta ISS BR completa via SICONFI"
-          git push origin main
+          git push origin HEAD:main
