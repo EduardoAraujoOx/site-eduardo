@@ -153,16 +153,17 @@
         <h1>Coeficiente de Participação de Transição por município: as 27 UFs do Brasil</h1>
         <p class="lead">
             O <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a> calculou o Coeficiente de
-            Participação de Transição (CPT, art. 115 da LC 227/2026) para os 26 estados e o Distrito Federal,
-            e para os municípios do Espírito Santo. Esta página generaliza o cálculo municipal para
-            <strong>qualquer UF</strong>: selecione um estado e obtenha o CPT individual de cada um dos seus
-            municípios, a partir do mesmo Demonstrativo de Contas Anuais (DCA/SICONFI) usado no Estudo 02.
+            Participação de Transição (CPT, art. 115 da LC 227/2026) — a fatia do IBS que cada ente vai
+            receber durante os 50 anos de transição da reforma tributária — para os 26 estados, o Distrito
+            Federal e os municípios do Espírito Santo. Esta página estende esse mesmo cálculo a
+            <strong>qualquer UF</strong>: escolha um estado abaixo e veja o CPT individual de cada um dos
+            seus municípios, a partir do mesmo Demonstrativo de Contas Anuais (DCA/SICONFI) usado no Estudo 02.
         </p>
         <p class="study-meta">
-            Diferente de um estado, um município nem sempre entrega o DCA em todos os anos. Como o CPT
-            municipal é uma fatia de um total fixo, um município ausente altera a fatia calculada para os
-            demais &mdash; por isso esta página trata dados faltantes de forma explícita (ver metodologia
-            abaixo) em vez de ignorá-los silenciosamente.
+            Uma diferença em relação ao Estudo 02: nem todo município entrega o DCA em todos os anos, e
+            como o CPT municipal é uma fatia de um total fixo, um município ausente altera a fatia
+            calculada para os demais. Por isso esta página trata dados faltantes de forma explícita — e
+            sinalizada na tabela — em vez de ignorá-los silenciosamente (ver metodologia abaixo).
         </p>
     </div>
 
@@ -209,11 +210,11 @@
 
             <span class="section-label">Coeficiente de Participação de Transição por município (DCA 2019–2025)</span>
             <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
-                Base = ISS bruto do município + cota-parte do ICMS (25% do ICMS bruto do estado, distribuído
-                proporcionalmente ao rateio do DCA entre os municípios da UF), corrigida pelo mesmo índice de
-                atualização usado no Estudo 02, média aritmética de 2019–2025. Municípios marcados com
-                <strong>†</strong> tiveram ao menos um ano estimado por ausência de dado (ver coluna "Anos c/
-                dado" e a metodologia abaixo).
+                A base de cada município é o seu ISS bruto somado à sua fatia da cota-parte do ICMS —
+                25% do ICMS bruto do estado, dividido entre os municípios na proporção do rateio real
+                do DCA — corrigida pelo mesmo índice de atualização do Estudo 02, com a média
+                aritmética de 2019–2025. Municípios marcados com <strong>†</strong> tiveram ao menos um
+                ano estimado por ausência de dado (ver a coluna "Anos c/ dado" e a metodologia abaixo).
             </p>
 
             <div class="table-toolbar">
@@ -255,62 +256,63 @@
                 <p class="meto-note">
                     O procedimento reaproveita integralmente a metodologia do
                     <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a> (LC 227/2026, arts.
-                    114, 115 e 129): índice de atualização único Índice_t = Total_BR_2025 / Total_BR_t (Total_BR
-                    = ICMS + ISS agregados nacionais), aplicado à receita de cada ano antes de tirar a média
-                    aritmética simples de 2019–2025. Fonte: SICONFI/STN, DCA Anexo I-C. Aqui o procedimento é
-                    generalizado para qualquer UF, no nível de município.
+                    114, 115 e 129): um índice de atualização único, Índice_t = Total_BR_2025 / Total_BR_t
+                    (Total_BR = ICMS + ISS agregados nacionais), aplicado à receita de cada ano antes de
+                    tirar a média aritmética simples de 2019–2025. Fonte: SICONFI/STN, DCA Anexo I-C. A
+                    novidade aqui é generalizar esse procedimento, no nível de município, para qualquer UF.
                 </p>
 
-                <p class="meto-section-title">1. Numerador de cada município</p>
+                <p class="meto-section-title">1. Como se calcula o numerador de cada município</p>
                 <p class="meto-note">
-                    Para cada ano t: ISS bruto do município (DCA) + cota-parte do ICMS. A cota-parte teórica de
-                    todos os municípios da UF é <code>ICMS_UF_t × 0,25</code> (art. 158, IV, CF); ela é
-                    distribuída entre os municípios proporcionalmente ao rateio real do DCA
-                    (<code>cota_parte_icms</code> declarada por cada um), preservando a participação relativa de
-                    cada ente. O resultado é multiplicado pelo Índice_t e a média dos 7 anos corrigidos, dividida
-                    pelo Total_BR_2025, é o CPT do município.
+                    Para cada ano t: ISS bruto do município (DCA) mais sua fatia da cota-parte do ICMS. A
+                    cota-parte teórica de todos os municípios da UF é <code>ICMS_UF_t × 0,25</code> (art.
+                    158, IV, CF); ela é dividida entre os municípios na proporção do rateio real do DCA
+                    (<code>cota_parte_icms</code> declarada por cada um), o que preserva a participação
+                    relativa de cada ente. O resultado é multiplicado pelo Índice_t, e a média dos 7 anos
+                    corrigidos, dividida pelo Total_BR_2025, é o CPT do município.
                 </p>
 
-                <p class="meto-section-title">2. O problema: um município ausente distorce os demais</p>
+                <p class="meto-section-title">2. Por que um município ausente distorce os demais</p>
                 <p class="meto-note">
-                    O denominador do rateio (soma da <code>cota_parte_icms</code> declarada por todos os
-                    municípios da UF naquele ano) é calculado apenas com quem entregou o DCA naquele ano. Como a
-                    cota-parte teórica (<code>ICMS_UF × 0,25</code>) é um total fixo, a ausência de um município
-                    reduz artificialmente esse denominador &mdash; e infla, na mesma proporção, a fatia calculada
-                    para os municípios que reportaram. O mesmo problema afeta o ISS: se um município não
-                    reportou naquele ano, seu numerador ficaria zerado se nada fosse feito.
+                    O denominador do rateio — a soma da <code>cota_parte_icms</code> declarada por todos os
+                    municípios da UF naquele ano — é calculado apenas com quem entregou o DCA naquele ano.
+                    Como a cota-parte teórica (<code>ICMS_UF × 0,25</code>) é um total fixo, a ausência de
+                    um município reduz artificialmente esse denominador, e infla, na mesma proporção, a
+                    fatia calculada para os municípios que reportaram. O mesmo vale para o ISS: se um
+                    município não reportou naquele ano, seu numerador ficaria zerado se nada fosse feito.
                 </p>
 
-                <p class="meto-section-title">3. Tratamento adotado: reposição pelo ano disponível mais próximo</p>
+                <p class="meto-section-title">3. Como tratamos isso: reposição pelo ano disponível mais próximo</p>
                 <p class="meto-note">
-                    Para cada município e cada ano sem dado, esta página usa o valor (ISS e cota-parte) do ano
-                    disponível mais próximo daquele município &mdash; anterior ou posterior, o que estiver a
-                    menor distância &mdash; tanto para recompor o numerador do próprio município quanto para
-                    recompor o denominador do rateio daquele ano. Isso evita zerar o município ausente e evita
-                    inflar artificialmente os demais. A célula/linha correspondente é sinalizada com
-                    <strong>†</strong> e a coluna "Anos c/ dado" mostra quantos dos 7 anos são declaração real
-                    (não estimada) daquele município. Municípios que nunca entregaram o DCA em nenhum dos 7 anos
-                    não aparecem na tabela &mdash; não há, nesse caso, nenhum ano-base para estimar.
+                    Para cada município e cada ano sem dado, esta página usa o valor (ISS e cota-parte) do
+                    ano disponível mais próximo daquele mesmo município — anterior ou posterior, o que
+                    estiver a menor distância — tanto para recompor o numerador do próprio município quanto
+                    o denominador do rateio daquele ano. Isso evita zerar o município ausente sem inflar
+                    artificialmente os demais. A linha correspondente é sinalizada com <strong>†</strong>,
+                    e a coluna "Anos c/ dado" mostra quantos dos 7 anos são declaração real (não estimada)
+                    daquele município. Municípios que nunca entregaram o DCA em nenhum dos 7 anos não
+                    aparecem na tabela: não há, nesse caso, nenhum ano-base do qual estimar.
                 </p>
 
-                <p class="meto-section-title">4. Uma limitação que persiste, mesmo com a reposição</p>
+                <p class="meto-section-title">4. O que a reposição não resolve</p>
                 <p class="meto-note">
-                    A reposição reduz a distorção, mas não a elimina: um valor "estimado" pelo ano mais próximo
-                    ainda é uma aproximação, não a declaração real daquele ano. Em UFs ou anos com muitos
-                    municípios ausentes (tipicamente o ano mais recente, por atraso na entrega), a tabela abaixo
-                    mostra explicitamente essa cobertura para que o leitor avalie o grau de confiança do
-                    coeficiente. Note-se que o próprio Estudo 02 registrava "78/78 municípios" cobertos para o
-                    Espírito Santo; na prática, o dado bruto do DCA cobre apenas 73/78 em vários anos recentes
-                    &mdash; a mesma limitação que esta página agora trata de forma explícita para as 27 UFs.
+                    A reposição reduz a distorção, mas não a elimina — um valor "estimado" pelo ano mais
+                    próximo continua sendo uma aproximação, não a declaração real daquele ano. Em UFs ou
+                    anos com muitos municípios ausentes (tipicamente o ano mais recente, por atraso na
+                    entrega), a tabela abaixo mostra essa cobertura de forma explícita, para que o leitor
+                    avalie o grau de confiança do coeficiente. Vale notar: o próprio Estudo 02 registrava
+                    "78/78 municípios" cobertos para o Espírito Santo, mas na prática o dado bruto do DCA
+                    cobre apenas 73/78 em vários anos recentes — a mesma limitação que esta página agora
+                    trata de forma explícita para as 27 UFs.
                 </p>
 
                 <p class="meto-section-title">5. Total oficial de municípios por UF</p>
                 <p class="meto-note">
-                    O número de municípios "com dado no DCA" exibido nesta página é comparado ao total oficial de
-                    municípios de cada UF (IBGE, 5.570 municípios no Brasil). Isso permite diferenciar duas
-                    situações distintas: municípios que nunca reportaram (fora da tabela, cobertura zero) e
-                    municípios que reportaram em alguns anos, mas não em todos (na tabela, com anos estimados
-                    sinalizados por †).
+                    O número de municípios "com dado no DCA" exibido aqui é comparado ao total oficial de
+                    municípios de cada UF (IBGE, 5.570 municípios no Brasil). Essa comparação separa duas
+                    situações distintas: municípios que nunca reportaram (ficam fora da tabela, cobertura
+                    zero) e municípios que reportaram em alguns anos mas não em todos (aparecem na tabela,
+                    com os anos estimados sinalizados por †).
                 </p>
 
             </div>
@@ -320,7 +322,7 @@
             <p><strong>Fontes e notas metodológicas:</strong></p>
             <p>1. Fonte primária: <a href="https://apidatalake.tesouro.gov.br/docs/siconfi/" target="_blank" rel="noopener">SICONFI: API Data Lake STN</a>, DCA Anexo I-C, 2019–2025. Coleta via GitHub Actions (27 jobs paralelos por UF); ver <code>data/reforma-tributaria.json</code> (campo <code>dca_detalhes</code>) e os workflows <code>collect-dca-municipios.yml</code> / <code>collect-siconfi-iss.yml</code> no repositório do site.</p>
             <p>2. Total oficial de municípios por UF: IBGE (Divisão Territorial Brasileira), 5.570 municípios em 27 UFs (26 estados + DF); número estável desde o final da década de 1990.</p>
-            <p>3. Diferente da comparação SEFAZ x SICONFI x SIOPE x SIOPS feita para o ES no <a href="/estudos/cota-parte-icms-municipios-es.html">Estudo 08</a>, esta página usa exclusivamente o DCA/SICONFI &mdash; não há, hoje, um pipeline automatizado de coleta de SIOPE (FNDE) e SIOPS (DATASUS/MS) em nível nacional, pois ambos os sistemas expõem apenas relatórios individuais por município, sem extrato agregado para todo o Brasil.</p>
+            <p>3. Esta página usa exclusivamente o DCA/SICONFI, diferente da comparação SEFAZ × SICONFI × SIOPE × SIOPS feita para o ES no <a href="/estudos/cota-parte-icms-municipios-es.html">Estudo 08</a>. O motivo é prático: hoje não existe um pipeline automatizado de coleta de SIOPE (FNDE) e SIOPS (DATASUS/MS) em nível nacional, pois ambos os sistemas expõem apenas relatórios individuais por município, sem extrato agregado para todo o Brasil.</p>
             <p>4. O botão "Exportar imagem" gera um PNG da tabela da UF selecionada (via <code>html2canvas</code>) para download ou compartilhamento direto (Web Share API, quando suportada pelo navegador).</p>
         </div>
 
