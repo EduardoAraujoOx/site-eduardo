@@ -101,6 +101,13 @@ def main():
             "coeficiente_municipios_pct": (media_munis / total_b * 100) if media_munis is not None else None,
             "coeficiente_total_pct": (media_total / total_b * 100) if media_total is not None else None,
         }
+        if is_df:
+            resultado[uf]["nota"] = (
+                "DF é ente único (art. 115, II, LC 227/2026): coeficiente_estado_pct aqui é só a "
+                "parcela ICMS+FECOP, NÃO o coeficiente unificado do DF -- use coeficiente_total_pct "
+                "(ICMS+FECOP+ISS) para fechamento nacional e qualquer comparação com as demais UFs. "
+                "coeficiente_municipios_pct é null porque o DF não tem repasse municipal separado."
+            )
 
     output = {
         "fonte": "DCA Anexo I-C, agregado por UF",

@@ -169,7 +169,7 @@ def main():
         "validacao_soma_por_uf": validacao_uf,
         "pendencias": [
             "Comparação ente a ente contra a Nota Técnica v22 feita em "
-            "data/build-divergencia-vs-nota-v22.py: 27/27 UFs e 79/79 municípios do ES "
+            "data/build-divergencia-vs-nota-v22.py: 27/27 UFs e 78/78 municípios do ES "
             "batem exatamente (diff = 0,0000pp) -- ver data/divergencia-vs-nota-v22.json.",
             "MT segue como divergência conhecida não investigada -- confirmada por três "
             "sinais independentes (DCA x RREO, Nota v22 x Sefaz-BA, e já citada no "
