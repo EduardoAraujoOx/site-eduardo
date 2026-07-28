@@ -169,12 +169,26 @@ def main():
         "validacao_soma_por_uf": validacao_uf,
         "pendencias": [
             "Comparação ente a ente contra a Nota Técnica v22 feita em "
-            "data/build-divergencia-vs-nota-v22.py: 27/27 UFs e 79/79 municípios do ES "
-            "batem exatamente (diff = 0,0000pp) -- ver data/divergencia-vs-nota-v22.json.",
-            "MT segue como divergência conhecida não investigada -- confirmada por três "
+            "data/build-divergencia-vs-nota-v22.py: 27/27 UFs e 78/78 municípios do ES "
+            "presentes; após a recoleta direcionada (linha abaixo), a maior parte das UFs "
+            "diverge <0,05pp e a maior parte dos municípios ES diverge <0,006pp -- ver "
+            "data/divergencia-vs-nota-v22.json para o detalhe caso a caso.",
+            "MT segue como divergência conhecida não investigada no ICMS estadual (fonte "
+            "DCA x RREO, eixo separado da cobertura municipal abaixo) -- confirmada por três "
             "sinais independentes (DCA x RREO, Nota v22 x Sefaz-BA, e já citada no "
             "briefing original); ver data/reconciliacao-dca-rreo.json e "
             "data/raw/nota-v22/comparacao_sefaz_es_ba_ufs.csv.",
+            "Recoleta direcionada (2026-07-27): 1.217 pares (município, ano) que estavam "
+            "ausentes em dca_detalhes foram rebuscados direto na API do SICONFI; 941 "
+            "recuperaram ISS e/ou cota-parte -- confirmando que a ausência era falha de "
+            "coleta, não falta real de declaração (checado ao vivo para Cariacica/ES: dado "
+            "de 2022-2025 já estava disponível na API). Municípios com cobertura <=4/7 anos "
+            "caiu de 230 (0,99% do coeficiente municipal) para 14 (0,02%). Efeito colateral "
+            "esperado: municípios que antes tinham poucos anos (ex.: Cariacica, São Mateus, "
+            "Alegre, Brejetuba, Água Doce do Norte, no ES) agora divergem mais da Nota "
+            "Técnica v22 nesses casos específicos, porque a Nota v22 foi calculada com o "
+            "mesmo tipo de coleta incompleta que aqui foi corrigida -- não é um erro novo, é "
+            "dado mais completo que a própria referência oficial.",
         ],
     }
 
