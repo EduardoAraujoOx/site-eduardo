@@ -207,6 +207,58 @@ def collect_rreo_year(ano):
             a1, conta_prefix="RECEITA PATRIMONIAL",
             coluna_contains="Até o Bimestre (c)",
         ),
+        "receita_previsao_atualizada": find(
+            a1, conta_prefix="TOTAL DAS RECEITAS",
+            coluna_exact="PREVISÃO ATUALIZADA (a)",
+        ),
+        "receita_pct_previsao_realizado": find(
+            a1, conta_prefix="TOTAL DAS RECEITAS",
+            coluna_exact="% (c/a)",
+        ),
+        "despesa_dotacao_atualizada": find(
+            a1, conta_prefix="TOTAL DAS DESPESAS",
+            coluna_contains="DOTAÇÃO ATUALIZADA",
+        ),
+        "receita_impostos_taxas": find(
+            a1, conta_prefix="IMPOSTOS, TAXAS E CONTRIBUIÇÕES DE MELHORIA",
+            coluna_contains="Até o Bimestre (c)",
+        ),
+        "receita_transferencias_correntes": find(
+            a1, conta_prefix="TRANSFERÊNCIAS CORRENTES",
+            coluna_contains="Até o Bimestre (c)",
+        ),
+        "receita_outras_correntes": find(
+            a1, conta_prefix="OUTRAS RECEITAS CORRENTES",
+            coluna_contains="Até o Bimestre (c)",
+        ),
+        "receita_de_capital": find(
+            a1, conta_prefix="RECEITAS DE CAPITAL",
+            coluna_contains="Até o Bimestre (c)",
+        ),
+        "despesa_pessoal_encargos": find(
+            a1, conta_prefix="PESSOAL E ENCARGOS SOCIAIS",
+            coluna_contains="DESPESAS EMPENHADAS ATÉ O BIMESTRE",
+        ),
+        "despesa_juros_encargos_divida": find(
+            a1, conta_prefix="JUROS E ENCARGOS DA DÍVIDA",
+            coluna_contains="DESPESAS EMPENHADAS ATÉ O BIMESTRE",
+        ),
+        "despesa_outras_correntes": find(
+            a1, conta_prefix="OUTRAS DESPESAS CORRENTES",
+            coluna_contains="DESPESAS EMPENHADAS ATÉ O BIMESTRE",
+        ),
+        "despesa_investimentos": find(
+            a1, conta_prefix="INVESTIMENTOS",
+            coluna_contains="DESPESAS EMPENHADAS ATÉ O BIMESTRE",
+        ),
+        "despesa_inversoes_financeiras": find(
+            a1, conta_prefix="INVERSÕES FINANCEIRAS",
+            coluna_contains="DESPESAS EMPENHADAS ATÉ O BIMESTRE",
+        ),
+        "despesa_amortizacao_divida": find(
+            a1, conta_prefix="AMORTIZAÇÃO DA DÍVIDA",
+            coluna_contains="DESPESAS EMPENHADAS ATÉ O BIMESTRE",
+        ),
         "rcl_rreo": find(
             a3, conta_prefix="RECEITA CORRENTE LÍQUIDA (III)",
             coluna_exact="TOTAL (ÚLTIMOS 12 MESES)",
