@@ -97,7 +97,24 @@ h2 {
   font-family: 'Playfair Display', serif; font-size: 27px; font-weight: 700; color: var(--navy);
   border-bottom: 2px solid var(--navy); padding-bottom: 12px; margin-bottom: 8px; line-height: 1.25;
 }
-.subhead { font-size: 14px; color: var(--muted); margin-bottom: 26px; max-width: 720px; }
+.subhead { font-size: 14px; color: var(--muted); margin-bottom: 14px; max-width: 720px; }
+
+/* caixa de definição, explicação acessível do termo técnico */
+.def {
+  font-size: 13px; color: var(--ink); line-height: 1.65;
+  background: #fbfaf6; border: 1px solid var(--border); border-left: 3px solid var(--navy-mid);
+  padding: 11px 16px; margin-bottom: 20px; max-width: 760px;
+}
+.def b { color: var(--navy); font-weight: 600; }
+
+/* tabela de dados simples */
+.data-table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 14px 0; }
+.data-table th { text-align: left; font-size: 10.5px; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); border-bottom: 1.5px solid var(--navy); padding: 6px 8px; font-weight: 600; }
+.data-table td { padding: 7px 8px; border-bottom: 1px solid var(--border); }
+.data-table td.num { text-align: right; font-family: -apple-system, sans-serif; font-variant-numeric: tabular-nums; }
+.data-table tr.total td { font-weight: 700; border-top: 1.5px solid var(--navy); }
+.data-table .tagvol { font-size: 10px; color: var(--gold-dark); font-weight: 600; }
+.data-table .tagestr { font-size: 10px; color: var(--good); font-weight: 600; }
 
 /* destaque de texto */
 .highlight {
@@ -247,9 +264,10 @@ footer.doc-footer {
   <div class="tag">Pilar I</div>
   <h2>Solvência: a dívida líquida segue sob controle</h2>
   <p class="subhead">Dívida consolidada líquida como percentual da receita corrente líquida, posição de 31 de dezembro de cada ano.</p>
+  <p class="def"><b>Solvência</b> é a capacidade de honrar compromissos de longo prazo, como empréstimos e financiamentos. <b>Dívida líquida</b> é a dívida contratual do Estado (empréstimos e financiamentos já tomados) menos o caixa e as aplicações financeiras que o Estado já tem disponíveis para pagar essa dívida. Um número negativo quer dizer que o Estado teria caixa suficiente para quitar toda a dívida contratual hoje e ainda sobrariam recursos.</p>
   <div class="chart-wrap" id="chart-dcl"></div>
-  <div class="highlight">A dívida líquida saiu de 14% da receita corrente líquida em 2019 para valores negativos desde 2021, o que significa que o Estado passou a deter mais ativos financeiros do que dívida. Em 2025 o indicador chegou a menos 52%, o mais favorável da série.</div>
-  <p class="note">O salto entre 2024 e 2025 foi impulsionado por um aumento expressivo em outros haveres financeiros registrados no relatório, item que merece acompanhamento mais detalhado nos próximos ciclos.</p>
+  <div class="highlight">A dívida líquida saiu de 14% da receita corrente líquida em 2019 para valores negativos desde 2021, o que significa que o Estado passou a deter mais ativos financeiros do que dívida. Em 2025, a dívida contratual bruta era de R$8,29 bilhões, e o caixa mais outras aplicações financeiras somavam R$23,02 bilhões: o resultado é uma dívida líquida de menos R$14,73 bilhões, equivalente a menos 52% da receita corrente líquida, o mais favorável da série.</div>
+  <p class="note">O salto entre 2024 e 2025 foi impulsionado por um aumento expressivo em outros haveres financeiros (ativos financeiros diferentes de caixa em espécie) registrados no relatório, item que merece acompanhamento mais detalhado nos próximos ciclos: sem esse detalhamento, não é possível afirmar se esses ativos estão de fato disponíveis para uso imediato.</p>
   <p class="src">Fonte: Relatório de Gestão Fiscal, Anexo 2, via SICONFI/Tesouro Nacional. Poder Executivo, posição de 31 de dezembro de cada ano.</p>
 </div>
 
@@ -258,8 +276,10 @@ footer.doc-footer {
   <div class="tag">Pilar II</div>
   <h2>Liquidez: o caixa livre está encolhendo</h2>
   <p class="subhead">Disponibilidade de caixa líquida e restos a pagar não processados, recursos não vinculados, em R$ milhões.</p>
+  <p class="def">Boa parte do dinheiro que entra no caixa do Estado já tem destino definido por lei, como os recursos de saúde e educação, que só podem ser gastos nessas áreas. <b>Caixa livre (recursos não vinculados)</b> é a parcela sem essa amarra, o dinheiro que sobra para o Estado decidir onde aplicar, incluindo pagar a folha e despesas do dia a dia. <b>Restos a pagar não processados</b> são compras e contratos que o governo já assumiu (empenhou) mas cujo produto ou serviço ainda não foi entregue e conferido (não foi liquidado), portanto ainda não foi pago. Quando esse estoque cresce mais rápido que o caixa disponível, é sinal de que o governo está postergando pagamentos.</p>
   <div class="chart-wrap" id="chart-caixa"></div>
-  <div class="highlight">A disponibilidade de caixa livre caiu de R$2,25 bilhões em 2021 para R$991 milhões em 2024, uma queda de 56%. Em 2025 houve recuperação parcial, para R$1,26 bilhão, ainda 44% abaixo do pico. No mesmo período, o estoque de restos a pagar (despesas já comprometidas e ainda não pagas) subiu de R$210 milhões para cerca de R$1 bilhão, um crescimento de quase 5 vezes.</div>
+  <div class="highlight">A disponibilidade de caixa livre caiu de R$2,25 bilhões em 2021 para R$991 milhões em 2024, uma queda de 56%. Em 2025 houve recuperação parcial, para R$1,26 bilhão, ainda 44% abaixo do pico. No mesmo período, o estoque de restos a pagar não processados subiu de R$210 milhões para cerca de R$1 bilhão, um crescimento de quase 5 vezes. As duas linhas se cruzaram em 2024: pela primeira vez na série, o Estado tinha mais compromissos represados do que caixa livre para honrá-los de imediato.</div>
+  <p class="note">Isso não significa que o Estado deixou de pagar fornecedores ou servidores: o caixa vinculado (saúde, educação, previdência e outras destinações) segue robusto, em torno de R$5,5 bilhões em 2025. O ponto de atenção é especificamente a margem de manobra livre, que é a que financia decisões novas de política pública.</p>
   <p class="src">Fonte: Relatório de Gestão Fiscal, Anexo 5, via SICONFI/Tesouro Nacional. Recursos não vinculados, posição de 31 de dezembro de cada ano.</p>
 </div>
 
@@ -268,6 +288,7 @@ footer.doc-footer {
   <div class="tag">Pilar III</div>
   <h2>Postura fiscal: o resultado sem a previdência conta outra história</h2>
   <p class="subhead">Resultado orçamentário do exercício e resultado primário, com e sem a receita do regime próprio de previdência.</p>
+  <p class="def">O <b>RPPS</b> (regime próprio de previdência social) é o sistema de aposentadoria dos servidores do Estado. Ele recebe todo ano as contribuições descontadas dos servidores e um aporte obrigatório do Tesouro estadual, e paga os benefícios de quem já se aposentou. Quando o que entra no RPPS num determinado ano é maior do que o que ele paga em benefícios, essa diferença positiva entra somada no resultado fiscal geral do Estado, o chamado <b>resultado com RPPS</b>. O problema é que esse saldo positivo pode esconder um resultado ruim do restante do governo, ou seja, das áreas de educação, saúde, segurança e administração. Por isso este relatório calcula também o <b>resultado sem RPPS</b>: ele isola o desempenho do governo fora da previdência, e responde à pergunta se as áreas que prestam serviço ao cidadão estão se financiando com a receita normal do Estado.</p>
   <div class="two-col">
     <div>
       <div class="chart-title">Resultado orçamentário (R$ milhões)</div>
@@ -278,7 +299,7 @@ footer.doc-footer {
       <div class="chart-wrap" id="chart-primario"></div>
     </div>
   </div>
-  <div class="highlight">O resultado orçamentário (diferença entre receita realizada e despesa empenhada no exercício) caiu de R$1,3 bilhão em 2021 para uma média próxima de R$860 milhões em 2023, 2024 e 2025, cerca de um terço menor. Ao excluir a receita do regime próprio de previdência, o resultado primário foi negativo em 2023 e novamente em 2025.</div>
+  <div class="highlight">O resultado orçamentário (tudo o que o Estado arrecadou no ano, menos tudo o que se comprometeu a gastar no mesmo ano) caiu de R$1,3 bilhão em 2021 para uma média próxima de R$860 milhões em 2023, 2024 e 2025, cerca de um terço menor. Ao excluir a receita do regime próprio de previdência, o resultado primário (a diferença entre receita e despesa do dia a dia, sem contar juros da dívida) foi negativo em 2023 e novamente em 2025: nesses dois anos, o governo gastou mais do que arrecadou nas suas operações normais, e só fechou no positivo geral porque a previdência teve saldo positivo.</div>
   <p class="src">Fonte: Relatório Resumido da Execução Orçamentária, Anexos 1 e 6, via SICONFI/Tesouro Nacional. Último bimestre publicado em cada ano.</p>
 </div>
 
@@ -287,21 +308,22 @@ footer.doc-footer {
   <div class="tag">Pilar IV</div>
   <h2>Passivos ocultos: o maior número deste diagnóstico</h2>
   <p class="subhead">Passivo atuarial do regime próprio de previdência, em R$ bilhões, posição de 31 de dezembro de cada ano.</p>
+  <p class="def"><b>Passivo oculto</b>, aqui, quer dizer um compromisso financeiro real e já assumido, mas que não aparece no caixa disponível hoje nem na dívida contratual do pilar I. O principal exemplo é o <b>passivo atuarial</b>: uma projeção, feita por atuários, de quanto o Estado precisará desembolsar ao longo das próximas décadas para pagar as aposentadorias e pensões já prometidas a servidores atuais e futuros, trazido a valor de hoje e descontadas as reservas financeiras que já existem para cobrir parte dessa conta. Não é uma dívida que vence amanhã, mas mostra o tamanho do compromisso de longuíssimo prazo, que exige aportes crescentes do Tesouro ano após ano.</p>
   <div class="chart-wrap" id="chart-atuarial"></div>
-  <div class="highlight">O passivo atuarial da previdência estadual saltou de R$6,1 bilhões em 2022 para cerca de R$59 bilhões a partir de 2023, valor próximo do dobro de toda a receita corrente líquida anual do Estado. Esse número não aparece no caixa disponível hoje, mas representa um compromisso financeiro que caberá aos próximos anos e às próximas gestões.</div>
+  <div class="highlight">O passivo atuarial da previdência estadual saltou de R$6,1 bilhões em 2022 para cerca de R$59 bilhões a partir de 2023, valor próximo do dobro de toda a receita corrente líquida anual do Estado. O salto reflete principalmente uma revisão das premissas atuariais (como taxa de juros e expectativa de vida usadas no cálculo), não um evento de caixa isolado, mas o novo patamar é o que consta nos relatórios oficiais desde então.</div>
   <div class="stat-tiles">
     <div class="stat-tile">
       <div class="name">Fundo Financeiro (regime civil)</div>
       <div class="big">R$ 37,84 bilhões</div>
-      <div class="delta">Déficit atuarial em 2024, variação de menos 3,0% frente a 2023</div>
+      <div class="delta">Déficit atuarial em 2024, variação de menos 3,0% frente a 2023. Regime com reservas próprias, hoje insuficientes, fechado a novos servidores</div>
     </div>
     <div class="stat-tile">
       <div class="name">Fundo de Proteção Social dos Militares</div>
       <div class="big">R$ 16,03 bilhões</div>
-      <div class="delta">Déficit atuarial em 2024, variação de mais 8,7% frente a 2023</div>
+      <div class="delta">Déficit atuarial em 2024, variação de mais 8,7% frente a 2023. Regime sem formação de reservas: as contribuições de hoje pagam os benefícios de hoje, sem poupança para o futuro</div>
     </div>
   </div>
-  <p class="note">Os aportes obrigatórios do Tesouro aos dois fundos somaram R$3,63 bilhões em 2024, equivalente a 13,8% da receita corrente líquida daquele ano.</p>
+  <p class="note">Os aportes obrigatórios do Tesouro aos dois fundos somaram R$3,63 bilhões em 2024, equivalente a 13,8% da receita corrente líquida daquele ano, dinheiro que sai do caixa corrente para cobrir parte da conta previdenciária.</p>
   <p class="src">Fontes: passivo atuarial total, Relatório de Gestão Fiscal Anexo 2, via SICONFI/Tesouro Nacional. Detalhamento por fundo: Tribunal de Contas do Estado do Espírito Santo, Prestação de Contas do Governador 2024, e IPAJM, avaliação atuarial dezembro de 2024.</p>
 </div>
 
@@ -309,10 +331,24 @@ footer.doc-footer {
 <div class="screen">
   <div class="tag">Pilar V</div>
   <h2>Qualidade da receita: parte do caixa depende de fatores externos</h2>
-  <p class="subhead">Receita patrimonial (inclui rendimentos financeiros e royalties de petróleo) como percentual da receita corrente líquida.</p>
+  <p class="subhead">De onde veio o crescimento da receita total do Estado entre 2019 e 2025, por categoria, em R$ milhões.</p>
+  <p class="def"><b>Qualidade da receita</b> não é sobre o tamanho da arrecadação, é sobre sua previsibilidade. Receita <b>estrutural</b> (impostos, transferências constitucionais) tende a crescer de forma estável, ligada à atividade econômica. Receita <b>volátil</b> depende de fatores que o Estado não controla, como a taxa de juros (Selic), o preço internacional do petróleo, ou acordos judiciais pontuais, e pode subir ou cair bruscamente de um ano para o outro. Quanto maior a fatia volátil, mais incerto fica o planejamento de longo prazo.</p>
+  <table class="data-table">
+    <thead><tr><th>Categoria da receita</th><th class="num">2019</th><th class="num">2025</th><th class="num">Variação</th><th>Natureza</th></tr></thead>
+    <tbody>
+      <tr><td>Impostos, taxas e contribuições</td><td class="num">8.594</td><td class="num">17.232</td><td class="num">+100%</td><td><span class="tagestr">estrutural</span></td></tr>
+      <tr><td>Transferências correntes (principalmente da União)</td><td class="num">6.026</td><td class="num">8.093</td><td class="num">+34%</td><td><span class="tagestr">estrutural</span></td></tr>
+      <tr><td>Receita patrimonial (rendimentos financeiros e royalties)</td><td class="num">840</td><td class="num">1.995</td><td class="num">+138%</td><td><span class="tagvol">volátil</span></td></tr>
+      <tr><td>Outras receitas correntes (inclui indenizações judiciais)</td><td class="num">325</td><td class="num">1.332</td><td class="num">+310%</td><td><span class="tagvol">volátil</span></td></tr>
+      <tr><td>Receitas de capital (empréstimos e transferências de capital)</td><td class="num">443</td><td class="num">1.959</td><td class="num">+342%</td><td><span class="tagvol">volátil</span></td></tr>
+      <tr class="total"><td>Receita total do Estado</td><td class="num">16.672</td><td class="num">31.496</td><td class="num">+89%</td><td></td></tr>
+    </tbody>
+  </table>
+  <div class="chart-title">Receita patrimonial como % da receita corrente líquida, série completa</div>
   <div class="chart-wrap" id="chart-patrimonial"></div>
-  <div class="highlight">A receita patrimonial oscilou entre 3% e 9% da receita corrente líquida ao longo da série. Rendimentos de aplicações financeiras somaram R$1,74 bilhão em 2025 (6,2% da receita corrente líquida, o terceiro maior percentual entre os estados), valor sensível ao nível da taxa Selic e ao volume de caixa do Tesouro estadual. Os royalties de petróleo caíram 23,5% entre janeiro e agosto de 2025 frente ao mesmo período de 2024, mas subiram 56,8% no primeiro trimestre de 2026, puxados pela alta do preço internacional do petróleo. É uma fonte de receita relevante, mas volátil nas duas direções, não apenas em queda.</div>
-  <p class="src">Fonte: receita patrimonial, Relatório Resumido da Execução Orçamentária Anexo 1, via SICONFI/Tesouro Nacional. Rendimentos financeiros e royalties: SEFAZ-ES.</p>
+  <div class="highlight">A receita total do Estado quase dobrou entre 2019 e 2025 (mais 89%), mas não cresceu de forma uniforme: a receita patrimonial (rendimentos financeiros e royalties) cresceu 138%, outras receitas correntes cresceram 310% (impulsionadas por indenizações judiciais que saltaram de R$71 milhões em 2022 para R$638 milhões em 2025, ligadas majoritariamente ao acordo de reparação do rompimento da barragem de Fundão), e as receitas de capital cresceram 342%. Todas essas categorias voláteis cresceram mais rápido do que a receita tributária própria (mais 100%) e bem mais rápido do que as transferências da União (mais 34%, a categoria mais lenta de todas). Em outras palavras, uma fatia cada vez maior do crescimento da receita depende de fontes que o Estado não controla e que podem reverter.</div>
+  <p class="note">Rendimentos de aplicações financeiras somaram R$1,74 bilhão em 2025 (6,2% da receita corrente líquida, terceiro maior percentual entre os estados), valor sensível ao nível da taxa Selic e ao volume de caixa do Tesouro. Os royalties de petróleo caíram 23,5% entre janeiro e agosto de 2025 frente ao mesmo período de 2024, mas subiram 56,8% no primeiro trimestre de 2026, puxados pela alta do preço internacional do petróleo: é uma fonte relevante, mas volátil nas duas direções, não apenas em queda.</p>
+  <p class="src">Fonte: Relatório Resumido da Execução Orçamentária, Anexo 1, via SICONFI/Tesouro Nacional, últimos bimestres de 2019 e 2025. Rendimentos financeiros e royalties: SEFAZ-ES.</p>
 </div>
 
 <!-- TELA 7: RIGIDEZ DO GASTO -->
@@ -320,8 +356,9 @@ footer.doc-footer {
   <div class="tag">Tema transversal</div>
   <h2>Rigidez do gasto: quanto sobra para decidir</h2>
   <p class="subhead">Despesa com pessoal do Poder Executivo como percentual da receita corrente líquida ajustada, limite da Lei de Responsabilidade Fiscal em 49%.</p>
+  <p class="def"><b>Rigidez do gasto</b> é a parcela da receita já comprometida com despesas obrigatórias, que o governo não pode simplesmente deixar de pagar de um ano para o outro, como salários e aposentadorias. Quanto maior essa parcela, menor o espaço para redirecionar recursos a novas prioridades ou para reagir a uma queda de receita sem cortar serviços. A <b>receita corrente líquida ajustada</b> é a receita corrente do Estado depois de descontar transferências obrigatórias a municípios e outras deduções previstas em lei, a base de cálculo usada pela Lei de Responsabilidade Fiscal para medir esse limite.</p>
   <div class="chart-wrap" id="chart-pessoal"></div>
-  <div class="highlight">A despesa com pessoal do Poder Executivo ficou estável, entre 35% e 39% da receita corrente líquida ajustada, sempre abaixo do limite legal de 49%. Isoladamente, este indicador não mostra fragilidade. Mas ao somar os aportes obrigatórios à previdência (13,8% da receita corrente líquida em 2024), o espaço fiscal realmente livre para decisões de política pública é menor do que sugere o indicador de pessoal isolado.</div>
+  <div class="highlight">A despesa com pessoal do Poder Executivo ficou estável, entre 35% e 39% da receita corrente líquida ajustada, sempre abaixo do limite legal de 49%. Isoladamente, este indicador não mostra fragilidade. Mas ao somar os aportes obrigatórios à previdência (13,8% da receita corrente líquida em 2024), a conta sobe para perto de 49% da receita já comprometida só com pessoal e previdência, e o espaço fiscal realmente livre para decisões de política pública é menor do que sugere o indicador de pessoal isolado.</div>
   <p class="src">Fonte: Relatório de Gestão Fiscal, Anexo 1, via SICONFI/Tesouro Nacional. Poder Executivo.</p>
 </div>
 
