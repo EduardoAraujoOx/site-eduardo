@@ -139,6 +139,22 @@ def collect_rgf_year(ano):
             a2, conta_prefix="LIMITE DEFINIDO POR RESOLUÇÃO DO SENADO",
             coluna_contains="Até o 3º Quadrimestre",
         ),
+        "passivo_atuarial_rpps": find(
+            a2, conta_prefix="Passivo Atuarial",
+            coluna_contains="Até o 3º Quadrimestre",
+        ),
+        "demais_haveres_financeiros": find(
+            a2, conta_prefix="Demais Haveres Financeiros",
+            coluna_contains="Até o 3º Quadrimestre",
+        ),
+        "precatorios_pos_2000_fora_dc": find(
+            a2, conta_prefix="Precatórios Posteriores a 05/05/2000",
+            coluna_contains="Até o 3º Quadrimestre",
+        ),
+        "rp_nao_processados_total_governo": find(
+            a2, conta_prefix="RP Não-Processados",
+            coluna_contains="Até o 3º Quadrimestre",
+        ),
         "despesa_pessoal_valor": find(
             a1, conta_prefix="DESPESA TOTAL COM PESSOAL",
             coluna_exact="Valor",
@@ -217,7 +233,17 @@ def main():
             "posição em 31/dez) para o ES nos anos testados; a série de "
             "caixa/dívida/pessoal é, portanto, um retrato de fim de "
             "exercício. RREO usa o último bimestre disponível em cada "
-            "ano (6 = ano fechado; 2 = 2026, ano corrente)."
+            "ano (6 = ano fechado; 2 = 2026, ano corrente). "
+            "passivo_atuarial_rpps, demais_haveres_financeiros e "
+            "precatorios_pos_2000_fora_dc são itens de memória do "
+            "RGF-Anexo 02 (não entram no cálculo da DCL, exceto haveres "
+            "financeiros que já compõem as DEDUÇÕES); "
+            "rp_nao_processados_total_governo é o estoque de restos a "
+            "pagar não processados de todo o governo (não só recursos "
+            "não vinculados) informado como memória no mesmo anexo, mais "
+            "comparável ano a ano do que o RREO-Anexo 07 (cujo saldo "
+            "reflete apenas resíduo de exercícios anteriores, não o "
+            "estoque total)."
         ),
         "unidade": "R$ nominais (não deflacionados)",
         "rgf": {},
