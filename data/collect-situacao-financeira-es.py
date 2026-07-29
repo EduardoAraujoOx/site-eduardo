@@ -199,6 +199,14 @@ def collect_rreo_year(ano):
             a1, conta_prefix="TOTAL DAS DESPESAS",
             coluna_contains="DESPESAS LIQUIDADAS ATÉ O BIMESTRE",
         ),
+        "despesa_empenhada": find(
+            a1, conta_prefix="TOTAL DAS DESPESAS",
+            coluna_contains="DESPESAS EMPENHADAS ATÉ O BIMESTRE",
+        ),
+        "receita_patrimonial": find(
+            a1, conta_prefix="RECEITA PATRIMONIAL",
+            coluna_contains="Até o Bimestre (c)",
+        ),
         "rcl_rreo": find(
             a3, conta_prefix="RECEITA CORRENTE LÍQUIDA (III)",
             coluna_exact="TOTAL (ÚLTIMOS 12 MESES)",

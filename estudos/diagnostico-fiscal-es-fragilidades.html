@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Diagnóstico de Fragilidade Fiscal, Estado do Espírito Santo</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&display=swap');
+
+:root {
+  --navy: #0f2240;
+  --navy-mid: #1a3a6b;
+  --gold: #b8922a;
+  --gold-dark: #8a6d1f;
+  --ink: #1c1c1c;
+  --muted: #565550;
+  --border: #d9d4c8;
+  --surface: #ffffff;
+  --panel: #f7f5ef;
+  --good: #1d6640;
+  --good-bg: #eef7f1;
+  --warn: #7a4f00;
+  --warn-bg: #fbf3e2;
+  --bad: #8b1a1a;
+  --bad-bg: #fbeded;
+  --series-blue: #1c5cab;
+  --series-gold: #b8922a;
+}
+
+* , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { color-scheme: light; }
+
+body {
+  font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  background: #e9e6dd;
+  color: var(--ink);
+  font-size: 15.5px;
+  line-height: 1.7;
+}
+
+.chart text, .kpi .val, .num { font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; }
+
+/* toolbar (não imprime) */
+.toolbar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--navy); color: white;
+  padding: 10px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 13px;
+}
+.toolbar span { color: rgba(255,255,255,.7); }
+.toolbar button {
+  background: var(--gold); color: var(--navy); border: none;
+  font-weight: 700; font-size: 13px; letter-spacing: .3px;
+  padding: 9px 18px; cursor: pointer;
+  font-family: 'Source Serif 4', serif;
+}
+.toolbar button:hover { background: #cba53a; }
+
+/* páginas */
+.screen {
+  background: var(--surface);
+  max-width: 940px;
+  margin: 28px auto;
+  padding: 56px 64px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.12);
+  min-height: 620px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* CAPA */
+.cover {
+  background: var(--navy); color: white;
+  padding: 90px 72px 64px;
+  position: relative; overflow: hidden;
+  min-height: 620px;
+  justify-content: center;
+}
+.cover::before {
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,.02) 40px, rgba(255,255,255,.02) 41px);
+}
+.cover-label { font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 26px; position: relative; }
+.cover-bar { height: 3px; width: 150px; background: linear-gradient(90deg, var(--gold), #d4b752, transparent); margin-bottom: 32px; position: relative; }
+.cover h1 { font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 700; line-height: 1.15; max-width: 680px; margin-bottom: 20px; position: relative; }
+.cover-sub { font-size: 17px; font-weight: 300; color: rgba(255,255,255,.75); max-width: 580px; margin-bottom: 48px; line-height: 1.6; position: relative; }
+.cover-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; border-top: 1px solid rgba(255,255,255,.16); padding-top: 26px; position: relative; }
+.cover-meta label { display: block; font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
+.cover-meta span { font-size: 13px; color: rgba(255,255,255,.85); line-height: 1.5; }
+
+/* rótulo de tela e título */
+.tag { font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 8px; }
+h2 {
+  font-family: 'Playfair Display', serif; font-size: 27px; font-weight: 700; color: var(--navy);
+  border-bottom: 2px solid var(--navy); padding-bottom: 12px; margin-bottom: 8px; line-height: 1.25;
+}
+.subhead { font-size: 14px; color: var(--muted); margin-bottom: 26px; max-width: 720px; }
+
+/* destaque de texto */
+.highlight {
+  border-left: 3px solid var(--gold);
+  background: var(--panel);
+  padding: 16px 22px;
+  font-size: 14.5px;
+  line-height: 1.72;
+  margin: 22px 0 6px;
+}
+.note { font-size: 12.5px; color: var(--muted); margin-top: 10px; line-height: 1.6; }
+.src {
+  font-size: 11.5px; color: var(--muted); font-style: italic;
+  border-top: 1px solid var(--border); padding-top: 10px; margin-top: auto;
+}
+
+/* painel de risco */
+.risk-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+.risk-table td { padding: 16px 4px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.risk-table tr:last-child td { border-bottom: none; }
+.risk-pillar { font-weight: 600; color: var(--navy); font-size: 14.5px; width: 21%; }
+.risk-pillar small { display: block; font-weight: 400; color: var(--muted); font-size: 11.5px; margin-top: 3px; }
+.risk-status { width: 16%; }
+.pill {
+  display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
+  padding: 5px 11px; white-space: nowrap;
+}
+.pill.good { background: var(--good-bg); color: var(--good); }
+.pill.warn { background: var(--warn-bg); color: var(--warn); }
+.pill.bad  { background: var(--bad-bg);  color: var(--bad); }
+.risk-desc { font-size: 13.5px; color: var(--ink); line-height: 1.6; }
+
+/* kpi */
+.kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 18px 0 8px; }
+.kpi-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.kpi { background: var(--panel); border: 1px solid var(--border); padding: 16px 18px; }
+.kpi .lbl { font-size: 10.5px; font-weight: 600; letter-spacing: .8px; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; line-height: 1.35; }
+.kpi .val { font-size: 24px; font-weight: 700; color: var(--navy); line-height: 1; margin-bottom: 5px; }
+.kpi .sub { font-size: 11.5px; color: var(--muted); line-height: 1.4; font-family: 'Source Serif 4', serif; }
+.kpi.good .val { color: var(--good); }
+.kpi.warn .val { color: var(--warn); }
+.kpi.bad .val { color: var(--bad); }
+
+/* charts */
+.chart-wrap { margin: 10px 0 4px; }
+.chart-wrap svg { width: 100%; height: auto; display: block; }
+.chart-title { font-size: 12px; font-weight: 600; color: var(--navy); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+.legend { display: flex; gap: 20px; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.legend .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+
+.stat-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+.stat-tile { border: 1px solid var(--border); padding: 16px 18px; }
+.stat-tile .name { font-size: 12.5px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+.stat-tile .big { font-size: 21px; font-weight: 700; color: var(--bad); font-family: -apple-system, sans-serif; }
+.stat-tile .delta { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* referências */
+.refs ol { list-style: decimal; padding-left: 20px; }
+.refs li { font-size: 12.5px; line-height: 1.65; margin-bottom: 8px; color: var(--ink); }
+.refs a { color: var(--navy-mid); text-decoration: underline; word-break: break-word; }
+
+footer.doc-footer {
+  max-width: 940px; margin: 0 auto 60px; text-align: center; color: var(--muted); font-size: 11.5px; padding: 0 64px;
+}
+
+@media print {
+  body { background: white; }
+  .toolbar { display: none; }
+  .screen { box-shadow: none; margin: 0; max-width: none; padding: 20mm 16mm; page-break-after: always; min-height: 0; }
+  .screen:last-of-type { page-break-after: auto; }
+  .cover { page-break-after: always; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  footer.doc-footer { display: none; }
+  @page { size: A4; margin: 0; }
+}
+
+@media (max-width: 720px) {
+  .screen { padding: 32px 24px; }
+  .cover { padding: 48px 24px; }
+  .cover h1 { font-size: 30px; }
+  .cover-meta { grid-template-columns: 1fr; }
+  .kpi-grid, .kpi-grid.cols-4 { grid-template-columns: 1fr 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+  .stat-tiles { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span>Diagnóstico de fragilidade fiscal, Espírito Santo · uso interno, não listado no site</span>
+  <button onclick="window.print()">Baixar / imprimir PDF</button>
+</div>
+
+<!-- CAPA -->
+<div class="screen cover">
+  <div class="cover-label">Diagnóstico técnico, uso interno</div>
+  <div class="cover-bar"></div>
+  <h1>Situação Fiscal do Estado do Espírito Santo</h1>
+  <p class="cover-sub">Avaliação de fragilidades a partir de dados públicos, organizada em cinco perguntas que uma análise de risco costuma fazer sobre as contas de um governo.</p>
+  <div class="cover-meta">
+    <div><label>Período de referência</label><span>2019 a abril de 2026</span></div>
+    <div><label>Fontes</label><span>SICONFI/Tesouro Nacional, SEFAZ-ES, TCE-ES, IPAJM, STN, IBGE, CLP</span></div>
+    <div><label>Elaborado em</label><span>Julho de 2026</span></div>
+  </div>
+</div>
+
+<!-- TELA 1: PAINEL DE RISCO -->
+<div class="screen">
+  <div class="tag">Visão geral</div>
+  <h2>Painel de risco fiscal</h2>
+  <p class="subhead">Cinco perguntas que uma avaliação de risco costuma fazer sobre as contas de um governo, respondidas com dados públicos do Espírito Santo.</p>
+  <table class="risk-table">
+    <tr>
+      <td class="risk-pillar">I. Solvência<small>A dívida é sustentável?</small></td>
+      <td class="risk-status"><span class="pill good">Risco baixo</span></td>
+      <td class="risk-desc">A dívida líquida é negativa desde 2021: o Estado tem mais recursos financeiros do que dívida.</td>
+    </tr>
+    <tr>
+      <td class="risk-pillar">II. Liquidez<small>Há caixa para o curto prazo?</small></td>
+      <td class="risk-status"><span class="pill warn">Atenção</span></td>
+      <td class="risk-desc">O caixa livre caiu 44% frente ao pico de 2021 e os restos a pagar cresceram cerca de 5 vezes no mesmo período.</td>
+    </tr>
+    <tr>
+      <td class="risk-pillar">III. Postura fiscal<small>O governo gera ou consome poupança?</small></td>
+      <td class="risk-status"><span class="pill warn">Atenção</span></td>
+      <td class="risk-desc">Sem a receita do fundo previdenciário, o resultado primário ficou negativo em dois dos últimos três anos.</td>
+    </tr>
+    <tr>
+      <td class="risk-pillar">IV. Passivos ocultos<small>Há compromissos futuros fora do caixa de hoje?</small></td>
+      <td class="risk-status"><span class="pill bad">Risco alto</span></td>
+      <td class="risk-desc">O déficit atuarial da previdência estadual equivale a cerca de duas vezes a receita corrente líquida anual.</td>
+    </tr>
+    <tr>
+      <td class="risk-pillar">V. Qualidade da receita<small>A receita é estável?</small></td>
+      <td class="risk-status"><span class="pill warn">Atenção</span></td>
+      <td class="risk-desc">Entre 3% e 9% da receita depende de fontes voláteis, como rendimentos financeiros e royalties de petróleo.</td>
+    </tr>
+  </table>
+  <p class="note" style="margin-top:20px;">Este painel resume os cinco temas detalhados nas páginas seguintes. Nenhum indicador isolado justifica uma conclusão definitiva: o valor deste diagnóstico está no conjunto.</p>
+</div>
+
+<!-- TELA 2: PILAR I SOLVÊNCIA -->
+<div class="screen">
+  <div class="tag">Pilar I</div>
+  <h2>Solvência: a dívida líquida segue sob controle</h2>
+  <p class="subhead">Dívida consolidada líquida como percentual da receita corrente líquida, posição de 31 de dezembro de cada ano.</p>
+  <div class="chart-wrap" id="chart-dcl"></div>
+  <div class="highlight">A dívida líquida saiu de 14% da receita corrente líquida em 2019 para valores negativos desde 2021, o que significa que o Estado passou a deter mais ativos financeiros do que dívida. Em 2025 o indicador chegou a menos 52%, o mais favorável da série.</div>
+  <p class="note">O salto entre 2024 e 2025 foi impulsionado por um aumento expressivo em outros haveres financeiros registrados no relatório, item que merece acompanhamento mais detalhado nos próximos ciclos.</p>
+  <p class="src">Fonte: Relatório de Gestão Fiscal, Anexo 2, via SICONFI/Tesouro Nacional. Poder Executivo, posição de 31 de dezembro de cada ano.</p>
+</div>
+
+<!-- TELA 3: PILAR II LIQUIDEZ -->
+<div class="screen">
+  <div class="tag">Pilar II</div>
+  <h2>Liquidez: o caixa livre está encolhendo</h2>
+  <p class="subhead">Disponibilidade de caixa líquida e restos a pagar não processados, recursos não vinculados, em R$ milhões.</p>
+  <div class="chart-wrap" id="chart-caixa"></div>
+  <div class="highlight">A disponibilidade de caixa livre caiu de R$2,25 bilhões em 2021 para R$991 milhões em 2024, uma queda de 56%. Em 2025 houve recuperação parcial, para R$1,26 bilhão, ainda 44% abaixo do pico. No mesmo período, o estoque de restos a pagar (despesas já comprometidas e ainda não pagas) subiu de R$210 milhões para cerca de R$1 bilhão, um crescimento de quase 5 vezes.</div>
+  <p class="src">Fonte: Relatório de Gestão Fiscal, Anexo 5, via SICONFI/Tesouro Nacional. Recursos não vinculados, posição de 31 de dezembro de cada ano.</p>
+</div>
+
+<!-- TELA 4: PILAR III POSTURA FISCAL -->
+<div class="screen">
+  <div class="tag">Pilar III</div>
+  <h2>Postura fiscal: o resultado sem a previdência conta outra história</h2>
+  <p class="subhead">Resultado orçamentário do exercício e resultado primário, com e sem a receita do regime próprio de previdência.</p>
+  <div class="two-col">
+    <div>
+      <div class="chart-title">Resultado orçamentário (R$ milhões)</div>
+      <div class="chart-wrap" id="chart-orcamentario"></div>
+    </div>
+    <div>
+      <div class="chart-title">Resultado primário, com e sem RPPS (R$ milhões)</div>
+      <div class="chart-wrap" id="chart-primario"></div>
+    </div>
+  </div>
+  <div class="highlight">O resultado orçamentário (diferença entre receita realizada e despesa empenhada no exercício) caiu de R$1,3 bilhão em 2021 para uma média próxima de R$860 milhões em 2023, 2024 e 2025, cerca de um terço menor. Ao excluir a receita do regime próprio de previdência, o resultado primário foi negativo em 2023 e novamente em 2025.</div>
+  <p class="src">Fonte: Relatório Resumido da Execução Orçamentária, Anexos 1 e 6, via SICONFI/Tesouro Nacional. Último bimestre publicado em cada ano.</p>
+</div>
+
+<!-- TELA 5: PILAR IV PASSIVOS OCULTOS -->
+<div class="screen">
+  <div class="tag">Pilar IV</div>
+  <h2>Passivos ocultos: o maior número deste diagnóstico</h2>
+  <p class="subhead">Passivo atuarial do regime próprio de previdência, em R$ bilhões, posição de 31 de dezembro de cada ano.</p>
+  <div class="chart-wrap" id="chart-atuarial"></div>
+  <div class="highlight">O passivo atuarial da previdência estadual saltou de R$6,1 bilhões em 2022 para cerca de R$59 bilhões a partir de 2023, valor próximo do dobro de toda a receita corrente líquida anual do Estado. Esse número não aparece no caixa disponível hoje, mas representa um compromisso financeiro que caberá aos próximos anos e às próximas gestões.</div>
+  <div class="stat-tiles">
+    <div class="stat-tile">
+      <div class="name">Fundo Financeiro (regime civil)</div>
+      <div class="big">R$ 37,84 bilhões</div>
+      <div class="delta">Déficit atuarial em 2024, variação de menos 3,0% frente a 2023</div>
+    </div>
+    <div class="stat-tile">
+      <div class="name">Fundo de Proteção Social dos Militares</div>
+      <div class="big">R$ 16,03 bilhões</div>
+      <div class="delta">Déficit atuarial em 2024, variação de mais 8,7% frente a 2023</div>
+    </div>
+  </div>
+  <p class="note">Os aportes obrigatórios do Tesouro aos dois fundos somaram R$3,63 bilhões em 2024, equivalente a 13,8% da receita corrente líquida daquele ano.</p>
+  <p class="src">Fontes: passivo atuarial total, Relatório de Gestão Fiscal Anexo 2, via SICONFI/Tesouro Nacional. Detalhamento por fundo: Tribunal de Contas do Estado do Espírito Santo, Prestação de Contas do Governador 2024, e IPAJM, avaliação atuarial dezembro de 2024.</p>
+</div>
+
+<!-- TELA 6: PILAR V QUALIDADE DA RECEITA -->
+<div class="screen">
+  <div class="tag">Pilar V</div>
+  <h2>Qualidade da receita: parte do caixa depende de fatores externos</h2>
+  <p class="subhead">Receita patrimonial (inclui rendimentos financeiros e royalties de petróleo) como percentual da receita corrente líquida.</p>
+  <div class="chart-wrap" id="chart-patrimonial"></div>
+  <div class="highlight">A receita patrimonial oscilou entre 3% e 9% da receita corrente líquida ao longo da série. Rendimentos de aplicações financeiras somaram R$1,74 bilhão em 2025 (6,2% da receita corrente líquida, o terceiro maior percentual entre os estados), valor sensível ao nível da taxa Selic e ao volume de caixa do Tesouro estadual. Os royalties de petróleo caíram 23,5% entre janeiro e agosto de 2025 frente ao mesmo período de 2024, mas subiram 56,8% no primeiro trimestre de 2026, puxados pela alta do preço internacional do petróleo. É uma fonte de receita relevante, mas volátil nas duas direções, não apenas em queda.</div>
+  <p class="src">Fonte: receita patrimonial, Relatório Resumido da Execução Orçamentária Anexo 1, via SICONFI/Tesouro Nacional. Rendimentos financeiros e royalties: SEFAZ-ES.</p>
+</div>
+
+<!-- TELA 7: RIGIDEZ DO GASTO -->
+<div class="screen">
+  <div class="tag">Tema transversal</div>
+  <h2>Rigidez do gasto: quanto sobra para decidir</h2>
+  <p class="subhead">Despesa com pessoal do Poder Executivo como percentual da receita corrente líquida ajustada, limite da Lei de Responsabilidade Fiscal em 49%.</p>
+  <div class="chart-wrap" id="chart-pessoal"></div>
+  <div class="highlight">A despesa com pessoal do Poder Executivo ficou estável, entre 35% e 39% da receita corrente líquida ajustada, sempre abaixo do limite legal de 49%. Isoladamente, este indicador não mostra fragilidade. Mas ao somar os aportes obrigatórios à previdência (13,8% da receita corrente líquida em 2024), o espaço fiscal realmente livre para decisões de política pública é menor do que sugere o indicador de pessoal isolado.</div>
+  <p class="src">Fonte: Relatório de Gestão Fiscal, Anexo 1, via SICONFI/Tesouro Nacional. Poder Executivo.</p>
+</div>
+
+<!-- TELA 8: ULTIMOS DADOS 2026 -->
+<div class="screen">
+  <div class="tag">Dado mais recente</div>
+  <h2>O que já se sabe de 2026, último ano do mandato</h2>
+  <p class="subhead">Resultados de janeiro a abril de 2026, apresentados pela SEFAZ-ES na Assembleia Legislativa em 13 de julho de 2026.</p>
+  <div class="kpi-grid cols-4">
+    <div class="kpi good">
+      <div class="lbl">Receita total líquida</div>
+      <div class="val">R$ 11,2 bi</div>
+      <div class="sub">Mais 23,5% nominal frente ao mesmo período de 2025</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Despesa total</div>
+      <div class="val">+9,2%</div>
+      <div class="sub">Variação nominal, todos os poderes</div>
+    </div>
+    <div class="kpi good">
+      <div class="lbl">Resultado primário</div>
+      <div class="val">R$ 712 mi</div>
+      <div class="sub">Acima da meta do período</div>
+    </div>
+    <div class="kpi good">
+      <div class="lbl">Resultado orçamentário</div>
+      <div class="val">R$ 2,5 bi</div>
+      <div class="sub">Receita menos despesa do período</div>
+    </div>
+    <div class="kpi good">
+      <div class="lbl">Dívida líquida</div>
+      <div class="val">-53,5%</div>
+      <div class="sub">Da receita corrente líquida</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Poupança corrente</div>
+      <div class="val">31,5%</div>
+      <div class="sub">Da receita corrente líquida</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Royalties e participação especial</div>
+      <div class="val">+56,8%</div>
+      <div class="sub">Reflexo da alta do preço do petróleo</div>
+    </div>
+    <div class="kpi good">
+      <div class="lbl">Investimentos</div>
+      <div class="val">R$ 2,2 bi</div>
+      <div class="sub">Recorde nominal para o período</div>
+    </div>
+  </div>
+  <div class="highlight">Os quatro primeiros meses de 2026 mostram receita crescendo acima da despesa e indicadores de dívida e liquidez favoráveis. É, no entanto, o retrato de um começo de ano, ainda distante do fechamento: entre 2023 e 2025 o resultado do exercício costumou se definir nos últimos meses, quando despesas represadas e restos a pagar se acumulam. Os indicadores de caixa livre e restos a pagar apresentados nos pilares II e IV só têm posição consolidada em 31 de dezembro.</div>
+  <p class="src">Fonte: SEFAZ-ES, Audiência Pública na Assembleia Legislativa do Espírito Santo, 1º quadrimestre de 2026, 13 de julho de 2026. Receita total confirmada de forma independente via RREO/SICONFI, período até abril de 2026.</p>
+</div>
+
+<!-- TELA 9: CONTRAPONTO -->
+<div class="screen">
+  <div class="tag">Contraponto</div>
+  <h2>O que está funcionando</h2>
+  <p class="subhead">Um diagnóstico de fragilidade só é útil se também reconhecer o que não é frágil.</p>
+  <div class="kpi-grid">
+    <div class="kpi good">
+      <div class="lbl">Capacidade de pagamento (CAPAG)</div>
+      <div class="val">Nota A+</div>
+      <div class="sub">Segundo ano consecutivo. Nota A nos três indicadores: endividamento 33,75% (limite 60%), poupança corrente 81,72% (limite 85%), liquidez relativa 11,49% (mínimo 5%)</div>
+    </div>
+    <div class="kpi good">
+      <div class="lbl">Mercado de trabalho</div>
+      <div class="val">3,3%</div>
+      <div class="sub">Taxa de desocupação em 2025, a menor da série histórica iniciada em 2012, quinta menor do país</div>
+    </div>
+    <div class="kpi good">
+      <div class="lbl">Infraestrutura</div>
+      <div class="val">2º lugar</div>
+      <div class="sub">No ranking nacional de competitividade do CLP desde 2022, atrás apenas de São Paulo</div>
+    </div>
+  </div>
+  <div class="highlight">Esses resultados são reais e não devem ser ofuscados pelos pontos de atenção deste diagnóstico. A avaliação de fragilidade apresentada aqui não é sobre um colapso iminente: é sobre identificar onde a margem de segurança está mais estreita do que estava há poucos anos, para que a próxima gestão comece com essa informação em mãos.</div>
+  <p class="src">Fontes: Secretaria do Tesouro Nacional, avaliação CAPAG (ano base 2024, publicada em setembro de 2025); IBGE, PNAD Contínua 2025; CLP e Tendências Consultoria, Ranking de Competitividade dos Estados 2025.</p>
+</div>
+
+<!-- TELA 10: FECHO E METODOLOGIA -->
+<div class="screen refs">
+  <div class="tag">Fechamento</div>
+  <h2>Metodologia e referências</h2>
+  <p class="subhead" style="margin-bottom:16px;">Definições e ressalvas necessárias para interpretar corretamente os números deste diagnóstico.</p>
+
+  <p style="font-size:13.5px; margin-bottom:12px;">Todos os valores estão em preços correntes de cada ano, sem ajuste pela inflação, salvo quando indicado. "Recursos não vinculados" são os recursos de caixa sem destinação legal obrigatória, a parcela que o Estado pode alocar livremente. "Resultado orçamentário" é a diferença entre a receita realizada e a despesa empenhada no exercício, conforme o Anexo 1 do Relatório Resumido da Execução Orçamentária, e só é comparável entre anos fechados: no meio do exercício, despesas de contratos anuais já empenhadas distorcem a comparação, por isso o resultado de 2026 usa a cifra divulgada pela própria SEFAZ-ES.</p>
+
+  <p style="font-size:13.5px; margin-bottom:12px;">O Relatório de Gestão Fiscal só tem publicação consolidada disponível para o terceiro quadrimestre (posição de 31 de dezembro) nos anos observados. Por isso os indicadores de caixa, dívida líquida e passivo atuarial (pilares I, II e IV) formam uma série anual de fim de exercício, e não incorporam ainda o fechamento de 2026.</p>
+
+  <p style="font-size:13.5px; margin-bottom:24px;">O passivo atuarial total informado pelo SICONFI (item de memória do Anexo 2 do Relatório de Gestão Fiscal) e a soma do déficit atuarial dos dois fundos previdenciários informada pelo Tribunal de Contas do Estado usam metodologias e datas de referência distintas: por isso os dois números são próximos, mas não idênticos, e este relatório cita cada um com sua fonte.</p>
+
+  <h3 style="font-family:'Playfair Display',serif; font-size:16px; color:var(--navy); margin-bottom:12px;">Referências</h3>
+  <ol>
+    <li>Secretaria do Tesouro Nacional (STN). <em>SICONFI, Relatório de Gestão Fiscal (RGF), Anexos 1, 2 e 5, e Relatório Resumido da Execução Orçamentária (RREO), Anexos 1, 3 e 6</em>. Governo do Estado do Espírito Santo, 2019 a 2026. <a href="https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo" target="_blank">apidatalake.tesouro.gov.br/ords/siconfi</a></li>
+    <li>Secretaria do Tesouro Nacional (STN). <em>Avaliação CAPAG, ano base 2024</em>, publicada em setembro de 2025. <a href="https://www.tesourotransparente.gov.br/temas/estados-e-municipios/capacidade-de-pagamento-capag" target="_blank">tesourotransparente.gov.br</a></li>
+    <li>Espírito Santo, Secretaria de Estado da Fazenda (SEFAZ-ES). <em>Espírito Santo tem recorde de investimentos em 2025 e consolida equilíbrio fiscal</em>, fevereiro de 2026. <a href="https://sefaz.es.gov.br/Noticia/espirito-santo-tem-recorde-de-investimentos-em-2025-e-consolida-equilibrio-fiscal" target="_blank">sefaz.es.gov.br</a></li>
+    <li>Espírito Santo, Secretaria de Estado da Fazenda (SEFAZ-ES). <em>Espírito Santo é destaque nacional em rendimentos de aplicações financeiras</em>, março de 2026. <a href="https://sefaz.es.gov.br" target="_blank">sefaz.es.gov.br</a></li>
+    <li>Espírito Santo, Secretaria de Estado da Fazenda (SEFAZ-ES). <em>Audiência Pública na ALES, 1º quadrimestre de 2026</em>, 13 de julho de 2026.</li>
+    <li>Tribunal de Contas do Estado do Espírito Santo (TCE-ES). <em>Prestação de Contas do Governador 2024, seção Previdência</em>. <a href="https://tcees.tc.br/contasdegovernoestado/previdencia" target="_blank">tcees.tc.br</a></li>
+    <li>Instituto de Previdência dos Servidores do Estado do Espírito Santo (IPAJM). <em>Relatório da Avaliação Atuarial, dezembro de 2024</em>. <a href="https://ipajm.es.gov.br" target="_blank">ipajm.es.gov.br</a></li>
+    <li>Instituto Brasileiro de Geografia e Estatística (IBGE). <em>PNAD Contínua, resultados de 2025</em>, fevereiro de 2026. <a href="https://agenciadenoticias.ibge.gov.br" target="_blank">agenciadenoticias.ibge.gov.br</a></li>
+    <li>Centro de Liderança Pública (CLP) e Tendências Consultoria. <em>Ranking de Competitividade dos Estados 2025</em>. <a href="https://rankingdecompetitividade.org.br" target="_blank">rankingdecompetitividade.org.br</a></li>
+  </ol>
+
+  <p class="src" style="margin-top:26px;">Documento elaborado com dados públicos, para uso interno. Não expressa opinião sobre decisões de política pública nem recomendação de voto. Página não listada na navegação do site.</p>
+</div>
+
+<footer class="doc-footer">Diagnóstico de Fragilidade Fiscal, Estado do Espírito Santo. Dados até abril de 2026. Uso interno, não indexado.</footer>
+
+<script>
+(function () {
+  var INK = '#1c1c1c';
+  var MUTED = '#565550';
+  var GRID = '#e4e0d3';
+  var BLUE = '#1c5cab';
+  var GOLD = '#b8922a';
+
+  function fmt(v, opts) {
+    opts = opts || {};
+    var abs = Math.abs(v);
+    var s;
+    if (opts.pct) {
+      s = v.toFixed(opts.decimals != null ? opts.decimals : 1).replace('.', ',') + '%';
+    } else if (opts.decimals) {
+      s = v.toLocaleString('pt-BR', {minimumFractionDigits: opts.decimals, maximumFractionDigits: opts.decimals});
+    } else {
+      s = Math.round(v).toLocaleString('pt-BR');
+    }
+    return s;
+  }
+
+  function svgEl(tag, attrs) {
+    var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+
+  // gráfico de linha(s), eixo único, com rótulo direto no último ponto
+  function lineChart(containerId, opts) {
+    var container = document.getElementById(containerId);
+    if (!container) return;
+    var W = 800, H = opts.height || 260;
+    var padL = 46, padR = 20, padT = 18, padB = 30;
+    var years = opts.years;
+    var series = opts.series; // [{name, color, values, format}]
+
+    var allVals = [];
+    series.forEach(function (s) { s.values.forEach(function (v) { if (v != null) allVals.push(v); }); });
+    var rawMin = Math.min.apply(null, allVals);
+    var vMax = Math.max.apply(null, allVals);
+    var vMin = (opts.forceZero !== false) ? Math.min(rawMin, 0) : rawMin;
+    var span = vMax - vMin || 1;
+    var padSpan = span * 0.14;
+    vMin -= padSpan; vMax += padSpan;
+    if (rawMin >= 0 && opts.forceZero !== false) vMin = 0;
+
+    var x = function (i) { return padL + (i / (years.length - 1)) * (W - padL - padR); };
+    var y = function (v) { return padT + (1 - (v - vMin) / (vMax - vMin)) * (H - padT - padB); };
+
+    var svg = svgEl('svg', {viewBox: '0 0 ' + W + ' ' + H, preserveAspectRatio: 'xMidYMid meet'});
+
+    // gridlines
+    var ticks = opts.yTicks || 4;
+    for (var t = 0; t <= ticks; t++) {
+      var val = vMin + (t / ticks) * (vMax - vMin);
+      var yy = y(val);
+      svg.appendChild(svgEl('line', {x1: padL, x2: W - padR, y1: yy, y2: yy, stroke: GRID, 'stroke-width': 1}));
+      var lbl = svgEl('text', {x: padL - 8, y: yy + 4, 'text-anchor': 'end', 'font-size': 10.5, fill: MUTED});
+      lbl.textContent = fmt(val, opts.valueFmt);
+      svg.appendChild(lbl);
+    }
+    // linha de zero em destaque, se o domínio cruza zero
+    if (vMin < 0 && vMax > 0) {
+      var y0 = y(0);
+      svg.appendChild(svgEl('line', {x1: padL, x2: W - padR, y1: y0, y2: y0, stroke: '#b7b2a1', 'stroke-width': 1.2}));
+    }
+
+    // eixo x, anos
+    years.forEach(function (yr, i) {
+      var lbl = svgEl('text', {x: x(i), y: H - 8, 'text-anchor': 'middle', 'font-size': 11, fill: MUTED});
+      lbl.textContent = yr;
+      svg.appendChild(lbl);
+    });
+
+    // séries
+    series.forEach(function (s) {
+      var pts = [];
+      s.values.forEach(function (v, i) { if (v != null) pts.push([x(i), y(v), v, i]); });
+      var d = pts.map(function (p, idx) { return (idx === 0 ? 'M' : 'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ');
+      svg.appendChild(svgEl('path', {d: d, fill: 'none', stroke: s.color, 'stroke-width': 2.25, 'stroke-linecap': 'round', 'stroke-linejoin': 'round'}));
+      pts.forEach(function (p, idx) {
+        svg.appendChild(svgEl('circle', {cx: p[0], cy: p[1], r: 3.4, fill: s.color}));
+      });
+      // rótulo direto no último ponto
+      var last = pts[pts.length - 1];
+      if (last) {
+        var above = s.labelAbove !== false;
+        var ly = above ? last[1] - 10 : last[1] + 16;
+        var t = svgEl('text', {x: last[0], y: ly, 'text-anchor': 'end', 'font-size': 12, 'font-weight': 700, fill: INK});
+        t.textContent = fmt(last[2], s.format || opts.valueFmt);
+        svg.appendChild(t);
+      }
+    });
+
+    container.innerHTML = '';
+    container.appendChild(svg);
+
+    if (series.length > 1) {
+      var leg = document.createElement('div');
+      leg.className = 'legend';
+      series.forEach(function (s) {
+        var item = document.createElement('span');
+        item.innerHTML = '<span class="dot" style="background:' + s.color + '"></span>' + s.name;
+        leg.appendChild(item);
+      });
+      container.appendChild(leg);
+    }
+  }
+
+  // gráfico de barras, série única
+  function barChart(containerId, opts) {
+    var container = document.getElementById(containerId);
+    if (!container) return;
+    var W = 800, H = opts.height || 260;
+    var padL = 46, padR = 20, padT = 18, padB = 30;
+    var years = opts.years;
+    var values = opts.values;
+    var color = opts.color || BLUE;
+
+    var vMax = Math.max.apply(null, values.filter(function (v) { return v != null; }));
+    var vMin = Math.min(0, Math.min.apply(null, values.filter(function (v) { return v != null; })));
+    if (opts.limitLine != null) vMax = Math.max(vMax, opts.limitLine);
+    vMax = vMax * 1.18;
+
+    var n = years.length;
+    var slot = (W - padL - padR) / n;
+    var barW = Math.min(46, slot * 0.52);
+    var x = function (i) { return padL + slot * i + slot / 2; };
+    var y = function (v) { return padT + (1 - (v - vMin) / (vMax - vMin)) * (H - padT - padB); };
+    var y0 = y(0);
+
+    var svg = svgEl('svg', {viewBox: '0 0 ' + W + ' ' + H, preserveAspectRatio: 'xMidYMid meet'});
+
+    var ticks = opts.yTicks || 4;
+    for (var t = 0; t <= ticks; t++) {
+      var val = vMin + (t / ticks) * (vMax - vMin);
+      var yy = y(val);
+      svg.appendChild(svgEl('line', {x1: padL, x2: W - padR, y1: yy, y2: yy, stroke: GRID, 'stroke-width': 1}));
+      var lbl = svgEl('text', {x: padL - 8, y: yy + 4, 'text-anchor': 'end', 'font-size': 10.5, fill: MUTED});
+      lbl.textContent = fmt(val, opts.valueFmt);
+      svg.appendChild(lbl);
+    }
+
+    if (opts.limitLine != null) {
+      var yl = y(opts.limitLine);
+      svg.appendChild(svgEl('line', {x1: padL, x2: W - padR, y1: yl, y2: yl, stroke: '#8b1a1a', 'stroke-width': 1.3, 'stroke-dasharray': '4,3'}));
+      var lt = svgEl('text', {x: W - padR, y: yl - 5, 'text-anchor': 'end', 'font-size': 10, fill: '#8b1a1a', 'font-weight': 700});
+      lt.textContent = opts.limitLabel || ('limite ' + opts.limitLine);
+      svg.appendChild(lt);
+    }
+
+    years.forEach(function (yr, i) {
+      var v = values[i];
+      var lbl = svgEl('text', {x: x(i), y: H - 8, 'text-anchor': 'middle', 'font-size': 11, fill: MUTED});
+      lbl.textContent = yr;
+      svg.appendChild(lbl);
+      if (v == null) return;
+      var yy = y(v);
+      var rectY = Math.min(yy, y0);
+      var rectH = Math.abs(yy - y0);
+      svg.appendChild(svgEl('rect', {x: x(i) - barW / 2, y: rectY, width: barW, height: Math.max(rectH, 1), fill: color, rx: 2}));
+      var above = v >= 0;
+      var t = svgEl('text', {x: x(i), y: above ? yy - 7 : yy + 15, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 700, fill: INK});
+      t.textContent = fmt(v, opts.valueFmt);
+      svg.appendChild(t);
+    });
+
+    container.innerHTML = '';
+    container.appendChild(svg);
+  }
+
+  // gráfico de barras pareadas (2 séries)
+  function groupedBarChart(containerId, opts) {
+    var container = document.getElementById(containerId);
+    if (!container) return;
+    var W = 800, H = opts.height || 260;
+    var padL = 46, padR = 20, padT = 18, padB = 30;
+    var years = opts.years;
+    var series = opts.series; // [{name, color, values}]
+
+    var allVals = [];
+    series.forEach(function (s) { s.values.forEach(function (v) { if (v != null) allVals.push(v); }); });
+    var vMax = Math.max.apply(null, allVals) * 1.2;
+    var vMin = Math.min(0, Math.min.apply(null, allVals) * 1.2);
+
+    var n = years.length;
+    var slot = (W - padL - padR) / n;
+    var groupW = slot * 0.62;
+    var barW = groupW / series.length - 4;
+    var x0 = function (i) { return padL + slot * i + (slot - groupW) / 2; };
+    var y = function (v) { return padT + (1 - (v - vMin) / (vMax - vMin)) * (H - padT - padB); };
+    var y0 = y(0);
+
+    var svg = svgEl('svg', {viewBox: '0 0 ' + W + ' ' + H, preserveAspectRatio: 'xMidYMid meet'});
+
+    var ticks = opts.yTicks || 4;
+    for (var t = 0; t <= ticks; t++) {
+      var val = vMin + (t / ticks) * (vMax - vMin);
+      var yy = y(val);
+      svg.appendChild(svgEl('line', {x1: padL, x2: W - padR, y1: yy, y2: yy, stroke: GRID, 'stroke-width': 1}));
+      var lbl = svgEl('text', {x: padL - 8, y: yy + 4, 'text-anchor': 'end', 'font-size': 10.5, fill: MUTED});
+      lbl.textContent = fmt(val, opts.valueFmt);
+      svg.appendChild(lbl);
+    }
+
+    years.forEach(function (yr, i) {
+      var lbl = svgEl('text', {x: padL + slot * i + slot / 2, y: H - 8, 'text-anchor': 'middle', 'font-size': 11, fill: MUTED});
+      lbl.textContent = yr;
+      svg.appendChild(lbl);
+      series.forEach(function (s, si) {
+        var v = s.values[i];
+        if (v == null) return;
+        var bx = x0(i) + si * (barW + 4);
+        var yy = y(v);
+        var rectY = Math.min(yy, y0);
+        var rectH = Math.abs(yy - y0);
+        svg.appendChild(svgEl('rect', {x: bx, y: rectY, width: barW, height: Math.max(rectH, 1), fill: s.color, rx: 2}));
+      });
+    });
+
+    container.innerHTML = '';
+    container.appendChild(svg);
+
+    var leg = document.createElement('div');
+    leg.className = 'legend';
+    series.forEach(function (s) {
+      var item = document.createElement('span');
+      item.innerHTML = '<span class="dot" style="background:' + s.color + '"></span>' + s.name;
+      leg.appendChild(item);
+    });
+    container.appendChild(leg);
+  }
+
+  var YEARS = ['2019','2020','2021','2022','2023','2024','2025'];
+
+  lineChart('chart-dcl', {
+    years: YEARS,
+    yTicks: 4,
+    valueFmt: {pct: true, decimals: 0},
+    series: [{ name: 'Dívida líquida / RCL', color: BLUE, values: [14.0, 9.1, -0.8, -4.1, -6.6, -9.7, -52.4] }]
+  });
+
+  lineChart('chart-caixa', {
+    years: YEARS,
+    yTicks: 4,
+    valueFmt: {decimals: 0},
+    series: [
+      { name: 'Caixa livre não vinculado', color: BLUE, values: [1283, 1627, 2253, 2191, 1889, 991, 1264], labelAbove: true },
+      { name: 'Restos a pagar não processados', color: GOLD, values: [210, 327, 295, 418, 702, 1019, 956], labelAbove: false }
+    ]
+  });
+
+  barChart('chart-orcamentario', {
+    years: ['2020','2021','2022','2023','2024','2025'],
+    height: 240,
+    valueFmt: {decimals: 0},
+    color: BLUE,
+    values: [1063, 1303, 1236, 798, 883, 888]
+  });
+
+  groupedBarChart('chart-primario', {
+    years: ['2023','2024','2025'],
+    height: 240,
+    valueFmt: {decimals: 0},
+    series: [
+      { name: 'Com RPPS', color: BLUE, values: [-468, 465, 11] },
+      { name: 'Sem RPPS', color: GOLD, values: [-711, 101, -440] }
+    ]
+  });
+
+  barChart('chart-atuarial', {
+    years: YEARS,
+    valueFmt: {decimals: 1},
+    color: '#8b1a1a',
+    values: [3.3, 2.5, 5.5, 6.1, 55.1, 58.9, 58.9]
+  });
+
+  lineChart('chart-patrimonial', {
+    years: YEARS,
+    yTicks: 4,
+    valueFmt: {pct: true, decimals: 1},
+    forceZero: true,
+    series: [{ name: 'Receita patrimonial / RCL', color: GOLD, values: [5.3, 2.8, 3.1, 9.4, 7.5, 6.3, 7.1] }]
+  });
+
+  barChart('chart-pessoal', {
+    years: YEARS,
+    valueFmt: {pct: true, decimals: 1},
+    color: BLUE,
+    limitLine: 49,
+    limitLabel: 'limite LRF 49%',
+    yTicks: 4,
+    values: [36.3, 38.8, 34.8, 37.5, 38.3, 36.1, 35.4]
+  });
+})();
+</script>
+
+</body>
+</html>
