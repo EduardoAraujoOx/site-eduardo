@@ -7,9 +7,13 @@ montar uma série histórica 2019-2026 com foco em fragilidade fiscal:
 - RGF Anexo 05: disponibilidade de caixa líquida (livre e vinculada) e
   restos a pagar não processados — "sobra caixa livre no fim do ano?"
 - RGF Anexo 02: dívida consolidada líquida (DCL) vs RCL e limite do
-  Senado — "a dívida líquida está subindo?"
+  Senado, com a decomposição bruta/deduções usada na página 2 do
+  diagnóstico — "a dívida líquida está subindo, e o que a compõe?"
 - RGF Anexo 01: despesa total com pessoal vs limite da LRF — "a folha
   está pressionando o limite?"
+- RGF Anexo 03: garantias concedidas a entidades controladas vs limite
+  do Senado — "há passivo contingente relevante em avais?"
+- RGF Anexo 04: operações de crédito contratadas vs limite do Senado.
 - RREO Anexo 01: receita realizada vs despesa paga/liquidada no
   exercício — "o caixa do ano fechou positivo ou negativo?"
 - RREO Anexo 03: receita corrente líquida (RCL), últimos 12 meses.
@@ -18,10 +22,19 @@ montar uma série histórica 2019-2026 com foco em fragilidade fiscal:
 - RREO Anexo 07: estoque total de restos a pagar — "despesa empurrada
   para o ano seguinte por falta de caixa?"
 
-RGF só tem dado consolidado (Q3 = até 31/dez) publicado para o ES nos
-anos testados; por isso a série de RGF é anual (fim de exercício). RREO
-usa o último bimestre publicado no ano (6 = ano fechado; 2 = mais
-recente em 2026, ano corrente/último do mandato).
+RGF só tem dado consolidado por quadrimestre; a série 2019-2025 usa o
+3º quadrimestre (posição de 31/dez, ano fechado), e 2026 usa o 1º
+quadrimestre (único publicado até a data de coleta, posição de 30/abr,
+ano corrente). RREO usa o último bimestre publicado no ano (6 = ano
+fechado; 2 = mais recente em 2026, ano corrente/último do mandato).
+
+Dados que o diagnóstico usa mas que NÃO são coletados por este script,
+por virem de fontes fora do SICONFI (mantidos como citação direta no
+HTML, não neste JSON): despesa por função (RREO Anexo 02, série
+função/subfunção sem campo de nível confiável na API pública),
+passivo atuarial por fundo (IPAJM), CAPAG indicativa de 2025 e
+poupança corrente/RTE (SEFAZ-ES), parecer prévio (TCE-ES), Audiência
+Pública de 2026 (SEFAZ-ES).
 
 Uso:
   python3 collect-situacao-financeira-es.py
@@ -37,7 +50,9 @@ ID_ENTE = 32  # cod_ibge do Estado do Espírito Santo
 ESFERA = "E"
 PODER = "E"  # Poder Executivo
 
-ANOS_RGF = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
+ANOS_RGF = [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]
+RGF_QUADRIMESTRE = {ano: 3 for ano in ANOS_RGF}
+RGF_QUADRIMESTRE[2026] = 1  # único quadrimestre publicado até a data de coleta
 RREO_PERIODO = {
     2019: 6, 2020: 6, 2021: 6, 2022: 6, 2023: 6, 2024: 6, 2025: 6,
     2026: 2,  # bimestre mar-abr, mais recente disponível em 2026
@@ -81,8 +96,11 @@ def rreo_items(ano, anexo, periodo):
     return data.get("items", []) if data else []
 
 
-def find(items, conta_prefix=None, conta_contains=None, coluna_contains=None, coluna_exact=None):
+def find(items, conta_prefix=None, conta_contains=None, conta_exact=None,
+         coluna_contains=None, coluna_exact=None):
     for it in items:
+        if conta_exact is not None and it["conta"] != conta_exact:
+            continue
         if conta_prefix is not None and not it["conta"].startswith(conta_prefix):
             continue
         if conta_contains is not None and conta_contains not in it["conta"]:
@@ -96,17 +114,28 @@ def find(items, conta_prefix=None, conta_contains=None, coluna_contains=None, co
 
 
 def collect_rgf_year(ano):
-    print(f"  RGF {ano} (Anexo 05 - caixa)...")
-    a5 = rgf_items(ano, "05")
-    print(f"  RGF {ano} (Anexo 02 - dívida)...")
-    a2 = rgf_items(ano, "02")
-    print(f"  RGF {ano} (Anexo 01 - pessoal)...")
-    a1 = rgf_items(ano, "01")
+    quad = RGF_QUADRIMESTRE.get(ano, 3)
+    coluna_quad = f"Até o {quad}º Quadrimestre"
 
-    if not a5 and not a2 and not a1:
+    print(f"  RGF {ano} (Anexo 05 - caixa)...")
+    a5 = rgf_items(ano, "05", periodo=quad)
+    print(f"  RGF {ano} (Anexo 02 - dívida)...")
+    a2 = rgf_items(ano, "02", periodo=quad)
+    print(f"  RGF {ano} (Anexo 01 - pessoal)...")
+    a1 = rgf_items(ano, "01", periodo=quad)
+    print(f"  RGF {ano} (Anexo 03 - garantias)...")
+    a3 = rgf_items(ano, "03", periodo=quad)
+    print(f"  RGF {ano} (Anexo 04 - operações de crédito)...")
+    a4 = rgf_items(ano, "04", periodo=quad)
+
+    if not a5 and not a2 and not a1 and not a3 and not a4:
         return None
 
+    # No Anexo 5, a "líquida" fica só após a inscrição em RPNP; no
+    # 1º/2º quadrimestre o rótulo da coluna não muda, mas o quadrimestre
+    # de referência do restante dos anexos sim.
     out = {
+        "quadrimestre": quad,
         "caixa_bruta_nao_vinculada": find(
             a5, conta_contains="RECURSOS NÃO VINCULADOS (I)",
             coluna_contains="CAIXA BRUTA",
@@ -129,31 +158,55 @@ def collect_rgf_year(ano):
         ),
         "dcl": find(
             a2, conta_prefix="DÍVIDA CONSOLIDADA LÍQUIDA",
-            coluna_contains="Até o 3º Quadrimestre",
+            coluna_contains=coluna_quad,
+        ),
+        "divida_consolidada_bruta": find(
+            a2, conta_prefix="DÍVIDA CONSOLIDADA - DC (I)",
+            coluna_contains=coluna_quad,
+        ),
+        "disponibilidade_caixa_bruta_dcl": find(
+            a2, conta_exact="Disponibilidade de Caixa Bruta",
+            coluna_contains=coluna_quad,
+        ),
+        "disponibilidade_caixa_dcl": find(
+            a2, conta_exact="Disponibilidade de Caixa",
+            coluna_contains=coluna_quad,
+        ),
+        "restos_a_pagar_processados_dcl": find(
+            a2, conta_contains="Restos a Pagar Processados",
+            coluna_contains=coluna_quad,
+        ),
+        "depositos_restituiveis_valores_vinculados": find(
+            a2, conta_contains="Depósitos Restituíveis e Valores Vinculados",
+            coluna_contains=coluna_quad,
+        ),
+        "deducoes_totais_dcl": find(
+            a2, conta_prefix="DEDUÇÕES (II)",
+            coluna_contains=coluna_quad,
         ),
         "rcl_rgf": find(
             a2, conta_prefix="RECEITA CORRENTE LÍQUIDA - RCL",
-            coluna_contains="Até o 3º Quadrimestre",
+            coluna_contains=coluna_quad,
         ),
         "limite_senado_divida": find(
             a2, conta_prefix="LIMITE DEFINIDO POR RESOLUÇÃO DO SENADO",
-            coluna_contains="Até o 3º Quadrimestre",
+            coluna_contains=coluna_quad,
         ),
         "passivo_atuarial_rpps": find(
             a2, conta_prefix="Passivo Atuarial",
-            coluna_contains="Até o 3º Quadrimestre",
+            coluna_contains=coluna_quad,
         ),
         "demais_haveres_financeiros": find(
             a2, conta_prefix="Demais Haveres Financeiros",
-            coluna_contains="Até o 3º Quadrimestre",
+            coluna_contains=coluna_quad,
         ),
         "precatorios_pos_2000_fora_dc": find(
             a2, conta_prefix="Precatórios Posteriores a 05/05/2000",
-            coluna_contains="Até o 3º Quadrimestre",
+            coluna_contains=coluna_quad,
         ),
         "rp_nao_processados_total_governo": find(
             a2, conta_prefix="RP Não-Processados",
-            coluna_contains="Até o 3º Quadrimestre",
+            coluna_contains=coluna_quad,
         ),
         "despesa_pessoal_valor": find(
             a1, conta_prefix="DESPESA TOTAL COM PESSOAL",
@@ -166,6 +219,22 @@ def collect_rgf_year(ano):
         "limite_pessoal_maximo_pct": find(
             a1, conta_prefix="LIMITE MÁXIMO",
             coluna_contains="% sobre a RCL",
+        ),
+        "garantias_pct_rcl_ajustada": find(
+            a3, conta_contains="% do TOTAL DAS GARANTIAS sobre a RCL AJUSTADA",
+            coluna_contains=coluna_quad,
+        ),
+        "limite_senado_garantias_pct": find(
+            a3, conta_prefix="LIMITE DEFINIDO POR RESOLUÇÃO DO SENADO FEDERAL",
+            coluna_contains="% SOBRE A RCL AJUSTADA",
+        ),
+        "operacoes_credito_pct_rcl_ajustada": find(
+            a4, conta_prefix="TOTAL CONSIDERADO PARA FINS DA APURAÇÃO DO CUMPRIMENTO DO LIMITE",
+            coluna_exact="% SOBRE A RCL AJUSTADA",
+        ),
+        "limite_senado_operacoes_credito_pct": find(
+            a4, conta_prefix="LIMITE GERAL DEFINIDO POR RESOLUÇÃO DO SENADO FEDERAL",
+            coluna_exact="% SOBRE A RCL AJUSTADA",
         ),
     }
     return out
@@ -285,19 +354,26 @@ def collect_rreo_year(ano):
 
 def main():
     result = {
-        "fonte": "SICONFI/Tesouro Nacional - RGF (Poder Executivo, Anexos 01/02/05) e RREO (Anexos 01/03/06/07)",
+        "fonte": "SICONFI/Tesouro Nacional - RGF (Poder Executivo, Anexos 01/02/03/04/05) e RREO (Anexos 01/03/06/07)",
         "ente": "Governo do Estado do Espírito Santo",
         "cod_ibge": ID_ENTE,
         "nota_metodologica": (
-            "RGF só possui publicação consolidada (3º quadrimestre = "
-            "posição em 31/dez) para o ES nos anos testados; a série de "
-            "caixa/dívida/pessoal é, portanto, um retrato de fim de "
-            "exercício. RREO usa o último bimestre disponível em cada "
-            "ano (6 = ano fechado; 2 = 2026, ano corrente). "
+            "RGF usa o 3º quadrimestre (posição em 31/dez, ano fechado) "
+            "para 2019-2025 e o 1º quadrimestre (posição em 30/abr, único "
+            "publicado até a coleta) para 2026; o campo quadrimestre em "
+            "cada registro de rgf indica qual foi usado. RREO usa o "
+            "último bimestre disponível em cada ano (6 = ano fechado; "
+            "2 = 2026, ano corrente). "
             "passivo_atuarial_rpps, demais_haveres_financeiros e "
             "precatorios_pos_2000_fora_dc são itens de memória do "
             "RGF-Anexo 02 (não entram no cálculo da DCL, exceto haveres "
             "financeiros que já compõem as DEDUÇÕES); "
+            "disponibilidade_caixa_bruta_dcl, restos_a_pagar_processados_dcl, "
+            "depositos_restituiveis_valores_vinculados e "
+            "disponibilidade_caixa_dcl são a decomposição oficial da DCL "
+            "(bruta menos RP processados menos depósitos = disponibilidade "
+            "de caixa, a dedução usada no cálculo); dcl = "
+            "divida_consolidada_bruta menos deducoes_totais_dcl; "
             "rp_nao_processados_total_governo é o estoque de restos a "
             "pagar não processados de todo o governo (não só recursos "
             "não vinculados) informado como memória no mesmo anexo, mais "
