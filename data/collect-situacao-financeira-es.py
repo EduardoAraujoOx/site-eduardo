@@ -254,10 +254,28 @@ def collect_rreo_year(ano):
     if not a1 and not a3 and not a6 and not a7:
         return None
 
+    # "Receita agropecuária, industrial e de serviços" (página 8) é a soma
+    # de três contas separadas do RREO Anexo 1, não uma conta única.
+    _agro = find(a1, conta_exact="RECEITA AGROPECUÁRIA", coluna_contains="Até o Bimestre (c)")
+    _ind = find(a1, conta_exact="RECEITA INDUSTRIAL", coluna_contains="Até o Bimestre (c)")
+    _serv = find(a1, conta_exact="RECEITA DE SERVIÇOS", coluna_contains="Até o Bimestre (c)")
+    _receita_agro_industrial_servicos = (
+        (_agro or 0) + (_ind or 0) + (_serv or 0)
+        if any(v is not None for v in (_agro, _ind, _serv)) else None
+    )
+
     out = {
         "periodo_bimestre": periodo,
         "receita_realizada": find(
             a1, conta_prefix="TOTAL DAS RECEITAS",
+            coluna_contains="Até o Bimestre (c)",
+        ),
+        "receita_exceto_intraorcamentaria": find(
+            a1, conta_prefix="RECEITAS (EXCETO INTRA-ORÇAMENTÁRIAS)",
+            coluna_contains="Até o Bimestre (c)",
+        ),
+        "receita_intraorcamentaria": find(
+            a1, conta_prefix="RECEITAS (INTRA-ORÇAMENTÁRIAS)",
             coluna_contains="Até o Bimestre (c)",
         ),
         "despesa_paga": find(
@@ -292,10 +310,15 @@ def collect_rreo_year(ano):
             a1, conta_prefix="IMPOSTOS, TAXAS E CONTRIBUIÇÕES DE MELHORIA",
             coluna_contains="Até o Bimestre (c)",
         ),
+        "receita_contribuicoes": find(
+            a1, conta_exact="CONTRIBUIÇÕES",
+            coluna_contains="Até o Bimestre (c)",
+        ),
         "receita_transferencias_correntes": find(
             a1, conta_prefix="TRANSFERÊNCIAS CORRENTES",
             coluna_contains="Até o Bimestre (c)",
         ),
+        "receita_agropecuaria_industrial_servicos": _receita_agro_industrial_servicos,
         "receita_outras_correntes": find(
             a1, conta_prefix="OUTRAS RECEITAS CORRENTES",
             coluna_contains="Até o Bimestre (c)",
@@ -379,7 +402,13 @@ def main():
             "não vinculados) informado como memória no mesmo anexo, mais "
             "comparável ano a ano do que o RREO-Anexo 07 (cujo saldo "
             "reflete apenas resíduo de exercícios anteriores, não o "
-            "estoque total)."
+            "estoque total). receita_realizada é o TOTAL DAS RECEITAS "
+            "do RREO Anexo 1 (inclui intra-orçamentárias); "
+            "receita_exceto_intraorcamentaria é o subtotal usado na "
+            "página 8 do diagnóstico (as sete categorias por natureza "
+            "econômica somam esse subtotal, não o total); "
+            "receita_intraorcamentaria é a diferença entre os dois, "
+            "reconciliada explicitamente na tabela da página 8."
         ),
         "unidade": "R$ nominais (não deflacionados)",
         "rgf": {},
