@@ -69,28 +69,25 @@ body {
 
 /* CAPA */
 .cover {
-  background: var(--navy); color: white;
+  background: var(--surface); color: var(--ink);
   padding: 64px 60px 46px;
   position: relative; overflow: hidden;
   min-height: 1000px;
   display: flex; flex-direction: column; justify-content: space-between;
+  border-top: 10px solid var(--navy);
 }
-.cover::before {
-  content: ''; position: absolute; inset: 0;
-  background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,.02) 40px, rgba(255,255,255,.02) 41px);
-}
-.cover-label { font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 24px; position: relative; }
-.cover-bar { height: 3px; width: 150px; background: linear-gradient(90deg, var(--gold), #d4b752, transparent); margin-bottom: 30px; position: relative; }
-.cover h1 { font-family: 'Playfair Display', serif; font-size: 41px; font-weight: 700; line-height: 1.15; max-width: 680px; margin-bottom: 18px; position: relative; }
-.cover-sub { font-size: 16px; font-weight: 300; color: rgba(255,255,255,.75); max-width: 580px; line-height: 1.6; position: relative; }
-.cover-toc { position: relative; border-top: 1px solid rgba(255,255,255,.16); padding-top: 22px; }
-.cover-toc-title { font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+.cover-label { font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 24px; position: relative; }
+.cover-bar { height: 3px; width: 150px; background: linear-gradient(90deg, var(--gold), var(--gold-dark), transparent); margin-bottom: 30px; position: relative; }
+.cover h1 { font-family: 'Playfair Display', serif; font-size: 41px; font-weight: 700; line-height: 1.15; max-width: 680px; margin-bottom: 18px; position: relative; color: var(--navy); }
+.cover-sub { font-size: 16px; font-weight: 300; color: var(--muted); max-width: 580px; line-height: 1.6; position: relative; }
+.cover-toc { position: relative; border-top: 1px solid var(--border); padding-top: 22px; }
+.cover-toc-title { font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 14px; }
 .cover-toc-list { list-style: none; columns: 2; column-gap: 40px; }
-.cover-toc-list li { display: flex; align-items: baseline; gap: 11px; font-size: 12px; color: rgba(255,255,255,.82); padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,.10); break-inside: avoid; line-height: 1.35; }
-.cover-toc-list li span { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 12.5px; color: var(--gold); width: 18px; flex: none; }
-.cover-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; border-top: 1px solid rgba(255,255,255,.16); padding-top: 22px; position: relative; }
-.cover-meta label { display: block; font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
-.cover-meta span { font-size: 12.5px; color: rgba(255,255,255,.85); line-height: 1.5; }
+.cover-toc-list li { display: flex; align-items: baseline; gap: 11px; font-size: 12px; color: var(--ink); padding: 6px 0; border-bottom: 1px solid var(--border); break-inside: avoid; line-height: 1.35; }
+.cover-toc-list li span { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 12.5px; color: var(--gold-dark); width: 18px; flex: none; }
+.cover-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; border-top: 1px solid var(--border); padding-top: 22px; position: relative; }
+.cover-meta label { display: block; font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 5px; }
+.cover-meta span { font-size: 12.5px; color: var(--ink); line-height: 1.5; }
 
 /* cabeçalho de página: número + título oficial do indicador */
 .pagehead { display: flex; align-items: baseline; gap: 10px; border-bottom: 2px solid var(--navy); padding-bottom: 9px; margin-bottom: 4px; }
@@ -205,7 +202,7 @@ h2 { font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 700; 
 
 /* referências */
 .refs ol { list-style: decimal; padding-left: 18px; }
-.refs li { font-size: 11.5px; line-height: 1.55; margin-bottom: 7px; color: var(--ink); }
+.refs li { font-size: 11px; line-height: 1.42; margin-bottom: 5px; color: var(--ink); }
 .refs a { color: var(--navy-mid); text-decoration: underline; word-break: break-word; }
 
 footer.doc-footer {
@@ -452,17 +449,20 @@ footer.doc-footer {
   <table class="data-table">
     <thead><tr><th>Categoria</th><th class="num">2019</th><th class="num">2025</th><th class="num">Var. nominal</th><th class="num">Var. real</th><th>Natureza</th></tr></thead>
     <tbody>
-      <tr><td>Impostos, taxas e contribuições</td><td class="num">8.594</td><td class="num">17.232</td><td class="num">+100%</td><td class="num">+44%</td><td><span class="tagestr">estrutural</span></td></tr>
+      <tr><td>Impostos e taxas</td><td class="num">8.594</td><td class="num">17.232</td><td class="num">+100%</td><td class="num">+44%</td><td><span class="tagestr">estrutural</span></td></tr>
+      <tr><td>Contribuições</td><td class="num">375</td><td class="num">783</td><td class="num">+109%</td><td class="num">+50%</td><td><span class="tagestr">estrutural</span></td></tr>
       <tr><td>Transferências correntes (principalmente da União)</td><td class="num">6.026</td><td class="num">8.093</td><td class="num">+34%</td><td class="num">menos 4%</td><td><span class="tagestr">estrutural</span></td></tr>
       <tr><td>Receita patrimonial (rendimentos financeiros e royalties)</td><td class="num">840</td><td class="num">1.995</td><td class="num">+138%</td><td class="num">+71%</td><td><span class="tagvol">volátil</span></td></tr>
+      <tr><td>Receita agropecuária, industrial e de serviços</td><td class="num">68</td><td class="num">103</td><td class="num">+50%</td><td class="num">+8%</td><td><span class="tagvol">volátil</span></td></tr>
       <tr><td>Outras receitas correntes (inclui indenizações judiciais)</td><td class="num">325</td><td class="num">1.332</td><td class="num">+310%</td><td class="num">+195%</td><td><span class="tagvol">volátil</span></td></tr>
       <tr><td>Receitas de capital (empréstimos e transferências de capital)</td><td class="num">443</td><td class="num">1.959</td><td class="num">+342%</td><td class="num">+217%</td><td><span class="tagvol">volátil</span></td></tr>
       <tr class="total"><td>Receita total do Estado</td><td class="num">16.672</td><td class="num">31.496</td><td class="num">+89%</td><td class="num">+36%</td><td></td></tr>
     </tbody>
   </table>
-  <div class="highlight">Depois de descontada a inflação, a receita total do Estado cresceu 36% entre 2019 e 2025, bem menos do que os 89% em valores nominais. As transferências correntes da União, uma das duas categorias estruturais, na verdade encolheram 4% em termos reais no período: cresceram nominalmente (+34%), mas menos do que a inflação acumulada (+39%). Já as três categorias voláteis cresceram muito acima da inflação e acima da própria receita tributária: receita patrimonial (+71% real), outras receitas correntes (+195% real, puxada por indenizações judiciais ligadas majoritariamente ao acordo de reparação do rompimento da barragem de Fundão, que saltaram de R$71 milhões em 2022 para R$638 milhões em 2025) e receitas de capital (+217% real). Uma fatia cada vez maior do crescimento real da receita depende de fontes que o Estado não controla.</div>
+  <p class="tbl-note">As sete categorias são a classificação completa da receita por categoria econômica do RREO Anexo 1 (a mesma classificação, com os mesmos códigos de conta, usada na Declaração de Contas Anuais); a soma das linhas fecha com o total da receita, sem resíduo.</p>
+  <div class="highlight">Depois de descontada a inflação, a receita total do Estado cresceu 36% entre 2019 e 2025, bem menos do que os 89% em valores nominais. As transferências correntes da União, uma das três categorias estruturais, na verdade encolheram 4% em termos reais no período: cresceram nominalmente (+34%), mas menos do que a inflação acumulada (+39%). Já as categorias voláteis cresceram muito acima da inflação e acima da própria receita tributária: receita patrimonial (+71% real), outras receitas correntes (+195% real, puxada por indenizações judiciais ligadas majoritariamente ao acordo de reparação do rompimento da barragem de Fundão, que saltaram de R$71 milhões em 2022 para R$638 milhões em 2025) e receitas de capital (+217% real). Uma fatia cada vez maior do crescimento real da receita depende de fontes que o Estado não controla.</div>
   <p class="note">Rendimentos de aplicações financeiras somaram R$1,74 bilhão em 2025 (6,2% da RCL, terceiro maior percentual entre os estados), valor sensível à taxa Selic e ao volume de caixa do Tesouro. Royalties de petróleo caíram 23,5% entre janeiro e agosto de 2025 frente a 2024, mas subiram 56,8% no primeiro quadrimestre de 2026, por causa da alta do preço internacional do petróleo: uma fonte de receita relevante e volátil nas duas direções.</p>
-  <p class="src"><b>Fontes:</b> Relatório Resumido da Execução Orçamentária (RREO), Anexo 1, via SICONFI/Tesouro Nacional, receita realizada até o bimestre 6 de 2019 e 2025. Deflator IPCA, IBGE. Rendimentos financeiros e royalties: SEFAZ-ES, notas de divulgação fiscal.</p>
+  <p class="src"><b>Fontes:</b> Relatório Resumido da Execução Orçamentária (RREO), Anexo 1, via SICONFI/Tesouro Nacional, receita realizada até o bimestre 6 de 2019 e 2025. Classificação cruzada com a Declaração de Contas Anuais (DCA), Anexo I-C, mesmos códigos de conta. Deflator IPCA, IBGE. Rendimentos financeiros e royalties: SEFAZ-ES, notas de divulgação fiscal.</p>
 </div>
 <div class="pagebreak"></div>
 
@@ -554,12 +554,14 @@ footer.doc-footer {
 <div class="screen refs">
   <div class="pagehead"><span class="no">13</span><h2>Metodologia e Referências</h2></div>
 
-  <p style="font-size:12px; margin-bottom:9px;">Valores em preços correntes de cada ano, exceto onde indicado "real" ou "deflacionado". A deflação usa o IPCA acumulado anual do IBGE (2019: 4,31%; 2020: 4,52%; 2021: 10,06%; 2022: 5,79%; 2023: 4,62%; 2024: 4,83%; 2025: 4,26%), convertendo todos os valores para poder de compra de dezembro de 2025.</p>
-  <p style="font-size:12px; margin-bottom:9px;">"Recursos não vinculados" são recursos de caixa sem destinação legal obrigatória. "Resultado orçamentário" é a diferença entre receita realizada e despesa empenhada no exercício (RREO Anexo 1), comparável apenas entre anos fechados: no meio do ano, despesas de contratos anuais já empenhadas distorcem a comparação, por isso a execução de 2026 (página 12) usa também os números já divulgados pela própria SEFAZ-ES.</p>
-  <p style="font-size:12px; margin-bottom:9px;">O Relatório de Gestão Fiscal só tem publicação consolidada disponível para o terceiro quadrimestre (posição de 31 de dezembro) nos anos observados. Por isso os indicadores de caixa, dívida líquida e passivo atuarial (páginas 3, 4 e 9) formam uma série anual de fim de exercício e não incorporam ainda o fechamento de 2026.</p>
-  <p style="font-size:12px; margin-bottom:16px;">O passivo atuarial total do SICONFI (item de memória do RGF Anexo 2) e a soma do déficit atuarial dos dois fundos previdenciários apurada pelo Tribunal de Contas do Estado usam metodologias e datas de referência distintas: os dois números são próximos, mas não idênticos, e este relatório cita cada um com sua fonte específica.</p>
+  <p style="font-size:11.5px; margin-bottom:7px;">Valores em preços correntes de cada ano, exceto onde indicado "real" ou "deflacionado". A deflação usa o IPCA acumulado anual do IBGE (2019: 4,31%; 2020: 4,52%; 2021: 10,06%; 2022: 5,79%; 2023: 4,62%; 2024: 4,83%; 2025: 4,26%), convertendo todos os valores para poder de compra de dezembro de 2025.</p>
+  <p style="font-size:11.5px; margin-bottom:7px;">"Recursos não vinculados" são recursos de caixa sem destinação legal obrigatória. "Resultado orçamentário" é a diferença entre receita realizada e despesa empenhada no exercício (RREO Anexo 1), comparável apenas entre anos fechados: no meio do ano, despesas de contratos anuais já empenhadas distorcem a comparação, por isso a execução de 2026 (página 12) usa também os números já divulgados pela própria SEFAZ-ES.</p>
+  <p style="font-size:11.5px; margin-bottom:7px;">O Relatório de Gestão Fiscal só tem publicação consolidada disponível para o terceiro quadrimestre (posição de 31 de dezembro) nos anos observados. Por isso os indicadores de caixa, dívida líquida e passivo atuarial (páginas 3, 4 e 9) formam uma série anual de fim de exercício e não incorporam ainda o fechamento de 2026.</p>
+  <p style="font-size:11.5px; margin-bottom:7px;">O passivo atuarial total do SICONFI (item de memória do RGF Anexo 2) e a soma do déficit atuarial dos dois fundos previdenciários apurada pelo Tribunal de Contas do Estado usam metodologias e datas de referência distintas: os dois números são próximos, mas não idênticos, e este relatório cita cada um com sua fonte específica.</p>
+  <p style="font-size:11.5px; margin-bottom:7px;">As categorias de despesa (página 7) e de receita (página 8) foram conferidas linha a linha contra o RREO Anexo 1 de cada exercício, garantindo que a soma feche com o total oficial. A mesma classificação por categoria econômica é usada na Declaração de Contas Anuais (DCA), Anexo I-C: RREO e DCA não divergem em metodologia, só no recorte (execução bimestral versus declaração anual consolidada).</p>
+  <p style="font-size:11.5px; margin-bottom:14px;">Antes do fechamento desta versão, verificou-se se havia dado de 2026 mais recente: no SICONFI não há RREO além do bimestre 2 nem RGF de nenhum quadrimestre; no site da SEFAZ-ES, o Demonstrativo de Caixa mais recente é o do 2º bimestre (02/06/2026) e não há RTE de 2026 publicado; o Portal da Transparência do TCE-ES chega apenas ao 1º bimestre. O Painel de Controle do TCE-ES (dados do SIGEFES) tem acesso restrito a login e não foi verificado nesta edição.</p>
 
-  <h3 style="font-family:'Playfair Display',serif; font-size:14px; color:var(--navy); margin-bottom:9px;">Referências</h3>
+  <h3 style="font-family:'Playfair Display',serif; font-size:13px; color:var(--navy); margin-bottom:6px;">Referências</h3>
   <ol>
     <li>Secretaria do Tesouro Nacional (STN). <em>SICONFI, Relatório de Gestão Fiscal (RGF), Anexos 1, 2 e 5, Relatório Resumido da Execução Orçamentária (RREO), Anexos 1, 3 e 6, e Declaração de Contas Anuais (DCA), Anexo I-AB (balanço patrimonial)</em>. Governo do Estado do Espírito Santo, 2019 a 2026. apidatalake.tesouro.gov.br/ords/siconfi</li>
     <li>Espírito Santo, Secretaria de Estado da Fazenda (SEFAZ-ES). <em>Resultado do Tesouro Estadual (RTE), 3º quadrimestre de 2025</em>. sefaz.es.gov.br/media/Tesouro Estadual/RTE 2025 - 3º Quadrimestre.pdf</li>
@@ -574,7 +576,7 @@ footer.doc-footer {
     <li>Instituto Brasileiro de Geografia e Estatística (IBGE). <em>Índice Nacional de Preços ao Consumidor Amplo (IPCA), variações anuais de 2019 a 2025</em>. agenciadenoticias.ibge.gov.br</li>
   </ol>
 
-  <p class="src" style="margin-top:16px;">Documento elaborado com dados públicos, para uso interno. Não expressa opinião sobre decisões de política pública nem recomendação de voto. Página não listada na navegação do site.</p>
+  <p class="src" style="margin-top:8px; padding-top:5px;">Documento elaborado com dados públicos, para uso interno. Não expressa opinião sobre decisões de política pública nem recomendação de voto. Página não listada na navegação do site.</p>
 </div>
 
 <footer class="doc-footer">Diagnóstico Fiscal, Estado do Espírito Santo. Execução até abril de 2026. Uso interno, não indexado.</footer>
