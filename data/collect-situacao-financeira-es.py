@@ -113,8 +113,8 @@ def find(items, conta_prefix=None, conta_contains=None, conta_exact=None,
     return None
 
 
-def collect_rgf_year(ano):
-    quad = RGF_QUADRIMESTRE.get(ano, 3)
+def collect_rgf_year(ano, quad=None):
+    quad = quad if quad is not None else RGF_QUADRIMESTRE.get(ano, 3)
     coluna_quad = f"Até o {quad}º Quadrimestre"
 
     print(f"  RGF {ano} (Anexo 05 - caixa)...")
@@ -240,8 +240,8 @@ def collect_rgf_year(ano):
     return out
 
 
-def collect_rreo_year(ano):
-    periodo = RREO_PERIODO[ano]
+def collect_rreo_year(ano, periodo=None):
+    periodo = periodo if periodo is not None else RREO_PERIODO[ano]
     print(f"  RREO {ano} p{periodo} (Anexo 01 - orçamento)...")
     a1 = rreo_items(ano, "01", periodo)
     print(f"  RREO {ano} p{periodo} (Anexo 03 - RCL)...")
@@ -408,11 +408,18 @@ def main():
             "página 8 do diagnóstico (as sete categorias por natureza "
             "econômica somam esse subtotal, não o total); "
             "receita_intraorcamentaria é a diferença entre os dois, "
-            "reconciliada explicitamente na tabela da página 8."
+            "reconciliada explicitamente na tabela da página 8. "
+            "comparaveis_periodo_parcial.2025 traz o RGF do 1º "
+            "quadrimestre de 2025 (posição 30/abr) e o RREO do bimestre "
+            "2 de 2025, no mesmo período de referência do dado parcial "
+            "de 2026, para permitir comparação janeiro-abril entre os "
+            "dois anos na página 2 do diagnóstico; não substitui a "
+            "série anual fechada de 2025 usada nas demais páginas."
         ),
         "unidade": "R$ nominais (não deflacionados)",
         "rgf": {},
         "rreo": {},
+        "comparaveis_periodo_parcial": {},
     }
 
     print("=== Coletando RGF (posição de fim de ano) ===")
@@ -426,6 +433,14 @@ def main():
         r = collect_rreo_year(ano)
         if r:
             result["rreo"][str(ano)] = r
+
+    print("\n=== Coletando período parcial comparável de 2025 (jan-abr) ===")
+    r_rgf_2025_1q = collect_rgf_year(2025, quad=1)
+    if r_rgf_2025_1q:
+        result["comparaveis_periodo_parcial"]["rgf_2025_1q"] = r_rgf_2025_1q
+    r_rreo_2025_bim2 = collect_rreo_year(2025, periodo=2)
+    if r_rreo_2025_bim2:
+        result["comparaveis_periodo_parcial"]["rreo_2025_bim2"] = r_rreo_2025_bim2
 
     with open(OUTPUT, "w") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
