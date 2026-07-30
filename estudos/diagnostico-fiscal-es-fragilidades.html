@@ -93,6 +93,7 @@ body {
 .pagehead { display: flex; align-items: baseline; gap: 10px; border-bottom: 2px solid var(--navy); padding-bottom: 9px; margin-bottom: 4px; }
 .pagehead .no { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--gold-dark); }
 .datatag { font-size: 9px; color: var(--muted); margin: 0 0 8px; letter-spacing: .1px; }
+#tbl-receita td:nth-child(5), #tbl-receita th:nth-child(5) { color: var(--muted); font-style: italic; font-weight: 400; }
 h2 { font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 700; color: var(--navy); line-height: 1.2; }
 .lede { font-size: 12.5px; color: var(--muted); font-style: italic; margin: 6px 0 12px; max-width: 760px; }
 .subhead { font-size: 12.5px; color: var(--muted); margin-bottom: 10px; max-width: 760px; }
@@ -293,7 +294,7 @@ footer.doc-footer {
     <ol class="cover-toc-list">
       <li><span>01</span>Síntese Executiva</li>
       <li><span>02</span>Fechamento de 2025 e Execução Parcial de 2026</li>
-      <li><span>03</span>Resultado Orçamentário, Primário e Uso de Reservas</li>
+      <li><span>03</span>Resultado Orçamentário, Primário e Superávit Financeiro</li>
       <li><span>04</span>Disponibilidade de Caixa e Restos a Pagar</li>
       <li><span>05</span>Resultado de Caixa do Tesouro Estadual</li>
       <li><span>06</span>Capacidade de Pagamento (CAPAG)</li>
@@ -323,7 +324,7 @@ footer.doc-footer {
   <div class="answer-grid">
     <div class="answer">
       <div class="q">O Estado está gerando resultado próprio ou vivendo de reservas acumuladas?</div>
-      <div class="a">O resultado primário sem RPPS foi negativo em 2023 e 2025, mas cumpriu a própria meta da LDO (também negativa) nos três últimos anos fechados, de forma compatível com o uso de superávit financeiro de exercícios anteriores. É conformidade formal com a meta, não geração de resultado próprio (páginas 3 e 14).</div>
+      <div class="a">O resultado primário sem RPPS foi negativo em 2023 e 2025, mas cumpriu a própria meta da LDO (também negativa) nos três últimos anos fechados, de forma compatível com créditos adicionais abertos com base em superávit financeiro de exercícios anteriores. É conformidade formal com a meta, não geração de resultado próprio; este diagnóstico não concilia o consumo financeiro efetivo dessas reservas (páginas 3 e 14).</div>
     </div>
     <div class="answer">
       <div class="q">A dívida líquida negativa significa caixa disponível para uso imediato?</div>
@@ -361,21 +362,21 @@ footer.doc-footer {
     <div class="kpi warn"><div class="lbl">Resultado primário sem RPPS</div><div class="val">menos R$440 mi</div><div class="sub">Meta cumprida (p. 3)</div></div>
     <div class="kpi good"><div class="lbl">Dívida consolidada líquida</div><div class="val">menos 52,4%</div><div class="sub">Da RCL, dado oficial (p. 7)</div></div>
     <div class="kpi warn"><div class="lbl">Cobertura do caixa livre</div><div class="val">2,3x</div><div class="sub">Sobre restos a pagar (p. 4)</div></div>
-    <div class="kpi good"><div class="lbl">CAPAG</div><div class="val">Nota A+</div><div class="sub">Ano-base 2024, oficial (p. 6)</div></div>
+    <div class="kpi good"><div class="lbl">CAPAG, classificação oficial vigente</div><div class="val">Nota A+</div><div class="sub">Ano-base 2024; não é um resultado do exercício de 2025 (p. 6)</div></div>
   </div>
   <div class="chart-title" style="margin-top:14px;">2026 (execução parcial, janeiro a abril), comparado ao mesmo período de 2025</div>
   <div class="kpi-grid cols-4">
     <div class="kpi good"><div class="lbl">Receita total</div><div class="val">R$ 11,2 bi</div><div class="sub">+23,5% sobre R$9,10 bi em jan-abr/2025</div></div>
     <div class="kpi"><div class="lbl">Despesa com pessoal (DTP)</div><div class="val">34,53%</div><div class="sub">Da RCL ajustada; 36,20% em jan-abr/2025 (limite 49%)</div></div>
-    <div class="kpi good"><div class="lbl">Dívida consolidada líquida</div><div class="val">menos 54,72%</div><div class="sub">Da RCL; menos 10,63% em jan-abr/2025 (ver p. 7)</div></div>
-    <div class="kpi"><div class="lbl">Investimentos</div><div class="val">R$ 2,25 bi</div><div class="sub">+15,7% sobre R$1,95 bi em jan-abr/2025</div></div>
+    <div class="kpi"><div class="lbl">Dívida consolidada líquida</div><div class="val">menos 54,72%</div><div class="sub">Da RCL; menos 10,63% em jan-abr/2025, salto explicado pela composição na p. 7, não por melhora de caixa</div></div>
+    <div class="kpi"><div class="lbl">Investimentos (estágio: empenhado)</div><div class="val">R$ 2,25 bi</div><div class="sub">+15,7% sobre R$1,95 bi empenhados em jan-abr/2025</div></div>
   </div>
   <table class="data-table" style="margin-top:10px; font-size:11px;">
-    <thead><tr><th>Mesmo período (janeiro a abril), R$ milhões</th><th class="num">2025</th><th class="num">2026</th><th class="num">Var.</th></tr></thead>
+    <thead><tr><th>Mesmo período (janeiro a abril), R$ milhões, por estágio de execução</th><th class="num">2025</th><th class="num">2026</th><th class="num">Var.</th></tr></thead>
     <tbody>
       <tr><td>Receita realizada</td><td class="num">9.097</td><td class="num">11.238</td><td class="num">+23,5%</td></tr>
-      <tr><td>Despesa paga</td><td class="num">7.597</td><td class="num">8.391</td><td class="num">+10,5%</td></tr>
-      <tr><td>Investimentos (despesa empenhada)</td><td class="num">1.948</td><td class="num">2.255</td><td class="num">+15,7%</td></tr>
+      <tr><td>Despesa, estágio pago</td><td class="num">7.597</td><td class="num">8.391</td><td class="num">+10,5%</td></tr>
+      <tr><td>Investimentos, estágio empenhado</td><td class="num">1.948</td><td class="num">2.255</td><td class="num">+15,7%</td></tr>
     </tbody>
   </table>
   <table class="data-table" style="margin-top:8px; font-size:11px;">
@@ -386,7 +387,7 @@ footer.doc-footer {
     </tbody>
   </table>
   <p class="tbl-note">A DCL de jan-abr/2025 (menos 10,63% da RCL) usa a mesma decomposição RGF Anexo 2 da página 7; a diferença de patamar frente a abril de 2026 (menos 54,72%) decorre principalmente de "Demais Haveres Financeiros" ter saltado de R$2,01 bilhões (abr/2025) para R$13,85 bilhões já em dezembro de 2025 (ver p. 7), não de uma mudança na dívida bruta.</p>
-  <div class="highlight">Os quatro primeiros meses de 2026 mostram receita crescendo acima da despesa paga, com DCL e despesa com pessoal dentro dos limites legais e evoluindo melhor que no mesmo período de 2025, mas é o retrato de um começo de ano: entre 2023 e 2025, o resultado do exercício se definiu nos últimos meses, quando despesas represadas e restos a pagar se acumulam (página 4). A dotação orçamentária atualizada para 2026 já projeta gastar R$824 milhões a mais do que a receita prevista, diferença compatível com créditos abertos por superávit financeiro de exercícios anteriores, prática legal e comum, mas que reduz a folga acumulada em anos futuros se repetida.</div>
+  <div class="highlight">Os quatro primeiros meses de 2026 mostram receita crescendo acima da despesa paga, com DCL e despesa com pessoal dentro dos limites legais, mas é o retrato de um começo de ano: entre 2023 e 2025, o resultado do exercício se definiu nos últimos meses, quando despesas represadas e restos a pagar se acumulam (página 4). A forte melhora aparente da DCL frente a jan-abr/2025 não deve ser lida como avanço fiscal equivalente a mais caixa disponível: decorre sobretudo da entrada do recebível de Fundão em "demais haveres financeiros" (ver composição na página 7), um efeito contábil, não um aumento de disponibilidade. A dotação orçamentária atualizada para 2026 já projeta gastar R$824 milhões a mais do que a receita prevista, diferença compatível com créditos abertos com base em superávit financeiro de exercícios anteriores, prática legal e comum, mas que reduz a folga acumulada em anos futuros se repetida.</div>
   <p class="note">Poupança corrente (RTE, período parcial) de 31,5% e royalties com alta de 56,8% no período: indicadores complementares, detalhados na metodologia (página 15). O KPI "resultado primário" e o resultado orçamentário fechado de 2025 usam a mesma definição da página 3; despesa empenhada (diferente de paga) não é comparável entre um exercício fechado e um parcial, por isso a comparação acima usa despesa paga e investimentos empenhados, ambos com o mesmo perímetro nos dois anos.</p>
   <p class="src"><b>Fontes:</b> 2025 fechado: RREO e RGF, via SICONFI/Tesouro Nacional, bimestre/quadrimestre de fechamento (ver páginas 3, 4, 6 e 7). Jan-abr/2025 (comparável): RREO Anexo 1, bimestre 2 de 2025, e RGF 1º quadrimestre de 2025, mesmas fontes SICONFI. 2026 parcial: SEFAZ-ES, Audiência Pública na Assembleia Legislativa do Espírito Santo, 1º quadrimestre de 2026, 13 de julho de 2026; DCL, DTP e demais indicadores oficiais confirmados via RGF 1º quadrimestre de 2026 e RREO Anexo 1 e 6, bimestre 2 de 2026, SICONFI/Tesouro Nacional.</p>
 </div>
@@ -394,9 +395,9 @@ footer.doc-footer {
 
 <!-- TELA 03: RESULTADO ORCAMENTARIO E PRIMARIO -->
 <div class="screen">
-  <div class="pagehead"><span class="no">03</span><h2>Resultado Orçamentário, Primário e Uso de Reservas</h2></div>
+  <div class="pagehead"><span class="no">03</span><h2>Resultado Orçamentário, Primário e Superávit Financeiro</h2></div>
   <p class="datatag">Dado mais recente: RREO Anexos 1 e 6, bimestre 6 de 2025 (fechado, posição 31/12), bimestral (ver p. 15).</p>
-  <p class="subhead">Resultado orçamentário do exercício (receita realizada menos despesa empenhada) e resultado primário, com e sem a receita do regime próprio de previdência (RPPS), ante a meta fixada na Lei de Diretrizes Orçamentárias (LDO) de cada ano, com o uso de superávit financeiro como fio analítico.</p>
+  <p class="subhead">Resultado orçamentário do exercício (receita realizada menos despesa empenhada) e resultado primário, com e sem a receita do regime próprio de previdência (RPPS), ante a meta fixada na Lei de Diretrizes Orçamentárias (LDO) de cada ano, com o superávit financeiro considerado na abertura de créditos adicionais como fio analítico.</p>
   <p class="def">O <b>RPPS</b> é o sistema de aposentadoria dos servidores, que recebe contribuições e um aporte obrigatório do Tesouro. Quando essas entradas superam os benefícios pagos no ano, o saldo positivo entra somado no resultado geral do Estado (<b>resultado com RPPS</b>), o que pode mascarar um resultado ruim do restante do governo. O <b>resultado sem RPPS</b> isola o desempenho das áreas de educação, saúde, segurança e administração, fora da previdência; é essa versão, e não a que inclui o RPPS, que o Tribunal de Contas do Estado usa como "resultado primário" oficial em seu parecer sobre as contas do Governador.</p>
   <div class="chart-title">Resultado orçamentário, 2020-2025 (R$ milhões)</div>
   <div class="chart-wrap" id="chart-orcamentario"></div>
@@ -408,15 +409,15 @@ footer.doc-footer {
       <tr><td>Resultado primário sem RPPS</td><td class="num">não disponível¹</td><td class="num">não disponível¹</td><td class="num">menos 711</td><td class="num">101</td><td class="num">menos 440</td></tr>
       <tr><td>Meta da LDO (sem RPPS)</td><td class="num">não disponível¹</td><td class="num">não disponível¹</td><td class="num">menos 977</td><td class="num">menos 1.703</td><td class="num">menos 1.571</td></tr>
       <tr class="total"><td>Resultado sem RPPS acima da meta</td><td class="num">não disponível¹</td><td class="num">não disponível¹</td><td class="num">266</td><td class="num">1.804</td><td class="num">1.131</td></tr>
-      <tr><td>Superávit financeiro utilizado (créditos adicionais)</td><td class="num">3.711</td><td class="num">4.605</td><td class="num">4.346</td><td class="num">3.506</td><td class="num">3.874</td></tr>
+      <tr><td>Superávit financeiro considerado em créditos adicionais abertos</td><td class="num">3.711</td><td class="num">4.605</td><td class="num">4.346</td><td class="num">3.506</td><td class="num">3.874</td></tr>
       <tr><td>Variação da disponibilidade de caixa líquida</td><td class="num">625</td><td class="num">menos 62</td><td class="num">menos 302</td><td class="num">menos 898</td><td class="num">273</td></tr>
       <tr><td>Inscrição líquida de restos a pagar não processados</td><td class="num">menos 32</td><td class="num">123</td><td class="num">284</td><td class="num">318</td><td class="num">menos 64</td></tr>
     </tbody>
   </table>
-  <p class="tbl-note">¹ O RREO Anexo 6 só passou a separar resultado primário "com RPPS" de "sem RPPS" a partir do exercício de 2023; antes disso, a conta é um resultado primário agregado, não comparável linha a linha com a série 2023-2025 (ver Metodologia, página 15). O resultado "com RPPS" soma o saldo do regime próprio de previdência ao restante do governo, o que pode mascarar um resultado ruim fora da previdência (ver definição acima); por isso o TCE-ES usa o "sem RPPS" como referência oficial. "Superávit financeiro utilizado" é a conta "Superávit Financeiro Utilizado para Créditos Adicionais" do RREO Anexo 1: mede a autorização orçamentária de uso de reservas, não necessariamente o valor final incorporado ao caixa do exercício. "Variação da disponibilidade" e "inscrição líquida de RP" são a diferença ano a ano dos estoques de fim de exercício da página 4 (RGF Anexo 5), não têm fonte própria. Esta conciliação aproxima, mas não substitui, uma conciliação contábil formal entre os demonstrativos.</p>
-  <div class="highlight">O resultado orçamentário caiu de R$1,3 bilhão em 2021 para uma média de R$860 milhões em 2023-2025. Sem RPPS, o resultado primário foi negativo em 2023 (menos R$711 milhões) e 2025 (menos R$440 milhões); com RPPS, negativo só em 2023 (menos R$468 milhões). Nos três anos, o resultado sem RPPS superou a meta da LDO, também negativa: <b>meta fiscal cumprida, embora com resultado negativo compatível com o uso planejado de superávit financeiro de exercícios anteriores</b>. Isso não deve ser lido como "favorável" no sentido de geração de resultado próprio: é conformidade formal com a meta, compatível com o uso de reservas acumuladas.</div>
+  <p class="tbl-note">¹ O RREO Anexo 6 só passou a separar resultado primário "com RPPS" de "sem RPPS" a partir do exercício de 2023; antes disso, a conta é um resultado primário agregado, não comparável linha a linha com a série 2023-2025 (ver Metodologia, página 15). O resultado "com RPPS" soma o saldo do regime próprio de previdência ao restante do governo, o que pode mascarar um resultado ruim fora da previdência (ver definição acima); por isso o TCE-ES usa o "sem RPPS" como referência oficial. "Superávit financeiro considerado em créditos adicionais abertos" é a conta "Superávit Financeiro Utilizado para Créditos Adicionais" do RREO Anexo 1: mede a base orçamentária usada para abrir créditos adicionais naquele exercício, não o consumo financeiro efetivo das reservas, que este diagnóstico não concilia. "Variação da disponibilidade" e "inscrição líquida de RP" são a diferença ano a ano dos estoques de fim de exercício da página 4 (RGF Anexo 5), não têm fonte própria. Esta conciliação aproxima, mas não substitui, uma conciliação contábil formal entre os demonstrativos.</p>
+  <div class="highlight">O resultado orçamentário caiu de R$1,3 bilhão em 2021 para uma média de R$860 milhões em 2023-2025. Sem RPPS, o resultado primário foi negativo em 2023 (menos R$711 milhões) e 2025 (menos R$440 milhões); com RPPS, negativo só em 2023 (menos R$468 milhões). Nos três anos, o resultado sem RPPS superou a meta da LDO, também negativa: <b>meta fiscal cumprida, embora com resultado negativo compatível com créditos adicionais abertos com base em superávit financeiro de exercícios anteriores</b>. Isso não deve ser lido como "favorável" no sentido de geração de resultado próprio: é conformidade formal com a meta; este diagnóstico não concilia o consumo financeiro efetivo dessas reservas.</div>
   <p class="note">O TCE-ES emitiu parecer prévio recomendando a aprovação, sem ressalvas, das contas de governo de 2024 (o julgamento definitivo cabe à Assembleia Legislativa), citando resultado orçamentário de R$908,9 milhões, resultado primário (sem RPPS) de R$101,42 milhões e dívida consolidada líquida negativa.</p>
-  <p class="src"><b>Fontes:</b> Relatório Resumido da Execução Orçamentária (RREO), Anexos 1 e 6, via SICONFI/Tesouro Nacional, último bimestre publicado em cada ano; meta fixada no Anexo de Metas Fiscais da LDO, RREO Anexo 6. Superávit financeiro utilizado: RREO Anexo 1, conta "Superávit Financeiro Utilizado para Créditos Adicionais". Parecer prévio sobre as contas de 2024: Tribunal de Contas do Estado do Espírito Santo (TCE-ES), Parecer Prévio TC-062/2025, Processo TC 4.006/2025-7, seção IX (Conclusão), item 1.1 (recomendação de aprovação ao Legislativo Estadual, art. 80, I, da LC Estadual nº 621/2012).</p>
+  <p class="src"><b>Fontes:</b> Relatório Resumido da Execução Orçamentária (RREO), Anexos 1 e 6, via SICONFI/Tesouro Nacional, último bimestre publicado em cada ano; meta fixada no Anexo de Metas Fiscais da LDO, RREO Anexo 6. Superávit financeiro considerado em créditos adicionais abertos: RREO Anexo 1, conta "Superávit Financeiro Utilizado para Créditos Adicionais". Parecer prévio sobre as contas de 2024: Tribunal de Contas do Estado do Espírito Santo (TCE-ES), Parecer Prévio TC-062/2025, Processo TC 4.006/2025-7, seção IX (Conclusão), item 1.1 (recomendação de aprovação ao Legislativo Estadual, art. 80, I, da LC Estadual nº 621/2012).</p>
 </div>
 <div class="pagebreak"></div>
 
@@ -427,14 +428,15 @@ footer.doc-footer {
   <p class="subhead">Disponibilidade de caixa não vinculada, decomposta em bruta, obrigações financeiras e restos a pagar não processados, R$ milhões nominais. Posição de 31 de dezembro de cada ano.</p>
   <p class="def">Parte do caixa do Estado tem destinação obrigatória por lei (saúde, educação, previdência). <b>Recursos não vinculados</b> são os sem essa amarra, a parcela livre para o Estado decidir onde aplicar. <b>Restos a pagar não processados</b> são despesas já empenhadas (compromissos assumidos) cujo produto ou serviço ainda não foi conferido nem pago. A <b>disponibilidade de caixa líquida</b> é a bruta menos obrigações financeiras e menos esses restos a pagar: é o teste que a Lei de Responsabilidade Fiscal exige para saber se um governante pode assumir novos compromissos. <b>Importante:</b> a líquida já é o resultado final dessa subtração; comparar a líquida de novo com os restos a pagar contaria o mesmo componente duas vezes. A razão de cobertura da tabela abaixo evita esse problema (ver fórmula na nota da tabela).</p>
   <div class="lawbox"><span class="lawtag">Base legal: Art. 42, Lei Complementar nº 101/2000 (LRF)</span>Veda contrair, nos últimos dois quadrimestres do mandato, obrigação de despesa que não possa ser cumprida no exercício ou que caia no seguinte sem disponibilidade de caixa suficiente. O RGF Anexo 5 (fonte desta página) existe para demonstrar esse cálculo a cada quadrimestre.</div>
-  <div class="chart-title">Decomposição da disponibilidade não vinculada em 2025 (R$ milhões)</div>
-  <div class="bridge">
-    <div class="bridge-bar">
-      <div class="bridge-seg" style="flex:2710; background:#1c5cab;">Bruta 2.710</div>
-      <div class="bridge-seg" style="flex:491; background:#8b1a1a;">Obrig. 491</div>
-      <div class="bridge-seg" style="flex:956; background:#b8922a;">RP 956</div>
-      <div class="bridge-seg" style="flex:1264; background:#1d6640;">Líquida 1.264</div>
-    </div>
+  <div class="chart-title">Decomposição aritmética da disponibilidade não vinculada em 2025 (R$ milhões)</div>
+  <div class="dclbridge">
+    <div class="dclbridge-step"><div class="lbl">Bruta</div><div class="val">2.710</div></div>
+    <div class="dclbridge-arrow">&minus;</div>
+    <div class="dclbridge-step neg"><div class="lbl">Obrigações financeiras</div><div class="val">491</div></div>
+    <div class="dclbridge-arrow">&minus;</div>
+    <div class="dclbridge-step neg"><div class="lbl">RP não processados</div><div class="val">956</div></div>
+    <div class="dclbridge-arrow">=</div>
+    <div class="dclbridge-step final"><div class="lbl">Líquida</div><div class="val">1.264</div></div>
   </div>
   <div class="chart-wrap" id="chart-caixa"></div>
   <table class="data-table" style="margin-top:6px; font-size:11.5px;">
@@ -545,20 +547,17 @@ footer.doc-footer {
     <div class="dclbridge-step analytic"><div class="lbl">Sem o recebível de Fundão</div><div class="val">menos 3.804</div><div class="sub">medida analítica, não legal</div></div>
   </div>
   <div class="chart-wrap" id="chart-dcl"></div>
-  <table class="data-table" style="margin-top:8px;">
-    <thead><tr><th>Decomposição da DCL (R$ milhões)</th><th class="num">2025 (3º quad.)</th><th class="num">2026 (1º quad.)</th></tr></thead>
+  <table class="data-table" style="margin-top:8px; font-size:10.5px;">
+    <thead><tr><th>Mesma decomposição em 2025, 3º quadrimestre, para referência (R$ milhões); ponte acima já traz o detalhe de 2026</th><th class="num">2025</th></tr></thead>
     <tbody>
-      <tr><td>Disponibilidade de Caixa Bruta</td><td class="num">10.374</td><td class="num">11.578</td></tr>
-      <tr><td>(–) Restos a Pagar Processados</td><td class="num">523</td><td class="num">108</td></tr>
-      <tr><td>(–) Depósitos Restituíveis e Valores Vinculados</td><td class="num">677</td><td class="num">853</td></tr>
-      <tr><td>(=) Disponibilidade de Caixa (dedução da DCL)</td><td class="num">9.174</td><td class="num">10.618</td></tr>
-      <tr><td>(+) Demais Haveres Financeiros, do qual recebível de Fundão</td><td class="num">13.846<br><span style="color:var(--bad);font-size:10.5px">não confirmado nesta rodada</span></td><td class="num">13.908<br><span style="color:var(--bad);font-size:10.5px">R$12.564 confirmado</span></td></tr>
-      <tr><td>(=) Deduções totais (II)</td><td class="num">23.020</td><td class="num">24.526</td></tr>
-      <tr><td>Dívida Consolidada bruta (I)</td><td class="num">8.291</td><td class="num">8.158</td></tr>
-      <tr class="total"><td>Dívida Consolidada Líquida (DCL) oficial (I − II)</td><td class="num">menos 14.729</td><td class="num">menos 16.368</td></tr>
+      <tr><td>Disponibilidade de Caixa Bruta (menos RP processados e depósitos vinculados)</td><td class="num">9.174</td></tr>
+      <tr><td>(+) Demais Haveres Financeiros, do qual recebível de Fundão não confirmado nesta rodada</td><td class="num">13.846</td></tr>
+      <tr><td>(=) Deduções totais (II)</td><td class="num">23.020</td></tr>
+      <tr><td>Dívida Consolidada bruta (I)</td><td class="num">8.291</td></tr>
+      <tr class="total"><td>Dívida Consolidada Líquida (DCL) oficial (I − II)</td><td class="num">menos 14.729</td></tr>
     </tbody>
   </table>
-  <div class="callout">Achado desta revisão: a nota explicativa do RGF do 1º quadrimestre de 2026 discrimina que, dos R$13,908 bilhões em "Demais Haveres Financeiros", <b>R$12.563.917.516,50 são um recebível certo relativo aos danos do rompimento da barragem de Fundão</b>, em Mariana/MG (conta contábil 121210700), não caixa nem aplicação financeira disponível. Uma <b>medida analítica ajustada</b> (não é o indicador legal da LRF, é cálculo deste relatório) que remova esse recebível da dedução resulta em DCL de aproximadamente <b>menos R$3,80 bilhões</b> no 1º quadrimestre de 2026: ainda negativa, mas com folga de caixa genuinamente líquida bem menor do que sugere a DCL oficial de menos R$16,37 bilhões. "Demais Haveres Financeiros" em 2025 somava R$13,85 bilhões, valor próximo ao de 2026, mas este relatório não localizou a nota explicativa equivalente do RGF de 2025 e não confirma, nesta rodada, se o recebível de Fundão já era seu principal componente naquele ano.</div>
+  <div class="callout">Achado desta revisão: a nota explicativa do RGF do 1º quadrimestre de 2026 (conta contábil 121210700) confirma que R$12.563.917.516,50 dos "Demais Haveres Financeiros" são um recebível certo do rompimento da barragem de Fundão (Mariana/MG), não caixa nem aplicação financeira disponível, base da medida analítica ajustada na ponte acima. "Demais Haveres Financeiros" em 2025 somava R$13,85 bilhões, valor próximo ao de 2026, mas este relatório não localizou a nota explicativa equivalente do RGF de 2025 e não confirma, nesta rodada, se o recebível de Fundão já era seu principal componente naquele ano.</div>
   <p class="note">Além da dívida contratual, o Estado concedeu garantias a entidades controladas (avais em operações de crédito): 0,76% da RCL ajustada em 2025, 0,69% no 1º quadrimestre de 2026, bem abaixo do limite do Senado Federal (22%) e do limite de alerta (19,8%). Essas garantias estão cobertas por contragarantias recebidas das próprias entidades, no mesmo valor: não representam, na posição mais recente, passivo contingente líquido relevante para o Tesouro estadual. Operações de crédito contratadas somaram 0,74% da RCL ajustada no 1º quadrimestre de 2026, dentro do limite geral de 16%.</p>
   <p class="src"><b>Fontes:</b> Relatório de Gestão Fiscal (RGF), Anexo 2, Poder Executivo, via API pública do SICONFI/Tesouro Nacional (apidatalake.tesouro.gov.br/ords/siconfi/tt/rgf, no_anexo=RGF-Anexo 02, id_ente=32), 3º quadrimestre de 2025 e 1º quadrimestre de 2026. Nota explicativa do recebível de Fundão: SEFAZ-ES, RGF 1º quadrimestre de 2026, Anexo 2, nota 6, Ordem de Serviço SUBSET nº 37 de 27/05/2026, sefaz.es.gov.br/rgf. Garantias, contragarantias e operações de crédito: RGF Anexos 3 e 4, mesmos períodos.</p>
 </div>
@@ -570,8 +569,8 @@ footer.doc-footer {
   <p class="datatag">Dado mais recente: RREO Anexo 1, bimestre 6 de 2025 (fechado); bimestre 2 de 2026, bimestral (ver p. 15).</p>
   <p class="subhead">Receita realizada por categoria, 2019 e 2025, em R$ milhões nominais e variação nominal e real (deflacionada pelo IPCA), com o valor parcial de 2026 para referência.</p>
   <p class="def">As categorias contábeis abaixo são heterogêneas por dentro: receita patrimonial mistura rendimento financeiro (ligado à Selic) e royalties (ligados ao preço do petróleo); outras receitas correntes misturam itens recorrentes e indenizações judiciais pontuais; receitas de capital misturam operação de crédito e transferência de capital. Por isso este diagnóstico não classifica a categoria inteira como "estrutural" ou "volátil": a ressalva qualitativa abaixo é feita apenas sobre os itens especificamente identificados dentro de cada categoria, não decompostos aqui por falta de abertura oficial linha a linha.</p>
-  <table class="data-table">
-    <thead><tr><th></th><th>Categoria</th><th class="num">2019</th><th class="num">2025</th><th class="num">2026 (jan-abr)</th><th class="num">Var. nominal</th><th class="num">Var. real</th></tr></thead>
+  <table class="data-table" id="tbl-receita">
+    <thead><tr><th></th><th>Categoria</th><th class="num">2019</th><th class="num">2025</th><th class="num">2026 (jan-abr, parcial)</th><th class="num">Var. nominal</th><th class="num">Var. real</th></tr></thead>
     <tbody>
       <tr><td class="num">1</td><td>Impostos e taxas</td><td class="num">8.594</td><td class="num">17.232</td><td class="num">6.081</td><td class="num">+100%</td><td class="num">+44%</td></tr>
       <tr><td class="num">2</td><td>Contribuições</td><td class="num">375</td><td class="num">783</td><td class="num">231</td><td class="num">+109%</td><td class="num">+50%</td></tr>
@@ -596,19 +595,19 @@ footer.doc-footer {
 <div class="screen">
   <div class="pagehead"><span class="no">09</span><h2>Despesa por Categoria Econômica</h2></div>
   <p class="datatag">Dado mais recente: RREO Anexo 1, bimestre 6 de cada exercício até 2025, bimestral; 2026 não incluído (despesa empenhada parcial distorce a comparação, ver p. 15).</p>
-  <p class="subhead">Despesa empenhada por categoria econômica, 2019, 2021, 2023 e 2025, em R$ milhões nominais e em R$ milhões de 2025 (deflacionado pelo IPCA).</p>
+  <p class="subhead">Despesa empenhada por categoria econômica, 2019 (em R$ de 2025, deflacionado pelo IPCA) e 2025 (nominal), com variação nominal e real do período.</p>
   <table class="data-table">
-    <thead><tr><th></th><th>Categoria</th><th class="num">2019 (real)</th><th class="num">2021 (real)</th><th class="num">2023 (real)</th><th class="num">2025</th><th class="num">Var. nominal</th><th class="num">Var. real</th></tr></thead>
+    <thead><tr><th></th><th>Categoria</th><th class="num">2019 (real)</th><th class="num">2025</th><th class="num">Var. nominal</th><th class="num">Var. real</th></tr></thead>
     <tbody>
-      <tr><td class="num">1</td><td>Pessoal e encargos sociais</td><td class="num">10.656</td><td class="num">10.310</td><td class="num">11.602</td><td class="num">12.735</td><td class="num">+66%</td><td class="num">+20%</td></tr>
-      <tr><td class="num">2</td><td>Outras despesas correntes (custeio)</td><td class="num">5.854</td><td class="num">7.412</td><td class="num">8.702</td><td class="num">10.449</td><td class="num">+148%</td><td class="num">+79%</td></tr>
-      <tr><td class="num">3</td><td>Juros e encargos da dívida</td><td class="num">452</td><td class="num">336</td><td class="num">435</td><td class="num">452</td><td class="num">+39%</td><td class="num">0%</td></tr>
-      <tr><td class="num">4</td><td>Investimentos</td><td class="num">1.493</td><td class="num">2.766</td><td class="num">4.611</td><td class="num">5.187</td><td class="num">+384%</td><td class="num">+248%</td></tr>
-      <tr><td class="num">5</td><td>Inversões financeiras</td><td class="num">748</td><td class="num">1.029</td><td class="num">1.178</td><td class="num">1.303</td><td class="num">+143%</td><td class="num">+74%</td></tr>
-      <tr><td class="num">6</td><td>Amortização da dívida</td><td class="num">196</td><td class="num">361</td><td class="num">417</td><td class="num">396</td><td class="num">+181%</td><td class="num">+102%</td></tr>
+      <tr><td class="num">1</td><td>Pessoal e encargos sociais</td><td class="num">10.656</td><td class="num">12.735</td><td class="num">+66%</td><td class="num">+20%</td></tr>
+      <tr><td class="num">2</td><td>Outras despesas correntes (custeio)</td><td class="num">5.854</td><td class="num">10.449</td><td class="num">+148%</td><td class="num">+79%</td></tr>
+      <tr><td class="num">3</td><td>Juros e encargos da dívida</td><td class="num">452</td><td class="num">452</td><td class="num">+39%</td><td class="num">0%</td></tr>
+      <tr><td class="num">4</td><td>Investimentos</td><td class="num">1.493</td><td class="num">5.187</td><td class="num">+384%</td><td class="num">+248%</td></tr>
+      <tr><td class="num">5</td><td>Inversões financeiras</td><td class="num">748</td><td class="num">1.303</td><td class="num">+143%</td><td class="num">+74%</td></tr>
+      <tr><td class="num">6</td><td>Amortização da dívida</td><td class="num">196</td><td class="num">396</td><td class="num">+181%</td><td class="num">+102%</td></tr>
     </tbody>
   </table>
-  <p class="tbl-note">Colunas de 2019, 2021 e 2023 em R$ milhões de 2025 (deflacionadas). A soma das categorias acima não fecha exatamente com o total da despesa empenhada, pois não inclui despesas intra-orçamentárias e reserva de contingência, itens secundários no valor total. As seis categorias numeradas são a classificação completa da despesa por categoria econômica do RREO Anexo 1 (três despesas correntes: pessoal, juros, outras correntes; três despesas de capital: investimentos, inversões financeiras, amortização), não um recorte: não há categoria oficial adicional a incluir.</p>
+  <p class="tbl-note">Coluna de 2019 em R$ milhões de 2025 (deflacionada); coluna de 2025 em valor nominal. A soma das categorias acima não fecha exatamente com o total da despesa empenhada, pois não inclui despesas intra-orçamentárias e reserva de contingência, itens secundários no valor total. As seis categorias numeradas são a classificação completa da despesa por categoria econômica do RREO Anexo 1 (três despesas correntes: pessoal, juros, outras correntes; três despesas de capital: investimentos, inversões financeiras, amortização), não um recorte: não há categoria oficial adicional a incluir.</p>
   <div class="highlight">Em termos reais, a despesa com pessoal cresceu 20% entre 2019 e 2025, um ritmo moderado, coerente com a estabilidade do indicador pessoal sobre RCL (página 11). Já o custeio (outras despesas correntes) cresceu 79% em termos reais, quase o dobro do crescimento real da receita total no mesmo período (36%, página 8). Investimentos foram a categoria que mais cresceu em termos reais (248%), resultado que sustenta o discurso oficial de recorde de investimentos, mas que também depende da composição da receita discutida na página 8.</div>
   <p class="note">Os dados de 2026 (RREO, posição de abril) não entram nesta tabela: despesa empenhada de um período parcial superestima sistematicamente a comparação com anos fechados, porque compromissos anuais (como parte da folha de pessoal) são empenhados de uma só vez no início do exercício. Por essa distorção, a própria SEFAZ-ES reporta "% Realizado" acima de 100% em algumas rubricas nos primeiros meses do ano. A execução de 2026 é tratada à parte, com os indicadores adequados a um período parcial, na página 2.</p>
   <p class="src"><b>Fonte:</b> Relatório Resumido da Execução Orçamentária (RREO), Anexo 1, via SICONFI/Tesouro Nacional, despesas empenhadas até o bimestre 6 (fechamento anual). Deflator IPCA, IBGE.</p>
@@ -702,7 +701,7 @@ footer.doc-footer {
   <p class="def"><b>Passivo atuarial</b> é uma projeção, feita por atuários, do valor presente de todos os benefícios de aposentadoria e pensão já prometidos a servidores atuais e futuros, descontadas as reservas financeiras que já existem para cobrir parte dessa conta. Não é uma dívida que vence amanhã, mas mede o compromisso de longuíssimo prazo do Estado. Déficit atuarial é comum à maioria dos RPPS no Brasil; o que importa aqui é o tamanho frente ao orçamento estadual e a tendência dos aportes anuais, não a mera existência do passivo.</p>
   <div class="chart-title">Estoque: passivo atuarial total, posição de 31 de dezembro (R$ bilhões)</div>
   <div class="chart-wrap" id="chart-atuarial"></div>
-  <div class="highlight">O passivo atuarial saltou de R$6,1 bilhões em 2022 para cerca de R$59 bilhões a partir de 2023 (linha tracejada no gráfico), quase o dobro da RCL anual. O salto reflete uma revisão das premissas atuariais (taxa de desconto e expectativa de vida), não um evento de caixa isolado, mas o novo patamar é o que consta nos relatórios desde então.</div>
+  <div class="highlight">O passivo atuarial saltou de R$6,1 bilhões em 2022 para cerca de R$59 bilhões a partir de 2023 (linha tracejada no gráfico), quase o dobro da RCL anual. Este diagnóstico registra uma quebra metodológica/revisão de premissas atuariais entre os dois exercícios, sem indicação documental específica sobre quais premissas mudaram; não é um evento de caixa isolado, mas o novo patamar é o que consta nos relatórios desde então.</div>
   <div class="chart-title" style="margin-top:10px;">Estoque por fundo, dezembro de 2025 (R$ bilhões)</div>
   <div class="stat-tiles" style="margin:4px 0;">
     <div class="stat-tile">
@@ -717,16 +716,8 @@ footer.doc-footer {
     </div>
   </div>
   <div class="chart-title" style="margin-top:10px;">Fluxo: aporte extra-orçamentário anual ao Fundo Financeiro e ao FPS Militares (R$ milhões)</div>
-  <div class="bridge" style="margin-top:4px;">
-    <div class="bridge-bar" style="height:40px; white-space:normal;">
-      <div class="bridge-seg" style="flex:2664; background:#c9a04a; flex-direction:column; line-height:1.15;">2022<br>2.664</div>
-      <div class="bridge-seg" style="flex:2836; background:#b8922a; flex-direction:column; line-height:1.15;">2023<br>2.836</div>
-      <div class="bridge-seg" style="flex:3200; background:#96741a; flex-direction:column; line-height:1.15;">2024<br>3.200</div>
-      <div class="bridge-seg" style="flex:3712; background:#8b1a1a; flex-direction:column; line-height:1.15;">2025<br>3.712</div>
-      <div class="bridge-seg" style="flex:1236; background:#6b6b6b; flex-direction:column; line-height:1.15; font-size:8.5px;">26p<br>1.236</div>
-    </div>
-  </div>
-  <div class="callout">Esse aporte, dentro da linha "Pessoal e Encargos Sociais" do Demonstrativo de Caixa do Tesouro, não discriminado nos relatórios de execução orçamentária padrão, <b>cresceu todos os anos desde 2022</b>: de R$2,66 bilhões para R$3,71 bilhões, alta de 39% em quatro anos, acima da inflação do período. O parecer prévio do TCE-ES sobre as contas de 2024 cientificou formalmente o IPAJM e a SEP sobre esse risco, recomendando um Fundo de Oscilação de Riscos ainda não criado.</div>
+  <div class="chart-wrap" id="chart-aporte"></div>
+  <div class="callout">Esse aporte, dentro da linha "Pessoal e Encargos Sociais" do Demonstrativo de Caixa do Tesouro, não discriminado nos relatórios de execução orçamentária padrão, <b>cresceu todos os anos desde 2022</b>: de R$2,66 bilhões para R$3,71 bilhões em 2025 (2026 é dado parcial de janeiro a abril, cor diferente no gráfico, não comparável ao total anual), alta de 39% entre 2022 e 2025, acima da inflação do período. O parecer prévio do TCE-ES sobre as contas de 2024 cientificou formalmente o IPAJM e a SEP sobre esse risco, recomendando um Fundo de Oscilação de Riscos ainda não criado.</div>
   <p class="src"><b>Fontes:</b> passivo atuarial total (série 2019 a 2025), RGF Anexo 2, item de memória, via SICONFI, mesmo valor do passivo formal no balanço patrimonial (DCA, conta 2.2.7.2.0.00.00). Detalhamento por fundo (dez/2025): IPAJM, <i>Relatório da Avaliação Atuarial Espírito Santo, dez/2025 (versão final)</i>, publicado em 08/05/2026. Alerta do TCE-ES (base 2024): Parecer Prévio TC-062/2025, itens 1.2.1 e 1.3.4. Aportes: SEFAZ-ES, Demonstrativo do Resultado de Caixa do Tesouro Estadual.</p>
 </div>
 <div class="pagebreak"></div>
@@ -739,9 +730,9 @@ footer.doc-footer {
   <table class="risk-table compact">
     <tr>
       <td class="risk-pillar">I. Passivo previdenciário<small>Passivo atuarial, p. 13</small></td>
-      <td class="risk-status"><span class="pill bad">Elevado</span><div class="ra-mini">Tendência: ↑ piorando<br>Incerteza: baixa</div></td>
+      <td class="risk-status"><span class="pill bad">Elevado</span><div class="ra-mini">Tendência: estoque estável, fluxo ↑ piorando<br>Incerteza: baixa</div></td>
       <td class="risk-horizon">Longo prazo</td>
-      <td class="risk-desc"><b class="vuln">Vulnerabilidade alta.</b> Cerca de R$59 bilhões, quase o dobro da RCL anual, com aportes crescendo todo ano desde 2022. Único item com alerta formal do TCE-ES em nome próprio, que recomendou um fundo de oscilação de riscos ainda não criado.</td>
+      <td class="risk-desc"><b class="vuln">Vulnerabilidade alta.</b> Estoque de cerca de R$59 bilhões, quase o dobro da RCL anual, aproximadamente estável desde 2023 (caiu levemente em 2025); mas o fluxo de aportes anuais do Tesouro cresce todo ano desde 2022, pressão de caixa crescente mesmo com o estoque estável. Único item com alerta formal do TCE-ES em nome próprio, que recomendou um fundo de oscilação de riscos ainda não criado.</td>
     </tr>
     <tr>
       <td class="risk-pillar">II. Liquidez do caixa livre<small>Caixa e RP, p. 4</small></td>
@@ -759,35 +750,29 @@ footer.doc-footer {
       <td class="risk-pillar">IV. Aplicação mínima em educação<small>P. 12</small></td>
       <td class="risk-status"><span class="pill warn">Atenção</span><div class="ra-mini">Tendência: ↑ piorando<br>Incerteza: baixa</div></td>
       <td class="risk-horizon">Curto prazo</td>
-      <td class="risk-desc"><b class="vuln">Vulnerabilidade média.</b> Margem acima do mínimo caiu de 2,80 pontos percentuais (2019) para 0,28 ponto (2025), a folga mais estreita deste diagnóstico, embora ainda cumprida.</td>
+      <td class="risk-desc"><b class="vuln">Risco de conformidade, não de solvência.</b> Margem acima do mínimo caiu de 2,80 pontos percentuais (2019) para 0,28 ponto (2025), a folga mais estreita deste diagnóstico. Ainda cumprida; o risco é de menor flexibilidade de execução orçamentária, não de insolvência ou de caixa.</td>
     </tr>
     <tr>
       <td class="risk-pillar">V. Composição da receita<small>Itens identificados, p. 8</small></td>
-      <td class="risk-status"><span class="pill warn">Atenção</span><div class="ra-mini">Tendência: ↑ piorando<br>Incerteza: média</div></td>
+      <td class="risk-status"><span class="pill warn">Monitoramento</span><div class="ra-mini">Tendência: não conclusiva<br>Incerteza: média</div></td>
       <td class="risk-horizon">Médio prazo</td>
-      <td class="risk-desc"><b class="vuln">Vulnerabilidade média.</b> Rendimentos financeiros, indenizações do acordo de Fundão e receitas de capital ligadas a operações de crédito pontuais cresceram, em termos reais, bem mais rápido que a receita tributária própria e as transferências da União desde 2019. Tendência a monitorar nesses itens específicos, não problema de caixa atual.</td>
+      <td class="risk-desc"><b class="vuln">Vulnerabilidade média.</b> Rendimentos financeiros, indenizações do acordo de Fundão e receitas de capital ligadas a operações de crédito pontuais cresceram, em termos reais, bem mais rápido que a receita tributária própria e as transferências da União entre 2019 e 2025 (comparação de dois pontos, não série anual completa). Item para monitorar, não problema de caixa atual nem tendência confirmada ano a ano.</td>
     </tr>
     <tr>
       <td class="risk-pillar">VI. Resultado primário<small>P. 3</small></td>
       <td class="risk-status"><span class="pill warn">Meta cumprida</span><div class="ra-mini">Tendência: &rarr; estável<br>Incerteza: baixa</div></td>
       <td class="risk-horizon">Recorrente</td>
-      <td class="risk-desc"><b class="vuln">Vulnerabilidade baixa.</b> O resultado sem RPPS foi negativo em 2023 e 2025, mas superou a própria meta (também negativa) da LDO nos três anos, compatível com o uso de superávit financeiro de exercícios anteriores. O TCE-ES emitiu parecer prévio recomendando a aprovação de 2024, sem ressalvas. Não deve ser lido como "favorável" no sentido de geração de resultado próprio.</td>
+      <td class="risk-desc"><b class="vuln">Vulnerabilidade baixa.</b> O resultado sem RPPS foi negativo em 2023 e 2025, mas superou a própria meta (também negativa) da LDO nos três anos, compatível com créditos adicionais abertos com base em superávit financeiro de exercícios anteriores (sem conciliação do consumo efetivo). O TCE-ES emitiu parecer prévio recomendando a aprovação de 2024, sem ressalvas. Não deve ser lido como "favorável" no sentido de geração de resultado próprio.</td>
     </tr>
     <tr>
-      <td class="risk-pillar">VII. Solvência e CAPAG<small>Dívida líquida, p. 7; CAPAG, p. 6</small></td>
+      <td class="risk-pillar">VII. Solvência, CAPAG e garantias<small>Dívida líquida, p. 7; CAPAG, p. 6</small></td>
       <td class="risk-status"><span class="pill good">Favorável</span><div class="ra-mini">Tendência: &rarr; estável<br>Incerteza: baixa</div></td>
       <td class="risk-horizon">Estrutural</td>
-      <td class="risk-desc"><b class="vuln">Vulnerabilidade baixa.</b> Dívida líquida negativa desde 2021 (embora com recebível de Fundão embutido nas deduções, ver p. 7); classificação oficial vigente CAPAG A+ (ano-base 2024), cálculo indicativo da SEFAZ mantém nota A nos três indicadores em 2025. Nenhum sinal de restrição de crédito.</td>
-    </tr>
-    <tr>
-      <td class="risk-pillar">VIII. Garantias concedidas<small>P. 7</small></td>
-      <td class="risk-status"><span class="pill good">Favorável</span><div class="ra-mini">Tendência: &rarr; estável<br>Incerteza: baixa</div></td>
-      <td class="risk-horizon">Estrutural</td>
-      <td class="risk-desc"><b class="vuln">Vulnerabilidade baixa.</b> Avais a entidades controladas somam 0,76% da RCL, sob o limite do Senado, e hoje cobertos por contragarantias no mesmo valor: não configuram passivo oculto relevante.</td>
+      <td class="risk-desc"><b class="vuln">Vulnerabilidade baixa.</b> Dívida líquida negativa desde 2021 (embora com recebível de Fundão embutido nas deduções, ver p. 7); classificação oficial vigente CAPAG A+ (ano-base 2024), cálculo indicativo da SEFAZ mantém nota A nos três indicadores em 2025. Avais a entidades controladas somam 0,76% da RCL, sob o limite do Senado, hoje cobertos por contragarantias no mesmo valor: não configuram passivo oculto relevante. Nenhum sinal de restrição de crédito.</td>
     </tr>
   </table>
   <p class="tbl-note">Cinco dimensões avaliadas por item: situação atual (pílula de cor), tendência (direção observada na série), vulnerabilidade (magnitude do impacto potencial, quando estimável), horizonte (prazo em que o risco tende a se manifestar) e incerteza (confiança na fonte e na mensuração; "alta" incerteza marca itens sem valor estimado ou sem série histórica).</p>
-  <p class="note" style="margin-top:10px;">Só o item I tem gravidade confirmada por fonte externa ao Tesouro (o TCE-ES). Os itens II a V pedem monitoramento contínuo, mas nenhum indica ruptura iminente de caixa ou crédito. O item VI é conformidade formal com a meta, não sinal de geração de resultado próprio: leitura neutra, nem favorável nem desfavorável. Os itens VII e VIII, lidos com cuidado, pesam a favor da situação fiscal do Estado.</p>
+  <p class="note" style="margin-top:10px;">Só o item I tem gravidade confirmada por fonte externa ao Tesouro (o TCE-ES). Os itens II, III e V pedem monitoramento contínuo, mas nenhum indica ruptura iminente de caixa ou crédito. O item IV é risco de conformidade e de flexibilidade de execução, não de solvência. O item VI é conformidade formal com a meta, não sinal de geração de resultado próprio: leitura neutra, nem favorável nem desfavorável. O item VII, lido com cuidado, pesa a favor da situação fiscal do Estado.</p>
   <p class="src"><b>Fonte:</b> leitura de conjunto elaborada a partir dos indicadores e fontes detalhados em cada página deste diagnóstico. TCE-ES, Parecer Prévio TC-062/2025, exercício de 2024.</p>
 </div>
 <div class="pagebreak"></div>
@@ -1037,12 +1022,12 @@ footer.doc-footer {
   var YEARS = ['2019','2020','2021','2022','2023','2024','2025'];
 
   barChart('chart-orcamentario', {
-    years: ['2020','2021','2022','2023','2024','2025'], height: 140, valueFmt: {decimals: 0}, color: BLUE,
+    years: ['2020','2021','2022','2023','2024','2025'], height: 110, valueFmt: {decimals: 0}, color: BLUE,
     values: [1063, 1303, 1236, 798, 883, 888]
   });
 
   lineChart('chart-caixa', {
-    years: YEARS, yTicks: 4, valueFmt: {decimals: 0}, height: 185,
+    years: YEARS, yTicks: 4, valueFmt: {decimals: 0}, height: 160,
     series: [
       { name: 'Disponibilidade de caixa líquida não vinculada (real, R$ 2025)', color: BLUE, values: [1786, 2167, 2725, 2505, 2064, 1033, 1264], labelAbove: true }
     ]
@@ -1055,14 +1040,20 @@ footer.doc-footer {
   });
 
   lineChart('chart-dcl', {
-    years: YEARS, yTicks: 4, valueFmt: {pct: true, decimals: 0}, height: 155,
+    years: YEARS, yTicks: 4, valueFmt: {pct: true, decimals: 0}, height: 130,
     series: [{ name: 'Dívida líquida / RCL', color: BLUE, values: [14.0, 9.1, -0.8, -4.1, -6.6, -9.7, -52.4] }]
   });
 
   barChart('chart-atuarial', {
     years: YEARS, valueFmt: {decimals: 1}, color: '#8b1a1a', height: 190,
     values: [3.3, 2.5, 5.5, 6.1, 55.1, 58.9, 58.9],
-    breakBefore: 4, breakLabel: 'revisão atuarial (nova premissa)'
+    breakBefore: 4, breakLabel: 'quebra metodológica'
+  });
+
+  barChart('chart-aporte', {
+    years: ['2022','2023','2024','2025','2026 (jan-abr)'], valueFmt: {decimals: 0}, color: '#8b1a1a', height: 170,
+    colors: ['#8b1a1a', '#8b1a1a', '#8b1a1a', '#8b1a1a', GOLD],
+    values: [2664, 2836, 3200, 3712, 1236]
   });
 
   barChart('chart-pessoal', {
