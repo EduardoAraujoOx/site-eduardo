@@ -4,16 +4,22 @@ Gera a Nota Técnica do Estudo 11 (série histórica e projeção do IBS total,
 Brasil, 2029-2033) em HTML print-ready, a partir de
 data/ibs-projecao-nacional.json e data/macro-parametros.json.
 
-O HTML é depois renderizado em PDF via Playwright/Chromium
+O gráfico de trajetória (histórico + projeção) é renderizado como imagem
+estática via matplotlib, já que o PDF não roda o Chart.js usado na página
+web. O HTML é depois renderizado em PDF via Playwright/Chromium
 (scripts/render-nota-tecnica-pdf.js).
+
+Depende de matplotlib (pip install matplotlib).
 
 Uso:
   python3 data/build-nota-tecnica-pdf.py
   node data/render-nota-tecnica-pdf.js
 """
 
+import base64
 import json
 from datetime import date
+from io import BytesIO
 from pathlib import Path
 
 HERE = Path(__file__).parent
@@ -25,6 +31,50 @@ fmtnum = lambda v, d=1: f"{v:,.{d}f}".replace(",", "§").replace(".", ",").repla
 fmtbi = lambda v, d=1: fmtnum(v / 1e9, d)
 fmtpct = lambda v, d=2: fmtnum(v, d) + "%"
 fmtpct_signed = lambda v, d=2: ("+" if v >= 0 else "") + fmtnum(v, d) + "%"
+
+
+def trajetoria_chart_data_uri():
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import matplotlib.ticker as mticker
+
+    historico = PROJ["historico"]
+    macro_path = PROJ["macro_path"]
+    razao = PROJ["_meta"]["razao_bolo_pib_base"] / 100
+    proj_por_ano = {p["ano"]: p["bolo_projetado"] for p in PROJ["projecao"]}
+
+    anos_real = [h["ano"] for h in historico]
+    valores_real = [h["bolo_nominal"] / 1e9 for h in historico]
+
+    ultimo = historico[-1]
+    anos_proj = [ultimo["ano"]] + [m["ano"] for m in macro_path]
+    valores_proj = [ultimo["bolo_nominal"] / 1e9] + [
+        (proj_por_ano.get(m["ano"], razao * m["pib_nominal"])) / 1e9 for m in macro_path
+    ]
+
+    fig, ax = plt.subplots(figsize=(7.0, 2.9), dpi=150)
+    ax.plot(anos_real, valores_real, color="#1A3A5C", linewidth=2.2, marker="o", markersize=3.5, label="Realizado (2015–2025)")
+    ax.plot(anos_proj, valores_proj, color="#2a78d6", linewidth=2.2, linestyle=(0, (5, 3)), marker="o", markersize=3.5, label="Projetado (2026–2033)")
+
+    ax.set_ylabel("R$ bi", fontsize=9)
+    ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda v, _: f"{v:,.0f}".replace(",", ".")))
+    ax.xaxis.set_major_locator(mticker.MultipleLocator(2))
+    ax.tick_params(labelsize=8.5, colors="#4A4A48")
+    for spine in ("top", "right"):
+        ax.spines[spine].set_visible(False)
+    for spine in ("left", "bottom"):
+        ax.spines[spine].set_color("#DADAD5")
+    ax.grid(axis="y", color="#E8E5DF", linewidth=0.7)
+    ax.set_axisbelow(True)
+    ax.legend(loc="upper left", fontsize=8.5, frameon=False)
+    fig.tight_layout()
+
+    buf = BytesIO()
+    fig.savefig(buf, format="png")
+    plt.close(fig)
+    buf.seek(0)
+    return "data:image/png;base64," + base64.b64encode(buf.read()).decode("ascii")
 
 
 def hist_rows():
@@ -228,6 +278,10 @@ HTML = f"""<!DOCTYPE html>
     }}
     .refs {{ font-size: 9pt; }}
     .refs li {{ margin-bottom: 0.5rem; }}
+
+    .chart-block {{ margin: 0.8rem 0 1.2rem; page-break-inside: avoid; }}
+    .chart-img {{ width: 100%; display: block; }}
+    .chart-caption {{ font-family: Arial, sans-serif; font-size: 8pt; color: #6E6E6E; text-align: center; margin: 0.3rem 0 0; }}
 </style>
 </head>
 <body>
@@ -277,6 +331,11 @@ HTML = f"""<!DOCTYPE html>
     R$ {fmtbi(p2033['bolo_projetado'])} bi, equivalente a {fmtpct(p2033['bolo_pct_pib'])} do PIB,
     a mesma proporção observada em 2025, por premissa metodológica explicada na Seção 4.
 </p>
+<div class="chart-block">
+    <img class="chart-img" src="{trajetoria_chart_data_uri()}" alt="Arrecadação de ICMS+ISS, Brasil: realizado 2015-2025 e projetado 2026-2033">
+    <p class="chart-caption">Arrecadação total de ICMS+ISS, Brasil (R$ bi, nominal). A linha
+    tracejada, a partir de 2026, é a projeção descrita na Seção 4.</p>
+</div>
 
 <h2>3. Fontes de dados</h2>
 <h3>3.1 Arrecadação histórica de ICMS e ISS</h3>
