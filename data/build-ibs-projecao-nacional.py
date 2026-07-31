@@ -1,0 +1,188 @@
+#!/usr/bin/env python3
+"""
+Estudo 11: série histórica e projeção do IBS total (Brasil), 2029-2033.
+
+Combina:
+  - o "bolo" histórico ICMS+ISS (SICONFI): DCA Anexo I-C (dca_icms_por_uf,
+    dca_iss_por_uf) para 2019-2025; RREO Anexo 3 (icms_por_uf) para
+    2015-2018, ano em que a série DCA não está coletada neste repositório
+    — validado como equivalente ao DCA (diff < 1%, ver
+    data/build-reconciliacao-dca-rreo.py). ISS usa DCA em toda a série
+    2015-2025 (RREO tem cobertura municipal ruim, ver
+    data/collect-iss-dca-2015-2018.py);
+  - a trajetória de PIB nominal 2026-2033, construída a partir do PIB
+    nominal de 2025 (BCB/SGS) composto pelas medianas do Boletim Focus
+    (2026-2030) e pelas projeções da IFI/RAF 107 (2031-2033), ver
+    data/macro-parametros.json;
+  - a premissa de que o bolo ICMS+ISS cresce na mesma proporção do PIB
+    nominal a partir de 2025 (razão bolo/PIB constante no nível de 2025)
+    — a mesma premissa de neutralidade de receita do art. 130 ADCT já
+    usada nos Estudos 06 e 09 desta página;
+  - o cronograma constitucional de transição ICMS/ISS → IBS (ADCT arts.
+    128 e 131, LC 227/2026), replicando exatamente os parâmetros fa/sa já
+    usados no Estudo 06 (estudos/ibs-projecao-arrecadacao-br.html).
+
+No agregado nacional, o valor TOTAL de IBS não depende dos coeficientes de
+redistribuição por UF (φ^neutro, φ^CPT, φ^dest) nem da fração α_a
+(histórico vs. destino) usados no Estudo 06 — esses parâmetros só
+determinam COMO o bolo é dividido entre entes, não o seu tamanho total.
+Por isso a fórmula nacional se reduz a:
+
+  ICMS+ISS residual(a) = bolo_projetado(a) × fa
+  IBS bruto(a)          = bolo_projetado(a) × sa
+  Total(a)               = bolo_projetado(a)          [fa + sa = 1, por construção]
+
+"IBS bruto" aqui é a arrecadação total antes das deduções do CGIBS e do
+Seguro-Receita (ADCT arts. 51 LC 227/2026 e 132 ADCT), que incidem sobre a
+parcela distribuída aos entes pelo critério destino — não reduzem o total
+nacional, apenas a fatia que cada estado/município recebe líquida (ver
+Estudo 06 para a decomposição por UF).
+
+Uso: python3 build-ibs-projecao-nacional.py
+"""
+
+import json
+from pathlib import Path
+
+DATA_DIR = Path(__file__).parent
+OUTPUT = DATA_DIR / "ibs-projecao-nacional.json"
+
+ANO_HIST_INICIO = 2015
+ANO_HIST_FIM = 2025
+ANO_BASE = 2025
+
+# Mesmo cronograma do Estudo 06 (estudos/ibs-projecao-arrecadacao-br.html),
+# derivado do ADCT arts. 128 e 131 (EC 132/2023) e LC 227/2026.
+ADCT = {
+    2029: {"fa": 0.9, "sa": 0.10},
+    2030: {"fa": 0.8, "sa": 0.20},
+    2031: {"fa": 0.7, "sa": 0.30},
+    2032: {"fa": 0.6, "sa": 0.40},
+    2033: {"fa": 0.0, "sa": 1.00},
+}
+ANOS_PROJ = [2029, 2030, 2031, 2032, 2033]
+
+
+def main():
+    ref = json.load(open(DATA_DIR / "reforma-tributaria.json"))
+    macro = json.load(open(DATA_DIR / "macro-parametros.json"))
+
+    dca_icms_por_uf = ref["dca_icms_por_uf"]
+    icms_por_uf_rreo = ref["icms_por_uf"]
+    dca_iss_por_uf = ref["dca_iss_por_uf"]
+
+    # ── Bolo histórico ICMS+ISS, 2015-2025 ──
+    historico = []
+    for y in range(ANO_HIST_INICIO, ANO_HIST_FIM + 1):
+        ys = str(y)
+        if ys in dca_icms_por_uf:
+            icms = sum(dca_icms_por_uf[ys].values())
+            fonte_icms = "DCA"
+        else:
+            icms = sum(icms_por_uf_rreo.get(uf, {}).get(ys, 0) or 0 for uf in icms_por_uf_rreo)
+            fonte_icms = "RREO"
+        iss = sum(dca_iss_por_uf.get(ys, {}).values())
+        bolo = icms + iss
+        pib = macro["pib_nominal_historico"][ys]
+        deflator = macro["deflator_ipca_para_2025"][ys]
+        historico.append({
+            "ano": y,
+            "icms": round(icms, 2),
+            "iss": round(iss, 2),
+            "bolo_nominal": round(bolo, 2),
+            "bolo_real_2025": round(bolo * deflator, 2),
+            "pib_nominal": round(pib, 2),
+            "bolo_pct_pib": round(bolo / pib * 100, 4),
+            "fonte_icms": fonte_icms,
+        })
+
+    bolo_2025 = next(h["bolo_nominal"] for h in historico if h["ano"] == ANO_BASE)
+    pib_2025 = macro["pib_nominal_historico"][str(ANO_BASE)]
+    razao_2025 = bolo_2025 / pib_2025
+
+    ratios = [h["bolo_pct_pib"] for h in historico if h["ano"] >= 2019]
+    faixa_historica = {"min": round(min(ratios), 4), "max": round(max(ratios), 4)}
+
+    # ── Trajetória de PIB nominal, 2026-2033 (Focus + IFI) ──
+    focus = macro["projecao_2026_2030_focus"]
+    ifi = macro["projecao_2031_2033_ifi"]
+
+    pib_nom = {ANO_BASE: pib_2025}
+    macro_path = []
+    for y in range(2026, 2034):
+        ys = str(y)
+        if ys in focus:
+            g = focus[ys]["pib_real_pct"]
+            infl = focus[ys]["ipca_pct"]
+            fonte = "Focus (BCB), mediana"
+        else:
+            g = ifi[ys]["pib_real_pct"]
+            infl = ifi[ys]["ipca_pct"]
+            fonte = "IFI, RAF 107 (dez/2025)"
+        pib_nom[y] = pib_nom[y - 1] * (1 + g) * (1 + infl)
+        macro_path.append({
+            "ano": y,
+            "pib_real_pct": round(g, 4),
+            "ipca_pct": round(infl, 4),
+            "pib_nominal_pct_crescimento": round((1 + g) * (1 + infl) - 1, 4),
+            "pib_nominal": round(pib_nom[y], 2),
+            "fonte": fonte,
+        })
+
+    # ── Bolo projetado (razão bolo/PIB constante em 2025) e decomposição ADCT ──
+    projecao = []
+    for a in ANOS_PROJ:
+        bolo_a = razao_2025 * pib_nom[a]
+        fa, sa = ADCT[a]["fa"], ADCT[a]["sa"]
+        icms_iss_residual = bolo_a * fa
+        ibs_bruto = bolo_a * sa
+        projecao.append({
+            "ano": a,
+            "bolo_projetado": round(bolo_a, 2),
+            "pib_nominal": round(pib_nom[a], 2),
+            "bolo_pct_pib": round(bolo_a / pib_nom[a] * 100, 4),
+            "fa": fa,
+            "sa": sa,
+            "icms_iss_residual": round(icms_iss_residual, 2),
+            "ibs_bruto": round(ibs_bruto, 2),
+        })
+
+    output = {
+        "_meta": {
+            "descricao": "Estudo 11: série histórica (2015-2025) e projeção do IBS total (Brasil), 2029-2033.",
+            "ano_base": ANO_BASE,
+            "razao_bolo_pib_base": round(razao_2025 * 100, 4),
+            "faixa_historica_razao_2019_2025": faixa_historica,
+            "fontes": {
+                "icms_2015_2018": "SICONFI/STN, RREO Anexo 3 (ICMSLiquidoExcetoTransferenciasEFUNDEB), validado contra DCA (diff < 1%)",
+                "icms_2019_2025": "SICONFI/STN, DCA Anexo I-C — mesma base dos Estudos 03, 06 e 09 desta página",
+                "iss_2015_2025": "SICONFI/STN, DCA Anexo I-C, todos os municípios",
+                "pib_ipca_historico": "BCB/SGS séries 1207 (PIB nominal) e 433 (IPCA)",
+                "projecao_macro_2026_2030": "BCB, Boletim Focus (Sistema de Expectativas de Mercado), mediana",
+                "projecao_macro_2031_2033": "IFI (Instituição Fiscal Independente, Senado Federal), RAF 107, 18/dez/2025",
+                "cronograma_adct": "ADCT arts. 128 e 131 (EC 132/2023) e LC 227/2026 — mesmos parâmetros fa/sa do Estudo 06",
+            },
+            "data_pesquisa_focus": macro["_meta"]["data_pesquisa_focus"],
+            "premissas": [
+                "Razão bolo (ICMS+ISS) / PIB nominal mantida constante no nível de 2025 a partir de 2026 (elasticidade-PIB unitária) — mesma premissa de neutralidade de receita do art. 130 ADCT usada nos Estudos 06 e 09.",
+                "IBS bruto = bolo projetado × sa (fração já migrada para IBS no ADCT). Não inclui a dedução do CGIBS nem a retenção do Seguro-Receita (ADCT art. 132), que incidem sobre a parcela distribuída aos entes pelo critério destino — ver Estudo 06 para a decomposição por UF líquida dessas deduções.",
+                "Para 2031-2033, fora do horizonte do Boletim Focus (~5 anos), usa-se a projeção da IFI (2,2% a.a. real, IPCA convergindo a 3,0%), constante para os três anos por simplificação — a IFI não detalha ano a ano dentro do intervalo 2027-2035.",
+            ],
+        },
+        "historico": historico,
+        "macro_path": macro_path,
+        "projecao": projecao,
+    }
+
+    OUTPUT.write_text(json.dumps(output, ensure_ascii=False, indent=2))
+    print(f"Gravado em {OUTPUT}")
+    print(f"\nBolo 2025: R$ {bolo_2025/1e9:.2f}B ({razao_2025*100:.2f}% do PIB)")
+    print("\n=== Projeção IBS 2029-2033 ===")
+    for p in projecao:
+        print(f"{p['ano']}: bolo R$ {p['bolo_projetado']/1e9:.1f}B | "
+              f"ICMS+ISS residual R$ {p['icms_iss_residual']/1e9:.1f}B | "
+              f"IBS bruto R$ {p['ibs_bruto']/1e9:.1f}B")
+
+
+if __name__ == "__main__":
+    main()
