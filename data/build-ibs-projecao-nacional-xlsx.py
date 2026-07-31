@@ -6,14 +6,14 @@ data/ibs-projecao-nacional.json e data/macro-parametros.json.
 
 Saída: materiais/ibs-projecao-nacional-memoria-calculo.xlsx, com abas:
   - Síntese: pergunta, resposta e fontes
-  - Série histórica 2015-2025: ICMS, ISS, bolo, PIB, %PIB (dados de entrada)
+  - Série histórica 2015-2025: ICMS, ISS, arrecadação total, PIB, %PIB (dados de entrada)
   - Premissas macro 2026-2033: PIB real, IPCA, fonte (dados de entrada)
   - PIB projetado: fórmulas que compõem o PIB nominal ano a ano
   - Projeção IBS 2029-2033: fórmulas que aplicam o cronograma ADCT
 
 Ao contrário das abas de dados de entrada (série histórica, premissas
 macro), as abas "PIB projetado" e "Projeção IBS" usam fórmulas de planilha
-que referenciam as células de entrada, não valores fixos — mudar uma
+que referenciam as células de entrada, não valores fixos. Mudar uma
 premissa recalcula a projeção inteira.
 
 Uso:
@@ -90,8 +90,8 @@ def main():
     # ── Aba 1: Síntese ──
     ws = wb.active
     ws.title = "Síntese"
-    title_block(ws, "Estudo 11 — IBS total do Brasil, 2029-2033",
-                "Série histórica (2015-2025) e projeção com PIB e inflação oficiais — memória de cálculo")
+    title_block(ws, "Estudo 11: IBS total do Brasil, 2029-2033",
+                "Série histórica (2015-2025) e projeção com PIB e inflação oficiais, memória de cálculo")
 
     p2029 = next(r for r in PROJ["projecao"] if r["ano"] == 2029)
     p2033 = next(r for r in PROJ["projecao"] if r["ano"] == 2033)
@@ -100,16 +100,16 @@ def main():
         ("Pergunta", "Quanto será o IBS total do Brasil entre 2029 e 2033, dado o cronograma constitucional de transição e projeções oficiais de PIB e inflação?"),
         ("", ""),
         ("Resposta", f"IBS bruto nacional: de R$ {p2029['ibs_bruto']/1e9:,.1f} bi em 2029 a R$ {p2033['ibs_bruto']/1e9:,.1f} bi em 2033 (valores nominais)."),
-        ("Bolo total em 2033 (ICMS+ISS+IBS)", f"R$ {p2033['bolo_projetado']/1e9:,.1f} bi ({p2033['bolo_pct_pib']:.2f}% do PIB — mesma proporção de 2025, por premissa)"),
+        ("Arrecadação total em 2033 (ICMS+ISS+IBS)", f"R$ {p2033['bolo_projetado']/1e9:,.1f} bi ({p2033['bolo_pct_pib']:.2f}% do PIB, a mesma proporção de 2025, por premissa)"),
         ("", ""),
-        ("Premissa central", "Razão ICMS+ISS/PIB constante no nível de 2025 a partir de 2026 (elasticidade-PIB unitária) — mesma premissa de neutralidade de receita do art. 130 ADCT usada nos Estudos 06 e 09 do site."),
+        ("Premissa central", "A arrecadação de ICMS e ISS, como proporção do PIB (a carga tributária), é mantida constante no nível de 2025 a partir de 2026: ela cresce sempre no mesmo ritmo da economia, nem mais nem menos rápido. É o próprio desenho legal da transição para o IBS (art. 130, caput e §3º, IV, do ADCT: o Senado fixa a alíquota de referência do IBS para manter a Receita-Base dos Entes Subnacionais como proporção do PIB)."),
         ("Fonte do PIB e inflação, 2026-2030", "Boletim Focus (Banco Central do Brasil), mediana das projeções de mercado, consultado via API do Sistema de Expectativas de Mercado."),
-        ("Fonte do PIB e inflação, 2031-2033", "IFI — Instituição Fiscal Independente (Senado Federal), Relatório de Acompanhamento Fiscal (RAF) nº 107, 18/dez/2025: PIB real 2,2% a.a. (2027-2035), IPCA convergindo a 3,0% (centro da meta contínua)."),
-        ("Fonte do ICMS", "SICONFI/STN — RREO Anexo 3 (2015-2018) e DCA Anexo I-C (2019-2025)."),
-        ("Fonte do ISS", "SICONFI/STN — DCA Anexo I-C, todos os municípios brasileiros (2015-2025)."),
+        ("Fonte do PIB e inflação, 2031-2033", "IFI, Instituição Fiscal Independente (Senado Federal), Relatório de Acompanhamento Fiscal (RAF) nº 107, 18/dez/2025: PIB real 2,2% a.a. (2027-2035), IPCA convergindo a 3,0% (centro da meta contínua)."),
+        ("Fonte do ICMS", "SICONFI/STN, RREO Anexo 3 (2015-2018) e DCA Anexo I-C (2019-2025)."),
+        ("Fonte do ISS", "SICONFI/STN, DCA Anexo I-C, todos os municípios brasileiros (2015-2025)."),
         ("Base legal da transição", "ADCT arts. 128, 130 e 131 (EC 132/2023); LC 227/2026, art. 51 (CGIBS); ADCT art. 132 (Seguro-Receita)."),
-        ("Cronograma f_a/s_a", "Idêntico ao usado no Estudo 06 (Projeção ICMS/IBS por Estado, 2029-2033)."),
-        ("O que este arquivo mostra", "Aba 'Série histórica': dados de entrada SICONFI 2015-2025. Aba 'Premissas macro': dados de entrada Focus/IFI 2026-2033. Aba 'PIB projetado': fórmulas que compõem o PIB nominal ano a ano. Aba 'Projeção IBS': fórmulas que aplicam a razão bolo/PIB e o cronograma ADCT — mude qualquer premissa nas abas de entrada (em azul) e a projeção recalcula."),
+        ("Cronograma f_a/s_a", "Fração remanescente de ICMS/ISS (f_a) e fração já convertida em IBS (s_a=1-f_a) a cada ano da transição, conforme ADCT arts. 128 e 131."),
+        ("O que este arquivo mostra", "Aba 'Série histórica': dados de entrada SICONFI 2015-2025. Aba 'Premissas macro': dados de entrada Focus/IFI 2026-2033. Aba 'PIB projetado': fórmulas que compõem o PIB nominal ano a ano. Aba 'Projeção IBS': fórmulas que aplicam a carga tributária constante e o cronograma ADCT. Mude qualquer premissa nas abas de entrada (em azul) e a projeção recalcula."),
         ("Gerado em", date.today().isoformat()),
         ("Página do estudo", "https://www.eduardoreisaraujo.com.br/estudos/ibs-projecao-nacional.html"),
     ]
@@ -127,8 +127,8 @@ def main():
 
     # ── Aba 2: Série histórica 2015-2025 (dados de entrada) ──
     ws2 = wb.create_sheet("Série histórica 2015-2025")
-    title_block(ws2, "ICMS + ISS, Brasil — série histórica 2015-2025",
-                "Dados de entrada (células em azul) — SICONFI/STN")
+    title_block(ws2, "ICMS + ISS, Brasil: série histórica 2015-2025",
+                "Dados de entrada (células em azul), SICONFI/STN")
     headers = ["Ano", "ICMS (R$)", "ISS (R$)", "ICMS+ISS nominal (R$)", "ICMS+ISS real, 2025 (R$)",
                "PIB nominal (R$)", "ICMS+ISS / PIB", "Fonte ICMS"]
     write_header_row(ws2, 4, headers, widths=[8, 20, 20, 22, 22, 20, 16, 12])
@@ -162,7 +162,7 @@ def main():
     # ── Aba 3: Premissas macro 2026-2033 (dados de entrada) ──
     ws3 = wb.create_sheet("Premissas macro 2026-2033")
     title_block(ws3, "Crescimento do PIB e inflação, 2026-2033",
-                "Dados de entrada (células em azul) — Boletim Focus (BCB) e IFI (RAF 107)")
+                "Dados de entrada (células em azul), Boletim Focus (BCB) e IFI (RAF 107)")
     headers3 = ["Ano", "PIB real (%)", "IPCA (%)", "Fonte"]
     write_header_row(ws3, 4, headers3, widths=[8, 14, 14, 42])
     macro_start_row = 5
@@ -182,8 +182,8 @@ def main():
     note_row3 = macro_end_row + 2
     ws3.cell(row=note_row3, column=1,
              value="2026-2030: mediana do Boletim Focus (BCB), consultada via API do Sistema de Expectativas de Mercado. "
-                   "2031-2033: fora do horizonte do Focus (~5 anos); usa-se a projeção da IFI (RAF 107, 18/dez/2025), constante nos três anos por simplificação — "
-                   "a IFI projeta uma taxa média para 2027-2035, não ano a ano.").font = NOTE_FONT
+                   "2031-2033: fora do horizonte do Focus (~5 anos); usa-se a projeção da IFI (RAF 107, 18/dez/2025), constante nos três anos por simplificação, "
+                   "já que a IFI projeta uma taxa média para 2027-2035, não ano a ano.").font = NOTE_FONT
     ws3.merge_cells(start_row=note_row3, start_column=1, end_row=note_row3, end_column=4)
     ws3.cell(row=note_row3, column=1).alignment = WRAP
     ws3.row_dimensions[note_row3].height = 55
@@ -225,9 +225,9 @@ def main():
     # ── Aba 5: Projeção IBS 2029-2033 (fórmulas) ──
     ws5 = wb.create_sheet("Projeção IBS 2029-2033")
     title_block(ws5, "Projeção do IBS total, Brasil, 2029-2033",
-                "Fórmulas: Bolo(t) = (Bolo2025/PIB2025) × PIB(t); ICMS+ISS residual = Bolo × fa; IBS bruto = Bolo × sa")
+                "Fórmulas: Receita(t) = (Receita2025/PIB2025) × PIB(t); ICMS+ISS residual = Receita × fa; IBS bruto = Receita × sa")
 
-    ws5["A4"] = "Razão bolo/PIB em 2025 (base):"
+    ws5["A4"] = "Carga tributária (arrecadação/PIB) em 2025, base da projeção:"
     ws5["A4"].font = H_FONT
     ws5["B4"] = f"='Série histórica 2015-2025'!D{[i for i,h in enumerate(PROJ['historico']) if h['ano']==2025][0] + hist_start_row}/'Série histórica 2015-2025'!F{[i for i,h in enumerate(PROJ['historico']) if h['ano']==2025][0] + hist_start_row}"
     ws5["B4"].font = FORMULA_FONT
@@ -235,7 +235,7 @@ def main():
     razao_cell = "$B$4"
 
     headers5 = ["Ano", "f_a (ICMS+ISS residual)", "s_a (IBS)", "PIB nominal (R$)",
-                "Bolo projetado (R$)", "ICMS+ISS residual (R$)", "IBS bruto (R$)", "Bolo / PIB"]
+                "Receita projetada (R$)", "ICMS+ISS residual (R$)", "IBS bruto (R$)", "Carga tributária (% PIB)"]
     write_header_row(ws5, 6, headers5, widths=[8, 20, 14, 20, 20, 22, 20, 14])
     proj_start_row = 7
     for i, p in enumerate(PROJ["projecao"]):
@@ -269,9 +269,9 @@ def main():
     note_row5 = proj_start_row + len(PROJ["projecao"]) + 1
     ws5.cell(row=note_row5, column=1,
              value="f_a (fração remanescente de ICMS+ISS) e s_a=1-f_a (fração já convertida em IBS) seguem o cronograma da transição "
-                   "constitucional (ADCT arts. 128 e 131, LC 227/2026), idêntico ao usado no Estudo 06 (Projeção ICMS/IBS por Estado). "
+                   "constitucional (ADCT arts. 128 e 131, LC 227/2026). "
                    "\"IBS bruto\" não desconta a taxa do CGIBS nem a retenção do Seguro-Receita (ADCT art. 132), que incidem sobre a parcela "
-                   "distribuída aos entes pelo critério destino — não sobre o total nacional.").font = NOTE_FONT
+                   "distribuída aos entes pelo critério destino, não sobre o total nacional.").font = NOTE_FONT
     ws5.merge_cells(start_row=note_row5, start_column=1, end_row=note_row5, end_column=8)
     ws5.cell(row=note_row5, column=1).alignment = WRAP
     ws5.row_dimensions[note_row5].height = 55

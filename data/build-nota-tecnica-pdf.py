@@ -258,22 +258,22 @@ HTML = f"""<!DOCTYPE html>
     Esta nota técnica responde a uma pergunta objetiva: <strong>quanto será o valor total do
     IBS (Imposto sobre Bens e Serviços) no Brasil, ano a ano, entre 2029 e 2033</strong>,
     o quinquênio de transição definido pela Reforma Tributária do consumo (EC 132/2023). A
-    resposta exige combinar três elementos: (i) o tamanho atual do "bolo" tributário que o IBS
-    substitui, a soma nacional de ICMS e ISS; (ii) uma projeção de como esse bolo deve
+    resposta exige combinar três elementos: (i) qual é a arrecadação total de ICMS e ISS hoje, o
+    tributo que o IBS substitui; (ii) uma projeção de como essa arrecadação deve
     crescer com a economia, o que depende de premissas explícitas sobre PIB e inflação; e (iii) o
-    cronograma constitucional que converte, ano a ano, parte desse bolo de ICMS/ISS em IBS.
+    cronograma constitucional que converte, ano a ano, parte dessa arrecadação de ICMS/ISS em IBS.
 </p>
 
 <h2>2. Resumo executivo</h2>
 <table>
     <thead><tr><th class="l">Ano</th><th>f<sub>a</sub> (ICMS+ISS residual)</th><th>s<sub>a</sub> (IBS)</th>
-    <th>ICMS+ISS residual (R$ bi)</th><th>IBS bruto (R$ bi)</th><th>Total = bolo projetado (R$ bi)</th><th>Bolo / PIB</th></tr></thead>
+    <th>ICMS+ISS residual (R$ bi)</th><th>IBS bruto (R$ bi)</th><th>Total = receita projetada (R$ bi)</th><th>Carga tributária (% PIB)</th></tr></thead>
     <tbody>{proj_rows()}</tbody>
 </table>
 <p>
-    O IBS bruto cresce de {fmtpct(p2029['ibs_bruto']/p2029['bolo_projetado']*100, 0)} do bolo
-    tributário em 2029 (início da transição) até 100% em 2033, quando o ICMS e o ISS são extintos
-    (ADCT art. 128). Em 2033, o bolo total projetado (ICMS+ISS+IBS) é de
+    O IBS bruto cresce de {fmtpct(p2029['ibs_bruto']/p2029['bolo_projetado']*100, 0)} da
+    arrecadação total em 2029 (início da transição) até 100% em 2033, quando o ICMS e o ISS são
+    extintos (ADCT art. 128). Em 2033, a arrecadação total projetada (ICMS+ISS+IBS) é de
     R$ {fmtbi(p2033['bolo_projetado'])} bi, equivalente a {fmtpct(p2033['bolo_pct_pib'])} do PIB,
     a mesma proporção observada em 2025, por premissa metodológica explicada na Seção 4.
 </p>
@@ -311,7 +311,7 @@ HTML = f"""<!DOCTYPE html>
 
 <h2>4. Metodologia</h2>
 
-<h3>4.1 O bolo histórico: ICMS + ISS, Brasil, 2015&ndash;2025</h3>
+<h3>4.1 A arrecadação histórica: ICMS + ISS, Brasil, 2015&ndash;2025</h3>
 <table>
     <thead><tr><th class="l">Ano</th><th>ICMS (R$ bi)</th><th>ISS (R$ bi)</th>
     <th>ICMS+ISS nominal (R$ bi)</th><th>ICMS+ISS real, 2025 (R$ bi)</th>
@@ -319,12 +319,14 @@ HTML = f"""<!DOCTYPE html>
     <tbody>{hist_rows()}</tbody>
 </table>
 
-<h3>4.2 Premissa central: razão bolo/PIB constante</h3>
+<h3>4.2 Premissa central: carga tributária constante</h3>
 <p>
-    A projeção assume que a razão ICMS+ISS/PIB se mantém constante no nível de 2025
-    (&asymp;{fmtpct(meta['razao_bolo_pib_base'])} do PIB) a partir de 2026, ou seja, elasticidade
-    unitária do bolo tributário em relação ao PIB nominal. Essa não é uma escolha arbitrária de
-    modelagem: é o próprio desenho legal da transição para o IBS.
+    A projeção assume que a arrecadação de ICMS e ISS, medida como proporção do PIB (a carga
+    tributária), se mantém no mesmo nível de 2025 (&asymp;{fmtpct(meta['razao_bolo_pib_base'])} do
+    PIB) a partir de 2026. Na prática, isso quer dizer que a arrecadação cresce sempre no mesmo
+    ritmo que a economia como um todo: se o PIB cresce 5% em determinado ano, a arrecadação também
+    cresce 5% naquele ano, nem mais, nem menos. Essa não é uma escolha arbitrária de modelagem: é
+    o próprio desenho legal da transição para o IBS.
 </p>
 <div class="law-box">
     <span class="art">Art. 130, caput, ADCT</span> (incluído pela EC 132/2023): resolução do
@@ -340,8 +342,8 @@ HTML = f"""<!DOCTYPE html>
     Ou seja: a Constituição não fixa de antemão qual será a alíquota do IBS. Ela é recalculada
     todo ano, por resolução do Senado, para que a arrecadação resultante mantenha a mesma
     proporção do PIB observada na base histórica do tributo que está sendo substituído. É esse
-    mecanismo constitucional, e não uma hipótese técnica externa, que justifica projetar o bolo
-    tributário como uma fração fixa do PIB projetado.
+    mecanismo constitucional, e não uma hipótese técnica externa, que justifica projetar a
+    arrecadação de ICMS e ISS como uma fração fixa do PIB projetado.
 </p>
 <p>
     Entre 2019 e 2025, a razão ICMS+ISS/PIB realizada variou entre
@@ -349,9 +351,9 @@ HTML = f"""<!DOCTYPE html>
     {fmtpct(meta['faixa_historica_razao_2019_2025']['max'])}, uma banda de cerca de
     {fmtnum(meta['faixa_historica_razao_2019_2025']['max'] - meta['faixa_historica_razao_2019_2025']['min'])}
     pontos percentuais em torno do valor-base usado aqui. Essa variação histórica é a melhor
-    medida disponível da incerteza real em torno da premissa de razão constante: anos de PIB
-    atipicamente forte ou fraco, ou mudanças na composição do consumo, podem deslocar a razão
-    observada para cima ou para baixo do valor projetado.
+    medida disponível da incerteza real em torno da premissa de carga tributária constante: anos
+    de PIB atipicamente forte ou fraco, ou mudanças na composição do consumo, podem deslocar a
+    arrecadação observada para cima ou para baixo do valor projetado.
 </p>
 
 <h3>4.3 Trajetória do PIB nominal, 2026&ndash;2033</h3>
@@ -368,8 +370,8 @@ HTML = f"""<!DOCTYPE html>
     <tbody>{macro_rows()}</tbody>
 </table>
 <p>
-    O bolo projetado de cada ano é obtido aplicando a razão constante da Seção 4.2 ao PIB
-    projetado: <code>Bolo(t) = (Bolo(2025)/PIB(2025)) &times; PIB(t)</code>.
+    A arrecadação projetada de cada ano é obtida aplicando a carga tributária constante da Seção
+    4.2 ao PIB projetado: <code>Receita(t) = (Receita(2025)/PIB(2025)) &times; PIB(t)</code>.
 </p>
 
 <h3>4.4 O cronograma constitucional de transição</h3>
@@ -389,26 +391,27 @@ HTML = f"""<!DOCTYPE html>
 
 <h3>4.5 Fórmula final</h3>
 <div class="formula-box">
-    ICMS+ISS residual(a) = Bolo<sub>projetado</sub>(a) &times; f<sub>a</sub><br>
-    IBS bruto(a) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= Bolo<sub>projetado</sub>(a) &times; s<sub>a</sub><br>
-    Total(a) = ICMS+ISS residual(a) + IBS bruto(a) = Bolo<sub>projetado</sub>(a)
+    ICMS+ISS residual(a) = Receita<sub>projetada</sub>(a) &times; f<sub>a</sub><br>
+    IBS bruto(a) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= Receita<sub>projetada</sub>(a) &times; s<sub>a</sub><br>
+    Total(a) = ICMS+ISS residual(a) + IBS bruto(a) = Receita<sub>projetada</sub>(a)
 </div>
 <p>
     Esta nota técnica trabalha só no agregado nacional, então não entra nos coeficientes de
     redistribuição por unidade federativa (&phi;<sup>neutro</sup>, &phi;<sup>CPT</sup>,
     &phi;<sup>dest</sup>) nem na fração &alpha;<sub>a</sub> que separa o critério histórico do
-    critério destino: esses parâmetros determinam <em>como</em> o bolo é dividido entre estados e
+    critério destino: esses parâmetros determinam <em>como</em> a arrecadação é dividida entre estados e
     municípios, não o seu <em>tamanho total</em>. No agregado nacional, o valor total de IBS
     depende apenas de f<sub>a</sub>/s<sub>a</sub>.
 </p>
 
 <h2>5. Limitações e simplificações</h2>
 <ol>
-    <li>A razão ICMS+ISS/PIB é mantida constante no nível de 2025 a partir de 2026
-    (elasticidade-PIB unitária), sem estimar uma elasticidade histórica separada por regressão.
-    Com apenas 11 observações anuais e quebras estruturais conhecidas (pandemia em 2020,
-    choque inflacionário em 2021&ndash;2022), uma elasticidade estimada seria pouco robusta. A
-    banda histórica da Seção 4.2 serve como medida alternativa de incerteza.</li>
+    <li>A razão ICMS+ISS/PIB (a carga tributária) é mantida constante no nível de 2025 a partir
+    de 2026, ou seja, presume-se que a arrecadação cresce sempre na mesma proporção do PIB, sem
+    estimar por métodos estatísticos se ela historicamente cresceu mais rápido ou mais devagar que
+    a economia. Com apenas 11 observações anuais e quebras estruturais conhecidas (pandemia em
+    2020, choque inflacionário em 2021&ndash;2022), uma estimativa desse tipo seria pouco robusta.
+    A banda histórica da Seção 4.2 serve como medida alternativa de incerteza.</li>
     <li>"IBS bruto" não desconta a taxa de manutenção do Comitê Gestor do IBS (CGIBS, art. 51 LC
     227/2026) nem a retenção do Seguro-Receita (ADCT art. 132), mecanismos que incidem sobre a
     parcela distribuída aos entes pelo critério destino, não sobre o total nacional
