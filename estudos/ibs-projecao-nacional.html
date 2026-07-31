@@ -22,6 +22,17 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '\\(', right: '\\)', display: false}
+            ],
+            throwOnError: false
+        })"></script>
+
     <link rel="stylesheet" href="/css/notas.css?v=4">
     <link rel="stylesheet" href="/css/search.css">
 
@@ -159,8 +170,8 @@
         <p class="lead">
             Estende a série de ICMS+ISS do Brasil (SICONFI) para 2015&ndash;2025 e projeta o
             valor total do IBS entre 2029 e 2033, usando crescimento do PIB e inflação de fontes
-            oficiais &mdash; Boletim Focus do Banco Central para 2026&ndash;2030, e a Instituição
-            Fiscal Independente (IFI, Senado Federal) para 2031&ndash;2033 &mdash; combinados com o
+            oficiais (Boletim Focus do Banco Central para 2026&ndash;2030 e a Instituição Fiscal
+            Independente, IFI, vinculada ao Senado Federal, para 2031&ndash;2033), combinados com o
             cronograma constitucional de transição do ICMS/ISS para o IBS (ADCT arts. 128 e 131,
             LC 227/2026).
         </p>
@@ -197,24 +208,53 @@
 
                 <p class="meto-section-title">1. O bolo histórico: ICMS + ISS, Brasil, 2015&ndash;2025</p>
                 <p class="meto-note">
-                    O ICMS (líquido de FUNDEB, bruto de cota-parte municipal &mdash; a mesma
-                    definição usada nos Estudos 03, 06 e 09) vem do SICONFI: DCA Anexo I-C para
-                    2019&ndash;2025 e RREO Anexo 3 para 2015&ndash;2018, ano em que a série DCA não
-                    estava coletada neste site. As duas fontes convergem: o ICMS bruto do RREO bate
-                    com o do DCA com diferença menor que 1% (checado estado a estado). O ISS usa DCA
-                    Anexo I-C em toda a série 2015&ndash;2025, somando os cerca de 5.570 municípios do
-                    Brasil &mdash; o RREO tem cobertura municipal ruim (menos de 15% dos municípios
-                    respondem a essa conta específica) e foi descartado para essa série.
+                    O ICMS considerado é líquido de FUNDEB e bruto de cota-parte municipal, ou seja,
+                    a arrecadação estadual total antes da partilha constitucional de 25% com os
+                    municípios (art. 158, IV, CF/88). Os valores vêm do SICONFI: DCA Anexo I-C para
+                    2019&ndash;2025 e RREO Anexo 3 para 2015&ndash;2018, período em que a série do DCA
+                    ainda não havia sido coletada neste site. As duas fontes convergem bem: o ICMS
+                    bruto do RREO bate com o do DCA com diferença menor que 1%, checado estado a
+                    estado. Já o ISS usa o DCA Anexo I-C em toda a série de 2015 a 2025, somando os
+                    cerca de 5.570 municípios do Brasil. O RREO foi descartado para o ISS porque tem
+                    cobertura municipal muito baixa: menos de 15% dos municípios respondem a essa
+                    conta específica nesse demonstrativo.
                 </p>
 
-                <p class="meto-section-title">2. Como o bolo cresce a partir de hoje: PIB e inflação</p>
+                <p class="meto-section-title">2. Como o bolo cresce a partir de hoje: a premissa da carga tributária constante</p>
                 <p class="meto-note">
-                    A premissa central: a razão ICMS+ISS/PIB se mantém constante no nível de 2025
-                    (&asymp;8,08% do PIB) a partir de 2026 &mdash; ou seja, elasticidade unitária do
-                    bolo em relação ao PIB nominal. É a mesma premissa de neutralidade de receita do
-                    art. 130 do ADCT já usada nos Estudos 06 e 09 desta página: as alíquotas do IBS
-                    são calibradas para preservar a arrecadação agregada como proporção da economia,
-                    não para crescer mais ou menos que ela.
+                    A projeção parte de uma premissa central: a razão ICMS+ISS/PIB se mantém
+                    constante no nível de 2025 (&asymp;8,08% do PIB) para todos os anos seguintes.
+                    Em outras palavras, o bolo tributário cresce exatamente no mesmo ritmo que o PIB
+                    nominal, nem mais nem menos. Essa não é uma escolha arbitrária de modelagem: é o
+                    próprio desenho legal da transição para o IBS.
+                </p>
+                <div class="lei-box">
+                    <p>
+                        <span class="lei-artigo">Art. 130, caput, ADCT</span> (incluído pela EC
+                        132/2023): resolução do Senado Federal fixará, para todas as esferas
+                        federativas, as alíquotas de referência do IBS e da CBS, observados a forma
+                        de cálculo e os limites previstos em lei complementar, de forma a assegurar
+                        que a receita de cada ente seja equivalente à dos tributos que estão sendo
+                        substituídos.
+                    </p>
+                    <p style="margin-top:0.6rem">
+                        <span class="lei-artigo">Art. 130, &sect;3&ordm;, IV, ADCT</span>: define a
+                        "Receita-Base dos Entes Subnacionais" como a receita de Estados, Distrito
+                        Federal e Municípios com o IBS (art. 156-A da Constituição), <em>apurada como
+                        proporção do PIB</em>. É essa métrica, expressa em proporção da economia e
+                        não em valor absoluto, que a Constituição usa para calibrar a alíquota de
+                        referência.
+                    </p>
+                </div>
+                <p class="meto-note">
+                    Na prática, isso significa que o legislador não fixou de antemão qual será a
+                    alíquota do IBS: ela será calculada todo ano, pelo Senado, para que a arrecadação
+                    resultante mantenha a mesma proporção do PIB observada na base histórica do
+                    tributo que está sendo substituído. É esse mecanismo constitucional, e não uma
+                    hipótese técnica externa, que justifica projetar o bolo tributário como uma fração
+                    fixa do PIB projetado. A seção "Incerteza da premissa", ao final desta
+                    metodologia, mostra o quanto essa proporção de fato oscilou entre 2019 e 2025,
+                    como medida da margem de erro possível dessa premissa.
                 </p>
                 <p class="meto-note">
                     O crescimento do PIB nominal, ano a ano, vem de duas fontes oficiais diferentes,
@@ -230,8 +270,8 @@
                         </tr>
                         <tr>
                             <td>2031&ndash;2033</td>
-                            <td>IFI &mdash; RAF 107 (18/dez/2025)</td>
-                            <td>A Instituição Fiscal Independente, órgão técnico vinculado ao Senado Federal, projeta PIB real de 2,2% a.a. para 2027&ndash;2035 e IPCA convergindo suavemente a 3,0% (centro da meta contínua). Como a IFI não detalha ano a ano dentro desse intervalo, usam-se os valores constantes de 2,2% e 3,0% para os três anos fora do horizonte do Focus &mdash; simplificação explícita.</td>
+                            <td>IFI, RAF 107 (18/dez/2025)</td>
+                            <td>A Instituição Fiscal Independente, órgão técnico vinculado ao Senado Federal, projeta PIB real de 2,2% a.a. para 2027&ndash;2035 e IPCA convergindo suavemente a 3,0% (centro da meta contínua). Como a IFI não detalha ano a ano dentro desse intervalo, os valores de 2,2% e 3,0% são usados como constantes para os três anos fora do horizonte do Focus; trata-se de uma simplificação explícita.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -245,14 +285,13 @@
 
                 <p class="meto-section-title">3. Do bolo para o IBS: o cronograma da transição</p>
                 <div class="lei-box">
-                    <p><span class="lei-artigo">ADCT art. 128</span> &mdash; A alíquota do ICMS e do ISS será reduzida a cada ano, de 2029 a 2032, à razão de um décimo, e extinta em 2033. <span class="lei-artigo">ADCT art. 131</span> &mdash; No mesmo período, o IBS é implementado progressivamente, complementando a fração já extinta do ICMS/ISS.</p>
+                    <p><span class="lei-artigo">ADCT art. 128</span>: a alíquota do ICMS e do ISS será reduzida a cada ano, de 2029 a 2032, à razão de um décimo, e extinta em 2033. <span class="lei-artigo">ADCT art. 131</span>: no mesmo período, o IBS é implementado progressivamente, complementando a fração já extinta do ICMS/ISS.</p>
                 </div>
                 <p class="meto-note">
-                    O cronograma usado aqui é exatamente o mesmo do
-                    <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> (projeção por
-                    UF): a fração remanescente de ICMS/ISS (\(f_a\)) cai 10 pontos percentuais por
-                    ano entre 2029 e 2032, e zera em 2033; a fração já convertida em IBS
-                    (\(s_a=1-f_a\)) sobe na mesma proporção.
+                    Traduzindo o cronograma legal em números: a fração do bolo ainda cobrada como
+                    ICMS/ISS (\(f_a\)) cai 10 pontos percentuais por ano entre 2029 e 2032, e zera em
+                    2033; a fração já convertida em IBS (\(s_a=1-f_a\)) sobe na mesma proporção, até
+                    chegar a 100% no último ano da transição.
                 </p>
                 <div class="meto-formula-box">
                     ICMS+ISS residual(a) = Bolo<sub>projetado</sub>(a) &times; f<sub>a</sub><br>
@@ -264,21 +303,21 @@
                     <tbody id="tbody-adct-params"></tbody>
                 </table>
                 <p class="meto-note">
-                    Diferente do Estudo 06, esta página não precisa dos coeficientes de redistribuição
-                    por UF (\(\varphi^{neutro}\), \(\varphi^{CPT}\), \(\varphi^{dest}\)) nem da fração
-                    \(\alpha_a\) (histórico vs. destino): esses parâmetros determinam <em>como</em> o
-                    bolo é dividido entre estados e municípios, não o seu <em>tamanho total</em>. No
-                    agregado nacional, o valor total de IBS depende só de \(f_a\)/\(s_a\).
+                    Esta página trabalha só no agregado nacional, então não entra nos coeficientes de
+                    redistribuição entre estados e municípios (\(\varphi^{neutro}\), \(\varphi^{CPT}\),
+                    \(\varphi^{dest}\)) nem na fração \(\alpha_a\) que separa o critério histórico do
+                    critério destino: esses parâmetros determinam <em>como</em> o bolo é dividido
+                    entre os entes federativos, não o seu <em>tamanho total</em>. No agregado
+                    nacional, o valor total de IBS depende só de \(f_a\)/\(s_a\).
                 </p>
 
                 <p class="meto-section-title">O que "IBS bruto" não inclui</p>
                 <p class="meto-note">
                     O valor de IBS aqui é a arrecadação total, antes da dedução para o Comitê Gestor
                     do IBS (CGIBS, art. 51 LC 227/2026) e da retenção do Seguro-Receita (ADCT art.
-                    132) &mdash; mecanismos que incidem sobre a parcela distribuída aos entes pelo
-                    critério destino, não sobre o total nacional. Para a receita líquida que cada
-                    estado efetivamente recebe, com essas deduções, veja o
-                    <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>.
+                    132). Esses dois mecanismos incidem sobre a parcela distribuída aos entes pelo
+                    critério destino, não sobre o total nacional arrecadado, e por isso não são
+                    descontados aqui.
                 </p>
 
                 <p class="meto-section-title">Incerteza da premissa de bolo/PIB constante</p>
@@ -371,14 +410,6 @@
         </div>
 
         <div class="callout" style="margin-top:1rem">
-            Para a distribuição desse total entre os 27 estados e o Distrito Federal, com os
-            coeficientes de redistribuição origem&rarr;destino, veja o
-            <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06: Projeção ICMS/IBS por Estado 2029&ndash;2033</a>.
-            Para o cenário contrafactual sem inflação nem crescimento do PIB, veja o
-            <a href="/estudos/ibs-aliquota-carga-constante.html">Estudo 09: Receita-Base de referência</a>.
-        </div>
-
-        <div class="callout" style="margin-top:1rem">
             <strong>Baixe os materiais deste estudo:</strong>
             <a href="/materiais/Nota-Tecnica-Estudo-11-IBS-Nacional.pdf" download>Nota técnica completa (.pdf)</a>
             &bull;
@@ -387,13 +418,13 @@
 
         <div class="footnotes">
             <p><strong>Fontes e notas metodológicas:</strong></p>
-            <p>1. ICMS 2015-2018: SICONFI/STN, RREO Anexo 3 (conta ICMSLiquidoExcetoTransferenciasEFUNDEB, coluna "TOTAL (últimos 12 meses)", período 6/bimestre nov-dez), todos os 27 estados + DF. ICMS 2019-2025: SICONFI/STN, DCA Anexo I-C — mesma base dos Estudos 03, 06 e 09 desta página. As duas fontes convergem: diferença menor que 1% (ver data/build-reconciliacao-dca-rreo.py).</p>
-            <p>2. ISS 2015-2025: SICONFI/STN, DCA Anexo I-C, soma de todos os municípios brasileiros (coluna "Receitas Brutas Realizadas", conta "Imposto sobre Serviços de Qualquer Natureza — ISSQN", identificada por texto porque o código da conta muda de esquema ao longo dos anos).</p>
+            <p>1. ICMS 2015-2018: SICONFI/STN, RREO Anexo 3 (conta ICMSLiquidoExcetoTransferenciasEFUNDEB, coluna "TOTAL (últimos 12 meses)", período 6/bimestre nov-dez), todos os 27 estados + DF. ICMS 2019-2025: SICONFI/STN, DCA Anexo I-C. As duas fontes convergem: diferença menor que 1% (ver data/build-reconciliacao-dca-rreo.py).</p>
+            <p>2. ISS 2015-2025: SICONFI/STN, DCA Anexo I-C, soma de todos os municípios brasileiros (coluna "Receitas Brutas Realizadas", conta "Imposto sobre Serviços de Qualquer Natureza, ISSQN", identificada por texto porque o código da conta muda de esquema ao longo dos anos).</p>
             <p>3. PIB nominal e IPCA: Banco Central do Brasil, SGS, séries 1207 (PIB anual a preços correntes, Contas Nacionais Trimestrais/IBGE) e 433 (IPCA, variação mensal).</p>
             <p>4. Projeção macroeconômica 2026-2030: Banco Central do Brasil, Sistema de Expectativas de Mercado (Boletim Focus), mediana das respostas, consultada via API Olinda em tempo de geração desta página.</p>
             <p>5. Projeção macroeconômica 2031-2033: Instituição Fiscal Independente (IFI), vinculada ao Senado Federal, Relatório de Acompanhamento Fiscal (RAF) nº 107, 18 de dezembro de 2025.</p>
-            <p>6. Base legal da transição: EC 132/2023; ADCT arts. 128, 130 e 131; LC 227/2026, art. 51 (CGIBS) e ADCT art. 132 (Seguro-Receita). Cronograma f_a/s_a idêntico ao usado no Estudo 06.</p>
-            <p>7. Simplificações: (i) razão ICMS+ISS/PIB mantida constante no nível de 2025 a partir de 2026 (elasticidade-PIB unitária), sem estimar uma elasticidade histórica separada; (ii) IBS bruto não desconta CGIBS nem Seguro-Receita, que incidem sobre a parcela por destino distribuída aos entes — ver Estudo 06 para a receita líquida por UF; (iii) para 2031-2033 (fora do horizonte do Focus), os parâmetros da IFI são tratados como constantes nos três anos, já que a IFI projeta uma taxa média para 2027-2035, não ano a ano.</p>
+            <p>6. Base legal: EC 132/2023; ADCT art. 128 (cronograma de extinção do ICMS/ISS) e art. 131 (implementação progressiva do IBS); ADCT art. 130, caput, e &sect;3&ordm;, IV (fixação da alíquota de referência para manter a Receita-Base como proporção do PIB); LC 227/2026, art. 51 (CGIBS) e ADCT art. 132 (Seguro-Receita).</p>
+            <p>7. Simplificações: (i) a razão ICMS+ISS/PIB é mantida constante no nível de 2025 a partir de 2026 (elasticidade-PIB unitária), sem estimar uma elasticidade histórica separada por regressão; (ii) o IBS bruto não desconta o CGIBS nem o Seguro-Receita, que incidem sobre a parcela por destino distribuída aos entes, não sobre o total nacional; (iii) para 2031-2033, fora do horizonte do Focus, os parâmetros da IFI são tratados como constantes nos três anos, já que a IFI projeta uma taxa média para 2027-2035, não ano a ano.</p>
         </div>
     </div>
 
@@ -439,7 +470,7 @@
             `De R$ ${fmtNum(p2029.ibs_bruto / 1e9, 1)} bi em 2029 a R$ ${fmtNum(p2033.ibs_bruto / 1e9, 1)} bi em 2033 (valores nominais)`;
         document.getElementById('resposta-sub').innerHTML =
             `O IBS bruto cresce de ${fmtPct(p2029.ibs_bruto / p2029.bolo_projetado * 100, 0)} do bolo tributário em 2029 (início da transição) até 100% em 2033, quando o ICMS e o ISS são extintos (ADCT art. 128). ` +
-            `Em 2033 o bolo total projetado (ICMS+ISS+IBS) é de R$ ${fmtNum(p2033.bolo_projetado / 1e9, 1)} bi, equivalente a ${fmtPct(p2033.bolo_pct_pib, 2)} do PIB &mdash; a mesma proporção de 2025, por premissa.`;
+            `Em 2033 o bolo total projetado (ICMS+ISS+IBS) é de R$ ${fmtNum(p2033.bolo_projetado / 1e9, 1)} bi, equivalente a ${fmtPct(p2033.bolo_pct_pib, 2)} do PIB, a mesma proporção de 2025, por premissa.`;
     }
 
     function buildAdctTable(data) {
@@ -455,7 +486,7 @@
         const f = data._meta.faixa_historica_razao_2019_2025;
         const base = data._meta.razao_bolo_pib_base;
         document.getElementById('faixa-historica-note').innerHTML =
-            `Entre 2019 e 2025, a razão ICMS+ISS/PIB variou de ${fmtPct(f.min, 2)} a ${fmtPct(f.max, 2)} &mdash; ` +
+            `Entre 2019 e 2025, a razão ICMS+ISS/PIB variou de ${fmtPct(f.min, 2)} a ${fmtPct(f.max, 2)}, ` +
             `uma banda de cerca de ${fmtNum((f.max - f.min), 2)} pontos percentuais em torno do valor usado como base para a projeção (${fmtPct(base, 2)}, referente a 2025). ` +
             `Essa banda dá uma ideia da incerteza real da premissa de razão constante: anos de PIB atipicamente forte ou fraco, ou mudanças na composição do consumo, podem deslocar a razão bolo/PIB para cima ou para baixo do valor projetado aqui.`;
     }
