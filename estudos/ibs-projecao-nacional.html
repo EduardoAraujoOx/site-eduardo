@@ -178,7 +178,7 @@
         <p class="study-meta">
             Dados: SICONFI/STN, DCA Anexo&nbsp;I-C e RREO Anexo&nbsp;3, 2015&ndash;2025 &bull;
             BCB/SGS (PIB nominal, IPCA) &bull; Boletim Focus (BCB) &bull; IFI, RAF&nbsp;107 (dez/2025) &bull;
-            Base legal: ADCT arts.&nbsp;128, 130 e 131; LC&nbsp;227/2026
+            Base legal: ADCT arts.&nbsp;128 e 131; LC&nbsp;214/2025 arts.&nbsp;361&ndash;365; LC&nbsp;227/2026
         </p>
     </div>
 
@@ -235,43 +235,60 @@
                     conta específica nesse demonstrativo.
                 </p>
 
-                <p class="meto-section-title">2. Como essa arrecadação cresce a partir de hoje: a premissa da carga tributária constante</p>
+                <p class="meto-section-title">2. Como essa arrecadação cresce a partir de hoje: o período de referência que a lei manda usar</p>
                 <p class="meto-note">
                     A projeção parte de uma premissa central: a arrecadação de ICMS e ISS, medida
-                    como proporção do PIB (a chamada "carga tributária"), se mantém no mesmo nível
-                    de 2025 (&asymp;8,08% do PIB) em todos os anos seguintes. Na prática, isso quer
-                    dizer que a arrecadação cresce sempre no mesmo ritmo que a economia como um
-                    todo: se o PIB cresce 5% em determinado ano, a arrecadação também cresce 5%
-                    naquele ano, nem mais, nem menos. Essa não é uma escolha arbitrária de
-                    modelagem: é o próprio desenho legal da transição para o IBS.
+                    como proporção do PIB (a "carga tributária"), se mantém constante a partir de
+                    2027 no nível médio dos anos de 2024, 2025 e 2026. Não é uma média escolhida
+                    por conveniência: é o período de três anos que a própria lei da reforma manda
+                    usar para calibrar a alíquota do IBS, ano a ano, durante toda a transição.
                 </p>
                 <div class="lei-box">
                     <p>
-                        <span class="lei-artigo">Art. 130, caput, ADCT</span> (incluído pela EC
-                        132/2023): resolução do Senado Federal fixará, para todas as esferas
-                        federativas, as alíquotas de referência do IBS e da CBS, observados a forma
-                        de cálculo e os limites previstos em lei complementar, de forma a assegurar
-                        que a receita de cada ente seja equivalente à dos tributos que estão sendo
-                        substituídos.
-                    </p>
-                    <p style="margin-top:0.6rem">
-                        <span class="lei-artigo">Art. 130, &sect;3&ordm;, IV, ADCT</span>: define a
-                        "Receita-Base dos Entes Subnacionais" como a receita de Estados, Distrito
-                        Federal e Municípios com o IBS (art. 156-A da Constituição), <em>apurada como
-                        proporção do PIB</em>. É essa métrica, expressa em proporção da economia e
-                        não em valor absoluto, que a Constituição usa para calibrar a alíquota de
-                        referência.
+                        <span class="lei-artigo">LC 214/2025, arts. 361 a 365</span> (redação dada
+                        pela LC 227/2026): para cada ano da transição (2029 a 2033), a alíquota de
+                        referência do IBS estadual e municipal é fixada de forma a equivaler à
+                        <em>média da razão entre a receita de referência (ICMS+ISS) e o PIB nos anos
+                        de 2024 a 2026</em>. O mesmo período de três anos vale para todos os cinco
+                        anos da transição: a lei não recalcula essa base a cada ano.
                     </p>
                 </div>
                 <p class="meto-note">
+                    Isso substitui a leitura mais simples de que bastaria olhar para o último ano
+                    fechado (2025). A tabela abaixo mostra os três anos que compõem a média e o
+                    resultado usado na projeção:
+                </p>
+                <table class="param-table">
+                    <thead><tr><th>Ano</th><th>ICMS+ISS (R$ bi)</th><th>PIB (R$ bi)</th><th>Razão</th><th>Situação</th></tr></thead>
+                    <tbody id="tbody-referencia"></tbody>
+                </table>
+                <p class="meto-note">
+                    Existe um segundo mecanismo na lei, com um período histórico bem diferente, que
+                    é fácil de confundir com este: o <strong>Teto de Referência</strong> do art. 130,
+                    &sect;4&ordm; e &sect;5&ordm;, do ADCT, calculado sobre a média de 2012 a 2021.
+                    Esse teto não fixa a alíquota ano a ano; ele funciona como uma trava de
+                    segurança que só entra em ação se a receita observada superar esse teto
+                    histórico mais amplo, em 2027&ndash;2028 (para a União) ou na média de
+                    2029&ndash;2033 (para o total dos entes subnacionais), obrigando uma redução
+                    posterior da alíquota. Como esta página projeta a arrecadação ano a ano e não
+                    verifica esse gatilho de segurança, o teto de 2012&ndash;2021 não é usado na
+                    conta abaixo.
+                </p>
+                <p class="meto-note">
+                    2026 ainda não fechou: a razão desse ano usa o ICMS+ISS do RREO (últimos 12
+                    meses até abril de 2026) sobre o PIB projetado pelo Boletim Focus para o ano,
+                    uma estimativa preliminar que será atualizada para o dado fechado (DCA) assim
+                    que estiver disponível.
+                </p>
+                <p class="meto-note">
                     Na prática, isso significa que o legislador não fixou de antemão qual será a
-                    alíquota do IBS: ela será calculada todo ano, pelo Senado, para que a arrecadação
-                    resultante mantenha a mesma proporção do PIB observada na base histórica do
-                    tributo que está sendo substituído. É esse mecanismo constitucional, e não uma
-                    hipótese técnica externa, que justifica projetar a arrecadação de ICMS e ISS
-                    como uma fração fixa do PIB projetado. A seção "Incerteza da premissa", ao final desta
+                    alíquota do IBS: ela será calculada pelo Senado para que a arrecadação
+                    resultante mantenha, em cada ano da transição, a mesma proporção do PIB medida
+                    nessa base histórica de três anos. É esse mecanismo legal, e não uma hipótese
+                    técnica externa, que justifica projetar a arrecadação de ICMS e ISS como uma
+                    fração fixa do PIB projetado. A seção "Incerteza da premissa", ao final desta
                     metodologia, mostra o quanto essa proporção de fato oscilou entre 2019 e 2025,
-                    como medida da margem de erro possível dessa premissa.
+                    como medida adicional da margem de erro possível.
                 </p>
                 <p class="meto-note">
                     O crescimento do PIB nominal, ano a ano, vem de duas fontes oficiais diferentes,
@@ -296,8 +313,8 @@
                     O PIB nominal de cada ano é obtido compondo o PIB nominal de 2025 (BCB/SGS) pelo
                     crescimento real e pela inflação projetados: <code>PIB<sub>t</sub> = PIB<sub>t-1</sub>
                     &times; (1 + g<sub>t</sub>) &times; (1 + IPCA<sub>t</sub>)</code>. A arrecadação
-                    projetada de cada ano aplica a carga tributária de 2025 a esse PIB:
-                    <code>Receita<sub>t</sub> = (Receita<sub>2025</sub>/PIB<sub>2025</sub>)
+                    projetada de cada ano aplica a razão de referência (a média 2024&ndash;2026 da
+                    Seção 2) a esse PIB: <code>Receita<sub>t</sub> = Razão<sub>2024&ndash;2026</sub>
                     &times; PIB<sub>t</sub></code>.
                 </p>
 
@@ -441,8 +458,8 @@
             <p>3. PIB nominal e IPCA: Banco Central do Brasil, SGS, séries 1207 (PIB anual a preços correntes, Contas Nacionais Trimestrais/IBGE) e 433 (IPCA, variação mensal).</p>
             <p>4. Projeção macroeconômica 2026-2030: Banco Central do Brasil, Sistema de Expectativas de Mercado (Boletim Focus), mediana das respostas, consultada via API Olinda em tempo de geração desta página.</p>
             <p>5. Projeção macroeconômica 2031-2033: Instituição Fiscal Independente (IFI), vinculada ao Senado Federal, Relatório de Acompanhamento Fiscal (RAF) nº 107, 18 de dezembro de 2025.</p>
-            <p>6. Base legal: EC 132/2023; ADCT art. 128 (cronograma de extinção do ICMS/ISS) e art. 131 (implementação progressiva do IBS); ADCT art. 130, caput, e &sect;3&ordm;, IV (fixação da alíquota de referência para manter a Receita-Base como proporção do PIB); LC 227/2026, art. 51 (CGIBS) e ADCT art. 132 (Seguro-Receita).</p>
-            <p>7. Simplificações: (i) a razão ICMS+ISS/PIB (a carga tributária) é mantida constante no nível de 2025 a partir de 2026, ou seja, presume-se que a arrecadação cresce sempre na mesma proporção do PIB, sem estimar por métodos estatísticos se ela historicamente cresceu mais rápido ou mais devagar que a economia; (ii) o IBS bruto não desconta o CGIBS nem o Seguro-Receita, que incidem sobre a parcela por destino distribuída aos entes, não sobre o total nacional; (iii) para 2031-2033, fora do horizonte do Focus, os parâmetros da IFI são tratados como constantes nos três anos, já que a IFI projeta uma taxa média para 2027-2035, não ano a ano.</p>
+            <p>6. Base legal: EC 132/2023; ADCT art. 128 (cronograma de extinção do ICMS/ISS) e art. 131 (implementação progressiva do IBS); LC 214/2025, arts. 361 a 365, com a redação dada pela LC 227/2026 (alíquota de referência do IBS calibrada pela média da razão receita/PIB em 2024-2026, para cada ano da transição); ADCT art. 130, &sect;4&ordm; e &sect;5&ordm; (Teto de Referência, média 2012-2021, mecanismo de salvaguarda distinto, não usado nesta projeção); LC 227/2026, art. 51 (CGIBS) e ADCT art. 132 (Seguro-Receita).</p>
+            <p>7. Simplificações: (i) a razão ICMS+ISS/PIB (a carga tributária) é mantida constante na média de 2024-2026 a partir de 2027, ou seja, presume-se que a arrecadação cresce sempre na mesma proporção do PIB, sem estimar por métodos estatísticos se ela historicamente cresceu mais rápido ou mais devagar que a economia; (ii) o dado de 2026 usado nessa média é uma estimativa preliminar (RREO, últimos 12 meses até abril de 2026, sobre o PIB projetado pelo Focus), a ser substituída pelo dado fechado (DCA) quando disponível; (iii) o IBS bruto não desconta o CGIBS nem o Seguro-Receita, que incidem sobre a parcela por destino distribuída aos entes, não sobre o total nacional; (iv) para 2031-2033, fora do horizonte do Focus, os parâmetros da IFI são tratados como constantes nos três anos, já que a IFI projeta uma taxa média para 2027-2035, não ano a ano.</p>
         </div>
     </div>
 
@@ -464,6 +481,7 @@
 
             buildResposta(data);
             buildAdctTable(data);
+            buildReferenciaTable(data);
             buildFaixaHistorica(data);
             buildHistoricoTable(data);
             buildMacroTable(data);
@@ -489,7 +507,7 @@
             `De R$ ${fmtNum(p2029.ibs_bruto / 1e9, 1)} bi em 2029 a R$ ${fmtNum(p2033.ibs_bruto / 1e9, 1)} bi em 2033 (valores nominais)`;
         document.getElementById('resposta-sub').innerHTML =
             `O IBS bruto cresce de ${fmtPct(p2029.ibs_bruto / p2029.bolo_projetado * 100, 0)} da arrecadação total em 2029 (início da transição) até 100% em 2033, quando o ICMS e o ISS são extintos (ADCT art. 128). ` +
-            `Em 2033 a arrecadação total projetada (ICMS+ISS+IBS) é de R$ ${fmtNum(p2033.bolo_projetado / 1e9, 1)} bi, equivalente a ${fmtPct(p2033.bolo_pct_pib, 2)} do PIB, a mesma proporção de 2025, por premissa.`;
+            `Em 2033 a arrecadação total projetada (ICMS+ISS+IBS) é de R$ ${fmtNum(p2033.bolo_projetado / 1e9, 1)} bi, equivalente a ${fmtPct(p2033.bolo_pct_pib, 2)} do PIB, a mesma proporção média de 2024&ndash;2026 (LC 214/2025, arts. 361 a 365).`;
     }
 
     function buildAdctTable(data) {
@@ -501,12 +519,27 @@
         </tr>`).join('');
     }
 
+    function buildReferenciaTable(data) {
+        const r = data._meta.receita_referencia;
+        const tbody = document.getElementById('tbody-referencia');
+        tbody.innerHTML = r.anos.map(a => `<tr>
+            <td>${a.ano}</td>
+            <td>${fmtNum(a.bolo / 1e9, 1)}</td>
+            <td>${fmtNum(a.pib / 1e9, 1)}</td>
+            <td>${fmtPct(a.razao_pct, 2)}</td>
+            <td>${a.status}</td>
+        </tr>`).join('') + `<tr style="background:var(--accent-bg);font-weight:600">
+            <td colspan="3">Média 2024&ndash;2026 (usada na projeção)</td>
+            <td colspan="2">${fmtPct(r.razao_media_pct, 2)}</td>
+        </tr>`;
+    }
+
     function buildFaixaHistorica(data) {
         const f = data._meta.faixa_historica_razao_2019_2025;
         const base = data._meta.razao_bolo_pib_base;
         document.getElementById('faixa-historica-note').innerHTML =
             `Entre 2019 e 2025, a razão ICMS+ISS/PIB variou de ${fmtPct(f.min, 2)} a ${fmtPct(f.max, 2)}, ` +
-            `uma banda de cerca de ${fmtNum((f.max - f.min), 2)} pontos percentuais em torno do valor usado como base para a projeção (${fmtPct(base, 2)}, referente a 2025). ` +
+            `uma banda de cerca de ${fmtNum((f.max - f.min), 2)} pontos percentuais em torno do valor usado como base para a projeção (${fmtPct(base, 2)}, a média 2024&ndash;2026 da Seção 2). ` +
             `Essa banda dá uma ideia da incerteza real da premissa de carga tributária constante: anos de PIB atipicamente forte ou fraco, ou mudanças na composição do consumo, podem deslocar a arrecadação para cima ou para baixo do valor projetado aqui.`;
     }
 

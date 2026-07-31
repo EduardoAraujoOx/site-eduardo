@@ -15,9 +15,12 @@ Combina:
     (2026-2030) e pelas projeções da IFI/RAF 107 (2031-2033), ver
     data/macro-parametros.json;
   - a premissa de que o bolo ICMS+ISS cresce na mesma proporção do PIB
-    nominal a partir de 2025 (razão bolo/PIB constante no nível de 2025)
-    — a mesma premissa de neutralidade de receita do art. 130 ADCT já
-    usada nos Estudos 06 e 09 desta página;
+    nominal a partir de 2027 (razão bolo/PIB constante na média de
+    2024-2026) — o período de referência definido pelos arts. 361 a 365
+    da LC 214/2025 (redação da LC 227/2026) para a fixação da alíquota
+    de referência do IBS em cada ano da transição (2029-2033): a média
+    da razão entre a receita de referência (ICMS+ISS) e o PIB nos anos
+    de 2024 a 2026, não apenas o último ano fechado;
   - o cronograma constitucional de transição ICMS/ISS → IBS (ADCT arts.
     128 e 131, LC 227/2026), replicando exatamente os parâmetros fa/sa já
     usados no Estudo 06 (estudos/ibs-projecao-arrecadacao-br.html).
@@ -98,7 +101,6 @@ def main():
 
     bolo_2025 = next(h["bolo_nominal"] for h in historico if h["ano"] == ANO_BASE)
     pib_2025 = macro["pib_nominal_historico"][str(ANO_BASE)]
-    razao_2025 = bolo_2025 / pib_2025
 
     ratios = [h["bolo_pct_pib"] for h in historico if h["ano"] >= 2019]
     faixa_historica = {"min": round(min(ratios), 4), "max": round(max(ratios), 4)}
@@ -129,10 +131,38 @@ def main():
             "fonte": fonte,
         })
 
-    # ── Bolo projetado (razão bolo/PIB constante em 2025) e decomposição ADCT ──
+    # ── Receita de referência: média da razão bolo/PIB em 2024-2026 ──
+    # Arts. 361 a 365 da LC 214/2025 (redação da LC 227/2026) fixam a
+    # alíquota de referência do IBS, em cada ano da transição, de forma a
+    # equivaler à média da razão entre a receita de referência (ICMS+ISS)
+    # e o PIB nos anos de 2024 a 2026 — não apenas o último ano fechado.
+    # 2026 ainda não fechou: usa-se o bolo RREO (últimos 12 meses até
+    # abr/2026, ref.py) sobre o PIB projetado de 2026 (Focus) como
+    # estimativa preliminar, a ser substituída pelo dado fechado (DCA)
+    # quando disponível.
+    bolo_2024 = next(h["bolo_nominal"] for h in historico if h["ano"] == 2024)
+    pib_2024 = macro["pib_nominal_historico"]["2024"]
+    bolo_2026_est = ref["icms_br"]["2026"] + ref["iss_br"]["2026"]
+    pib_2026_est = pib_nom[2026]
+
+    ratio_2024 = bolo_2024 / pib_2024
+    ratio_2025 = bolo_2025 / pib_2025
+    ratio_2026 = bolo_2026_est / pib_2026_est
+    razao_referencia = (ratio_2024 + ratio_2025 + ratio_2026) / 3
+
+    receita_referencia = {
+        "anos": [
+            {"ano": 2024, "bolo": round(bolo_2024, 2), "pib": round(pib_2024, 2), "razao_pct": round(ratio_2024 * 100, 4), "status": "fechado (DCA)"},
+            {"ano": 2025, "bolo": round(bolo_2025, 2), "pib": round(pib_2025, 2), "razao_pct": round(ratio_2025 * 100, 4), "status": "fechado (DCA)"},
+            {"ano": 2026, "bolo": round(bolo_2026_est, 2), "pib": round(pib_2026_est, 2), "razao_pct": round(ratio_2026 * 100, 4), "status": "estimativa preliminar (RREO 12m + PIB Focus)"},
+        ],
+        "razao_media_pct": round(razao_referencia * 100, 4),
+    }
+
+    # ── Bolo projetado (razão bolo/PIB constante na média 2024-2026) e decomposição ADCT ──
     projecao = []
     for a in ANOS_PROJ:
-        bolo_a = razao_2025 * pib_nom[a]
+        bolo_a = razao_referencia * pib_nom[a]
         fa, sa = ADCT[a]["fa"], ADCT[a]["sa"]
         icms_iss_residual = bolo_a * fa
         ibs_bruto = bolo_a * sa
@@ -151,7 +181,8 @@ def main():
         "_meta": {
             "descricao": "Estudo 11: série histórica (2015-2025) e projeção do IBS total (Brasil), 2029-2033.",
             "ano_base": ANO_BASE,
-            "razao_bolo_pib_base": round(razao_2025 * 100, 4),
+            "razao_bolo_pib_base": round(razao_referencia * 100, 4),
+            "receita_referencia": receita_referencia,
             "faixa_historica_razao_2019_2025": faixa_historica,
             "fontes": {
                 "icms_2015_2018": "SICONFI/STN, RREO Anexo 3 (ICMSLiquidoExcetoTransferenciasEFUNDEB), validado contra DCA (diff < 1%)",
@@ -161,10 +192,13 @@ def main():
                 "projecao_macro_2026_2030": "BCB, Boletim Focus (Sistema de Expectativas de Mercado), mediana",
                 "projecao_macro_2031_2033": "IFI (Instituição Fiscal Independente, Senado Federal), RAF 107, 18/dez/2025",
                 "cronograma_adct": "ADCT art. 128 (extinção do ICMS/ISS) e art. 131 (implementação do IBS), EC 132/2023, e LC 227/2026",
+                "periodo_referencia_aliquota": "LC 214/2025, arts. 361 a 365 (redação da LC 227/2026): média da razão receita de referência/PIB nos anos de 2024 a 2026",
             },
             "data_pesquisa_focus": macro["_meta"]["data_pesquisa_focus"],
             "premissas": [
-                "Razão bolo (ICMS+ISS) / PIB nominal mantida constante no nível de 2025 a partir de 2026 (elasticidade-PIB unitária), por força do art. 130, caput e §3º, IV, do ADCT: a alíquota de referência do IBS é fixada por resolução do Senado Federal para manter a Receita-Base dos Entes Subnacionais como proporção do PIB.",
+                "Razão bolo (ICMS+ISS) / PIB nominal mantida constante na média de 2024-2026 a partir de 2027. Esse período de referência não é uma escolha de modelagem: é o que os arts. 361 a 365 da LC 214/2025 (redação da LC 227/2026) usam para calibrar a alíquota de referência do IBS em cada ano da transição (2029-2033) — a média da razão entre a receita de referência (ICMS+ISS) e o PIB nos anos de 2024 a 2026, fixada por resolução do Senado Federal.",
+                "O art. 130, §4º e §5º, do ADCT define um mecanismo distinto: o 'Teto de Referência', baseado na média 2012-2021, que funciona como salvaguarda (reduz a alíquota se a Receita-Base observada superar esse teto em 2027-2028 para a União e em 2029-2033 para o total dos entes subnacionais). Não é a base de cálculo ano a ano da alíquota, e por isso não é usado nesta projeção.",
+                "2026 ainda não fechou: a razão desse ano usa o bolo do RREO (últimos 12 meses até abr/2026) sobre o PIB projetado pelo Focus, uma estimativa preliminar a ser substituída pelo dado fechado (DCA) quando disponível.",
                 "IBS bruto = bolo projetado × sa (fração já migrada para IBS no ADCT). Não inclui a dedução do CGIBS nem a retenção do Seguro-Receita (ADCT art. 132), que incidem sobre a parcela distribuída aos entes pelo critério destino, não sobre o total nacional arrecadado.",
                 "Para 2031-2033, fora do horizonte do Boletim Focus (~5 anos), usa-se a projeção da IFI (2,2% a.a. real, IPCA convergindo a 3,0%), constante para os três anos por simplificação, já que a IFI não detalha ano a ano dentro do intervalo 2027-2035.",
             ],
@@ -176,7 +210,8 @@ def main():
 
     OUTPUT.write_text(json.dumps(output, ensure_ascii=False, indent=2))
     print(f"Gravado em {OUTPUT}")
-    print(f"\nBolo 2025: R$ {bolo_2025/1e9:.2f}B ({razao_2025*100:.2f}% do PIB)")
+    print(f"\nReceita de referência (média 2024-2026): {razao_referencia*100:.2f}% do PIB")
+    print(f"  2024: {ratio_2024*100:.2f}% | 2025: {ratio_2025*100:.2f}% | 2026 (est.): {ratio_2026*100:.2f}%")
     print("\n=== Projeção IBS 2029-2033 ===")
     for p in projecao:
         print(f"{p['ano']}: bolo R$ {p['bolo_projetado']/1e9:.1f}B | "

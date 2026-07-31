@@ -225,19 +225,60 @@ def main():
     # ── Aba 5: Projeção IBS 2029-2033 (fórmulas) ──
     ws5 = wb.create_sheet("Projeção IBS 2029-2033")
     title_block(ws5, "Projeção do IBS total, Brasil, 2029-2033",
-                "Fórmulas: Receita(t) = (Receita2025/PIB2025) × PIB(t); ICMS+ISS residual = Receita × fa; IBS bruto = Receita × sa")
+                "Fórmulas: Receita(t) = Razão(2024-2026) × PIB(t); ICMS+ISS residual = Receita × fa; IBS bruto = Receita × sa")
 
-    ws5["A4"] = "Carga tributária (arrecadação/PIB) em 2025, base da projeção:"
+    hist_row_by_year = {h["ano"]: hist_start_row + i for i, h in enumerate(PROJ["historico"])}
+    row2024, row2025 = hist_row_by_year[2024], hist_row_by_year[2025]
+    ref2026 = PROJ["_meta"]["receita_referencia"]["anos"][2]  # ano 2026, estimativa preliminar
+
+    ws5["A4"] = "Receita de referência (LC 214/2025, arts. 361-365): média da razão receita/PIB em 2024-2026"
     ws5["A4"].font = H_FONT
-    ws5["B4"] = f"='Série histórica 2015-2025'!D{[i for i,h in enumerate(PROJ['historico']) if h['ano']==2025][0] + hist_start_row}/'Série histórica 2015-2025'!F{[i for i,h in enumerate(PROJ['historico']) if h['ano']==2025][0] + hist_start_row}"
-    ws5["B4"].font = FORMULA_FONT
-    ws5["B4"].number_format = PCT_FMT
-    razao_cell = "$B$4"
+    ws5.merge_cells("A4:H4")
+
+    headers_ref = ["Ano", "ICMS+ISS (R$)", "PIB (R$)", "Razão", "Situação"]
+    write_header_row(ws5, 5, headers_ref, widths=[8, 20, 14, 20, 20, 22, 20, 14])
+    ws5.cell(row=6, column=1, value=2024).font = FORMULA_FONT
+    ws5.cell(row=6, column=2, value=f"='Série histórica 2015-2025'!D{row2024}").font = FORMULA_FONT
+    ws5.cell(row=6, column=3, value=f"='Série histórica 2015-2025'!F{row2024}").font = FORMULA_FONT
+    ws5.cell(row=6, column=4, value="=B6/C6").font = FORMULA_FONT
+    ws5.cell(row=6, column=5, value="fechado (DCA)").font = BODY_FONT
+    ws5.cell(row=7, column=1, value=2025).font = FORMULA_FONT
+    ws5.cell(row=7, column=2, value=f"='Série histórica 2015-2025'!D{row2025}").font = FORMULA_FONT
+    ws5.cell(row=7, column=3, value=f"='Série histórica 2015-2025'!F{row2025}").font = FORMULA_FONT
+    ws5.cell(row=7, column=4, value="=B7/C7").font = FORMULA_FONT
+    ws5.cell(row=7, column=5, value="fechado (DCA)").font = BODY_FONT
+    ws5.cell(row=8, column=1, value=2026).font = INPUT_FONT
+    ws5.cell(row=8, column=2, value=ref2026["bolo"]).font = INPUT_FONT
+    ws5.cell(row=8, column=3, value=ref2026["pib"]).font = INPUT_FONT
+    ws5.cell(row=8, column=4, value="=B8/C8").font = FORMULA_FONT
+    ws5.cell(row=8, column=5, value="estimativa preliminar (RREO 12m + PIB Focus)").font = BODY_FONT
+    for rr in (6, 7, 8):
+        ws5.cell(row=rr, column=2).number_format = RS_FMT_FULL
+        ws5.cell(row=rr, column=3).number_format = RS_FMT_FULL
+        ws5.cell(row=rr, column=4).number_format = PCT_FMT
+        for col in range(1, 6):
+            ws5.cell(row=rr, column=col).border = BORDER
+    ws5.cell(row=9, column=1, value="Média 2024-2026 (usada na projeção)").font = TOTAL_FONT
+    ws5.merge_cells(start_row=9, start_column=1, end_row=9, end_column=3)
+    ws5.cell(row=9, column=4, value="=AVERAGE(D6:D8)").font = TOTAL_FONT
+    ws5.cell(row=9, column=4).number_format = PCT_FMT
+    ws5.cell(row=9, column=4).fill = TOTAL_FILL
+    ws5.cell(row=9, column=1).fill = TOTAL_FILL
+    for col in range(1, 6):
+        ws5.cell(row=9, column=col).border = BORDER
+    razao_cell = "$D$9"
+
+    ws5.cell(row=11, column=1,
+             value="O Teto de Referência do art. 130, §4º e §5º, do ADCT usa outro período (média 2012-2021) "
+                   "como salvaguarda, não como base de cálculo ano a ano da alíquota; não é usado nesta planilha.").font = NOTE_FONT
+    ws5.merge_cells(start_row=11, start_column=1, end_row=11, end_column=8)
+    ws5.cell(row=11, column=1).alignment = WRAP
+    ws5.row_dimensions[11].height = 30
 
     headers5 = ["Ano", "f_a (ICMS+ISS residual)", "s_a (IBS)", "PIB nominal (R$)",
                 "Receita projetada (R$)", "ICMS+ISS residual (R$)", "IBS bruto (R$)", "Carga tributária (% PIB)"]
-    write_header_row(ws5, 6, headers5, widths=[8, 20, 14, 20, 20, 22, 20, 14])
-    proj_start_row = 7
+    write_header_row(ws5, 13, headers5, widths=[8, 20, 14, 20, 20, 22, 20, 14])
+    proj_start_row = 14
     for i, p in enumerate(PROJ["projecao"]):
         rr = proj_start_row + i
         pib_row = pib_rows_by_year[p["ano"]]

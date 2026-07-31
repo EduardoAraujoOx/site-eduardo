@@ -2,7 +2,33 @@
   "_meta": {
     "descricao": "Estudo 11: série histórica (2015-2025) e projeção do IBS total (Brasil), 2029-2033.",
     "ano_base": 2025,
-    "razao_bolo_pib_base": 8.0823,
+    "razao_bolo_pib_base": 7.8812,
+    "receita_referencia": {
+      "anos": [
+        {
+          "ano": 2024,
+          "bolo": 954338315489.55,
+          "pib": 11779250581628.3,
+          "razao_pct": 8.1019,
+          "status": "fechado (DCA)"
+        },
+        {
+          "ano": 2025,
+          "bolo": 1029573688573.62,
+          "pib": 12738565613881.1,
+          "razao_pct": 8.0823,
+          "status": "fechado (DCA)"
+        },
+        {
+          "ano": 2026,
+          "bolo": 1018711484869.06,
+          "pib": 13656851382430.35,
+          "razao_pct": 7.4593,
+          "status": "estimativa preliminar (RREO 12m + PIB Focus)"
+        }
+      ],
+      "razao_media_pct": 7.8812
+    },
     "faixa_historica_razao_2019_2025": {
       "min": 7.5801,
       "max": 8.2725
@@ -14,11 +40,14 @@
       "pib_ipca_historico": "BCB/SGS séries 1207 (PIB nominal) e 433 (IPCA)",
       "projecao_macro_2026_2030": "BCB, Boletim Focus (Sistema de Expectativas de Mercado), mediana",
       "projecao_macro_2031_2033": "IFI (Instituição Fiscal Independente, Senado Federal), RAF 107, 18/dez/2025",
-      "cronograma_adct": "ADCT art. 128 (extinção do ICMS/ISS) e art. 131 (implementação do IBS), EC 132/2023, e LC 227/2026"
+      "cronograma_adct": "ADCT art. 128 (extinção do ICMS/ISS) e art. 131 (implementação do IBS), EC 132/2023, e LC 227/2026",
+      "periodo_referencia_aliquota": "LC 214/2025, arts. 361 a 365 (redação da LC 227/2026): média da razão receita de referência/PIB nos anos de 2024 a 2026"
     },
     "data_pesquisa_focus": "2026-07-24",
     "premissas": [
-      "Razão bolo (ICMS+ISS) / PIB nominal mantida constante no nível de 2025 a partir de 2026 (elasticidade-PIB unitária), por força do art. 130, caput e §3º, IV, do ADCT: a alíquota de referência do IBS é fixada por resolução do Senado Federal para manter a Receita-Base dos Entes Subnacionais como proporção do PIB.",
+      "Razão bolo (ICMS+ISS) / PIB nominal mantida constante na média de 2024-2026 a partir de 2027. Esse período de referência não é uma escolha de modelagem: é o que os arts. 361 a 365 da LC 214/2025 (redação da LC 227/2026) usam para calibrar a alíquota de referência do IBS em cada ano da transição (2029-2033) — a média da razão entre a receita de referência (ICMS+ISS) e o PIB nos anos de 2024 a 2026, fixada por resolução do Senado Federal.",
+      "O art. 130, §4º e §5º, do ADCT define um mecanismo distinto: o 'Teto de Referência', baseado na média 2012-2021, que funciona como salvaguarda (reduz a alíquota se a Receita-Base observada superar esse teto em 2027-2028 para a União e em 2029-2033 para o total dos entes subnacionais). Não é a base de cálculo ano a ano da alíquota, e por isso não é usado nesta projeção.",
+      "2026 ainda não fechou: a razão desse ano usa o bolo do RREO (últimos 12 meses até abr/2026) sobre o PIB projetado pelo Focus, uma estimativa preliminar a ser substituída pelo dado fechado (DCA) quando disponível.",
       "IBS bruto = bolo projetado × sa (fração já migrada para IBS no ADCT). Não inclui a dedução do CGIBS nem a retenção do Seguro-Receita (ADCT art. 132), que incidem sobre a parcela distribuída aos entes pelo critério destino, não sobre o total nacional arrecadado.",
       "Para 2031-2033, fora do horizonte do Boletim Focus (~5 anos), usa-se a projeção da IFI (2,2% a.a. real, IPCA convergindo a 3,0%), constante para os três anos por simplificação, já que a IFI não detalha ano a ano dentro do intervalo 2027-2035."
     ]
@@ -204,53 +233,53 @@
   "projecao": [
     {
       "ano": 2029,
-      "bolo_projetado": 1306260683362.1,
+      "bolo_projetado": 1273749949857.6,
       "pib_nominal": 16161919839748.76,
-      "bolo_pct_pib": 8.0823,
+      "bolo_pct_pib": 7.8812,
       "fa": 0.9,
       "sa": 0.1,
-      "icms_iss_residual": 1175634615025.89,
-      "ibs_bruto": 130626068336.21
+      "icms_iss_residual": 1146374954871.84,
+      "ibs_bruto": 127374994985.76
     },
     {
       "ano": 2030,
-      "bolo_projetado": 1379019403425.37,
+      "bolo_projetado": 1344697822064.66,
       "pib_nominal": 17062138774822.77,
-      "bolo_pct_pib": 8.0823,
+      "bolo_pct_pib": 7.8812,
       "fa": 0.8,
       "sa": 0.2,
-      "icms_iss_residual": 1103215522740.3,
-      "ibs_bruto": 275803880685.07
+      "icms_iss_residual": 1075758257651.73,
+      "ibs_bruto": 268939564412.93
     },
     {
       "ano": 2031,
-      "bolo_projetado": 1451638565209.75,
+      "bolo_projetado": 1415509609374.59,
       "pib_nominal": 17960631002704.94,
-      "bolo_pct_pib": 8.0823,
+      "bolo_pct_pib": 7.8812,
       "fa": 0.7,
       "sa": 0.3,
-      "icms_iss_residual": 1016146995646.83,
-      "ibs_bruto": 435491569562.93
+      "icms_iss_residual": 990856726562.21,
+      "ibs_bruto": 424652882812.38
     },
     {
       "ano": 2032,
-      "bolo_projetado": 1528081852053.7,
+      "bolo_projetado": 1490050345404.25,
       "pib_nominal": 18906437831307.38,
-      "bolo_pct_pib": 8.0823,
+      "bolo_pct_pib": 7.8812,
       "fa": 0.6,
       "sa": 0.4,
-      "icms_iss_residual": 916849111232.22,
-      "ibs_bruto": 611232740821.48
+      "icms_iss_residual": 894030207242.55,
+      "ibs_bruto": 596020138161.7
     },
     {
       "ano": 2033,
-      "bolo_projetado": 1608550642382.84,
+      "bolo_projetado": 1568516396593.24,
       "pib_nominal": 19902050847504.02,
-      "bolo_pct_pib": 8.0823,
+      "bolo_pct_pib": 7.8812,
       "fa": 0.0,
       "sa": 1.0,
       "icms_iss_residual": 0.0,
-      "ibs_bruto": 1608550642382.84
+      "ibs_bruto": 1568516396593.24
     }
   ]
 }
