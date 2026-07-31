@@ -195,18 +195,33 @@
             <div class="resposta-sub" id="resposta-sub"></div>
         </div>
 
+        <span class="section-label">De onde viemos, para onde vamos: arrecadação de ICMS+ISS, 2015&ndash;2033</span>
+        <div class="callout">
+            A linha cheia é o que já foi arrecadado (dado observado, SICONFI). A linha tracejada,
+            a partir de 2026, é a projeção: aplica a carga tributária de 2025 ao PIB projetado para
+            cada ano, como explicado na metodologia abaixo.
+        </div>
+        <div class="chart-panel">
+            <p class="chart-panel-title">Arrecadação total de ICMS+ISS, Brasil (R$ bi, nominal)</p>
+            <canvas id="chart-trajetoria" style="max-height:360px"></canvas>
+            <div class="chart-legend-note">
+                <span><span class="legend-dot" style="background:#1A3A5C"></span>Realizado (2015&ndash;2025)</span>
+                <span><span class="legend-dot" style="background:#2a78d6"></span>Projetado (2026&ndash;2033)</span>
+            </div>
+        </div>
+
         <details class="methodology">
             <summary>Metodologia: como se chega da série histórica à projeção do IBS</summary>
             <div class="methodology-body">
                 <p class="meto-note">
-                    A pergunta tem três partes que precisam de fontes diferentes: (1) o tamanho do
-                    "bolo" tributário hoje e como ele variou no passado; (2) como esse bolo deve
-                    crescer no futuro, o que depende de PIB e inflação; e (3) como o cronograma
-                    constitucional da reforma converte parte desse bolo, ano a ano, de ICMS/ISS em
-                    IBS.
+                    A pergunta tem três partes que precisam de fontes diferentes: (1) qual é a
+                    arrecadação de ICMS e ISS hoje e como ela variou no passado; (2) como essa
+                    arrecadação deve crescer no futuro, o que depende de PIB e inflação; e (3) como
+                    o cronograma constitucional da reforma converte parte dessa arrecadação, ano a
+                    ano, de ICMS/ISS em IBS.
                 </p>
 
-                <p class="meto-section-title">1. O bolo histórico: ICMS + ISS, Brasil, 2015&ndash;2025</p>
+                <p class="meto-section-title">1. A arrecadação histórica: ICMS + ISS, Brasil, 2015&ndash;2025</p>
                 <p class="meto-note">
                     O ICMS considerado é líquido de FUNDEB e bruto de cota-parte municipal, ou seja,
                     a arrecadação estadual total antes da partilha constitucional de 25% com os
@@ -220,13 +235,15 @@
                     conta específica nesse demonstrativo.
                 </p>
 
-                <p class="meto-section-title">2. Como o bolo cresce a partir de hoje: a premissa da carga tributária constante</p>
+                <p class="meto-section-title">2. Como essa arrecadação cresce a partir de hoje: a premissa da carga tributária constante</p>
                 <p class="meto-note">
-                    A projeção parte de uma premissa central: a razão ICMS+ISS/PIB se mantém
-                    constante no nível de 2025 (&asymp;8,08% do PIB) para todos os anos seguintes.
-                    Em outras palavras, o bolo tributário cresce exatamente no mesmo ritmo que o PIB
-                    nominal, nem mais nem menos. Essa não é uma escolha arbitrária de modelagem: é o
-                    próprio desenho legal da transição para o IBS.
+                    A projeção parte de uma premissa central: a arrecadação de ICMS e ISS, medida
+                    como proporção do PIB (a chamada "carga tributária"), se mantém no mesmo nível
+                    de 2025 (&asymp;8,08% do PIB) em todos os anos seguintes. Na prática, isso quer
+                    dizer que a arrecadação cresce sempre no mesmo ritmo que a economia como um
+                    todo: se o PIB cresce 5% em determinado ano, a arrecadação também cresce 5%
+                    naquele ano, nem mais, nem menos. Essa não é uma escolha arbitrária de
+                    modelagem: é o próprio desenho legal da transição para o IBS.
                 </p>
                 <div class="lei-box">
                     <p>
@@ -251,8 +268,8 @@
                     alíquota do IBS: ela será calculada todo ano, pelo Senado, para que a arrecadação
                     resultante mantenha a mesma proporção do PIB observada na base histórica do
                     tributo que está sendo substituído. É esse mecanismo constitucional, e não uma
-                    hipótese técnica externa, que justifica projetar o bolo tributário como uma fração
-                    fixa do PIB projetado. A seção "Incerteza da premissa", ao final desta
+                    hipótese técnica externa, que justifica projetar a arrecadação de ICMS e ISS
+                    como uma fração fixa do PIB projetado. A seção "Incerteza da premissa", ao final desta
                     metodologia, mostra o quanto essa proporção de fato oscilou entre 2019 e 2025,
                     como medida da margem de erro possível dessa premissa.
                 </p>
@@ -278,25 +295,26 @@
                 <p class="meto-note">
                     O PIB nominal de cada ano é obtido compondo o PIB nominal de 2025 (BCB/SGS) pelo
                     crescimento real e pela inflação projetados: <code>PIB<sub>t</sub> = PIB<sub>t-1</sub>
-                    &times; (1 + g<sub>t</sub>) &times; (1 + IPCA<sub>t</sub>)</code>. O bolo projetado
-                    de cada ano é <code>Bolo<sub>t</sub> = (Bolo<sub>2025</sub>/PIB<sub>2025</sub>)
+                    &times; (1 + g<sub>t</sub>) &times; (1 + IPCA<sub>t</sub>)</code>. A arrecadação
+                    projetada de cada ano aplica a carga tributária de 2025 a esse PIB:
+                    <code>Receita<sub>t</sub> = (Receita<sub>2025</sub>/PIB<sub>2025</sub>)
                     &times; PIB<sub>t</sub></code>.
                 </p>
 
-                <p class="meto-section-title">3. Do bolo para o IBS: o cronograma da transição</p>
+                <p class="meto-section-title">3. Da arrecadação de ICMS e ISS para o IBS: o cronograma da transição</p>
                 <div class="lei-box">
                     <p><span class="lei-artigo">ADCT art. 128</span>: a alíquota do ICMS e do ISS será reduzida a cada ano, de 2029 a 2032, à razão de um décimo, e extinta em 2033. <span class="lei-artigo">ADCT art. 131</span>: no mesmo período, o IBS é implementado progressivamente, complementando a fração já extinta do ICMS/ISS.</p>
                 </div>
                 <p class="meto-note">
-                    Traduzindo o cronograma legal em números: a fração do bolo ainda cobrada como
-                    ICMS/ISS (\(f_a\)) cai 10 pontos percentuais por ano entre 2029 e 2032, e zera em
-                    2033; a fração já convertida em IBS (\(s_a=1-f_a\)) sobe na mesma proporção, até
-                    chegar a 100% no último ano da transição.
+                    Traduzindo o cronograma legal em números: a fração da arrecadação ainda cobrada
+                    como ICMS/ISS (\(f_a\)) cai 10 pontos percentuais por ano entre 2029 e 2032, e
+                    zera em 2033; a fração já convertida em IBS (\(s_a=1-f_a\)) sobe na mesma
+                    proporção, até chegar a 100% no último ano da transição.
                 </p>
                 <div class="meto-formula-box">
-                    ICMS+ISS residual(a) = Bolo<sub>projetado</sub>(a) &times; f<sub>a</sub><br>
-                    IBS bruto(a) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= Bolo<sub>projetado</sub>(a) &times; s<sub>a</sub><br>
-                    Total(a) = ICMS+ISS residual(a) + IBS bruto(a) = Bolo<sub>projetado</sub>(a)
+                    ICMS+ISS residual(a) = Receita<sub>projetada</sub>(a) &times; f<sub>a</sub><br>
+                    IBS bruto(a) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= Receita<sub>projetada</sub>(a) &times; s<sub>a</sub><br>
+                    Total(a) = ICMS+ISS residual(a) + IBS bruto(a) = Receita<sub>projetada</sub>(a)
                 </div>
                 <table class="param-table">
                     <thead><tr><th>Ano</th><th>\(f_a\) (ICMS+ISS residual)</th><th>\(s_a\) (IBS)</th></tr></thead>
@@ -306,8 +324,8 @@
                     Esta página trabalha só no agregado nacional, então não entra nos coeficientes de
                     redistribuição entre estados e municípios (\(\varphi^{neutro}\), \(\varphi^{CPT}\),
                     \(\varphi^{dest}\)) nem na fração \(\alpha_a\) que separa o critério histórico do
-                    critério destino: esses parâmetros determinam <em>como</em> o bolo é dividido
-                    entre os entes federativos, não o seu <em>tamanho total</em>. No agregado
+                    critério destino: esses parâmetros determinam <em>como</em> a arrecadação é
+                    dividida entre os entes federativos, não o seu <em>tamanho total</em>. No agregado
                     nacional, o valor total de IBS depende só de \(f_a\)/\(s_a\).
                 </p>
 
@@ -320,7 +338,7 @@
                     descontados aqui.
                 </p>
 
-                <p class="meto-section-title">Incerteza da premissa de bolo/PIB constante</p>
+                <p class="meto-section-title">Incerteza da premissa de carga tributária constante</p>
                 <p class="meto-note" id="faixa-historica-note"></p>
             </div>
         </details>
@@ -384,8 +402,8 @@
 
         <span class="section-label">A transição: ICMS+ISS residual encolhendo, IBS crescendo (R$ bi, nominal)</span>
         <div class="callout">
-            O bolo tributário total (linha "Total") cresce com o PIB nominal projetado. O que muda
-            de composição, ano a ano, é a fração que ainda é cobrada como ICMS/ISS e a fração já
+            A arrecadação total (linha "Total") cresce com o PIB nominal projetado. O que muda de
+            composição, ano a ano, é a fração que ainda é cobrada como ICMS/ISS e a fração já
             convertida em IBS, conforme o cronograma do ADCT art. 128.
         </div>
         <div class="chart-panel">
@@ -399,8 +417,8 @@
                         <th class="th-left">Ano</th>
                         <th>ICMS+ISS residual (R$ bi)</th>
                         <th>IBS bruto (R$ bi)</th>
-                        <th>Total = bolo projetado (R$ bi)</th>
-                        <th>Bolo / PIB</th>
+                        <th>Total = receita projetada (R$ bi)</th>
+                        <th>Carga tributária (% do PIB)</th>
                     </tr>
                 </thead>
                 <tbody id="tbody-projecao">
@@ -424,7 +442,7 @@
             <p>4. Projeção macroeconômica 2026-2030: Banco Central do Brasil, Sistema de Expectativas de Mercado (Boletim Focus), mediana das respostas, consultada via API Olinda em tempo de geração desta página.</p>
             <p>5. Projeção macroeconômica 2031-2033: Instituição Fiscal Independente (IFI), vinculada ao Senado Federal, Relatório de Acompanhamento Fiscal (RAF) nº 107, 18 de dezembro de 2025.</p>
             <p>6. Base legal: EC 132/2023; ADCT art. 128 (cronograma de extinção do ICMS/ISS) e art. 131 (implementação progressiva do IBS); ADCT art. 130, caput, e &sect;3&ordm;, IV (fixação da alíquota de referência para manter a Receita-Base como proporção do PIB); LC 227/2026, art. 51 (CGIBS) e ADCT art. 132 (Seguro-Receita).</p>
-            <p>7. Simplificações: (i) a razão ICMS+ISS/PIB é mantida constante no nível de 2025 a partir de 2026 (elasticidade-PIB unitária), sem estimar uma elasticidade histórica separada por regressão; (ii) o IBS bruto não desconta o CGIBS nem o Seguro-Receita, que incidem sobre a parcela por destino distribuída aos entes, não sobre o total nacional; (iii) para 2031-2033, fora do horizonte do Focus, os parâmetros da IFI são tratados como constantes nos três anos, já que a IFI projeta uma taxa média para 2027-2035, não ano a ano.</p>
+            <p>7. Simplificações: (i) a razão ICMS+ISS/PIB (a carga tributária) é mantida constante no nível de 2025 a partir de 2026, ou seja, presume-se que a arrecadação cresce sempre na mesma proporção do PIB, sem estimar por métodos estatísticos se ela historicamente cresceu mais rápido ou mais devagar que a economia; (ii) o IBS bruto não desconta o CGIBS nem o Seguro-Receita, que incidem sobre a parcela por destino distribuída aos entes, não sobre o total nacional; (iii) para 2031-2033, fora do horizonte do Focus, os parâmetros da IFI são tratados como constantes nos três anos, já que a IFI projeta uma taxa média para 2027-2035, não ano a ano.</p>
         </div>
     </div>
 
@@ -450,6 +468,7 @@
             buildHistoricoTable(data);
             buildMacroTable(data);
             buildProjecaoTable(data);
+            buildChartTrajetoria(data);
             buildChartNominalReal(data);
             buildChartPib(data);
             buildChartTransicao(data);
@@ -469,8 +488,8 @@
         document.getElementById('resposta-numero').textContent =
             `De R$ ${fmtNum(p2029.ibs_bruto / 1e9, 1)} bi em 2029 a R$ ${fmtNum(p2033.ibs_bruto / 1e9, 1)} bi em 2033 (valores nominais)`;
         document.getElementById('resposta-sub').innerHTML =
-            `O IBS bruto cresce de ${fmtPct(p2029.ibs_bruto / p2029.bolo_projetado * 100, 0)} do bolo tributário em 2029 (início da transição) até 100% em 2033, quando o ICMS e o ISS são extintos (ADCT art. 128). ` +
-            `Em 2033 o bolo total projetado (ICMS+ISS+IBS) é de R$ ${fmtNum(p2033.bolo_projetado / 1e9, 1)} bi, equivalente a ${fmtPct(p2033.bolo_pct_pib, 2)} do PIB, a mesma proporção de 2025, por premissa.`;
+            `O IBS bruto cresce de ${fmtPct(p2029.ibs_bruto / p2029.bolo_projetado * 100, 0)} da arrecadação total em 2029 (início da transição) até 100% em 2033, quando o ICMS e o ISS são extintos (ADCT art. 128). ` +
+            `Em 2033 a arrecadação total projetada (ICMS+ISS+IBS) é de R$ ${fmtNum(p2033.bolo_projetado / 1e9, 1)} bi, equivalente a ${fmtPct(p2033.bolo_pct_pib, 2)} do PIB, a mesma proporção de 2025, por premissa.`;
     }
 
     function buildAdctTable(data) {
@@ -488,7 +507,7 @@
         document.getElementById('faixa-historica-note').innerHTML =
             `Entre 2019 e 2025, a razão ICMS+ISS/PIB variou de ${fmtPct(f.min, 2)} a ${fmtPct(f.max, 2)}, ` +
             `uma banda de cerca de ${fmtNum((f.max - f.min), 2)} pontos percentuais em torno do valor usado como base para a projeção (${fmtPct(base, 2)}, referente a 2025). ` +
-            `Essa banda dá uma ideia da incerteza real da premissa de razão constante: anos de PIB atipicamente forte ou fraco, ou mudanças na composição do consumo, podem deslocar a razão bolo/PIB para cima ou para baixo do valor projetado aqui.`;
+            `Essa banda dá uma ideia da incerteza real da premissa de carga tributária constante: anos de PIB atipicamente forte ou fraco, ou mudanças na composição do consumo, podem deslocar a arrecadação para cima ou para baixo do valor projetado aqui.`;
     }
 
     function buildHistoricoTable(data) {
@@ -531,6 +550,52 @@
             grid: 'rgba(128,128,128,0.15)',
             text: css.getPropertyValue('--text-muted').trim() || '#9A9A9A'
         };
+    }
+
+    function buildChartTrajetoria(data) {
+        const el = document.getElementById('chart-trajetoria');
+        if (!el || typeof Chart === 'undefined') return;
+        const c = themeColors();
+        const razao = data._meta.razao_bolo_pib_base / 100;
+
+        // Linha realizada: 2015-2025, dado observado (SICONFI)
+        const pontosRealizado = data.historico.map(r => ({ x: r.ano, y: r.bolo_nominal / 1e9 }));
+
+        // Linha projetada: começa no último ano realizado (2025), para a linha ficar contínua,
+        // e segue com a arrecadação projetada de 2026 a 2033 (carga tributária de 2025 × PIB projetado).
+        const projPorAno = {};
+        data.projecao.forEach(r => { projPorAno[r.ano] = r.bolo_projetado; });
+        const ultimo = data.historico[data.historico.length - 1];
+        const pontosProjetado = [{ x: ultimo.ano, y: ultimo.bolo_nominal / 1e9 }].concat(
+            data.macro_path.map(r => {
+                const valor = projPorAno[r.ano] != null ? projPorAno[r.ano] : razao * r.pib_nominal;
+                return { x: r.ano, y: valor / 1e9 };
+            })
+        );
+
+        new Chart(el, {
+            type: 'line',
+            data: {
+                datasets: [
+                    { label: 'Realizado', data: pontosRealizado,
+                      borderColor: '#1A3A5C', backgroundColor: '#1A3A5C', borderWidth: 2.5, pointRadius: 3, pointHoverRadius: 5, tension: 0.1 },
+                    { label: 'Projetado', data: pontosProjetado,
+                      borderColor: '#2a78d6', backgroundColor: '#2a78d6', borderWidth: 2.5, borderDash: [6, 4], pointRadius: 3, pointHoverRadius: 5, tension: 0.1 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: true, aspectRatio: 2.3,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: c.text, font: { size: 11 } } },
+                    tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: R$ ${fmtNum(ctx.raw.y,1)} bi` } }
+                },
+                scales: {
+                    x: { type: 'linear', grid: { display: false }, ticks: { stepSize: 1, color: c.text, font: { size: 10 } } },
+                    y: { grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 }, callback: v => fmtNum(v,0) }, title: { display: true, text: 'R$ bi', color: c.text, font: { size: 10 } } }
+                }
+            }
+        });
     }
 
     function buildChartNominalReal(data) {
