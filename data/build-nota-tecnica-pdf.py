@@ -41,23 +41,36 @@ def trajetoria_chart_data_uri():
 
     historico = PROJ["historico"]
     macro_path = PROJ["macro_path"]
+    projecao = PROJ["projecao"]
     razao = PROJ["_meta"]["razao_bolo_pib_base"] / 100
-    proj_por_ano = {p["ano"]: p["bolo_projetado"] for p in PROJ["projecao"]}
+    proj_por_ano = {p["ano"]: p["bolo_projetado"] for p in projecao}
 
     anos_real = [h["ano"] for h in historico]
     valores_real = [h["bolo_nominal"] / 1e9 for h in historico]
 
+    # Linha do total projetado: até 2029 (depois disso, o total se abre em duas linhas).
     ultimo = historico[-1]
-    anos_proj = [ultimo["ano"]] + [m["ano"] for m in macro_path]
+    anos_proj = [ultimo["ano"]] + [m["ano"] for m in macro_path if m["ano"] <= 2029]
     valores_proj = [ultimo["bolo_nominal"] / 1e9] + [
-        (proj_por_ano.get(m["ano"], razao * m["pib_nominal"])) / 1e9 for m in macro_path
+        (proj_por_ano.get(m["ano"], razao * m["pib_nominal"])) / 1e9
+        for m in macro_path if m["ano"] <= 2029
     ]
+
+    # A partir de 2029, o cronograma do ADCT art. 128 abre o total em duas trajetórias opostas.
+    anos_residual = [p["ano"] for p in projecao]
+    valores_residual = [p["icms_iss_residual"] / 1e9 for p in projecao]
+    valores_ibs = [p["ibs_bruto"] / 1e9 for p in projecao]
 
     fig, ax = plt.subplots(figsize=(7.0, 2.9), dpi=150)
     ax.plot(anos_real, valores_real, color="#1A3A5C", linewidth=2.2, marker="o", markersize=3.5, label="Realizado (2013–2025)")
-    ax.plot(anos_proj, valores_proj, color="#2a78d6", linewidth=2.2, linestyle=(0, (5, 3)), marker="o", markersize=3.5, label="Projetado (2026–2033)")
+    ax.plot(anos_proj, valores_proj, color="#2a78d6", linewidth=2.2, linestyle=(0, (5, 3)), marker="o", markersize=3.5, label="Projetado, total (2026–2029)")
+    ax.plot(anos_residual, valores_residual, color="#b03a2e", linewidth=2.2, marker="o", markersize=3.5, label="ICMS+ISS residual (2029–2033)")
+    ax.fill_between(anos_residual, valores_residual, 0, color="#b03a2e", alpha=0.08)
+    ax.plot(anos_residual, valores_ibs, color="#1e8449", linewidth=2.2, marker="o", markersize=3.5, label="IBS bruto (2029–2033)")
+    ax.fill_between(anos_residual, valores_ibs, 0, color="#1e8449", alpha=0.08)
 
     ax.set_ylabel("R$ bi", fontsize=9)
+    ax.set_ylim(bottom=0)
     ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda v, _: f"{v:,.0f}".replace(",", ".")))
     ax.xaxis.set_major_locator(mticker.MultipleLocator(2))
     ax.tick_params(labelsize=8.5, colors="#4A4A48")
@@ -67,7 +80,7 @@ def trajetoria_chart_data_uri():
         ax.spines[spine].set_color("#DADAD5")
     ax.grid(axis="y", color="#E8E5DF", linewidth=0.7)
     ax.set_axisbelow(True)
-    ax.legend(loc="upper left", fontsize=8.5, frameon=False)
+    ax.legend(loc="upper left", fontsize=7.5, frameon=False, ncol=2)
     fig.tight_layout()
 
     buf = BytesIO()
@@ -389,9 +402,11 @@ HTML = f"""<!DOCTYPE html>
     Seção 4.
 </p>
 <div class="chart-block">
-    <img class="chart-img" src="{trajetoria_chart_data_uri()}" alt="Arrecadação de ICMS+ISS, Brasil: realizado 2013-2025 e projetado 2026-2033">
-    <p class="chart-caption">Arrecadação total de ICMS+ISS, Brasil (R$ bi, nominal). A linha
-    tracejada, a partir de 2026, é a projeção descrita na Seção 4.</p>
+    <img class="chart-img" src="{trajetoria_chart_data_uri()}" alt="Arrecadação de ICMS+ISS, Brasil: realizado 2013-2025, projetado 2026-2029 e a abertura em ICMS+ISS residual e IBS bruto entre 2029 e 2033">
+    <p class="chart-caption">Arrecadação de ICMS+ISS, Brasil (R$ bi, nominal). A linha tracejada,
+    a partir de 2026, é a projeção do total (Seção 4.2). Em 2029 essa linha se abre em duas: o
+    cronograma do ADCT art. 128 converte parte da arrecadação de ICMS/ISS em IBS ano a ano, até a
+    extinção do ICMS e do ISS em 2033 (Seção 4.4).</p>
 </div>
 
 <h2>3. Fontes de dados</h2>
