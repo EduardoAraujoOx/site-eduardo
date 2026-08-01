@@ -77,6 +77,44 @@ def trajetoria_chart_data_uri():
     return "data:image/png;base64," + base64.b64encode(buf.read()).decode("ascii")
 
 
+def transicao_chart_data_uri():
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import matplotlib.ticker as mticker
+
+    projecao = PROJ["projecao"]
+    anos = [p["ano"] for p in projecao]
+    residual = [p["icms_iss_residual"] / 1e9 for p in projecao]
+    ibs = [p["ibs_bruto"] / 1e9 for p in projecao]
+
+    fig, ax = plt.subplots(figsize=(7.0, 2.9), dpi=150)
+    ax.plot(anos, residual, color="#b03a2e", linewidth=2.2, marker="o", markersize=4, label="ICMS+ISS residual")
+    ax.fill_between(anos, residual, 0, color="#b03a2e", alpha=0.10)
+    ax.plot(anos, ibs, color="#1e8449", linewidth=2.2, marker="o", markersize=4, label="IBS bruto")
+    ax.fill_between(anos, ibs, 0, color="#1e8449", alpha=0.10)
+
+    ax.set_ylabel("R$ bi", fontsize=9)
+    ax.set_ylim(bottom=0)
+    ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda v, _: f"{v:,.0f}".replace(",", ".")))
+    ax.xaxis.set_major_locator(mticker.MultipleLocator(1))
+    ax.tick_params(labelsize=8.5, colors="#4A4A48")
+    for spine in ("top", "right"):
+        ax.spines[spine].set_visible(False)
+    for spine in ("left", "bottom"):
+        ax.spines[spine].set_color("#DADAD5")
+    ax.grid(axis="y", color="#E8E5DF", linewidth=0.7)
+    ax.set_axisbelow(True)
+    ax.legend(loc="center left", fontsize=8.5, frameon=False)
+    fig.tight_layout()
+
+    buf = BytesIO()
+    fig.savefig(buf, format="png")
+    plt.close(fig)
+    buf.seek(0)
+    return "data:image/png;base64," + base64.b64encode(buf.read()).decode("ascii")
+
+
 def hist_rows():
     rows = []
     for h in PROJ["historico"]:
@@ -496,6 +534,12 @@ HTML = f"""<!DOCTYPE html>
     <thead><tr><th class="l">Ano</th><th>f<sub>a</sub> (fração ICMS+ISS residual)</th><th>s<sub>a</sub> = 1&minus;f<sub>a</sub> (fração IBS)</th></tr></thead>
     <tbody>{adct_rows()}</tbody>
 </table>
+<div class="chart-block">
+    <img class="chart-img" src="{transicao_chart_data_uri()}" alt="ICMS+ISS residual encolhendo e IBS bruto crescendo, Brasil, 2029-2033">
+    <p class="chart-caption">ICMS+ISS residual vs. IBS bruto, Brasil (R$ bi, nominal). As duas linhas partem de
+    pontos opostos em 2029 e se afastam ano a ano até a extinção do ICMS/ISS em 2033: em cada ano, a soma das
+    duas é a arrecadação total projetada (Seção 4.5).</p>
+</div>
 
 <h3>4.5 Fórmula final</h3>
 <div class="formula-box">
