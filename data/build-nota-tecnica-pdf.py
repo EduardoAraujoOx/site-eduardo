@@ -48,23 +48,25 @@ def trajetoria_chart_data_uri():
     anos_real = [h["ano"] for h in historico]
     valores_real = [h["bolo_nominal"] / 1e9 for h in historico]
 
-    # Linha do total projetado: até 2029 (depois disso, o total se abre em duas linhas).
+    # Linha do total projetado, 2026-2033: até 2029 é a própria projeção de ICMS+ISS; dali em
+    # diante vira o cenário contrafactual (o que o ICMS+ISS teria sido sem a reforma).
     ultimo = historico[-1]
-    anos_proj = [ultimo["ano"]] + [m["ano"] for m in macro_path if m["ano"] <= 2029]
+    anos_proj = [ultimo["ano"]] + [m["ano"] for m in macro_path]
     valores_proj = [ultimo["bolo_nominal"] / 1e9] + [
-        (proj_por_ano.get(m["ano"], razao * m["pib_nominal"])) / 1e9
-        for m in macro_path if m["ano"] <= 2029
+        (proj_por_ano.get(m["ano"], razao * m["pib_nominal"])) / 1e9 for m in macro_path
     ]
 
-    # A partir de 2029, o cronograma do ADCT art. 128 abre o total em duas trajetórias opostas.
+    # A partir de 2029, o cronograma do ADCT art. 128 desvia a arrecadação da linha contrafactual
+    # acima para duas trajetórias opostas: ICMS+ISS residual (abaixo do cenário sem reforma) e
+    # IBS bruto (subindo do zero).
     anos_residual = [p["ano"] for p in projecao]
     valores_residual = [p["icms_iss_residual"] / 1e9 for p in projecao]
     valores_ibs = [p["ibs_bruto"] / 1e9 for p in projecao]
 
     fig, ax = plt.subplots(figsize=(7.0, 2.9), dpi=150)
     ax.plot(anos_real, valores_real, color="#1A3A5C", linewidth=2.2, marker="o", markersize=3.5, label="Realizado (2013–2025)")
-    ax.plot(anos_proj, valores_proj, color="#2a78d6", linewidth=2.2, linestyle=(0, (5, 3)), marker="o", markersize=3.5, label="Projetado, total (2026–2029)")
-    ax.plot(anos_residual, valores_residual, color="#b03a2e", linewidth=2.2, marker="o", markersize=3.5, label="ICMS+ISS residual (2029–2033)")
+    ax.plot(anos_proj, valores_proj, color="#2a78d6", linewidth=2.2, linestyle=(0, (5, 3)), marker="o", markersize=3.5, label="Projetado, sem a reforma (2026–2033)")
+    ax.plot(anos_residual, valores_residual, color="#b03a2e", linewidth=2.2, marker="o", markersize=3.5, label="ICMS+ISS residual, com a reforma (2029–2033)")
     ax.fill_between(anos_residual, valores_residual, 0, color="#b03a2e", alpha=0.08)
     ax.plot(anos_residual, valores_ibs, color="#1e8449", linewidth=2.2, marker="o", markersize=3.5, label="IBS bruto (2029–2033)")
     ax.fill_between(anos_residual, valores_ibs, 0, color="#1e8449", alpha=0.08)
@@ -402,11 +404,13 @@ HTML = f"""<!DOCTYPE html>
     Seção 4.
 </p>
 <div class="chart-block">
-    <img class="chart-img" src="{trajetoria_chart_data_uri()}" alt="Arrecadação de ICMS+ISS, Brasil: realizado 2013-2025, projetado 2026-2029 e a abertura em ICMS+ISS residual e IBS bruto entre 2029 e 2033">
-    <p class="chart-caption">Arrecadação de ICMS+ISS, Brasil (R$ bi, nominal). A linha tracejada,
-    a partir de 2026, é a projeção do total (Seção 4.2). Em 2029 essa linha se abre em duas: o
-    cronograma do ADCT art. 128 converte parte da arrecadação de ICMS/ISS em IBS ano a ano, até a
-    extinção do ICMS e do ISS em 2033 (Seção 4.4).</p>
+    <img class="chart-img" src="{trajetoria_chart_data_uri()}" alt="Arrecadação de ICMS+ISS, Brasil: realizado 2013-2025, cenário projetado sem a reforma até 2033, e a abertura real em ICMS+ISS residual e IBS bruto a partir de 2029">
+    <p class="chart-caption">Arrecadação de ICMS+ISS, Brasil (R$ bi, nominal). A linha tracejada
+    aplica a carga tributária de referência (Seção 4.2) ao PIB projetado: até 2029 é a própria
+    projeção de ICMS+ISS; dali em diante, um cenário hipotético sem a reforma. As duas linhas
+    coloridas são o que de fato acontece a partir de 2029: o cronograma do ADCT art. 128 desvia
+    parte da arrecadação para o IBS, enquanto o que resta como ICMS/ISS cai abaixo do cenário sem
+    reforma, até a extinção do ICMS e do ISS em 2033 (Seção 4.4).</p>
 </div>
 
 <h2>3. Fontes de dados</h2>

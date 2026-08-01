@@ -197,22 +197,24 @@
 
         <span class="section-label">De onde viemos, para onde vamos: arrecadação de ICMS+ISS, 2013&ndash;2033</span>
         <div class="callout">
-            A linha cheia é o que já foi arrecadado (dado observado, SICONFI). A linha tracejada,
-            a partir de 2026, é a projeção: aplica a carga tributária de referência (a média
-            2024&ndash;2026 explicada na metodologia abaixo) ao PIB projetado para cada ano. Em 2029
-            essa linha única se abre em duas: a partir daí, o cronograma constitucional (ADCT
-            art. 128) começa a converter parte da arrecadação de ICMS/ISS em IBS, ano a ano, até a
-            extinção do ICMS e do ISS em 2033. Todos os valores são nominais (preços de cada ano);
-            a inflação projetada já está embutida no PIB nominal usado para projetar, não é
-            aplicada de novo por fora.
+            A linha cheia é o que já foi arrecadado (dado observado, SICONFI). A linha azul
+            tracejada aplica a carga tributária de referência (a média 2024&ndash;2026 explicada na
+            metodologia abaixo) ao PIB projetado para cada ano: até 2029 ela é a própria projeção de
+            ICMS+ISS, e dali em diante vira um cenário hipotético &mdash; o que o ICMS+ISS teria
+            sido se toda a arrecadação continuasse como ICMS/ISS, sem a reforma. Em 2029 essa linha
+            se abre em duas trajetórias reais: o cronograma constitucional (ADCT art. 128) desvia
+            parte da arrecadação para o IBS (verde, subindo), enquanto o que resta como ICMS/ISS
+            (vermelho) cai abaixo do cenário sem reforma, até a extinção do ICMS e do ISS em 2033.
+            Todos os valores são nominais (preços de cada ano); a inflação projetada já está
+            embutida no PIB nominal usado para projetar, não é aplicada de novo por fora.
         </div>
         <div class="chart-panel">
             <p class="chart-panel-title">Arrecadação de ICMS+ISS, Brasil (R$ bi, nominal)</p>
             <canvas id="chart-trajetoria" style="max-height:360px"></canvas>
             <div class="chart-legend-note">
                 <span><span class="legend-dot" style="background:#1A3A5C"></span>Realizado (2013&ndash;2025)</span>
-                <span><span class="legend-dot" style="background:#2a78d6"></span>Projetado, total (2026&ndash;2029)</span>
-                <span><span class="legend-dot" style="background:#b03a2e"></span>ICMS+ISS residual (2029&ndash;2033)</span>
+                <span><span class="legend-dot" style="background:#2a78d6"></span>Projetado, sem a reforma (2026&ndash;2033)</span>
+                <span><span class="legend-dot" style="background:#b03a2e"></span>ICMS+ISS residual, com a reforma (2029&ndash;2033)</span>
                 <span><span class="legend-dot" style="background:#1e8449"></span>IBS bruto (2029&ndash;2033)</span>
             </div>
         </div>
@@ -611,21 +613,24 @@
         // Linha realizada: 2013-2025, dado observado (SICONFI)
         const pontosRealizado = data.historico.map(r => ({ x: r.ano, y: r.bolo_nominal / 1e9 }));
 
-        // Linha projetada (total, antes da transição): começa no último ano realizado (2025), para
-        // a linha ficar contínua, e segue até 2029 (carga tributária de referência × PIB projetado).
-        // A partir de 2029 o total se abre em duas linhas (ver abaixo), então essa linha para aqui.
+        // Linha projetada (total): começa no último ano realizado (2025), para a linha ficar
+        // contínua, e segue até 2033 (carga tributária de referência × PIB projetado). Até 2029
+        // ela é a própria projeção de ICMS+ISS (a transição ainda não começou). De 2029 em diante,
+        // ela vira o cenário contrafactual: o que o ICMS+ISS teria sido se a arrecadação inteira
+        // continuasse como ICMS/ISS, sem nada convertido em IBS.
         const projPorAno = {};
         data.projecao.forEach(r => { projPorAno[r.ano] = r.bolo_projetado; });
         const ultimo = data.historico[data.historico.length - 1];
         const pontosProjetado = [{ x: ultimo.ano, y: ultimo.bolo_nominal / 1e9 }].concat(
-            data.macro_path.filter(r => r.ano <= 2029).map(r => {
+            data.macro_path.map(r => {
                 const valor = projPorAno[r.ano] != null ? projPorAno[r.ano] : razao * r.pib_nominal;
                 return { x: r.ano, y: valor / 1e9 };
             })
         );
 
-        // A partir de 2029: o cronograma do ADCT art. 128 divide o total em duas trajetórias
-        // opostas até a extinção do ICMS/ISS em 2033 ("boca de jacaré").
+        // A partir de 2029, o cronograma do ADCT art. 128 desvia a arrecadação da linha
+        // contrafactual acima para duas trajetórias opostas ("boca de jacaré"): parte segue como
+        // ICMS+ISS (caindo abaixo do que seria sem a reforma) e parte vira IBS (subindo do zero).
         const pontosResidual = data.projecao.map(r => ({ x: r.ano, y: r.icms_iss_residual / 1e9 }));
         const pontosIbs = data.projecao.map(r => ({ x: r.ano, y: r.ibs_bruto / 1e9 }));
 
@@ -635,7 +640,7 @@
                 datasets: [
                     { label: 'Realizado', data: pontosRealizado,
                       borderColor: '#1A3A5C', backgroundColor: '#1A3A5C', borderWidth: 2.5, pointRadius: 3, pointHoverRadius: 5, tension: 0.1 },
-                    { label: 'Projetado, total', data: pontosProjetado,
+                    { label: 'Projetado (sem a reforma, a partir de 2029)', data: pontosProjetado,
                       borderColor: '#2a78d6', backgroundColor: '#2a78d6', borderWidth: 2.5, borderDash: [6, 4], pointRadius: 3, pointHoverRadius: 5, tension: 0.1 },
                     { label: 'ICMS+ISS residual', data: pontosResidual,
                       borderColor: '#b03a2e', backgroundColor: 'rgba(176,58,46,0.10)', borderWidth: 2.5, pointRadius: 3, pointHoverRadius: 5, tension: 0.1, fill: 'origin' },
