@@ -425,9 +425,10 @@
 
         <span class="section-label">A transição: ICMS+ISS residual encolhendo, IBS crescendo (R$ bi, nominal)</span>
         <div class="callout">
-            A arrecadação total (linha "Total") cresce com o PIB nominal projetado. O que muda de
-            composição, ano a ano, é a fração que ainda é cobrada como ICMS/ISS e a fração já
-            convertida em IBS, conforme o cronograma do ADCT art. 128.
+            As duas linhas partem de pontos opostos em 2029 e se afastam ano a ano, uma caindo e
+            outra subindo, até a extinção do ICMS/ISS em 2033: é o cronograma do ADCT art. 128
+            passando a fração que ainda é cobrada como ICMS/ISS para o IBS, sem mudar o total
+            (a soma das duas linhas, em cada ano, é a arrecadação total projetada).
         </div>
         <div class="chart-panel">
             <p class="chart-panel-title">ICMS+ISS residual vs. IBS bruto, Brasil (R$ bi, nominal)</p>
@@ -695,14 +696,16 @@
         const c = themeColors();
         const anos = data.projecao.map(r => r.ano);
         new Chart(el, {
-            type: 'bar',
+            type: 'line',
             data: {
                 labels: anos,
                 datasets: [
                     { label: 'ICMS+ISS residual', data: data.projecao.map(r => r.icms_iss_residual / 1e9),
-                      backgroundColor: '#b03a2e', stack: 'bolo' },
+                      borderColor: '#b03a2e', backgroundColor: 'rgba(176,58,46,0.10)',
+                      borderWidth: 2.5, pointRadius: 4, pointHoverRadius: 6, tension: 0.15, fill: 'origin' },
                     { label: 'IBS bruto', data: data.projecao.map(r => r.ibs_bruto / 1e9),
-                      backgroundColor: '#1e8449', stack: 'bolo' }
+                      borderColor: '#1e8449', backgroundColor: 'rgba(30,132,73,0.10)',
+                      borderWidth: 2.5, pointRadius: 4, pointHoverRadius: 6, tension: 0.15, fill: 'origin' }
                 ]
             },
             options: {
@@ -713,8 +716,8 @@
                     tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: R$ ${fmtNum(ctx.raw,1)} bi` } }
                 },
                 scales: {
-                    x: { stacked: true, grid: { display: false }, ticks: { color: c.text, font: { size: 11 } } },
-                    y: { stacked: true, grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 }, callback: v => fmtNum(v,0) }, title: { display: true, text: 'R$ bi', color: c.text, font: { size: 10 } } }
+                    x: { grid: { display: false }, ticks: { color: c.text, font: { size: 11 } } },
+                    y: { grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 }, callback: v => fmtNum(v,0) }, title: { display: true, text: 'R$ bi', color: c.text, font: { size: 10 } } }
                 }
             }
         });
