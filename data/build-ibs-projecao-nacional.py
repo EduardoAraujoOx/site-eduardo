@@ -3,13 +3,15 @@
 Estudo 11: série histórica e projeção do IBS total (Brasil), 2029-2033.
 
 Combina:
-  - o "bolo" histórico ICMS+ISS (SICONFI): DCA Anexo I-C (dca_icms_por_uf,
-    dca_iss_por_uf) para 2019-2025; RREO Anexo 3 (icms_por_uf) para
-    2015-2018, ano em que a série DCA não está coletada neste repositório
-    — validado como equivalente ao DCA (diff < 1%, ver
-    data/build-reconciliacao-dca-rreo.py). ISS usa DCA em toda a série
-    2015-2025 (RREO tem cobertura municipal ruim, ver
-    data/collect-iss-dca-2015-2018.py);
+  - o "bolo" histórico ICMS+ISS (SICONFI), todo em base DCA Anexo I-C:
+    dca_icms_por_uf (2019-2025, já coletado) mesclado com
+    data/icms-dca-2013-2018.json (2013-2018, ver
+    data/collect-icms-dca-2013-2018.py — substitui o RREO Anexo 3 usado
+    antes para 2015-2018, validado como equivalente, diff < 1%, ver
+    data/build-reconciliacao-dca-rreo.py); dca_iss_por_uf (2015-2025)
+    mesclado com data/iss-dca-2013-2014.json (2013-2014, ver
+    data/collect-iss-dca-2013-2014.py). SICONFI não tem cobertura DCA
+    antes de 2013;
   - a trajetória de PIB nominal 2026-2033, construída a partir do PIB
     nominal de 2025 (BCB/SGS) composto pelas medianas do Boletim Focus
     (2026-2030) e pelas projeções da IFI/RAF 107 (2031-2033), ver
@@ -50,7 +52,7 @@ from pathlib import Path
 DATA_DIR = Path(__file__).parent
 OUTPUT = DATA_DIR / "ibs-projecao-nacional.json"
 
-ANO_HIST_INICIO = 2015
+ANO_HIST_INICIO = 2013
 ANO_HIST_FIM = 2025
 ANO_BASE = 2025
 
@@ -70,20 +72,20 @@ def main():
     ref = json.load(open(DATA_DIR / "reforma-tributaria.json"))
     macro = json.load(open(DATA_DIR / "macro-parametros.json"))
 
-    dca_icms_por_uf = ref["dca_icms_por_uf"]
-    icms_por_uf_rreo = ref["icms_por_uf"]
-    dca_iss_por_uf = ref["dca_iss_por_uf"]
+    dca_icms_por_uf = dict(ref["dca_icms_por_uf"])
+    dca_iss_por_uf = dict(ref["dca_iss_por_uf"])
 
-    # ── Bolo histórico ICMS+ISS, 2015-2025 ──
+    icms_dca_2013_2018 = json.load(open(DATA_DIR / "icms-dca-2013-2018.json"))
+    iss_dca_2013_2014 = json.load(open(DATA_DIR / "iss-dca-2013-2014.json"))["dca_iss_por_uf"]
+    dca_icms_por_uf.update(icms_dca_2013_2018)
+    dca_iss_por_uf.update(iss_dca_2013_2014)
+
+    # ── Bolo histórico ICMS+ISS, 2013-2025 (100% base DCA Anexo I-C) ──
     historico = []
     for y in range(ANO_HIST_INICIO, ANO_HIST_FIM + 1):
         ys = str(y)
-        if ys in dca_icms_por_uf:
-            icms = sum(dca_icms_por_uf[ys].values())
-            fonte_icms = "DCA"
-        else:
-            icms = sum(icms_por_uf_rreo.get(uf, {}).get(ys, 0) or 0 for uf in icms_por_uf_rreo)
-            fonte_icms = "RREO"
+        icms = sum(dca_icms_por_uf[ys].values())
+        fonte_icms = "DCA"
         iss = sum(dca_iss_por_uf.get(ys, {}).values())
         bolo = icms + iss
         pib = macro["pib_nominal_historico"][ys]
@@ -179,15 +181,14 @@ def main():
 
     output = {
         "_meta": {
-            "descricao": "Estudo 11: série histórica (2015-2025) e projeção do IBS total (Brasil), 2029-2033.",
+            "descricao": "Estudo 11: série histórica (2013-2025) e projeção do IBS total (Brasil), 2029-2033.",
             "ano_base": ANO_BASE,
             "razao_bolo_pib_base": round(razao_referencia * 100, 4),
             "receita_referencia": receita_referencia,
             "faixa_historica_razao_2019_2025": faixa_historica,
             "fontes": {
-                "icms_2015_2018": "SICONFI/STN, RREO Anexo 3 (ICMSLiquidoExcetoTransferenciasEFUNDEB), validado contra DCA (diff < 1%)",
-                "icms_2019_2025": "SICONFI/STN, DCA Anexo I-C",
-                "iss_2015_2025": "SICONFI/STN, DCA Anexo I-C, todos os municípios",
+                "icms_2013_2025": "SICONFI/STN, DCA Anexo I-C, todos os estados e o DF",
+                "iss_2013_2025": "SICONFI/STN, DCA Anexo I-C, todos os municípios",
                 "pib_ipca_historico": "BCB/SGS séries 1207 (PIB nominal) e 433 (IPCA)",
                 "projecao_macro_2026_2030": "BCB, Boletim Focus (Sistema de Expectativas de Mercado), mediana",
                 "projecao_macro_2031_2033": "IFI (Instituição Fiscal Independente, Senado Federal), RAF 107, 18/dez/2025",
@@ -196,7 +197,7 @@ def main():
             },
             "data_pesquisa_focus": macro["_meta"]["data_pesquisa_focus"],
             "premissas": [
-                "Razão bolo (ICMS+ISS) / PIB nominal mantida constante na média de 2024-2026 a partir de 2027. Esse período de referência não é uma escolha de modelagem: é o que os arts. 361 a 365 da LC 214/2025 (redação da LC 227/2026) usam para calibrar a alíquota de referência do IBS em cada ano da transição (2029-2033) — a média da razão entre a receita de referência (ICMS+ISS) e o PIB nos anos de 2024 a 2026, fixada por resolução do Senado Federal.",
+                "Razão bolo (ICMS+ISS) / PIB nominal mantida constante na média de 2024-2026 a partir de 2027. Esse período de referência não é uma escolha de modelagem: é o que os arts. 361 a 365 da LC 214/2025 (redação da LC 227/2026) usam para calibrar a alíquota de referência do IBS em cada ano da transição (2029-2033), a média da razão entre a receita de referência (ICMS+ISS) e o PIB nos anos de 2024 a 2026, fixada por resolução do Senado Federal.",
                 "O art. 130, §4º e §5º, do ADCT define um mecanismo distinto: o 'Teto de Referência', que compara a média 2029-2033 de CBS+Imposto Seletivo+IBS com a média 2012-2021 de IPI+ICMS+ISS+PIS/Cofins+IOF-seguros. Não altera os valores projetados aqui: mesmo se ultrapassado, a redução da alíquota só vale a partir de 2035 (fora desta projeção), e o teto exige dados federais (CBS, PIS/Cofins, IPI, IOF-seguros) fora do escopo deste estudo, que modela só o lado subnacional (ICMS/ISS/IBS).",
                 "2026 ainda não fechou: a razão desse ano usa o bolo do RREO (últimos 12 meses até abr/2026) sobre o PIB projetado pelo Focus, uma estimativa preliminar a ser substituída pelo dado fechado (DCA) quando disponível.",
                 "IBS bruto = bolo projetado × sa (fração já migrada para IBS no ADCT). Não inclui a dedução do CGIBS nem a retenção do Seguro-Receita (ADCT art. 132), que incidem sobre a parcela distribuída aos entes pelo critério destino, não sobre o total nacional arrecadado.",
