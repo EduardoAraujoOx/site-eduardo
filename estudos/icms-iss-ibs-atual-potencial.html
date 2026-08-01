@@ -169,9 +169,11 @@
             efetivamente arrecadada com ICMS e ISS em 2022, comparada ao que cada UF arrecadaria sob a
             adoção plena do IBS, e o coeficiente de participação nacional derivado dessa estimativa. A
             Tabela 3, independente da primeira fonte, usa a população de cada UF como proxy do critério de
-            destino. As Tabelas 4 e 5 aproximam como esses coeficientes se dividiriam entre as esferas
-            estadual e municipal, a partir da proporção observada em 2025 entre ICMS e ISS (SICONFI/STN). Ao
-            final, um gráfico de dispersão mede o quanto as duas fontes concordam entre si.
+            destino. As Tabelas 4 e 5 dividem esses coeficientes entre as esferas estadual e municipal
+            usando o saldo municipal líquido publicado na própria Tabela 2 de Gobetti e Monteiro &mdash;
+            dado real dos autores, não uma proporção uniforme estimada por nós &mdash;, com o saldo
+            estadual obtido por resíduo. Ao final, um gráfico de dispersão mede o quanto as duas fontes
+            concordam entre si.
         </p>
         <p class="study-meta">
             Dados: Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária:
@@ -412,13 +414,15 @@
         <span class="section-label">Tabela 4 &middot; Repartição do coeficiente potencial entre estado e municípios (%)</span>
         <div class="callout">
             A Tabela 2 estima o coeficiente potencial de cada UF como um todo (estado mais municípios), pois
-            é assim que Gobetti e Monteiro publicam a Tabela 1 original, sem segregação por esfera. Para
-            aproximar como esse coeficiente se dividiria entre as duas esferas, esta tabela aplica a cada UF
-            a mesma proporção observada em sua arrecadação de ICMS e ISS em 2025 (SICONFI/STN): 75% do ICMS
-            bruto fica com o estado (art. 158, IV, CF/88), e os 25% restantes (cota-parte) somados ao ISS
-            integral ficam com os municípios. O coeficiente potencial estadual e o municipal de cada UF são
-            o coeficiente potencial total multiplicado pela participação de cada esfera nesse total de 2025 e,
-            por construção, sempre somam de volta o valor total da Tabela 2.
+            é assim que Gobetti e Monteiro publicam a Tabela 1 original, sem segregação por esfera. Esta
+            tabela separa as duas esferas usando o saldo municipal líquido publicado na Tabela 2 do próprio
+            paper dos autores (ganhos e perdas dos municípios de cada UF na migração ao IBS) &mdash; dado
+            real, não uma proporção estimada por nós; o saldo estadual é obtido por resíduo, subtraindo esse
+            saldo municipal do saldo total da UF (Tabela 1). Como o paper não publica a divisão do valor
+            pré-reforma (2022) entre as esferas, essa parte ainda é estimada a partir da cota-parte
+            constitucional do ICMS (75% estado / 25% município, art. 158, IV, CF/88) e do ISS de 2022
+            (SICONFI/STN) &mdash; ver coluna "Peso do estado". O coeficiente potencial estadual e o
+            municipal de cada UF, por construção, sempre somam de volta o valor total da Tabela 2.
         </div>
         <div class="table-wrap">
             <table class="data-table" id="table-esfera">
@@ -426,7 +430,7 @@
                     <tr>
                         <th class="th-left">UF</th>
                         <th>Coeficiente potencial total, Tabela 2 (%)</th>
-                        <th>Peso do estado no ICMS+ISS 2025 (%)</th>
+                        <th>Peso do estado na base pré-reforma (2022, estimado) (%)</th>
                         <th>Coeficiente potencial estadual (%)</th>
                         <th>Coeficiente potencial municipal (%)</th>
                     </tr>
@@ -449,28 +453,28 @@
             totais normalizados separadamente por esfera. Por isso, a soma dos coeficientes estaduais de
             todas as UFs não fecha em 100% sozinha &mdash; fica em torno do peso do ICMS líquido no total
             nacional, cerca de 64% &mdash;, o mesmo valendo para os municípios (cerca de 36%); apenas a soma
-            de estado e município de todas as UFs fecha em 100%. O "regime do IBS projetado" aplica a cada
-            UF, nas duas esferas, a mesma variação relativa calculada na Tabela 2 a partir da estimativa de
-            Gobetti e Monteiro para a adoção plena do IBS sob o princípio do destino, e então normaliza o
-            conjunto (estado mais município de todas as UFs) por um único fator de escala, preservando a
-            mesma regra de soma da sistemática vigente.
+            de estado e município de todas as UFs fecha em 100%. O "regime do IBS projetado" aplica, a cada
+            UF, a variação relativa da Tabela 4 &mdash; <strong>diferenciada por esfera</strong>, não mais a
+            mesma variação para as duas: o saldo municipal vem do dado real da Tabela 2 de Gobetti e
+            Monteiro, e o estadual do resíduo &mdash; e então normaliza o conjunto (estado mais município de
+            todas as UFs) por um único fator de escala, preservando a mesma regra de soma da sistemática
+            vigente.
         </div>
         <div class="table-wrap">
             <table class="data-table" id="table-origem-destino">
                 <thead>
                     <tr>
                         <th class="th-left" rowspan="2">UF</th>
-                        <th rowspan="2">Variação relativa aplicada, Tabela 2 (%)</th>
-                        <th colspan="2">Esfera estadual</th>
-                        <th class="col-divider" colspan="2">Esfera municipal</th>
+                        <th colspan="3">Esfera estadual</th>
+                        <th class="col-divider" colspan="3">Esfera municipal</th>
                     </tr>
                     <tr>
-                        <th>Sistemática vigente, 2025 (%)</th><th>Regime do IBS projetado (%)</th>
-                        <th class="col-divider">Sistemática vigente, 2025 (%)</th><th>Regime do IBS projetado (%)</th>
+                        <th>Variação relativa (%)</th><th>Sistemática vigente, 2025 (%)</th><th>Regime do IBS projetado (%)</th>
+                        <th class="col-divider">Variação relativa (%)</th><th>Sistemática vigente, 2025 (%)</th><th>Regime do IBS projetado (%)</th>
                     </tr>
                 </thead>
                 <tbody id="tbody-origem-destino">
-                    <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                    <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
                 </tbody>
                 <tfoot id="tfoot-origem-destino"></tfoot>
             </table>
@@ -490,7 +494,7 @@
             arrecadação num horizonte de transição &mdash; não uma projeção literal do cronograma de 50 anos
             de transição do ICMS/ISS para o IBS previsto na EC 132/2023 (art. 128 do ADCT), que muda o peso
             relativo de origem e destino ano a ano até 2078. No Espírito Santo, por exemplo, o coeficiente
-            estadual é de 1,6405% no cenário neutro, 1,1507% no de destino pleno, e 1,3956% no intermediário.
+            estadual é de 1,6405% no cenário neutro, 1,0836% no de destino pleno, e 1,3620% no intermediário.
         </div>
         <div class="table-wrap">
             <table class="data-table" id="table-cenarios">
@@ -519,8 +523,8 @@
             <p>3. Base de dados das Tabelas 1 e 2: ICMS e ISS efetivamente arrecadados em 2022 (soma de estado e municípios de cada UF). IBS: estimativa dos autores para o cenário de migração integral e imediata ao princípio do destino, sem regra de transição, construída a partir de proxy de consumo por UF, na mesma linhagem metodológica de Orair e Gobetti (2019), com receita de referência atualizada para 2022.</p>
             <p>4. Tabela 3 desta página: elaboração própria. Coeficiente atual: idêntico ao coeficiente atual da Tabela 2 desta página (nota 2), derivado da Tabela 1 de Gobetti e Monteiro, base 2022 &mdash; não uma medida independente de 2025, para isolar o efeito de qual proxy de destino se usa em cada tabela. População 2025: IBGE, Estimativas de População (referência 01/07/2025), mesma base do <a href="/estudos/icms-iss-participacao-vs-populacao.html">Estudo 05</a>, usada aqui como proxy alternativa do critério de destino/consumo. Variação (p.p.) = participação populacional &minus; coeficiente atual; variação relativa (%) = variação (p.p.) / coeficiente atual &times; 100, na mesma lógica da Tabela 2.</p>
             <p>5. Gráfico de dispersão (Tabela 2 vs. Tabela 3): cruza, para cada UF, o coeficiente potencial da Tabela 2 (eixo X, receita pós-reforma da UF / receita pós-reforma nacional &times; 100) com a participação populacional da Tabela 3 (eixo Y). A correlação é o coeficiente de Pearson entre as duas séries; a segunda estatística é a proporção de UFs cuja participação populacional fica a menos de 1 ponto percentual do coeficiente potencial estimado por Gobetti e Monteiro. Ambas são calculadas no navegador, a partir dos mesmos dados publicados nas Tabelas 1 a 3.</p>
-            <p>6. Tabela 4 desta página: elaboração própria, sem qualquer dado adicional além do publicado por Gobetti e Monteiro (Tabela 2) e do SICONFI/STN, DCA Anexo I-C 2025 (mesma base da Tabela 3). Peso do estado = 0,75 &times; ICMS bruto da UF / (ICMS bruto da UF + ISS da UF); peso do município = (0,25 &times; ICMS bruto da UF + ISS da UF) / (ICMS bruto da UF + ISS da UF), refletindo a cota-parte constitucional de 25% do ICMS aos municípios (art. 158, IV, CF/88). Coeficiente potencial estadual = coeficiente potencial da Tabela 2 &times; peso do estado; coeficiente potencial municipal = coeficiente potencial da Tabela 2 &times; peso do município. É uma aproximação: pressupõe que a proporção estado/município de cada UF em 2025 se mantém após a migração para o IBS, algo que a própria reforma pode alterar (por exemplo, ao mudar os critérios de rateio da cota-parte municipal).</p>
-            <p>7. Tabela 5 desta página: elaboração própria, na mesma lógica de denominador único do Coeficiente de Participação de Transição (CPT) usado no <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a>. Total nacional agregado (SICONFI/STN, 2025) = soma do ICMS bruto de todas as UFs + soma do ISS de todos os municípios. Coeficiente estadual sob a sistemática vigente = ICMS líquido da UF (75% do ICMS bruto) / total nacional agregado &times; 100; coeficiente municipal sob a sistemática vigente = receita municipal da UF (25% do ICMS bruto + ISS) / total nacional agregado &times; 100 &mdash; ambos contra o mesmo denominador, e não contra totais separados por esfera; por isso cada um, somado entre as 27 UFs, não fecha em 100% sozinho. Coeficiente projetado sob o regime do IBS (bruto) = coeficiente sob a sistemática vigente &times; (1 + variação relativa da Tabela 2); em seguida, todos os coeficientes projetados (estaduais e municipais, das 27 UFs) são normalizados por um único fator de escala (100 dividido pela soma de todos eles) para que o conjunto volte a somar 100%. Pressupõe que a variação relativa estimada por Gobetti e Monteiro para a UF como um todo se aplica igualmente às duas esferas, o que é uma simplificação: a reforma pode afetar estado e município de forma desigual dentro da mesma UF.</p>
+            <p>6. Tabela 4 desta página: elaboração própria. O saldo municipal líquido (ganho ou perda de cada UF na migração ao IBS) vem diretamente da Tabela 2 do paper de Gobetti e Monteiro &mdash; dado publicado pelos autores, não estimado por nós; o saldo estadual é o resíduo entre o saldo total da UF (Tabela 1) e esse saldo municipal. Como o paper não publica a divisão do valor <em>pré-reforma</em> (2022) entre as esferas, essa parte é estimada a partir do ICMS bruto e do ISS efetivamente arrecadados por cada UF em 2022 (SICONFI/STN, DCA Anexo I-C), aplicando a cota-parte constitucional do ICMS (75% estado / 25% município, art. 158, IV, CF/88) &mdash; coluna "Peso do estado". Essa proporção é aplicada apenas sobre o valor pré-reforma; o valor pós-reforma de cada esfera soma esse pré-reforma estimado ao saldo real (estadual ou municipal) descrito acima, preservando exatamente o total da Tabela 2. Ver <code>data/gobetti-2023-perdas-ganhos-uf.json</code>, campo <code>tabela4_esferas</code>.</p>
+            <p>7. Tabela 5 desta página: elaboração própria, na mesma lógica de denominador único do Coeficiente de Participação de Transição (CPT) usado no <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a>. Total nacional agregado (SICONFI/STN, 2025) = soma do ICMS bruto de todas as UFs + soma do ISS de todos os municípios. Coeficiente estadual sob a sistemática vigente = ICMS líquido da UF (75% do ICMS bruto) / total nacional agregado &times; 100; coeficiente municipal sob a sistemática vigente = receita municipal da UF (25% do ICMS bruto + ISS) / total nacional agregado &times; 100 &mdash; ambos contra o mesmo denominador, e não contra totais separados por esfera; por isso cada um, somado entre as 27 UFs, não fecha em 100% sozinho. Coeficiente projetado sob o regime do IBS (bruto) = coeficiente sob a sistemática vigente &times; (1 + variação relativa da Tabela 4) &mdash; <strong>a variação relativa agora é diferenciada por esfera</strong> (coluna própria para estado e para município na Tabela 4), não mais uma única variação aplicada às duas, como em versões anteriores desta página; em seguida, todos os coeficientes projetados (estaduais e municipais, das 27 UFs) são normalizados por um único fator de escala (100 dividido pela soma de todos eles) para que o conjunto volte a somar 100%.</p>
             <p>8. Tabela 6 desta página: elaboração própria, a partir das mesmas colunas da Tabela 5 (nota 7), sem qualquer dado adicional. Cenário neutro = coluna "Sistemática vigente" da Tabela 5; cenário de destino pleno = coluna "Regime do IBS projetado" da Tabela 5; cenário intermediário = média aritmética simples entre os dois, (neutro + pleno) &divide; 2, por esfera. É um ponto de referência estilizado para estimativas de arrecadação, não uma projeção do cronograma legal de transição de 50 anos entre ICMS/ISS e IBS (EC 132/2023, art. 128 do ADCT).</p>
             <p>9. Colunas percentuais das Tabelas 2, 3, 5 e 6 são exibidas com quatro casas decimais, e não uma ou duas como nas demais tabelas desta página, porque alimentam estimativas de arrecadação em estudos subsequentes, nos quais o arredondamento em casas decimais menores se acumularia UF a UF. Os totais de cada coluna são recalculados a partir dos valores individuais de cada UF com essa mesma precisão, não arredondados a partir de um total previamente publicado.</p>
         </div>
@@ -663,29 +667,24 @@
         </tr>`;
     }
 
-    // Repartição estado/município do coeficiente potencial: usa a cota-parte constitucional do ICMS
-    // (75% estado / 25% município, art. 158, IV, CF/88) aplicada ao ICMS bruto e ISS de 2025 (SICONFI/STN)
-    // para estimar, em cada UF, que fração do coeficiente potencial (Tabela 2) cabe a cada esfera.
-    function buildTable4(data, popData) {
-        const totalPos = data.tabela1_static.total_pos;
-        const coefPotByUf = {};
-        data.tabela1_static.ufs.forEach(u => {
-            coefPotByUf[u.uf] = (u.pos / totalPos) * 100;
-        });
+    // Repartição estado/município do coeficiente potencial: usa o saldo municipal líquido publicado na
+    // Tabela 2 do paper de Gobetti e Monteiro (dado real, não estimado) para separar o efeito da migração
+    // ao IBS por esfera; o estado é o resíduo entre o saldo total (Tabela 1) e esse saldo municipal. A
+    // repartição do valor pré-reforma (2022) entre as esferas é estimada a partir da cota-parte
+    // constitucional do ICMS (75% estado / 25% município, art. 158, IV, CF/88) e do ISS de 2022
+    // (SICONFI/STN), pois o paper não publica essa divisão. Ver tabela4_esferas em
+    // gobetti-2023-perdas-ganhos-uf.json.
+    function buildTable4(data) {
+        const t4 = data.tabela4_esferas;
+        const totalPos = t4.total.estado_pos + t4.total.muni_pos;
 
-        const rows = popData.ufs.map(u => {
-            const coefPot     = coefPotByUf[u.uf];
-            const icmsLiquido = u.icms * 0.75;
-            const cotaParte   = u.icms * 0.25;
-            const pesoEstado  = icmsLiquido / (u.icms + u.iss);
-            const pesoMun     = (cotaParte + u.iss) / (u.icms + u.iss);
-            return {
-                uf: u.uf, nome: NOMES_UF[u.uf], coefPot,
-                pesoEstado: pesoEstado * 100,
-                coefEstado: coefPot * pesoEstado,
-                coefMun: coefPot * pesoMun
-            };
-        }).sort((a, b) => a.uf.localeCompare(b.uf));
+        const rows = t4.ufs.map(u => ({
+            uf: u.uf, nome: NOMES_UF[u.uf],
+            coefPot: (u.estado_pos + u.muni_pos) / totalPos * 100,
+            pesoEstado: u.share_estimada_estado * 100,
+            coefEstado: u.estado_pos / totalPos * 100,
+            coefMun: u.muni_pos / totalPos * 100
+        })).sort((a, b) => a.uf.localeCompare(b.uf));
 
         const tbody = document.getElementById('tbody-esfera');
         tbody.innerHTML = rows.map(r => {
@@ -699,11 +698,9 @@
             </tr>`;
         }).join('');
 
-        const totalIcms = popData.ufs.reduce((s, u) => s + u.icms, 0);
-        const totalIss   = popData.ufs.reduce((s, u) => s + u.iss, 0);
-        const pesoEstadoBR = (totalIcms * 0.75) / (totalIcms + totalIss) * 100;
+        const pesoEstadoBR   = t4.total.estado_pre / (t4.total.estado_pre + t4.total.muni_pre) * 100;
         const somaCoefEstado = rows.reduce((s, r) => s + r.coefEstado, 0);
-        const somaCoefMun     = rows.reduce((s, r) => s + r.coefMun, 0);
+        const somaCoefMun    = rows.reduce((s, r) => s + r.coefMun, 0);
         document.getElementById('tfoot-esfera').innerHTML = `<tr>
             <td class="td-uf"><strong>Total</strong> <small>27 UFs</small></td>
             <td>100,00</td>
@@ -718,30 +715,28 @@
     // coeficientes estadual e municipal — não dois totais normalizados separadamente por esfera. Por isso,
     // a soma dos coeficientes estaduais de todas as UFs não fecha em 100% sozinha (fica perto do peso
     // nacional do ICMS líquido no total ICMS+ISS); apenas a soma de estado + município de todas as UFs
-    // fecha em 100%. O regime do IBS projetado (aqui chamado de "pleno") aplica a variação relativa da
-    // Tabela 2 sobre esses coeficientes e normaliza pelo mesmo critério (um único fator de escala),
-    // preservando essa mesma regra. Compartilhado pelas Tabelas 5 e 6.
+    // fecha em 100%. O regime do IBS projetado (aqui chamado de "pleno") aplica, a cada esfera, a variação
+    // relativa diferenciada da Tabela 4 (saldo municipal real do Gobetti-Monteiro; estadual por resíduo) e
+    // normaliza pelo mesmo critério (um único fator de escala), preservando essa mesma regra. Compartilhado
+    // pelas Tabelas 5 e 6.
     function computeEsferaScenarios(data, popData) {
-        const totalPre = data.tabela1_static.total_pre;
-        const totalPos = data.tabela1_static.total_pos;
-        const varRelByUf = {};
-        data.tabela1_static.ufs.forEach(u => {
-            const coefAtual = (u.pre / totalPre) * 100;
-            const coefPot   = (u.pos / totalPos) * 100;
-            varRelByUf[u.uf] = (coefPot - coefAtual) / coefAtual;
-        });
+        const t4ByUf = {};
+        data.tabela4_esferas.ufs.forEach(u => { t4ByUf[u.uf] = u; });
 
         const totalBR = popData.ufs.reduce((s, u) => s + u.icms + u.iss, 0);
 
         const rows = popData.ufs.map(u => {
             const neutroEstado    = (u.icms * 0.75) / totalBR * 100;
             const neutroMunicipio = (u.icms * 0.25 + u.iss) / totalBR * 100;
-            const varRel = varRelByUf[u.uf];
+            const t4 = t4ByUf[u.uf] || {};
+            const varRelEstado    = (t4.estado_pct ?? 0) / 100;
+            const varRelMunicipio = (t4.muni_pct ?? 0) / 100;
             return {
-                uf: u.uf, nome: NOMES_UF[u.uf], varRel: varRel * 100,
+                uf: u.uf, nome: NOMES_UF[u.uf],
+                varRelEstado: varRelEstado * 100, varRelMunicipio: varRelMunicipio * 100,
                 neutroEstado, neutroMunicipio,
-                brutoEstado: neutroEstado * (1 + varRel),
-                brutoMunicipio: neutroMunicipio * (1 + varRel)
+                brutoEstado: neutroEstado * (1 + varRelEstado),
+                brutoMunicipio: neutroMunicipio * (1 + varRelMunicipio)
             };
         });
 
@@ -749,7 +744,8 @@
         const escala = 100 / somaBruto;
 
         return rows.map(r => ({
-            uf: r.uf, nome: r.nome, varRel: r.varRel,
+            uf: r.uf, nome: r.nome,
+            varRelEstado: r.varRelEstado, varRelMunicipio: r.varRelMunicipio,
             neutroEstado: r.neutroEstado,
             neutroMunicipio: r.neutroMunicipio,
             plenoEstado:    r.brutoEstado    * escala,
@@ -763,10 +759,11 @@
             const isES = r.uf === 'ES';
             return `<tr${isES ? ' class="row-es"' : ''}>
                 <td class="td-uf">${r.uf} <small>${r.nome}</small></td>
-                <td class="${clsPct(r.varRel)}">${fmtPct(r.varRel, 4)}</td>
+                <td class="${clsPct(r.varRelEstado)}">${fmtPct(r.varRelEstado, 4)}</td>
                 <td>${fmtNum(r.neutroEstado, 4)}</td>
                 <td>${fmtNum(r.plenoEstado, 4)}</td>
-                <td class="col-divider">${fmtNum(r.neutroMunicipio, 4)}</td>
+                <td class="col-divider ${clsPct(r.varRelMunicipio)}">${fmtPct(r.varRelMunicipio, 4)}</td>
+                <td>${fmtNum(r.neutroMunicipio, 4)}</td>
                 <td>${fmtNum(r.plenoMunicipio, 4)}</td>
             </tr>`;
         }).join('');
@@ -780,7 +777,8 @@
             <td>&mdash;</td>
             <td>${fmtNum(somaNeutroEstado, 4)}</td>
             <td>${fmtNum(somaPlenoEstado, 4)}</td>
-            <td class="col-divider">${fmtNum(somaNeutroMunicipio, 4)}</td>
+            <td class="col-divider">&mdash;</td>
+            <td>${fmtNum(somaNeutroMunicipio, 4)}</td>
             <td>${fmtNum(somaPlenoMunicipio, 4)}</td>
         </tr>`;
     }
@@ -968,7 +966,7 @@
             buildCoefTable(data);
             buildPopTable(data, popData);
             buildCorrelationChart(data, popData);
-            buildTable4(data, popData);
+            buildTable4(data);
             const scenarios = computeEsferaScenarios(data, popData);
             buildTable5(scenarios);
             buildTable6(scenarios);
