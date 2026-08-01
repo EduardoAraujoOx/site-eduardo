@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quanto será o IBS total do Brasil em 2029–2033? Série histórica e projeção | Eduardo Reis Araújo</title>
+    <meta name="description" content="Série histórica de ICMS+ISS no Brasil (2015-2025, SICONFI) e projeção do IBS total nacional para 2029-2033, usando crescimento do PIB e inflação de fontes oficiais (Boletim Focus/BCB e IFI) e o cronograma constitucional de transição.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/ibs-projecao-nacional.html">
+
+    <meta property="og:title" content="Quanto será o IBS total do Brasil em 2029–2033?">
+    <meta property="og:description" content="Série histórica de ICMS+ISS (2015-2025) e projeção do IBS total nacional para 2029-2033, com PIB e inflação de fontes oficiais.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/ibs-projecao-nacional.html">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '\\(', right: '\\)', display: false}
+            ],
+            throwOnError: false
+        })"></script>
+
+    <link rel="stylesheet" href="/css/notas.css?v=4">
+    <link rel="stylesheet" href="/css/search.css">
+
+    <style>
+        /* ── Page layout ── */
+        .study-hero { max-width: 980px; margin: 0 auto; padding: 3rem 2rem 1.5rem; }
+        .study-hero-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+        .study-hero-tag { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); padding: 0.25rem 0.6rem; border-radius: 4px; }
+        .study-hero-topic { font-family: var(--sans); font-size: 0.73rem; color: var(--text-secondary); background: var(--border-light); padding: 0.2rem 0.55rem; border-radius: 4px; }
+        .study-hero-date { font-family: var(--sans); font-size: 0.73rem; color: var(--text-muted); margin-left: auto; }
+        .study-hero h1 { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 0.8rem; }
+        .study-hero .lead { font-family: var(--serif); font-size: 1rem; line-height: 1.72; color: var(--text-secondary); max-width: 760px; }
+        .study-hero .study-meta { font-family: var(--sans); font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem; }
+
+        .study-content { max-width: 980px; margin: 0 auto; padding: 0 2rem 5rem; }
+
+        /* ── Status bar ── */
+        .status-bar { display: flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #999; flex-shrink: 0; transition: background 0.3s; }
+
+        :root { --pos: #1e8449; --pos-bg: #f0faf4; --neg: #b03a2e; --neg-bg: #fdf3f2; }
+        @media (prefers-color-scheme: dark) { :root { --pos: #4caf76; --pos-bg: #192a20; --neg: #e05a4f; --neg-bg: #2a1a1a; } }
+        :root[data-theme="light"] { --pos:#1e8449; --pos-bg:#f0faf4; --neg:#b03a2e; --neg-bg:#fdf3f2; }
+        :root[data-theme="dark"]  { --pos:#4caf76; --pos-bg:#192a20; --neg:#e05a4f; --neg-bg:#2a1a1a; }
+
+        /* ── Resposta em destaque ── */
+        .resposta-box { border: 2px solid var(--pos); background: var(--pos-bg); border-radius: 10px; padding: 1.5rem 1.75rem; margin: 0.5rem 0 2rem; }
+        .resposta-label { font-family: var(--mono); font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.09em; color: var(--pos); margin-bottom: 0.6rem; }
+        .resposta-numero { font-family: var(--display); font-size: clamp(1.5rem, 3.6vw, 2.1rem); font-weight: 700; color: var(--text); line-height: 1.2; margin-bottom: 0.4rem; }
+        .resposta-sub { font-family: var(--sans); font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+
+        /* ── Metodologia ── */
+        .methodology { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 2rem; background: var(--surface); }
+        .methodology summary { padding: 0.9rem 1.25rem; cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; list-style: none; display: flex; align-items: center; gap: 0.5rem; }
+        .methodology summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; }
+        .methodology[open] summary::before { transform: rotate(90deg); }
+        .methodology-body { padding: 0 1.5rem 1.5rem; }
+        .meto-note { font-family: var(--serif); font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; margin-top: 0.5rem; }
+        .meto-note:first-child { margin-top: 0; }
+        .meto-section-title { font-family: var(--sans); font-size: 0.85rem; font-weight: 600; color: var(--text); margin: 1.25rem 0 0.4rem; }
+
+        .meto-formula-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.25rem 1.5rem;
+            margin: 0.75rem 0 1.25rem;
+            overflow-x: auto;
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            color: var(--text);
+        }
+
+        .lei-box { border-left: 3px solid var(--accent); background: var(--bg); border-radius: 0 6px 6px 0; padding: 1rem 1.25rem; margin: 0.75rem 0 1.25rem; }
+        .lei-box p { font-family: var(--serif); font-size: 0.81rem; line-height: 1.75; color: var(--text); margin: 0; }
+        .lei-box .lei-artigo { font-weight: 700; }
+
+        .param-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; margin: 0.75rem 0; }
+        .param-table th { background: var(--bg); padding: 0.45rem 0.75rem; text-align: left; border-bottom: 2px solid var(--border); font-family: var(--sans); font-weight: 600; font-size: 0.8rem; }
+        .param-table td { padding: 0.4rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: top; font-family: var(--sans); font-size: 0.82rem; color: var(--text-secondary); }
+        .param-table td:first-child { font-family: var(--mono); font-weight: 600; font-size: 0.84rem; color: var(--text); white-space: nowrap; }
+        .param-table tr:last-child td { border-bottom: none; }
+
+        /* ── Label de seção ── */
+        .section-label { display: block; font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 0.5rem; }
+
+        /* ── Tabela de dados ── */
+        .table-wrap { overflow-x: auto; margin-bottom: 1.5rem; }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
+        .data-table th { background: var(--bg); border: 1px solid var(--border); padding: 0.42rem 0.6rem; text-align: center; font-family: var(--sans); font-weight: 600; font-size: 0.76rem; white-space: nowrap; color: var(--text); }
+        .data-table th.th-left { text-align: left; }
+        .data-table td { border: 1px solid var(--border); padding: 0.36rem 0.6rem; text-align: right; font-family: var(--mono); font-size: 0.78rem; white-space: nowrap; color: var(--text); }
+        .data-table td.td-left { text-align: left; font-family: var(--sans); font-weight: 600; }
+        .data-table td.td-ref { color: var(--text-muted); }
+        .data-table tr.row-resposta { background: var(--pos-bg); }
+        .data-table tr.row-resposta td { color: var(--text); font-weight: 600; }
+        .data-table tr:hover:not(.row-resposta) { background: var(--accent-bg); }
+
+        /* ── Gráficos ── */
+        .chart-panel { background: var(--border-light); border-radius: 8px; padding: 1.25rem 1.25rem 1.5rem; margin: 0 0 1.5rem; }
+        .chart-panel-title { font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin: 0 0 1rem; }
+        .chart-legend-note { font-family: var(--sans); font-size: 0.75rem; color: var(--text-muted); margin: 0.75rem 0 0; display: flex; gap: 1.25rem; flex-wrap: wrap; }
+        .legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 0.35rem; vertical-align: middle; }
+        .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+
+        /* ── Callout ── */
+        .callout { background: var(--accent-bg); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 0.75rem 1rem; font-family: var(--serif); font-size: 0.84rem; color: var(--text); margin: 1rem 0; line-height: 1.6; }
+
+        /* ── Notas de rodapé ── */
+        .footnotes { margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+        .footnotes p { font-family: var(--serif); font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.4rem; }
+        .footnotes a { color: var(--accent); text-decoration: none; }
+        .footnotes a:hover { text-decoration: underline; }
+
+        @media (max-width: 780px) {
+            .chart-grid-2 { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+            .study-hero { padding: 2rem 1.25rem 1rem; }
+            .study-content { padding: 0 1.25rem 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <div class="header-right-group">
+                <nav class="header-nav">
+                    <a href="/#publicacoes">Publicações</a>
+                    <a href="/ensino/">Ensino</a>
+                    <a href="/estudos/" class="active">Estudos</a>
+                    <a href="/#contato">Contato</a>
+                </nav>
+                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="study-hero">
+        <div class="study-hero-meta">
+            <span class="study-hero-tag">Estudo 11</span>
+            <span class="study-hero-topic">Reforma Tributária</span>
+            <span class="study-hero-topic">IBS</span>
+            <span class="study-hero-topic">PIB e Inflação</span>
+            <span class="study-hero-date">Julho de 2026</span>
+        </div>
+        <h1>Quanto será o IBS total do Brasil entre 2029 e 2033? Série histórica e projeção</h1>
+        <p class="lead">
+            Estende a série de ICMS+ISS do Brasil (SICONFI) para 2015&ndash;2025 e projeta o
+            valor total do IBS entre 2029 e 2033, usando crescimento do PIB e inflação de fontes
+            oficiais (Boletim Focus do Banco Central para 2026&ndash;2030 e a Instituição Fiscal
+            Independente, IFI, vinculada ao Senado Federal, para 2031&ndash;2033), combinados com o
+            cronograma constitucional de transição do ICMS/ISS para o IBS (ADCT arts. 128 e 131,
+            LC 227/2026).
+        </p>
+        <p class="study-meta">
+            Dados: SICONFI/STN, DCA Anexo&nbsp;I-C e RREO Anexo&nbsp;3, 2015&ndash;2025 &bull;
+            BCB/SGS (PIB nominal, IPCA) &bull; Boletim Focus (BCB) &bull; IFI, RAF&nbsp;107 (dez/2025) &bull;
+            Base legal: ADCT arts.&nbsp;128 e 131; LC&nbsp;214/2025 arts.&nbsp;361&ndash;365; LC&nbsp;227/2026
+        </p>
+    </div>
+
+    <div class="study-content">
+
+        <div id="status-main" class="status-bar">
+            <span class="status-dot"></span>
+            <span>Carregando dados...</span>
+        </div>
+
+        <div class="resposta-box">
+            <div class="resposta-label">A resposta</div>
+            <div class="resposta-numero" id="resposta-numero">Calculando...</div>
+            <div class="resposta-sub" id="resposta-sub"></div>
+        </div>
+
+        <span class="section-label">De onde viemos, para onde vamos: arrecadação de ICMS+ISS, 2015&ndash;2033</span>
+        <div class="callout">
+            A linha cheia é o que já foi arrecadado (dado observado, SICONFI). A linha tracejada,
+            a partir de 2026, é a projeção: aplica a carga tributária de 2025 ao PIB projetado para
+            cada ano, como explicado na metodologia abaixo.
+        </div>
+        <div class="chart-panel">
+            <p class="chart-panel-title">Arrecadação total de ICMS+ISS, Brasil (R$ bi, nominal)</p>
+            <canvas id="chart-trajetoria" style="max-height:360px"></canvas>
+            <div class="chart-legend-note">
+                <span><span class="legend-dot" style="background:#1A3A5C"></span>Realizado (2015&ndash;2025)</span>
+                <span><span class="legend-dot" style="background:#2a78d6"></span>Projetado (2026&ndash;2033)</span>
+            </div>
+        </div>
+
+        <details class="methodology">
+            <summary>Metodologia: como se chega da série histórica à projeção do IBS</summary>
+            <div class="methodology-body">
+                <p class="meto-note">
+                    A pergunta tem três partes que precisam de fontes diferentes: (1) qual é a
+                    arrecadação de ICMS e ISS hoje e como ela variou no passado; (2) como essa
+                    arrecadação deve crescer no futuro, o que depende de PIB e inflação; e (3) como
+                    o cronograma constitucional da reforma converte parte dessa arrecadação, ano a
+                    ano, de ICMS/ISS em IBS.
+                </p>
+
+                <p class="meto-section-title">1. A arrecadação histórica: ICMS + ISS, Brasil, 2015&ndash;2025</p>
+                <p class="meto-note">
+                    O ICMS considerado é líquido de FUNDEB e bruto de cota-parte municipal, ou seja,
+                    a arrecadação estadual total antes da partilha constitucional de 25% com os
+                    municípios (art. 158, IV, CF/88). Os valores vêm do SICONFI: DCA Anexo I-C para
+                    2019&ndash;2025 e RREO Anexo 3 para 2015&ndash;2018, período em que a série do DCA
+                    ainda não havia sido coletada neste site. As duas fontes convergem bem: o ICMS
+                    bruto do RREO bate com o do DCA com diferença menor que 1%, checado estado a
+                    estado. Já o ISS usa o DCA Anexo I-C em toda a série de 2015 a 2025, somando os
+                    cerca de 5.570 municípios do Brasil. O RREO foi descartado para o ISS porque tem
+                    cobertura municipal muito baixa: menos de 15% dos municípios respondem a essa
+                    conta específica nesse demonstrativo.
+                </p>
+
+                <p class="meto-section-title">2. Como essa arrecadação cresce a partir de hoje: o período de referência que a lei manda usar</p>
+                <p class="meto-note">
+                    A projeção parte de uma premissa central: a arrecadação de ICMS e ISS, medida
+                    como proporção do PIB (a "carga tributária"), se mantém constante a partir de
+                    2027 no nível médio dos anos de 2024, 2025 e 2026. Não é uma média escolhida
+                    por conveniência: é o período de três anos que a própria lei da reforma manda
+                    usar para calibrar a alíquota do IBS, ano a ano, durante toda a transição.
+                </p>
+                <div class="lei-box">
+                    <p>
+                        <span class="lei-artigo">LC 214/2025, arts. 361 a 365</span> (redação dada
+                        pela LC 227/2026): para cada ano da transição (2029 a 2033), a alíquota de
+                        referência do IBS estadual e municipal é fixada de forma a equivaler à
+                        <em>média da razão entre a receita de referência (ICMS+ISS) e o PIB nos anos
+                        de 2024 a 2026</em>. O mesmo período de três anos vale para todos os cinco
+                        anos da transição: a lei não recalcula essa base a cada ano.
+                    </p>
+                </div>
+                <p class="meto-note">
+                    Isso substitui a leitura mais simples de que bastaria olhar para o último ano
+                    fechado (2025). A tabela abaixo mostra os três anos que compõem a média e o
+                    resultado usado na projeção:
+                </p>
+                <table class="param-table">
+                    <thead><tr><th>Ano</th><th>ICMS+ISS (R$ bi)</th><th>PIB (R$ bi)</th><th>Razão</th><th>Situação</th></tr></thead>
+                    <tbody id="tbody-referencia"></tbody>
+                </table>
+                <p class="meto-note">
+                    Existe um segundo mecanismo na lei, com um período histórico bem diferente, que
+                    é fácil de confundir com este: o <strong>Teto de Referência</strong> do art. 130,
+                    &sect;4&ordm; e &sect;5&ordm;, do ADCT, calculado sobre a média de 2012 a 2021.
+                    Esse teto não fixa a alíquota ano a ano; ele funciona como uma trava de
+                    segurança que só entra em ação se a receita observada superar esse teto
+                    histórico mais amplo &mdash; no caso do IBS, se a média de 2029&ndash;2033 da
+                    soma CBS&#43;Imposto Seletivo&#43;IBS superar a média 2012&ndash;2021 da soma
+                    IPI&#43;ICMS&#43;ISS&#43;PIS/Cofins&#43;IOF-seguros. Isso não muda os valores
+                    projetados aqui para 2029&ndash;2033, por dois motivos: (i) mesmo que o teto
+                    seja ultrapassado, a redução da alíquota só entra em vigor em 2035, dois anos
+                    depois do fim desta projeção; e (ii) o teto compara o sistema novo e o antigo
+                    <em>por inteiro</em>, somando o lado federal (CBS, Imposto Seletivo, PIS/Cofins,
+                    IPI, IOF-seguros) ao lado subnacional (IBS, ICMS, ISS), enquanto esta página
+                    modela só o lado subnacional. Simular esse teto exigiria dados federais fora do
+                    escopo deste estudo. Por isso o teto de 2012&ndash;2021 é citado aqui como
+                    contexto, mas não entra na conta abaixo.
+                </p>
+                <p class="meto-note">
+                    2026 ainda não fechou: a razão desse ano usa o ICMS+ISS do RREO (últimos 12
+                    meses até abril de 2026) sobre o PIB projetado pelo Boletim Focus para o ano,
+                    uma estimativa preliminar que será atualizada para o dado fechado (DCA) assim
+                    que estiver disponível.
+                </p>
+                <p class="meto-note">
+                    Na prática, isso significa que o legislador não fixou de antemão qual será a
+                    alíquota do IBS: ela será calculada pelo Senado para que a arrecadação
+                    resultante mantenha, em cada ano da transição, a mesma proporção do PIB medida
+                    nessa base histórica de três anos. É esse mecanismo legal, e não uma hipótese
+                    técnica externa, que justifica projetar a arrecadação de ICMS e ISS como uma
+                    fração fixa do PIB projetado. A seção "Incerteza da premissa", ao final desta
+                    metodologia, mostra o quanto essa proporção de fato oscilou entre 2019 e 2025,
+                    como medida adicional da margem de erro possível.
+                </p>
+                <p class="meto-note">
+                    O crescimento do PIB nominal, ano a ano, vem de duas fontes oficiais diferentes,
+                    porque nenhuma cobre sozinha todo o intervalo até 2033:
+                </p>
+                <table class="param-table">
+                    <thead><tr><th>Período</th><th>Fonte</th><th>O que fornece</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>2026&ndash;2030</td>
+                            <td>Boletim Focus (BCB)</td>
+                            <td>Mediana semanal das projeções de mercado para crescimento real do PIB e IPCA, coletada via API do Sistema de Expectativas de Mercado do Banco Central. É o horizonte mais longo que o Focus cobre (&asymp;5 anos à frente).</td>
+                        </tr>
+                        <tr>
+                            <td>2031&ndash;2033</td>
+                            <td>IFI, RAF 107 (18/dez/2025)</td>
+                            <td>A Instituição Fiscal Independente, órgão técnico vinculado ao Senado Federal, projeta PIB real de 2,2% a.a. para 2027&ndash;2035 e IPCA convergindo suavemente a 3,0% (centro da meta contínua). Como a IFI não detalha ano a ano dentro desse intervalo, os valores de 2,2% e 3,0% são usados como constantes para os três anos fora do horizonte do Focus; trata-se de uma simplificação explícita.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="meto-note">
+                    O PIB nominal de cada ano é obtido compondo o PIB nominal de 2025 (BCB/SGS) pelo
+                    crescimento real e pela inflação projetados: <code>PIB<sub>t</sub> = PIB<sub>t-1</sub>
+                    &times; (1 + g<sub>t</sub>) &times; (1 + IPCA<sub>t</sub>)</code>. A arrecadação
+                    projetada de cada ano aplica a razão de referência (a média 2024&ndash;2026 da
+                    Seção 2) a esse PIB: <code>Receita<sub>t</sub> = Razão<sub>2024&ndash;2026</sub>
+                    &times; PIB<sub>t</sub></code>.
+                </p>
+
+                <p class="meto-section-title">3. Da arrecadação de ICMS e ISS para o IBS: o cronograma da transição</p>
+                <div class="lei-box">
+                    <p><span class="lei-artigo">ADCT art. 128</span>: a alíquota do ICMS e do ISS será reduzida a cada ano, de 2029 a 2032, à razão de um décimo, e extinta em 2033. <span class="lei-artigo">ADCT art. 131</span>: no mesmo período, o IBS é implementado progressivamente, complementando a fração já extinta do ICMS/ISS.</p>
+                </div>
+                <p class="meto-note">
+                    Traduzindo o cronograma legal em números: a fração da arrecadação ainda cobrada
+                    como ICMS/ISS (\(f_a\)) cai 10 pontos percentuais por ano entre 2029 e 2032, e
+                    zera em 2033; a fração já convertida em IBS (\(s_a=1-f_a\)) sobe na mesma
+                    proporção, até chegar a 100% no último ano da transição.
+                </p>
+                <div class="meto-formula-box">
+                    ICMS+ISS residual(a) = Receita<sub>projetada</sub>(a) &times; f<sub>a</sub><br>
+                    IBS bruto(a) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= Receita<sub>projetada</sub>(a) &times; s<sub>a</sub><br>
+                    Total(a) = ICMS+ISS residual(a) + IBS bruto(a) = Receita<sub>projetada</sub>(a)
+                </div>
+                <table class="param-table">
+                    <thead><tr><th>Ano</th><th>\(f_a\) (ICMS+ISS residual)</th><th>\(s_a\) (IBS)</th></tr></thead>
+                    <tbody id="tbody-adct-params"></tbody>
+                </table>
+                <p class="meto-note">
+                    Esta página trabalha só no agregado nacional, então não entra nos coeficientes de
+                    redistribuição entre estados e municípios (\(\varphi^{neutro}\), \(\varphi^{CPT}\),
+                    \(\varphi^{dest}\)) nem na fração \(\alpha_a\) que separa o critério histórico do
+                    critério destino: esses parâmetros determinam <em>como</em> a arrecadação é
+                    dividida entre os entes federativos, não o seu <em>tamanho total</em>. No agregado
+                    nacional, o valor total de IBS depende só de \(f_a\)/\(s_a\).
+                </p>
+
+                <p class="meto-section-title">O que "IBS bruto" não inclui</p>
+                <p class="meto-note">
+                    O valor de IBS aqui é a arrecadação total, antes da dedução para o Comitê Gestor
+                    do IBS (CGIBS, art. 51 LC 227/2026) e da retenção do Seguro-Receita (ADCT art.
+                    132). Esses dois mecanismos incidem sobre a parcela distribuída aos entes pelo
+                    critério destino, não sobre o total nacional arrecadado, e por isso não são
+                    descontados aqui.
+                </p>
+
+                <p class="meto-section-title">Incerteza da premissa de carga tributária constante</p>
+                <p class="meto-note" id="faixa-historica-note"></p>
+            </div>
+        </details>
+
+        <span class="section-label">Série histórica: ICMS + ISS, Brasil (2015&ndash;2025)</span>
+        <div class="chart-grid-2">
+            <div class="chart-panel">
+                <p class="chart-panel-title">ICMS + ISS, Brasil (R$ bi, 2015&ndash;2025)</p>
+                <canvas id="chart-bolo-nominal-real" style="max-height:300px"></canvas>
+                <div class="chart-legend-note">
+                    <span><span class="legend-dot" style="background:#2a78d6"></span>Nominal</span>
+                    <span><span class="legend-dot" style="background:#7aa8d6"></span>Real (reais de 2025, IPCA)</span>
+                </div>
+            </div>
+            <div class="chart-panel">
+                <p class="chart-panel-title">ICMS + ISS como % do PIB (2015&ndash;2025)</p>
+                <canvas id="chart-bolo-pib" style="max-height:300px"></canvas>
+                <div class="chart-legend-note">
+                    <span><span class="legend-dot" style="background:#1A3A5C"></span>ICMS+ISS / PIB</span>
+                </div>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="th-left">Ano</th>
+                        <th>ICMS (R$ bi)</th>
+                        <th>ISS (R$ bi)</th>
+                        <th>ICMS+ISS nominal (R$ bi)</th>
+                        <th>ICMS+ISS real, 2025 (R$ bi)</th>
+                        <th>PIB nominal (R$ bi)</th>
+                        <th>ICMS+ISS / PIB</th>
+                        <th>Fonte ICMS</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-historico">
+                    <tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <span class="section-label">Premissas macroeconômicas usadas na projeção, 2026&ndash;2033</span>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="th-left">Ano</th>
+                        <th>Crescimento real do PIB</th>
+                        <th>IPCA</th>
+                        <th>Crescimento nominal do PIB</th>
+                        <th>PIB nominal projetado (R$ bi)</th>
+                        <th class="th-left">Fonte</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-macro">
+                    <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <span class="section-label">A transição: ICMS+ISS residual encolhendo, IBS crescendo (R$ bi, nominal)</span>
+        <div class="callout">
+            A arrecadação total (linha "Total") cresce com o PIB nominal projetado. O que muda de
+            composição, ano a ano, é a fração que ainda é cobrada como ICMS/ISS e a fração já
+            convertida em IBS, conforme o cronograma do ADCT art. 128.
+        </div>
+        <div class="chart-panel">
+            <p class="chart-panel-title">ICMS+ISS residual vs. IBS bruto, Brasil (R$ bi, nominal)</p>
+            <canvas id="chart-transicao" style="max-height:340px"></canvas>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="th-left">Ano</th>
+                        <th>ICMS+ISS residual (R$ bi)</th>
+                        <th>IBS bruto (R$ bi)</th>
+                        <th>Total = receita projetada (R$ bi)</th>
+                        <th>Carga tributária (% do PIB)</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-projecao">
+                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="callout" style="margin-top:1rem">
+            <strong>Baixe os materiais deste estudo:</strong>
+            <a href="/materiais/Nota-Tecnica-Estudo-11-IBS-Nacional.pdf" download>Nota técnica completa (.pdf)</a>
+            &bull;
+            <a href="/materiais/ibs-projecao-nacional-memoria-calculo.xlsx" download>Planilha com memória de cálculo (.xlsx)</a>
+        </div>
+
+        <div class="footnotes">
+            <p><strong>Fontes e notas metodológicas:</strong></p>
+            <p>1. ICMS 2015-2018: SICONFI/STN, RREO Anexo 3 (conta ICMSLiquidoExcetoTransferenciasEFUNDEB, coluna "TOTAL (últimos 12 meses)", período 6/bimestre nov-dez), todos os 27 estados + DF. ICMS 2019-2025: SICONFI/STN, DCA Anexo I-C. As duas fontes convergem: diferença menor que 1% (ver data/build-reconciliacao-dca-rreo.py).</p>
+            <p>2. ISS 2015-2025: SICONFI/STN, DCA Anexo I-C, soma de todos os municípios brasileiros (coluna "Receitas Brutas Realizadas", conta "Imposto sobre Serviços de Qualquer Natureza, ISSQN", identificada por texto porque o código da conta muda de esquema ao longo dos anos).</p>
+            <p>3. PIB nominal e IPCA: Banco Central do Brasil, SGS, séries 1207 (PIB anual a preços correntes, Contas Nacionais Trimestrais/IBGE) e 433 (IPCA, variação mensal).</p>
+            <p>4. Projeção macroeconômica 2026-2030: Banco Central do Brasil, Sistema de Expectativas de Mercado (Boletim Focus), mediana das respostas, consultada via API Olinda em tempo de geração desta página.</p>
+            <p>5. Projeção macroeconômica 2031-2033: Instituição Fiscal Independente (IFI), vinculada ao Senado Federal, Relatório de Acompanhamento Fiscal (RAF) nº 107, 18 de dezembro de 2025.</p>
+            <p>6. Base legal: EC 132/2023; ADCT art. 128 (cronograma de extinção do ICMS/ISS) e art. 131 (implementação progressiva do IBS); LC 214/2025, arts. 361 a 365, com a redação dada pela LC 227/2026 (alíquota de referência do IBS calibrada pela média da razão receita/PIB em 2024-2026, para cada ano da transição); ADCT art. 130, &sect;4&ordm; e &sect;5&ordm; (Teto de Referência, média 2012-2021 de IPI+ICMS+ISS+PIS/Cofins+IOF-seguros, comparado à média 2029-2033 de CBS+Imposto Seletivo+IBS; se ultrapassado, reduz a alíquota a partir de 2035, fora do horizonte desta projeção, e exige dados federais fora do escopo deste estudo; não usado aqui); LC 227/2026, art. 51 (CGIBS) e ADCT art. 132 (Seguro-Receita).</p>
+            <p>7. Simplificações: (i) a razão ICMS+ISS/PIB (a carga tributária) é mantida constante na média de 2024-2026 a partir de 2027, ou seja, presume-se que a arrecadação cresce sempre na mesma proporção do PIB, sem estimar por métodos estatísticos se ela historicamente cresceu mais rápido ou mais devagar que a economia; (ii) o dado de 2026 usado nessa média é uma estimativa preliminar (RREO, últimos 12 meses até abril de 2026, sobre o PIB projetado pelo Focus), a ser substituída pelo dado fechado (DCA) quando disponível; (iii) o IBS bruto não desconta o CGIBS nem o Seguro-Receita, que incidem sobre a parcela por destino distribuída aos entes, não sobre o total nacional; (iv) para 2031-2033, fora do horizonte do Focus, os parâmetros da IFI são tratados como constantes nos três anos, já que a IFI projeta uma taxa média para 2027-2035, não ano a ano.</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+
+    <script src="/js/search.js"></script>
+    <script>
+    const fmtNum  = (v, d=1) => v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
+    const fmtPct  = (v, d=2) => v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }) + '%';
+    const fmtPctSigned = (v, d=2) => (v >= 0 ? '+' : '') + v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }) + '%';
+
+    async function init() {
+        const statusEl = document.getElementById('status-main');
+        try {
+            const res = await fetch('/data/ibs-projecao-nacional.json?t=' + Date.now());
+            const data = await res.json();
+
+            buildResposta(data);
+            buildAdctTable(data);
+            buildReferenciaTable(data);
+            buildFaixaHistorica(data);
+            buildHistoricoTable(data);
+            buildMacroTable(data);
+            buildProjecaoTable(data);
+            buildChartTrajetoria(data);
+            buildChartNominalReal(data);
+            buildChartPib(data);
+            buildChartTransicao(data);
+
+            statusEl.innerHTML = '<span class="status-dot" style="background:var(--pos)"></span><span>Dados carregados &middot; consulta Focus de ' +
+                new Date(data._meta.data_pesquisa_focus).toLocaleDateString('pt-BR') + '</span>';
+        } catch (e) {
+            console.error(e);
+            statusEl.innerHTML = '<span class="status-dot" style="background:#b03a2e"></span><span>Erro ao carregar dados.</span>';
+        }
+    }
+
+    function buildResposta(data) {
+        const p = data.projecao;
+        const p2033 = p.find(r => r.ano === 2033);
+        const p2029 = p.find(r => r.ano === 2029);
+        document.getElementById('resposta-numero').textContent =
+            `De R$ ${fmtNum(p2029.ibs_bruto / 1e9, 1)} bi em 2029 a R$ ${fmtNum(p2033.ibs_bruto / 1e9, 1)} bi em 2033 (valores nominais)`;
+        document.getElementById('resposta-sub').innerHTML =
+            `O IBS bruto cresce de ${fmtPct(p2029.ibs_bruto / p2029.bolo_projetado * 100, 0)} da arrecadação total em 2029 (início da transição) até 100% em 2033, quando o ICMS e o ISS são extintos (ADCT art. 128). ` +
+            `Em 2033 a arrecadação total projetada (ICMS+ISS+IBS) é de R$ ${fmtNum(p2033.bolo_projetado / 1e9, 1)} bi, equivalente a ${fmtPct(p2033.bolo_pct_pib, 2)} do PIB, a mesma proporção média de 2024&ndash;2026 (LC 214/2025, arts. 361 a 365).`;
+    }
+
+    function buildAdctTable(data) {
+        const tbody = document.getElementById('tbody-adct-params');
+        tbody.innerHTML = data.projecao.map(r => `<tr>
+            <td>${r.ano}</td>
+            <td>${fmtPct(r.fa * 100, 0)}</td>
+            <td>${fmtPct(r.sa * 100, 0)}</td>
+        </tr>`).join('');
+    }
+
+    function buildReferenciaTable(data) {
+        const r = data._meta.receita_referencia;
+        const tbody = document.getElementById('tbody-referencia');
+        tbody.innerHTML = r.anos.map(a => `<tr>
+            <td>${a.ano}</td>
+            <td>${fmtNum(a.bolo / 1e9, 1)}</td>
+            <td>${fmtNum(a.pib / 1e9, 1)}</td>
+            <td>${fmtPct(a.razao_pct, 2)}</td>
+            <td>${a.status}</td>
+        </tr>`).join('') + `<tr style="background:var(--accent-bg);font-weight:600">
+            <td colspan="3">Média 2024&ndash;2026 (usada na projeção)</td>
+            <td colspan="2">${fmtPct(r.razao_media_pct, 2)}</td>
+        </tr>`;
+    }
+
+    function buildFaixaHistorica(data) {
+        const f = data._meta.faixa_historica_razao_2019_2025;
+        const base = data._meta.razao_bolo_pib_base;
+        document.getElementById('faixa-historica-note').innerHTML =
+            `Entre 2019 e 2025, a razão ICMS+ISS/PIB variou de ${fmtPct(f.min, 2)} a ${fmtPct(f.max, 2)}, ` +
+            `uma banda de cerca de ${fmtNum((f.max - f.min), 2)} pontos percentuais em torno do valor usado como base para a projeção (${fmtPct(base, 2)}, a média 2024&ndash;2026 da Seção 2). ` +
+            `Essa banda dá uma ideia da incerteza real da premissa de carga tributária constante: anos de PIB atipicamente forte ou fraco, ou mudanças na composição do consumo, podem deslocar a arrecadação para cima ou para baixo do valor projetado aqui.`;
+    }
+
+    function buildHistoricoTable(data) {
+        document.getElementById('tbody-historico').innerHTML = data.historico.map(r => `<tr>
+            <td class="td-left">${r.ano}</td>
+            <td>${fmtNum(r.icms / 1e9, 1)}</td>
+            <td>${fmtNum(r.iss / 1e9, 1)}</td>
+            <td>${fmtNum(r.bolo_nominal / 1e9, 1)}</td>
+            <td>${fmtNum(r.bolo_real_2025 / 1e9, 1)}</td>
+            <td>${fmtNum(r.pib_nominal / 1e9, 1)}</td>
+            <td>${fmtPct(r.bolo_pct_pib, 2)}</td>
+            <td class="td-ref">${r.fonte_icms}</td>
+        </tr>`).join('');
+    }
+
+    function buildMacroTable(data) {
+        document.getElementById('tbody-macro').innerHTML = data.macro_path.map(r => `<tr>
+            <td class="td-left">${r.ano}</td>
+            <td>${fmtPctSigned(r.pib_real_pct * 100, 2)}</td>
+            <td>${fmtPctSigned(r.ipca_pct * 100, 2)}</td>
+            <td>${fmtPctSigned(r.pib_nominal_pct_crescimento * 100, 2)}</td>
+            <td>${fmtNum(r.pib_nominal / 1e9, 1)}</td>
+            <td class="td-left td-ref">${r.fonte}</td>
+        </tr>`).join('');
+    }
+
+    function buildProjecaoTable(data) {
+        document.getElementById('tbody-projecao').innerHTML = data.projecao.map(r => `<tr class="row-resposta">
+            <td class="td-left">${r.ano}</td>
+            <td>${fmtNum(r.icms_iss_residual / 1e9, 1)}</td>
+            <td>${fmtNum(r.ibs_bruto / 1e9, 1)}</td>
+            <td>${fmtNum(r.bolo_projetado / 1e9, 1)}</td>
+            <td>${fmtPct(r.bolo_pct_pib, 2)}</td>
+        </tr>`).join('');
+    }
+
+    function themeColors() {
+        const css = getComputedStyle(document.documentElement);
+        return {
+            grid: 'rgba(128,128,128,0.15)',
+            text: css.getPropertyValue('--text-muted').trim() || '#9A9A9A'
+        };
+    }
+
+    function buildChartTrajetoria(data) {
+        const el = document.getElementById('chart-trajetoria');
+        if (!el || typeof Chart === 'undefined') return;
+        const c = themeColors();
+        const razao = data._meta.razao_bolo_pib_base / 100;
+
+        // Linha realizada: 2015-2025, dado observado (SICONFI)
+        const pontosRealizado = data.historico.map(r => ({ x: r.ano, y: r.bolo_nominal / 1e9 }));
+
+        // Linha projetada: começa no último ano realizado (2025), para a linha ficar contínua,
+        // e segue com a arrecadação projetada de 2026 a 2033 (carga tributária de 2025 × PIB projetado).
+        const projPorAno = {};
+        data.projecao.forEach(r => { projPorAno[r.ano] = r.bolo_projetado; });
+        const ultimo = data.historico[data.historico.length - 1];
+        const pontosProjetado = [{ x: ultimo.ano, y: ultimo.bolo_nominal / 1e9 }].concat(
+            data.macro_path.map(r => {
+                const valor = projPorAno[r.ano] != null ? projPorAno[r.ano] : razao * r.pib_nominal;
+                return { x: r.ano, y: valor / 1e9 };
+            })
+        );
+
+        new Chart(el, {
+            type: 'line',
+            data: {
+                datasets: [
+                    { label: 'Realizado', data: pontosRealizado,
+                      borderColor: '#1A3A5C', backgroundColor: '#1A3A5C', borderWidth: 2.5, pointRadius: 3, pointHoverRadius: 5, tension: 0.1 },
+                    { label: 'Projetado', data: pontosProjetado,
+                      borderColor: '#2a78d6', backgroundColor: '#2a78d6', borderWidth: 2.5, borderDash: [6, 4], pointRadius: 3, pointHoverRadius: 5, tension: 0.1 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: true, aspectRatio: 2.3,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: c.text, font: { size: 11 } } },
+                    tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: R$ ${fmtNum(ctx.raw.y,1)} bi` } }
+                },
+                scales: {
+                    x: { type: 'linear', grid: { display: false }, ticks: { stepSize: 1, color: c.text, font: { size: 10 } } },
+                    y: { grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 }, callback: v => fmtNum(v,0) }, title: { display: true, text: 'R$ bi', color: c.text, font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    function buildChartNominalReal(data) {
+        const el = document.getElementById('chart-bolo-nominal-real');
+        if (!el || typeof Chart === 'undefined') return;
+        const c = themeColors();
+        const anos = data.historico.map(r => r.ano);
+        new Chart(el, {
+            type: 'line',
+            data: {
+                labels: anos,
+                datasets: [
+                    { label: 'Nominal', data: data.historico.map(r => r.bolo_nominal / 1e9),
+                      borderColor: '#2a78d6', backgroundColor: '#2a78d6', borderWidth: 2.5, pointRadius: 3, pointHoverRadius: 5, tension: 0.15 },
+                    { label: 'Real (reais de 2025)', data: data.historico.map(r => r.bolo_real_2025 / 1e9),
+                      borderColor: '#7aa8d6', backgroundColor: '#7aa8d6', borderWidth: 2, borderDash: [5, 4], pointRadius: 3, pointHoverRadius: 5, tension: 0.15 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: true, aspectRatio: 1.4,
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: R$ ${fmtNum(ctx.raw,1)} bi` } } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: c.text, font: { size: 10 } } },
+                    y: { grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 }, callback: v => fmtNum(v,0) }, title: { display: true, text: 'R$ bi', color: c.text, font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    function buildChartPib(data) {
+        const el = document.getElementById('chart-bolo-pib');
+        if (!el || typeof Chart === 'undefined') return;
+        const c = themeColors();
+        const anos = data.historico.map(r => r.ano);
+        new Chart(el, {
+            type: 'line',
+            data: {
+                labels: anos,
+                datasets: [{ label: 'ICMS+ISS / PIB', data: data.historico.map(r => r.bolo_pct_pib),
+                    borderColor: '#1A3A5C', backgroundColor: 'rgba(26,58,92,0.12)', borderWidth: 2.5, pointRadius: 3, pointHoverRadius: 5, tension: 0.15, fill: true }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: true, aspectRatio: 1.4,
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `${fmtPct(ctx.raw,2)} do PIB` } } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: c.text, font: { size: 10 } } },
+                    y: { grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 }, callback: v => v.toFixed(1) + '%' }, title: { display: true, text: '% do PIB', color: c.text, font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    function buildChartTransicao(data) {
+        const el = document.getElementById('chart-transicao');
+        if (!el || typeof Chart === 'undefined') return;
+        const c = themeColors();
+        const anos = data.projecao.map(r => r.ano);
+        new Chart(el, {
+            type: 'bar',
+            data: {
+                labels: anos,
+                datasets: [
+                    { label: 'ICMS+ISS residual', data: data.projecao.map(r => r.icms_iss_residual / 1e9),
+                      backgroundColor: '#b03a2e', stack: 'bolo' },
+                    { label: 'IBS bruto', data: data.projecao.map(r => r.ibs_bruto / 1e9),
+                      backgroundColor: '#1e8449', stack: 'bolo' }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: true, aspectRatio: 2.2,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: c.text, font: { size: 11 } } },
+                    tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: R$ ${fmtNum(ctx.raw,1)} bi` } }
+                },
+                scales: {
+                    x: { stacked: true, grid: { display: false }, ticks: { color: c.text, font: { size: 11 } } },
+                    y: { stacked: true, grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 }, callback: v => fmtNum(v,0) }, title: { display: true, text: 'R$ bi', color: c.text, font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    init();
+    </script>
+</body>
+</html>
