@@ -426,10 +426,15 @@ HTML = f"""<!DOCTYPE html>
     confundir com este: o <strong>Teto de Referência</strong> do art. 130, &sect;4&ordm; e
     &sect;5&ordm;, do ADCT, calculado sobre a média de 2012 a 2021. Esse teto não fixa a alíquota
     ano a ano; funciona como uma trava de segurança que só entra em ação se a receita observada
-    superar esse teto histórico mais amplo, em 2027&ndash;2028 (para a União) ou na média de
-    2029&ndash;2033 (para o total dos entes subnacionais), obrigando uma redução posterior da
-    alíquota. Como esta nota técnica projeta a arrecadação ano a ano e não verifica esse gatilho
-    de segurança, o teto de 2012&ndash;2021 não é usado na conta acima.
+    superar esse teto histórico mais amplo: no caso do IBS, se a média de 2029&ndash;2033 da soma
+    CBS+Imposto Seletivo+IBS superar a média 2012&ndash;2021 da soma
+    IPI+ICMS+ISS+PIS/Cofins+IOF-seguros. Isso não altera os valores projetados aqui para
+    2029&ndash;2033, por dois motivos: (i) mesmo que o teto seja ultrapassado, a redução da
+    alíquota só entra em vigor em 2035, dois anos depois do fim desta projeção; e (ii) o teto
+    compara o sistema novo e o antigo por inteiro, somando o lado federal (CBS, Imposto Seletivo,
+    PIS/Cofins, IPI, IOF-seguros) ao lado subnacional (IBS, ICMS, ISS), enquanto esta nota técnica
+    modela só o lado subnacional. Simular esse teto exigiria dados federais fora do escopo deste
+    estudo. Por isso ele é citado aqui como contexto, mas não entra na conta acima.
 </p>
 <p>
     2026 ainda não fechou: a razão desse ano usa o ICMS+ISS do RREO (últimos 12 meses até abril

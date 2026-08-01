@@ -269,11 +269,13 @@ def main():
     razao_cell = "$D$9"
 
     ws5.cell(row=11, column=1,
-             value="O Teto de Referência do art. 130, §4º e §5º, do ADCT usa outro período (média 2012-2021) "
-                   "como salvaguarda, não como base de cálculo ano a ano da alíquota; não é usado nesta planilha.").font = NOTE_FONT
+             value="O Teto de Referência (ADCT art. 130, §4º e §5º) compara a média 2029-2033 de CBS+Imposto "
+                   "Seletivo+IBS com a média 2012-2021 de IPI+ICMS+ISS+PIS/Cofins+IOF-seguros. Não altera os "
+                   "valores desta planilha: mesmo se ultrapassado, a redução só vale a partir de 2035 (fora "
+                   "desta projeção), e exige dados federais fora do escopo deste estudo (só ICMS/ISS/IBS).").font = NOTE_FONT
     ws5.merge_cells(start_row=11, start_column=1, end_row=11, end_column=8)
     ws5.cell(row=11, column=1).alignment = WRAP
-    ws5.row_dimensions[11].height = 30
+    ws5.row_dimensions[11].height = 45
 
     headers5 = ["Ano", "f_a (ICMS+ISS residual)", "s_a (IBS)", "PIB nominal (R$)",
                 "Receita projetada (R$)", "ICMS+ISS residual (R$)", "IBS bruto (R$)", "Carga tributária (% PIB)"]

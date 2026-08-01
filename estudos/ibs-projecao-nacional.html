@@ -268,11 +268,17 @@
                     &sect;4&ordm; e &sect;5&ordm;, do ADCT, calculado sobre a média de 2012 a 2021.
                     Esse teto não fixa a alíquota ano a ano; ele funciona como uma trava de
                     segurança que só entra em ação se a receita observada superar esse teto
-                    histórico mais amplo, em 2027&ndash;2028 (para a União) ou na média de
-                    2029&ndash;2033 (para o total dos entes subnacionais), obrigando uma redução
-                    posterior da alíquota. Como esta página projeta a arrecadação ano a ano e não
-                    verifica esse gatilho de segurança, o teto de 2012&ndash;2021 não é usado na
-                    conta abaixo.
+                    histórico mais amplo &mdash; no caso do IBS, se a média de 2029&ndash;2033 da
+                    soma CBS&#43;Imposto Seletivo&#43;IBS superar a média 2012&ndash;2021 da soma
+                    IPI&#43;ICMS&#43;ISS&#43;PIS/Cofins&#43;IOF-seguros. Isso não muda os valores
+                    projetados aqui para 2029&ndash;2033, por dois motivos: (i) mesmo que o teto
+                    seja ultrapassado, a redução da alíquota só entra em vigor em 2035, dois anos
+                    depois do fim desta projeção; e (ii) o teto compara o sistema novo e o antigo
+                    <em>por inteiro</em>, somando o lado federal (CBS, Imposto Seletivo, PIS/Cofins,
+                    IPI, IOF-seguros) ao lado subnacional (IBS, ICMS, ISS), enquanto esta página
+                    modela só o lado subnacional. Simular esse teto exigiria dados federais fora do
+                    escopo deste estudo. Por isso o teto de 2012&ndash;2021 é citado aqui como
+                    contexto, mas não entra na conta abaixo.
                 </p>
                 <p class="meto-note">
                     2026 ainda não fechou: a razão desse ano usa o ICMS+ISS do RREO (últimos 12
@@ -458,7 +464,7 @@
             <p>3. PIB nominal e IPCA: Banco Central do Brasil, SGS, séries 1207 (PIB anual a preços correntes, Contas Nacionais Trimestrais/IBGE) e 433 (IPCA, variação mensal).</p>
             <p>4. Projeção macroeconômica 2026-2030: Banco Central do Brasil, Sistema de Expectativas de Mercado (Boletim Focus), mediana das respostas, consultada via API Olinda em tempo de geração desta página.</p>
             <p>5. Projeção macroeconômica 2031-2033: Instituição Fiscal Independente (IFI), vinculada ao Senado Federal, Relatório de Acompanhamento Fiscal (RAF) nº 107, 18 de dezembro de 2025.</p>
-            <p>6. Base legal: EC 132/2023; ADCT art. 128 (cronograma de extinção do ICMS/ISS) e art. 131 (implementação progressiva do IBS); LC 214/2025, arts. 361 a 365, com a redação dada pela LC 227/2026 (alíquota de referência do IBS calibrada pela média da razão receita/PIB em 2024-2026, para cada ano da transição); ADCT art. 130, &sect;4&ordm; e &sect;5&ordm; (Teto de Referência, média 2012-2021, mecanismo de salvaguarda distinto, não usado nesta projeção); LC 227/2026, art. 51 (CGIBS) e ADCT art. 132 (Seguro-Receita).</p>
+            <p>6. Base legal: EC 132/2023; ADCT art. 128 (cronograma de extinção do ICMS/ISS) e art. 131 (implementação progressiva do IBS); LC 214/2025, arts. 361 a 365, com a redação dada pela LC 227/2026 (alíquota de referência do IBS calibrada pela média da razão receita/PIB em 2024-2026, para cada ano da transição); ADCT art. 130, &sect;4&ordm; e &sect;5&ordm; (Teto de Referência, média 2012-2021 de IPI+ICMS+ISS+PIS/Cofins+IOF-seguros, comparado à média 2029-2033 de CBS+Imposto Seletivo+IBS; se ultrapassado, reduz a alíquota a partir de 2035, fora do horizonte desta projeção, e exige dados federais fora do escopo deste estudo; não usado aqui); LC 227/2026, art. 51 (CGIBS) e ADCT art. 132 (Seguro-Receita).</p>
             <p>7. Simplificações: (i) a razão ICMS+ISS/PIB (a carga tributária) é mantida constante na média de 2024-2026 a partir de 2027, ou seja, presume-se que a arrecadação cresce sempre na mesma proporção do PIB, sem estimar por métodos estatísticos se ela historicamente cresceu mais rápido ou mais devagar que a economia; (ii) o dado de 2026 usado nessa média é uma estimativa preliminar (RREO, últimos 12 meses até abril de 2026, sobre o PIB projetado pelo Focus), a ser substituída pelo dado fechado (DCA) quando disponível; (iii) o IBS bruto não desconta o CGIBS nem o Seguro-Receita, que incidem sobre a parcela por destino distribuída aos entes, não sobre o total nacional; (iv) para 2031-2033, fora do horizonte do Focus, os parâmetros da IFI são tratados como constantes nos três anos, já que a IFI projeta uma taxa média para 2027-2035, não ano a ano.</p>
         </div>
     </div>
