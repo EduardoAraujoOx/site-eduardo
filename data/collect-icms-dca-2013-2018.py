@@ -69,12 +69,21 @@ def icms_do_ano(id_ente, ano):
     data = fetch(url)
     if not data:
         return None
+    # A conta ICMS aparece em pelo menos dois níveis da árvore contábil do
+    # DCA: um agregado ("Impostos sobre a Produção e a Circulação" /
+    # "..., Circulação de Mercadorias e Serviços") e a linha específica do
+    # ICMS logo abaixo, com o mesmo valor (ou quase). Casar por "icms" ou
+    # "circula" pega os dois níveis e soma em dobro. A frase "relativas à
+    # circulação" só aparece na linha específica do ICMS (definição
+    # constitucional, art. 155, II, CF), em todos os formatos observados
+    # (2013-2014 abreviado "Op. Relativas à Circulação", 2019+ por extenso
+    # "Operações Relativas à Circulação"), nunca no agregado.
     total = 0.0
     achou = False
     for it in data.get("items", []):
         conta = (it.get("conta") or "").lower()
         coluna = it.get("coluna") or ""
-        if "icms" not in conta and "circula" not in conta:
+        if "relativas à circulação" not in conta and "relativas a circulacao" not in conta:
             continue
         if any(x in conta for x in EXCLUIR):
             continue

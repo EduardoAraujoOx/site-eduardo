@@ -6,7 +6,7 @@ data/ibs-projecao-nacional.json e data/macro-parametros.json.
 
 Saída: materiais/ibs-projecao-nacional-memoria-calculo.xlsx, com abas:
   - Síntese: pergunta, resposta e fontes
-  - Série histórica 2015-2025: ICMS, ISS, arrecadação total, PIB, %PIB (dados de entrada)
+  - Série histórica 2013-2025: ICMS, ISS, arrecadação total, PIB, %PIB (dados de entrada)
   - Premissas macro 2026-2033: PIB real, IPCA, fonte (dados de entrada)
   - PIB projetado: fórmulas que compõem o PIB nominal ano a ano
   - Projeção IBS 2029-2033: fórmulas que aplicam o cronograma ADCT
@@ -91,7 +91,7 @@ def main():
     ws = wb.active
     ws.title = "Síntese"
     title_block(ws, "Estudo 11: IBS total do Brasil, 2029-2033",
-                "Série histórica (2015-2025) e projeção com PIB e inflação oficiais, memória de cálculo")
+                "Série histórica (2013-2025) e projeção com PIB e inflação oficiais, memória de cálculo")
 
     p2029 = next(r for r in PROJ["projecao"] if r["ano"] == 2029)
     p2033 = next(r for r in PROJ["projecao"] if r["ano"] == 2033)
@@ -105,11 +105,11 @@ def main():
         ("Premissa central", "A arrecadação de ICMS e ISS, como proporção do PIB (a carga tributária), é mantida constante no nível de 2025 a partir de 2026: ela cresce sempre no mesmo ritmo da economia, nem mais nem menos rápido. É o próprio desenho legal da transição para o IBS (art. 130, caput e §3º, IV, do ADCT: o Senado fixa a alíquota de referência do IBS para manter a Receita-Base dos Entes Subnacionais como proporção do PIB)."),
         ("Fonte do PIB e inflação, 2026-2030", "Boletim Focus (Banco Central do Brasil), mediana das projeções de mercado, consultado via API do Sistema de Expectativas de Mercado."),
         ("Fonte do PIB e inflação, 2031-2033", "IFI, Instituição Fiscal Independente (Senado Federal), Relatório de Acompanhamento Fiscal (RAF) nº 107, 18/dez/2025: PIB real 2,2% a.a. (2027-2035), IPCA convergindo a 3,0% (centro da meta contínua)."),
-        ("Fonte do ICMS", "SICONFI/STN, RREO Anexo 3 (2015-2018) e DCA Anexo I-C (2019-2025)."),
-        ("Fonte do ISS", "SICONFI/STN, DCA Anexo I-C, todos os municípios brasileiros (2015-2025)."),
+        ("Fonte do ICMS", "SICONFI/STN, DCA Anexo I-C (2013-2025), comparado com o RREO Anexo 3 para 2015-2018 (diferença < 1,3%)."),
+        ("Fonte do ISS", "SICONFI/STN, DCA Anexo I-C, todos os municípios brasileiros (2013-2025)."),
         ("Base legal da transição", "ADCT arts. 128, 130 e 131 (EC 132/2023); LC 227/2026, art. 51 (CGIBS); ADCT art. 132 (Seguro-Receita)."),
         ("Cronograma f_a/s_a", "Fração remanescente de ICMS/ISS (f_a) e fração já convertida em IBS (s_a=1-f_a) a cada ano da transição, conforme ADCT arts. 128 e 131."),
-        ("O que este arquivo mostra", "Aba 'Série histórica': dados de entrada SICONFI 2015-2025. Aba 'Premissas macro': dados de entrada Focus/IFI 2026-2033. Aba 'PIB projetado': fórmulas que compõem o PIB nominal ano a ano. Aba 'Projeção IBS': fórmulas que aplicam a carga tributária constante e o cronograma ADCT. Mude qualquer premissa nas abas de entrada (em azul) e a projeção recalcula."),
+        ("O que este arquivo mostra", "Aba 'Série histórica': dados de entrada SICONFI 2013-2025. Aba 'Premissas macro': dados de entrada Focus/IFI 2026-2033. Aba 'PIB projetado': fórmulas que compõem o PIB nominal ano a ano. Aba 'Projeção IBS': fórmulas que aplicam a carga tributária constante e o cronograma ADCT. Mude qualquer premissa nas abas de entrada (em azul) e a projeção recalcula."),
         ("Gerado em", date.today().isoformat()),
         ("Página do estudo", "https://www.eduardoreisaraujo.com.br/estudos/ibs-projecao-nacional.html"),
     ]
@@ -125,9 +125,9 @@ def main():
     for rr in range(4, r):
         ws.row_dimensions[rr].height = 30
 
-    # ── Aba 2: Série histórica 2015-2025 (dados de entrada) ──
-    ws2 = wb.create_sheet("Série histórica 2015-2025")
-    title_block(ws2, "ICMS + ISS, Brasil: série histórica 2015-2025",
+    # ── Aba 2: Série histórica 2013-2025 (dados de entrada) ──
+    ws2 = wb.create_sheet("Série histórica 2013-2025")
+    title_block(ws2, "ICMS + ISS, Brasil: série histórica 2013-2025",
                 "Dados de entrada (células em azul), SICONFI/STN")
     headers = ["Ano", "ICMS (R$)", "ISS (R$)", "ICMS+ISS nominal (R$)", "ICMS+ISS real, 2025 (R$)",
                "PIB nominal (R$)", "ICMS+ISS / PIB", "Fonte ICMS"]
@@ -153,8 +153,9 @@ def main():
     hist_end_row = hist_start_row + len(PROJ["historico"]) - 1
     note_row = hist_end_row + 2
     ws2.cell(row=note_row, column=1,
-             value="ICMS 2015-2018: SICONFI/STN, RREO Anexo 3 (conta ICMSLiquidoExcetoTransferenciasEFUNDEB, coluna \"TOTAL últimos 12 meses\"). "
-                   "ICMS 2019-2025 e ISS 2015-2025: SICONFI/STN, DCA Anexo I-C. Fontes RREO e DCA convergem para o ICMS (diferença < 1%).").font = NOTE_FONT
+             value="ICMS e ISS 2013-2025: SICONFI/STN, DCA Anexo I-C, todos os estados e municípios. O SICONFI não publica o DCA "
+                   "antes de 2013. Para 2015-2018, o ICMS do DCA foi comparado com o RREO Anexo 3 (conta ICMSLiquidoExcetoTransferenciasEFUNDEB, "
+                   "coluna \"TOTAL últimos 12 meses\"): diferença < 1,3% em todos os anos.").font = NOTE_FONT
     ws2.merge_cells(start_row=note_row, start_column=1, end_row=note_row, end_column=8)
     ws2.cell(row=note_row, column=1).alignment = WRAP
     ws2.row_dimensions[note_row].height = 40
@@ -238,13 +239,13 @@ def main():
     headers_ref = ["Ano", "ICMS+ISS (R$)", "PIB (R$)", "Razão", "Situação"]
     write_header_row(ws5, 5, headers_ref, widths=[8, 20, 14, 20, 20, 22, 20, 14])
     ws5.cell(row=6, column=1, value=2024).font = FORMULA_FONT
-    ws5.cell(row=6, column=2, value=f"='Série histórica 2015-2025'!D{row2024}").font = FORMULA_FONT
-    ws5.cell(row=6, column=3, value=f"='Série histórica 2015-2025'!F{row2024}").font = FORMULA_FONT
+    ws5.cell(row=6, column=2, value=f"='Série histórica 2013-2025'!D{row2024}").font = FORMULA_FONT
+    ws5.cell(row=6, column=3, value=f"='Série histórica 2013-2025'!F{row2024}").font = FORMULA_FONT
     ws5.cell(row=6, column=4, value="=B6/C6").font = FORMULA_FONT
     ws5.cell(row=6, column=5, value="fechado (DCA)").font = BODY_FONT
     ws5.cell(row=7, column=1, value=2025).font = FORMULA_FONT
-    ws5.cell(row=7, column=2, value=f"='Série histórica 2015-2025'!D{row2025}").font = FORMULA_FONT
-    ws5.cell(row=7, column=3, value=f"='Série histórica 2015-2025'!F{row2025}").font = FORMULA_FONT
+    ws5.cell(row=7, column=2, value=f"='Série histórica 2013-2025'!D{row2025}").font = FORMULA_FONT
+    ws5.cell(row=7, column=3, value=f"='Série histórica 2013-2025'!F{row2025}").font = FORMULA_FONT
     ws5.cell(row=7, column=4, value="=B7/C7").font = FORMULA_FONT
     ws5.cell(row=7, column=5, value="fechado (DCA)").font = BODY_FONT
     ws5.cell(row=8, column=1, value=2026).font = INPUT_FONT

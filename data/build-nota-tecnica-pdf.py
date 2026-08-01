@@ -54,7 +54,7 @@ def trajetoria_chart_data_uri():
     ]
 
     fig, ax = plt.subplots(figsize=(7.0, 2.9), dpi=150)
-    ax.plot(anos_real, valores_real, color="#1A3A5C", linewidth=2.2, marker="o", markersize=3.5, label="Realizado (2015–2025)")
+    ax.plot(anos_real, valores_real, color="#1A3A5C", linewidth=2.2, marker="o", markersize=3.5, label="Realizado (2013–2025)")
     ax.plot(anos_proj, valores_proj, color="#2a78d6", linewidth=2.2, linestyle=(0, (5, 3)), marker="o", markersize=3.5, label="Projetado (2026–2033)")
 
     ax.set_ylabel("R$ bi", fontsize=9)
@@ -309,7 +309,7 @@ HTML = f"""<!DOCTYPE html>
     <h1>Série histórica e projeção do IBS total do Brasil, 2029&ndash;2033</h1>
     <p class="subtitle">
         Estimativa do valor total do IBS nacional durante o quinquênio de transição da Reforma
-        Tributária, a partir da série histórica de ICMS e ISS (SICONFI, 2015&ndash;2025) e de
+        Tributária, a partir da série histórica de ICMS e ISS (SICONFI, 2013&ndash;2025) e de
         projeções oficiais de crescimento do PIB e inflação.
     </p>
     <div class="answer-box">
@@ -351,7 +351,7 @@ HTML = f"""<!DOCTYPE html>
     Seção 4.
 </p>
 <div class="chart-block">
-    <img class="chart-img" src="{trajetoria_chart_data_uri()}" alt="Arrecadação de ICMS+ISS, Brasil: realizado 2015-2025 e projetado 2026-2033">
+    <img class="chart-img" src="{trajetoria_chart_data_uri()}" alt="Arrecadação de ICMS+ISS, Brasil: realizado 2013-2025 e projetado 2026-2033">
     <p class="chart-caption">Arrecadação total de ICMS+ISS, Brasil (R$ bi, nominal). A linha
     tracejada, a partir de 2026, é a projeção descrita na Seção 4.</p>
 </div>
@@ -359,25 +359,29 @@ HTML = f"""<!DOCTYPE html>
 <h2>3. Fontes de dados</h2>
 <h3>3.1 Arrecadação histórica de ICMS e ISS</h3>
 <ul>
-    <li><strong>ICMS, 2015&ndash;2018:</strong> {meta['fontes']['icms_2015_2018']}, coluna
-    "TOTAL (últimos 12 meses)", período 6 (bimestre nov-dez), 27 estados + Distrito Federal.</li>
-    <li><strong>ICMS, 2019&ndash;2025:</strong> {meta['fontes']['icms_2019_2025']}.</li>
-    <li><strong>ISS, 2015&ndash;2025:</strong> {meta['fontes']['iss_2015_2025']} (cerca de 5.570
+    <li><strong>ICMS, 2013&ndash;2025:</strong> {meta['fontes']['icms_2013_2025']}, conta
+    identificada pelo texto da definição constitucional do imposto ("Operações Relativas à
+    Circulação de Mercadorias..."), não pelo código, que muda de esquema ao longo dos anos,
+    excluindo o adicional do Fundo Estadual de Combate à Pobreza, multas e dívida ativa, 27
+    estados + Distrito Federal.</li>
+    <li><strong>ISS, 2013&ndash;2025:</strong> {meta['fontes']['iss_2013_2025']} (cerca de 5.570
     municípios por ano), conta identificada por texto ("Imposto sobre Serviços de Qualquer
     Natureza, ISSQN") porque o código da conta no plano de contas do DCA mudou de esquema mais
-    de uma vez entre 2015 e 2025.</li>
+    de uma vez entre 2013 e 2025.</li>
 </ul>
 <p>
-    As duas fontes de ICMS convergem: o valor bruto do RREO Anexo 3 coincide com o valor bruto do
-    DCA Anexo I-C com diferença inferior a 1%, checado estado a estado. Já a coleta de ISS
-    nacional via RREO Anexo 3 apresentou cobertura muito baixa (menos de 15% dos municípios
-    respondem a essa conta específica) e foi descartada em favor do DCA, que atinge cobertura de
-    90% a 99% dos municípios brasileiros em cada ano.
+    O SICONFI não publica o DCA Anexo I-C para nenhum dos dois tributos antes de 2013. Para
+    2015&ndash;2018, o ICMS do DCA foi comparado com o RREO Anexo 3, outro demonstrativo do
+    SICONFI: a diferença fica sempre abaixo de 1,3%, checado estado a estado, o que confirma que
+    os dois demonstrativos captam a mesma arrecadação. O RREO não é usado para o ISS porque
+    apresenta cobertura municipal muito baixa (menos de 15% dos municípios respondem a essa conta
+    específica nesse demonstrativo); o DCA atinge cobertura de 90% a 99% dos municípios
+    brasileiros em cada ano.
 </p>
 
 <h3>3.2 PIB e inflação</h3>
 <ul>
-    <li><strong>Histórico (2015&ndash;2025):</strong> {meta['fontes']['pib_ipca_historico']}.</li>
+    <li><strong>Histórico (2013&ndash;2025):</strong> {meta['fontes']['pib_ipca_historico']}.</li>
     <li><strong>Projeção 2026&ndash;2030:</strong> {meta['fontes']['projecao_macro_2026_2030']},
     consultado em tempo real via API do Sistema de Expectativas de Mercado do Banco Central
     (data da pesquisa: {meta['data_pesquisa_focus']}).</li>
@@ -389,7 +393,7 @@ HTML = f"""<!DOCTYPE html>
 
 <h2>4. Metodologia</h2>
 
-<h3>4.1 A arrecadação histórica: ICMS + ISS, Brasil, 2015&ndash;2025</h3>
+<h3>4.1 A arrecadação histórica: ICMS + ISS, Brasil, 2013&ndash;2025</h3>
 <table>
     <thead><tr><th class="l">Ano</th><th>ICMS (R$ bi)</th><th>ISS (R$ bi)</th>
     <th>ICMS+ISS nominal (R$ bi)</th><th>ICMS+ISS real, 2025 (R$ bi)</th>
@@ -513,7 +517,7 @@ HTML = f"""<!DOCTYPE html>
     <li>A razão ICMS+ISS/PIB (a carga tributária) é mantida constante na média de 2024-2026 a
     partir de 2027, ou seja, presume-se que a arrecadação cresce sempre na mesma proporção do
     PIB medida nesse período de referência, sem estimar por métodos estatísticos se ela
-    historicamente cresceu mais rápido ou mais devagar que a economia. Com apenas 11 observações
+    historicamente cresceu mais rápido ou mais devagar que a economia. Com apenas 13 observações
     anuais e quebras estruturais conhecidas (pandemia em 2020, choque inflacionário em
     2021&ndash;2022), uma estimativa desse tipo seria pouco robusta. A banda histórica da Seção
     4.2 serve como medida alternativa de incerteza.</li>
@@ -530,7 +534,7 @@ HTML = f"""<!DOCTYPE html>
     simplificação explícita.</li>
     <li>Os valores são nominais (a preços correntes de cada ano), não deflacionados. A coluna
     "ICMS+ISS real, 2025" na tabela histórica (Seção 4.1) mostra o efeito da correção pela
-    inflação apenas para o período já realizado (2015&ndash;2025); a projeção 2026&ndash;2033 não
+    inflação apenas para o período já realizado (2013&ndash;2025); a projeção 2026&ndash;2033 não
     reapresenta essa correção porque a inflação projetada já está embutida na composição do PIB
     nominal.</li>
 </ol>
@@ -555,9 +559,9 @@ HTML = f"""<!DOCTYPE html>
 <div class="footer-note">
     Nota técnica gerada automaticamente a partir de data/ibs-projecao-nacional.json e
     data/macro-parametros.json (repositório do site). Metodologia replicável: scripts de coleta
-    e cálculo disponíveis em data/collect-icms-rreo-2015-2018.py,
-    data/collect-iss-dca-2015-2018.py, data/collect-macro-focus-ifi.py e
-    data/build-ibs-projecao-nacional.py.
+    e cálculo disponíveis em data/collect-icms-dca-2013-2018.py,
+    data/collect-iss-dca-2013-2014.py, data/collect-iss-dca-2015-2018.py,
+    data/collect-macro-focus-ifi.py e data/build-ibs-projecao-nacional.py.
 </div>
 
 </body>
