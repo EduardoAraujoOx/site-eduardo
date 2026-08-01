@@ -27,7 +27,7 @@ from pathlib import Path
 DATA_DIR = Path(__file__).parent
 OUTPUT = DATA_DIR / "macro-parametros.json"
 
-ANO_HIST_INICIO = 2015
+ANO_HIST_INICIO = 2013
 ANO_HIST_FIM = 2025
 ANOS_FOCUS = [2026, 2027, 2028, 2029, 2030]
 ANOS_IFI = [2031, 2032, 2033]

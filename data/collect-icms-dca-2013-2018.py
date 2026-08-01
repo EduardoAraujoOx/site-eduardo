@@ -27,6 +27,16 @@ OUTPUT = Path(__file__).parent / "icms-dca-2013-2018.json"
 
 EXCLUIR = ("multa", "dívida", "divida", "adicional", "fundo estadual", "desoneração", "desoneracao")
 
+# A API do SICONFI retorna uf="BR" para todos os entes estaduais (esfera=E)
+# em /entes -- bug/particularidade da própria API. O código IBGE do estado
+# é confiável, então mapeamos cod_ibge -> sigla UF nós mesmos.
+COD_IBGE_PARA_UF = {
+    11: "RO", 12: "AC", 13: "AM", 14: "RR", 15: "PA", 16: "AP", 17: "TO",
+    21: "MA", 22: "PI", 23: "CE", 24: "RN", 25: "PB", 26: "PE", 27: "AL",
+    28: "SE", 29: "BA", 31: "MG", 32: "ES", 33: "RJ", 35: "SP",
+    41: "PR", 42: "SC", 43: "RS", 50: "MS", 51: "MT", 52: "GO", 53: "DF",
+}
+
 
 def fetch(url, retries=4):
     for attempt in range(retries):
@@ -88,10 +98,11 @@ def main():
         resultado[str(ano)] = {}
         for e in estados:
             done += 1
+            uf = COD_IBGE_PARA_UF.get(e["cod_ibge"], e["uf"])
             val = icms_do_ano(e["cod_ibge"], ano)
             if val is not None:
-                resultado[str(ano)][e["uf"]] = val
-            print(f"\r{done}/{total} — {ano} {e['uf']}: {'R$ %.0f' % val if val else 'N/A'}    ", end="", flush=True)
+                resultado[str(ano)][uf] = val
+            print(f"\r{done}/{total} — {ano} {uf}: {'R$ %.0f' % val if val else 'N/A'}    ", end="", flush=True)
             time.sleep(0.3)
     print()
 
