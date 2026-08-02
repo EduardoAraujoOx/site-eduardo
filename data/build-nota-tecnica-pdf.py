@@ -41,23 +41,33 @@ def trajetoria_chart_data_uri():
 
     historico = PROJ["historico"]
     macro_path = PROJ["macro_path"]
+    projecao = PROJ["projecao"]
     razao = PROJ["_meta"]["razao_bolo_pib_base"] / 100
-    proj_por_ano = {p["ano"]: p["bolo_projetado"] for p in PROJ["projecao"]}
+    proj_por_ano = {p["ano"]: p["bolo_projetado"] for p in projecao}
 
     anos_real = [h["ano"] for h in historico]
     valores_real = [h["bolo_nominal"] / 1e9 for h in historico]
 
+    # Linha contrafactual, 2026-2033: uma projeção pura de tendência, sem considerar a reforma.
     ultimo = historico[-1]
     anos_proj = [ultimo["ano"]] + [m["ano"] for m in macro_path]
     valores_proj = [ultimo["bolo_nominal"] / 1e9] + [
         (proj_por_ano.get(m["ano"], razao * m["pib_nominal"])) / 1e9 for m in macro_path
     ]
 
+    # Linha do que de fato acontece a partir de 2029: o ADCT art. 128 desvia parte da arrecadação
+    # para o IBS, e o ICMS+ISS residual cai abaixo do cenário sem reforma. Detalhe completo do IBS
+    # no gráfico de barras (Seção 4.4).
+    anos_reforma = [p["ano"] for p in projecao]
+    valores_reforma = [p["icms_iss_residual"] / 1e9 for p in projecao]
+
     fig, ax = plt.subplots(figsize=(7.0, 2.9), dpi=150)
     ax.plot(anos_real, valores_real, color="#1A3A5C", linewidth=2.2, marker="o", markersize=3.5, label="Realizado (2013–2025)")
-    ax.plot(anos_proj, valores_proj, color="#2a78d6", linewidth=2.2, linestyle=(0, (5, 3)), marker="o", markersize=3.5, label="Projetado (2026–2033)")
+    ax.plot(anos_proj, valores_proj, color="#2a78d6", linewidth=2.2, linestyle=(0, (5, 3)), marker="o", markersize=3.5, label="Projetado, sem a reforma (2026–2033)")
+    ax.plot(anos_reforma, valores_reforma, color="#b03a2e", linewidth=2.8, marker="o", markersize=3.5, label="Projetado, com a reforma (2029–2033)")
 
     ax.set_ylabel("R$ bi", fontsize=9)
+    ax.set_ylim(bottom=0)
     ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda v, _: f"{v:,.0f}".replace(",", ".")))
     ax.xaxis.set_major_locator(mticker.MultipleLocator(2))
     ax.tick_params(labelsize=8.5, colors="#4A4A48")
@@ -77,6 +87,53 @@ def trajetoria_chart_data_uri():
     return "data:image/png;base64," + base64.b64encode(buf.read()).decode("ascii")
 
 
+def transicao_chart_data_uri():
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import matplotlib.ticker as mticker
+
+    projecao = PROJ["projecao"]
+    anos = [p["ano"] for p in projecao]
+    residual = [p["icms_iss_residual"] / 1e9 for p in projecao]
+    hist = [p["ibs_historico"] / 1e9 for p in projecao]
+    dest = [p["ibs_destino_liquido"] / 1e9 for p in projecao]
+    seguro = [p["ibs_seguro_receita"] / 1e9 for p in projecao]
+    cgibs = [p["ibs_cgibs"] / 1e9 for p in projecao]
+
+    base1 = residual
+    base2 = [a + b for a, b in zip(base1, hist)]
+    base3 = [a + b for a, b in zip(base2, dest)]
+    base4 = [a + b for a, b in zip(base3, seguro)]
+
+    fig, ax = plt.subplots(figsize=(7.0, 2.9), dpi=150)
+    ax.bar(anos, residual, color="#b03a2e", width=0.6, label="ICMS+ISS residual")
+    ax.bar(anos, hist, bottom=base1, color="#1e8449", width=0.6, label="IBS, critério histórico")
+    ax.bar(anos, dest, bottom=base2, color="#4caf76", width=0.6, label="IBS, critério destino (líquido)")
+    ax.bar(anos, seguro, bottom=base3, color="#d4a017", width=0.6, label="Seguro-Receita")
+    ax.bar(anos, cgibs, bottom=base4, color="#9e9e9e", width=0.6, label="CGIBS")
+
+    ax.set_ylabel("R$ bi", fontsize=9)
+    ax.set_ylim(bottom=0)
+    ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda v, _: f"{v:,.0f}".replace(",", ".")))
+    ax.xaxis.set_major_locator(mticker.MultipleLocator(1))
+    ax.tick_params(labelsize=8.5, colors="#4A4A48")
+    for spine in ("top", "right"):
+        ax.spines[spine].set_visible(False)
+    for spine in ("left", "bottom"):
+        ax.spines[spine].set_color("#DADAD5")
+    ax.grid(axis="y", color="#E8E5DF", linewidth=0.7)
+    ax.set_axisbelow(True)
+    ax.legend(loc="upper left", fontsize=7, frameon=False, ncol=2)
+    fig.tight_layout()
+
+    buf = BytesIO()
+    fig.savefig(buf, format="png")
+    plt.close(fig)
+    buf.seek(0)
+    return "data:image/png;base64," + base64.b64encode(buf.read()).decode("ascii")
+
+
 def hist_rows():
     rows = []
     for h in PROJ["historico"]:
@@ -84,6 +141,7 @@ def hist_rows():
             <td class="l">{h['ano']}</td>
             <td>{fmtbi(h['icms'])}</td>
             <td>{fmtbi(h['iss'])}</td>
+            <td>{fmtbi(h.get('fecop', 0))}</td>
             <td>{fmtbi(h['bolo_nominal'])}</td>
             <td>{fmtbi(h['bolo_real_2025'])}</td>
             <td>{fmtbi(h['pib_nominal'])}</td>
@@ -144,6 +202,27 @@ def adct_rows():
     rows = []
     for p in PROJ["projecao"]:
         rows.append(f"<tr><td class='l'>{p['ano']}</td><td>{fmtpct(p['fa']*100,0)}</td><td>{fmtpct(p['sa']*100,0)}</td></tr>")
+    return "\n".join(rows)
+
+
+def ibs_parametros_rows():
+    rows = []
+    for p in PROJ["projecao"]:
+        rows.append(f"<tr><td class='l'>{p['ano']}</td><td>{fmtpct(p['alpha_a']*100,0)}</td><td>{fmtpct(p['ca']*100,2)}</td><td>5%</td></tr>")
+    return "\n".join(rows)
+
+
+def ibs_divisao_rows():
+    rows = []
+    for p in PROJ["projecao"]:
+        rows.append(f"""<tr class="hl">
+            <td class="l">{p['ano']}</td>
+            <td>{fmtbi(p['ibs_historico'])}</td>
+            <td>{fmtbi(p['ibs_destino_liquido'])}</td>
+            <td>{fmtbi(p['ibs_seguro_receita'])}</td>
+            <td>{fmtbi(p['ibs_cgibs'])}</td>
+            <td>{fmtbi(p['ibs_bruto'])}</td>
+        </tr>""")
     return "\n".join(rows)
 
 
@@ -309,7 +388,7 @@ HTML = f"""<!DOCTYPE html>
     <h1>Série histórica e projeção do IBS total do Brasil, 2029&ndash;2033</h1>
     <p class="subtitle">
         Estimativa do valor total do IBS nacional durante o quinquênio de transição da Reforma
-        Tributária, a partir da série histórica de ICMS e ISS (SICONFI, 2013&ndash;2025) e de
+        Tributária, a partir da série histórica de ICMS, ISS e FECOP (SICONFI, 2013&ndash;2025) e de
         projeções oficiais de crescimento do PIB e inflação.
     </p>
     <div class="answer-box">
@@ -330,8 +409,8 @@ HTML = f"""<!DOCTYPE html>
     Esta nota técnica responde a uma pergunta objetiva: <strong>quanto será o valor total do
     IBS (Imposto sobre Bens e Serviços) no Brasil, ano a ano, entre 2029 e 2033</strong>,
     o quinquênio de transição definido pela Reforma Tributária do consumo (EC 132/2023). A
-    resposta exige combinar três elementos: (i) qual é a arrecadação total de ICMS e ISS hoje, o
-    tributo que o IBS substitui; (ii) uma projeção de como essa arrecadação deve
+    resposta exige combinar três elementos: (i) qual é a receita de referência (ICMS, ISS e FECOP)
+    hoje, a base que o IBS substitui; (ii) uma projeção de como essa arrecadação deve
     crescer com a economia, o que depende de premissas explícitas sobre PIB e inflação; e (iii) o
     cronograma constitucional que converte, ano a ano, parte dessa arrecadação de ICMS/ISS em IBS.
 </p>
@@ -351,32 +430,42 @@ HTML = f"""<!DOCTYPE html>
     Seção 4.
 </p>
 <div class="chart-block">
-    <img class="chart-img" src="{trajetoria_chart_data_uri()}" alt="Arrecadação de ICMS+ISS, Brasil: realizado 2013-2025 e projetado 2026-2033">
-    <p class="chart-caption">Arrecadação total de ICMS+ISS, Brasil (R$ bi, nominal). A linha
-    tracejada, a partir de 2026, é a projeção descrita na Seção 4.</p>
+    <img class="chart-img" src="{trajetoria_chart_data_uri()}" alt="Arrecadação de ICMS+ISS, Brasil, realizado 2013-2025, projetado sem a reforma até 2033 e o ICMS+ISS residual com a reforma a partir de 2029">
+    <p class="chart-caption">Arrecadação de ICMS+ISS, Brasil (R$ bi, nominal). A linha azul
+    tracejada aplica a carga tributária de referência (Seção 4.2) ao PIB projetado até 2033: é uma
+    projeção pura de tendência, sem considerar a reforma. A linha vermelha é o que de fato acontece
+    a partir de 2029: o ADCT art. 128 desvia parte da arrecadação para o IBS ano a ano, e o
+    ICMS+ISS residual cai abaixo do cenário sem reforma até a extinção do ICMS e do ISS em 2033
+    (detalhe completo do IBS no gráfico de barras da Seção 4.4).</p>
 </div>
 
 <h2>3. Fontes de dados</h2>
-<h3>3.1 Arrecadação histórica de ICMS e ISS</h3>
+<h3>3.1 Arrecadação histórica de ICMS, ISS e FECOP</h3>
 <ul>
     <li><strong>ICMS, 2013&ndash;2025:</strong> {meta['fontes']['icms_2013_2025']}, conta
     identificada pelo texto da definição constitucional do imposto ("Operações Relativas à
     Circulação de Mercadorias..."), não pelo código, que muda de esquema ao longo dos anos,
-    excluindo o adicional do Fundo Estadual de Combate à Pobreza, multas e dívida ativa, 27
-    estados + Distrito Federal.</li>
+    excluindo multas e dívida ativa (o FECOP entra separadamente, ver abaixo), 27 estados +
+    Distrito Federal.</li>
     <li><strong>ISS, 2013&ndash;2025:</strong> {meta['fontes']['iss_2013_2025']} (cerca de 5.570
     municípios por ano), conta identificada por texto ("Imposto sobre Serviços de Qualquer
     Natureza, ISSQN") porque o código da conta no plano de contas do DCA mudou de esquema mais
     de uma vez entre 2013 e 2025.</li>
+    <li><strong>FECOP, 2019&ndash;2025:</strong> {meta['fontes'].get('fecop_2019_2025', 'SICONFI/STN, DCA Anexo I-C')},
+    mesma fonte usada no coeficiente estadual do Estudo 06, validado contra a Nota Técnica
+    nº 02/2026. Zero em 2013&ndash;2018 (sem coleta equivalente via RREO); 2026 usa o valor de
+    2025 como estimativa preliminar.</li>
 </ul>
 <p>
-    O SICONFI não publica o DCA Anexo I-C para nenhum dos dois tributos antes de 2013. Para
+    O SICONFI não publica o DCA Anexo I-C para nenhum dos três tributos antes de 2013. Para
     2015&ndash;2018, o ICMS do DCA foi comparado com o RREO Anexo 3, outro demonstrativo do
     SICONFI: a diferença fica sempre abaixo de 1,3%, checado estado a estado, o que confirma que
     os dois demonstrativos captam a mesma arrecadação. O RREO não é usado para o ISS porque
     apresenta cobertura municipal muito baixa (menos de 15% dos municípios respondem a essa conta
     específica nesse demonstrativo); o DCA atinge cobertura de 90% a 99% dos municípios
-    brasileiros em cada ano.
+    brasileiros em cada ano. O FECOP (Fundo de Combate à Pobreza) é incluído na receita de
+    referência porque a legislação da reforma o trata como parte da base substituída pelo IBS nos
+    estados que o cobram: cerca de R$&nbsp;14 bi em 2025, ~1,4% da receita de referência total.
 </p>
 
 <h3>3.2 PIB e inflação</h3>
@@ -393,35 +482,35 @@ HTML = f"""<!DOCTYPE html>
 
 <h2>4. Metodologia</h2>
 
-<h3>4.1 A arrecadação histórica: ICMS + ISS, Brasil, 2013&ndash;2025</h3>
+<h3>4.1 A arrecadação histórica: ICMS + ISS + FECOP, Brasil, 2013&ndash;2025</h3>
 <table>
-    <thead><tr><th class="l">Ano</th><th>ICMS (R$ bi)</th><th>ISS (R$ bi)</th>
-    <th>ICMS+ISS nominal (R$ bi)</th><th>ICMS+ISS real, 2025 (R$ bi)</th>
-    <th>PIB nominal (R$ bi)</th><th>ICMS+ISS / PIB</th><th>Fonte ICMS</th></tr></thead>
+    <thead><tr><th class="l">Ano</th><th>ICMS (R$ bi)</th><th>ISS (R$ bi)</th><th>FECOP (R$ bi)</th>
+    <th>Total nominal (R$ bi)</th><th>Total real, 2025 (R$ bi)</th>
+    <th>PIB nominal (R$ bi)</th><th>Total / PIB</th><th>Fonte ICMS</th></tr></thead>
     <tbody>{hist_rows()}</tbody>
 </table>
 
 <h3>4.2 Premissa central: o período de referência que a lei manda usar</h3>
 <p>
-    A projeção assume que a arrecadação de ICMS e ISS, medida como proporção do PIB (a "carga
-    tributária"), se mantém constante a partir de 2027 no nível médio dos anos de 2024, 2025 e
-    2026 (&asymp;{fmtpct(meta['razao_bolo_pib_base'])} do PIB). Não é uma média escolhida por
-    conveniência: é o período de três anos que a própria lei da reforma manda usar para calibrar
-    a alíquota do IBS, ano a ano, durante toda a transição.
+    A projeção assume que a receita de referência (ICMS, ISS e FECOP), medida como proporção do
+    PIB (a "carga tributária"), se mantém constante a partir de 2027 no nível médio dos anos de
+    2024, 2025 e 2026 (&asymp;{fmtpct(meta['razao_bolo_pib_base'])} do PIB). Não é uma média
+    escolhida por conveniência: é o período de três anos que a própria lei da reforma manda usar
+    para calibrar a alíquota do IBS, ano a ano, durante toda a transição.
 </p>
 <div class="law-box">
     <span class="art">LC 214/2025, arts. 361 a 365</span> (redação dada pela LC 227/2026): para
     cada ano da transição (2029 a 2033), a alíquota de referência do IBS estadual e municipal é
-    fixada de forma a equivaler à <em>média da razão entre a receita de referência (ICMS+ISS) e o
-    PIB nos anos de 2024 a 2026</em>. O mesmo período de três anos vale para todos os cinco anos
-    da transição: a lei não recalcula essa base a cada ano.
+    fixada de forma a equivaler à <em>média da razão entre a receita de referência (ICMS+ISS+FECOP)
+    e o PIB nos anos de 2024 a 2026</em>. O mesmo período de três anos vale para todos os cinco
+    anos da transição: a lei não recalcula essa base a cada ano.
 </div>
 <p>
     Isso substitui a leitura mais simples de que bastaria olhar para o último ano fechado (2025).
     A tabela abaixo mostra os três anos que compõem a média e o resultado usado na projeção:
 </p>
 <table>
-    <thead><tr><th class="l">Ano</th><th>ICMS+ISS (R$ bi)</th><th>PIB (R$ bi)</th>
+    <thead><tr><th class="l">Ano</th><th>ICMS+ISS+FECOP (R$ bi)</th><th>PIB (R$ bi)</th>
     <th>Razão</th><th class="l">Situação</th></tr></thead>
     <tbody>{referencia_rows()}</tbody>
 </table>
@@ -449,11 +538,11 @@ HTML = f"""<!DOCTYPE html>
     Na prática, isso significa que o legislador não fixou de antemão qual será a alíquota do IBS:
     ela será calculada pelo Senado para que a arrecadação resultante mantenha, em cada ano da
     transição, a mesma proporção do PIB medida nessa base histórica de três anos. É esse
-    mecanismo legal, e não uma hipótese técnica externa, que justifica projetar a arrecadação de
-    ICMS e ISS como uma fração fixa do PIB projetado.
+    mecanismo legal, e não uma hipótese técnica externa, que justifica projetar a receita de
+    referência (ICMS+ISS+FECOP) como uma fração fixa do PIB projetado.
 </p>
 <p>
-    Entre 2019 e 2025, a razão ICMS+ISS/PIB realizada variou entre
+    Entre 2019 e 2025, a razão receita de referência/PIB realizada variou entre
     {fmtpct(meta['faixa_historica_razao_2019_2025']['min'])} e
     {fmtpct(meta['faixa_historica_razao_2019_2025']['max'])}, uma banda de cerca de
     {fmtnum(meta['faixa_historica_razao_2019_2025']['max'] - meta['faixa_historica_razao_2019_2025']['min'])}
@@ -496,6 +585,13 @@ HTML = f"""<!DOCTYPE html>
     <thead><tr><th class="l">Ano</th><th>f<sub>a</sub> (fração ICMS+ISS residual)</th><th>s<sub>a</sub> = 1&minus;f<sub>a</sub> (fração IBS)</th></tr></thead>
     <tbody>{adct_rows()}</tbody>
 </table>
+<div class="chart-block">
+    <img class="chart-img" src="{transicao_chart_data_uri()}" alt="ICMS+ISS residual encolhendo e a divisão do IBS bruto entre criterio historico, criterio destino, Seguro-Receita e CGIBS, Brasil, 2029-2033">
+    <p class="chart-caption">ICMS+ISS residual vs. divisão do IBS bruto, Brasil (R$ bi, nominal). Cada
+    barra é a arrecadação total projetada de um ano da transição: o total não muda por causa da
+    reforma, só a composição, até a extinção do ICMS e do ISS em 2033. O detalhe de como o IBS
+    bruto se divide está na Seção 4.6.</p>
+</div>
 
 <h3>4.5 Fórmula final</h3>
 <div class="formula-box">
@@ -504,36 +600,76 @@ HTML = f"""<!DOCTYPE html>
     Total(a) = ICMS+ISS residual(a) + IBS bruto(a) = Receita<sub>projetada</sub>(a)
 </div>
 <p>
-    Esta nota técnica trabalha só no agregado nacional, então não entra nos coeficientes de
-    redistribuição por unidade federativa (&phi;<sup>neutro</sup>, &phi;<sup>CPT</sup>,
-    &phi;<sup>dest</sup>) nem na fração &alpha;<sub>a</sub> que separa o critério histórico do
-    critério destino: esses parâmetros determinam <em>como</em> a arrecadação é dividida entre estados e
-    municípios, não o seu <em>tamanho total</em>. No agregado nacional, o valor total de IBS
-    depende apenas de f<sub>a</sub>/s<sub>a</sub>.
+    Esta nota técnica trabalha no agregado nacional, então não entra nos coeficientes que dizem
+    qual estado ou município recebe cada parte (&phi;<sup>neutro</sup>, &phi;<sup>CPT</sup>,
+    &phi;<sup>dest</sup>): esses parâmetros determinam <em>como</em> a arrecadação é dividida entre
+    estados e municípios, não o seu <em>tamanho total</em>, e continuam fora do escopo (ver
+    Estudo 06). Já a fração &alpha;<sub>a</sub>, que separa o critério histórico do critério
+    destino, afeta o <em>tamanho</em> do que chega aos entes, porque duas deduções (CGIBS e
+    Seguro-Receita) incidem só sobre a parcela destino: por isso ela é usada na Seção 4.6, para
+    detalhar como o IBS bruto de cada ano se divide.
+</p>
+
+<h3>4.6 Como o IBS bruto se divide: critério histórico, critério destino, CGIBS e Seguro-Receita</h3>
+<p>
+    O IBS bruto de cada ano não chega inteiro, do mesmo jeito, a todos os entes: uma parte é
+    distribuída pelo critério histórico (a participação de cada estado e município na arrecadação
+    de ICMS+ISS em 2019&ndash;2025), e o restante pelo critério destino (onde o consumo de fato
+    acontece). Da parcela distribuída por destino, duas deduções saem antes de chegar aos entes: o
+    financiamento do Comitê Gestor do IBS (CGIBS) e a retenção para o Seguro-Receita, um fundo que
+    garante um piso de receita aos entes durante a transição.
+</p>
+<div class="law-box">
+    <span class="art">ADCT arts. 131 e 132; LC 227/2026 arts. 51 e 114 a 116</span>: a fração
+    &alpha;<sub>a</sub> do IBS é distribuída pelo critério histórico; a parcela
+    (1&minus;&alpha;<sub>a</sub>) restante é distribuída pelo critério destino, mas antes disso
+    sofre duas deduções, nesta ordem: primeiro a taxa de financiamento do CGIBS (c<sub>a</sub>,
+    art. 51 LC 227/2026), depois a retenção de 5% para o Seguro-Receita (&rho;, ADCT art. 132).
+</div>
+<div class="formula-box">
+    IBS histórico(a) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= IBS bruto(a) &times; &alpha;<sub>a</sub><br>
+    CGIBS(a) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= IBS bruto(a) &times; (1&minus;&alpha;<sub>a</sub>) &times; c<sub>a</sub><br>
+    Seguro-Receita(a) &nbsp;= IBS bruto(a) &times; (1&minus;&alpha;<sub>a</sub>) &times; (1&minus;c<sub>a</sub>) &times; &rho;<br>
+    IBS destino, líquido(a) = IBS bruto(a) &times; (1&minus;&alpha;<sub>a</sub>) &times; (1&minus;c<sub>a</sub>) &times; (1&minus;&rho;)
+</div>
+<table>
+    <thead><tr><th class="l">Ano</th><th>&alpha;<sub>a</sub> (histórico)</th><th>c<sub>a</sub> (CGIBS, sobre a parcela destino)</th><th>&rho; (Seguro-Receita)</th></tr></thead>
+    <tbody>{ibs_parametros_rows()}</tbody>
+</table>
+<table>
+    <thead><tr><th class="l">Ano</th><th>IBS histórico (R$ bi)</th><th>IBS destino, líquido (R$ bi)</th><th>Seguro-Receita (R$ bi)</th><th>CGIBS (R$ bi)</th><th>IBS bruto total (R$ bi)</th></tr></thead>
+    <tbody>{ibs_divisao_rows()}</tbody>
+</table>
+<p>
+    Essas quatro fatias somam exatamente o IBS bruto do ano, sem dedução dupla. &alpha;<sub>a</sub>
+    e c<sub>a</sub> são os mesmos parâmetros já publicados no Estudo 06; a diferença é que aqui
+    eles só entram para mostrar a divisão do total nacional, não para calcular quanto cada estado
+    ou município recebe.
 </p>
 
 <h2>5. Limitações e simplificações</h2>
 <ol>
-    <li>A razão ICMS+ISS/PIB (a carga tributária) é mantida constante na média de 2024-2026 a
-    partir de 2027, ou seja, presume-se que a arrecadação cresce sempre na mesma proporção do
-    PIB medida nesse período de referência, sem estimar por métodos estatísticos se ela
-    historicamente cresceu mais rápido ou mais devagar que a economia. Com apenas 13 observações
-    anuais e quebras estruturais conhecidas (pandemia em 2020, choque inflacionário em
+    <li>A razão receita de referência/PIB (a carga tributária) é mantida constante na média de
+    2024-2026 a partir de 2027, ou seja, presume-se que a arrecadação cresce sempre na mesma
+    proporção do PIB medida nesse período de referência, sem estimar por métodos estatísticos se
+    ela historicamente cresceu mais rápido ou mais devagar que a economia. Com apenas 13
+    observações anuais e quebras estruturais conhecidas (pandemia em 2020, choque inflacionário em
     2021&ndash;2022), uma estimativa desse tipo seria pouco robusta. A banda histórica da Seção
     4.2 serve como medida alternativa de incerteza.</li>
     <li>O dado de 2026 usado na média de referência é uma estimativa preliminar (RREO, últimos 12
-    meses até abril de 2026, sobre o PIB projetado pelo Focus), a ser substituída pelo dado
-    fechado (DCA) assim que disponível.</li>
-    <li>"IBS bruto" não desconta a taxa de manutenção do Comitê Gestor do IBS (CGIBS, art. 51 LC
-    227/2026) nem a retenção do Seguro-Receita (ADCT art. 132), mecanismos que incidem sobre a
-    parcela distribuída aos entes pelo critério destino, não sobre o total nacional
-    arrecadado.</li>
+    meses até abril de 2026, sobre o PIB projetado pelo Focus, mais o FECOP de 2025 como proxy), a
+    ser substituída pelo dado fechado (DCA) assim que disponível.</li>
+    <li>"IBS bruto", nas Seções 2 a 4.5, é a arrecadação total antes de qualquer dedução. A divisão
+    entre critério histórico, critério destino, CGIBS (art. 51 LC 227/2026) e Seguro-Receita (ADCT
+    art. 132), na Seção 4.6, usa os mesmos parâmetros &alpha;<sub>a</sub> e c<sub>a</sub> já
+    publicados no Estudo 06, mas só para mostrar o tamanho de cada fatia no agregado nacional, sem
+    entrar em qual estado ou município recebe o quê.</li>
     <li>Para 2031&ndash;2033, fora do horizonte do Boletim Focus (~5 anos à frente), usa-se a
     projeção da IFI, que reporta uma taxa média para o intervalo 2027&ndash;2035, não ano a ano.
     Os valores de 2,2% (PIB real) e 3,0% (IPCA) são tratados como constantes nos três anos por
     simplificação explícita.</li>
     <li>Os valores são nominais (a preços correntes de cada ano), não deflacionados. A coluna
-    "ICMS+ISS real, 2025" na tabela histórica (Seção 4.1) mostra o efeito da correção pela
+    "Total real, 2025" na tabela histórica (Seção 4.1) mostra o efeito da correção pela
     inflação apenas para o período já realizado (2013&ndash;2025); a projeção 2026&ndash;2033 não
     reapresenta essa correção porque a inflação projetada já está embutida na composição do PIB
     nominal.</li>

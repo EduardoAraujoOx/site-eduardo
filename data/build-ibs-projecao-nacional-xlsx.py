@@ -102,14 +102,16 @@ def main():
         ("Resposta", f"IBS bruto nacional: de R$ {p2029['ibs_bruto']/1e9:,.1f} bi em 2029 a R$ {p2033['ibs_bruto']/1e9:,.1f} bi em 2033 (valores nominais)."),
         ("Arrecadação total em 2033 (ICMS+ISS+IBS)", f"R$ {p2033['bolo_projetado']/1e9:,.1f} bi ({p2033['bolo_pct_pib']:.2f}% do PIB, a mesma proporção de 2025, por premissa)"),
         ("", ""),
-        ("Premissa central", "A arrecadação de ICMS e ISS, como proporção do PIB (a carga tributária), é mantida constante no nível de 2025 a partir de 2026: ela cresce sempre no mesmo ritmo da economia, nem mais nem menos rápido. É o próprio desenho legal da transição para o IBS (art. 130, caput e §3º, IV, do ADCT: o Senado fixa a alíquota de referência do IBS para manter a Receita-Base dos Entes Subnacionais como proporção do PIB)."),
+        ("Premissa central", "A receita de referência (ICMS+ISS+FECOP), como proporção do PIB (a carga tributária), é mantida constante no nível médio de 2024-2026 a partir de 2027: ela cresce sempre no mesmo ritmo da economia, nem mais nem menos rápido. É o próprio desenho legal da transição para o IBS (LC 214/2025, arts. 361 a 365, redação da LC 227/2026: o Senado fixa a alíquota de referência do IBS para manter essa razão constante)."),
         ("Fonte do PIB e inflação, 2026-2030", "Boletim Focus (Banco Central do Brasil), mediana das projeções de mercado, consultado via API do Sistema de Expectativas de Mercado."),
         ("Fonte do PIB e inflação, 2031-2033", "IFI, Instituição Fiscal Independente (Senado Federal), Relatório de Acompanhamento Fiscal (RAF) nº 107, 18/dez/2025: PIB real 2,2% a.a. (2027-2035), IPCA convergindo a 3,0% (centro da meta contínua)."),
         ("Fonte do ICMS", "SICONFI/STN, DCA Anexo I-C (2013-2025), comparado com o RREO Anexo 3 para 2015-2018 (diferença < 1,3%)."),
         ("Fonte do ISS", "SICONFI/STN, DCA Anexo I-C, todos os municípios brasileiros (2013-2025)."),
-        ("Base legal da transição", "ADCT arts. 128, 130 e 131 (EC 132/2023); LC 227/2026, art. 51 (CGIBS); ADCT art. 132 (Seguro-Receita)."),
+        ("Fonte do FECOP", "SICONFI/STN, DCA Anexo I-C (2019-2025); zero em 2013-2018; 2026 usa o valor de 2025 como estimativa preliminar. Mesmo critério do coeficiente validado no Estudo 06."),
+        ("Base legal da transição", "ADCT arts. 128, 130, 131 e 132 (EC 132/2023); LC 227/2026, arts. 51 e 114 a 116 (CGIBS e critério histórico/destino)."),
         ("Cronograma f_a/s_a", "Fração remanescente de ICMS/ISS (f_a) e fração já convertida em IBS (s_a=1-f_a) a cada ano da transição, conforme ADCT arts. 128 e 131."),
-        ("O que este arquivo mostra", "Aba 'Série histórica': dados de entrada SICONFI 2013-2025. Aba 'Premissas macro': dados de entrada Focus/IFI 2026-2033. Aba 'PIB projetado': fórmulas que compõem o PIB nominal ano a ano. Aba 'Projeção IBS': fórmulas que aplicam a carga tributária constante e o cronograma ADCT. Mude qualquer premissa nas abas de entrada (em azul) e a projeção recalcula."),
+        ("Divisão do IBS bruto", "Fração alpha_a distribuída pelo critério histórico; o restante pelo critério destino, líquido do CGIBS (art. 51 LC 227/2026) e do Seguro-Receita (5%, ADCT art. 132). Mesmos parâmetros já publicados no Estudo 06, usados aqui só para o agregado nacional (aba 'Projeção IBS 2029-2033')."),
+        ("O que este arquivo mostra", "Aba 'Série histórica': dados de entrada SICONFI 2013-2025. Aba 'Premissas macro': dados de entrada Focus/IFI 2026-2033. Aba 'PIB projetado': fórmulas que compõem o PIB nominal ano a ano. Aba 'Projeção IBS': fórmulas que aplicam a carga tributária constante, o cronograma ADCT e a divisão do IBS bruto. Mude qualquer premissa nas abas de entrada (em azul) e a projeção recalcula."),
         ("Gerado em", date.today().isoformat()),
         ("Página do estudo", "https://www.eduardoreisaraujo.com.br/estudos/ibs-projecao-nacional.html"),
     ]
@@ -127,36 +129,39 @@ def main():
 
     # ── Aba 2: Série histórica 2013-2025 (dados de entrada) ──
     ws2 = wb.create_sheet("Série histórica 2013-2025")
-    title_block(ws2, "ICMS + ISS, Brasil: série histórica 2013-2025",
+    title_block(ws2, "ICMS + ISS + FECOP, Brasil: série histórica 2013-2025",
                 "Dados de entrada (células em azul), SICONFI/STN")
-    headers = ["Ano", "ICMS (R$)", "ISS (R$)", "ICMS+ISS nominal (R$)", "ICMS+ISS real, 2025 (R$)",
-               "PIB nominal (R$)", "ICMS+ISS / PIB", "Fonte ICMS"]
-    write_header_row(ws2, 4, headers, widths=[8, 20, 20, 22, 22, 20, 16, 12])
+    headers = ["Ano", "ICMS (R$)", "ISS (R$)", "FECOP (R$)", "Total nominal (R$)", "Total real, 2025 (R$)",
+               "PIB nominal (R$)", "Total / PIB", "Fonte ICMS"]
+    write_header_row(ws2, 4, headers, widths=[8, 20, 20, 16, 22, 22, 20, 16, 12])
     hist_start_row = 5
     for i, h in enumerate(PROJ["historico"]):
         rr = hist_start_row + i
         ws2.cell(row=rr, column=1, value=h["ano"]).font = INPUT_FONT
         ws2.cell(row=rr, column=2, value=h["icms"]).font = INPUT_FONT
         ws2.cell(row=rr, column=3, value=h["iss"]).font = INPUT_FONT
-        c4 = ws2.cell(row=rr, column=4, value=f"=B{rr}+C{rr}")
-        c4.font = FORMULA_FONT
-        ws2.cell(row=rr, column=5, value=h["bolo_real_2025"]).font = INPUT_FONT
-        ws2.cell(row=rr, column=6, value=h["pib_nominal"]).font = INPUT_FONT
-        c7 = ws2.cell(row=rr, column=7, value=f"=D{rr}/F{rr}")
-        c7.font = FORMULA_FONT
-        c7.number_format = PCT_FMT
-        ws2.cell(row=rr, column=8, value=h["fonte_icms"]).font = BODY_FONT
-        for col in (2, 3, 4, 5, 6):
+        ws2.cell(row=rr, column=4, value=h.get("fecop", 0)).font = INPUT_FONT
+        c5 = ws2.cell(row=rr, column=5, value=f"=B{rr}+C{rr}+D{rr}")
+        c5.font = FORMULA_FONT
+        ws2.cell(row=rr, column=6, value=h["bolo_real_2025"]).font = INPUT_FONT
+        ws2.cell(row=rr, column=7, value=h["pib_nominal"]).font = INPUT_FONT
+        c8 = ws2.cell(row=rr, column=8, value=f"=E{rr}/G{rr}")
+        c8.font = FORMULA_FONT
+        c8.number_format = PCT_FMT
+        ws2.cell(row=rr, column=9, value=h["fonte_icms"]).font = BODY_FONT
+        for col in (2, 3, 4, 5, 6, 7):
             ws2.cell(row=rr, column=col).number_format = RS_FMT_FULL
-        for col in range(1, 9):
+        for col in range(1, 10):
             ws2.cell(row=rr, column=col).border = BORDER
     hist_end_row = hist_start_row + len(PROJ["historico"]) - 1
     note_row = hist_end_row + 2
     ws2.cell(row=note_row, column=1,
-             value="ICMS e ISS 2013-2025: SICONFI/STN, DCA Anexo I-C, todos os estados e municípios. O SICONFI não publica o DCA "
-                   "antes de 2013. Para 2015-2018, o ICMS do DCA foi comparado com o RREO Anexo 3 (conta ICMSLiquidoExcetoTransferenciasEFUNDEB, "
-                   "coluna \"TOTAL últimos 12 meses\"): diferença < 1,3% em todos os anos.").font = NOTE_FONT
-    ws2.merge_cells(start_row=note_row, start_column=1, end_row=note_row, end_column=8)
+             value="ICMS e ISS 2013-2025, FECOP 2019-2025: SICONFI/STN, DCA Anexo I-C, todos os estados e municípios. O SICONFI não publica o DCA "
+                   "antes de 2013 (FECOP tratado como zero em 2013-2018, sem coleta equivalente via RREO). Para 2015-2018, o ICMS do DCA foi comparado "
+                   "com o RREO Anexo 3 (conta ICMSLiquidoExcetoTransferenciasEFUNDEB, coluna \"TOTAL últimos 12 meses\"): diferença < 1,3% em todos os anos. "
+                   "FECOP incluído porque a legislação da reforma o trata como parte da base substituída pelo IBS nos estados que o cobram (mesmo critério "
+                   "do coeficiente validado no Estudo 06).").font = NOTE_FONT
+    ws2.merge_cells(start_row=note_row, start_column=1, end_row=note_row, end_column=9)
     ws2.cell(row=note_row, column=1).alignment = WRAP
     ws2.row_dimensions[note_row].height = 40
 
@@ -236,16 +241,16 @@ def main():
     ws5["A4"].font = H_FONT
     ws5.merge_cells("A4:H4")
 
-    headers_ref = ["Ano", "ICMS+ISS (R$)", "PIB (R$)", "Razão", "Situação"]
+    headers_ref = ["Ano", "ICMS+ISS+FECOP (R$)", "PIB (R$)", "Razão", "Situação"]
     write_header_row(ws5, 5, headers_ref, widths=[8, 20, 14, 20, 20, 22, 20, 14])
     ws5.cell(row=6, column=1, value=2024).font = FORMULA_FONT
-    ws5.cell(row=6, column=2, value=f"='Série histórica 2013-2025'!D{row2024}").font = FORMULA_FONT
-    ws5.cell(row=6, column=3, value=f"='Série histórica 2013-2025'!F{row2024}").font = FORMULA_FONT
+    ws5.cell(row=6, column=2, value=f"='Série histórica 2013-2025'!E{row2024}").font = FORMULA_FONT
+    ws5.cell(row=6, column=3, value=f"='Série histórica 2013-2025'!G{row2024}").font = FORMULA_FONT
     ws5.cell(row=6, column=4, value="=B6/C6").font = FORMULA_FONT
     ws5.cell(row=6, column=5, value="fechado (DCA)").font = BODY_FONT
     ws5.cell(row=7, column=1, value=2025).font = FORMULA_FONT
-    ws5.cell(row=7, column=2, value=f"='Série histórica 2013-2025'!D{row2025}").font = FORMULA_FONT
-    ws5.cell(row=7, column=3, value=f"='Série histórica 2013-2025'!F{row2025}").font = FORMULA_FONT
+    ws5.cell(row=7, column=2, value=f"='Série histórica 2013-2025'!E{row2025}").font = FORMULA_FONT
+    ws5.cell(row=7, column=3, value=f"='Série histórica 2013-2025'!G{row2025}").font = FORMULA_FONT
     ws5.cell(row=7, column=4, value="=B7/C7").font = FORMULA_FONT
     ws5.cell(row=7, column=5, value="fechado (DCA)").font = BODY_FONT
     ws5.cell(row=8, column=1, value=2026).font = INPUT_FONT
@@ -313,12 +318,64 @@ def main():
     note_row5 = proj_start_row + len(PROJ["projecao"]) + 1
     ws5.cell(row=note_row5, column=1,
              value="f_a (fração remanescente de ICMS+ISS) e s_a=1-f_a (fração já convertida em IBS) seguem o cronograma da transição "
-                   "constitucional (ADCT arts. 128 e 131, LC 227/2026). "
-                   "\"IBS bruto\" não desconta a taxa do CGIBS nem a retenção do Seguro-Receita (ADCT art. 132), que incidem sobre a parcela "
-                   "distribuída aos entes pelo critério destino, não sobre o total nacional.").font = NOTE_FONT
+                   "constitucional (ADCT arts. 128 e 131, LC 227/2026). \"IBS bruto\" é a arrecadação total antes de qualquer dedução; "
+                   "a divisão entre critério histórico, critério destino, CGIBS e Seguro-Receita está na seção abaixo.").font = NOTE_FONT
     ws5.merge_cells(start_row=note_row5, start_column=1, end_row=note_row5, end_column=8)
     ws5.cell(row=note_row5, column=1).alignment = WRAP
-    ws5.row_dimensions[note_row5].height = 55
+    ws5.row_dimensions[note_row5].height = 45
+
+    # ── Seção: divisão do IBS bruto (critério histórico, destino, CGIBS, Seguro-Receita) ──
+    div_title_row = note_row5 + 2
+    ws5.cell(row=div_title_row, column=1,
+             value="Divisão do IBS bruto (ADCT arts. 131-132; LC 227/2026 arts. 51 e 114-116): mesmos parâmetros alpha_a e c_a do Estudo 06").font = H_FONT
+    ws5.merge_cells(start_row=div_title_row, start_column=1, end_row=div_title_row, end_column=9)
+
+    headers_div = ["Ano", "alpha_a (histórico)", "c_a (CGIBS)", "rho (Seguro-Receita)",
+                   "IBS histórico (R$)", "CGIBS (R$)", "Seguro-Receita (R$)", "IBS destino, líquido (R$)", "Total (confere IBS bruto)"]
+    div_header_row = div_title_row + 1
+    write_header_row(ws5, div_header_row, headers_div, widths=[8, 20, 14, 20, 20, 22, 20, 14, 22])
+    div_start_row = div_header_row + 1
+    for i, p in enumerate(PROJ["projecao"]):
+        rr = div_start_row + i
+        proj_row = proj_start_row + i
+        ws5.cell(row=rr, column=1, value=p["ano"]).font = FORMULA_FONT
+        calpha = ws5.cell(row=rr, column=2, value=p["alpha_a"])
+        calpha.font = INPUT_FONT
+        calpha.number_format = PCT_FMT
+        cca = ws5.cell(row=rr, column=3, value=p["ca"])
+        cca.font = INPUT_FONT
+        cca.number_format = PCT_FMT
+        crho = ws5.cell(row=rr, column=4, value=0.05)
+        crho.font = INPUT_FONT
+        crho.number_format = PCT_FMT
+        chist = ws5.cell(row=rr, column=5, value=f"=G{proj_row}*B{rr}")
+        chist.font = FORMULA_FONT
+        chist.number_format = RS_FMT_FULL
+        ccgibs = ws5.cell(row=rr, column=6, value=f"=G{proj_row}*(1-B{rr})*C{rr}")
+        ccgibs.font = FORMULA_FONT
+        ccgibs.number_format = RS_FMT_FULL
+        cseguro = ws5.cell(row=rr, column=7, value=f"=G{proj_row}*(1-B{rr})*(1-C{rr})*D{rr}")
+        cseguro.font = FORMULA_FONT
+        cseguro.number_format = RS_FMT_FULL
+        cdest = ws5.cell(row=rr, column=8, value=f"=G{proj_row}*(1-B{rr})*(1-C{rr})*(1-D{rr})")
+        cdest.font = FORMULA_FONT
+        cdest.number_format = RS_FMT_FULL
+        ctotal = ws5.cell(row=rr, column=9, value=f"=E{rr}+F{rr}+G{rr}+H{rr}")
+        ctotal.font = FORMULA_FONT
+        ctotal.number_format = RS_FMT_FULL
+        for col in range(1, 10):
+            ws5.cell(row=rr, column=col).border = BORDER
+
+    note_row_div = div_start_row + len(PROJ["projecao"]) + 1
+    ws5.cell(row=note_row_div, column=1,
+             value="alpha_a = fração do IBS bruto distribuída pelo critério histórico; (1-alpha_a) vai pelo critério destino, mas antes sofre "
+                   "duas deduções, nesta ordem: c_a (CGIBS, art. 51 LC 227/2026) e rho=5% (Seguro-Receita, ADCT art. 132). As quatro colunas de "
+                   "reais somam exatamente o IBS bruto do ano (coluna \"Total\" confere isso). alpha_a e c_a são os mesmos parâmetros já "
+                   "publicados no Estudo 06 (estudos/ibs-projecao-arrecadacao-br.html), usados aqui só para mostrar o tamanho de cada fatia no "
+                   "agregado nacional, sem entrar em qual estado ou município recebe o quê.").font = NOTE_FONT
+    ws5.merge_cells(start_row=note_row_div, start_column=1, end_row=note_row_div, end_column=9)
+    ws5.cell(row=note_row_div, column=1).alignment = WRAP
+    ws5.row_dimensions[note_row_div].height = 65
 
     wb.save(OUTPUT)
     print(f"Gravado em {OUTPUT}")
