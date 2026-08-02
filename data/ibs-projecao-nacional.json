@@ -2,40 +2,41 @@
   "_meta": {
     "descricao": "Estudo 11: série histórica (2013-2025) e projeção do IBS total (Brasil), 2029-2033.",
     "ano_base": 2025,
-    "razao_bolo_pib_base": 7.8812,
+    "razao_bolo_pib_base": 7.9904,
     "receita_referencia": {
       "anos": [
         {
           "ano": 2024,
-          "bolo": 954338315489.55,
+          "bolo": 967956708999.83,
           "pib": 11779250581628.3,
-          "razao_pct": 8.1019,
+          "razao_pct": 8.2175,
           "status": "fechado (DCA)"
         },
         {
           "ano": 2025,
-          "bolo": 1029573688573.62,
+          "bolo": 1043555446075.16,
           "pib": 12738565613881.1,
-          "razao_pct": 8.0823,
+          "razao_pct": 8.1921,
           "status": "fechado (DCA)"
         },
         {
           "ano": 2026,
-          "bolo": 1018711484869.06,
+          "bolo": 1032693242370.6,
           "pib": 13656851382430.35,
-          "razao_pct": 7.4593,
+          "razao_pct": 7.5617,
           "status": "estimativa preliminar (RREO 12m + PIB Focus)"
         }
       ],
-      "razao_media_pct": 7.8812
+      "razao_media_pct": 7.9904
     },
     "faixa_historica_razao_2019_2025": {
-      "min": 7.5801,
-      "max": 8.2725
+      "min": 7.6901,
+      "max": 8.4478
     },
     "fontes": {
       "icms_2013_2025": "SICONFI/STN, DCA Anexo I-C, todos os estados e o DF",
       "iss_2013_2025": "SICONFI/STN, DCA Anexo I-C, todos os municípios",
+      "fecop_2019_2025": "SICONFI/STN, DCA Anexo I-C (dca_fecop_br); zero em 2013-2018 (sem coleta); 2026 usa o valor de 2025 como estimativa preliminar",
       "pib_ipca_historico": "BCB/SGS séries 1207 (PIB nominal) e 433 (IPCA)",
       "projecao_macro_2026_2030": "BCB, Boletim Focus (Sistema de Expectativas de Mercado), mediana",
       "projecao_macro_2031_2033": "IFI (Instituição Fiscal Independente, Senado Federal), RAF 107, 18/dez/2025",
@@ -44,7 +45,7 @@
     },
     "data_pesquisa_focus": "2026-07-24",
     "premissas": [
-      "Razão bolo (ICMS+ISS) / PIB nominal mantida constante na média de 2024-2026 a partir de 2027. Esse período de referência não é uma escolha de modelagem: é o que os arts. 361 a 365 da LC 214/2025 (redação da LC 227/2026) usam para calibrar a alíquota de referência do IBS em cada ano da transição (2029-2033), a média da razão entre a receita de referência (ICMS+ISS) e o PIB nos anos de 2024 a 2026, fixada por resolução do Senado Federal.",
+      "Razão bolo (ICMS+ISS+FECOP) / PIB nominal mantida constante na média de 2024-2026 a partir de 2027. Esse período de referência não é uma escolha de modelagem: é o que os arts. 361 a 365 da LC 214/2025 (redação da LC 227/2026) usam para calibrar a alíquota de referência do IBS em cada ano da transição (2029-2033), a média da razão entre a receita de referência e o PIB nos anos de 2024 a 2026, fixada por resolução do Senado Federal. O FECOP (Fundo de Combate à Pobreza) é incluído na receita de referência porque a legislação da reforma o trata como parte da base de receita substituída pelo IBS nos estados que o cobram; sem essa parcela, a receita de referência ficaria subestimada em cerca de R$ 14 bi em 2025 (~1,4% do total) frente ao dataset validado de coeficientes por UF (data/coeficientes-uf.json, conferido contra a Nota Técnica nº 02/2026).",
       "O art. 130, §4º e §5º, do ADCT define um mecanismo distinto: o 'Teto de Referência', que compara a média 2029-2033 de CBS+Imposto Seletivo+IBS com a média 2012-2021 de IPI+ICMS+ISS+PIS/Cofins+IOF-seguros. Não altera os valores projetados aqui: mesmo se ultrapassado, a redução da alíquota só vale a partir de 2035 (fora desta projeção), e o teto exige dados federais (CBS, PIS/Cofins, IPI, IOF-seguros) fora do escopo deste estudo, que modela só o lado subnacional (ICMS/ISS/IBS).",
       "2026 ainda não fechou: a razão desse ano usa o bolo do RREO (últimos 12 meses até abr/2026) sobre o PIB projetado pelo Focus, uma estimativa preliminar a ser substituída pelo dado fechado (DCA) quando disponível.",
       "IBS bruto = bolo projetado × sa (fração já migrada para IBS no ADCT). Não inclui a dedução do CGIBS nem a retenção do Seguro-Receita (ADCT art. 132), que incidem sobre a parcela distribuída aos entes pelo critério destino, não sobre o total nacional arrecadado.",
@@ -56,6 +57,7 @@
       "ano": 2013,
       "icms": 351208258415.59,
       "iss": 44603470588.89,
+      "fecop": 0,
       "bolo_nominal": 395811729004.48,
       "bolo_real_2025": 768024440131.99,
       "pib_nominal": 5331618999627.08,
@@ -66,6 +68,7 @@
       "ano": 2014,
       "icms": 374500455243.7,
       "iss": 48736779406.45,
+      "fecop": 0,
       "bolo_nominal": 423237234650.15,
       "bolo_real_2025": 771787132328.83,
       "pib_nominal": 5778953000008.59,
@@ -76,6 +79,7 @@
       "ano": 2015,
       "icms": 385291418665.57,
       "iss": 52456331446.13,
+      "fecop": 0,
       "bolo_nominal": 437747750111.7,
       "bolo_real_2025": 721263493891.62,
       "pib_nominal": 5995786999726.3,
@@ -86,6 +90,7 @@
       "ano": 2016,
       "icms": 404214537044.43,
       "iss": 52326423881.55,
+      "fecop": 0,
       "bolo_nominal": 456540960925.98,
       "bolo_real_2025": 707726271317.67,
       "pib_nominal": 6269328000659.18,
@@ -96,6 +101,7 @@
       "ano": 2017,
       "icms": 437205536595.41,
       "iss": 54880868786.6,
+      "fecop": 0,
       "bolo_nominal": 492086405382.01,
       "bolo_real_2025": 740989005972.98,
       "pib_nominal": 6585479000139.78,
@@ -106,6 +112,7 @@
       "ano": 2018,
       "icms": 472618579441.61,
       "iss": 62298307526.46,
+      "fecop": 0,
       "bolo_nominal": 534916886968.07,
       "bolo_real_2025": 776403550007.77,
       "pib_nominal": 7004140999893.37,
@@ -116,70 +123,77 @@
       "ano": 2019,
       "icms": 512501165557.69,
       "iss": 72575738376.57,
-      "bolo_nominal": 585076903934.26,
-      "bolo_real_2025": 814150513197.07,
+      "fecop": 11699003388.68,
+      "bolo_nominal": 596775907322.94,
+      "bolo_real_2025": 830429996370.55,
       "pib_nominal": 7389130999453.28,
-      "bolo_pct_pib": 7.9181,
+      "bolo_pct_pib": 8.0764,
       "fonte_icms": "DCA"
     },
     {
       "ano": 2020,
       "icms": 525280463571.25,
       "iss": 72939656553.14,
-      "bolo_nominal": 598220120124.39,
-      "bolo_real_2025": 796460803566.97,
+      "fecop": 12775546215.27,
+      "bolo_nominal": 610995666339.66,
+      "bolo_real_2025": 813469963677.64,
       "pib_nominal": 7609597000575.82,
-      "bolo_pct_pib": 7.8614,
+      "bolo_pct_pib": 8.0293,
       "fonte_icms": "DCA"
     },
     {
       "ano": 2021,
       "icms": 655213422197.43,
       "iss": 90315695421.34,
-      "bolo_nominal": 745529117618.77,
-      "bolo_real_2025": 901850044265.15,
+      "fecop": 15797405283.66,
+      "bolo_nominal": 761326522902.43,
+      "bolo_real_2025": 920959815188.44,
       "pib_nominal": 9012141999284.48,
-      "bolo_pct_pib": 8.2725,
+      "bolo_pct_pib": 8.4478,
       "fonte_icms": "DCA"
     },
     {
       "ano": 2022,
       "icms": 694424706419.7,
       "iss": 105738689405.94,
-      "bolo_nominal": 800163395825.64,
-      "bolo_real_2025": 915008144239.53,
+      "fecop": 14732300782.29,
+      "bolo_nominal": 814895696607.93,
+      "bolo_real_2025": 931854922371.98,
       "pib_nominal": 10079676679176.0,
-      "bolo_pct_pib": 7.9384,
+      "bolo_pct_pib": 8.0845,
       "fonte_icms": "DCA"
     },
     {
       "ano": 2023,
       "icms": 708531573094.66,
       "iss": 120982841687.58,
-      "bolo_nominal": 829514414782.24,
-      "bolo_real_2025": 906673404756.58,
+      "fecop": 12037722674.32,
+      "bolo_nominal": 841552137456.56,
+      "bolo_real_2025": 919830840972.45,
       "pib_nominal": 10943344667905.0,
-      "bolo_pct_pib": 7.5801,
+      "bolo_pct_pib": 7.6901,
       "fonte_icms": "DCA"
     },
     {
       "ano": 2024,
       "icms": 814527574371.58,
       "iss": 139810741117.97,
-      "bolo_nominal": 954338315489.55,
-      "bolo_real_2025": 995034974553.8,
+      "fecop": 13618393510.28,
+      "bolo_nominal": 967956708999.83,
+      "bolo_real_2025": 1009234108781.18,
       "pib_nominal": 11779250581628.3,
-      "bolo_pct_pib": 8.1019,
+      "bolo_pct_pib": 8.2175,
       "fonte_icms": "DCA"
     },
     {
       "ano": 2025,
       "icms": 875783701718.08,
       "iss": 153789986855.54,
-      "bolo_nominal": 1029573688573.62,
-      "bolo_real_2025": 1029573688573.62,
+      "fecop": 13981757501.54,
+      "bolo_nominal": 1043555446075.16,
+      "bolo_real_2025": 1043555446075.16,
       "pib_nominal": 12738565613881.1,
-      "bolo_pct_pib": 8.0823,
+      "bolo_pct_pib": 8.1921,
       "fonte_icms": "DCA"
     }
   ],
@@ -252,53 +266,53 @@
   "projecao": [
     {
       "ano": 2029,
-      "bolo_projetado": 1273749949857.6,
+      "bolo_projetado": 1291406942066.12,
       "pib_nominal": 16161919839748.76,
-      "bolo_pct_pib": 7.8812,
+      "bolo_pct_pib": 7.9904,
       "fa": 0.9,
       "sa": 0.1,
-      "icms_iss_residual": 1146374954871.84,
-      "ibs_bruto": 127374994985.76
+      "icms_iss_residual": 1162266247859.51,
+      "ibs_bruto": 129140694206.61
     },
     {
       "ano": 2030,
-      "bolo_projetado": 1344697822064.66,
+      "bolo_projetado": 1363338308739.2,
       "pib_nominal": 17062138774822.77,
-      "bolo_pct_pib": 7.8812,
+      "bolo_pct_pib": 7.9904,
       "fa": 0.8,
       "sa": 0.2,
-      "icms_iss_residual": 1075758257651.73,
-      "ibs_bruto": 268939564412.93
+      "icms_iss_residual": 1090670646991.36,
+      "ibs_bruto": 272667661747.84
     },
     {
       "ano": 2031,
-      "bolo_projetado": 1415509609374.59,
+      "bolo_projetado": 1435131704077.41,
       "pib_nominal": 17960631002704.94,
-      "bolo_pct_pib": 7.8812,
+      "bolo_pct_pib": 7.9904,
       "fa": 0.7,
       "sa": 0.3,
-      "icms_iss_residual": 990856726562.21,
-      "ibs_bruto": 424652882812.38
+      "icms_iss_residual": 1004592192854.18,
+      "ibs_bruto": 430539511223.22
     },
     {
       "ano": 2032,
-      "bolo_projetado": 1490050345404.25,
+      "bolo_projetado": 1510705739614.12,
       "pib_nominal": 18906437831307.38,
-      "bolo_pct_pib": 7.8812,
+      "bolo_pct_pib": 7.9904,
       "fa": 0.6,
       "sa": 0.4,
-      "icms_iss_residual": 894030207242.55,
-      "ibs_bruto": 596020138161.7
+      "icms_iss_residual": 906423443768.47,
+      "ibs_bruto": 604282295845.65
     },
     {
       "ano": 2033,
-      "bolo_projetado": 1568516396593.24,
+      "bolo_projetado": 1590259503862.2,
       "pib_nominal": 19902050847504.02,
-      "bolo_pct_pib": 7.8812,
+      "bolo_pct_pib": 7.9904,
       "fa": 0.0,
       "sa": 1.0,
       "icms_iss_residual": 0.0,
-      "ibs_bruto": 1568516396593.24
+      "ibs_bruto": 1590259503862.2
     }
   ]
 }
