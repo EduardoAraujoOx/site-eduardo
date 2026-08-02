@@ -195,18 +195,16 @@
             <div class="resposta-sub" id="resposta-sub"></div>
         </div>
 
-        <span class="section-label">De onde viemos, para onde vamos: arrecadação de ICMS+ISS, 2013&ndash;2033</span>
+        <span class="section-label">De onde viemos: arrecadação de ICMS+ISS, 2013&ndash;2033, sem a reforma</span>
         <div class="callout">
-            A linha cheia é o que já foi arrecadado (dado observado, SICONFI). A linha azul
-            tracejada aplica a carga tributária de referência (a média 2024&ndash;2026 explicada na
-            metodologia abaixo) ao PIB projetado para cada ano: até 2029 ela é a própria projeção de
-            ICMS+ISS, e dali em diante vira um cenário hipotético &mdash; o que o ICMS+ISS teria
-            sido se toda a arrecadação continuasse como ICMS/ISS, sem a reforma. Em 2029 essa linha
-            se abre em duas trajetórias reais: o cronograma constitucional (ADCT art. 128) desvia
-            parte da arrecadação para o IBS (verde, subindo), enquanto o que resta como ICMS/ISS
-            (vermelho) cai abaixo do cenário sem reforma, até a extinção do ICMS e do ISS em 2033.
-            Todos os valores são nominais (preços de cada ano); a inflação projetada já está
-            embutida no PIB nominal usado para projetar, não é aplicada de novo por fora.
+            A linha cheia é o que já foi arrecadado (dado observado, SICONFI). A linha tracejada
+            aplica a carga tributária de referência (a média 2024&ndash;2026 explicada na
+            metodologia abaixo) ao PIB projetado para cada ano, até 2033. Ela é uma projeção pura
+            de tendência: mostra o que o ICMS+ISS teria sido se toda a arrecadação continuasse como
+            ICMS/ISS, sem levar em conta a reforma. O efeito real da transição para o IBS, que
+            começa em 2029, está no gráfico da próxima seção. Todos os valores são nominais (preços
+            de cada ano); a inflação projetada já está embutida no PIB nominal usado para projetar,
+            não é aplicada de novo por fora.
         </div>
         <div class="chart-panel">
             <p class="chart-panel-title">Arrecadação de ICMS+ISS, Brasil (R$ bi, nominal)</p>
@@ -214,8 +212,6 @@
             <div class="chart-legend-note">
                 <span><span class="legend-dot" style="background:#1A3A5C"></span>Realizado (2013&ndash;2025)</span>
                 <span><span class="legend-dot" style="background:#2a78d6"></span>Projetado, sem a reforma (2026&ndash;2033)</span>
-                <span><span class="legend-dot" style="background:#b03a2e"></span>ICMS+ISS residual, com a reforma (2029&ndash;2033)</span>
-                <span><span class="legend-dot" style="background:#1e8449"></span>IBS bruto (2029&ndash;2033)</span>
             </div>
         </div>
 
@@ -437,14 +433,19 @@
 
         <span class="section-label">A transição: ICMS+ISS residual encolhendo, IBS crescendo (R$ bi, nominal)</span>
         <div class="callout">
-            As duas linhas partem de pontos opostos em 2029 e se afastam ano a ano, uma caindo e
-            outra subindo, até a extinção do ICMS/ISS em 2033: é o cronograma do ADCT art. 128
-            passando a fração que ainda é cobrada como ICMS/ISS para o IBS, sem mudar o total
-            (a soma das duas linhas, em cada ano, é a arrecadação total projetada).
+            Cada barra é a arrecadação total projetada de um ano da transição, dividida entre o que
+            ainda é cobrado como ICMS/ISS (vermelho) e o que já é IBS (verde). O total não muda de
+            um ano para o outro por causa da reforma, só a composição: é o cronograma do ADCT
+            art. 128 passando, ano a ano, a fração que ainda é ICMS/ISS para o IBS, até a extinção
+            do ICMS e do ISS em 2033.
         </div>
         <div class="chart-panel">
             <p class="chart-panel-title">ICMS+ISS residual vs. IBS bruto, Brasil (R$ bi, nominal)</p>
             <canvas id="chart-transicao" style="max-height:340px"></canvas>
+            <div class="chart-legend-note">
+                <span><span class="legend-dot" style="background:#b03a2e"></span>ICMS+ISS residual</span>
+                <span><span class="legend-dot" style="background:#1e8449"></span>IBS bruto</span>
+            </div>
         </div>
         <div class="table-wrap">
             <table class="data-table">
@@ -613,11 +614,10 @@
         // Linha realizada: 2013-2025, dado observado (SICONFI)
         const pontosRealizado = data.historico.map(r => ({ x: r.ano, y: r.bolo_nominal / 1e9 }));
 
-        // Linha projetada (total): começa no último ano realizado (2025), para a linha ficar
-        // contínua, e segue até 2033 (carga tributária de referência × PIB projetado). Até 2029
-        // ela é a própria projeção de ICMS+ISS (a transição ainda não começou). De 2029 em diante,
-        // ela vira o cenário contrafactual: o que o ICMS+ISS teria sido se a arrecadação inteira
-        // continuasse como ICMS/ISS, sem nada convertido em IBS.
+        // Linha projetada: começa no último ano realizado (2025), para a linha ficar contínua, e
+        // segue até 2033 (carga tributária de referência × PIB projetado). É uma projeção pura de
+        // tendência, sem considerar a reforma: o efeito real da transição para o IBS (ADCT art.
+        // 128) está no gráfico da próxima seção.
         const projPorAno = {};
         data.projecao.forEach(r => { projPorAno[r.ano] = r.bolo_projetado; });
         const ultimo = data.historico[data.historico.length - 1];
@@ -628,24 +628,14 @@
             })
         );
 
-        // A partir de 2029, o cronograma do ADCT art. 128 desvia a arrecadação da linha
-        // contrafactual acima para duas trajetórias opostas ("boca de jacaré"): parte segue como
-        // ICMS+ISS (caindo abaixo do que seria sem a reforma) e parte vira IBS (subindo do zero).
-        const pontosResidual = data.projecao.map(r => ({ x: r.ano, y: r.icms_iss_residual / 1e9 }));
-        const pontosIbs = data.projecao.map(r => ({ x: r.ano, y: r.ibs_bruto / 1e9 }));
-
         new Chart(el, {
             type: 'line',
             data: {
                 datasets: [
                     { label: 'Realizado', data: pontosRealizado,
                       borderColor: '#1A3A5C', backgroundColor: '#1A3A5C', borderWidth: 2.5, pointRadius: 3, pointHoverRadius: 5, tension: 0.1 },
-                    { label: 'Projetado (sem a reforma, a partir de 2029)', data: pontosProjetado,
-                      borderColor: '#2a78d6', backgroundColor: '#2a78d6', borderWidth: 2.5, borderDash: [6, 4], pointRadius: 3, pointHoverRadius: 5, tension: 0.1 },
-                    { label: 'ICMS+ISS residual', data: pontosResidual,
-                      borderColor: '#b03a2e', backgroundColor: 'rgba(176,58,46,0.10)', borderWidth: 2.5, pointRadius: 3, pointHoverRadius: 5, tension: 0.1, fill: 'origin' },
-                    { label: 'IBS bruto', data: pontosIbs,
-                      borderColor: '#1e8449', backgroundColor: 'rgba(30,132,73,0.10)', borderWidth: 2.5, pointRadius: 3, pointHoverRadius: 5, tension: 0.1, fill: 'origin' }
+                    { label: 'Projetado, sem a reforma', data: pontosProjetado,
+                      borderColor: '#2a78d6', backgroundColor: '#2a78d6', borderWidth: 2.5, borderDash: [6, 4], pointRadius: 3, pointHoverRadius: 5, tension: 0.1 }
                 ]
             },
             options: {
@@ -721,16 +711,14 @@
         const c = themeColors();
         const anos = data.projecao.map(r => r.ano);
         new Chart(el, {
-            type: 'line',
+            type: 'bar',
             data: {
                 labels: anos,
                 datasets: [
                     { label: 'ICMS+ISS residual', data: data.projecao.map(r => r.icms_iss_residual / 1e9),
-                      borderColor: '#b03a2e', backgroundColor: 'rgba(176,58,46,0.10)',
-                      borderWidth: 2.5, pointRadius: 4, pointHoverRadius: 6, tension: 0.15, fill: 'origin' },
+                      backgroundColor: '#b03a2e', borderRadius: 2, stack: 'total' },
                     { label: 'IBS bruto', data: data.projecao.map(r => r.ibs_bruto / 1e9),
-                      borderColor: '#1e8449', backgroundColor: 'rgba(30,132,73,0.10)',
-                      borderWidth: 2.5, pointRadius: 4, pointHoverRadius: 6, tension: 0.15, fill: 'origin' }
+                      backgroundColor: '#1e8449', borderRadius: 2, stack: 'total' }
                 ]
             },
             options: {
@@ -741,8 +729,8 @@
                     tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: R$ ${fmtNum(ctx.raw,1)} bi` } }
                 },
                 scales: {
-                    x: { grid: { display: false }, ticks: { color: c.text, font: { size: 11 } } },
-                    y: { grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 }, callback: v => fmtNum(v,0) }, title: { display: true, text: 'R$ bi', color: c.text, font: { size: 10 } } }
+                    x: { stacked: true, grid: { display: false }, ticks: { color: c.text, font: { size: 11 } } },
+                    y: { stacked: true, grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 }, callback: v => fmtNum(v,0) }, title: { display: true, text: 'R$ bi', color: c.text, font: { size: 10 } } }
                 }
             }
         });
