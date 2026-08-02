@@ -48,17 +48,23 @@ def trajetoria_chart_data_uri():
     anos_real = [h["ano"] for h in historico]
     valores_real = [h["bolo_nominal"] / 1e9 for h in historico]
 
-    # Linha do total projetado, 2026-2033: uma projeção pura de tendência, sem considerar a
-    # reforma. O efeito real da transição para o IBS está no gráfico de barras (Seção 4.4).
+    # Linha contrafactual, 2026-2033: uma projeção pura de tendência, sem considerar a reforma.
     ultimo = historico[-1]
     anos_proj = [ultimo["ano"]] + [m["ano"] for m in macro_path]
     valores_proj = [ultimo["bolo_nominal"] / 1e9] + [
         (proj_por_ano.get(m["ano"], razao * m["pib_nominal"])) / 1e9 for m in macro_path
     ]
 
+    # Linha do que de fato acontece a partir de 2029: o ADCT art. 128 desvia parte da arrecadação
+    # para o IBS, e o ICMS+ISS residual cai abaixo do cenário sem reforma. Detalhe completo do IBS
+    # no gráfico de barras (Seção 4.4).
+    anos_reforma = [p["ano"] for p in projecao]
+    valores_reforma = [p["icms_iss_residual"] / 1e9 for p in projecao]
+
     fig, ax = plt.subplots(figsize=(7.0, 2.9), dpi=150)
     ax.plot(anos_real, valores_real, color="#1A3A5C", linewidth=2.2, marker="o", markersize=3.5, label="Realizado (2013–2025)")
     ax.plot(anos_proj, valores_proj, color="#2a78d6", linewidth=2.2, linestyle=(0, (5, 3)), marker="o", markersize=3.5, label="Projetado, sem a reforma (2026–2033)")
+    ax.plot(anos_reforma, valores_reforma, color="#b03a2e", linewidth=2.8, marker="o", markersize=3.5, label="Projetado, com a reforma (2029–2033)")
 
     ax.set_ylabel("R$ bi", fontsize=9)
     ax.set_ylim(bottom=0)
@@ -391,11 +397,13 @@ HTML = f"""<!DOCTYPE html>
     Seção 4.
 </p>
 <div class="chart-block">
-    <img class="chart-img" src="{trajetoria_chart_data_uri()}" alt="Arrecadação de ICMS+ISS, Brasil, realizado 2013-2025 e projetado até 2033 sem considerar a reforma">
-    <p class="chart-caption">Arrecadação de ICMS+ISS, Brasil (R$ bi, nominal). A linha tracejada
-    aplica a carga tributária de referência (Seção 4.2) ao PIB projetado até 2033: é uma projeção
-    pura de tendência, sem considerar a reforma. O efeito real da transição para o IBS, que começa
-    em 2029, está no gráfico da Seção 4.4.</p>
+    <img class="chart-img" src="{trajetoria_chart_data_uri()}" alt="Arrecadação de ICMS+ISS, Brasil, realizado 2013-2025, projetado sem a reforma até 2033 e o ICMS+ISS residual com a reforma a partir de 2029">
+    <p class="chart-caption">Arrecadação de ICMS+ISS, Brasil (R$ bi, nominal). A linha azul
+    tracejada aplica a carga tributária de referência (Seção 4.2) ao PIB projetado até 2033: é uma
+    projeção pura de tendência, sem considerar a reforma. A linha vermelha é o que de fato acontece
+    a partir de 2029: o ADCT art. 128 desvia parte da arrecadação para o IBS ano a ano, e o
+    ICMS+ISS residual cai abaixo do cenário sem reforma até a extinção do ICMS e do ISS em 2033
+    (detalhe completo do IBS no gráfico de barras da Seção 4.4).</p>
 </div>
 
 <h2>3. Fontes de dados</h2>

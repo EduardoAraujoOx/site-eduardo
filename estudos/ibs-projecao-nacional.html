@@ -195,16 +195,19 @@
             <div class="resposta-sub" id="resposta-sub"></div>
         </div>
 
-        <span class="section-label">De onde viemos: arrecadação de ICMS+ISS, 2013&ndash;2033, sem a reforma</span>
+        <span class="section-label">De onde viemos, para onde vamos: arrecadação de ICMS+ISS, 2013&ndash;2033</span>
         <div class="callout">
-            A linha cheia é o que já foi arrecadado (dado observado, SICONFI). A linha tracejada
-            aplica a carga tributária de referência (a média 2024&ndash;2026 explicada na
-            metodologia abaixo) ao PIB projetado para cada ano, até 2033. Ela é uma projeção pura
-            de tendência: mostra o que o ICMS+ISS teria sido se toda a arrecadação continuasse como
-            ICMS/ISS, sem levar em conta a reforma. O efeito real da transição para o IBS, que
-            começa em 2029, está no gráfico da próxima seção. Todos os valores são nominais (preços
-            de cada ano); a inflação projetada já está embutida no PIB nominal usado para projetar,
-            não é aplicada de novo por fora.
+            A linha cheia é o que já foi arrecadado (dado observado, SICONFI). A linha azul
+            tracejada aplica a carga tributária de referência (a média 2024&ndash;2026 explicada na
+            metodologia abaixo) ao PIB projetado para cada ano, até 2033: é uma projeção pura de
+            tendência, o que o ICMS+ISS teria sido se toda a arrecadação continuasse como ICMS/ISS,
+            sem a reforma. A linha vermelha é o que de fato acontece a partir de 2029: o cronograma
+            constitucional (ADCT art. 128) desvia parte da arrecadação para o IBS ano a ano, e o que
+            resta como ICMS/ISS cai abaixo da linha tracejada até a extinção do ICMS e do ISS em
+            2033 (o detalhe de como o IBS cresce enquanto o ICMS+ISS cai está no gráfico de barras
+            da próxima seção). Todos os valores são nominais (preços de cada ano); a inflação
+            projetada já está embutida no PIB nominal usado para projetar, não é aplicada de novo
+            por fora.
         </div>
         <div class="chart-panel">
             <p class="chart-panel-title">Arrecadação de ICMS+ISS, Brasil (R$ bi, nominal)</p>
@@ -212,6 +215,7 @@
             <div class="chart-legend-note">
                 <span><span class="legend-dot" style="background:#1A3A5C"></span>Realizado (2013&ndash;2025)</span>
                 <span><span class="legend-dot" style="background:#2a78d6"></span>Projetado, sem a reforma (2026&ndash;2033)</span>
+                <span><span class="legend-dot" style="background:#b03a2e"></span>Projetado, com a reforma (2029&ndash;2033)</span>
             </div>
         </div>
 
@@ -614,10 +618,9 @@
         // Linha realizada: 2013-2025, dado observado (SICONFI)
         const pontosRealizado = data.historico.map(r => ({ x: r.ano, y: r.bolo_nominal / 1e9 }));
 
-        // Linha projetada: começa no último ano realizado (2025), para a linha ficar contínua, e
-        // segue até 2033 (carga tributária de referência × PIB projetado). É uma projeção pura de
-        // tendência, sem considerar a reforma: o efeito real da transição para o IBS (ADCT art.
-        // 128) está no gráfico da próxima seção.
+        // Linha projetada (contrafactual): começa no último ano realizado (2025), para a linha
+        // ficar contínua, e segue até 2033 (carga tributária de referência × PIB projetado). É uma
+        // projeção pura de tendência, sem considerar a reforma.
         const projPorAno = {};
         data.projecao.forEach(r => { projPorAno[r.ano] = r.bolo_projetado; });
         const ultimo = data.historico[data.historico.length - 1];
@@ -628,6 +631,10 @@
             })
         );
 
+        // Linha do que de fato acontece a partir de 2029: o cronograma do ADCT art. 128 desvia
+        // parte da arrecadação para o IBS, e o ICMS+ISS residual cai abaixo do cenário sem reforma.
+        const pontosComReforma = data.projecao.map(r => ({ x: r.ano, y: r.icms_iss_residual / 1e9 }));
+
         new Chart(el, {
             type: 'line',
             data: {
@@ -635,7 +642,9 @@
                     { label: 'Realizado', data: pontosRealizado,
                       borderColor: '#1A3A5C', backgroundColor: '#1A3A5C', borderWidth: 2.5, pointRadius: 3, pointHoverRadius: 5, tension: 0.1 },
                     { label: 'Projetado, sem a reforma', data: pontosProjetado,
-                      borderColor: '#2a78d6', backgroundColor: '#2a78d6', borderWidth: 2.5, borderDash: [6, 4], pointRadius: 3, pointHoverRadius: 5, tension: 0.1 }
+                      borderColor: '#2a78d6', backgroundColor: '#2a78d6', borderWidth: 2.5, borderDash: [6, 4], pointRadius: 3, pointHoverRadius: 5, tension: 0.1 },
+                    { label: 'Projetado, com a reforma', data: pontosComReforma,
+                      borderColor: '#b03a2e', backgroundColor: '#b03a2e', borderWidth: 3, pointRadius: 3, pointHoverRadius: 5, tension: 0.1 }
                 ]
             },
             options: {
