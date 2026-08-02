@@ -28,20 +28,25 @@ Combina:
     usados no Estudo 06 (estudos/ibs-projecao-arrecadacao-br.html).
 
 No agregado nacional, o valor TOTAL de IBS não depende dos coeficientes de
-redistribuição por UF (φ^neutro, φ^CPT, φ^dest) nem da fração α_a
-(histórico vs. destino) usados no Estudo 06 — esses parâmetros só
-determinam COMO o bolo é dividido entre entes, não o seu tamanho total.
-Por isso a fórmula nacional se reduz a:
+redistribuição por UF (φ^neutro, φ^CPT, φ^dest) usados no Estudo 06 —
+esses parâmetros só determinam COMO o bolo é dividido entre entes, não o
+seu tamanho total. Por isso a fórmula nacional se reduz a:
 
   ICMS+ISS residual(a) = bolo_projetado(a) × fa
   IBS bruto(a)          = bolo_projetado(a) × sa
   Total(a)               = bolo_projetado(a)          [fa + sa = 1, por construção]
 
 "IBS bruto" aqui é a arrecadação total antes das deduções do CGIBS e do
-Seguro-Receita (ADCT arts. 51 LC 227/2026 e 132 ADCT), que incidem sobre a
-parcela distribuída aos entes pelo critério destino — não reduzem o total
-nacional, apenas a fatia que cada estado/município recebe líquida (ver
-Estudo 06 para a decomposição por UF).
+Seguro-Receita. Diferente dos φ (que só redistribuem entre entes, sem
+afetar o total nacional), a fração α_a (histórico vs. destino) e as taxas
+de CGIBS/Seguro-Receita AFETAM o total nacional que efetivamente chega
+aos entes, porque essas duas deduções incidem só sobre a parcela destino
+— por isso são detalhadas à parte, na decomposição de IBS bruto em
+quatro categorias (ver "ibs_historico"/"ibs_destino_liquido"/
+"ibs_seguro_receita"/"ibs_cgibs" em cada ano de "projecao", e a Seção 4
+da metodologia na página). Os parâmetros α_a e c_a (CGIBS) usados aqui
+são os mesmos já publicados no Estudo 06
+(estudos/ibs-projecao-arrecadacao-br.html).
 
 Uso: python3 build-ibs-projecao-nacional.py
 """
@@ -66,6 +71,25 @@ ADCT = {
     2033: {"fa": 0.0, "sa": 1.00},
 }
 ANOS_PROJ = [2029, 2030, 2031, 2032, 2033]
+
+# Como o IBS bruto de cada ano se divide entre os critérios de distribuição
+# e as duas retenções que incidem só sobre a parcela destino. Mesmos valores
+# já publicados no Estudo 06 (estudos/ibs-projecao-arrecadacao-br.html):
+# alpha_a = fração do IBS distribuída pelo critério histórico (IBSt); a
+# parcela (1-alpha_a) vai pelo critério destino (IBSd). Base legal: ADCT
+# arts. 131-132 e LC 227/2026 arts. 114-116. ca = taxa de financiamento do
+# CGIBS (Comitê Gestor do IBS, art. 51 LC 227/2026), incide só sobre o IBSd,
+# antes da redistribuição por destino.
+ADCT_IBS = {
+    2029: {"alpha_a": 0.80, "ca": 0.0200},
+    2030: {"alpha_a": 0.80, "ca": 0.0100},
+    2031: {"alpha_a": 0.80, "ca": 0.0067},
+    2032: {"alpha_a": 0.80, "ca": 0.0050},
+    2033: {"alpha_a": 0.90, "ca": 0.0050},
+}
+# Seguro-Receita (ADCT art. 132): retenção de 5% sobre o IBSd líquido de
+# CGIBS, também antes da redistribuição por destino.
+RHO_SEGURO_RECEITA = 0.05
 
 
 def main():
@@ -168,6 +192,17 @@ def main():
         fa, sa = ADCT[a]["fa"], ADCT[a]["sa"]
         icms_iss_residual = bolo_a * fa
         ibs_bruto = bolo_a * sa
+
+        # Decomposição do IBS bruto em quatro fatias: histórico, destino
+        # líquido, Seguro-Receita e CGIBS (ver ADCT_IBS acima).
+        alpha_a, ca = ADCT_IBS[a]["alpha_a"], ADCT_IBS[a]["ca"]
+        ibs_historico = ibs_bruto * alpha_a
+        ibs_destino_bruto = ibs_bruto * (1 - alpha_a)
+        ibs_cgibs = ibs_destino_bruto * ca
+        ibs_destino_liquido_cgibs = ibs_destino_bruto * (1 - ca)
+        ibs_seguro_receita = ibs_destino_liquido_cgibs * RHO_SEGURO_RECEITA
+        ibs_destino_liquido = ibs_destino_liquido_cgibs * (1 - RHO_SEGURO_RECEITA)
+
         projecao.append({
             "ano": a,
             "bolo_projetado": round(bolo_a, 2),
@@ -177,6 +212,12 @@ def main():
             "sa": sa,
             "icms_iss_residual": round(icms_iss_residual, 2),
             "ibs_bruto": round(ibs_bruto, 2),
+            "alpha_a": alpha_a,
+            "ca": ca,
+            "ibs_historico": round(ibs_historico, 2),
+            "ibs_destino_liquido": round(ibs_destino_liquido, 2),
+            "ibs_seguro_receita": round(ibs_seguro_receita, 2),
+            "ibs_cgibs": round(ibs_cgibs, 2),
         })
 
     output = {
@@ -194,13 +235,14 @@ def main():
                 "projecao_macro_2031_2033": "IFI (Instituição Fiscal Independente, Senado Federal), RAF 107, 18/dez/2025",
                 "cronograma_adct": "ADCT art. 128 (extinção do ICMS/ISS) e art. 131 (implementação do IBS), EC 132/2023, e LC 227/2026",
                 "periodo_referencia_aliquota": "LC 214/2025, arts. 361 a 365 (redação da LC 227/2026): média da razão receita de referência/PIB nos anos de 2024 a 2026",
+                "divisao_ibs_bruto": "ADCT arts. 131-132 e LC 227/2026 arts. 51 e 114-116 (critério histórico/destino, CGIBS e Seguro-Receita); mesmos parâmetros do Estudo 06",
             },
             "data_pesquisa_focus": macro["_meta"]["data_pesquisa_focus"],
             "premissas": [
                 "Razão bolo (ICMS+ISS) / PIB nominal mantida constante na média de 2024-2026 a partir de 2027. Esse período de referência não é uma escolha de modelagem: é o que os arts. 361 a 365 da LC 214/2025 (redação da LC 227/2026) usam para calibrar a alíquota de referência do IBS em cada ano da transição (2029-2033), a média da razão entre a receita de referência (ICMS+ISS) e o PIB nos anos de 2024 a 2026, fixada por resolução do Senado Federal.",
                 "O art. 130, §4º e §5º, do ADCT define um mecanismo distinto: o 'Teto de Referência', que compara a média 2029-2033 de CBS+Imposto Seletivo+IBS com a média 2012-2021 de IPI+ICMS+ISS+PIS/Cofins+IOF-seguros. Não altera os valores projetados aqui: mesmo se ultrapassado, a redução da alíquota só vale a partir de 2035 (fora desta projeção), e o teto exige dados federais (CBS, PIS/Cofins, IPI, IOF-seguros) fora do escopo deste estudo, que modela só o lado subnacional (ICMS/ISS/IBS).",
                 "2026 ainda não fechou: a razão desse ano usa o bolo do RREO (últimos 12 meses até abr/2026) sobre o PIB projetado pelo Focus, uma estimativa preliminar a ser substituída pelo dado fechado (DCA) quando disponível.",
-                "IBS bruto = bolo projetado × sa (fração já migrada para IBS no ADCT). Não inclui a dedução do CGIBS nem a retenção do Seguro-Receita (ADCT art. 132), que incidem sobre a parcela distribuída aos entes pelo critério destino, não sobre o total nacional arrecadado.",
+                "IBS bruto = bolo projetado × sa (fração já migrada para IBS no ADCT). Esse total se divide em quatro fatias: a fração alpha_a distribuída pelo critério histórico, e a fração (1-alpha_a) distribuída pelo critério destino, da qual se deduzem o CGIBS (art. 51 LC 227/2026) e o Seguro-Receita (5%, ADCT art. 132) antes de chegar aos entes. alpha_a e a taxa do CGIBS variam a cada ano da transição (2029-2033) e são os mesmos parâmetros já publicados no Estudo 06.",
                 "Para 2031-2033, fora do horizonte do Boletim Focus (~5 anos), usa-se a projeção da IFI (2,2% a.a. real, IPCA convergindo a 3,0%), constante para os três anos por simplificação, já que a IFI não detalha ano a ano dentro do intervalo 2027-2035.",
             ],
         },
@@ -218,6 +260,14 @@ def main():
         print(f"{p['ano']}: bolo R$ {p['bolo_projetado']/1e9:.1f}B | "
               f"ICMS+ISS residual R$ {p['icms_iss_residual']/1e9:.1f}B | "
               f"IBS bruto R$ {p['ibs_bruto']/1e9:.1f}B")
+    print("\n=== Divisão do IBS bruto: histórico / destino líquido / seguro-receita / CGIBS ===")
+    for p in projecao:
+        soma = p["ibs_historico"] + p["ibs_destino_liquido"] + p["ibs_seguro_receita"] + p["ibs_cgibs"]
+        print(f"{p['ano']}: hist R$ {p['ibs_historico']/1e9:.1f}B | "
+              f"dest R$ {p['ibs_destino_liquido']/1e9:.1f}B | "
+              f"seg-receita R$ {p['ibs_seguro_receita']/1e9:.1f}B | "
+              f"CGIBS R$ {p['ibs_cgibs']/1e9:.1f}B | "
+              f"soma R$ {soma/1e9:.1f}B (IBS bruto R$ {p['ibs_bruto']/1e9:.1f}B)")
 
 
 if __name__ == "__main__":

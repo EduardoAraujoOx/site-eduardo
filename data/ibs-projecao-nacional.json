@@ -40,14 +40,15 @@
       "projecao_macro_2026_2030": "BCB, Boletim Focus (Sistema de Expectativas de Mercado), mediana",
       "projecao_macro_2031_2033": "IFI (Instituição Fiscal Independente, Senado Federal), RAF 107, 18/dez/2025",
       "cronograma_adct": "ADCT art. 128 (extinção do ICMS/ISS) e art. 131 (implementação do IBS), EC 132/2023, e LC 227/2026",
-      "periodo_referencia_aliquota": "LC 214/2025, arts. 361 a 365 (redação da LC 227/2026): média da razão receita de referência/PIB nos anos de 2024 a 2026"
+      "periodo_referencia_aliquota": "LC 214/2025, arts. 361 a 365 (redação da LC 227/2026): média da razão receita de referência/PIB nos anos de 2024 a 2026",
+      "divisao_ibs_bruto": "ADCT arts. 131-132 e LC 227/2026 arts. 51 e 114-116 (critério histórico/destino, CGIBS e Seguro-Receita); mesmos parâmetros do Estudo 06"
     },
     "data_pesquisa_focus": "2026-07-24",
     "premissas": [
       "Razão bolo (ICMS+ISS) / PIB nominal mantida constante na média de 2024-2026 a partir de 2027. Esse período de referência não é uma escolha de modelagem: é o que os arts. 361 a 365 da LC 214/2025 (redação da LC 227/2026) usam para calibrar a alíquota de referência do IBS em cada ano da transição (2029-2033), a média da razão entre a receita de referência (ICMS+ISS) e o PIB nos anos de 2024 a 2026, fixada por resolução do Senado Federal.",
       "O art. 130, §4º e §5º, do ADCT define um mecanismo distinto: o 'Teto de Referência', que compara a média 2029-2033 de CBS+Imposto Seletivo+IBS com a média 2012-2021 de IPI+ICMS+ISS+PIS/Cofins+IOF-seguros. Não altera os valores projetados aqui: mesmo se ultrapassado, a redução da alíquota só vale a partir de 2035 (fora desta projeção), e o teto exige dados federais (CBS, PIS/Cofins, IPI, IOF-seguros) fora do escopo deste estudo, que modela só o lado subnacional (ICMS/ISS/IBS).",
       "2026 ainda não fechou: a razão desse ano usa o bolo do RREO (últimos 12 meses até abr/2026) sobre o PIB projetado pelo Focus, uma estimativa preliminar a ser substituída pelo dado fechado (DCA) quando disponível.",
-      "IBS bruto = bolo projetado × sa (fração já migrada para IBS no ADCT). Não inclui a dedução do CGIBS nem a retenção do Seguro-Receita (ADCT art. 132), que incidem sobre a parcela distribuída aos entes pelo critério destino, não sobre o total nacional arrecadado.",
+      "IBS bruto = bolo projetado × sa (fração já migrada para IBS no ADCT). Esse total se divide em quatro fatias: a fração alpha_a distribuída pelo critério histórico, e a fração (1-alpha_a) distribuída pelo critério destino, da qual se deduzem o CGIBS (art. 51 LC 227/2026) e o Seguro-Receita (5%, ADCT art. 132) antes de chegar aos entes. alpha_a e a taxa do CGIBS variam a cada ano da transição (2029-2033) e são os mesmos parâmetros já publicados no Estudo 06.",
       "Para 2031-2033, fora do horizonte do Boletim Focus (~5 anos), usa-se a projeção da IFI (2,2% a.a. real, IPCA convergindo a 3,0%), constante para os três anos por simplificação, já que a IFI não detalha ano a ano dentro do intervalo 2027-2035."
     ]
   },
@@ -258,7 +259,13 @@
       "fa": 0.9,
       "sa": 0.1,
       "icms_iss_residual": 1146374954871.84,
-      "ibs_bruto": 127374994985.76
+      "ibs_bruto": 127374994985.76,
+      "alpha_a": 0.8,
+      "ca": 0.02,
+      "ibs_historico": 101899995988.61,
+      "ibs_destino_liquido": 23717224066.35,
+      "ibs_seguro_receita": 1248274950.86,
+      "ibs_cgibs": 509499979.94
     },
     {
       "ano": 2030,
@@ -268,7 +275,13 @@
       "fa": 0.8,
       "sa": 0.2,
       "icms_iss_residual": 1075758257651.73,
-      "ibs_bruto": 268939564412.93
+      "ibs_bruto": 268939564412.93,
+      "alpha_a": 0.8,
+      "ca": 0.01,
+      "ibs_historico": 215151651530.35,
+      "ibs_destino_liquido": 50587532066.07,
+      "ibs_seguro_receita": 2662501687.69,
+      "ibs_cgibs": 537879128.83
     },
     {
       "ano": 2031,
@@ -278,7 +291,13 @@
       "fa": 0.7,
       "sa": 0.3,
       "icms_iss_residual": 990856726562.21,
-      "ibs_bruto": 424652882812.38
+      "ibs_bruto": 424652882812.38,
+      "alpha_a": 0.8,
+      "ca": 0.0067,
+      "ibs_historico": 339722306249.9,
+      "ibs_destino_liquido": 80143464614.53,
+      "ibs_seguro_receita": 4218077084.98,
+      "ibs_cgibs": 569034862.97
     },
     {
       "ano": 2032,
@@ -288,7 +307,13 @@
       "fa": 0.6,
       "sa": 0.4,
       "icms_iss_residual": 894030207242.55,
-      "ibs_bruto": 596020138161.7
+      "ibs_bruto": 596020138161.7,
+      "alpha_a": 0.8,
+      "ca": 0.005,
+      "ibs_historico": 476816110529.36,
+      "ibs_destino_liquido": 112677607119.47,
+      "ibs_seguro_receita": 5930400374.71,
+      "ibs_cgibs": 596020138.16
     },
     {
       "ano": 2033,
@@ -298,7 +323,13 @@
       "fa": 0.0,
       "sa": 1.0,
       "icms_iss_residual": 0.0,
-      "ibs_bruto": 1568516396593.24
+      "ibs_bruto": 1568516396593.24,
+      "alpha_a": 0.9,
+      "ca": 0.005,
+      "ibs_historico": 1411664756933.92,
+      "ibs_destino_liquido": 148264012387.98,
+      "ibs_seguro_receita": 7803369073.05,
+      "ibs_cgibs": 784258198.3
     }
   ]
 }

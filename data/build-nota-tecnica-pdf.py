@@ -96,11 +96,22 @@ def transicao_chart_data_uri():
     projecao = PROJ["projecao"]
     anos = [p["ano"] for p in projecao]
     residual = [p["icms_iss_residual"] / 1e9 for p in projecao]
-    ibs = [p["ibs_bruto"] / 1e9 for p in projecao]
+    hist = [p["ibs_historico"] / 1e9 for p in projecao]
+    dest = [p["ibs_destino_liquido"] / 1e9 for p in projecao]
+    seguro = [p["ibs_seguro_receita"] / 1e9 for p in projecao]
+    cgibs = [p["ibs_cgibs"] / 1e9 for p in projecao]
+
+    base1 = residual
+    base2 = [a + b for a, b in zip(base1, hist)]
+    base3 = [a + b for a, b in zip(base2, dest)]
+    base4 = [a + b for a, b in zip(base3, seguro)]
 
     fig, ax = plt.subplots(figsize=(7.0, 2.9), dpi=150)
     ax.bar(anos, residual, color="#b03a2e", width=0.6, label="ICMS+ISS residual")
-    ax.bar(anos, ibs, bottom=residual, color="#1e8449", width=0.6, label="IBS bruto")
+    ax.bar(anos, hist, bottom=base1, color="#1e8449", width=0.6, label="IBS, critério histórico")
+    ax.bar(anos, dest, bottom=base2, color="#4caf76", width=0.6, label="IBS, critério destino (líquido)")
+    ax.bar(anos, seguro, bottom=base3, color="#d4a017", width=0.6, label="Seguro-Receita")
+    ax.bar(anos, cgibs, bottom=base4, color="#9e9e9e", width=0.6, label="CGIBS")
 
     ax.set_ylabel("R$ bi", fontsize=9)
     ax.set_ylim(bottom=0)
@@ -113,7 +124,7 @@ def transicao_chart_data_uri():
         ax.spines[spine].set_color("#DADAD5")
     ax.grid(axis="y", color="#E8E5DF", linewidth=0.7)
     ax.set_axisbelow(True)
-    ax.legend(loc="upper right", fontsize=8.5, frameon=False)
+    ax.legend(loc="upper left", fontsize=7, frameon=False, ncol=2)
     fig.tight_layout()
 
     buf = BytesIO()
@@ -190,6 +201,27 @@ def adct_rows():
     rows = []
     for p in PROJ["projecao"]:
         rows.append(f"<tr><td class='l'>{p['ano']}</td><td>{fmtpct(p['fa']*100,0)}</td><td>{fmtpct(p['sa']*100,0)}</td></tr>")
+    return "\n".join(rows)
+
+
+def ibs_parametros_rows():
+    rows = []
+    for p in PROJ["projecao"]:
+        rows.append(f"<tr><td class='l'>{p['ano']}</td><td>{fmtpct(p['alpha_a']*100,0)}</td><td>{fmtpct(p['ca']*100,2)}</td><td>5%</td></tr>")
+    return "\n".join(rows)
+
+
+def ibs_divisao_rows():
+    rows = []
+    for p in PROJ["projecao"]:
+        rows.append(f"""<tr class="hl">
+            <td class="l">{p['ano']}</td>
+            <td>{fmtbi(p['ibs_historico'])}</td>
+            <td>{fmtbi(p['ibs_destino_liquido'])}</td>
+            <td>{fmtbi(p['ibs_seguro_receita'])}</td>
+            <td>{fmtbi(p['ibs_cgibs'])}</td>
+            <td>{fmtbi(p['ibs_bruto'])}</td>
+        </tr>""")
     return "\n".join(rows)
 
 
@@ -547,10 +579,11 @@ HTML = f"""<!DOCTYPE html>
     <tbody>{adct_rows()}</tbody>
 </table>
 <div class="chart-block">
-    <img class="chart-img" src="{transicao_chart_data_uri()}" alt="ICMS+ISS residual encolhendo e IBS bruto crescendo dentro do mesmo total, Brasil, 2029-2033">
-    <p class="chart-caption">ICMS+ISS residual vs. IBS bruto, Brasil (R$ bi, nominal). Cada barra é a
-    arrecadação total projetada de um ano da transição: o total não muda por causa da reforma, só a
-    composição entre ICMS/ISS e IBS, até a extinção do ICMS e do ISS em 2033 (Seção 4.5).</p>
+    <img class="chart-img" src="{transicao_chart_data_uri()}" alt="ICMS+ISS residual encolhendo e a divisão do IBS bruto entre criterio historico, criterio destino, Seguro-Receita e CGIBS, Brasil, 2029-2033">
+    <p class="chart-caption">ICMS+ISS residual vs. divisão do IBS bruto, Brasil (R$ bi, nominal). Cada
+    barra é a arrecadação total projetada de um ano da transição: o total não muda por causa da
+    reforma, só a composição, até a extinção do ICMS e do ISS em 2033. O detalhe de como o IBS
+    bruto se divide está na Seção 4.6.</p>
 </div>
 
 <h3>4.5 Fórmula final</h3>
@@ -560,12 +593,51 @@ HTML = f"""<!DOCTYPE html>
     Total(a) = ICMS+ISS residual(a) + IBS bruto(a) = Receita<sub>projetada</sub>(a)
 </div>
 <p>
-    Esta nota técnica trabalha só no agregado nacional, então não entra nos coeficientes de
-    redistribuição por unidade federativa (&phi;<sup>neutro</sup>, &phi;<sup>CPT</sup>,
-    &phi;<sup>dest</sup>) nem na fração &alpha;<sub>a</sub> que separa o critério histórico do
-    critério destino: esses parâmetros determinam <em>como</em> a arrecadação é dividida entre estados e
-    municípios, não o seu <em>tamanho total</em>. No agregado nacional, o valor total de IBS
-    depende apenas de f<sub>a</sub>/s<sub>a</sub>.
+    Esta nota técnica trabalha no agregado nacional, então não entra nos coeficientes que dizem
+    qual estado ou município recebe cada parte (&phi;<sup>neutro</sup>, &phi;<sup>CPT</sup>,
+    &phi;<sup>dest</sup>): esses parâmetros determinam <em>como</em> a arrecadação é dividida entre
+    estados e municípios, não o seu <em>tamanho total</em>, e continuam fora do escopo (ver
+    Estudo 06). Já a fração &alpha;<sub>a</sub>, que separa o critério histórico do critério
+    destino, afeta o <em>tamanho</em> do que chega aos entes, porque duas deduções (CGIBS e
+    Seguro-Receita) incidem só sobre a parcela destino: por isso ela é usada na Seção 4.6, para
+    detalhar como o IBS bruto de cada ano se divide.
+</p>
+
+<h3>4.6 Como o IBS bruto se divide: critério histórico, critério destino, CGIBS e Seguro-Receita</h3>
+<p>
+    O IBS bruto de cada ano não chega inteiro, do mesmo jeito, a todos os entes: uma parte é
+    distribuída pelo critério histórico (a participação de cada estado e município na arrecadação
+    de ICMS+ISS em 2019&ndash;2025), e o restante pelo critério destino (onde o consumo de fato
+    acontece). Da parcela distribuída por destino, duas deduções saem antes de chegar aos entes: o
+    financiamento do Comitê Gestor do IBS (CGIBS) e a retenção para o Seguro-Receita, um fundo que
+    garante um piso de receita aos entes durante a transição.
+</p>
+<div class="law-box">
+    <span class="art">ADCT arts. 131 e 132; LC 227/2026 arts. 51 e 114 a 116</span>: a fração
+    &alpha;<sub>a</sub> do IBS é distribuída pelo critério histórico; a parcela
+    (1&minus;&alpha;<sub>a</sub>) restante é distribuída pelo critério destino, mas antes disso
+    sofre duas deduções, nesta ordem: primeiro a taxa de financiamento do CGIBS (c<sub>a</sub>,
+    art. 51 LC 227/2026), depois a retenção de 5% para o Seguro-Receita (&rho;, ADCT art. 132).
+</div>
+<div class="formula-box">
+    IBS histórico(a) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= IBS bruto(a) &times; &alpha;<sub>a</sub><br>
+    CGIBS(a) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= IBS bruto(a) &times; (1&minus;&alpha;<sub>a</sub>) &times; c<sub>a</sub><br>
+    Seguro-Receita(a) &nbsp;= IBS bruto(a) &times; (1&minus;&alpha;<sub>a</sub>) &times; (1&minus;c<sub>a</sub>) &times; &rho;<br>
+    IBS destino, líquido(a) = IBS bruto(a) &times; (1&minus;&alpha;<sub>a</sub>) &times; (1&minus;c<sub>a</sub>) &times; (1&minus;&rho;)
+</div>
+<table>
+    <thead><tr><th class="l">Ano</th><th>&alpha;<sub>a</sub> (histórico)</th><th>c<sub>a</sub> (CGIBS, sobre a parcela destino)</th><th>&rho; (Seguro-Receita)</th></tr></thead>
+    <tbody>{ibs_parametros_rows()}</tbody>
+</table>
+<table>
+    <thead><tr><th class="l">Ano</th><th>IBS histórico (R$ bi)</th><th>IBS destino, líquido (R$ bi)</th><th>Seguro-Receita (R$ bi)</th><th>CGIBS (R$ bi)</th><th>IBS bruto total (R$ bi)</th></tr></thead>
+    <tbody>{ibs_divisao_rows()}</tbody>
+</table>
+<p>
+    Essas quatro fatias somam exatamente o IBS bruto do ano, sem dedução dupla. &alpha;<sub>a</sub>
+    e c<sub>a</sub> são os mesmos parâmetros já publicados no Estudo 06; a diferença é que aqui
+    eles só entram para mostrar a divisão do total nacional, não para calcular quanto cada estado
+    ou município recebe.
 </p>
 
 <h2>5. Limitações e simplificações</h2>
@@ -580,10 +652,11 @@ HTML = f"""<!DOCTYPE html>
     <li>O dado de 2026 usado na média de referência é uma estimativa preliminar (RREO, últimos 12
     meses até abril de 2026, sobre o PIB projetado pelo Focus), a ser substituída pelo dado
     fechado (DCA) assim que disponível.</li>
-    <li>"IBS bruto" não desconta a taxa de manutenção do Comitê Gestor do IBS (CGIBS, art. 51 LC
-    227/2026) nem a retenção do Seguro-Receita (ADCT art. 132), mecanismos que incidem sobre a
-    parcela distribuída aos entes pelo critério destino, não sobre o total nacional
-    arrecadado.</li>
+    <li>"IBS bruto", nas Seções 2 a 4.5, é a arrecadação total antes de qualquer dedução. A divisão
+    entre critério histórico, critério destino, CGIBS (art. 51 LC 227/2026) e Seguro-Receita (ADCT
+    art. 132), na Seção 4.6, usa os mesmos parâmetros &alpha;<sub>a</sub> e c<sub>a</sub> já
+    publicados no Estudo 06, mas só para mostrar o tamanho de cada fatia no agregado nacional, sem
+    entrar em qual estado ou município recebe o quê.</li>
     <li>Para 2031&ndash;2033, fora do horizonte do Boletim Focus (~5 anos à frente), usa-se a
     projeção da IFI, que reporta uma taxa média para o intervalo 2027&ndash;2035, não ano a ano.
     Os valores de 2,2% (PIB real) e 3,0% (IPCA) são tratados como constantes nos três anos por
