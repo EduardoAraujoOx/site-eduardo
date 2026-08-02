@@ -3,7 +3,7 @@
 Estudo 11: série histórica e projeção do IBS total (Brasil), 2029-2033.
 
 Combina:
-  - o "bolo" histórico ICMS+ISS (SICONFI), todo em base DCA Anexo I-C:
+  - o "bolo" histórico ICMS+ISS+FECOP (SICONFI), todo em base DCA Anexo I-C:
     dca_icms_por_uf (2019-2025, já coletado) mesclado com
     data/icms-dca-2013-2018.json (2013-2018, ver
     data/collect-icms-dca-2013-2018.py — substitui o RREO Anexo 3 usado
@@ -11,7 +11,11 @@ Combina:
     data/build-reconciliacao-dca-rreo.py); dca_iss_por_uf (2015-2025)
     mesclado com data/iss-dca-2013-2014.json (2013-2014, ver
     data/collect-iss-dca-2013-2014.py). SICONFI não tem cobertura DCA
-    antes de 2013;
+    antes de 2013. FECOP (Fundo de Combate à Pobreza) usa DCA
+    (dca_fecop_br) para 2019-2025 — mesma fonte e mesma base usada em
+    data/build-coeficientes-uf.py para o coeficiente estadual validado
+    contra a Nota Técnica nº 02/2026; não há FECOP coletado para
+    2013-2018, tratado como zero nesses anos;
   - a trajetória de PIB nominal 2026-2033, construída a partir do PIB
     nominal de 2025 (BCB/SGS) composto pelas medianas do Boletim Focus
     (2026-2030) e pelas projeções da IFI/RAF 107 (2031-2033), ver
@@ -98,26 +102,29 @@ def main():
 
     dca_icms_por_uf = dict(ref["dca_icms_por_uf"])
     dca_iss_por_uf = dict(ref["dca_iss_por_uf"])
+    dca_fecop_br = ref.get("dca_fecop_br", {})
 
     icms_dca_2013_2018 = json.load(open(DATA_DIR / "icms-dca-2013-2018.json"))
     iss_dca_2013_2014 = json.load(open(DATA_DIR / "iss-dca-2013-2014.json"))["dca_iss_por_uf"]
     dca_icms_por_uf.update(icms_dca_2013_2018)
     dca_iss_por_uf.update(iss_dca_2013_2014)
 
-    # ── Bolo histórico ICMS+ISS, 2013-2025 (100% base DCA Anexo I-C) ──
+    # ── Bolo histórico ICMS+ISS+FECOP, 2013-2025 (100% base DCA Anexo I-C) ──
     historico = []
     for y in range(ANO_HIST_INICIO, ANO_HIST_FIM + 1):
         ys = str(y)
         icms = sum(dca_icms_por_uf[ys].values())
         fonte_icms = "DCA"
         iss = sum(dca_iss_por_uf.get(ys, {}).values())
-        bolo = icms + iss
+        fecop = dca_fecop_br.get(ys, 0) or 0
+        bolo = icms + iss + fecop
         pib = macro["pib_nominal_historico"][ys]
         deflator = macro["deflator_ipca_para_2025"][ys]
         historico.append({
             "ano": y,
             "icms": round(icms, 2),
             "iss": round(iss, 2),
+            "fecop": round(fecop, 2),
             "bolo_nominal": round(bolo, 2),
             "bolo_real_2025": round(bolo * deflator, 2),
             "pib_nominal": round(pib, 2),
@@ -168,7 +175,11 @@ def main():
     # quando disponível.
     bolo_2024 = next(h["bolo_nominal"] for h in historico if h["ano"] == 2024)
     pib_2024 = macro["pib_nominal_historico"]["2024"]
-    bolo_2026_est = ref["icms_br"]["2026"] + ref["iss_br"]["2026"]
+    # FECOP de 2026 ainda não fechou na DCA; usa-se o valor de 2025 como estimativa
+    # preliminar (mesma lógica de "carregar o último dado fechado" já aplicada ao
+    # ICMS/ISS de 2026 via RREO). Repor por dado fechado quando a DCA de 2026 sair.
+    fecop_2026_est = dca_fecop_br.get(str(ANO_BASE), 0) or 0
+    bolo_2026_est = ref["icms_br"]["2026"] + ref["iss_br"]["2026"] + fecop_2026_est
     pib_2026_est = pib_nom[2026]
 
     ratio_2024 = bolo_2024 / pib_2024
@@ -230,6 +241,7 @@ def main():
             "fontes": {
                 "icms_2013_2025": "SICONFI/STN, DCA Anexo I-C, todos os estados e o DF",
                 "iss_2013_2025": "SICONFI/STN, DCA Anexo I-C, todos os municípios",
+                "fecop_2019_2025": "SICONFI/STN, DCA Anexo I-C (dca_fecop_br); zero em 2013-2018 (sem coleta); 2026 usa o valor de 2025 como estimativa preliminar",
                 "pib_ipca_historico": "BCB/SGS séries 1207 (PIB nominal) e 433 (IPCA)",
                 "projecao_macro_2026_2030": "BCB, Boletim Focus (Sistema de Expectativas de Mercado), mediana",
                 "projecao_macro_2031_2033": "IFI (Instituição Fiscal Independente, Senado Federal), RAF 107, 18/dez/2025",
@@ -239,7 +251,7 @@ def main():
             },
             "data_pesquisa_focus": macro["_meta"]["data_pesquisa_focus"],
             "premissas": [
-                "Razão bolo (ICMS+ISS) / PIB nominal mantida constante na média de 2024-2026 a partir de 2027. Esse período de referência não é uma escolha de modelagem: é o que os arts. 361 a 365 da LC 214/2025 (redação da LC 227/2026) usam para calibrar a alíquota de referência do IBS em cada ano da transição (2029-2033), a média da razão entre a receita de referência (ICMS+ISS) e o PIB nos anos de 2024 a 2026, fixada por resolução do Senado Federal.",
+                "Razão bolo (ICMS+ISS+FECOP) / PIB nominal mantida constante na média de 2024-2026 a partir de 2027. Esse período de referência não é uma escolha de modelagem: é o que os arts. 361 a 365 da LC 214/2025 (redação da LC 227/2026) usam para calibrar a alíquota de referência do IBS em cada ano da transição (2029-2033), a média da razão entre a receita de referência e o PIB nos anos de 2024 a 2026, fixada por resolução do Senado Federal. O FECOP (Fundo de Combate à Pobreza) é incluído na receita de referência porque a legislação da reforma o trata como parte da base de receita substituída pelo IBS nos estados que o cobram; sem essa parcela, a receita de referência ficaria subestimada em cerca de R$ 14 bi em 2025 (~1,4% do total) frente ao dataset validado de coeficientes por UF (data/coeficientes-uf.json, conferido contra a Nota Técnica nº 02/2026).",
                 "O art. 130, §4º e §5º, do ADCT define um mecanismo distinto: o 'Teto de Referência', que compara a média 2029-2033 de CBS+Imposto Seletivo+IBS com a média 2012-2021 de IPI+ICMS+ISS+PIS/Cofins+IOF-seguros. Não altera os valores projetados aqui: mesmo se ultrapassado, a redução da alíquota só vale a partir de 2035 (fora desta projeção), e o teto exige dados federais (CBS, PIS/Cofins, IPI, IOF-seguros) fora do escopo deste estudo, que modela só o lado subnacional (ICMS/ISS/IBS).",
                 "2026 ainda não fechou: a razão desse ano usa o bolo do RREO (últimos 12 meses até abr/2026) sobre o PIB projetado pelo Focus, uma estimativa preliminar a ser substituída pelo dado fechado (DCA) quando disponível.",
                 "IBS bruto = bolo projetado × sa (fração já migrada para IBS no ADCT). Esse total se divide em quatro fatias: a fração alpha_a distribuída pelo critério histórico, e a fração (1-alpha_a) distribuída pelo critério destino, da qual se deduzem o CGIBS (art. 51 LC 227/2026) e o Seguro-Receita (5%, ADCT art. 132) antes de chegar aos entes. alpha_a e a taxa do CGIBS variam a cada ano da transição (2029-2033) e são os mesmos parâmetros já publicados no Estudo 06.",

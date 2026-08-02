@@ -141,6 +141,7 @@ def hist_rows():
             <td class="l">{h['ano']}</td>
             <td>{fmtbi(h['icms'])}</td>
             <td>{fmtbi(h['iss'])}</td>
+            <td>{fmtbi(h.get('fecop', 0))}</td>
             <td>{fmtbi(h['bolo_nominal'])}</td>
             <td>{fmtbi(h['bolo_real_2025'])}</td>
             <td>{fmtbi(h['pib_nominal'])}</td>
@@ -387,7 +388,7 @@ HTML = f"""<!DOCTYPE html>
     <h1>Série histórica e projeção do IBS total do Brasil, 2029&ndash;2033</h1>
     <p class="subtitle">
         Estimativa do valor total do IBS nacional durante o quinquênio de transição da Reforma
-        Tributária, a partir da série histórica de ICMS e ISS (SICONFI, 2013&ndash;2025) e de
+        Tributária, a partir da série histórica de ICMS, ISS e FECOP (SICONFI, 2013&ndash;2025) e de
         projeções oficiais de crescimento do PIB e inflação.
     </p>
     <div class="answer-box">
@@ -408,8 +409,8 @@ HTML = f"""<!DOCTYPE html>
     Esta nota técnica responde a uma pergunta objetiva: <strong>quanto será o valor total do
     IBS (Imposto sobre Bens e Serviços) no Brasil, ano a ano, entre 2029 e 2033</strong>,
     o quinquênio de transição definido pela Reforma Tributária do consumo (EC 132/2023). A
-    resposta exige combinar três elementos: (i) qual é a arrecadação total de ICMS e ISS hoje, o
-    tributo que o IBS substitui; (ii) uma projeção de como essa arrecadação deve
+    resposta exige combinar três elementos: (i) qual é a receita de referência (ICMS, ISS e FECOP)
+    hoje, a base que o IBS substitui; (ii) uma projeção de como essa arrecadação deve
     crescer com a economia, o que depende de premissas explícitas sobre PIB e inflação; e (iii) o
     cronograma constitucional que converte, ano a ano, parte dessa arrecadação de ICMS/ISS em IBS.
 </p>
@@ -439,26 +440,32 @@ HTML = f"""<!DOCTYPE html>
 </div>
 
 <h2>3. Fontes de dados</h2>
-<h3>3.1 Arrecadação histórica de ICMS e ISS</h3>
+<h3>3.1 Arrecadação histórica de ICMS, ISS e FECOP</h3>
 <ul>
     <li><strong>ICMS, 2013&ndash;2025:</strong> {meta['fontes']['icms_2013_2025']}, conta
     identificada pelo texto da definição constitucional do imposto ("Operações Relativas à
     Circulação de Mercadorias..."), não pelo código, que muda de esquema ao longo dos anos,
-    excluindo o adicional do Fundo Estadual de Combate à Pobreza, multas e dívida ativa, 27
-    estados + Distrito Federal.</li>
+    excluindo multas e dívida ativa (o FECOP entra separadamente, ver abaixo), 27 estados +
+    Distrito Federal.</li>
     <li><strong>ISS, 2013&ndash;2025:</strong> {meta['fontes']['iss_2013_2025']} (cerca de 5.570
     municípios por ano), conta identificada por texto ("Imposto sobre Serviços de Qualquer
     Natureza, ISSQN") porque o código da conta no plano de contas do DCA mudou de esquema mais
     de uma vez entre 2013 e 2025.</li>
+    <li><strong>FECOP, 2019&ndash;2025:</strong> {meta['fontes'].get('fecop_2019_2025', 'SICONFI/STN, DCA Anexo I-C')},
+    mesma fonte usada no coeficiente estadual do Estudo 06, validado contra a Nota Técnica
+    nº 02/2026. Zero em 2013&ndash;2018 (sem coleta equivalente via RREO); 2026 usa o valor de
+    2025 como estimativa preliminar.</li>
 </ul>
 <p>
-    O SICONFI não publica o DCA Anexo I-C para nenhum dos dois tributos antes de 2013. Para
+    O SICONFI não publica o DCA Anexo I-C para nenhum dos três tributos antes de 2013. Para
     2015&ndash;2018, o ICMS do DCA foi comparado com o RREO Anexo 3, outro demonstrativo do
     SICONFI: a diferença fica sempre abaixo de 1,3%, checado estado a estado, o que confirma que
     os dois demonstrativos captam a mesma arrecadação. O RREO não é usado para o ISS porque
     apresenta cobertura municipal muito baixa (menos de 15% dos municípios respondem a essa conta
     específica nesse demonstrativo); o DCA atinge cobertura de 90% a 99% dos municípios
-    brasileiros em cada ano.
+    brasileiros em cada ano. O FECOP (Fundo de Combate à Pobreza) é incluído na receita de
+    referência porque a legislação da reforma o trata como parte da base substituída pelo IBS nos
+    estados que o cobram: cerca de R$&nbsp;14 bi em 2025, ~1,4% da receita de referência total.
 </p>
 
 <h3>3.2 PIB e inflação</h3>
@@ -475,35 +482,35 @@ HTML = f"""<!DOCTYPE html>
 
 <h2>4. Metodologia</h2>
 
-<h3>4.1 A arrecadação histórica: ICMS + ISS, Brasil, 2013&ndash;2025</h3>
+<h3>4.1 A arrecadação histórica: ICMS + ISS + FECOP, Brasil, 2013&ndash;2025</h3>
 <table>
-    <thead><tr><th class="l">Ano</th><th>ICMS (R$ bi)</th><th>ISS (R$ bi)</th>
-    <th>ICMS+ISS nominal (R$ bi)</th><th>ICMS+ISS real, 2025 (R$ bi)</th>
-    <th>PIB nominal (R$ bi)</th><th>ICMS+ISS / PIB</th><th>Fonte ICMS</th></tr></thead>
+    <thead><tr><th class="l">Ano</th><th>ICMS (R$ bi)</th><th>ISS (R$ bi)</th><th>FECOP (R$ bi)</th>
+    <th>Total nominal (R$ bi)</th><th>Total real, 2025 (R$ bi)</th>
+    <th>PIB nominal (R$ bi)</th><th>Total / PIB</th><th>Fonte ICMS</th></tr></thead>
     <tbody>{hist_rows()}</tbody>
 </table>
 
 <h3>4.2 Premissa central: o período de referência que a lei manda usar</h3>
 <p>
-    A projeção assume que a arrecadação de ICMS e ISS, medida como proporção do PIB (a "carga
-    tributária"), se mantém constante a partir de 2027 no nível médio dos anos de 2024, 2025 e
-    2026 (&asymp;{fmtpct(meta['razao_bolo_pib_base'])} do PIB). Não é uma média escolhida por
-    conveniência: é o período de três anos que a própria lei da reforma manda usar para calibrar
-    a alíquota do IBS, ano a ano, durante toda a transição.
+    A projeção assume que a receita de referência (ICMS, ISS e FECOP), medida como proporção do
+    PIB (a "carga tributária"), se mantém constante a partir de 2027 no nível médio dos anos de
+    2024, 2025 e 2026 (&asymp;{fmtpct(meta['razao_bolo_pib_base'])} do PIB). Não é uma média
+    escolhida por conveniência: é o período de três anos que a própria lei da reforma manda usar
+    para calibrar a alíquota do IBS, ano a ano, durante toda a transição.
 </p>
 <div class="law-box">
     <span class="art">LC 214/2025, arts. 361 a 365</span> (redação dada pela LC 227/2026): para
     cada ano da transição (2029 a 2033), a alíquota de referência do IBS estadual e municipal é
-    fixada de forma a equivaler à <em>média da razão entre a receita de referência (ICMS+ISS) e o
-    PIB nos anos de 2024 a 2026</em>. O mesmo período de três anos vale para todos os cinco anos
-    da transição: a lei não recalcula essa base a cada ano.
+    fixada de forma a equivaler à <em>média da razão entre a receita de referência (ICMS+ISS+FECOP)
+    e o PIB nos anos de 2024 a 2026</em>. O mesmo período de três anos vale para todos os cinco
+    anos da transição: a lei não recalcula essa base a cada ano.
 </div>
 <p>
     Isso substitui a leitura mais simples de que bastaria olhar para o último ano fechado (2025).
     A tabela abaixo mostra os três anos que compõem a média e o resultado usado na projeção:
 </p>
 <table>
-    <thead><tr><th class="l">Ano</th><th>ICMS+ISS (R$ bi)</th><th>PIB (R$ bi)</th>
+    <thead><tr><th class="l">Ano</th><th>ICMS+ISS+FECOP (R$ bi)</th><th>PIB (R$ bi)</th>
     <th>Razão</th><th class="l">Situação</th></tr></thead>
     <tbody>{referencia_rows()}</tbody>
 </table>
@@ -531,11 +538,11 @@ HTML = f"""<!DOCTYPE html>
     Na prática, isso significa que o legislador não fixou de antemão qual será a alíquota do IBS:
     ela será calculada pelo Senado para que a arrecadação resultante mantenha, em cada ano da
     transição, a mesma proporção do PIB medida nessa base histórica de três anos. É esse
-    mecanismo legal, e não uma hipótese técnica externa, que justifica projetar a arrecadação de
-    ICMS e ISS como uma fração fixa do PIB projetado.
+    mecanismo legal, e não uma hipótese técnica externa, que justifica projetar a receita de
+    referência (ICMS+ISS+FECOP) como uma fração fixa do PIB projetado.
 </p>
 <p>
-    Entre 2019 e 2025, a razão ICMS+ISS/PIB realizada variou entre
+    Entre 2019 e 2025, a razão receita de referência/PIB realizada variou entre
     {fmtpct(meta['faixa_historica_razao_2019_2025']['min'])} e
     {fmtpct(meta['faixa_historica_razao_2019_2025']['max'])}, uma banda de cerca de
     {fmtnum(meta['faixa_historica_razao_2019_2025']['max'] - meta['faixa_historica_razao_2019_2025']['min'])}
@@ -642,16 +649,16 @@ HTML = f"""<!DOCTYPE html>
 
 <h2>5. Limitações e simplificações</h2>
 <ol>
-    <li>A razão ICMS+ISS/PIB (a carga tributária) é mantida constante na média de 2024-2026 a
-    partir de 2027, ou seja, presume-se que a arrecadação cresce sempre na mesma proporção do
-    PIB medida nesse período de referência, sem estimar por métodos estatísticos se ela
-    historicamente cresceu mais rápido ou mais devagar que a economia. Com apenas 13 observações
-    anuais e quebras estruturais conhecidas (pandemia em 2020, choque inflacionário em
+    <li>A razão receita de referência/PIB (a carga tributária) é mantida constante na média de
+    2024-2026 a partir de 2027, ou seja, presume-se que a arrecadação cresce sempre na mesma
+    proporção do PIB medida nesse período de referência, sem estimar por métodos estatísticos se
+    ela historicamente cresceu mais rápido ou mais devagar que a economia. Com apenas 13
+    observações anuais e quebras estruturais conhecidas (pandemia em 2020, choque inflacionário em
     2021&ndash;2022), uma estimativa desse tipo seria pouco robusta. A banda histórica da Seção
     4.2 serve como medida alternativa de incerteza.</li>
     <li>O dado de 2026 usado na média de referência é uma estimativa preliminar (RREO, últimos 12
-    meses até abril de 2026, sobre o PIB projetado pelo Focus), a ser substituída pelo dado
-    fechado (DCA) assim que disponível.</li>
+    meses até abril de 2026, sobre o PIB projetado pelo Focus, mais o FECOP de 2025 como proxy), a
+    ser substituída pelo dado fechado (DCA) assim que disponível.</li>
     <li>"IBS bruto", nas Seções 2 a 4.5, é a arrecadação total antes de qualquer dedução. A divisão
     entre critério histórico, critério destino, CGIBS (art. 51 LC 227/2026) e Seguro-Receita (ADCT
     art. 132), na Seção 4.6, usa os mesmos parâmetros &alpha;<sub>a</sub> e c<sub>a</sub> já
@@ -662,7 +669,7 @@ HTML = f"""<!DOCTYPE html>
     Os valores de 2,2% (PIB real) e 3,0% (IPCA) são tratados como constantes nos três anos por
     simplificação explícita.</li>
     <li>Os valores são nominais (a preços correntes de cada ano), não deflacionados. A coluna
-    "ICMS+ISS real, 2025" na tabela histórica (Seção 4.1) mostra o efeito da correção pela
+    "Total real, 2025" na tabela histórica (Seção 4.1) mostra o efeito da correção pela
     inflação apenas para o período já realizado (2013&ndash;2025); a projeção 2026&ndash;2033 não
     reapresenta essa correção porque a inflação projetada já está embutida na composição do PIB
     nominal.</li>
