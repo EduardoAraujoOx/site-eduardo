@@ -92,15 +92,6 @@
         .meto-section-title { font-family: var(--sans); font-size: 0.85rem; font-weight: 600; color: var(--text); margin: 1.25rem 0 0.4rem; }
         .meto-note { font-family: var(--serif); font-size: 0.82rem; color: var(--text-secondary); line-height: 1.65; margin-top: 0.5rem; }
 
-        /* ── Abas ── */
-        .tabs-wrap { margin-bottom: 0; }
-        .tab-btns { display: flex; gap: 0.25rem; border-bottom: 2px solid var(--border); margin-bottom: 1.25rem; flex-wrap: wrap; }
-        .tab-btn { padding: 0.5rem 1.1rem; border: 1px solid transparent; border-bottom: none; border-radius: 6px 6px 0 0; background: none; cursor: pointer; font-family: var(--sans); font-size: 0.86rem; font-weight: 500; color: var(--text-muted); transition: all 0.15s; position: relative; bottom: -2px; }
-        .tab-btn:hover { color: var(--text); background: var(--bg); }
-        .tab-btn.active { color: var(--accent); border-color: var(--border); border-bottom-color: var(--surface); background: var(--surface); font-weight: 600; }
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
-
         /* ── Seletor de esfera ── */
         .esfera-toggle { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
         .esfera-toggle-label { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-right: 0.25rem; }
@@ -116,6 +107,7 @@
         .data-table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
         .data-table th { background: var(--bg); border: 1px solid var(--border); padding: 0.42rem 0.6rem; text-align: center; font-family: var(--sans); font-weight: 600; font-size: 0.76rem; white-space: nowrap; color: var(--text); }
         .data-table th.th-left { text-align: left; }
+        .data-table th.col-divider, .data-table td.col-divider { border-left: 2px solid var(--border); }
         .data-table td { border: 1px solid var(--border); padding: 0.36rem 0.6rem; text-align: right; font-family: var(--mono); font-size: 0.78rem; white-space: nowrap; color: var(--text); }
         .data-table td.td-uf { text-align: left; font-family: var(--sans); font-weight: 600; font-size: 0.81rem; }
         .data-table td.td-uf small { font-weight: 400; color: var(--text-muted); }
@@ -146,7 +138,6 @@
         @media (max-width: 640px) {
             .study-hero { padding: 2rem 1.25rem 1rem; }
             .study-content { padding: 0 1.25rem 3rem; }
-            .tab-btns { flex-wrap: wrap; }
         }
     </style>
 </head>
@@ -260,9 +251,10 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
                     correção, comparar a receita projetada (que cresce com o PIB) contra um valor
                     travado em 2025 misturaria o efeito da redistribuição com o efeito puro do
                     crescimento da economia, superestimando ganhos e subestimando perdas em todos os
-                    entes por igual. A coluna "\(r_0^{2025}\) (ref.)" de cada tabela mostra apenas o
-                    valor de partida em 2025, para referência; não é mais a base usada no cálculo da
-                    variação percentual a partir de 2030.
+                    entes por igual. Nesta atualização, \(R^{0}_{a,\text{ente}}\) deixa de ficar
+                    implícito no cálculo do \(\Delta\%\): cada tabela abaixo mostra a coluna "Sem
+                    reforma" ano a ano, lado a lado com "Com reforma", para que a comparação seja
+                    auditável diretamente pelos dois números, não só pela razão entre eles.
                 </p>
 
                 <p class="meto-section-title">Variáveis</p>
@@ -296,7 +288,7 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
                         </tr>
                         <tr>
                             <td>\(\lambda_{\text{ente}}\)</td>
-                            <td>Quociente \(\varphi^{CPT}_{\text{ente}}/\varphi^{neutro}_{\text{ente}}\), exibido no Cenário 3 (neutro). \(\lambda<1\) indica ente que cresceu acima da média nacional em 2019&ndash;2025 e sofre leve penalidade pelo critério histórico; \(\lambda>1\) indica o oposto. Calculado separadamente para estado e município.</td>
+                            <td>Quociente \(\varphi^{CPT}_{\text{ente}}/\varphi^{neutro}_{\text{ente}}\), usado internamente no Cenário 3 (neutro) mas sem coluna própria nas tabelas abaixo. \(\lambda<1\) indica ente que cresceu acima da média nacional em 2019&ndash;2025 e sofre leve penalidade pelo critério histórico; \(\lambda>1\) indica o oposto. Calculado separadamente para estado e município.</td>
                             <td>Derivado dos itens acima</td>
                         </tr>
                         <tr>
@@ -434,151 +426,136 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
             <button class="esfera-btn" data-esfera="municipio">Municípios (agregado)</button>
         </div>
 
-        <div class="tabs-wrap">
-            <div class="tab-btns">
-                <button class="tab-btn active" data-tab="sc1">Cenário 1: Redistribuição integral</button>
-                <button class="tab-btn" data-tab="sc2">Cenário 2: Redistribuição moderada</button>
-                <button class="tab-btn" data-tab="sc3">Cenário 3: Neutro</button>
-                <button class="tab-btn" data-tab="ineq">Receita vs. Gini/IDH</button>
-            </div>
-
-            <div id="tab-sc1" class="tab-panel active">
-                <span class="section-label">Cenário 1: Redistribuição integral (R$ bi)</span>
-                <div class="callout">
-                    O IBSd é alocado pelo critério de consumo final: cada ente recebe uma fração
-                    \(\varphi^{dest}_{\text{ente}}\) da receita de referência projetada, derivada dos
-                    coeficientes de redistribuição de Gobetti e Monteiro (IPEA, 2023) e normalizada
-                    para conservar o agregado. A coluna exibe \(\varphi^{dest}\) como percentual da
-                    receita de referência nacional 2025.
-                </div>
-                <div class="table-wrap">
-                    <table class="data-table" id="table-sc1">
-                        <thead>
-                            <tr>
-                                <th class="th-left" rowspan="2">UF</th>
-                                <th rowspan="2">\(\varphi^{dest}\)</th>
-                                <th rowspan="2">\(r_0^{2025}\)<br>(ref.)</th>
-                                <th colspan="5">Receita ICMS/IBS projetada (R$ bi)</th>
-                                <th colspan="2">Variação vs. contrafactual</th>
-                            </tr>
-                            <tr>
-                                <th>2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
-                                <th>&#916;% 2029</th><th>&#916;% 2033</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-sc1">
-                            <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
-                        </tbody>
-                        <tfoot id="tfoot-sc1"></tfoot>
-                    </table>
-                </div>
-            </div>
-
-            <div id="tab-sc2" class="tab-panel">
-                <span class="section-label">Cenário 2: Redistribuição moderada (R$ bi)</span>
-                <div class="callout">
-                    O coeficiente de destino \(\varphi^{dest}_{\text{ente}}\) é a média aritmética entre
-                    \(\varphi^{neutro}_{\text{ente}}\) (Cenário 3) e \(\varphi^{dest,pleno}_{\text{ente}}\)
-                    (Cenário 1). Por ser transformação linear de uma redistribuição soma-zero, o total
-                    de IBS entre entes é conservado: a menor perda de um ente corresponde ao menor
-                    ganho de outro, na mesma proporção.
-                </div>
-                <div class="table-wrap">
-                    <table class="data-table" id="table-sc2">
-                        <thead>
-                            <tr>
-                                <th class="th-left" rowspan="2">UF</th>
-                                <th rowspan="2">\(\varphi^{dest}\)</th>
-                                <th rowspan="2">\(r_0^{2025}\)<br>(ref.)</th>
-                                <th colspan="5">Receita ICMS/IBS projetada (R$ bi)</th>
-                                <th colspan="2">Variação vs. contrafactual</th>
-                            </tr>
-                            <tr>
-                                <th>2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
-                                <th>&#916;% 2029</th><th>&#916;% 2033</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-sc2">
-                            <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
-                        </tbody>
-                        <tfoot id="tfoot-sc2"></tfoot>
-                    </table>
-                </div>
-            </div>
-
-            <div id="tab-sc3" class="tab-panel">
-                <span class="section-label">Cenário 3: Neutro (R$ bi)</span>
-                <div class="callout">
-                    Com \(\varphi^{dest}=\varphi^{neutro}\), IBSd e ICMS residual usam a mesma
-                    participação de origem 2025. Variações decorrem exclusivamente do efeito CPT
-                    (\(\lambda\neq 1\)): entes com crescimento de receita abaixo da média nacional
-                    entre 2019 e 2025 têm \(\lambda>1\); os que cresceram acima têm \(\lambda<1\). A
-                    coluna \(\lambda_{\text{ente}}=\varphi^{CPT}/\varphi^{neutro}\) exibe esse
-                    coeficiente.
-                </div>
-                <div class="table-wrap">
-                    <table class="data-table" id="table-sc3">
-                        <thead>
-                            <tr>
-                                <th class="th-left" rowspan="2">UF</th>
-                                <th rowspan="2">\(\lambda_{\text{ente}}\)</th>
-                                <th rowspan="2">\(r_0^{2025}\)<br>(ref.)</th>
-                                <th colspan="5">Receita ICMS/IBS projetada (R$ bi)</th>
-                                <th colspan="2">Variação vs. contrafactual</th>
-                            </tr>
-                            <tr>
-                                <th>2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
-                                <th>&#916;% 2029</th><th>&#916;% 2033</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-sc3">
-                            <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
-                        </tbody>
-                        <tfoot id="tfoot-sc3"></tfoot>
-                    </table>
-                </div>
-            </div>
-
-            <div id="tab-ineq" class="tab-panel">
-                <span class="section-label">Variação de receita em 2033 vs. indicadores de bem-estar, por UF (esfera: total)</span>
-                <div class="callout">
-                    Compara a variação percentual da receita projetada para 2033 em relação ao
-                    contrafactual sem reforma daquele ano \(R^{0}_{2033,\text{ente}}\) &mdash; nos
-                    Cenários 1 (redistribuição integral) e 3 (neutro), esfera total (estado +
-                    municípios) &mdash; com o Índice de Gini do rendimento domiciliar
-                    per capita (IBGE, PNAD Contínua, 2023) e o IDHM (PNUD, Radar IDHM 2024) de cada
-                    estado. O objetivo é avaliar, de forma exploratória, se os estados que mais ganham
-                    ou perdem receita na transição são também os de maior ou menor indicador de
-                    qualidade de vida. Coeficientes de correlação de Pearson (\(r\)) são exibidos abaixo
-                    da tabela; com \(n=27\) UFs, devem ser lidos como indicativos, não como evidência
-                    causal.
-                </div>
-                <div class="table-wrap">
-                    <table class="data-table" id="table-ineq">
-                        <thead>
-                            <tr>
-                                <th class="th-left">UF</th>
-                                <th>&#916;% 2033<br>(Cenário 1)</th>
-                                <th>&#916;% 2033<br>(Cenário 3)</th>
-                                <th>Gini<br>(2023)</th>
-                                <th>IDHM<br>(2024)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-ineq">
-                            <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
-                        </tbody>
-                        <tfoot id="tfoot-ineq"></tfoot>
-                    </table>
-                </div>
-                <p class="meto-note" id="corr-ineq"></p>
-                <p class="meto-note">
-                    Fontes: IBGE, PNAD Contínua, Tabela 7435 (SIDRA) &mdash; Índice de Gini do
-                    rendimento domiciliar per capita, 2023. PNUD Brasil (com Ipea e FJP),
-                    <em>Radar IDHM: evolução do IDHM e de seus componentes &mdash; período de 2012 a
-                    2024</em>, maio de 2026.
-                </p>
-            </div>
+        <span class="section-label">Tabela 1 &middot; Cenário de redistribuição integral (R$ bi)</span>
+        <div class="callout">
+            O IBSd é alocado pelo critério de consumo final: cada ente recebe uma fração
+            \(\varphi^{dest}_{\text{ente}}\) da receita de referência projetada, derivada dos
+            coeficientes de redistribuição de Gobetti e Monteiro (IPEA, 2023) e normalizada para
+            conservar o agregado. "Sem reforma" é o contrafactual \(R^{0}_{a,\text{ente}}\); "Com
+            reforma" é \(R_{a,\text{ente}}\); \(\Delta\%\) compara os dois em cada ano; "Acumulado
+            do período" soma as cinco colunas de cada lado (2029&ndash;2033) antes de comparar.
         </div>
+        <div class="table-wrap">
+            <table class="data-table" id="table-sc1">
+                <thead>
+                    <tr>
+                        <th class="th-left" rowspan="2">UF</th>
+                        <th colspan="5">Sem reforma (R$ bi)</th>
+                        <th class="col-divider" colspan="5">Com reforma (R$ bi)</th>
+                        <th class="col-divider" colspan="5">&#916;%</th>
+                        <th class="col-divider" colspan="2">Acumulado do período</th>
+                    </tr>
+                    <tr>
+                        <th>2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
+                        <th class="col-divider">2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
+                        <th class="col-divider">2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
+                        <th class="col-divider">&#916; R$ bi</th><th>&#916;%</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-sc1">
+                    <tr><td colspan="18" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+                <tfoot id="tfoot-sc1"></tfoot>
+            </table>
+        </div>
+
+        <span class="section-label">Tabela 2 &middot; Cenário de redistribuição moderada (R$ bi)</span>
+        <div class="callout">
+            O coeficiente de destino \(\varphi^{dest}_{\text{ente}}\) é a média aritmética entre
+            \(\varphi^{neutro}_{\text{ente}}\) (Tabela 3) e \(\varphi^{dest,pleno}_{\text{ente}}\)
+            (Tabela 1). Por ser transformação linear de uma redistribuição soma-zero, o total de
+            IBS entre entes é conservado: a menor perda de um ente corresponde ao menor ganho de
+            outro, na mesma proporção.
+        </div>
+        <div class="table-wrap">
+            <table class="data-table" id="table-sc2">
+                <thead>
+                    <tr>
+                        <th class="th-left" rowspan="2">UF</th>
+                        <th colspan="5">Sem reforma (R$ bi)</th>
+                        <th class="col-divider" colspan="5">Com reforma (R$ bi)</th>
+                        <th class="col-divider" colspan="5">&#916;%</th>
+                        <th class="col-divider" colspan="2">Acumulado do período</th>
+                    </tr>
+                    <tr>
+                        <th>2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
+                        <th class="col-divider">2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
+                        <th class="col-divider">2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
+                        <th class="col-divider">&#916; R$ bi</th><th>&#916;%</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-sc2">
+                    <tr><td colspan="18" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+                <tfoot id="tfoot-sc2"></tfoot>
+            </table>
+        </div>
+
+        <span class="section-label">Tabela 3 &middot; Cenário neutro (R$ bi)</span>
+        <div class="callout">
+            Com \(\varphi^{dest}=\varphi^{neutro}\), IBSd e ICMS residual usam a mesma participação
+            de origem 2025. Variações residuais decorrem exclusivamente do efeito CPT
+            (\(\lambda=\varphi^{CPT}/\varphi^{neutro}\neq 1\)): entes com crescimento de receita
+            abaixo da média nacional entre 2019 e 2025 têm \(\lambda>1\); os que cresceram acima
+            têm \(\lambda<1\).
+        </div>
+        <div class="table-wrap">
+            <table class="data-table" id="table-sc3">
+                <thead>
+                    <tr>
+                        <th class="th-left" rowspan="2">UF</th>
+                        <th colspan="5">Sem reforma (R$ bi)</th>
+                        <th class="col-divider" colspan="5">Com reforma (R$ bi)</th>
+                        <th class="col-divider" colspan="5">&#916;%</th>
+                        <th class="col-divider" colspan="2">Acumulado do período</th>
+                    </tr>
+                    <tr>
+                        <th>2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
+                        <th class="col-divider">2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
+                        <th class="col-divider">2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
+                        <th class="col-divider">&#916; R$ bi</th><th>&#916;%</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-sc3">
+                    <tr><td colspan="18" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+                <tfoot id="tfoot-sc3"></tfoot>
+            </table>
+        </div>
+
+        <span class="section-label">Tabela 4 &middot; Receita acumulada vs. indicadores de bem-estar, por UF (esfera: total)</span>
+        <div class="callout">
+            Compara a variação percentual acumulada 2029&ndash;2033 (Tabelas 1 e 3, esfera total
+            &mdash; estado + municípios) com o Índice de Gini do rendimento domiciliar per capita
+            (IBGE, PNAD Contínua, 2023) e o IDHM (PNUD, Radar IDHM 2024) de cada estado. O objetivo
+            é avaliar, de forma exploratória, se os estados que mais ganham ou perdem receita na
+            transição são também os de maior ou menor indicador de qualidade de vida. Coeficientes
+            de correlação de Pearson (\(r\)) são exibidos abaixo da tabela; com \(n=27\) UFs, devem
+            ser lidos como indicativos, não como evidência causal.
+        </div>
+        <div class="table-wrap">
+            <table class="data-table" id="table-ineq">
+                <thead>
+                    <tr>
+                        <th class="th-left">UF</th>
+                        <th>&#916;% acumulado<br>(Tabela 1)</th>
+                        <th>&#916;% acumulado<br>(Tabela 3)</th>
+                        <th>Gini<br>(2023)</th>
+                        <th>IDHM<br>(2024)</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-ineq">
+                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+                <tfoot id="tfoot-ineq"></tfoot>
+            </table>
+        </div>
+        <p class="meto-note" id="corr-ineq"></p>
+        <p class="meto-note">
+            Fontes: IBGE, PNAD Contínua, Tabela 7435 (SIDRA) &mdash; Índice de Gini do rendimento
+            domiciliar per capita, 2023. PNUD Brasil (com Ipea e FJP), <em>Radar IDHM: evolução do
+            IDHM e de seus componentes &mdash; período de 2012 a 2024</em>, maio de 2026.
+        </p>
 
         <div class="callout" style="margin-top:1rem">
             A trajetória nacional de receita de referência (ICMS+ISS contrafactual e IBS) usada como
@@ -745,89 +722,85 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
         return { res, r0_2025 };
     }
 
-    function dispCoefFor(uf, params, esfera, coefKey, showLambda) {
-        const parts = partsFor(uf, esfera, params);
-        if (parts.length === 0) return null;
-        if (showLambda) {
-            const cpt = parts.reduce((s, x) => s + x.coefCPT, 0);
-            const neutro = parts.reduce((s, x) => s + x.coefNeutro, 0);
-            return neutro > 0 ? cpt / neutro : 1;
-        }
-        const key = coefKey === 'pleno' ? 'coefPleno' : 'coefInter';
-        return parts.reduce((s, x) => s + x[key], 0);
-    }
-
     const SCENARIOS = [
         { id: 'sc1', coefKey: 'pleno'  },
         { id: 'sc2', coefKey: 'inter'  },
         { id: 'sc3', coefKey: 'neutro' }
     ];
 
-    function buildTable(tbodyId, tfootId, params, coefKey, esfera, nacionalByYear) {
-        const showLambda = coefKey === 'neutro';
+    // Soma as cinco colunas de cada lado (2029-2033) antes de comparar — "quanto o ente
+    // arrecadou/deixou de arrecadar no acumulado dos cinco anos", não uma média de percentuais.
+    function accumulate(proj) {
+        if (!proj) return null;
+        let sumTotal = 0, sumContra = 0;
+        ANOS.forEach(a => { sumTotal += proj.res[a].total; sumContra += proj.res[a].contrafactual; });
+        return { sumTotal, sumContra, deltaRs: sumTotal - sumContra, dpct: sumContra > 0 ? (sumTotal - sumContra) / sumContra : 0 };
+    }
 
+    function td(content, classes) {
+        const cls = (classes || []).filter(Boolean).join(' ');
+        return `<td${cls ? ` class="${cls}"` : ''}>${content}</td>`;
+    }
+
+    function buildTable(tbodyId, tfootId, params, coefKey, esfera, nacionalByYear) {
         const rows = UFS.map(uf => {
             const proj = project(uf, esfera, params, coefKey, nacionalByYear);
-            const dispCoef = dispCoefFor(uf, params, esfera, coefKey, showLambda);
-            return { uf, proj, dispCoef };
+            return { uf, proj, acc: accumulate(proj) };
         }).sort((a, b) => {
-            if (!a.proj && !b.proj) return 0;
-            if (!a.proj) return 1;
-            if (!b.proj) return -1;
-            return a.proj.res[2033].dpct - b.proj.res[2033].dpct;
+            if (!a.acc && !b.acc) return 0;
+            if (!a.acc) return 1;
+            if (!b.acc) return -1;
+            return a.acc.dpct - b.acc.dpct;
         });
 
         const tbody = document.getElementById(tbodyId);
-        tbody.innerHTML = rows.map(({ uf, proj, dispCoef }) => {
+        tbody.innerHTML = rows.map(({ uf, proj, acc }) => {
             const isES = uf === 'ES';
+            const rowClass = isES ? ' class="row-es"' : '';
             if (!proj) {
-                const naCells = ANOS.map(() => '<td class="td-ref">n/a</td>').join('');
-                return `<tr${isES ? ' class="row-es"' : ''}>
+                const naGroup = (n, divider) => Array.from({ length: n }, (_, i) =>
+                    td('n/a', ['td-ref', i === 0 && divider ? 'col-divider' : null])
+                ).join('');
+                return `<tr${rowClass} title="Sem esfera municipal separada para o DF (LC 227/2026)">
                     <td class="td-uf">${uf} <small>${NOMES_UF[uf]}</small></td>
-                    <td class="td-ref" title="Sem esfera municipal separada para o DF (LC 227/2026)">n/a</td>
-                    <td class="td-ref">n/a</td>
-                    ${naCells}
-                    <td class="td-ref">n/a</td>
-                    <td class="td-ref">n/a</td>
+                    ${naGroup(5, false)}${naGroup(5, true)}${naGroup(5, true)}${naGroup(2, true)}
                 </tr>`;
             }
-            const d1cell = showLambda
-                ? `<td class="td-ref">${dispCoef.toLocaleString('pt-BR',{minimumFractionDigits:4,maximumFractionDigits:4})}</td>`
-                : `<td class="td-ref">${fmtCoef(dispCoef)}</td>`;
-            const yrCells = ANOS.map(a => `<td>${fmtBi(proj.res[a].total, 2)}</td>`).join('');
-            const d29 = proj.res[2029].dpct, d33 = proj.res[2033].dpct;
-            return `<tr${isES ? ' class="row-es"' : ''}>
+            const semCells = ANOS.map(a => td(fmtBi(proj.res[a].contrafactual, 2))).join('');
+            const comCells = ANOS.map((a, i) => td(fmtBi(proj.res[a].total, 2), [i === 0 ? 'col-divider' : null])).join('');
+            const dpctCells = ANOS.map((a, i) => td(fmtPct(proj.res[a].dpct, 1), [clsPct(proj.res[a].dpct), i === 0 ? 'col-divider' : null])).join('');
+            const accCells = td(fmtBi(acc.deltaRs, 2), ['col-divider', clsPct(acc.dpct)]) + td(fmtPct(acc.dpct, 1), [clsPct(acc.dpct)]);
+            return `<tr${rowClass}>
                 <td class="td-uf">${uf} <small>${NOMES_UF[uf]}</small></td>
-                ${d1cell}
-                <td class="td-ref">${fmtBi(proj.r0_2025, 2)}</td>
-                ${yrCells}
-                <td class="${clsPct(d29)}">${fmtPct(d29, 1)}</td>
-                <td class="${clsPct(d33)}">${fmtPct(d33, 1)}</td>
+                ${semCells}${comCells}${dpctCells}${accCells}
             </tr>`;
         }).join('');
 
-        let sumR0_2025 = 0;
-        const sumYears = {}, sumContra = {};
-        ANOS.forEach(a => { sumYears[a] = 0; sumContra[a] = 0; });
+        const sumSem = {}, sumCom = {};
+        ANOS.forEach(a => { sumSem[a] = 0; sumCom[a] = 0; });
+        let sumAccDelta = 0, sumAccContra = 0;
         for (const uf of UFS) {
             const proj = project(uf, esfera, params, coefKey, nacionalByYear);
             if (!proj) continue;
-            sumR0_2025 += proj.r0_2025;
-            ANOS.forEach(a => { sumYears[a] += proj.res[a].total; sumContra[a] += proj.res[a].contrafactual; });
+            ANOS.forEach(a => { sumSem[a] += proj.res[a].contrafactual; sumCom[a] += proj.res[a].total; });
+            const acc = accumulate(proj);
+            sumAccDelta += acc.deltaRs;
+            sumAccContra += acc.sumContra;
         }
-        const dpct29 = sumContra[2029] > 0 ? (sumYears[2029] - sumContra[2029]) / sumContra[2029] : 0;
-        const dpct33 = sumContra[2033] > 0 ? (sumYears[2033] - sumContra[2033]) / sumContra[2033] : 0;
-        const yrSumCells = ANOS.map(a => `<td>${fmtBi(sumYears[a], 1)}</td>`).join('');
+        const sumDpct = {};
+        ANOS.forEach(a => { sumDpct[a] = sumSem[a] > 0 ? (sumCom[a] - sumSem[a]) / sumSem[a] : 0; });
+        const sumAccDpct = sumAccContra > 0 ? sumAccDelta / sumAccContra : 0;
+
+        const semFootCells = ANOS.map(a => td(fmtBi(sumSem[a], 1))).join('');
+        const comFootCells = ANOS.map((a, i) => td(fmtBi(sumCom[a], 1), [i === 0 ? 'col-divider' : null])).join('');
+        const dpctFootCells = ANOS.map((a, i) => td(fmtPct(sumDpct[a], 1), [clsPct(sumDpct[a]), i === 0 ? 'col-divider' : null])).join('');
+        const accFootCells = td(fmtBi(sumAccDelta, 1), ['col-divider', clsPct(sumAccDpct)]) + td(fmtPct(sumAccDpct, 1), [clsPct(sumAccDpct)]);
         const labelBrasil = esfera === 'estado' ? 'Brasil <small>27 estados</small>'
                            : esfera === 'municipio' ? 'Brasil <small>26 UFs, municípios</small>'
                            : 'Brasil <small>27 UFs</small>';
         document.getElementById(tfootId).innerHTML = `<tr>
             <td class="td-uf"><strong>${labelBrasil}</strong></td>
-            <td class="td-ref"></td>
-            <td class="td-ref">${fmtBi(sumR0_2025, 1)}</td>
-            ${yrSumCells}
-            <td class="${clsPct(dpct29)}">${fmtPct(dpct29, 1)}</td>
-            <td class="${clsPct(dpct33)}">${fmtPct(dpct33, 1)}</td>
+            ${semFootCells}${comFootCells}${dpctFootCells}${accFootCells}
         </tr>`;
     }
 
@@ -853,10 +826,10 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
 
     function buildIneqTable(params, giniIdh, nacionalByYear) {
         const rows = UFS.map(uf => {
-            const rC1 = project(uf, 'total', params, 'pleno', nacionalByYear);
-            const rC3 = project(uf, 'total', params, 'neutro', nacionalByYear);
+            const accC1 = accumulate(project(uf, 'total', params, 'pleno', nacionalByYear));
+            const accC3 = accumulate(project(uf, 'total', params, 'neutro', nacionalByYear));
             const ind = giniIdh.ufs[uf] || {};
-            return { uf, dC1: rC1.res[2033].dpct, dC3: rC3.res[2033].dpct, gini: ind.gini_2023, idhm: ind.idhm_2024 };
+            return { uf, dC1: accC1.dpct, dC3: accC3.dpct, gini: ind.gini_2023, idhm: ind.idhm_2024 };
         }).sort((a, b) => a.dC1 - b.dC1);
 
         const tbody = document.getElementById('tbody-ineq');
@@ -888,20 +861,11 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
         const fmtR = v => v.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
         document.getElementById('corr-ineq').innerHTML =
             `<strong>Correlação de Pearson (n=27):</strong> ` +
-            `&#916;%2033(C1) &times; Gini: r = ${fmtR(rGiniC1)} &nbsp;&bull;&nbsp; ` +
-            `&#916;%2033(C1) &times; IDHM: r = ${fmtR(rIdhmC1)} &nbsp;&bull;&nbsp; ` +
-            `&#916;%2033(C3) &times; Gini: r = ${fmtR(rGiniC3)} &nbsp;&bull;&nbsp; ` +
-            `&#916;%2033(C3) &times; IDHM: r = ${fmtR(rIdhmC3)}`;
+            `&#916;% acum. (Tabela 1) &times; Gini: r = ${fmtR(rGiniC1)} &nbsp;&bull;&nbsp; ` +
+            `&#916;% acum. (Tabela 1) &times; IDHM: r = ${fmtR(rIdhmC1)} &nbsp;&bull;&nbsp; ` +
+            `&#916;% acum. (Tabela 3) &times; Gini: r = ${fmtR(rGiniC3)} &nbsp;&bull;&nbsp; ` +
+            `&#916;% acum. (Tabela 3) &times; IDHM: r = ${fmtR(rIdhmC3)}`;
     }
-
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-        });
-    });
 
     document.querySelectorAll('.esfera-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -952,8 +916,8 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
             statusEl.innerHTML =
                 '<span class="status-dot" style="background:#22c55e"></span> ' +
                 `27 UFs &middot; Receita de referência (Estudo 11): 2029 = ${fmtBi(ref29.icms_iss_residual + ref29.ibs_bruto, 1)} bi, 2033 = ${fmtBi(ref33.ibs_bruto, 1)} bi &middot; ` +
-                `ES estado: &phi;&#7580; = ${fmtCoef(esP.estado.coefNeutro)}, &phi;&#7480;&#7473;&#7488; = ${fmtCoef(esP.estado.coefCPT)} &middot; ` +
-                `ES municípios: &phi;&#7480;&#7473;&#7488; = ${fmtCoef(esP.municipio.coefCPT)}`;
+                `ES estado: &phi; neutro = ${fmtCoef(esP.estado.coefNeutro)}, &phi; CPT = ${fmtCoef(esP.estado.coefCPT)} &middot; ` +
+                `ES municípios: &phi; CPT = ${fmtCoef(esP.municipio.coefCPT)}`;
         } catch (err) {
             statusEl.innerHTML =
                 '<span class="status-dot" style="background:#ef4444"></span> Erro ao carregar dados: ' + err.message;
