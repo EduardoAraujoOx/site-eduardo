@@ -547,38 +547,34 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
             </table>
         </div>
 
-        <span class="section-label">Tabela 4 &middot; Receita acumulada vs. indicadores de bem-estar, por UF (esfera: total)</span>
+        <span class="section-label">Tabela 4 &middot; Receita acumulada vs. nível de desenvolvimento, por grupo de UF (esfera: total)</span>
         <div class="callout">
-            Compara a variação percentual acumulada 2029&ndash;2033 (Tabelas 1 e 3, esfera total
-            &mdash; estado + municípios) com o Índice de Gini do rendimento domiciliar per capita
-            (IBGE, PNAD Contínua, 2023) e o IDHM (PNUD, Radar IDHM 2024) de cada estado. O objetivo
-            é avaliar, de forma exploratória, se os estados que mais ganham ou perdem receita na
-            transição são também os de maior ou menor indicador de qualidade de vida. Coeficientes
-            de correlação de Pearson (\(r\)) são exibidos abaixo da tabela; com \(n=27\) UFs, devem
-            ser lidos como indicativos, não como evidência causal.
+            Agrupa as 27 UFs em três tercis de tamanho igual (9 UFs cada) pelo IDHM estadual (PNUD,
+            Radar IDHM 2024) &mdash; desenvolvimento alto, médio e baixo &mdash; e mostra a variação
+            percentual acumulada 2029&ndash;2033 média de cada grupo (Tabelas 1 e 3, esfera total
+            &mdash; estado + municípios). O objetivo é avaliar, de forma exploratória, se estados de
+            maior ou menor desenvolvimento tendem a ganhar ou perder receita na transição. Com
+            apenas três grupos de nove UFs, deve ser lido como indicativo, não como evidência causal.
         </div>
         <div class="table-wrap">
             <table class="data-table" id="table-ineq">
                 <thead>
                     <tr>
-                        <th class="th-left">UF</th>
-                        <th>&#916;% acumulado<br>(Tabela 1)</th>
-                        <th>&#916;% acumulado<br>(Tabela 3)</th>
-                        <th>Gini<br>(2023)</th>
-                        <th>IDHM<br>(2024)</th>
+                        <th class="th-left">Grupo (IDHM)</th>
+                        <th class="th-left">UFs</th>
+                        <th>IDHM médio</th>
+                        <th>&#916;% méd. acum.<br>(Tabela 1)</th>
+                        <th>&#916;% méd. acum.<br>(Tabela 3)</th>
                     </tr>
                 </thead>
                 <tbody id="tbody-ineq">
                     <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
                 </tbody>
-                <tfoot id="tfoot-ineq"></tfoot>
             </table>
         </div>
-        <p class="meto-note" id="corr-ineq"></p>
         <p class="meto-note">
-            Fontes: IBGE, PNAD Contínua, Tabela 7435 (SIDRA) &mdash; Índice de Gini do rendimento
-            domiciliar per capita, 2023. PNUD Brasil (com Ipea e FJP), <em>Radar IDHM: evolução do
-            IDHM e de seus componentes &mdash; período de 2012 a 2024</em>, maio de 2026.
+            Fonte: PNUD Brasil (com Ipea e FJP), <em>Radar IDHM: evolução do IDHM e de seus
+            componentes &mdash; período de 2012 a 2024</em>, maio de 2026.
         </p>
 
         <div class="callout" style="margin-top:1rem">
@@ -829,60 +825,37 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
         }
     }
 
-    function pearson(xs, ys) {
-        const n = xs.length;
-        const mx = xs.reduce((a, b) => a + b, 0) / n;
-        const my = ys.reduce((a, b) => a + b, 0) / n;
-        let num = 0, dx2 = 0, dy2 = 0;
-        for (let i = 0; i < n; i++) {
-            const dx = xs[i] - mx, dy = ys[i] - my;
-            num += dx * dy; dx2 += dx * dx; dy2 += dy * dy;
-        }
-        const den = Math.sqrt(dx2 * dy2);
-        return den > 0 ? num / den : 0;
-    }
-
     function buildIneqTable(params, giniIdh, nacionalByYear) {
         const rows = UFS.map(uf => {
             const accC1 = accumulate(project(uf, 'total', params, 'pleno', nacionalByYear));
             const accC3 = accumulate(project(uf, 'total', params, 'neutro', nacionalByYear));
             const ind = giniIdh.ufs[uf] || {};
-            return { uf, dC1: accC1.dpct, dC3: accC3.dpct, gini: ind.gini_2023, idhm: ind.idhm_2024 };
-        }).sort((a, b) => a.dC1 - b.dC1);
+            return { uf, dC1: accC1.dpct, dC3: accC3.dpct, idhm: ind.idhm_2024 };
+        }).filter(r => r.idhm != null).sort((a, b) => b.idhm - a.idhm);
+
+        // Tercis de tamanho igual por IDHM estadual (9 UFs cada, com n=27).
+        const terc = Math.ceil(rows.length / 3);
+        const grupos = [
+            { nome: 'Alto desenvolvimento', linhas: rows.slice(0, terc) },
+            { nome: 'Médio desenvolvimento', linhas: rows.slice(terc, 2 * terc) },
+            { nome: 'Baixo desenvolvimento', linhas: rows.slice(2 * terc) },
+        ];
+
+        const media = (arr, key) => arr.reduce((s, r) => s + r[key], 0) / arr.length;
 
         const tbody = document.getElementById('tbody-ineq');
-        tbody.innerHTML = rows.map(({ uf, dC1, dC3, gini, idhm }) => {
-            const isES = uf === 'ES';
-            return `<tr${isES ? ' class="row-es"' : ''}>
-                <td class="td-uf">${uf} <small>${NOMES_UF[uf]}</small></td>
-                <td class="${clsPct(dC1)}">${fmtPct(dC1, 1)}</td>
-                <td class="${clsPct(dC3)}">${fmtPct(dC3, 1)}</td>
-                <td class="td-ref">${gini != null ? gini.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3}) : '—'}</td>
-                <td class="td-ref">${idhm != null ? idhm.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3}) : '—'}</td>
+        tbody.innerHTML = grupos.map(({ nome, linhas }) => {
+            const avgIdhm = media(linhas, 'idhm');
+            const avgC1 = media(linhas, 'dC1');
+            const avgC3 = media(linhas, 'dC3');
+            return `<tr>
+                <td class="td-uf">${nome} <small>tercil, n=${linhas.length}</small></td>
+                <td class="td-ref" style="font-family:var(--sans);font-size:0.78rem">${linhas.map(r => r.uf).join(', ')}</td>
+                <td class="td-ref">${avgIdhm.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3})}</td>
+                <td class="${clsPct(avgC1)}">${fmtPct(avgC1, 1)}</td>
+                <td class="${clsPct(avgC3)}">${fmtPct(avgC3, 1)}</td>
             </tr>`;
         }).join('');
-
-        document.getElementById('tfoot-ineq').innerHTML = `<tr>
-            <td class="td-uf"><strong>Brasil</strong> <small>27 UFs</small></td>
-            <td class="td-ref"></td>
-            <td class="td-ref"></td>
-            <td class="td-ref">${giniIdh.brasil.gini_2023.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3})}</td>
-            <td class="td-ref">${giniIdh.brasil.idhm_2024.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3})}</td>
-        </tr>`;
-
-        const withGini = rows.filter(r => r.gini != null);
-        const withIdhm = rows.filter(r => r.idhm != null);
-        const rGiniC1 = pearson(withGini.map(r => r.dC1), withGini.map(r => r.gini));
-        const rIdhmC1 = pearson(withIdhm.map(r => r.dC1), withIdhm.map(r => r.idhm));
-        const rGiniC3 = pearson(withGini.map(r => r.dC3), withGini.map(r => r.gini));
-        const rIdhmC3 = pearson(withIdhm.map(r => r.dC3), withIdhm.map(r => r.idhm));
-        const fmtR = v => v.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
-        document.getElementById('corr-ineq').innerHTML =
-            `<strong>Correlação de Pearson (n=27):</strong> ` +
-            `&#916;% acum. (Tabela 1) &times; Gini: r = ${fmtR(rGiniC1)} &nbsp;&bull;&nbsp; ` +
-            `&#916;% acum. (Tabela 1) &times; IDHM: r = ${fmtR(rIdhmC1)} &nbsp;&bull;&nbsp; ` +
-            `&#916;% acum. (Tabela 3) &times; Gini: r = ${fmtR(rGiniC3)} &nbsp;&bull;&nbsp; ` +
-            `&#916;% acum. (Tabela 3) &times; IDHM: r = ${fmtR(rIdhmC3)}`;
     }
 
     document.querySelectorAll('.esfera-btn').forEach(btn => {
