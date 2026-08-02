@@ -210,10 +210,13 @@
                     cada ente &mdash; estado, agregado dos municípios de uma UF, ou o total dos dois
                     &mdash; é decomposta em três parcelas: ICMS residual em extinção gradual, IBS
                     distribuído pelo critério histórico (IBSt) e IBS distribuído pelo critério destino
-                    (IBSd). As duas primeiras variáveis da fórmula, \(\mathrm{Ref}^{ICMS+ISS}_a\) e
-                    \(\mathrm{Ref}^{IBS}_a\), não são fixas: vêm da série de receita de referência
-                    nacional projetada no <a href="/estudos/ibs-projecao-nacional.html">Estudo 11</a>,
-                    que cresce ano a ano com o PIB nominal (Focus/IFI), mantendo fixa apenas a
+                    (IBSd), líquido do CGIBS e do Seguro-Receita. As três variáveis de base da fórmula
+                    &mdash; \(\mathrm{Ref}^{ICMS+ISS}_a\), \(\mathrm{Ref}^{IBSt}_a\) e
+                    \(\mathrm{Ref}^{IBSd}_a\) &mdash; não são fixas nem recalculadas nesta página: vêm
+                    prontas da série de receita de referência nacional projetada no
+                    <a href="/estudos/ibs-projecao-nacional.html">Estudo 11</a>, que já aplica
+                    \(\alpha_a\) (histórico vs. destino), o CGIBS e o Seguro-Receita sobre o IBS bruto
+                    de cada ano, crescendo com o PIB nominal (Focus/IFI) e mantendo fixa apenas a
                     <em>razão</em> entre receita de referência e PIB (média 2024&ndash;2026, conforme
                     LC&nbsp;214/2025 arts.&nbsp;361 a 365). Os coeficientes de participação de cada ente
                     &mdash; a variável que de fato captura o efeito da reforma &mdash; são o que
@@ -223,9 +226,20 @@
                 <div class="meto-formula-box">
 $$R_{a,\,\text{ente}} \;=\;
 \underbrace{\mathrm{Ref}^{ICMS+ISS}_a\cdot\varphi^{neutro}_{\text{ente}}}_{\text{ICMS residual}}
-\;+\;\underbrace{\mathrm{Ref}^{IBS}_a\cdot\varphi^{CPT}_{\text{ente}}\cdot\alpha_a}_{\substack{\text{IBSt via} \\ \text{CPT histórico}}}
-\;+\;\underbrace{\mathrm{Ref}^{IBS}_a\cdot\varphi^{dest}_{\text{ente}}\cdot(1-\alpha_a)\cdot(1-c_a)\cdot(1-\rho)}_{\text{IBSd via coeficiente de destino}}$$
+\;+\;\underbrace{\mathrm{Ref}^{IBSt}_a\cdot\varphi^{CPT}_{\text{ente}}}_{\text{IBSt via CPT histórico}}
+\;+\;\underbrace{\mathrm{Ref}^{IBSd}_a\cdot\varphi^{dest}_{\text{ente}}}_{\text{IBSd via coeficiente de destino}}$$
                 </div>
+                <p class="meto-note">
+                    \(\mathrm{Ref}^{IBSt}_a\) e \(\mathrm{Ref}^{IBSd}_a\) vêm dos campos
+                    <code>ibs_historico</code> e <code>ibs_destino_liquido</code> de
+                    <code>data/ibs-projecao-nacional.json</code>: \(\mathrm{Ref}^{IBSt}_a =
+                    \mathrm{Ref}^{IBS}_a\cdot\alpha_a\) e \(\mathrm{Ref}^{IBSd}_a =
+                    \mathrm{Ref}^{IBS}_a\cdot(1-\alpha_a)\cdot(1-c_a)\cdot(1-\rho)\), onde
+                    \(\mathrm{Ref}^{IBS}_a=\mathrm{Ref}^{IBSt}_a+\mathrm{Ref}^{IBSd}_a+\text{CGIBS}_a+\text{Seguro-Receita}_a\)
+                    é o IBS bruto do ano. As duas páginas compartilham a mesma fonte para
+                    \(\alpha_a\), \(c_a\) e \(\rho\) desde esta atualização, em vez de cada uma manter
+                    sua própria cópia dessas constantes.
+                </p>
 
                 <p class="meto-note">
                     onde <em>ente</em> é o estado, o agregado dos municípios da UF, ou o total (soma
@@ -268,8 +282,18 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
                         </tr>
                         <tr>
                             <td>\(\mathrm{Ref}^{IBS}_a\)</td>
-                            <td>Parcela da mesma receita de referência já convertida em IBS no ano \(a\): \(\mathrm{Ref}_a\cdot s_a\), com \(s_a=1-f_a\).</td>
+                            <td>IBS bruto nacional do ano \(a\): \(\mathrm{Ref}_a\cdot s_a\), com \(s_a=1-f_a\). Usado só para compor o contrafactual \(\mathrm{Ref}_a\) (ver abaixo); a receita projetada usa a divisão em \(\mathrm{Ref}^{IBSt}_a\) e \(\mathrm{Ref}^{IBSd}_a\).</td>
                             <td>R$&nbsp;127,4&nbsp;bi (2029) a R$&nbsp;1.568,5&nbsp;bi (2033)</td>
+                        </tr>
+                        <tr>
+                            <td>\(\mathrm{Ref}^{IBSt}_a\)</td>
+                            <td>Parcela do IBS bruto distribuída pelo critério histórico: \(\mathrm{Ref}^{IBS}_a\cdot\alpha_a\). Vem pronta do campo <code>ibs_historico</code> do Estudo 11.</td>
+                            <td>ibs-projecao-nacional.json</td>
+                        </tr>
+                        <tr>
+                            <td>\(\mathrm{Ref}^{IBSd}_a\)</td>
+                            <td>Parcela do IBS bruto distribuída pelo critério destino, já líquida do CGIBS e do Seguro-Receita: \(\mathrm{Ref}^{IBS}_a\cdot(1-\alpha_a)\cdot(1-c_a)\cdot(1-\rho)\). Vem pronta do campo <code>ibs_destino_liquido</code> do Estudo 11.</td>
+                            <td>ibs-projecao-nacional.json</td>
                         </tr>
                         <tr>
                             <td>\(\varphi^{neutro}_{\text{ente}}\)</td>
@@ -298,17 +322,17 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
                         </tr>
                         <tr>
                             <td>\(\alpha_a\)</td>
-                            <td>Fração do IBS distribuída pelo critério histórico (IBSt); a parcela \((1-\alpha_a)\) é distribuída pelo critério destino (IBSd). Base legal: ADCT arts. 131&ndash;132 e LC 227/2026 arts. 114&ndash;116.</td>
+                            <td>Fração do IBS distribuída pelo critério histórico (IBSt); a parcela \((1-\alpha_a)\) é distribuída pelo critério destino (IBSd). Base legal: ADCT arts. 131&ndash;132 e LC 227/2026 arts. 114&ndash;116. Aplicada dentro da série do Estudo 11 (campos <code>ibs_historico</code>/<code>ibs_destino_liquido</code>) &mdash; não recalculada aqui.</td>
                             <td>0,80 (2029&ndash;2032) / 0,90 (2033)</td>
                         </tr>
                         <tr>
                             <td>\(c_a\)</td>
-                            <td>Taxa de financiamento do Comitê Gestor do IBS (CGIBS, art. 51 LC 227/2026). Dedução aplicada exclusivamente sobre a parcela IBSd, anterior à redistribuição por destino.</td>
+                            <td>Taxa de financiamento do Comitê Gestor do IBS (CGIBS, art. 51 LC 227/2026). Dedução aplicada exclusivamente sobre a parcela IBSd, anterior à redistribuição por destino. Aplicada dentro da série do Estudo 11 &mdash; não recalculada aqui.</td>
                             <td>2,0% / 1,0% / 0,67% / 0,5% / 0,5%</td>
                         </tr>
                         <tr>
                             <td>\(\rho\)</td>
-                            <td>Seguro-Receita (ADCT art. 132): fração do IBSd retida para fundo de garantia de receita mínima. Aplicada antes da distribuição por destino. Segue como simplificação nesta atualização: o retorno do fundo aos entes que acionam a garantia ainda não é modelado (é objeto de um próximo estudo).</td>
+                            <td>Seguro-Receita (ADCT art. 132): fração do IBSd retida para fundo de garantia de receita mínima. Aplicada antes da distribuição por destino, dentro da série do Estudo 11. Segue como simplificação nesta atualização: o retorno do fundo aos entes que acionam a garantia ainda não é modelado (é objeto de um próximo estudo &mdash; ver <code>ibs_seguro_receita</code> no Estudo 11).</td>
                             <td>5% do IBSd bruto</td>
                         </tr>
                     </tbody>
@@ -568,7 +592,7 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
 
         <div class="footnotes">
             <p><strong>Fontes e notas metodológicas:</strong></p>
-            <p>1. Receita de referência nacional (\(\mathrm{Ref}_a\), decomposta em \(\mathrm{Ref}^{ICMS+ISS}_a\) e \(\mathrm{Ref}^{IBS}_a\)): Estudo 11, projeção 2029&ndash;2033 sobre PIB nominal (mediana Focus 2026&ndash;2030, IFI RAF 107 2031&ndash;2033), razão receita/PIB fixada na média 2024&ndash;2026 (LC 214/2025 arts. 361&ndash;365). Ver <code>data/ibs-projecao-nacional.json</code>.</p>
+            <p>1. Receita de referência nacional (\(\mathrm{Ref}_a\), decomposta em \(\mathrm{Ref}^{ICMS+ISS}_a\) e \(\mathrm{Ref}^{IBS}_a\), este último subdividido em \(\mathrm{Ref}^{IBSt}_a\) e \(\mathrm{Ref}^{IBSd}_a\)): Estudo 11, projeção 2029&ndash;2033 sobre PIB nominal (mediana Focus 2026&ndash;2030, IFI RAF 107 2031&ndash;2033), razão receita/PIB fixada na média 2024&ndash;2026 (LC 214/2025 arts. 361&ndash;365). A divisão de \(\mathrm{Ref}^{IBS}_a\) em histórico (\(\alpha_a\)) e destino líquido de CGIBS e Seguro-Receita (\(c_a\), \(\rho\)) também é calculada no Estudo 11 e consumida diretamente daqui, sem duplicar essas constantes. Ver campos <code>ibs_historico</code> e <code>ibs_destino_liquido</code> de <code>data/ibs-projecao-nacional.json</code>.</p>
             <p>2. Coeficientes de participação histórica (\(\varphi^{CPT}\)), estado e municípios: <code>data/coeficientes-uf.json</code>, validado termo a termo contra a Nota Técnica nº 02/2026 (SEFAZ-ES, pacote v22) &mdash; ver <code>data/divergencia-vs-nota-v22.json</code>.</p>
             <p>3. Coeficiente de destino \(\varphi^{dest}_{\text{ente}}\): Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura, n. 60, Nota de Conjuntura 18. IPEA, 28 ago. 2023. Disponível em: <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">repositorio.ipea.gov.br</a>. Variação relativa diferenciada por esfera (<code>tabela4_esferas</code>): saldo municipal vem da Tabela 2 do paper (dado publicado, não estimado); saldo estadual é o resíduo entre a Tabela 1 (total) e esse saldo municipal.</p>
             <p>4. Cota-parte municipal do ICMS: valor declarado pelo estado, SICONFI/STN DCA Anexo I-C (<code>dca_transf_munis_por_uf</code>); sem declaração, usa-se o teórico de 25% do ICMS bruto (art. 158, IV, CF/88). FECOP: SICONFI/STN DCA Anexo I-C (<code>dca_fecop_por_uf</code>), somado à fatia estadual de \(\varphi^{neutro}\) e \(\varphi^{CPT}\), mesma base da receita de referência nacional do Estudo 11.</p>
@@ -596,16 +620,7 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
         SE:'Sergipe', SP:'São Paulo', TO:'Tocantins'
     };
 
-    // alphaBIS=fração IBSt, ca=CGIBS (sobre IBSd). fa/sa vêm da série do Estudo 11 (não recalculados aqui).
-    const ADCT = {
-        2029: { alphaBIS: 0.80, ca: 0.020  },
-        2030: { alphaBIS: 0.80, ca: 0.010  },
-        2031: { alphaBIS: 0.80, ca: 0.0067 },
-        2032: { alphaBIS: 0.80, ca: 0.005  },
-        2033: { alphaBIS: 0.90, ca: 0.005  }
-    };
     const ANOS = [2029, 2030, 2031, 2032, 2033];
-    const RHO  = 0.05;
 
     let PARAMS = null;
     let NACIONAL_BY_YEAR = null;
@@ -698,13 +713,16 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
     // o PIB". Isso isola o efeito da redistribuição (mudança de regra) do efeito do crescimento
     // da economia: sem essa correção, comparar a receita projetada (que cresce) contra um valor
     // travado em 2025 misturaria os dois efeitos.
+    //
+    // ibs_historico(a) e ibs_destino_liquido(a) vêm prontos do Estudo 11 (data/ibs-projecao-nacional.json),
+    // que já aplica alpha_a (histórico vs. destino), o CGIBS e o Seguro-Receita (5%) sobre o IBS
+    // bruto nacional — não são recalculados aqui, para as duas páginas usarem sempre a mesma base.
     function project(uf, esfera, params, coefKey, nacionalByYear) {
         const parts = partsFor(uf, esfera, params);
         if (parts.length === 0) return null;
         const r0_2025 = parts.reduce((s, x) => s + x.r0_2025, 0);
         const res = {};
         for (const a of ANOS) {
-            const { alphaBIS, ca } = ADCT[a];
             const nac = nacionalByYear[a];
             const refA = nac.icms_iss_residual + nac.ibs_bruto;
             let total = 0, contrafactual = 0;
@@ -713,8 +731,8 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
                                 : coefKey === 'inter' ? part.coefInter
                                 : part.coefNeutro;
                 total += nac.icms_iss_residual * part.coefNeutro
-                       + nac.ibs_bruto * part.coefCPT * alphaBIS
-                       + nac.ibs_bruto * coefDest * (1 - alphaBIS) * (1 - ca) * (1 - RHO);
+                       + nac.ibs_historico * part.coefCPT
+                       + nac.ibs_destino_liquido * coefDest;
                 contrafactual += refA * part.coefNeutro;
             }
             res[a] = { total, contrafactual, dpct: contrafactual > 0 ? (total - contrafactual) / contrafactual : 0 };
