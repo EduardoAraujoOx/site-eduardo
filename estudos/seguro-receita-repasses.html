@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repasses do Seguro-Receita por ente: quem recebe e quanto, 2029–2033 | Eduardo Reis Araújo</title>
+    <meta name="description" content="Estimativa dos repasses do Seguro-Receita (ADCT art. 132, EC 132/2023; LC 227/2026, art. 117) a cada um dos 27 estados, o Distrito Federal e os 5.569 municípios do Brasil, 2029–2033, com o algoritmo de nivelamento sequencial da lei.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/seguro-receita-repasses.html">
+
+    <meta property="og:title" content="Repasses do Seguro-Receita por ente: quem recebe e quanto, 2029–2033">
+    <meta property="og:description" content="Estimativa dos repasses do Seguro-Receita (ADCT art. 132; LC 227/2026, art. 117) a cada estado, o DF e cada um dos 5.569 municípios do Brasil, 2029–2033.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/seguro-receita-repasses.html">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]})"></script>
+
+    <link rel="stylesheet" href="/css/notas.css?v=4">
+    <link rel="stylesheet" href="/css/search.css">
+
+    <style>
+        .study-hero { max-width: 980px; margin: 0 auto; padding: 3rem 2rem 1.5rem; }
+        .study-hero-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+        .study-hero-tag { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); padding: 0.25rem 0.6rem; border-radius: 4px; }
+        .study-hero-topic { font-family: var(--sans); font-size: 0.73rem; color: var(--text-secondary); background: var(--border-light); padding: 0.2rem 0.55rem; border-radius: 4px; }
+        .study-hero-date { font-family: var(--sans); font-size: 0.73rem; color: var(--text-muted); margin-left: auto; }
+        .study-hero h1 { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 0.8rem; }
+        .study-hero .lead { font-family: var(--serif); font-size: 1rem; line-height: 1.72; color: var(--text-secondary); max-width: 760px; }
+        .study-hero .study-meta { font-family: var(--sans); font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem; }
+
+        .study-content { max-width: 980px; margin: 0 auto; padding: 0 2rem 5rem; }
+
+        .status-bar { display: flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #999; flex-shrink: 0; transition: background 0.3s; }
+        .status-dot.ok { background: #22c55e; }
+        .status-dot.pending { background: #f59e0b; }
+
+        :root {
+            --neg: #b03a2e; --neg-bg: #fdf3f2;
+            --pos: #1e8449; --pos-bg: #f0faf4;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root { --neg: #e05a4f; --neg-bg: #2a1a1a; --pos: #4caf76; --pos-bg: #192a20; }
+        }
+        :root[data-theme="light"] { --neg:#b03a2e; --neg-bg:#fdf3f2; --pos:#1e8449; --pos-bg:#f0faf4; }
+        :root[data-theme="dark"]  { --neg:#e05a4f; --neg-bg:#2a1a1a; --pos:#4caf76; --pos-bg:#192a20; }
+
+        .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 0 0 1.5rem; }
+        .stat-tile { border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem 1rem; background: var(--surface); }
+        .stat-tile .stat-label { font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 0.35rem; display: block; }
+        .stat-tile .stat-value { font-family: var(--sans); font-size: 1.35rem; font-weight: 700; color: var(--text); }
+        .stat-tile .stat-sub { font-family: var(--sans); font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+        .callout { background: var(--accent-bg); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 0.75rem 1rem; font-family: var(--serif); font-size: 0.84rem; color: var(--text); margin: 1rem 0 1.5rem; line-height: 1.6; }
+
+        .section-label { display: block; font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin: 2rem 0 0.5rem; }
+        .section-label:first-of-type { margin-top: 0.5rem; }
+
+        .table-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.75rem; }
+        .search-input { font-family: var(--sans); font-size: 0.85rem; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.45rem 0.8rem; min-width: 220px; }
+        .uf-select { font-family: var(--sans); font-size: 0.9rem; font-weight: 600; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 0.8rem; cursor: pointer; min-width: 220px; }
+
+        .table-wrap { overflow-x: auto; margin-bottom: 1.5rem; max-height: 640px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
+        .data-table th { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0.5rem 0.7rem; text-align: right; font-family: var(--sans); font-weight: 600; font-size: 0.74rem; white-space: nowrap; color: var(--text); position: sticky; top: 0; z-index: 1; }
+        .data-table th.th-left { text-align: left; }
+        .data-table td { border-bottom: 1px solid var(--border-light); padding: 0.4rem 0.7rem; text-align: right; font-family: var(--mono); font-size: 0.78rem; white-space: nowrap; color: var(--text); }
+        .data-table td.td-ente { text-align: left; font-family: var(--sans); font-weight: 600; font-size: 0.81rem; }
+        .data-table td.td-ente small { font-weight: 400; color: var(--text-muted); font-family: var(--mono); }
+        .data-table .td-zero { color: var(--text-muted); }
+        .data-table .col-divider { border-left: 2px solid var(--border); }
+        .data-table tfoot tr { background: var(--bg); border-top: 2px solid var(--border); }
+        .data-table tfoot td { font-weight: 700; }
+        .data-table tbody tr:hover { background: var(--accent-bg); }
+        .data-table tr.row-es { background: var(--pos-bg); }
+        .row-hidden { display: none; }
+
+        .methodology { border: 1px solid var(--border); border-radius: 8px; margin: 2rem 0; background: var(--surface); }
+        .methodology summary { padding: 0.9rem 1.25rem; cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; list-style: none; display: flex; align-items: center; gap: 0.5rem; }
+        .methodology summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; }
+        .methodology[open] summary::before { transform: rotate(90deg); }
+        .methodology-body { padding: 0 1.5rem 1.5rem; }
+        .meto-section-title { font-family: var(--sans); font-size: 0.85rem; font-weight: 600; color: var(--text); margin: 1.25rem 0 0.4rem; }
+        .meto-note { font-family: var(--serif); font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; margin-top: 0.5rem; }
+        .meto-note:first-child { margin-top: 0; }
+        .meto-note code { font-family: var(--mono); font-size: 0.85em; }
+        .meto-formula-box { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 1rem 1.25rem; margin: 0.75rem 0; overflow-x: auto; font-size: 0.92rem; }
+        .param-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 0.5rem; }
+        .param-table th { text-align: left; font-family: var(--sans); font-weight: 600; font-size: 0.74rem; color: var(--text-muted); border-bottom: 1px solid var(--border); padding: 0.4rem 0.6rem; }
+        .param-table td { font-family: var(--serif); font-size: 0.85rem; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+
+        .footnotes { margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+        .footnotes p { font-family: var(--serif); font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.4rem; }
+        .footnotes a { color: var(--accent); text-decoration: none; }
+        .footnotes a:hover { text-decoration: underline; }
+
+        @media (max-width: 640px) {
+            .study-hero { padding: 2rem 1.25rem 1rem; }
+            .study-content { padding: 0 1.25rem 3rem; }
+            .stat-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <div class="header-right-group">
+                <nav class="header-nav">
+                    <a href="/#publicacoes">Publicações</a>
+                    <a href="/ensino/">Ensino</a>
+                    <a href="/estudos/" class="active">Estudos</a>
+                    <a href="/#contato">Contato</a>
+                </nav>
+                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="study-hero">
+        <div class="study-hero-meta">
+            <span class="study-hero-tag">Estudo 12</span>
+            <span class="study-hero-topic">Reforma Tributária</span>
+            <span class="study-hero-topic">Federalismo Fiscal</span>
+            <span class="study-hero-topic">Seguro-Receita</span>
+            <span class="study-hero-date">Agosto de 2026</span>
+        </div>
+        <h1>Repasses do Seguro-Receita por ente: quem recebe e quanto, 2029–2033</h1>
+        <p class="lead">
+            A reforma tributária retém 5% do IBS distribuído pelo critério destino para formar um fundo de
+            garantia (ADCT art. 132, EC 132/2023) — o "Seguro-Receita". Esse fundo não é dividido
+            igualmente nem proporcionalmente à perda de cada ente: a lei manda calcular, para
+            <strong>cada um dos 5.596 entes</strong> (27 estados, o Distrito Federal e cada um dos 5.569
+            municípios individualmente), uma razão entre o que ele está recebendo agora e o que arrecadava
+            historicamente — e atender primeiro quem está pior, até o fundo acabar ou todos nivelarem
+            (LC 227/2026, art. 117). Esta página reproduz esse algoritmo sobre os coeficientes já
+            calculados nos <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudos 06</a> e
+            <a href="/estudos/ibs-projecao-nacional.html">11</a>.
+        </p>
+        <p class="study-meta">
+            Estimativa, não o cálculo oficial: o coeficiente de fato será calculado e publicado pelo
+            Comitê Gestor do IBS (CGIBS), com base em dados que ainda não existem por completo (DCA
+            2026) e sujeito a um processo de contestação dos entes (LC 227/2026, art. 116, §§7º-8º). Ver
+            metodologia e simplificações abaixo.
+        </p>
+    </div>
+
+    <div class="study-content">
+
+        <div id="status-main" class="status-bar">
+            <span class="status-dot pending" id="status-dot"></span>
+            <span id="status-text">Carregando dados…</span>
+        </div>
+
+        <div class="stat-row">
+            <div class="stat-tile">
+                <span class="stat-label">Fundo do Seguro-Receita</span>
+                <div class="stat-value" id="stat-pool">—</div>
+                <div class="stat-sub">2029 → 2033 (R$ bi/ano)</div>
+            </div>
+            <div class="stat-tile">
+                <span class="stat-label">Entes beneficiados em 2033</span>
+                <div class="stat-value" id="stat-benef">—</div>
+                <div class="stat-sub">de 5.596 (estados + DF + municípios)</div>
+            </div>
+            <div class="stat-tile">
+                <span class="stat-label">Maior beneficiário em 2033</span>
+                <div class="stat-value" id="stat-top">—</div>
+                <div class="stat-sub" id="stat-top-sub">—</div>
+            </div>
+        </div>
+
+        <div class="callout">
+            O repasse de cada ente é o mesmo em todos os anos, na proporção: só o <em>tamanho</em> do
+            fundo cresce (2029 → 2033), não a lista de quem recebe — consequência de os coeficientes por
+            trás do cálculo (participação histórica e participação pelo critério destino) serem fixos ao
+            longo da transição. Ver metodologia.
+        </div>
+
+        <span class="section-label">Tabela 1 · Estados e Distrito Federal (R$ mi)</span>
+        <p style="font-size:0.88rem;color:var(--text-secondary);margin:0.25rem 0 0.75rem;line-height:1.65">
+            Ordenado por repasse acumulado 2029–2033. Estados fora da tabela não se qualificaram em
+            nenhum ano do período (razão acima do nível de corte do nivelamento).
+        </p>
+        <div class="table-wrap">
+            <table class="data-table" id="table-estados">
+                <thead>
+                    <tr>
+                        <th class="th-left">Estado</th>
+                        <th>2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
+                        <th class="col-divider">Acumulado</th>
+                        <th>Razão 2033</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-estados">
+                    <tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+                <tfoot id="tfoot-estados"></tfoot>
+            </table>
+        </div>
+
+        <span class="section-label">Tabela 2 · Os 30 municípios com maior repasse acumulado, 2029–2033 (R$ mi)</span>
+        <div class="table-wrap">
+            <table class="data-table" id="table-top-munis">
+                <thead>
+                    <tr>
+                        <th class="th-left">Município</th>
+                        <th>2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
+                        <th class="col-divider">Acumulado</th>
+                        <th>Razão 2033</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-top-munis"></tbody>
+            </table>
+        </div>
+
+        <span class="section-label">Tabela 3 · Busque qualquer um dos 5.569 municípios</span>
+        <div class="table-toolbar">
+            <select class="uf-select" id="select-uf">
+                <option value="" disabled selected>Selecione uma UF…</option>
+            </select>
+            <input type="text" class="search-input" id="search-municipio" placeholder="Buscar município na UF selecionada…">
+        </div>
+        <div id="uf-hint" style="font-family:var(--sans);font-size:0.78rem;color:var(--text-muted);margin-bottom:0.75rem">
+            Escolha uma UF para ver o repasse de cada um dos seus municípios.
+        </div>
+        <div class="table-wrap">
+            <table class="data-table" id="table-munis-uf">
+                <thead>
+                    <tr>
+                        <th class="th-left">Município</th>
+                        <th>2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
+                        <th class="col-divider">Acumulado</th>
+                        <th>Razão 2033</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-munis-uf"></tbody>
+                <tfoot id="tfoot-munis-uf"></tfoot>
+            </table>
+        </div>
+
+        <details class="methodology">
+            <summary>Metodologia e base legal</summary>
+            <div class="methodology-body">
+
+                <p class="meto-note">
+                    O Seguro-Receita é regulado pelo art. 132 do ADCT (incluído pela EC 132/2023) e
+                    detalhado pelo art. 117 da LC 227/2026 ("Da distribuição complementar para os entes
+                    federativos com maior perda de participação relativa na receita"). Para cada ente
+                    (estado, DF, ou cada um dos 5.569 municípios individualmente), a lei define uma razão:
+                </p>
+
+                <div class="meto-formula-box">
+$$\text{razão}_{\text{ente},a} = \frac{\text{IBS-destino recebido no ano } a}{\text{receita média de referência ajustada}}$$
+                </div>
+
+                <p class="meto-note">
+                    O numerador cresce a cada ano, junto com o próprio IBS. O denominador &mdash;
+                    "receita média de referência ajustada" (art. 117, §§3º-6º) &mdash; é o
+                    <strong>menor valor</strong> entre (i) a receita média histórica do ente (art. 115 da
+                    LC 227/2026: média de 2019 a 2026, corrigida pela variação nominal do ICMS+ISS
+                    nacional &mdash; a mesma base do φ<sup>CPT</sup> já usado nos
+                    <a href="/estudos/reforma-tributaria-coeficiente.html">Estudos 02</a> e
+                    <a href="/estudos/ibs-projecao-arrecadacao-br.html">06</a>) e (ii) 3&times; a média
+                    nacional por habitante da respectiva esfera federativa (estadual ou municipal,
+                    separadamente) &mdash; um teto para impedir que um ente historicamente muito rico
+                    "prove" carência só pelo tamanho da sua base histórica.
+                </p>
+
+                <p class="meto-section-title">O nivelamento: quem recebe primeiro</p>
+                <p class="meto-note">
+                    O fundo (5% do IBS-destino, líquido do CGIBS) não é dividido proporcionalmente ao
+                    déficit de cada ente. A lei manda distribuir <strong>sequencial e sucessivamente</strong>
+                    aos entes de menor razão, elevando cada um até nivelar com o próximo, até o fundo
+                    acabar ou todos convergirem para a mesma razão (art. 117, §1º) &mdash; como socorrer
+                    primeiro quem está mais afogado, não repartir o colete salva-vidas igualmente. Em
+                    termos matemáticos: encontra-se um nível \(L\) tal que
+                    \(\sum_{\text{ente}} \max(0,\, L\cdot\text{denom}_{\text{ente}} - \text{numerador}_{\text{ente},a}) = \text{fundo}_a\),
+                    e cada ente recebe exatamente essa parcela.
+                </p>
+
+                <p class="meto-section-title">Tratamento do Distrito Federal</p>
+                <p class="meto-note">
+                    Sem camada municipal própria, a receita média de referência do DF soma ICMS e ISS
+                    (art. 115, §5º); seu ICMS e sua população entram na média per capita do grupo
+                    "Estados", e seu ISS e sua população entram na média per capita do grupo "Municípios"
+                    (sem ganhar linha própria nesse segundo grupo); o teto do próprio DF soma as duas
+                    médias per capita, multiplicadas pela sua população (art. 117, §6º).
+                </p>
+
+                <p class="meto-section-title">Simplificações desta estimativa</p>
+                <table class="param-table">
+                    <thead><tr><th>Simplificação</th><th>Motivo</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>Anual em vez de mensal</td>
+                            <td>A lei apura uma média móvel dos últimos 12 meses e distribui todo mês; esta página usa o ano-calendário inteiro como proxy, consistente com o horizonte anual do Estudo 06.</td>
+                        </tr>
+                        <tr>
+                            <td>População de 2025 (ponto único)</td>
+                            <td>O teto per capita usa a "média da população entre 2019 e 2026" (art. 117, §§3º-6º); não há série histórica de população municipal disponível neste site, então se usa a estimativa IBGE de 2025.</td>
+                        </tr>
+                        <tr>
+                            <td>Numerador do DF restrito ao ICMS</td>
+                            <td>O φ<sup>dest</sup> do DF, em todo o site, é calculado só a partir do ICMS (o DF nunca teve um φ<sup>dest</sup> municipal próprio calculado em nenhum estudo) &mdash; só o teto (denominador) foi corrigido para somar ICMS+ISS, por consistência com o restante do site.</td>
+                        </tr>
+                        <tr>
+                            <td>Estimativa própria, não o cálculo oficial</td>
+                            <td>O coeficiente de fato é calculado e publicado pelo CGIBS (art. 116), com fontes adicionais possíveis (Simples Nacional, LRF) e sujeito a um processo de contestação de 30+90 dias pelos entes (art. 116, §§7º-8º) que esta estimativa não reproduz.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </details>
+
+        <div class="footnotes">
+            <p><strong>Fontes e notas metodológicas:</strong></p>
+            <p>1. Base legal: ADCT art. 132 (EC 132/2023); LC 227/2026 arts. 114 a 117 (critério histórico e Seguro-Receita) e art. 51 (CGIBS).</p>
+            <p>2. IBS pelo critério destino (numerador) e o fundo do Seguro-Receita (5%, líquido de CGIBS): <a href="/estudos/ibs-projecao-nacional.html">Estudo 11</a>, campos <code>ibs_destino_liquido</code> e <code>ibs_seguro_receita</code> de <code>data/ibs-projecao-nacional.json</code>.</p>
+            <p>3. Coeficiente de participação pelo critério destino (φ<sup>dest</sup>), por estado: <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>. Por município: rateio proporcional ao φ<sup>CPT</sup> individual dentro de cada UF, ver <code>data/rateio-destino-municipios.json</code> &mdash; simplificação necessária porque Gobetti e Monteiro (IPEA, 2023) só publicam o efeito do critério destino agregado por UF, não por município.</p>
+            <p>4. Receita média de referência (denominador): <code>data/coeficientes-uf.json</code> e <code>data/coeficientes-municipios.json</code>, validados contra a Nota Técnica nº 02/2026 (SEFAZ-ES).</p>
+            <p>5. População: IBGE, Estimativas da População Residente, 1º de julho de 2025 (<code>data/icms-iss-vs-populacao-2025.json</code> e <code>data/populacao-municipios-2025.json</code>).</p>
+            <p>6. Algoritmo de nivelamento e dados desta página: <code>data/build-seguro-receita-repasses.py</code>, saída em <code>data/seguro-receita-repasses.json</code>.</p>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+
+    <script src="/js/search.js"></script>
+    <script>
+    const ANOS = [2029, 2030, 2031, 2032, 2033];
+
+    const NOMES_UF = {
+        AC:'Acre', AL:'Alagoas', AM:'Amazonas', AP:'Amapá', BA:'Bahia',
+        CE:'Ceará', DF:'Distrito Federal', ES:'Espírito Santo', GO:'Goiás',
+        MA:'Maranhão', MG:'Minas Gerais', MS:'Mato Grosso do Sul',
+        MT:'Mato Grosso', PA:'Pará', PB:'Paraíba', PE:'Pernambuco',
+        PI:'Piauí', PR:'Paraná', RJ:'Rio de Janeiro', RN:'Rio Grande do Norte',
+        RO:'Rondônia', RR:'Roraima', RS:'Rio Grande do Sul', SC:'Santa Catarina',
+        SE:'Sergipe', SP:'São Paulo', TO:'Tocantins'
+    };
+    const UFS = Object.keys(NOMES_UF).sort((a, b) => NOMES_UF[a].localeCompare(NOMES_UF[b], 'pt-BR'));
+
+    const fmtMi = v => (v / 1e6).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    const fmtBi = v => (v / 1e9).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmtPct = v => (v * 100).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%';
+    const td = (content, cls) => `<td${cls ? ` class="${cls}"` : ''}>${content}</td>`;
+
+    let ENTIDADES = null; // Map: id -> { nome, uf, esfera, denomCapado, porAno: {ano: repasse}, acumulado, razao2033 }
+
+    async function loadData() {
+        let raw;
+        try {
+            const resp = await fetch('/data/seguro-receita-repasses.json?t=' + Date.now());
+            if (!resp.ok) throw new Error('not found');
+            raw = await resp.json();
+        } catch (e) {
+            document.getElementById('status-text').textContent = 'Dados ainda não disponíveis.';
+            return;
+        }
+
+        const map = new Map();
+        for (const ano of ANOS) {
+            const ent = raw.anos[String(ano)].entidades;
+            for (const e of ent) {
+                if (!map.has(e.id)) {
+                    map.set(e.id, {
+                        nome: e.nome, uf: e.uf, esfera: e.esfera, denomCapado: e.denom_capado,
+                        porAno: {}, acumulado: 0, razao2033: null,
+                    });
+                }
+                const rec = map.get(e.id);
+                rec.porAno[ano] = e.repasse;
+                rec.acumulado += e.repasse;
+                if (ano === 2033) rec.razao2033 = e.razao;
+            }
+        }
+        ENTIDADES = map;
+
+        renderStats(raw);
+        renderEstados();
+        renderTopMunicipios();
+        renderUfPicker();
+
+        document.getElementById('status-dot').classList.remove('pending');
+        document.getElementById('status-dot').classList.add('ok');
+        document.getElementById('status-text').textContent =
+            `${map.size.toLocaleString('pt-BR')} entes (27 estados + DF + municípios) · fundo 2029–2033 de ${raw.anos['2029'].pool ? '' : ''}` +
+            `R$ ${fmtBi(raw.anos['2029'].pool)} bi a R$ ${fmtBi(raw.anos['2033'].pool)} bi/ano.`;
+    }
+
+    function renderStats(raw) {
+        document.getElementById('stat-pool').textContent =
+            `R$ ${fmtBi(raw.anos['2029'].pool)} → ${fmtBi(raw.anos['2033'].pool)} bi`;
+        document.getElementById('stat-benef').textContent = raw.anos['2033'].n_beneficiarios.toLocaleString('pt-BR');
+
+        let top = null;
+        for (const [id, rec] of ENTIDADES) {
+            if (!top || (rec.porAno[2033] || 0) > (top.porAno[2033] || 0)) top = rec;
+        }
+        document.getElementById('stat-top').textContent = top ? `R$ ${fmtMi(top.porAno[2033])} mi` : '—';
+        document.getElementById('stat-top-sub').textContent = top
+            ? `${top.nome}${top.esfera === 'municipio' ? ' (' + top.uf + ')' : ''}, em 2033` : '—';
+    }
+
+    function rowHtml(rec, isES) {
+        const anoCells = ANOS.map(a => td(fmtMi(rec.porAno[a] || 0), (rec.porAno[a] || 0) < 1e-6 ? 'td-zero' : '')).join('');
+        const nomeLabel = rec.esfera === 'municipio' ? `${rec.nome} <small>${rec.uf}</small>` : `${rec.nome} <small>${NOMES_UF[rec.uf] || ''}</small>`;
+        return `<tr${isES ? ' class="row-es"' : ''}>
+            ${td(nomeLabel, 'td-ente')}
+            ${anoCells}
+            ${td(fmtMi(rec.acumulado), 'col-divider')}
+            ${td(rec.razao2033 != null && isFinite(rec.razao2033) ? fmtPct(rec.razao2033) : '—')}
+        </tr>`;
+    }
+
+    function renderEstados() {
+        const rows = [...ENTIDADES.values()]
+            .filter(r => r.esfera === 'estado' && r.acumulado > 1e-6)
+            .sort((a, b) => b.acumulado - a.acumulado);
+        document.getElementById('tbody-estados').innerHTML =
+            rows.map(r => rowHtml(r, r.uf === 'ES')).join('') ||
+            `<tr><td colspan="8" style="text-align:center;padding:1.5rem;color:var(--text-muted);font-family:var(--sans)">Nenhum estado se qualificou no período.</td></tr>`;
+
+        const somaPorAno = {};
+        ANOS.forEach(a => { somaPorAno[a] = rows.reduce((s, r) => s + (r.porAno[a] || 0), 0); });
+        const somaAcum = rows.reduce((s, r) => s + r.acumulado, 0);
+        document.getElementById('tfoot-estados').innerHTML = `<tr>
+            <td class="td-ente"><strong>Total dos estados beneficiados</strong> <small>${rows.length}</small></td>
+            ${ANOS.map(a => td(fmtMi(somaPorAno[a]))).join('')}
+            ${td(fmtMi(somaAcum), 'col-divider')}
+            <td></td>
+        </tr>`;
+    }
+
+    function renderTopMunicipios() {
+        const rows = [...ENTIDADES.values()]
+            .filter(r => r.esfera === 'municipio')
+            .sort((a, b) => b.acumulado - a.acumulado)
+            .slice(0, 30);
+        document.getElementById('tbody-top-munis').innerHTML = rows.map(r => rowHtml(r, false)).join('');
+    }
+
+    function renderUfPicker() {
+        const select = document.getElementById('select-uf');
+        for (const uf of UFS) {
+            if (uf === 'DF') continue; // sem camada municipal própria
+            const opt = document.createElement('option');
+            opt.value = uf;
+            opt.textContent = `${NOMES_UF[uf]} (${uf})`;
+            select.appendChild(opt);
+        }
+        select.addEventListener('change', () => {
+            const uf = select.value;
+            if (uf) {
+                const url = new URL(window.location);
+                url.searchParams.set('uf', uf);
+                window.history.replaceState({}, '', url);
+            }
+            renderMunicipiosUF(uf);
+        });
+
+        const ufParam = new URLSearchParams(window.location.search).get('uf');
+        if (ufParam && NOMES_UF[ufParam.toUpperCase()]) {
+            select.value = ufParam.toUpperCase();
+            renderMunicipiosUF(select.value);
+        }
+    }
+
+    function renderMunicipiosUF(uf) {
+        const rows = [...ENTIDADES.values()]
+            .filter(r => r.esfera === 'municipio' && r.uf === uf)
+            .sort((a, b) => b.acumulado - a.acumulado);
+
+        document.getElementById('uf-hint').textContent =
+            `${rows.length.toLocaleString('pt-BR')} municípios de ${NOMES_UF[uf]}, ordenados por repasse acumulado 2029–2033.`;
+
+        document.getElementById('tbody-munis-uf').innerHTML = rows.map(r => rowHtml(r, false)).join('');
+
+        const somaPorAno = {};
+        ANOS.forEach(a => { somaPorAno[a] = rows.reduce((s, r) => s + (r.porAno[a] || 0), 0); });
+        const somaAcum = rows.reduce((s, r) => s + r.acumulado, 0);
+        document.getElementById('tfoot-munis-uf').innerHTML = `<tr>
+            <td class="td-ente"><strong>Total ${NOMES_UF[uf]}</strong> <small>${rows.length} municípios</small></td>
+            ${ANOS.map(a => td(fmtMi(somaPorAno[a]))).join('')}
+            ${td(fmtMi(somaAcum), 'col-divider')}
+            <td></td>
+        </tr>`;
+    }
+
+    const semAcento = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+    document.getElementById('search-municipio').addEventListener('input', (e) => {
+        const q = semAcento(e.target.value.trim());
+        document.querySelectorAll('#tbody-munis-uf tr').forEach(tr => {
+            const nome = semAcento(tr.querySelector('.td-ente')?.textContent || '');
+            tr.classList.toggle('row-hidden', q.length > 0 && !nome.includes(q));
+        });
+    });
+
+    loadData();
+    </script>
+</body>
+</html>
