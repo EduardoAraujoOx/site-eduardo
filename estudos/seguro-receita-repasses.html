@@ -253,6 +253,14 @@
             </table>
         </div>
 
+        <div class="callout" style="margin-top:1rem" id="planilha-auditavel">
+            <strong>Confira a conta linha a linha:</strong>
+            <a href="/materiais/seguro-receita-repasses-memoria-calculo.xlsx" download>Planilha com memória de cálculo (.xlsx)</a>
+            &mdash; os 5.596 entes, ordenados do pior colocado ao melhor, com fórmulas vivas (não valores
+            colados) para a razão de cada um, a soma acumulada e o nível de corte que decide quem entra
+            e quanto recebe. Inclui uma aba com o exemplo pequeno abaixo, também com fórmulas.
+        </div>
+
         <details class="methodology">
             <summary>Metodologia e base legal</summary>
             <div class="methodology-body">
@@ -291,6 +299,42 @@ $$\text{razão}_{\text{ente},a} = \frac{\text{IBS-destino recebido no ano } a}{\
                     termos matemáticos: encontra-se um nível \(L\) tal que
                     \(\sum_{\text{ente}} \max(0,\, L\cdot\text{denom}_{\text{ente}} - \text{numerador}_{\text{ente},a}) = \text{fundo}_a\),
                     e cada ente recebe exatamente essa parcela.
+                </p>
+
+                <p class="meto-section-title">Um exemplo com números pequenos</p>
+                <p class="meto-note">
+                    Imagine só 4 entes fictícios e um fundo de R$ 10 milhões:
+                </p>
+                <table class="param-table">
+                    <thead><tr><th>Ente</th><th>Numerador (recebe hoje)</th><th>Denominador (receita média capada)</th><th>Razão</th></tr></thead>
+                    <tbody>
+                        <tr><td>A</td><td>R$ 4 mi</td><td>R$ 100 mi</td><td>4,0%</td></tr>
+                        <tr><td>B</td><td>R$ 4,8 mi</td><td>R$ 80 mi</td><td>6,0%</td></tr>
+                        <tr><td>C</td><td>R$ 3 mi</td><td>R$ 50 mi</td><td>6,0%</td></tr>
+                        <tr><td>D</td><td>R$ 30 mi</td><td>R$ 200 mi</td><td>15,0%</td></tr>
+                    </tbody>
+                </table>
+                <p class="meto-note">
+                    <strong>Passo 1 &mdash; ordena do pior pro melhor:</strong> A (4,0%) é o pior colocado,
+                    B e C empatam em 6,0%, D está bem à frente (15,0%).
+                </p>
+                <p class="meto-note">
+                    <strong>Passo 2 &mdash; eleva o pior até alcançar o próximo:</strong> A precisa de
+                    2 pontos percentuais (de 4% para 6%) sobre seu denominador de R$ 100 mi &mdash; custa
+                    R$ 2 mi. Sobram R$ 8 mi no fundo.
+                </p>
+                <p class="meto-note">
+                    <strong>Passo 3 &mdash; A, B e C agora sobem juntos</strong> (estão empatados em 6%):
+                    juntos, precisariam de R$ 20,7 mi pra alcançar D (15%), mas só sobram R$ 8 mi. O fundo
+                    acaba no meio do caminho, num nível comum de <strong>9,48%</strong>.
+                </p>
+                <p class="meto-note">
+                    <strong>Resultado:</strong> A recebe R$ 5,48 mi, B recebe R$ 2,78 mi, C recebe
+                    R$ 1,74 mi (os três terminam empatados em 9,48%) &mdash; soma exatamente os R$ 10 mi do
+                    fundo. <strong>D não recebe nada</strong>: já estava acima de qualquer nível que o
+                    fundo alcançaria. Esse é o mecanismo completo, repetido com 5.596 entes em vez de 4: a
+                    <a href="#planilha-auditavel">planilha auditável</a> abaixo mostra a conta linha a
+                    linha, com fórmulas visíveis, para os números reais.
                 </p>
 
                 <p class="meto-section-title">Tratamento do Distrito Federal</p>
@@ -336,6 +380,7 @@ $$\text{razão}_{\text{ente},a} = \frac{\text{IBS-destino recebido no ano } a}{\
             <p>4. Receita média de referência (denominador): <code>data/coeficientes-uf.json</code> e <code>data/coeficientes-municipios.json</code>, validados contra a Nota Técnica nº 02/2026 (SEFAZ-ES).</p>
             <p>5. População: IBGE, Estimativas da População Residente no Brasil e Unidades da Federação, e nos Municípios Brasileiros, publicação no Diário Oficial da União (2019, 2020, 2021, 2024 e 2025 &mdash; média simples dos anos disponíveis; ver <code>data/populacao-uf-media-2019-2026.json</code> e <code>data/populacao-municipios-media-2019-2026.json</code>).</p>
             <p>6. Algoritmo de nivelamento e dados desta página: <code>data/build-seguro-receita-repasses.py</code>, saída em <code>data/seguro-receita-repasses.json</code>.</p>
+            <p>7. Planilha com memória de cálculo: <code>data/build-seguro-receita-planilha.py</code>, gerada a partir do mesmo algoritmo, verificada numericamente contra ele (diferença menor que R$ 0,01 em todos os anos).</p>
         </div>
 
     </div>
