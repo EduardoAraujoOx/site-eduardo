@@ -311,8 +311,8 @@ $$\text{razão}_{\text{ente},a} = \frac{\text{IBS-destino recebido no ano } a}{\
                             <td>A lei apura uma média móvel dos últimos 12 meses e distribui todo mês; esta página usa o ano-calendário inteiro como proxy, consistente com o horizonte anual do Estudo 06.</td>
                         </tr>
                         <tr>
-                            <td>População de 2025 (ponto único)</td>
-                            <td>O teto per capita usa a "média da população entre 2019 e 2026" (art. 117, §§3º-6º); não há série histórica de população municipal disponível neste site, então se usa a estimativa IBGE de 2025.</td>
+                            <td>População: 5 dos 8 anos pedidos</td>
+                            <td>O teto per capita usa a "média da população entre 2019 e 2026" (art. 117, §§3º-6º) de cada ente. O IBGE publica estimativa anual para 2019, 2020, 2021, 2024 e 2025; 2022 e 2023 não têm estimativa normal (o Censo Demográfico 2022 a substituiu nesses dois anos) e 2026 ainda não foi publicado. A média usada é desses 5 anos disponíveis.</td>
                         </tr>
                         <tr>
                             <td>Numerador do DF restrito ao ICMS</td>
@@ -334,7 +334,7 @@ $$\text{razão}_{\text{ente},a} = \frac{\text{IBS-destino recebido no ano } a}{\
             <p>2. IBS pelo critério destino (numerador) e o fundo do Seguro-Receita (5%, líquido de CGIBS): <a href="/estudos/ibs-projecao-nacional.html">Estudo 11</a>, campos <code>ibs_destino_liquido</code> e <code>ibs_seguro_receita</code> de <code>data/ibs-projecao-nacional.json</code>.</p>
             <p>3. Coeficiente de participação pelo critério destino (φ<sup>dest</sup>), por estado: <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>. Por município: rateio proporcional ao φ<sup>CPT</sup> individual dentro de cada UF, ver <code>data/rateio-destino-municipios.json</code> &mdash; simplificação necessária porque Gobetti e Monteiro (IPEA, 2023) só publicam o efeito do critério destino agregado por UF, não por município.</p>
             <p>4. Receita média de referência (denominador): <code>data/coeficientes-uf.json</code> e <code>data/coeficientes-municipios.json</code>, validados contra a Nota Técnica nº 02/2026 (SEFAZ-ES).</p>
-            <p>5. População: IBGE, Estimativas da População Residente, 1º de julho de 2025 (<code>data/icms-iss-vs-populacao-2025.json</code> e <code>data/populacao-municipios-2025.json</code>).</p>
+            <p>5. População: IBGE, Estimativas da População Residente no Brasil e Unidades da Federação, e nos Municípios Brasileiros, publicação no Diário Oficial da União (2019, 2020, 2021, 2024 e 2025 &mdash; média simples dos anos disponíveis; ver <code>data/populacao-uf-media-2019-2026.json</code> e <code>data/populacao-municipios-media-2019-2026.json</code>).</p>
             <p>6. Algoritmo de nivelamento e dados desta página: <code>data/build-seguro-receita-repasses.py</code>, saída em <code>data/seguro-receita-repasses.json</code>.</p>
         </div>
 
