@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projeção ICMS/IBS por Estado 2029–2033 | Eduardo Reis Araújo</title>
-    <meta name="description" content="Projeção da receita de ICMS/IBS de estados e municípios para os 27 estados e o Distrito Federal durante a transição da Reforma Tributária (2029–2033), sobre a trajetória de receita de referência projetada no Estudo 11, com três cenários de redistribuição pelo critério destino.">
+    <meta name="description" content="Projeção da receita de ICMS/IBS de estados e municípios para os 27 estados e o Distrito Federal durante a transição da Reforma Tributária (2029–2033), sobre a trajetória de receita de referência projetada no Estudo 11, com redistribuição plena pelo critério destino e o repasse do Seguro-Receita (Estudo 12).">
     <meta name="author" content="Eduardo Reis Araujo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/ibs-projecao-arrecadacao-br.html">
 
     <meta property="og:title" content="Projeção ICMS/IBS por Estado 2029–2033">
-    <meta property="og:description" content="Projeção da receita de ICMS/IBS de estados e municípios durante a transição (2029–2033), sobre a trajetória de receita de referência do Estudo 11, com três cenários de redistribuição por destino.">
+    <meta property="og:description" content="Projeção da receita de ICMS/IBS de estados e municípios durante a transição (2029–2033), sobre a trajetória de receita de referência do Estudo 11, com redistribuição plena pelo critério destino e o repasse do Seguro-Receita.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/ibs-projecao-arrecadacao-br.html">
     <meta property="og:locale" content="pt_BR">
@@ -123,6 +123,10 @@
         .data-table tfoot td { font-weight: 700; }
         .data-table tr:hover:not(tfoot tr) { background: var(--accent-bg); }
         .data-table tr.row-es:hover { background: color-mix(in srgb, var(--border-es) 20%, transparent); }
+        /* Tabela de IDH: linha de grupo (tercil) em destaque, linhas de UF indentadas por baixo */
+        .data-table tr.row-grupo td { background: var(--bg); font-weight: 700; border-top: 2px solid var(--border); }
+        .data-table tr.row-sub td.td-uf { padding-left: 1.75rem; font-weight: 500; }
+        .data-table tr.row-sub td.td-uf small { margin-left: 0.3rem; }
 
         /* ── Callout ── */
         .callout { background: var(--accent-bg); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 0.75rem 1rem; font-family: var(--serif); font-size: 0.84rem; color: var(--text); margin: 1rem 0; line-height: 1.6; }
@@ -173,21 +177,24 @@
         <p class="lead">
             Estimativa da receita de ICMS/IBS de estados e municípios durante a transição da Reforma
             Tributária, para os 27 estados, o Distrito Federal e o agregado dos municípios de cada UF.
-            A projeção aplica coeficientes de participação constantes (histórico, destino e origem)
-            sobre a trajetória de receita de referência nacional projetada no
-            <a href="/estudos/ibs-projecao-nacional.html">Estudo 11</a> &mdash; que cresce com o PIB, em
-            vez de permanecer travada em termos nominais &mdash; e compara a receita de cada ano contra
-            um contrafactual que cresce junto, isolando o efeito da redistribuição do efeito do
-            crescimento da economia. A base de origem usa a cota-parte municipal do ICMS efetivamente
-            declarada por cada estado (não o teórico de 25%) e inclui o FECOP, e três cenários de
-            redistribuição do IBS pelo critério destino, com base nos coeficientes de Gobetti e
-            Monteiro (IPEA, 2023).
+            O resultado de cada ente combina quatro peças: o ICMS que ainda resta cobrar, a fatia do
+            IBS que a lei distribui pela participação histórica do ente, a fatia que distribui pelo
+            critério destino (onde o consumo acontece) e o que o ente recebe de volta do
+            Seguro-Receita, o fundo que nivela quem perde participação mais rápido. A base de cada
+            peça cresce com o PIB, projetada no <a href="/estudos/ibs-projecao-nacional.html">Estudo
+            11</a>, e a comparação de cada ano é sempre contra um contrafactual que cresce junto, para
+            isolar o efeito da redistribuição do efeito do crescimento da economia. A base de origem
+            usa a cota-parte municipal do ICMS efetivamente declarada por cada estado (não o teórico
+            de 25%) e inclui o FECOP; o critério destino usa a redistribuição plena estimada por
+            Gobetti e Monteiro (IPEA, 2023); e o repasse do Seguro-Receita vem do
+            <a href="/estudos/seguro-receita-repasses.html">Estudo 12</a>.
         </p>
         <p class="study-meta">
             Dados: SICONFI/STN, DCA Anexo&nbsp;I-C, 2019–2025 (ICMS, ISS, FECOP e cota-parte declarada) &bull;
             Coeficientes de participação: validados contra a Nota Técnica&nbsp;nº&nbsp;02/2026 (SEFAZ-ES) &bull;
             Receita de referência: Estudo&nbsp;11 (BCB/Focus + IFI) &bull;
-            Coeficientes de destino: IPEA Carta de Conjuntura&nbsp;60 (2023) &bull;
+            Coeficiente de destino: IPEA Carta de Conjuntura&nbsp;60 (2023), redistribuição plena &bull;
+            Repasse do Seguro-Receita: Estudo&nbsp;12 &bull;
             Base legal: EC&nbsp;132/2023, LC&nbsp;214/2025, LC&nbsp;227/2026
         </p>
     </div>
@@ -200,56 +207,82 @@
         </div>
 
         <details class="methodology">
-            <summary>Metodologia e fórmula matemática</summary>
+            <summary>Metodologia: como o resultado de cada ente é montado</summary>
             <div class="methodology-body">
 
                 <p class="meto-note">
-                    A receita de ICMS/IBS projetada para o ano \(a \in \{2029,\ldots,2033\}\) e para
-                    cada ente &mdash; estado, agregado dos municípios de uma UF, ou o total dos dois
-                    &mdash; é decomposta em três parcelas: ICMS residual em extinção gradual, IBS
-                    distribuído pelo critério histórico (IBSt) e IBS distribuído pelo critério destino
-                    (IBSd), líquido do CGIBS e do Seguro-Receita. As três variáveis de base da fórmula
-                    &mdash; \(\mathrm{Ref}^{ICMS+ISS}_a\), \(\mathrm{Ref}^{IBSt}_a\) e
-                    \(\mathrm{Ref}^{IBSd}_a\) &mdash; não são fixas nem recalculadas nesta página: vêm
-                    prontas da série de receita de referência nacional projetada no
-                    <a href="/estudos/ibs-projecao-nacional.html">Estudo 11</a>, que já aplica
-                    \(\alpha_a\) (histórico vs. destino), o CGIBS e o Seguro-Receita sobre o IBS bruto
-                    de cada ano, crescendo com o PIB nominal (Focus/IFI) e mantendo fixa apenas a
-                    <em>razão</em> entre receita de referência e PIB (média 2024&ndash;2026, conforme
-                    LC&nbsp;214/2025 arts.&nbsp;361 a 365). Os coeficientes de participação de cada ente
-                    &mdash; a variável que de fato captura o efeito da reforma &mdash; são o que
-                    permanece constante ao longo do tempo.
+                    A receita projetada de cada ente &mdash; estado, agregado dos municípios de uma
+                    UF, ou o total dos dois &mdash; é a soma de quatro peças, e cada peça segue uma
+                    regra de repartição diferente. Primeiro, a fração da receita de referência que
+                    ainda é cobrada como ICMS/ISS (o "ICMS residual") é dividida entre os entes na
+                    mesma proporção que cada um arrecadava em 2025; essa fração cai a cada ano da
+                    transição, até zerar em 2033 (ADCT art. 128). Segundo, a maior parte do IBS que
+                    substitui essa fração &mdash; entre 80% e 90%, dependendo do ano &mdash; é
+                    distribuída pelo critério histórico: cada ente recebe a mesma participação que
+                    tinha, em média, entre 2019 e 2025 (o Coeficiente de Participação de Transição,
+                    \(\varphi^{CPT}\)). Terceiro, o restante do IBS é distribuído pelo critério
+                    destino, seguindo a estimativa de onde o consumo final de fato acontece (Gobetti e
+                    Monteiro, IPEA 2023) &mdash; essa é a parcela que desloca receita da origem para o
+                    consumo, e cresce a cada ano até se tornar 100% da distribuição do IBS em 2033.
+                    Quarto, 5% da parcela distribuída por destino é retida antes de chegar a qualquer
+                    ente, formando o Seguro-Receita: um fundo que devolve dinheiro aos entes que estão
+                    perdendo participação mais depressa. O <a href="/estudos/seguro-receita-repasses.html">Estudo
+                    12</a> calcula esse repasse ente a ente, e o valor recebido entra de volta na
+                    receita projetada aqui.
+                </p>
+                <p class="meto-note">
+                    As três primeiras peças vêm prontas da receita de referência nacional projetada no
+                    <a href="/estudos/ibs-projecao-nacional.html">Estudo 11</a>, que cresce com o PIB
+                    (Focus/IFI) em vez de ficar travada em termos nominais; a quarta vem pronta do
+                    Estudo 12. O que esta página calcula é só a participação de cada ente dentro de
+                    cada peça &mdash; \(\varphi^{neutro}\), \(\varphi^{CPT}\) e \(\varphi^{dest}\)
+                    &mdash;, mantida constante ao longo da transição.
                 </p>
 
                 <div class="meto-formula-box">
 $$R_{a,\,\text{ente}} \;=\;
-\underbrace{\mathrm{Ref}^{ICMS+ISS}_a\cdot\varphi^{neutro}_{\text{ente}}}_{\text{ICMS residual}}
-\;+\;\underbrace{\mathrm{Ref}^{IBSt}_a\cdot\varphi^{CPT}_{\text{ente}}}_{\text{IBSt via CPT histórico}}
-\;+\;\underbrace{\mathrm{Ref}^{IBSd}_a\cdot\varphi^{dest}_{\text{ente}}}_{\text{IBSd via coeficiente de destino}}$$
+\underbrace{\mathrm{Ref}^{ICMS+ISS}_a\cdot\varphi^{neutro}_{\text{ente}}}_{\text{1. ICMS residual}}
+\;+\;\underbrace{\mathrm{Ref}^{IBSt}_a\cdot\varphi^{CPT}_{\text{ente}}}_{\text{2. IBS, histórico}}
+\;+\;\underbrace{\mathrm{Ref}^{IBSd}_a\cdot\varphi^{dest}_{\text{ente}}}_{\text{3. IBS, destino}}
+\;+\;\underbrace{SR_{a,\,\text{ente}}}_{\text{4. repasse Seguro-Receita}}$$
                 </div>
                 <p class="meto-note">
-                    \(\mathrm{Ref}^{IBSt}_a\) e \(\mathrm{Ref}^{IBSd}_a\) vêm dos campos
-                    <code>ibs_historico</code> e <code>ibs_destino_liquido</code> de
-                    <code>data/ibs-projecao-nacional.json</code>: \(\mathrm{Ref}^{IBSt}_a =
-                    \mathrm{Ref}^{IBS}_a\cdot\alpha_a\) e \(\mathrm{Ref}^{IBSd}_a =
-                    \mathrm{Ref}^{IBS}_a\cdot(1-\alpha_a)\cdot(1-c_a)\cdot(1-\rho)\), onde
-                    \(\mathrm{Ref}^{IBS}_a=\mathrm{Ref}^{IBSt}_a+\mathrm{Ref}^{IBSd}_a+\text{CGIBS}_a+\text{Seguro-Receita}_a\)
-                    é o IBS bruto do ano. As duas páginas compartilham a mesma fonte para
-                    \(\alpha_a\), \(c_a\) e \(\rho\) desde esta atualização, em vez de cada uma manter
-                    sua própria cópia dessas constantes.
+                    A tabela abaixo resume, ano a ano, como a receita de referência nacional se divide
+                    entre as quatro peças &mdash; cada coluna é a fração do total daquele ano (as
+                    colunas somam 100%; os valores em reais estão no Estudo 11 e no Estudo 12):
+                </p>
+                <div class="table-wrap">
+                    <table class="param-table">
+                        <thead>
+                            <tr><th>Ano</th><th>1. ICMS residual</th><th>2. IBS, histórico</th><th>3. IBS, destino líquido</th><th>Seguro-Receita retido<sup>*</sup></th><th>CGIBS retido</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>2029</td><td>90,00%</td><td>8,00%</td><td>1,86%</td><td>0,10%</td><td>0,04%</td></tr>
+                            <tr><td>2030</td><td>80,00%</td><td>16,00%</td><td>3,76%</td><td>0,20%</td><td>0,04%</td></tr>
+                            <tr><td>2031</td><td>70,00%</td><td>24,00%</td><td>5,66%</td><td>0,30%</td><td>0,04%</td></tr>
+                            <tr><td>2032</td><td>60,00%</td><td>32,00%</td><td>7,56%</td><td>0,40%</td><td>0,05%</td></tr>
+                            <tr><td>2033</td><td>0,00%</td><td>90,00%</td><td>9,45%</td><td>0,50%</td><td>0,05%</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="meto-note">
+                    <sup>*</sup>O Seguro-Receita retido não é perdido: é a peça 4 da fórmula acima,
+                    redistribuída ente a ente pelo Estudo 12. O CGIBS retido, ao contrário, financia o
+                    Comitê Gestor e não volta a nenhum ente. Base legal: ADCT arts. 128, 131 e 132; LC
+                    227/2026 arts. 51 e 114 a 116. Esses parâmetros não são recalculados nesta página:
+                    vêm prontos do Estudo 11 (campos <code>ibs_historico</code>,
+                    <code>ibs_destino_liquido</code>, <code>ibs_seguro_receita</code> e
+                    <code>ibs_cgibs</code> de <code>data/ibs-projecao-nacional.json</code>), para que
+                    as duas páginas sempre usem a mesma base.
                 </p>
 
+                <p class="meto-section-title">O contrafactual: contra o quê medir ganho ou perda</p>
                 <p class="meto-note">
-                    onde <em>ente</em> é o estado, o agregado dos municípios da UF, ou o total (soma
-                    dos dois) &mdash; ver o seletor <strong>Estado / Municípios / Total</strong> acima
-                    de cada tabela abaixo.
-                </p>
-
-                <p class="meto-note">
-                    As colunas de variação percentual de cada tabela não comparam \(R_{a,\text{ente}}\)
-                    contra o valor fixo de 2025: comparam contra um <strong>contrafactual que também
-                    cresce</strong>, ano a ano, à mesma trajetória da receita de referência nacional
-                    &mdash; mantendo fixa apenas a participação do ente, não o volume:
+                    Como a receita de referência cresce com o PIB em vez de ficar travada em 2025,
+                    comparar a receita projetada de cada ente contra o valor fixo de 2025 misturaria
+                    dois efeitos diferentes: o efeito da redistribuição (mudança de regra) e o efeito
+                    puro do crescimento da economia. A coluna \(\Delta\%\) de cada tabela evita essa
+                    mistura comparando, em vez disso, contra um contrafactual que também cresce:
                 </p>
                 <div class="meto-formula-box">
 $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}}, \qquad
@@ -259,14 +292,29 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
                 <p class="meto-note">
                     \(R^{0}_{a,\text{ente}}\) responde à pergunta "quanto esse ente arrecadaria em
                     ICMS/ISS no ano \(a\) se a reforma não tivesse acontecido, mas a economia tivesse
-                    crescido do mesmo jeito?" &mdash; e não "quanto ele arrecadava em 2025?". Sem essa
-                    correção, comparar a receita projetada (que cresce com o PIB) contra um valor
-                    travado em 2025 misturaria o efeito da redistribuição com o efeito puro do
-                    crescimento da economia, superestimando ganhos e subestimando perdas em todos os
-                    entes por igual. Nesta atualização, \(R^{0}_{a,\text{ente}}\) deixa de ficar
-                    implícito no cálculo do \(\Delta\%\): cada tabela abaixo mostra a coluna "Sem
-                    reforma" ano a ano, lado a lado com "Com reforma", para que a comparação seja
-                    auditável diretamente pelos dois números, não só pela razão entre eles.
+                    crescido do mesmo jeito?" &mdash; e não "quanto ele arrecadava em 2025?". Como o
+                    mesmo \(\mathrm{Ref}_a\) entra tanto na receita projetada quanto no contrafactual,
+                    o crescimento se cancela na razão \(\Delta\%\): o que sobra é o efeito puro da
+                    redistribuição. A tabela abaixo mostra a coluna "Sem reforma" ano a ano, lado a
+                    lado com "Com reforma", para que a comparação seja auditável diretamente pelos
+                    dois números, não só pela razão entre eles.
+                </p>
+
+                <p class="meto-section-title">Por que só o cenário de destino pleno</p>
+                <p class="meto-note">
+                    Versões anteriores desta página simulavam três cenários para o critério destino:
+                    pleno (redistribuição integral pela estimativa de consumo de Gobetti e Monteiro),
+                    intermediário (média entre pleno e a participação de origem) e neutro (sem
+                    redistribuição nenhuma). Esta atualização mantém só o pleno, por dois motivos:
+                    primeiro, é o cenário que a legislação de fato desenha &mdash; a distribuição por
+                    destino é integral a partir do momento em que entra em vigor, não parcial; os
+                    outros dois eram bandas de sensibilidade, não alternativas legais igualmente
+                    prováveis. Segundo, o <a href="/estudos/seguro-receita-repasses.html">Estudo
+                    12</a>, que calcula o repasse do Seguro-Receita ente a ente, já usa exclusivamente
+                    o coeficiente pleno como base do numerador de cada ente: manter os três cenários
+                    aqui exigiria também triplicar o Estudo 12, sem ganho real de informação. Quem
+                    quiser comparar contra o cenário neutro ainda encontra essa referência na Tabela 2
+                    (agrupamento por IDHM), que mostra as duas colunas lado a lado.
                 </p>
 
                 <p class="meto-section-title">Variáveis</p>
@@ -294,24 +342,24 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
                             <td>ibs-projecao-nacional.json</td>
                         </tr>
                         <tr>
+                            <td>\(SR_{a,\text{ente}}\)</td>
+                            <td>Repasse do Seguro-Receita recebido pelo ente no ano \(a\), calculado no Estudo 12 por nivelamento sequencial entre os entes com menor razão entre receita de destino recebida e receita média de referência (ADCT art. 132; LC 227/2026 art. 117). Zero para entes que não são beneficiários naquele ano.</td>
+                            <td>seguro-receita-repasses.json</td>
+                        </tr>
+                        <tr>
                             <td>\(\varphi^{neutro}_{\text{ente}}\)</td>
-                            <td>Coeficiente de participação pelo critério de origem em 2025. Para o estado: \(\text{ICMS bruto}_{UF,2025} - \text{cota-parte}_{UF,2025} + \text{FECOP}_{UF,2025}\); para os municípios: \(\text{ISS}_{UF,2025} + \text{cota-parte}_{UF,2025}\) &mdash; onde a cota-parte é o valor efetivamente <strong>declarado</strong> pelo estado (não o teórico de 25% do ICMS, salvo quando o dado declarado não existe). Ambos divididos pela soma nacional de ICMS+ISS+FECOP 2025. Mesma base de cálculo do \(\varphi^{CPT}\) validado. É a base do ICMS residual decrescente, do contrafactual crescente (ver abaixo) e corresponde ao Cenário 3 (neutro) para o IBSd. Para o DF, sem esfera municipal própria: \(\text{ICMS bruto}_{DF,2025} + \text{FECOP}_{DF,2025}\), sem dedução de cota-parte.</td>
+                            <td>Coeficiente de participação pelo critério de origem em 2025. Para o estado: \(\text{ICMS bruto}_{UF,2025} - \text{cota-parte}_{UF,2025} + \text{FECOP}_{UF,2025}\); para os municípios: \(\text{ISS}_{UF,2025} + \text{cota-parte}_{UF,2025}\) &mdash; onde a cota-parte é o valor efetivamente <strong>declarado</strong> pelo estado (não o teórico de 25% do ICMS, salvo quando o dado declarado não existe). Ambos divididos pela soma nacional de ICMS+ISS+FECOP 2025. Mesma base de cálculo do \(\varphi^{CPT}\) validado. É a base do ICMS residual decrescente e do contrafactual crescente (ver abaixo). Para o DF, sem esfera municipal própria: \(\text{ICMS bruto}_{DF,2025} + \text{FECOP}_{DF,2025}\), sem dedução de cota-parte.</td>
                             <td>DCA 2025, por UF</td>
                         </tr>
                         <tr>
                             <td>\(\varphi^{CPT}_{\text{ente}}\)</td>
-                            <td>Coeficiente de Participação de Transição (participação histórica, 2019&ndash;2025 deflacionado). Fonte trocada nesta atualização: em vez de recalculado no navegador, vem do dataset validado <code>coeficientes-uf.json</code>, conferido termo a termo contra a Nota Técnica nº 02/2026 (SEFAZ-ES) &mdash; para estado e para o agregado municipal separadamente. Não disponível para a fatia municipal do DF (sem esfera municipal própria).</td>
+                            <td>Coeficiente de Participação de Transição (participação histórica, 2019&ndash;2025 deflacionado), vem do dataset validado <code>coeficientes-uf.json</code>, conferido termo a termo contra a Nota Técnica nº 02/2026 (SEFAZ-ES) &mdash; para estado e para o agregado municipal separadamente. Não disponível para a fatia municipal do DF (sem esfera municipal própria).</td>
                             <td>coeficientes-uf.json</td>
                         </tr>
                         <tr>
                             <td>\(\varphi^{dest}_{\text{ente}}\)</td>
-                            <td>Coeficiente de participação pelo critério destino/consumo, normalizado para conservar o agregado nacional entre todas as fatias (estado e município de todas as UFs). A variação relativa \(vr\) usada para deslocar cada fatia a partir de \(\varphi^{neutro}\) é <strong>diferenciada por esfera</strong>: para o estado, vem do saldo estadual (residual) de <code>tabela4_esferas</code>; para os municípios, vem do saldo municipal líquido publicado na Tabela 2 do próprio Gobetti e Monteiro (não é uma estimativa nossa &mdash; é dado real do paper, e por isso os dois valores divergem por UF).</td>
+                            <td>Coeficiente de participação pelo critério destino pleno, \(\varphi^{neutro}_{\text{ente}}\times(1+vr_{\text{ente}})\), normalizado para conservar o agregado nacional entre todas as fatias. A variação relativa \(vr\) usada para deslocar cada fatia a partir de \(\varphi^{neutro}\) é <strong>diferenciada por esfera</strong>: para o estado, vem do saldo estadual (residual) de <code>tabela4_esferas</code>; para os municípios, vem do saldo municipal líquido publicado na Tabela 2 do próprio Gobetti e Monteiro (dado real do paper, não estimativa nossa &mdash; por isso os dois valores divergem por UF).</td>
                             <td>gobetti-2023-perdas-ganhos-uf.json, tabela4_esferas</td>
-                        </tr>
-                        <tr>
-                            <td>\(\lambda_{\text{ente}}\)</td>
-                            <td>Quociente \(\varphi^{CPT}_{\text{ente}}/\varphi^{neutro}_{\text{ente}}\), usado internamente no Cenário 3 (neutro) mas sem coluna própria nas tabelas abaixo. \(\lambda<1\) indica ente que cresceu acima da média nacional em 2019&ndash;2025 e sofre leve penalidade pelo critério histórico; \(\lambda>1\) indica o oposto. Calculado separadamente para estado e município.</td>
-                            <td>Derivado dos itens acima</td>
                         </tr>
                         <tr>
                             <td>\(f_a\), \(s_a=1-f_a\)</td>
@@ -319,92 +367,30 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
                             <td>0,9 / 0,8 / 0,7 / 0,6 / 0</td>
                         </tr>
                         <tr>
-                            <td>\(\alpha_a\)</td>
-                            <td>Fração do IBS distribuída pelo critério histórico (IBSt); a parcela \((1-\alpha_a)\) é distribuída pelo critério destino (IBSd). Base legal: ADCT arts. 131&ndash;132 e LC 227/2026 arts. 114&ndash;116. Aplicada dentro da série do Estudo 11 (campos <code>ibs_historico</code>/<code>ibs_destino_liquido</code>) &mdash; não recalculada aqui.</td>
-                            <td>0,80 (2029&ndash;2032) / 0,90 (2033)</td>
-                        </tr>
-                        <tr>
-                            <td>\(c_a\)</td>
-                            <td>Taxa de financiamento do Comitê Gestor do IBS (CGIBS, art. 51 LC 227/2026). Dedução aplicada exclusivamente sobre a parcela IBSd, anterior à redistribuição por destino. Aplicada dentro da série do Estudo 11 &mdash; não recalculada aqui.</td>
-                            <td>2,0% / 1,0% / 0,67% / 0,5% / 0,5%</td>
-                        </tr>
-                        <tr>
-                            <td>\(\rho\)</td>
-                            <td>Seguro-Receita (ADCT art. 132): fração do IBSd retida para fundo de garantia de receita mínima. Aplicada antes da distribuição por destino, dentro da série do Estudo 11. Segue como simplificação nesta atualização: o retorno do fundo aos entes que acionam a garantia ainda não é modelado (é objeto de um próximo estudo &mdash; ver <code>ibs_seguro_receita</code> no Estudo 11).</td>
-                            <td>5% do IBSd bruto</td>
+                            <td>\(\alpha_a\), \(c_a\), \(\rho\)</td>
+                            <td>Fração do IBS pelo critério histórico (\(\alpha_a\), ADCT arts. 131&ndash;132, LC 227/2026 arts. 114&ndash;116); taxa do CGIBS sobre a parcela destino (\(c_a\), art. 51 LC 227/2026); retenção do Seguro-Receita sobre a parcela destino líquida de CGIBS (\(\rho=5\%\), ADCT art. 132). Todas aplicadas dentro da série do Estudo 11 &mdash; não recalculadas aqui.</td>
+                            <td>ver tabela acima</td>
                         </tr>
                     </tbody>
                 </table>
-
-                <p class="meto-section-title">Parâmetros da transição (ADCT arts. 128 e 131)</p>
-                <div class="table-wrap">
-                    <table class="param-table">
-                        <thead>
-                            <tr><th>Ano</th><th>\(f_a\)</th><th>\(s_a\)</th><th>\(\alpha_a\) (IBSt)</th><th>\(1-\alpha_a\) (IBSd)</th><th>\(c_a\) (CGIBS, sobre IBSd)</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>2029</td><td>0,90</td><td>0,10</td><td>0,80</td><td>0,20</td><td>2,00%</td></tr>
-                            <tr><td>2030</td><td>0,80</td><td>0,20</td><td>0,80</td><td>0,20</td><td>1,00%</td></tr>
-                            <tr><td>2031</td><td>0,70</td><td>0,30</td><td>0,80</td><td>0,20</td><td>0,67%</td></tr>
-                            <tr><td>2032</td><td>0,60</td><td>0,40</td><td>0,80</td><td>0,20</td><td>0,50%</td></tr>
-                            <tr><td>2033</td><td>0,00</td><td>1,00</td><td>0,90</td><td>0,10</td><td>0,50%</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <p class="meto-section-title">Cenários (parâmetro \(\varphi^{dest}_{\text{ente}}\))</p>
-                <table class="param-table">
-                    <thead><tr><th>Cenário</th><th>\(\varphi^{dest}_{\text{ente}}\)</th><th>Descrição</th></tr></thead>
-                    <tbody>
-                        <tr><td>1: Redistribuição integral</td><td>\(\varphi^{neutro}_{\text{ente}}\times(1+vr_{\text{ente}})\), normalizado</td><td>O IBSd é alocado conforme a redistribuição plena pelo critério destino. Cada ente recebe uma fração da receita de referência proporcional ao consumo final estimado por Gobetti e Monteiro (IPEA, 2023), normalizada para conservar o agregado nacional entre todas as fatias estaduais e municipais.</td></tr>
-                        <tr><td>2: Redistribuição moderada</td><td>\((\varphi^{neutro}_{\text{ente}}+\varphi^{dest,pleno}_{\text{ente}})/2\)</td><td>Média aritmética entre os coeficientes do Cenário 3 (neutro) e do Cenário 1 (pleno). Por ser transformação linear de uma redistribuição soma-zero, o total entre entes é conservado.</td></tr>
-                        <tr><td>3: Neutro</td><td>\(\varphi^{neutro}_{\text{ente}} = r_0^{2025}/\mathrm{Ref}_{2025}\)</td><td>O IBSd é distribuído pelo critério de origem vigente em 2025, sem redistribuição por destino. Variações residuais decorrem do efeito CPT (\(\lambda\neq 1\)) e das deduções de CGIBS e Seguro-Receita sobre o IBSd.</td></tr>
-                    </tbody>
-                </table>
-
-                <p class="meto-section-title">Receita de referência crescente, coeficientes constantes</p>
-                <p class="meto-note">
-                    Os três componentes da receita derivam de uma base comum que <strong>não</strong>
-                    fica travada em termos nominais: \(\mathrm{Ref}_a\), a receita de referência
-                    nacional projetada no Estudo 11, que acompanha o crescimento do PIB (mediana Focus
-                    2026&ndash;2030, IFI 2031&ndash;2033), mantendo fixa apenas a razão receita/PIB na
-                    média 2024&ndash;2026. O que fica congelado ao longo da transição é a
-                    <em>participação</em> de cada ente nessa base &mdash; \(\varphi^{neutro}\),
-                    \(\varphi^{CPT}\) e \(\varphi^{dest}\) &mdash;, não o volume de receita em si.
-                </p>
-                <p class="meto-note">
-                    Isso cria um problema de comparação que não existia quando a receita de
-                    referência ficava travada em 2025 (como nas versões anteriores desta página):
-                    contra o quê medir ganho ou perda, se a base cresce? Comparar a receita projetada
-                    &mdash; que cresce com o PIB &mdash; contra o valor fixo de 2025 misturaria
-                    redistribuição com crescimento, inflando artificialmente os ganhos de todo mundo.
-                    A resposta é o contrafactual \(R^{0}_{a,\text{ente}} = \mathrm{Ref}_a\cdot
-                    \varphi^{neutro}_{\text{ente}}\) definido acima: a receita de referência de cada
-                    ano, multiplicada pela participação que o ente já tinha em 2025 &mdash; ou seja,
-                    "o que ele arrecadaria se nada tivesse mudado na regra, mas a economia tivesse
-                    seguido crescendo". Como o mesmo \(\mathrm{Ref}_a\) entra tanto na receita
-                    projetada quanto no contrafactual, o crescimento se cancela na razão \(\Delta\%\):
-                    o que sobra é o efeito puro da redistribuição, comparável entre os três cenários e
-                    entre qualquer par de anos da transição.
-                </p>
 
                 <p class="meto-section-title">Camada municipal e o seletor Estado / Municípios / Total</p>
                 <p class="meto-note">
-                    Esta atualização adiciona uma segunda fatia por UF: o agregado dos municípios,
-                    tratado como um único bloco (não há projeção individual por município nesta
-                    página). O cálculo espelha o do estado, trocando a base de origem 2025
+                    Cada UF entra com uma segunda fatia: o agregado dos municípios, tratado como um
+                    único bloco (não há projeção individual por município nesta página, exceto no
+                    repasse do Seguro-Receita, que o Estudo 12 calcula município a município). O
+                    cálculo espelha o do estado, trocando a base de origem 2025
                     (\(\text{ISS}+\text{cota-parte}\)) e o \(\varphi^{CPT}\) municipal validado. A
                     cota-parte usada dos dois lados é o valor <strong>declarado</strong> pelo estado
                     (<code>dca_transf_munis_por_uf</code>), não o teórico de 25% do ICMS bruto &mdash;
                     os dois valores divergem UF a UF, porque a partilha efetiva não segue exatamente
-                    a fração constitucional em todos os casos. A camada de destino usa a variação
-                    relativa <strong>diferenciada</strong> por esfera descrita acima. O Distrito
-                    Federal não tem esfera municipal própria (LC 227/2026): nas tabelas, sua linha
-                    aparece como "n/a" quando o seletor está em "Municípios", e o valor de
-                    "Estado"/"Total" para o DF soma ICMS bruto e FECOP, sem dedução de cota-parte,
-                    mesmo critério do dataset <code>coeficientes-uf.json</code> &mdash; o que ainda
-                    assim subestima levemente a receita total do DF por não capturar uma fatia
-                    equivalente à municipal, que a legislação não separa para esse ente.
+                    a fração constitucional em todos os casos. O Distrito Federal não tem esfera
+                    municipal própria (LC 227/2026): nas tabelas, sua linha aparece como "n/a" quando
+                    o seletor está em "Municípios", e o valor de "Estado"/"Total" para o DF soma ICMS
+                    bruto e FECOP, sem dedução de cota-parte, mesmo critério do dataset
+                    <code>coeficientes-uf.json</code> &mdash; o que ainda assim subestima levemente a
+                    receita total do DF por não capturar uma fatia equivalente à municipal, que a
+                    legislação não separa para esse ente.
                 </p>
 
                 <p class="meto-section-title">Simplificações e mecanismos não modelados</p>
@@ -413,9 +399,12 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
                     Compensação de Benefícios Fiscais ou Financeiro-Fiscais (FCBF, ADCT art. 65 EC
                     132/2023), relevante para estados com benefícios legados via CONFAZ; a
                     possibilidade de alíquotas estaduais do IBS divergirem da carga histórica do ICMS;
-                    o efeito do cashback sobre a receita líquida (ADCT art. 134); e o retorno do
-                    Seguro-Receita (ADCT art. 132) aos entes que acionam a garantia &mdash; hoje o
-                    modelo só desconta \(\rho=5\%\) na origem, sem redistribuir esse valor de volta.
+                    e o efeito do cashback sobre a receita líquida (ADCT art. 134). O repasse do
+                    Seguro-Receita, que era um mecanismo não modelado em versões anteriores desta
+                    página, passa a entrar diretamente na receita projetada (peça 4 da fórmula acima),
+                    calculado no Estudo 12; as simplificações específicas desse cálculo (apuração
+                    mensal tratada como anual, população 2025 no lugar da média 2019&ndash;2026 exigida
+                    pela lei) estão documentadas na metodologia do Estudo 12.
                 </p>
 
                 <p class="meto-note">
@@ -423,20 +412,17 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
                     cobrado como adicional ao ICMS em boa parte dos estados (R$&nbsp;14,0&nbsp;bi em
                     2025), entra na fatia estadual de \(\varphi^{neutro}\) e \(\varphi^{CPT}\) e
                     também na receita de referência nacional projetada no Estudo 11 &mdash; as duas
-                    páginas foram atualizadas juntas para usar a mesma base
-                    (R$&nbsp;1.043,6&nbsp;bi em 2025), eliminando uma divergência de cerca de 1,4%
-                    que existia entre elas antes desta correção. FECOP só está disponível na DCA a
-                    partir de 2019; nos anos anteriores da série histórica do Estudo 11 é tratado como
-                    zero.
+                    páginas usam a mesma base (R$&nbsp;1.043,6&nbsp;bi em 2025). FECOP só está
+                    disponível na DCA a partir de 2019; nos anos anteriores da série histórica do
+                    Estudo 11 é tratado como zero.
                 </p>
 
                 <p class="meto-note">
-                    <strong>Relação com o Estudo 03 (Espírito Santo):</strong> até esta atualização, o
-                    Estudo 06 replicava exatamente a metodologia do Estudo 03 (base fixa em 2025,
-                    \(\varphi^{CPT}\) recalculado no navegador). Com a adoção da receita de referência
-                    crescente do Estudo 11 e dos coeficientes validados, essa paridade deixou de valer:
-                    os números desta página não são mais diretamente comparáveis aos do Estudo 03 até
-                    que ele receba a mesma atualização.
+                    <strong>Relação com o Estudo 03 (Espírito Santo):</strong> até a atualização que
+                    introduziu a receita de referência crescente do Estudo 11, o Estudo 06 replicava
+                    exatamente a metodologia do Estudo 03 (base fixa em 2025, \(\varphi^{CPT}\)
+                    recalculado no navegador). Os números desta página não são mais diretamente
+                    comparáveis aos do Estudo 03 até que ele receba a mesma atualização.
                 </p>
             </div>
         </details>
@@ -448,14 +434,12 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
             <button class="esfera-btn" data-esfera="municipio">Municípios (agregado)</button>
         </div>
 
-        <span class="section-label">Tabela 1 &middot; Cenário de redistribuição integral (R$ bi)</span>
+        <span class="section-label">Tabela 1 &middot; Projeção de receita por UF, critério destino pleno (R$ bi)</span>
         <div class="callout">
-            O IBSd é alocado pelo critério de consumo final: cada ente recebe uma fração
-            \(\varphi^{dest}_{\text{ente}}\) da receita de referência projetada, derivada dos
-            coeficientes de redistribuição de Gobetti e Monteiro (IPEA, 2023) e normalizada para
-            conservar o agregado. "Sem reforma" é o contrafactual \(R^{0}_{a,\text{ente}}\); "Com
-            reforma" é \(R_{a,\text{ente}}\); \(\Delta\%\) compara os dois em cada ano; "Acumulado
-            do período" soma as cinco colunas de cada lado (2029&ndash;2033) antes de comparar.
+            "Com reforma" já soma as quatro peças da fórmula acima, inclusive o que o ente recebe (ou
+            não) do repasse do Seguro-Receita calculado no Estudo 12. "Sem reforma" é o contrafactual
+            \(R^{0}_{a,\text{ente}}\); \(\Delta\%\) compara os dois em cada ano; "Acumulado do
+            período" soma as cinco colunas de cada lado (2029&ndash;2033) antes de comparar.
         </div>
         <div class="table-wrap">
             <table class="data-table" id="table-sc1">
@@ -481,92 +465,29 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
             </table>
         </div>
 
-        <span class="section-label">Tabela 2 &middot; Cenário de redistribuição moderada (R$ bi)</span>
+        <span class="section-label">Tabela 2 &middot; Receita acumulada vs. nível de desenvolvimento, por UF (esfera: total)</span>
         <div class="callout">
-            O coeficiente de destino \(\varphi^{dest}_{\text{ente}}\) é a média aritmética entre
-            \(\varphi^{neutro}_{\text{ente}}\) (Tabela 3) e \(\varphi^{dest,pleno}_{\text{ente}}\)
-            (Tabela 1). Por ser transformação linear de uma redistribuição soma-zero, o total de
-            IBS entre entes é conservado: a menor perda de um ente corresponde ao menor ganho de
-            outro, na mesma proporção.
-        </div>
-        <div class="table-wrap">
-            <table class="data-table" id="table-sc2">
-                <thead>
-                    <tr>
-                        <th class="th-left" rowspan="2">UF</th>
-                        <th colspan="5">Sem reforma (R$ bi)</th>
-                        <th class="col-divider" colspan="5">Com reforma (R$ bi)</th>
-                        <th class="col-divider" colspan="5">&#916;%</th>
-                        <th class="col-divider" colspan="2">Acumulado do período</th>
-                    </tr>
-                    <tr>
-                        <th>2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
-                        <th class="col-divider">2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
-                        <th class="col-divider">2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
-                        <th class="col-divider">&#916; R$ bi</th><th>&#916;%</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody-sc2">
-                    <tr><td colspan="18" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
-                </tbody>
-                <tfoot id="tfoot-sc2"></tfoot>
-            </table>
-        </div>
-
-        <span class="section-label">Tabela 3 &middot; Cenário neutro (R$ bi)</span>
-        <div class="callout">
-            Com \(\varphi^{dest}=\varphi^{neutro}\), IBSd e ICMS residual usam a mesma participação
-            de origem 2025. Variações residuais decorrem exclusivamente do efeito CPT
-            (\(\lambda=\varphi^{CPT}/\varphi^{neutro}\neq 1\)): entes com crescimento de receita
-            abaixo da média nacional entre 2019 e 2025 têm \(\lambda>1\); os que cresceram acima
-            têm \(\lambda<1\).
-        </div>
-        <div class="table-wrap">
-            <table class="data-table" id="table-sc3">
-                <thead>
-                    <tr>
-                        <th class="th-left" rowspan="2">UF</th>
-                        <th colspan="5">Sem reforma (R$ bi)</th>
-                        <th class="col-divider" colspan="5">Com reforma (R$ bi)</th>
-                        <th class="col-divider" colspan="5">&#916;%</th>
-                        <th class="col-divider" colspan="2">Acumulado do período</th>
-                    </tr>
-                    <tr>
-                        <th>2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
-                        <th class="col-divider">2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
-                        <th class="col-divider">2029</th><th>2030</th><th>2031</th><th>2032</th><th>2033</th>
-                        <th class="col-divider">&#916; R$ bi</th><th>&#916;%</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody-sc3">
-                    <tr><td colspan="18" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
-                </tbody>
-                <tfoot id="tfoot-sc3"></tfoot>
-            </table>
-        </div>
-
-        <span class="section-label">Tabela 4 &middot; Receita acumulada vs. nível de desenvolvimento, por grupo de UF (esfera: total)</span>
-        <div class="callout">
-            Agrupa as 27 UFs em três tercis de tamanho igual (9 UFs cada) pelo IDHM estadual (PNUD,
-            Radar IDHM 2024) &mdash; desenvolvimento alto, médio e baixo &mdash; e mostra a variação
-            percentual acumulada 2029&ndash;2033 média de cada grupo (Tabelas 1 e 3, esfera total
-            &mdash; estado + municípios). O objetivo é avaliar, de forma exploratória, se estados de
-            maior ou menor desenvolvimento tendem a ganhar ou perder receita na transição. Com
-            apenas três grupos de nove UFs, deve ser lido como indicativo, não como evidência causal.
+            Ordena as 27 UFs pelo IDHM estadual (PNUD, Radar IDHM 2024) e mostra, para cada uma, a
+            variação percentual acumulada 2029&ndash;2033 no critério destino pleno (Tabela 1) e, para
+            referência, no critério neutro (sem redistribuição por destino, só origem 2025) &mdash;
+            a diferença entre as duas colunas isola o efeito específico da mudança de critério. As
+            UFs também aparecem agrupadas em três tercis de tamanho igual (desenvolvimento alto, médio
+            e baixo), com a média de cada grupo, para avaliar de forma exploratória se estados de
+            maior ou menor desenvolvimento tendem a ganhar ou perder receita na transição. Com apenas
+            27 UFs (e tercis de nove), deve ser lido como indicativo, não como evidência causal.
         </div>
         <div class="table-wrap">
             <table class="data-table" id="table-ineq">
                 <thead>
                     <tr>
-                        <th class="th-left">Grupo (IDHM)</th>
-                        <th class="th-left">UFs</th>
-                        <th>IDHM médio</th>
-                        <th>&#916;% méd. acum.<br>(Tabela 1)</th>
-                        <th>&#916;% méd. acum.<br>(Tabela 3)</th>
+                        <th class="th-left">Grupo / UF</th>
+                        <th>IDHM</th>
+                        <th>&#916;% acum., destino pleno</th>
+                        <th>&#916;% acum., critério neutro</th>
                     </tr>
                 </thead>
                 <tbody id="tbody-ineq">
-                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                    <tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -579,7 +500,9 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
             A trajetória nacional de receita de referência (ICMS+ISS contrafactual e IBS) usada como
             base desta página vem do
             <a href="/estudos/ibs-projecao-nacional.html">Estudo 11: série histórica e projeção do IBS
-            total (Brasil), 2029&ndash;2033</a>. O coeficiente CPT do ES é analisado no
+            total (Brasil), 2029&ndash;2033</a>. O repasse do Seguro-Receita, ente a ente, vem do
+            <a href="/estudos/seguro-receita-repasses.html">Estudo 12: repasses do Seguro-Receita por
+            ente, 2029&ndash;2033</a>. O coeficiente CPT do ES é analisado no
             <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02: Coeficiente de
             Participação de Transição ES</a>.
         </div>
@@ -588,10 +511,11 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
             <p><strong>Fontes e notas metodológicas:</strong></p>
             <p>1. Receita de referência nacional (\(\mathrm{Ref}_a\), decomposta em \(\mathrm{Ref}^{ICMS+ISS}_a\) e \(\mathrm{Ref}^{IBS}_a\), este último subdividido em \(\mathrm{Ref}^{IBSt}_a\) e \(\mathrm{Ref}^{IBSd}_a\)): Estudo 11, projeção 2029&ndash;2033 sobre PIB nominal (mediana Focus 2026&ndash;2030, IFI RAF 107 2031&ndash;2033), razão receita/PIB fixada na média 2024&ndash;2026 (LC 214/2025 arts. 361&ndash;365). A divisão de \(\mathrm{Ref}^{IBS}_a\) em histórico (\(\alpha_a\)) e destino líquido de CGIBS e Seguro-Receita (\(c_a\), \(\rho\)) também é calculada no Estudo 11 e consumida diretamente daqui, sem duplicar essas constantes. Ver campos <code>ibs_historico</code> e <code>ibs_destino_liquido</code> de <code>data/ibs-projecao-nacional.json</code>.</p>
             <p>2. Coeficientes de participação histórica (\(\varphi^{CPT}\)), estado e municípios: <code>data/coeficientes-uf.json</code>, validado termo a termo contra a Nota Técnica nº 02/2026 (SEFAZ-ES, pacote v22) &mdash; ver <code>data/divergencia-vs-nota-v22.json</code>.</p>
-            <p>3. Coeficiente de destino \(\varphi^{dest}_{\text{ente}}\): Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura, n. 60, Nota de Conjuntura 18. IPEA, 28 ago. 2023. Disponível em: <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">repositorio.ipea.gov.br</a>. Variação relativa diferenciada por esfera (<code>tabela4_esferas</code>): saldo municipal vem da Tabela 2 do paper (dado publicado, não estimado); saldo estadual é o resíduo entre a Tabela 1 (total) e esse saldo municipal.</p>
+            <p>3. Coeficiente de destino \(\varphi^{dest}_{\text{ente}}\), critério pleno: Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura, n. 60, Nota de Conjuntura 18. IPEA, 28 ago. 2023. Disponível em: <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">repositorio.ipea.gov.br</a>. Variação relativa diferenciada por esfera (<code>tabela4_esferas</code>): saldo municipal vem da Tabela 2 do paper (dado publicado, não estimado); saldo estadual é o resíduo entre a Tabela 1 (total) e esse saldo municipal.</p>
             <p>4. Cota-parte municipal do ICMS: valor declarado pelo estado, SICONFI/STN DCA Anexo I-C (<code>dca_transf_munis_por_uf</code>); sem declaração, usa-se o teórico de 25% do ICMS bruto (art. 158, IV, CF/88). FECOP: SICONFI/STN DCA Anexo I-C (<code>dca_fecop_por_uf</code>), somado à fatia estadual de \(\varphi^{neutro}\) e \(\varphi^{CPT}\), mesma base da receita de referência nacional do Estudo 11.</p>
-            <p>5. Base legal: EC 132/2023; ADCT arts. 128, 130, 131 e 132; LC 214/2025; LC 227/2026 arts. 51, 114&ndash;116.</p>
-            <p>6. Mecanismos não modelados por simplificação: FCBF (ADCT art. 65), variações de alíquota estadual do IBS, cashback (ADCT art. 134) e o retorno do Seguro-Receita (ADCT art. 132) aos entes que acionam a garantia.</p>
+            <p>5. Repasse do Seguro-Receita por ente (\(SR_{a,\text{ente}}\)): Estudo 12, <code>data/seguro-receita-repasses.json</code>, calculado por nivelamento sequencial entre os entes de menor razão entre IBS-destino recebido e receita média de referência ajustada (ADCT art. 132; LC 227/2026 art. 117).</p>
+            <p>6. Base legal: EC 132/2023; ADCT arts. 128, 130, 131 e 132; LC 214/2025; LC 227/2026 arts. 51, 114&ndash;117.</p>
+            <p>7. Mecanismos não modelados por simplificação: FCBF (ADCT art. 65), variações de alíquota estadual do IBS e cashback (ADCT art. 134).</p>
         </div>
     </div>
 
@@ -618,6 +542,7 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
 
     let PARAMS = null;
     let NACIONAL_BY_YEAR = null;
+    let REPASSE_INDEX = null;
     let currentEsfera = 'total';
 
     const fmtBi   = (v, d=2) => (v/1e9).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
@@ -626,7 +551,7 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
     const clsPct  = v => v < -0.0005 ? 'td-neg' : v > 0.0005 ? 'td-pos' : '';
 
     // params[uf] = { estado: {...}, municipio: {...} | null }
-    // Cada esfera guarda: r0_2025, coefNeutro, coefCPT, bruto (pré-normalização), coefPleno, coefInter, lambda
+    // Cada esfera guarda: r0_2025, coefNeutro, coefCPT, bruto (pré-normalização), coefPleno, lambda
     function computeParams(dcaIcms2025, dcaIss2025, dcaFecop2025, dcaCotaDeclarada2025, totalBR2025, coeficientesUF, tabela4) {
         const t4ByUf = {};
         (tabela4?.ufs || []).forEach(u => { t4ByUf[u.uf] = u; });
@@ -681,10 +606,8 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
         for (const uf of UFS) {
             const p = params[uf];
             p.estado.coefPleno = somaBruto > 0 ? p.estado.bruto / somaBruto : 0;
-            p.estado.coefInter = (p.estado.coefNeutro + p.estado.coefPleno) / 2;
             if (p.municipio) {
                 p.municipio.coefPleno = somaBruto > 0 ? p.municipio.bruto / somaBruto : 0;
-                p.municipio.coefInter = (p.municipio.coefNeutro + p.municipio.coefPleno) / 2;
             }
         }
         return params;
@@ -698,8 +621,8 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
         return parts;
     }
 
-    // Retorna { res: {[ano]: {total, contrafactual, dpct}}, r0_2025 } ou null se a esfera não
-    // existir para a UF (ex.: DF/municípios).
+    // Retorna { res: {[ano]: {total, contrafactual, repasse, dpct}}, r0_2025 } ou null se a
+    // esfera não existir para a UF (ex.: DF/municípios).
     //
     // O contrafactual não é o valor fixo de 2025: é Ref_a (receita de referência nacional do
     // ano, Estudo 11) × φ^neutro do ente — ou seja, "quanto esse ente arrecadaria se tivesse
@@ -711,7 +634,10 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
     // ibs_historico(a) e ibs_destino_liquido(a) vêm prontos do Estudo 11 (data/ibs-projecao-nacional.json),
     // que já aplica alpha_a (histórico vs. destino), o CGIBS e o Seguro-Receita (5%) sobre o IBS
     // bruto nacional — não são recalculados aqui, para as duas páginas usarem sempre a mesma base.
-    function project(uf, esfera, params, coefKey, nacionalByYear) {
+    // O repasse do Seguro-Receita (Estudo 12) é somado de volta a `total`: o ente já perdeu essa
+    // fatia na dedução embutida em ibs_destino_liquido, e ganha de volta aqui se for beneficiário
+    // do nivelamento naquele ano.
+    function project(uf, esfera, params, coefKey, nacionalByYear, repasseIndex) {
         const parts = partsFor(uf, esfera, params);
         if (parts.length === 0) return null;
         const r0_2025 = parts.reduce((s, x) => s + x.r0_2025, 0);
@@ -721,23 +647,45 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
             const refA = nac.icms_iss_residual + nac.ibs_bruto;
             let total = 0, contrafactual = 0;
             for (const part of parts) {
-                const coefDest = coefKey === 'pleno' ? part.coefPleno
-                                : coefKey === 'inter' ? part.coefInter
-                                : part.coefNeutro;
+                const coefDest = coefKey === 'pleno' ? part.coefPleno : part.coefNeutro;
                 total += nac.icms_iss_residual * part.coefNeutro
                        + nac.ibs_historico * part.coefCPT
                        + nac.ibs_destino_liquido * coefDest;
                 contrafactual += refA * part.coefNeutro;
             }
-            res[a] = { total, contrafactual, dpct: contrafactual > 0 ? (total - contrafactual) / contrafactual : 0 };
+            let repasse = 0;
+            if (repasseIndex && repasseIndex[uf]) {
+                if (esfera === 'estado' || esfera === 'total') repasse += repasseIndex[uf].estado[a] || 0;
+                if ((esfera === 'municipio' || esfera === 'total') && params[uf].municipio) repasse += repasseIndex[uf].municipio[a] || 0;
+            }
+            total += repasse;
+            res[a] = { total, contrafactual, repasse, dpct: contrafactual > 0 ? (total - contrafactual) / contrafactual : 0 };
         }
         return { res, r0_2025 };
     }
 
+    // Índice idx[uf][esfera][ano] = repasse recebido do Seguro-Receita (Estudo 12), agregando
+    // municípios por UF (o Estudo 12 já projeta município a município).
+    function buildRepasseIndex(seguroData) {
+        const idx = {};
+        UFS.forEach(uf => {
+            idx[uf] = { estado: {}, municipio: {} };
+            ANOS.forEach(a => { idx[uf].estado[a] = 0; idx[uf].municipio[a] = 0; });
+        });
+        ANOS.forEach(a => {
+            const ano = seguroData.anos && seguroData.anos[a];
+            if (!ano) return;
+            (ano.entidades || []).forEach(e => {
+                if (!idx[e.uf]) return;
+                if (e.esfera === 'estado') idx[e.uf].estado[a] += e.repasse;
+                else idx[e.uf].municipio[a] += e.repasse;
+            });
+        });
+        return idx;
+    }
+
     const SCENARIOS = [
-        { id: 'sc1', coefKey: 'pleno'  },
-        { id: 'sc2', coefKey: 'inter'  },
-        { id: 'sc3', coefKey: 'neutro' }
+        { id: 'sc1', coefKey: 'pleno' }
     ];
 
     // Soma as cinco colunas de cada lado (2029-2033) antes de comparar — "quanto o ente
@@ -754,9 +702,9 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
         return `<td${cls ? ` class="${cls}"` : ''}>${content}</td>`;
     }
 
-    function buildTable(tbodyId, tfootId, params, coefKey, esfera, nacionalByYear) {
+    function buildTable(tbodyId, tfootId, params, coefKey, esfera, nacionalByYear, repasseIndex) {
         const rows = UFS.map(uf => {
-            const proj = project(uf, esfera, params, coefKey, nacionalByYear);
+            const proj = project(uf, esfera, params, coefKey, nacionalByYear, repasseIndex);
             return { uf, proj, acc: accumulate(proj) };
         }).sort((a, b) => {
             if (!a.acc && !b.acc) return 0;
@@ -792,7 +740,7 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
         ANOS.forEach(a => { sumSem[a] = 0; sumCom[a] = 0; });
         let sumAccDelta = 0, sumAccContra = 0;
         for (const uf of UFS) {
-            const proj = project(uf, esfera, params, coefKey, nacionalByYear);
+            const proj = project(uf, esfera, params, coefKey, nacionalByYear, repasseIndex);
             if (!proj) continue;
             ANOS.forEach(a => { sumSem[a] += proj.res[a].contrafactual; sumCom[a] += proj.res[a].total; });
             const acc = accumulate(proj);
@@ -819,13 +767,16 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
     function renderAllScenarios() {
         if (!PARAMS || !NACIONAL_BY_YEAR) return;
         for (const sc of SCENARIOS) {
-            buildTable('tbody-' + sc.id, 'tfoot-' + sc.id, PARAMS, sc.coefKey, currentEsfera, NACIONAL_BY_YEAR);
+            buildTable('tbody-' + sc.id, 'tfoot-' + sc.id, PARAMS, sc.coefKey, currentEsfera, NACIONAL_BY_YEAR, REPASSE_INDEX);
         }
     }
 
-    function buildIneqTable(params, giniIdh, nacionalByYear) {
+    function buildIneqTable(params, giniIdh, nacionalByYear, repasseIndex) {
+        // C1 (destino pleno) inclui o repasse do Seguro-Receita, igual à Tabela 1. C3 (neutro,
+        // sem redistribuição por destino) fica sem repasse: serve de referência "sem nenhuma
+        // redistribuição", e o repasse do Estudo 12 já usa o coeficiente pleno na sua própria base.
         const rows = UFS.map(uf => {
-            const accC1 = accumulate(project(uf, 'total', params, 'pleno', nacionalByYear));
+            const accC1 = accumulate(project(uf, 'total', params, 'pleno', nacionalByYear, repasseIndex));
             const accC3 = accumulate(project(uf, 'total', params, 'neutro', nacionalByYear));
             const ind = giniIdh.ufs[uf] || {};
             return { uf, dC1: accC1.dpct, dC3: accC3.dpct, idhm: ind.idhm_2024 };
@@ -846,13 +797,22 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
             const avgIdhm = media(linhas, 'idhm');
             const avgC1 = media(linhas, 'dC1');
             const avgC3 = media(linhas, 'dC3');
-            return `<tr>
+            const grupoRow = `<tr class="row-grupo">
                 <td class="td-uf">${nome} <small>tercil, n=${linhas.length}</small></td>
-                <td class="td-ref" style="font-family:var(--sans);font-size:0.78rem">${linhas.map(r => r.uf).join(', ')}</td>
                 <td class="td-ref">${avgIdhm.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3})}</td>
                 <td class="${clsPct(avgC1)}">${fmtPct(avgC1, 1)}</td>
                 <td class="${clsPct(avgC3)}">${fmtPct(avgC3, 1)}</td>
             </tr>`;
+            const ufRows = linhas.map(r => {
+                const isES = r.uf === 'ES';
+                return `<tr class="row-sub${isES ? ' row-es' : ''}">
+                    <td class="td-uf">${r.uf} <small>${NOMES_UF[r.uf]}</small></td>
+                    <td class="td-ref">${r.idhm.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3})}</td>
+                    <td class="${clsPct(r.dC1)}">${fmtPct(r.dC1, 1)}</td>
+                    <td class="${clsPct(r.dC3)}">${fmtPct(r.dC3, 1)}</td>
+                </tr>`;
+            }).join('');
+            return grupoRow + ufRows;
         }).join('');
     }
 
@@ -868,14 +828,15 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
     (async function init() {
         const statusEl = document.getElementById('status-main');
         try {
-            const [refResp, coefResp, gobettiResp, giniIdhResp, nacResp] = await Promise.all([
+            const [refResp, coefResp, gobettiResp, giniIdhResp, nacResp, seguroResp] = await Promise.all([
                 fetch('/data/reforma-tributaria.json?t=' + Date.now()),
                 fetch('/data/coeficientes-uf.json?t=' + Date.now()),
                 fetch('/data/gobetti-2023-perdas-ganhos-uf.json?t=' + Date.now()),
                 fetch('/data/gini-idh-uf.json?t=' + Date.now()),
-                fetch('/data/ibs-projecao-nacional.json?t=' + Date.now())
+                fetch('/data/ibs-projecao-nacional.json?t=' + Date.now()),
+                fetch('/data/seguro-receita-repasses.json?t=' + Date.now())
             ]);
-            if (!refResp.ok || !coefResp.ok || !gobettiResp.ok || !giniIdhResp.ok || !nacResp.ok) {
+            if (!refResp.ok || !coefResp.ok || !gobettiResp.ok || !giniIdhResp.ok || !nacResp.ok || !seguroResp.ok) {
                 throw new Error('Erro ao carregar dados');
             }
             const refData        = await refResp.json();
@@ -883,6 +844,7 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
             const gobettiData    = await gobettiResp.json();
             const giniIdhData    = await giniIdhResp.json();
             const nacionalData   = await nacResp.json();
+            const seguroData     = await seguroResp.json();
 
             const dcaIcms2025          = (refData.dca_icms_por_uf         && refData.dca_icms_por_uf['2025'])         || {};
             const dcaIss2025           = (refData.dca_iss_por_uf          && refData.dca_iss_por_uf['2025'])          || {};
@@ -896,9 +858,10 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
 
             PARAMS = computeParams(dcaIcms2025, dcaIss2025, dcaFecop2025, dcaCotaDeclarada2025,
                                    totalBR2025, coeficientesUF, gobettiData.tabela4_esferas);
+            REPASSE_INDEX = buildRepasseIndex(seguroData);
 
             renderAllScenarios();
-            buildIneqTable(PARAMS, giniIdhData, NACIONAL_BY_YEAR);
+            buildIneqTable(PARAMS, giniIdhData, NACIONAL_BY_YEAR, REPASSE_INDEX);
 
             const esP = PARAMS['ES'];
             const ref29 = NACIONAL_BY_YEAR[2029], ref33 = NACIONAL_BY_YEAR[2033];
