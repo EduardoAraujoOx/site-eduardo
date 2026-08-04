@@ -45,15 +45,13 @@
         .status-dot.ok { background: #22c55e; }
         .status-dot.pending { background: #f59e0b; }
 
+        /* --text/--bg (notas.css) não têm variante escura -- o site é sempre "claro" no texto,
+           então --pos-bg/--neg-bg também ficam fixos no valor claro, para não descasar fundo
+           escuro com texto que continua escuro (deixando a linha ilegível no modo escuro do SO). */
         :root {
             --neg: #b03a2e; --neg-bg: #fdf3f2;
             --pos: #1e8449; --pos-bg: #f0faf4;
         }
-        @media (prefers-color-scheme: dark) {
-            :root { --neg: #e05a4f; --neg-bg: #2a1a1a; --pos: #4caf76; --pos-bg: #192a20; }
-        }
-        :root[data-theme="light"] { --neg:#b03a2e; --neg-bg:#fdf3f2; --pos:#1e8449; --pos-bg:#f0faf4; }
-        :root[data-theme="dark"]  { --neg:#e05a4f; --neg-bg:#2a1a1a; --pos:#4caf76; --pos-bg:#192a20; }
 
         .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 0 0 1.5rem; }
         .stat-tile { border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem 1rem; background: var(--surface); }
