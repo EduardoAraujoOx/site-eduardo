@@ -142,11 +142,11 @@
         <h1>Repasses do Seguro-Receita por ente: quem recebe e quanto, 2029–2033</h1>
         <p class="lead">
             A reforma tributária retém 5% do IBS distribuído pelo critério destino para formar um fundo de
-            garantia (ADCT art. 132, EC 132/2023) — o "Seguro-Receita". Esse fundo não é dividido
+            garantia conhecido como Seguro-Receita (ADCT art. 132, EC 132/2023). Esse fundo não é dividido
             igualmente nem proporcionalmente à perda de cada ente: a lei manda calcular, para
             <strong>cada um dos 5.596 entes</strong> (27 estados, o Distrito Federal e cada um dos 5.569
             municípios individualmente), uma razão entre o que ele está recebendo agora e o que arrecadava
-            historicamente — e atender primeiro quem está pior, até o fundo acabar ou todos nivelarem
+            historicamente, atendendo primeiro quem está pior até o fundo acabar ou todos nivelarem
             (LC 227/2026, art. 117). Esta página reproduz esse algoritmo sobre os coeficientes já
             calculados nos <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudos 06</a> e
             <a href="/estudos/ibs-projecao-nacional.html">11</a>.
@@ -186,8 +186,8 @@
 
         <div class="callout">
             O repasse de cada ente é o mesmo em todos os anos, na proporção: só o <em>tamanho</em> do
-            fundo cresce (2029 → 2033), não a lista de quem recebe — consequência de os coeficientes por
-            trás do cálculo (participação histórica e participação pelo critério destino) serem fixos ao
+            fundo cresce (2029 → 2033), não a lista de quem recebe, já que os coeficientes por
+            trás do cálculo (participação histórica e participação pelo critério destino) permanecem fixos ao
             longo da transição. Ver metodologia.
         </div>
 
@@ -255,8 +255,8 @@
 
         <div class="callout" style="margin-top:1rem" id="planilha-auditavel">
             <strong>Confira a conta linha a linha:</strong>
-            <a href="/materiais/seguro-receita-repasses-memoria-calculo.xlsx" download>Planilha com memória de cálculo (.xlsx)</a>
-            &mdash; os 5.596 entes, ordenados do pior colocado ao melhor, com fórmulas vivas (não valores
+            <a href="/materiais/seguro-receita-repasses-memoria-calculo.xlsx" download>Planilha com memória de cálculo (.xlsx)</a>,
+            que traz os 5.596 entes ordenados do pior colocado ao melhor, com fórmulas vivas (não valores
             colados) para a razão de cada um, a soma acumulada e o nível de corte que decide quem entra
             e quanto recebe. Inclui uma aba com o exemplo pequeno abaixo, também com fórmulas.
         </div>
@@ -277,15 +277,15 @@ $$\text{razão}_{\text{ente},a} = \frac{\text{IBS-destino recebido no ano } a}{\
                 </div>
 
                 <p class="meto-note">
-                    O numerador cresce a cada ano, junto com o próprio IBS. O denominador &mdash;
-                    "receita média de referência ajustada" (art. 117, §§3º-6º) &mdash; é o
+                    O numerador cresce a cada ano, junto com o próprio IBS. Já o denominador, que a lei
+                    chama de "receita média de referência ajustada" (art. 117, §§3º-6º), é o
                     <strong>menor valor</strong> entre (i) a receita média histórica do ente (art. 115 da
                     LC 227/2026: média de 2019 a 2026, corrigida pela variação nominal do ICMS+ISS
-                    nacional &mdash; a mesma base do φ<sup>CPT</sup> já usado nos
+                    nacional, a mesma base do φ<sup>CPT</sup> já usado nos
                     <a href="/estudos/reforma-tributaria-coeficiente.html">Estudos 02</a> e
                     <a href="/estudos/ibs-projecao-arrecadacao-br.html">06</a>) e (ii) 3&times; a média
                     nacional por habitante da respectiva esfera federativa (estadual ou municipal,
-                    separadamente) &mdash; um teto para impedir que um ente historicamente muito rico
+                    separadamente), um teto que impede que um ente historicamente muito rico
                     "prove" carência só pelo tamanho da sua base histórica.
                 </p>
 
@@ -294,9 +294,9 @@ $$\text{razão}_{\text{ente},a} = \frac{\text{IBS-destino recebido no ano } a}{\
                     O fundo (5% do IBS-destino, líquido do CGIBS) não é dividido proporcionalmente ao
                     déficit de cada ente. A lei manda distribuir <strong>sequencial e sucessivamente</strong>
                     aos entes de menor razão, elevando cada um até nivelar com o próximo, até o fundo
-                    acabar ou todos convergirem para a mesma razão (art. 117, §1º) &mdash; como socorrer
-                    primeiro quem está mais afogado, não repartir o colete salva-vidas igualmente. Em
-                    termos matemáticos: encontra-se um nível \(L\) tal que
+                    acabar ou todos convergirem para a mesma razão (art. 117, §1º): é como socorrer
+                    primeiro quem está mais afogado, em vez de repartir o colete salva-vidas igualmente entre
+                    todos. Em termos matemáticos: encontra-se um nível \(L\) tal que
                     \(\sum_{\text{ente}} \max(0,\, L\cdot\text{denom}_{\text{ente}} - \text{numerador}_{\text{ente},a}) = \text{fundo}_a\),
                     e cada ente recebe exatamente essa parcela.
                 </p>
@@ -315,22 +315,22 @@ $$\text{razão}_{\text{ente},a} = \frac{\text{IBS-destino recebido no ano } a}{\
                     </tbody>
                 </table>
                 <p class="meto-note">
-                    <strong>Passo 1 &mdash; ordena do pior pro melhor:</strong> A (4,0%) é o pior colocado,
+                    <strong>Passo 1: ordena do pior pro melhor.</strong> A (4,0%) é o pior colocado,
                     B e C empatam em 6,0%, D está bem à frente (15,0%).
                 </p>
                 <p class="meto-note">
-                    <strong>Passo 2 &mdash; eleva o pior até alcançar o próximo:</strong> A precisa de
-                    2 pontos percentuais (de 4% para 6%) sobre seu denominador de R$ 100 mi &mdash; custa
+                    <strong>Passo 2: eleva o pior até alcançar o próximo.</strong> A precisa de
+                    2 pontos percentuais (de 4% para 6%) sobre seu denominador de R$ 100 mi, o que custa
                     R$ 2 mi. Sobram R$ 8 mi no fundo.
                 </p>
                 <p class="meto-note">
-                    <strong>Passo 3 &mdash; A, B e C agora sobem juntos</strong> (estão empatados em 6%):
+                    <strong>Passo 3: A, B e C agora sobem juntos</strong>, já que estão empatados em 6%:
                     juntos, precisariam de R$ 20,7 mi pra alcançar D (15%), mas só sobram R$ 8 mi. O fundo
                     acaba no meio do caminho, num nível comum de <strong>9,48%</strong>.
                 </p>
                 <p class="meto-note">
-                    <strong>Resultado:</strong> A recebe R$ 5,48 mi, B recebe R$ 2,78 mi, C recebe
-                    R$ 1,74 mi (os três terminam empatados em 9,48%) &mdash; soma exatamente os R$ 10 mi do
+                    <strong>Resultado:</strong> A recebe R$ 5,48 mi, B recebe R$ 2,78 mi e C recebe
+                    R$ 1,74 mi, os três terminando empatados em 9,48% e somando exatamente os R$ 10 mi do
                     fundo. <strong>D não recebe nada</strong>: já estava acima de qualquer nível que o
                     fundo alcançaria. Esse é o mecanismo completo, repetido com 5.596 entes em vez de 4: a
                     <a href="#planilha-auditavel">planilha auditável</a> abaixo mostra a conta linha a
@@ -360,7 +360,7 @@ $$\text{razão}_{\text{ente},a} = \frac{\text{IBS-destino recebido no ano } a}{\
                         </tr>
                         <tr>
                             <td>Numerador do DF restrito ao ICMS</td>
-                            <td>O φ<sup>dest</sup> do DF, em todo o site, é calculado só a partir do ICMS (o DF nunca teve um φ<sup>dest</sup> municipal próprio calculado em nenhum estudo) &mdash; só o teto (denominador) foi corrigido para somar ICMS+ISS, por consistência com o restante do site.</td>
+                            <td>O φ<sup>dest</sup> do DF, em todo o site, é calculado só a partir do ICMS, já que o DF nunca teve um φ<sup>dest</sup> municipal próprio calculado em nenhum estudo; só o teto (denominador) foi corrigido para somar ICMS+ISS, por consistência com o restante do site.</td>
                         </tr>
                         <tr>
                             <td>Estimativa própria, não o cálculo oficial</td>
@@ -376,9 +376,9 @@ $$\text{razão}_{\text{ente},a} = \frac{\text{IBS-destino recebido no ano } a}{\
             <p><strong>Fontes e notas metodológicas:</strong></p>
             <p>1. Base legal: ADCT art. 132 (EC 132/2023); LC 227/2026 arts. 114 a 117 (critério histórico e Seguro-Receita) e art. 51 (CGIBS).</p>
             <p>2. IBS pelo critério destino (numerador) e o fundo do Seguro-Receita (5%, líquido de CGIBS): <a href="/estudos/ibs-projecao-nacional.html">Estudo 11</a>, campos <code>ibs_destino_liquido</code> e <code>ibs_seguro_receita</code> de <code>data/ibs-projecao-nacional.json</code>.</p>
-            <p>3. Coeficiente de participação pelo critério destino (φ<sup>dest</sup>), por estado: <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>. Por município: rateio proporcional ao φ<sup>CPT</sup> individual dentro de cada UF, ver <code>data/rateio-destino-municipios.json</code> &mdash; simplificação necessária porque Gobetti e Monteiro (IPEA, 2023) só publicam o efeito do critério destino agregado por UF, não por município.</p>
+            <p>3. Coeficiente de participação pelo critério destino (φ<sup>dest</sup>), por estado: <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>. Por município: rateio proporcional ao φ<sup>CPT</sup> individual dentro de cada UF, ver <code>data/rateio-destino-municipios.json</code>, simplificação necessária porque Gobetti e Monteiro (IPEA, 2023) só publicam o efeito do critério destino agregado por UF, não por município.</p>
             <p>4. Receita média de referência (denominador): <code>data/coeficientes-uf.json</code> e <code>data/coeficientes-municipios.json</code>, validados contra a Nota Técnica nº 02/2026 (SEFAZ-ES).</p>
-            <p>5. População: IBGE, Estimativas da População Residente no Brasil e Unidades da Federação, e nos Municípios Brasileiros, publicação no Diário Oficial da União (2019, 2020, 2021, 2024 e 2025 &mdash; média simples dos anos disponíveis; ver <code>data/populacao-uf-media-2019-2026.json</code> e <code>data/populacao-municipios-media-2019-2026.json</code>).</p>
+            <p>5. População: IBGE, Estimativas da População Residente no Brasil e Unidades da Federação, e nos Municípios Brasileiros, publicação no Diário Oficial da União (2019, 2020, 2021, 2024 e 2025, média simples dos anos disponíveis; ver <code>data/populacao-uf-media-2019-2026.json</code> e <code>data/populacao-municipios-media-2019-2026.json</code>).</p>
             <p>6. Algoritmo de nivelamento e dados desta página: <code>data/build-seguro-receita-repasses.py</code>, saída em <code>data/seguro-receita-repasses.json</code>.</p>
             <p>7. Planilha com memória de cálculo: <code>data/build-seguro-receita-planilha.py</code>, gerada a partir do mesmo algoritmo, verificada numericamente contra ele (diferença menor que R$ 0,01 em todos os anos).</p>
         </div>
