@@ -52,6 +52,9 @@
         .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #999; flex-shrink: 0; transition: background 0.3s; }
 
         /* ── Cores pos/neg ── */
+        /* --text/--bg (notas.css) não têm variante escura -- o site é sempre "claro" no texto,
+           então essas cores também ficam fixas no valor claro, para não descasar fundo escuro
+           com texto que continua escuro (deixando a linha ilegível no modo escuro do SO). */
         :root {
             --neg:       #b03a2e;
             --neg-bg:    #fdf3f2;
@@ -59,11 +62,6 @@
             --pos-bg:    #f0faf4;
             --border-es: #d4a017;
         }
-        @media (prefers-color-scheme: dark) {
-            :root { --neg: #e05a4f; --neg-bg: #2a1a1a; --pos: #4caf76; --pos-bg: #192a20; --border-es: #c0940a; }
-        }
-        :root[data-theme="light"] { --neg:#b03a2e; --neg-bg:#fdf3f2; --pos:#1e8449; --pos-bg:#f0faf4; --border-es:#d4a017; }
-        :root[data-theme="dark"]  { --neg:#e05a4f; --neg-bg:#2a1a1a; --pos:#4caf76; --pos-bg:#192a20; --border-es:#c0940a; }
 
         /* ── Metodologia ── */
         .methodology { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 2rem; background: var(--surface); }

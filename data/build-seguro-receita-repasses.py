@@ -36,10 +36,12 @@ granularidade do que uma projeção anual permite):
   1. MENSAL -> ANUAL. Uso o ano-calendário inteiro como proxy da "média
      móvel de 12 meses" (não modelo a apuração mês a mês nem o ajuste do
      §2º para meses de alíquota diferente entre anos).
-  2. POPULAÇÃO: uso a estimativa IBGE de 2025 (population data já
-     disponível no site) em vez da "média da população entre 2019 e 2026"
-     exigida pelo art. 117, §§3º-6º -- não tenho série histórica municipal
-     de população nos anos anteriores.
+  2. POPULAÇÃO: era estimativa 2025 (ponto único) numa versão anterior; já
+     corrigido para a média 2019-2026 exigida pelo art. 117, §§3º-6º -- ver
+     data/build-populacao-municipios.py e build-populacao-uf-media.py.
+     Cobertura real: 2019, 2020, 2021, 2024 e 2025 (5 dos 8 anos pedidos);
+     2022-2023 não têm estimativa anual normal (Censo Demográfico 2022 a
+     substituiu nesses dois anos) e 2026 ainda não foi publicado pelo IBGE.
   3. DF, numerador: o φ^dest do DF nesta página segue a convenção já
      estabelecida no Estudo 06 (baseada só no ICMS, sem ISS separado, já
      que o DF não tem φ^dest municipal próprio calculado em nenhum estudo
@@ -157,9 +159,9 @@ def main():
         rateio_muni = json.load(f)
     with open(HERE / "ibs-projecao-nacional.json") as f:
         nacional = json.load(f)
-    with open(HERE / "icms-iss-vs-populacao-2025.json") as f:
+    with open(HERE / "populacao-uf-media-2019-2026.json") as f:
         pop_uf = json.load(f)
-    with open(HERE / "populacao-municipios-2025.json") as f:
+    with open(HERE / "populacao-municipios-media-2019-2026.json") as f:
         pop_muni = json.load(f)
 
     dca_icms_2025 = ref_data.get('dca_icms_por_uf', {}).get('2025', {})
@@ -174,7 +176,7 @@ def main():
     params_estado = compute_params_estado(dca_icms_2025, dca_iss_2025, dca_fecop_2025,
                                            dca_cota_declarada_2025, total_br_2025, coeficientes_uf, t4_by_uf)
 
-    pop_by_uf = {u['uf']: u['pop'] for u in pop_uf['ufs']}
+    pop_by_uf = {uf: v['pop_media'] for uf, v in pop_uf['ufs'].items()}
 
     nac_by_year = {r['ano']: r for r in nacional['projecao']}
 
@@ -200,7 +202,7 @@ def main():
         entidades.append({
             'id': f'MUN-{cod}', 'nome': r['nome'], 'uf': r['uf'], 'esfera': 'municipio', 'is_df': False,
             'denom': r['receita_media_referencia'], 'phi_dest': rd['phi_dest_pct'] / 100,
-            'pop': pm['pop'],
+            'pop': pm['pop_media'],
         })
 
     print(f"Total de entidades: {len(entidades)} "
@@ -278,9 +280,10 @@ def main():
             "ano (cresce a cada ano) e (II) receita média de referência ajustada -- o menor valor "
             "entre a receita média histórica FIXA (art. 115 LC 227/2026, mesma base do φ^CPT) e 3x "
             "a média nacional per capita da esfera (estadual/municipal, separadamente; DF soma as "
-            "duas médias, art. 117 §6º). Ver docstring do script para o texto legal completo e as "
-            "simplificações explícitas (mensal->anual, população 2025 em vez da média 2019-2026, "
-            "numerador do DF restrito ao ICMS por consistência com o Estudo 06)."
+            "duas médias, art. 117 §6º). População: média 2019-2026 (5 dos 8 anos pedidos "
+            "disponíveis no IBGE -- ver docstring). Ver docstring do script para o texto legal "
+            "completo e a simplificação restante (mensal->anual; numerador do DF restrito ao "
+            "ICMS por consistência com o Estudo 06)."
         ),
         'anos': resultado_por_ano,
     }
