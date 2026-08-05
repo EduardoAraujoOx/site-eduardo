@@ -912,13 +912,24 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
         titleEl.textContent = `Receita projetada, ${uf} (R$ bi)`;
         if (!el || typeof Chart === 'undefined') return;
         const c = themeColors();
+        const comReforma = ANOS.map(a => proj.res[a].total / 1e9);
+        const semReforma = ANOS.map(a => proj.res[a].contrafactual / 1e9);
+        // Eixo Y recortado perto da faixa dos dados (em vez de começar em zero), para deixar
+        // visível a diferença entre "com reforma" e "sem reforma" — as duas séries costumam
+        // ficar próximas, e um eixo começando em zero achata a diferença entre elas.
+        const allVals = comReforma.concat(semReforma);
+        const dataMin = Math.min(...allVals);
+        const dataMax = Math.max(...allVals);
+        const pad = Math.max((dataMax - dataMin) * 0.35, dataMax * 0.02);
+        const yMin = Math.max(0, dataMin - pad);
+        const yMax = dataMax + pad;
         chartUfTotal = new Chart(el, {
             data: {
                 labels: ANOS,
                 datasets: [
-                    { type: 'bar', label: 'Com reforma', data: ANOS.map(a => proj.res[a].total / 1e9),
+                    { type: 'bar', label: 'Com reforma', data: comReforma,
                       backgroundColor: '#2a78d6', order: 2 },
-                    { type: 'line', label: 'Sem reforma (contrafactual)', data: ANOS.map(a => proj.res[a].contrafactual / 1e9),
+                    { type: 'line', label: 'Sem reforma (contrafactual)', data: semReforma,
                       borderColor: c.text, backgroundColor: c.text, borderDash: [6, 4], borderWidth: 2,
                       pointRadius: 3, tension: 0.1, order: 1 }
                 ]
@@ -932,7 +943,7 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
                 },
                 scales: {
                     x: { grid: { display: false }, ticks: { color: c.text, font: { size: 10 } } },
-                    y: { grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 } }, title: { display: true, text: 'R$ bi', color: c.text, font: { size: 10 } } }
+                    y: { min: yMin, max: yMax, grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 } }, title: { display: true, text: 'R$ bi', color: c.text, font: { size: 10 } } }
                 }
             }
         });
