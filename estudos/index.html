@@ -557,6 +557,88 @@
         Eduardo Reis Araújo · Políticas públicas orientadas por evidências
     </footer>
 
+    <!-- Password Modal -->
+    <div class="download-modal-overlay" id="downloadModal" role="dialog" aria-modal="true" aria-labelledby="downloadModalTitle">
+        <div class="download-modal">
+            <button class="download-modal-close" onclick="closeDownloadModal()" aria-label="Fechar">&#x2715;</button>
+            <div class="download-modal-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>
+            </div>
+            <h3 id="downloadModalTitle">Acesso restrito</h3>
+            <p class="download-modal-subtitle">Este estudo está disponível apenas mediante senha. Digite a senha fornecida por Eduardo.</p>
+            <input
+                type="password"
+                id="downloadPassword"
+                class="download-modal-input"
+                placeholder="Senha"
+                autocomplete="off"
+            >
+            <div class="download-modal-error" id="downloadError" role="alert"></div>
+            <button class="download-modal-submit" onclick="confirmDownload()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Desbloquear estudo
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ===== STUDY CARDS (password-gated) =====
+        var STUDIES_PASSWORD = '123123';
+        var studiesUnlocked = false;
+        var pendingHref = null;
+
+        document.querySelectorAll('.study-card').forEach(function(card) {
+            card.addEventListener('click', function(e) {
+                if (studiesUnlocked) return;
+                e.preventDefault();
+                pendingHref = card.getAttribute('href');
+                document.getElementById('downloadPassword').value = '';
+                document.getElementById('downloadPassword').classList.remove('has-error');
+                document.getElementById('downloadError').textContent = '';
+                document.getElementById('downloadModal').classList.add('is-open');
+                setTimeout(function() { document.getElementById('downloadPassword').focus(); }, 150);
+            });
+        });
+
+        function closeDownloadModal() {
+            document.getElementById('downloadModal').classList.remove('is-open');
+            pendingHref = null;
+        }
+
+        function confirmDownload() {
+            var input = document.getElementById('downloadPassword');
+            var errorEl = document.getElementById('downloadError');
+            if (input.value === STUDIES_PASSWORD) {
+                studiesUnlocked = true;
+                closeDownloadModal();
+                if (pendingHref) window.location.href = pendingHref;
+            } else {
+                errorEl.textContent = 'Senha incorreta. Tente novamente.';
+                input.classList.add('has-error');
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        document.getElementById('downloadModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDownloadModal();
+        });
+
+        document.getElementById('downloadPassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                confirmDownload();
+            } else {
+                this.classList.remove('has-error');
+                document.getElementById('downloadError').textContent = '';
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('downloadModal').classList.contains('is-open')) {
+                closeDownloadModal();
+            }
+        });
+    </script>
     <script src="/js/search.js"></script>
 </body>
 </html>
