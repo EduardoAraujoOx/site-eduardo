@@ -20,6 +20,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"
@@ -99,6 +101,21 @@
 
         /* ── Label de seção ── */
         .section-label { display: block; font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 0.5rem; }
+
+        /* ── Seletor de UF (detalhe) ── */
+        .uf-detalhe-toggle { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+        .uf-detalhe-toggle label { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+        .uf-detalhe-toggle select { padding: 0.35rem 0.7rem; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text); font-family: var(--sans); font-size: 0.83rem; cursor: pointer; }
+
+        /* ── Gráficos ── */
+        .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+        .chart-panel { background: var(--border-light); border-radius: 8px; padding: 1.25rem 1.25rem 1.5rem; }
+        .chart-panel-title { font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin: 0 0 1rem; }
+        .chart-legend-note { font-family: var(--sans); font-size: 0.75rem; color: var(--text-muted); margin: 0.75rem 0 0; display: flex; gap: 1rem; flex-wrap: wrap; }
+        .legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 0.35rem; vertical-align: middle; }
+        @media (max-width: 780px) {
+            .chart-grid-2 { grid-template-columns: 1fr; }
+        }
 
         /* ── Tabela de dados ── */
         .table-wrap { overflow-x: auto; margin-bottom: 1.5rem; }
@@ -465,6 +482,39 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
             </table>
         </div>
 
+        <span class="section-label">Detalhe por UF: trajetória e composição da receita</span>
+        <div class="callout">
+            Escolha uma UF para ver sua trajetória de receita 2029&ndash;2033 (esfera selecionada
+            acima) e como ela se compõe a cada ano: a fração que ainda é ICMS/ISS residual, a
+            fração de IBS que vem do critério histórico, a que vem do critério destino, e o que a
+            UF recebe (ou não) do repasse do Seguro-Receita. É a mesma decomposição da fórmula da
+            metodologia, aplicada a um ente por vez em vez de ao agregado nacional.
+        </div>
+        <div class="uf-detalhe-toggle">
+            <label for="select-uf-detalhe">UF</label>
+            <select id="select-uf-detalhe"></select>
+        </div>
+        <div class="chart-grid-2">
+            <div class="chart-panel">
+                <p class="chart-panel-title" id="chart-uf-total-title">Receita projetada (R$ bi)</p>
+                <canvas id="chart-uf-total" style="max-height:300px"></canvas>
+                <div class="chart-legend-note">
+                    <span><span class="legend-dot" style="background:#2a78d6"></span>Com reforma</span>
+                    <span><span class="legend-dot" style="background:var(--text-muted)"></span>Sem reforma (contrafactual)</span>
+                </div>
+            </div>
+            <div class="chart-panel">
+                <p class="chart-panel-title" id="chart-uf-composicao-title">Composição da receita (R$ bi)</p>
+                <canvas id="chart-uf-composicao" style="max-height:300px"></canvas>
+                <div class="chart-legend-note">
+                    <span><span class="legend-dot" style="background:#b03a2e"></span>ICMS residual</span>
+                    <span><span class="legend-dot" style="background:#1e8449"></span>IBS, histórico</span>
+                    <span><span class="legend-dot" style="background:#4caf76"></span>IBS, destino</span>
+                    <span><span class="legend-dot" style="background:#d4a017"></span>Seguro-Receita</span>
+                </div>
+            </div>
+        </div>
+
         <span class="section-label">Tabela 2 &middot; Receita acumulada vs. nível de desenvolvimento, por UF (esfera: total)</span>
         <div class="callout">
             Ordena as 27 UFs pelo IDHM estadual (PNUD, Radar IDHM 2024) e mostra, para cada uma, a
@@ -816,12 +866,137 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
         }).join('');
     }
 
+    // Mesma decomposição de project(), mas mantendo as quatro peças separadas (não somadas em
+    // "total") para o gráfico de composição por UF.
+    function projectComponents(uf, esfera, params, nacionalByYear, repasseIndex) {
+        const parts = partsFor(uf, esfera, params);
+        if (parts.length === 0) return null;
+        const res = {};
+        for (const a of ANOS) {
+            const nac = nacionalByYear[a];
+            let icmsResidual = 0, ibsHistorico = 0, ibsDestino = 0;
+            for (const part of parts) {
+                icmsResidual += nac.icms_iss_residual * part.coefNeutro;
+                ibsHistorico += nac.ibs_historico * part.coefCPT;
+                ibsDestino += nac.ibs_destino_liquido * part.coefPleno;
+            }
+            let repasseSR = 0;
+            if (repasseIndex && repasseIndex[uf]) {
+                if (esfera === 'estado' || esfera === 'total') repasseSR += repasseIndex[uf].estado[a] || 0;
+                if ((esfera === 'municipio' || esfera === 'total') && params[uf].municipio) repasseSR += repasseIndex[uf].municipio[a] || 0;
+            }
+            res[a] = { icmsResidual, ibsHistorico, ibsDestino, repasseSR };
+        }
+        return res;
+    }
+
+    function themeColors() {
+        const css = getComputedStyle(document.documentElement);
+        return {
+            grid: 'rgba(128,128,128,0.15)',
+            text: css.getPropertyValue('--text-muted').trim() || '#9A9A9A'
+        };
+    }
+
+    let chartUfTotal = null, chartUfComposicao = null;
+
+    function buildChartUfTotal(uf) {
+        const el = document.getElementById('chart-uf-total');
+        const titleEl = document.getElementById('chart-uf-total-title');
+        const proj = project(uf, currentEsfera, PARAMS, 'pleno', NACIONAL_BY_YEAR, REPASSE_INDEX);
+        if (chartUfTotal) { chartUfTotal.destroy(); chartUfTotal = null; }
+        if (!proj) {
+            titleEl.textContent = `Receita projetada (R$ bi): sem esfera municipal própria para ${uf}`;
+            return;
+        }
+        titleEl.textContent = `Receita projetada, ${uf} (R$ bi)`;
+        if (!el || typeof Chart === 'undefined') return;
+        const c = themeColors();
+        chartUfTotal = new Chart(el, {
+            data: {
+                labels: ANOS,
+                datasets: [
+                    { type: 'bar', label: 'Com reforma', data: ANOS.map(a => proj.res[a].total / 1e9),
+                      backgroundColor: '#2a78d6', order: 2 },
+                    { type: 'line', label: 'Sem reforma (contrafactual)', data: ANOS.map(a => proj.res[a].contrafactual / 1e9),
+                      borderColor: c.text, backgroundColor: c.text, borderDash: [6, 4], borderWidth: 2,
+                      pointRadius: 3, tension: 0.1, order: 1 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: true, aspectRatio: 1.4,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: R$ ${fmtBi(ctx.raw * 1e9, 2)} bi` } }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: c.text, font: { size: 10 } } },
+                    y: { grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 } }, title: { display: true, text: 'R$ bi', color: c.text, font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    function buildChartUfComposicao(uf) {
+        const el = document.getElementById('chart-uf-composicao');
+        const titleEl = document.getElementById('chart-uf-composicao-title');
+        const comp = projectComponents(uf, currentEsfera, PARAMS, NACIONAL_BY_YEAR, REPASSE_INDEX);
+        if (chartUfComposicao) { chartUfComposicao.destroy(); chartUfComposicao = null; }
+        if (!comp) {
+            titleEl.textContent = `Composição da receita (R$ bi): sem esfera municipal própria para ${uf}`;
+            return;
+        }
+        titleEl.textContent = `Composição da receita, ${uf} (R$ bi)`;
+        if (!el || typeof Chart === 'undefined') return;
+        const c = themeColors();
+        chartUfComposicao = new Chart(el, {
+            type: 'bar',
+            data: {
+                labels: ANOS,
+                datasets: [
+                    { label: 'ICMS residual', data: ANOS.map(a => comp[a].icmsResidual / 1e9), backgroundColor: '#b03a2e', stack: 'total' },
+                    { label: 'IBS, histórico', data: ANOS.map(a => comp[a].ibsHistorico / 1e9), backgroundColor: '#1e8449', stack: 'total' },
+                    { label: 'IBS, destino', data: ANOS.map(a => comp[a].ibsDestino / 1e9), backgroundColor: '#4caf76', stack: 'total' },
+                    { label: 'Seguro-Receita', data: ANOS.map(a => comp[a].repasseSR / 1e9), backgroundColor: '#d4a017', stack: 'total', borderRadius: 2 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: true, aspectRatio: 1.4,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: R$ ${fmtBi(ctx.raw * 1e9, 2)} bi` } }
+                },
+                scales: {
+                    x: { stacked: true, grid: { display: false }, ticks: { color: c.text, font: { size: 10 } } },
+                    y: { stacked: true, grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 } }, title: { display: true, text: 'R$ bi', color: c.text, font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    function populateUfSelect() {
+        const sel = document.getElementById('select-uf-detalhe');
+        sel.innerHTML = UFS.map(uf => `<option value="${uf}"${uf === 'ES' ? ' selected' : ''}>${uf} - ${NOMES_UF[uf]}</option>`).join('');
+    }
+
+    function renderUfDetalhe() {
+        if (!PARAMS || !NACIONAL_BY_YEAR) return;
+        const uf = document.getElementById('select-uf-detalhe').value || 'ES';
+        buildChartUfTotal(uf);
+        buildChartUfComposicao(uf);
+    }
+
+    document.getElementById('select-uf-detalhe').addEventListener('change', renderUfDetalhe);
+
     document.querySelectorAll('.esfera-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.esfera-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentEsfera = btn.dataset.esfera;
             renderAllScenarios();
+            renderUfDetalhe();
         });
     });
 
@@ -862,6 +1037,8 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
 
             renderAllScenarios();
             buildIneqTable(PARAMS, giniIdhData, NACIONAL_BY_YEAR, REPASSE_INDEX);
+            populateUfSelect();
+            renderUfDetalhe();
 
             const esP = PARAMS['ES'];
             const ref29 = NACIONAL_BY_YEAR[2029], ref33 = NACIONAL_BY_YEAR[2033];
