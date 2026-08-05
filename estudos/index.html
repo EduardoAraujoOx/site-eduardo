@@ -610,8 +610,9 @@
             var errorEl = document.getElementById('downloadError');
             if (input.value === STUDIES_PASSWORD) {
                 studiesUnlocked = true;
+                var href = pendingHref;
                 closeDownloadModal();
-                if (pendingHref) window.location.href = pendingHref;
+                if (href) window.location.href = href;
             } else {
                 errorEl.textContent = 'Senha incorreta. Tente novamente.';
                 input.classList.add('has-error');
