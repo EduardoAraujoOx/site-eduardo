@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeção IBS por Estado 2029–2077: os 50 anos da transição | Eduardo Reis Araújo</title>
+    <meta name="description" content="Extensão do Estudo 06 até o fim do cronograma constitucional de transição do critério histórico para o critério destino do IBS (ADCT art. 131, §1º), 2029–2077, sem premissas de crescimento diferenciado por estado.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/ibs-projecao-longo-prazo.html">
+
+    <meta property="og:title" content="Projeção IBS por Estado 2029–2077: os 50 anos da transição">
+    <meta property="og:description" content="Extensão do Estudo 06 até o fim do cronograma constitucional de transição do critério histórico para o critério destino do IBS (ADCT art. 131, §1º), 2029–2077.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/ibs-projecao-longo-prazo.html">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '\\(', right: '\\)', display: false}
+            ],
+            throwOnError: false
+        })"></script>
+
+    <link rel="stylesheet" href="/css/notas.css?v=4">
+    <link rel="stylesheet" href="/css/search.css">
+
+    <style>
+        /* ── Page layout ── */
+        .study-hero { max-width: 980px; margin: 0 auto; padding: 3rem 2rem 1.5rem; }
+        .study-hero-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+        .study-hero-tag { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); padding: 0.25rem 0.6rem; border-radius: 4px; }
+        .study-hero-topic { font-family: var(--sans); font-size: 0.73rem; color: var(--text-secondary); background: var(--border-light); padding: 0.2rem 0.55rem; border-radius: 4px; }
+        .study-hero-date { font-family: var(--sans); font-size: 0.73rem; color: var(--text-muted); margin-left: auto; }
+        .study-hero h1 { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 0.8rem; }
+        .study-hero .lead { font-family: var(--serif); font-size: 1rem; line-height: 1.72; color: var(--text-secondary); max-width: 760px; }
+        .study-hero .study-meta { font-family: var(--sans); font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem; }
+
+        .study-content { max-width: 980px; margin: 0 auto; padding: 0 2rem 5rem; }
+
+        /* ── Status bar ── */
+        .status-bar { display: flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #999; flex-shrink: 0; transition: background 0.3s; }
+
+        :root {
+            --neg:       #b03a2e;
+            --neg-bg:    #fdf3f2;
+            --pos:       #1e8449;
+            --pos-bg:    #f0faf4;
+            --border-es: #d4a017;
+        }
+
+        /* ── Metodologia ── */
+        .methodology { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 2rem; background: var(--surface); }
+        .methodology summary { padding: 0.9rem 1.25rem; cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; list-style: none; display: flex; align-items: center; gap: 0.5rem; }
+        .methodology summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; }
+        .methodology[open] summary::before { transform: rotate(90deg); }
+        .methodology-body { padding: 0 1.5rem 1.5rem; }
+
+        .meto-formula-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.25rem 1.5rem;
+            margin: 0.75rem 0 1.25rem;
+            overflow-x: auto;
+        }
+        .meto-formula-box .katex-display { margin: 0.25rem 0; }
+
+        .param-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; margin: 0.75rem 0; }
+        .param-table th { background: var(--bg); padding: 0.45rem 0.75rem; text-align: left; border-bottom: 2px solid var(--border); font-family: var(--sans); font-weight: 600; font-size: 0.8rem; }
+        .param-table td { padding: 0.4rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: top; font-family: var(--sans); font-size: 0.82rem; color: var(--text-secondary); }
+        .param-table td:first-child { font-family: var(--mono); font-weight: 600; font-size: 0.84rem; color: var(--text); white-space: nowrap; }
+        .param-table td:nth-child(3) { font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); }
+        .param-table tr:last-child td { border-bottom: none; }
+
+        .meto-section-title { font-family: var(--sans); font-size: 0.85rem; font-weight: 600; color: var(--text); margin: 1.25rem 0 0.4rem; }
+        .meto-note { font-family: var(--serif); font-size: 0.82rem; color: var(--text-secondary); line-height: 1.65; margin-top: 0.5rem; }
+
+        /* ── Seletor de esfera ── */
+        .esfera-toggle { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+        .esfera-toggle-label { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-right: 0.25rem; }
+        .esfera-btn { padding: 0.35rem 0.9rem; border: 1px solid var(--border); border-radius: 999px; background: none; cursor: pointer; font-family: var(--sans); font-size: 0.78rem; font-weight: 500; color: var(--text-muted); transition: all 0.15s; }
+        .esfera-btn:hover { color: var(--text); background: var(--bg); }
+        .esfera-btn.active { color: var(--accent); border-color: var(--accent); background: var(--accent-light); font-weight: 600; }
+
+        /* ── Label de seção ── */
+        .section-label { display: block; font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 0.5rem; }
+
+        /* ── Seletor de UF (detalhe) ── */
+        .uf-detalhe-toggle { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+        .uf-detalhe-toggle label { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+        .uf-detalhe-toggle select { padding: 0.35rem 0.7rem; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text); font-family: var(--sans); font-size: 0.83rem; cursor: pointer; }
+
+        /* ── Gráficos ── */
+        .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+        .chart-panel { background: var(--border-light); border-radius: 8px; padding: 1.25rem 1.25rem 1.5rem; }
+        .chart-panel-title { font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin: 0 0 1rem; }
+        .chart-legend-note { font-family: var(--sans); font-size: 0.75rem; color: var(--text-muted); margin: 0.75rem 0 0; display: flex; gap: 1rem; flex-wrap: wrap; }
+        .legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 0.35rem; vertical-align: middle; }
+        @media (max-width: 780px) {
+            .chart-grid-2 { grid-template-columns: 1fr; }
+        }
+
+        /* ── Tabela de dados ── */
+        .table-wrap { overflow-x: auto; margin-bottom: 1.5rem; }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
+        .data-table th { background: var(--bg); border: 1px solid var(--border); padding: 0.42rem 0.6rem; text-align: center; font-family: var(--sans); font-weight: 600; font-size: 0.76rem; white-space: nowrap; color: var(--text); }
+        .data-table th.th-left { text-align: left; }
+        .data-table th.col-divider, .data-table td.col-divider { border-left: 2px solid var(--border); }
+        .data-table td { border: 1px solid var(--border); padding: 0.36rem 0.6rem; text-align: right; font-family: var(--mono); font-size: 0.78rem; white-space: nowrap; color: var(--text); }
+        .data-table td.td-uf { text-align: left; font-family: var(--sans); font-weight: 600; font-size: 0.81rem; }
+        .data-table td.td-uf small { font-weight: 400; color: var(--text-muted); }
+        .data-table td.td-ref { color: var(--text-muted); }
+        .data-table .td-neg { color: var(--neg); font-weight: 600; }
+        .data-table .td-pos { color: var(--pos); font-weight: 600; }
+        .data-table tr.row-es { background: color-mix(in srgb, var(--border-es) 12%, transparent); }
+        .data-table tr.row-es td { color: var(--text); }
+        .data-table tr.row-es td.td-ref { color: var(--text-muted); }
+        .data-table tr.row-es td.td-neg { color: var(--neg); }
+        .data-table tr.row-es td.td-pos { color: var(--pos); }
+        .data-table tr.row-es td.td-uf::after { content: ' \2605'; color: var(--border-es); font-size: 0.7em; }
+        .data-table tfoot tr { background: var(--bg); border-top: 2px solid var(--border); }
+        .data-table tfoot td { font-weight: 700; }
+        .data-table tr:hover:not(tfoot tr) { background: var(--accent-bg); }
+        .data-table tr.row-es:hover { background: color-mix(in srgb, var(--border-es) 20%, transparent); }
+        .data-table tr.row-grupo td { background: var(--bg); font-weight: 700; border-top: 2px solid var(--border); }
+        .data-table tr.row-sub td.td-uf { padding-left: 1.75rem; font-weight: 500; }
+        .data-table tr.row-sub td.td-uf small { margin-left: 0.3rem; }
+
+        /* ── Callout ── */
+        .callout { background: var(--accent-bg); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 0.75rem 1rem; font-family: var(--serif); font-size: 0.84rem; color: var(--text); margin: 1rem 0; line-height: 1.6; }
+        .callout.callout-warn { border-left-color: var(--border-es); background: color-mix(in srgb, var(--border-es) 8%, var(--accent-bg)); }
+
+        /* ── Notas de rodapé ── */
+        .footnotes { margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+        .footnotes p { font-family: var(--serif); font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.4rem; }
+        .footnotes a { color: var(--accent); text-decoration: none; }
+        .footnotes a:hover { text-decoration: underline; }
+
+        @media (max-width: 640px) {
+            .study-hero { padding: 2rem 1.25rem 1rem; }
+            .study-content { padding: 0 1.25rem 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <div class="header-right-group">
+                <nav class="header-nav">
+                    <a href="/#publicacoes">Publicações</a>
+                    <a href="/ensino/">Ensino</a>
+                    <a href="/estudos/" class="active">Estudos</a>
+                    <a href="/#contato">Contato</a>
+                </nav>
+                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="study-hero">
+        <div class="study-hero-meta">
+            <span class="study-hero-tag">Estudo 06 &middot; extensão</span>
+            <span class="study-hero-topic">Reforma Tributária</span>
+            <span class="study-hero-topic">IBS</span>
+            <span class="study-hero-topic">Longo prazo</span>
+            <span class="study-hero-date">Agosto de 2026</span>
+        </div>
+        <h1>Projeção IBS por Estado, 2029&ndash;2077: os 50 anos da transição completos</h1>
+        <p class="lead">
+            O <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> projeta a receita de
+            ICMS/IBS de estados e municípios até 2033, quando a conversão do ICMS/ISS para o IBS
+            termina (ADCT art. 128). Mas o critério de <em>distribuição</em> do IBS entre origem
+            (participação histórica) e destino (onde o consumo acontece) não termina em 2033: a
+            Constituição prevê uma transição própria, mais longa, de 50 anos (2029&ndash;2078, ADCT
+            art. 131, &sect;1&ordm;), que em 2033 ainda está só 10% concluída. Esta página estende
+            exatamente o mesmo método do Estudo 06 &mdash; os mesmos coeficientes de participação por
+            UF, a mesma base de dados, a mesma fórmula de combinação &mdash; até 2077, o último ano
+            antes de o critério destino chegar a 100% e o Seguro-Receita começar a reduzir seu
+            percentual de retenção.
+        </p>
+        <p class="study-meta">
+            Dados: mesma base do <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>
+            (SICONFI/STN DCA 2019&ndash;2025, coeficientes validados contra a Nota Técnica
+            nº&nbsp;02/2026 SEFAZ-ES) &bull;
+            Cronograma histórico&rarr;destino 2034&ndash;2077: ADCT art.&nbsp;131, &sect;1&ordm;
+            (EC&nbsp;132/2023) &bull;
+            PIB/infla&ccedil;&atilde;o 2034&ndash;2077: última taxa da IFI (RAF 107) continuada, sem
+            premissa nova &bull;
+            Base legal: EC&nbsp;132/2023, LC&nbsp;214/2025, LC&nbsp;227/2026
+        </p>
+    </div>
+
+    <div class="study-content">
+
+        <div id="status-main" class="status-bar">
+            <span class="status-dot"></span>
+            <span>Carregando dados...</span>
+        </div>
+
+        <div class="callout callout-warn">
+            <strong>O que esta página NÃO faz:</strong> não inventa nenhuma taxa de crescimento
+            diferente por UF. Todo estado mantém, do início ao fim, exatamente o coeficiente de
+            participação medido em dados reais 2019&ndash;2025 (o mesmo do Estudo 06) &mdash; a
+            fatia relativa de cada UF <strong>não muda</strong> com o tempo neste modelo. O que muda,
+            e é o cronograma real da lei, é a divisão entre critério histórico e critério destino
+            <em>dentro</em> do IBS, e o tamanho do bolo nacional, que cresce com o PIB. Ver
+            "Metodologia" para os detalhes e para o porquê de não tentarmos prever crescimento
+            diferenciado por estado ao longo de 44 anos adicionais.
+        </div>
+
+        <details class="methodology">
+            <summary>Metodologia: como o resultado de cada ente é projetado até 2077</summary>
+            <div class="methodology-body">
+                <p class="meto-note">
+                    O modelo estima a receita de cada ente combinando quatro insumos: (i) a receita
+                    nacional de referência (ICMS+ISS 2013&ndash;2025, base do
+                    <a href="/estudos/ibs-projecao-nacional.html">Estudo 11</a>); (ii) o cronograma
+                    legal da transição, que fixa a divisão histórico/destino ano a ano; (iii) os
+                    coeficientes de participação de cada UF, validados contra a Nota Técnica
+                    nº&nbsp;02/2026 (SEFAZ-ES) e já usados no
+                    <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>; e (iv) o repasse
+                    do Seguro-Receita, estimado ente a ente pelo algoritmo de nivelamento do
+                    <a href="/estudos/seguro-receita-repasses.html">Estudo 12</a> &mdash; não uma
+                    retenção genérica sem destino conhecido. Esta seção descreve como as quatro peças
+                    se encaixam; a derivação completa dos coeficientes está na metodologia do Estudo 06.
+                </p>
+
+                <p class="meto-section-title">1. O cronograma legal, 2029&ndash;2077</p>
+                <p class="meto-note">
+                    A Tabela A resume os parâmetros que a lei fixa para cada ano: f<sub>a</sub> (fração
+                    ainda cobrada como ICMS/ISS), s<sub>a</sub> (fração já convertida em IBS),
+                    &alpha;<sub>a</sub> (fração do IBS bruto pelo critério histórico), c<sub>a</sub>
+                    (taxa do CGIBS) e &rho; (retenção do Seguro-Receita). Até 2033, são os mesmos
+                    valores já publicados no Estudo 06/11 (ADCT art. 128 e 131, &sect;1&ordm;, I&ndash;II).
+                    De 2034 em diante, o ADCT art. 131, &sect;1&ordm; reduz o &alpha;<sub>a</sub> de 2033
+                    (90%) em <strong>1/45 a cada ano</strong>, até chegar a zero em 2078 (100% destino)
+                    &mdash; a mesma "transição de 50 anos" mencionada de passagem em outras páginas
+                    deste site, aqui modelada ano a ano pela primeira vez.
+                </p>
+                <div class="table-wrap">
+                    <table class="param-table" id="table-parametros">
+                        <thead>
+                            <tr><th>Ano</th><th>f<sub>a</sub></th><th>s<sub>a</sub></th><th>&alpha;<sub>a</sub></th><th>1&minus;&alpha;<sub>a</sub> (destino)</th><th>c<sub>a</sub></th><th>&rho;</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>2029</td><td>90%</td><td>10%</td><td>80%</td><td>2%</td><td>2,00%</td><td>5%</td></tr>
+                            <tr><td>2033</td><td>0%</td><td>100%</td><td>90%</td><td>10%</td><td>0,50%</td><td>5%</td></tr>
+                            <tr><td>2034</td><td>0%</td><td>100%</td><td>88%</td><td>12%</td><td>0,50%</td><td>5%</td></tr>
+                            <tr><td>2050</td><td>0%</td><td>100%</td><td>56%</td><td>44%</td><td>0,50%</td><td>5%</td></tr>
+                            <tr><td>2077</td><td>0%</td><td>100%</td><td>2%</td><td>98%</td><td>0,50%</td><td>5%</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="meto-note">
+                    Por exemplo, o &alpha;<sub>a</sub> de 2050 é 0,90&nbsp;&times;&nbsp;(2078&minus;2050)/45
+                    = 0,90&nbsp;&times;&nbsp;28/45 = <strong>56%</strong>: em 2050, 56% do IBS bruto
+                    ainda segue o critério histórico e 44% já vai pelo destino. A fórmula completa:
+                </p>
+                <div class="meto-formula-box">
+                    $$\alpha_a = \begin{cases} 0{,}80 & 2029 \le a \le 2032 \\ 0{,}90 & a = 2033 \\ 0{,}90 \times \dfrac{2078-a}{45} & 2034 \le a \le 2077 \end{cases}$$
+                </div>
+                <p class="meto-note">
+                    c<sub>a</sub> fica no piso de 0,50% já vigente em 2032&ndash;2033 (a lei não
+                    detalha novo valor além disso); &rho; continua 5% até 2077 &mdash; só cai,
+                    linearmente, a partir de 2078 (até 0% em 2097), fora do horizonte desta página.
+                </p>
+
+                <p class="meto-section-title">2. A base nacional projetada</p>
+                <p class="meto-note">
+                    O bolo nacional de cada ano é o PIB nominal projetado multiplicado pela razão
+                    bolo/PIB já fixada no Estudo 11 (7,9904%, média 2024&ndash;2026, LC 214/2025 arts.
+                    361&ndash;365): \(\text{bolo}_a = \text{PIB}_a \times 7{,}9904\%\). Até 2033, o PIB
+                    nominal segue Focus (2026&ndash;2030) e IFI/RAF&nbsp;107 (2031&ndash;2033). De 2034
+                    em diante, a própria IFI trata 2,2% a.a. real (IPCA convergindo a 3,0%) como válido
+                    "por simplificação" para todo o intervalo 2027&ndash;2035, sem abrir ano a ano; esta
+                    página apenas <strong>continua essa mesma taxa</strong> &mdash; nenhum número novo.
+                    Por exemplo, de 2033 para 2034: PIB<sub>2034</sub> = PIB<sub>2033</sub> &times;
+                    1,022 &times; 1,03 = R$&nbsp;19.902,05&nbsp;bi &times; 1,0527 =
+                    R$&nbsp;20.950,09&nbsp;bi, e bolo<sub>2034</sub> = R$&nbsp;20.950,09&nbsp;bi
+                    &times; 7,9904% = R$&nbsp;1.674,00&nbsp;bi. É estado estacionário na última taxa
+                    oficial disponível, não uma previsão de longuíssimo prazo.
+                </p>
+
+                <p class="meto-section-title">3. Seguro-Receita: repasse estimado, não retenção genérica</p>
+                <p class="meto-note">
+                    Os 5% retidos (&rho;) não desaparecem: o
+                    <a href="/estudos/seguro-receita-repasses.html">Estudo 12</a> estima quem recebe
+                    esse fundo de volta, ente a ente, por nivelamento sequencial entre as 5.596
+                    entidades (27 UFs+DF e cada um dos 5.569 municípios), competindo simultaneamente
+                    pelo mesmo fundo a cada ano (ADCT art. 132; LC 227/2026 art. 117). Esta página
+                    estende esse mesmo algoritmo, com os mesmos coeficientes e receita de referência já
+                    validados, para 2034&ndash;2077.
+                </p>
+
+                <p class="meto-section-title">4. Símbolos e como o resultado de cada ente é montado</p>
+                <div class="table-wrap">
+                    <table class="param-table">
+                        <thead><tr><th>Símbolo</th><th>Definição</th></tr></thead>
+                        <tbody>
+                            <tr><td>\(R_{u,a}\)</td><td>Receita projetada do ente <em>u</em> no ano <em>a</em>.</td></tr>
+                            <tr><td>\(\text{bolo}_a\)</td><td>Bolo nacional (ICMS+ISS/IBS) projetado no ano <em>a</em> (item 2).</td></tr>
+                            <tr><td>\(\alpha_a\)</td><td>Fração do IBS bruto pelo critério histórico no ano <em>a</em> (item 1).</td></tr>
+                            <tr><td>\(p_u^{neutro}\)</td><td>Participação corrente do ente <em>u</em> (base 2025), aplicada à fração ainda cobrada como ICMS/ISS.</td></tr>
+                            <tr><td>\(p_u^{CPT}\)</td><td>Coeficiente de Participação de Transição do ente <em>u</em> (2019&ndash;2025), validado contra a Nota Técnica nº&nbsp;02/2026.</td></tr>
+                            <tr><td>\(p_u^{dest}\)</td><td>Coeficiente de destino pleno do ente <em>u</em> (Gobetti e Monteiro, 2023, reescalado).</td></tr>
+                            <tr><td>\(SR_{u,a}\)</td><td>Repasse do Seguro-Receita ao ente <em>u</em> no ano <em>a</em> (item 3, Estudo 12).</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="meto-formula-box">
+                    $$R_{u,a} = \underbrace{\text{bolo}_a f_a \, p_u^{neutro}}_{\text{ICMS residual}} + \underbrace{\text{bolo}_a s_a \alpha_a \, p_u^{CPT}}_{\text{IBS, histórico}} + \underbrace{\text{bolo}_a s_a (1-\alpha_a)(1-c_a)(1-\rho) \, p_u^{dest}}_{\text{IBS, destino líquido}} + \, SR_{u,a}$$
+                </div>
+                <p class="meto-note">
+                    Um exemplo concreto: em 2050, o Espírito Santo (esfera estado) tem
+                    \(p_{ES}^{neutro}=1{,}6288\%\), \(p_{ES}^{CPT}=1{,}5418\%\) e
+                    \(p_{ES}^{dest}=1{,}0781\%\). Como f<sub>2050</sub>=0 (ICMS já extinto), a parcela
+                    histórica é R$&nbsp;2.130,85&nbsp;bi &times; 1,5418% =
+                    R$&nbsp;32,85&nbsp;bi, a parcela destino líquida é R$&nbsp;1.582,57&nbsp;bi
+                    &times; 1,0781% = R$&nbsp;17,06&nbsp;bi, e o Estudo 12 estima um repasse de
+                    Seguro-Receita de R$&nbsp;6,40&nbsp;bi para o estado nesse ano &mdash; total de
+                    R$&nbsp;56,31&nbsp;bi, 9,1% abaixo do contrafactual (R$&nbsp;61,98&nbsp;bi, a
+                    participação de 2025 sobre o mesmo bolo). É a mesma conta que gera a linha "2050"
+                    nas tabelas abaixo, só que por esfera separada em vez de "total".
+                </p>
+
+                <p class="meto-section-title">5. Limitações</p>
+                <p class="meto-note">
+                    <strong>Cenário único.</strong> Esta página mostra só o critério de destino pleno
+                    (\(p_u^{dest}\) integral), não os cenários intermediário ou neutro que o Estudo 06
+                    já considerou em versões anteriores &mdash; o neutro aparece apenas como referência
+                    de comparação na Tabela 2. <strong>Premissa de longo prazo.</strong> PIB e inflação
+                    de 2034 em diante são a última taxa oficial (IFI) continuada, não uma previsão
+                    &mdash; ver item 2. <strong>Sem crescimento diferenciado por UF.</strong> Testamos
+                    essa ideia e descartamos: não existe fonte oficial de crescimento de consumo por UF
+                    para 44 anos à frente, e qualquer número inventado decidiria o resultado antes de o
+                    estudo "descobrir" qualquer coisa. Como consequência verificável (não escondida): o
+                    conjunto de entes beneficiários do Seguro-Receita é idêntico em todos os 49 anos
+                    deste modelo (777 dos 5.596), porque o numerador e o pool crescem na mesma
+                    proporção do IBS-destino nacional quando a participação de cada ente é fixa.
+                    <strong>Mecanismos não modelados</strong>, pelas mesmas razões do Estudo 06: FCBF
+                    (ADCT art. 65), variação de alíquota própria do IBS, cashback (ADCT art. 134) e a
+                    redução do Seguro-Receita entre 2078 e 2097 (fora do horizonte desta página).
+                    <strong>Participação corrigida até 2025.</strong> A regra legal definitiva
+                    incorporará também 2026, ainda não fechado na base pública usada aqui &mdash; mesma
+                    ressalva do Estudo 06/11.
+                </p>
+            </div>
+        </details>
+
+        <span class="section-label">Gráfico 1 &middot; Bolo nacional e sua composição (R$ bi, valores nominais)</span>
+        <div class="callout">
+            A barra empilhada mostra como o bolo total de IBS se divide, a cada ano, entre a fatia
+            histórica (&alpha;<sub>a</sub>), a fatia destino líquida de CGIBS e Seguro-Receita, o
+            próprio Seguro-Receita retido e o CGIBS. A linha mostra &alpha;<sub>a</sub> caindo de 90%
+            (2033) a 2% (2077) &mdash; o eixo direito. Valores nominais (não descontados de inflação):
+            o crescimento do bolo aqui reflete tanto o PIB real quanto a inflação acumulada.
+        </div>
+        <div class="chart-panel" style="margin-bottom:1.5rem">
+            <p class="chart-panel-title" id="chart-nacional-title">Composição do IBS bruto nacional, 2029&ndash;2077 (R$ bi)</p>
+            <canvas id="chart-nacional" style="max-height:360px"></canvas>
+            <div class="chart-legend-note">
+                <span><span class="legend-dot" style="background:#1e8449"></span>IBS, histórico</span>
+                <span><span class="legend-dot" style="background:#4caf76"></span>IBS, destino líquido</span>
+                <span><span class="legend-dot" style="background:#d4a017"></span>Seguro-Receita</span>
+                <span><span class="legend-dot" style="background:#8a8a8a"></span>CGIBS</span>
+                <span><span class="legend-dot" style="background:#2a78d6"></span>&alpha;<sub>a</sub> (% histórico, eixo direito)</span>
+            </div>
+        </div>
+
+        <div class="esfera-toggle" role="group" aria-label="Esfera de governo">
+            <span class="esfera-toggle-label">Esfera</span>
+            <button class="esfera-btn active" data-esfera="total">Total (estado + municípios)</button>
+            <button class="esfera-btn" data-esfera="estado">Estado</button>
+            <button class="esfera-btn" data-esfera="municipio">Municípios (agregado)</button>
+        </div>
+
+        <span class="section-label">Tabela 1 &middot; Receita acumulada por UF, 2029&ndash;2077 (critério destino pleno, R$ bi)</span>
+        <div class="callout">
+            Soma os 49 anos de cada lado antes de comparar (não uma tabela ano a ano, que aqui teria
+            49 colunas de cada lado &mdash; use o "Detalhe por UF" abaixo para ver a trajetória
+            completa de qualquer estado). "Com reforma" já inclui o repasse do Seguro-Receita;
+            "sem reforma" é o contrafactual que mantém a participação de 2025 sobre uma base que
+            também cresce com o PIB.
+        </div>
+        <div class="table-wrap">
+            <table class="data-table" id="table-ranking">
+                <thead>
+                    <tr>
+                        <th class="th-left">UF</th>
+                        <th>Sem reforma (R$ bi)</th>
+                        <th class="col-divider">Com reforma (R$ bi)</th>
+                        <th class="col-divider">&#916; R$ bi</th>
+                        <th>&#916;%</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-ranking">
+                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+                <tfoot id="tfoot-ranking"></tfoot>
+            </table>
+        </div>
+
+        <span class="section-label">Detalhe por UF: trajetória completa, 2029&ndash;2077</span>
+        <div class="callout">
+            Escolha uma UF para ver sua trajetória de receita e composição pelos 49 anos da
+            transição (esfera selecionada acima). A tabela abaixo dos gráficos marca alguns anos de
+            referência a cada 5 anos.
+        </div>
+        <div class="uf-detalhe-toggle">
+            <label for="select-uf-detalhe">UF</label>
+            <select id="select-uf-detalhe"></select>
+        </div>
+        <div class="chart-grid-2">
+            <div class="chart-panel">
+                <p class="chart-panel-title" id="chart-uf-total-title">Receita projetada (R$ bi)</p>
+                <canvas id="chart-uf-total" style="max-height:300px"></canvas>
+                <div class="chart-legend-note">
+                    <span><span class="legend-dot" style="background:#2a78d6"></span>Com reforma</span>
+                    <span><span class="legend-dot" style="background:var(--text-muted)"></span>Sem reforma (contrafactual)</span>
+                </div>
+            </div>
+            <div class="chart-panel">
+                <p class="chart-panel-title" id="chart-uf-composicao-title">Composição da receita (R$ bi)</p>
+                <canvas id="chart-uf-composicao" style="max-height:300px"></canvas>
+                <div class="chart-legend-note">
+                    <span><span class="legend-dot" style="background:#1e8449"></span>IBS, histórico</span>
+                    <span><span class="legend-dot" style="background:#4caf76"></span>IBS, destino</span>
+                    <span><span class="legend-dot" style="background:#d4a017"></span>Seguro-Receita</span>
+                </div>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table" id="table-uf-milestone">
+                <thead>
+                    <tr>
+                        <th class="th-left">Ano</th>
+                        <th>&alpha;<sub>a</sub> (% histórico)</th>
+                        <th class="col-divider">Sem reforma (R$ bi)</th>
+                        <th>Com reforma (R$ bi)</th>
+                        <th>&#916;%</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-uf-milestone"></tbody>
+            </table>
+        </div>
+
+        <span class="section-label">Tabela 2 &middot; Receita acumulada vs. nível de desenvolvimento, por UF (esfera: total, 2029&ndash;2077)</span>
+        <div class="callout">
+            Mesma leitura do Estudo 06 (Tabela 2), agora acumulada nos 49 anos: ordena as 27 UFs pelo
+            IDHM estadual (PNUD, Radar IDHM 2024) e compara a variação percentual acumulada no
+            critério destino pleno contra o critério neutro (sem redistribuição por destino).
+        </div>
+        <div class="table-wrap">
+            <table class="data-table" id="table-ineq">
+                <thead>
+                    <tr>
+                        <th class="th-left">Grupo / UF</th>
+                        <th>IDHM</th>
+                        <th>&#916;% acum., destino pleno</th>
+                        <th>&#916;% acum., critério neutro</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-ineq">
+                    <tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="meto-note">
+            Fonte: PNUD Brasil (com Ipea e FJP), <em>Radar IDHM: evolução do IDHM e de seus
+            componentes &mdash; período de 2012 a 2024</em>, maio de 2026.
+        </p>
+
+        <div class="callout" style="margin-top:1rem">
+            Esta página estende o <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>
+            (mesmo método, 2029&ndash;2033) usando a mesma base de coeficientes por UF e um novo par
+            de datasets calculados especialmente para o horizonte 2029&ndash;2077:
+            <code>data/ibs-projecao-longo-prazo.json</code> (extensão do
+            <a href="/estudos/ibs-projecao-nacional.html">Estudo 11</a>) e
+            <code>data/seguro-receita-repasses-longo-prazo.json</code> (extensão do
+            <a href="/estudos/seguro-receita-repasses.html">Estudo 12</a>). Os dois batem
+            exatamente com os originais no trecho 2029&ndash;2033.
+        </div>
+
+        <div class="footnotes">
+            <p><strong>Fontes e notas metodológicas:</strong></p>
+            <p>1. Fórmula de combinação por ente, coeficientes de participação (&phi;<sup>CPT</sup>, &phi;<sup>dest</sup>), base de origem 2025 e repasse do Seguro-Receita: idênticos ao <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> &mdash; ver a metodologia lá para a derivação completa e as fontes primárias (SICONFI/STN DCA, Gobetti &amp; Monteiro/IPEA 2023, Nota Técnica nº 02/2026 SEFAZ-ES).</p>
+            <p>2. Cronograma histórico&rarr;destino, 2034&ndash;2077 (&alpha;<sub>a</sub>): ADCT art. 131, &sect;1&ordm; (EC 132/2023) &mdash; redução de 1/45 ao ano a partir do valor de 2033, chegando a 0% (100% destino) em 2078.</p>
+            <p>3. PIB nominal e IBS bruto nacional, 2034&ndash;2077: <code>data/build-ibs-projecao-longo-prazo.py</code>, que lê a projeção 2029&ndash;2033 do Estudo 11 sem recalculá-la e continua o PIB com a mesma taxa da IFI (RAF 107: 2,2% a.a. real, IPCA 3,0% a.a.) usada em 2031&ndash;2033, e a mesma razão bolo/PIB do Estudo 11.</p>
+            <p>4. Repasse do Seguro-Receita por ente, 2034&ndash;2077: <code>data/build-seguro-receita-repasses-longo-prazo.py</code>, mesmo algoritmo de nivelamento sequencial do Estudo 12 (art. 132 ADCT; art. 117 LC 227/2026), mesmos coeficientes e receita de referência fixos, aplicado ao IBS-destino estendido.</p>
+            <p>5. Base legal: EC 132/2023; ADCT arts. 128, 130, 131 e 132; LC 214/2025; LC 227/2026 arts. 51, 114&ndash;117.</p>
+            <p>6. Mecanismos não modelados, pelas mesmas razões do Estudo 06: FCBF (ADCT art. 65), variações de alíquota estadual do IBS, cashback (ADCT art. 134); e, específico desta extensão, a redução do Seguro-Receita entre 2078 e 2097 (fora do horizonte desta página) e qualquer crescimento diferenciado do consumo por UF (ver "Metodologia", item 3).</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+
+    <script src="/js/search.js"></script>
+    <script>
+    const UFS = ['AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT',
+                 'PA','PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO'];
+
+    const NOMES_UF = {
+        AC:'Acre', AL:'Alagoas', AM:'Amazonas', AP:'Amapá', BA:'Bahia',
+        CE:'Ceará', DF:'Distrito Federal', ES:'Espírito Santo', GO:'Goiás',
+        MA:'Maranhão', MG:'Minas Gerais', MS:'Mato Grosso do Sul',
+        MT:'Mato Grosso', PA:'Pará', PB:'Paraíba', PE:'Pernambuco',
+        PI:'Piauí', PR:'Paraná', RJ:'Rio de Janeiro', RN:'Rio Grande do Norte',
+        RO:'Rondônia', RR:'Roraima', RS:'Rio Grande do Sul', SC:'Santa Catarina',
+        SE:'Sergipe', SP:'São Paulo', TO:'Tocantins'
+    };
+
+    const ANO_INICIO = 2029, ANO_FIM = 2077;
+    const ANOS = Array.from({ length: ANO_FIM - ANO_INICIO + 1 }, (_, i) => ANO_INICIO + i);
+    const ANOS_MARCO = [2029, 2033, 2038, 2043, 2048, 2053, 2058, 2063, 2068, 2073, 2077];
+
+    let PARAMS = null;
+    let NACIONAL_BY_YEAR = null;
+    let REPASSE_INDEX = null;
+    let currentEsfera = 'total';
+
+    const fmtBi   = (v, d=2) => (v/1e9).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+    const fmtPct  = (v, d=1) => (v >= 0 ? '+' : '') + (v*100).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}) + '%';
+    const fmtCoef = v => (v*100).toLocaleString('pt-BR',{minimumFractionDigits:4,maximumFractionDigits:4}) + '%';
+    const clsPct  = v => v < -0.0005 ? 'td-neg' : v > 0.0005 ? 'td-pos' : '';
+
+    // ── As três funções abaixo são idênticas às do Estudo 06 (mesma fórmula de combinação) ──
+
+    function computeParams(dcaIcms2025, dcaIss2025, dcaFecop2025, dcaCotaDeclarada2025, totalBR2025, coeficientesUF, tabela4) {
+        const t4ByUf = {};
+        (tabela4?.ufs || []).forEach(u => { t4ByUf[u.uf] = u; });
+
+        const params = {};
+        for (const uf of UFS) {
+            const icms  = dcaIcms2025[uf]  || 0;
+            const iss   = dcaIss2025[uf]   || 0;
+            const fecop = dcaFecop2025[uf] || 0;
+            const cuf   = (coeficientesUF.por_uf && coeficientesUF.por_uf[uf]) || {};
+            const t4    = t4ByUf[uf] || {};
+            const isDf  = !!cuf.is_df;
+
+            const cotaDeclarada = dcaCotaDeclarada2025[uf];
+            const cota = isDf ? 0 : (cotaDeclarada != null ? cotaDeclarada : icms * 0.25);
+
+            const rEstado = isDf ? (icms + fecop) : (icms - cota + fecop);
+            const rMuni   = isDf ? null : (iss + cota);
+
+            const coefNeutroEstado = totalBR2025 > 0 ? rEstado / totalBR2025 : 0;
+            const coefNeutroMuni   = (rMuni != null && totalBR2025 > 0) ? rMuni / totalBR2025 : null;
+
+            const coefCPTEstado = (cuf.coeficiente_estado_pct ?? 0) / 100;
+            const coefCPTMuni   = (cuf.coeficiente_municipios_pct != null) ? cuf.coeficiente_municipios_pct / 100 : null;
+
+            const vrEstado = (t4.estado_pct ?? 0) / 100;
+            const vrMuni   = (t4.muni_pct != null) ? t4.muni_pct / 100 : null;
+
+            const brutoEstado = coefNeutroEstado * (1 + vrEstado);
+            const brutoMuni   = (coefNeutroMuni != null && vrMuni != null) ? coefNeutroMuni * (1 + vrMuni) : null;
+
+            params[uf] = {
+                estado: {
+                    r0_2025: rEstado, coefNeutro: coefNeutroEstado, coefCPT: coefCPTEstado,
+                    bruto: brutoEstado, lambda: coefNeutroEstado > 0 ? coefCPTEstado / coefNeutroEstado : 1
+                },
+                municipio: (rMuni == null) ? null : {
+                    r0_2025: rMuni, coefNeutro: coefNeutroMuni, coefCPT: coefCPTMuni,
+                    bruto: brutoMuni, lambda: coefNeutroMuni > 0 ? coefCPTMuni / coefNeutroMuni : 1
+                }
+            };
+        }
+
+        let somaBruto = 0;
+        for (const uf of UFS) {
+            somaBruto += params[uf].estado.bruto || 0;
+            somaBruto += (params[uf].municipio && params[uf].municipio.bruto) || 0;
+        }
+        for (const uf of UFS) {
+            const p = params[uf];
+            p.estado.coefPleno = somaBruto > 0 ? p.estado.bruto / somaBruto : 0;
+            if (p.municipio) {
+                p.municipio.coefPleno = somaBruto > 0 ? p.municipio.bruto / somaBruto : 0;
+            }
+        }
+        return params;
+    }
+
+    function partsFor(uf, esfera, params) {
+        const p = params[uf];
+        const parts = [];
+        if (esfera === 'estado' || esfera === 'total') parts.push(p.estado);
+        if ((esfera === 'municipio' || esfera === 'total') && p.municipio) parts.push(p.municipio);
+        return parts;
+    }
+
+    function project(uf, esfera, params, coefKey, nacionalByYear, repasseIndex) {
+        const parts = partsFor(uf, esfera, params);
+        if (parts.length === 0) return null;
+        const r0_2025 = parts.reduce((s, x) => s + x.r0_2025, 0);
+        const res = {};
+        for (const a of ANOS) {
+            const nac = nacionalByYear[a];
+            const refA = nac.icms_iss_residual + nac.ibs_bruto;
+            let total = 0, contrafactual = 0;
+            for (const part of parts) {
+                const coefDest = coefKey === 'pleno' ? part.coefPleno : part.coefNeutro;
+                total += nac.icms_iss_residual * part.coefNeutro
+                       + nac.ibs_historico * part.coefCPT
+                       + nac.ibs_destino_liquido * coefDest;
+                contrafactual += refA * part.coefNeutro;
+            }
+            let repasse = 0;
+            if (repasseIndex && repasseIndex[uf]) {
+                if (esfera === 'estado' || esfera === 'total') repasse += repasseIndex[uf].estado[a] || 0;
+                if ((esfera === 'municipio' || esfera === 'total') && params[uf].municipio) repasse += repasseIndex[uf].municipio[a] || 0;
+            }
+            total += repasse;
+            res[a] = { total, contrafactual, repasse, dpct: contrafactual > 0 ? (total - contrafactual) / contrafactual : 0 };
+        }
+        return { res, r0_2025 };
+    }
+
+    function projectComponents(uf, esfera, params, nacionalByYear, repasseIndex) {
+        const parts = partsFor(uf, esfera, params);
+        if (parts.length === 0) return null;
+        const res = {};
+        for (const a of ANOS) {
+            const nac = nacionalByYear[a];
+            let ibsHistorico = 0, ibsDestino = 0;
+            for (const part of parts) {
+                ibsHistorico += nac.ibs_historico * part.coefCPT;
+                ibsDestino += nac.ibs_destino_liquido * part.coefPleno;
+            }
+            let repasseSR = 0;
+            if (repasseIndex && repasseIndex[uf]) {
+                if (esfera === 'estado' || esfera === 'total') repasseSR += repasseIndex[uf].estado[a] || 0;
+                if ((esfera === 'municipio' || esfera === 'total') && params[uf].municipio) repasseSR += repasseIndex[uf].municipio[a] || 0;
+            }
+            res[a] = { ibsHistorico, ibsDestino, repasseSR };
+        }
+        return res;
+    }
+
+    // Esta página consome o repasse já agregado por UF/esfera (ver
+    // data/build-seguro-receita-repasses-longo-prazo.py) -- diferente do
+    // Estudo 12/Estudo 06, que leem o detalhe município a município.
+    function buildRepasseIndex(seguroData) {
+        const idx = {};
+        UFS.forEach(uf => {
+            idx[uf] = { estado: {}, municipio: {} };
+            ANOS.forEach(a => { idx[uf].estado[a] = 0; idx[uf].municipio[a] = 0; });
+        });
+        ANOS.forEach(a => {
+            const ano = seguroData.anos && seguroData.anos[a];
+            if (!ano) return;
+            UFS.forEach(uf => {
+                const r = (ano.repasse_por_uf && ano.repasse_por_uf[uf]) || {};
+                idx[uf].estado[a] = r.estado || 0;
+                idx[uf].municipio[a] = r.municipio || 0;
+            });
+        });
+        return idx;
+    }
+
+    // Soma os 49 anos de cada lado (2029-2077) antes de comparar.
+    function accumulate(proj) {
+        if (!proj) return null;
+        let sumTotal = 0, sumContra = 0;
+        ANOS.forEach(a => { sumTotal += proj.res[a].total; sumContra += proj.res[a].contrafactual; });
+        return { sumTotal, sumContra, deltaRs: sumTotal - sumContra, dpct: sumContra > 0 ? (sumTotal - sumContra) / sumContra : 0 };
+    }
+
+    function td(content, classes) {
+        const cls = (classes || []).filter(Boolean).join(' ');
+        return `<td${cls ? ` class="${cls}"` : ''}>${content}</td>`;
+    }
+
+    // ── Daqui pra baixo: específico desta página (2029-2077) ──
+
+    function buildRankingTable() {
+        const rows = UFS.map(uf => {
+            const proj = project(uf, currentEsfera, PARAMS, 'pleno', NACIONAL_BY_YEAR, REPASSE_INDEX);
+            return { uf, acc: accumulate(proj) };
+        }).sort((a, b) => {
+            if (!a.acc && !b.acc) return 0;
+            if (!a.acc) return 1;
+            if (!b.acc) return -1;
+            return a.acc.dpct - b.acc.dpct;
+        });
+
+        const tbody = document.getElementById('tbody-ranking');
+        tbody.innerHTML = rows.map(({ uf, acc }) => {
+            const isES = uf === 'ES';
+            const rowClass = isES ? ' class="row-es"' : '';
+            if (!acc) {
+                return `<tr${rowClass} title="Sem esfera municipal separada para o DF (LC 227/2026)">
+                    <td class="td-uf">${uf} <small>${NOMES_UF[uf]}</small></td>
+                    ${td('n/a', ['td-ref'])}${td('n/a', ['td-ref col-divider'])}${td('n/a', ['td-ref col-divider'])}${td('n/a', ['td-ref'])}
+                </tr>`;
+            }
+            return `<tr${rowClass}>
+                <td class="td-uf">${uf} <small>${NOMES_UF[uf]}</small></td>
+                ${td(fmtBi(acc.sumContra, 1))}
+                ${td(fmtBi(acc.sumTotal, 1), ['col-divider'])}
+                ${td(fmtBi(acc.deltaRs, 1), ['col-divider', clsPct(acc.dpct)])}
+                ${td(fmtPct(acc.dpct, 1), [clsPct(acc.dpct)])}
+            </tr>`;
+        }).join('');
+
+        let sumContra = 0, sumTotal = 0;
+        for (const uf of UFS) {
+            const proj = project(uf, currentEsfera, PARAMS, 'pleno', NACIONAL_BY_YEAR, REPASSE_INDEX);
+            const acc = accumulate(proj);
+            if (!acc) continue;
+            sumContra += acc.sumContra;
+            sumTotal += acc.sumTotal;
+        }
+        const sumDelta = sumTotal - sumContra;
+        const sumDpct = sumContra > 0 ? sumDelta / sumContra : 0;
+        const labelBrasil = currentEsfera === 'estado' ? 'Brasil <small>27 estados</small>'
+                           : currentEsfera === 'municipio' ? 'Brasil <small>26 UFs, municípios</small>'
+                           : 'Brasil <small>27 UFs</small>';
+        document.getElementById('tfoot-ranking').innerHTML = `<tr>
+            <td class="td-uf"><strong>${labelBrasil}</strong></td>
+            ${td(fmtBi(sumContra, 1))}
+            ${td(fmtBi(sumTotal, 1), ['col-divider'])}
+            ${td(fmtBi(sumDelta, 1), ['col-divider', clsPct(sumDpct)])}
+            ${td(fmtPct(sumDpct, 1), [clsPct(sumDpct)])}
+        </tr>`;
+    }
+
+    function buildIneqTable(params, giniIdh, nacionalByYear, repasseIndex) {
+        const rows = UFS.map(uf => {
+            const accC1 = accumulate(project(uf, 'total', params, 'pleno', nacionalByYear, repasseIndex));
+            const accC3 = accumulate(project(uf, 'total', params, 'neutro', nacionalByYear));
+            const ind = giniIdh.ufs[uf] || {};
+            return { uf, dC1: accC1.dpct, dC3: accC3.dpct, idhm: ind.idhm_2024 };
+        }).filter(r => r.idhm != null).sort((a, b) => b.idhm - a.idhm);
+
+        const terc = Math.ceil(rows.length / 3);
+        const grupos = [
+            { nome: 'Alto desenvolvimento', linhas: rows.slice(0, terc) },
+            { nome: 'Médio desenvolvimento', linhas: rows.slice(terc, 2 * terc) },
+            { nome: 'Baixo desenvolvimento', linhas: rows.slice(2 * terc) },
+        ];
+
+        const media = (arr, key) => arr.reduce((s, r) => s + r[key], 0) / arr.length;
+
+        const tbody = document.getElementById('tbody-ineq');
+        tbody.innerHTML = grupos.map(({ nome, linhas }) => {
+            const avgIdhm = media(linhas, 'idhm');
+            const avgC1 = media(linhas, 'dC1');
+            const avgC3 = media(linhas, 'dC3');
+            const grupoRow = `<tr class="row-grupo">
+                <td class="td-uf">${nome} <small>tercil, n=${linhas.length}</small></td>
+                <td class="td-ref">${avgIdhm.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3})}</td>
+                <td class="${clsPct(avgC1)}">${fmtPct(avgC1, 1)}</td>
+                <td class="${clsPct(avgC3)}">${fmtPct(avgC3, 1)}</td>
+            </tr>`;
+            const ufRows = linhas.map(r => {
+                const isES = r.uf === 'ES';
+                return `<tr class="row-sub${isES ? ' row-es' : ''}">
+                    <td class="td-uf">${r.uf} <small>${NOMES_UF[r.uf]}</small></td>
+                    <td class="td-ref">${r.idhm.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3})}</td>
+                    <td class="${clsPct(r.dC1)}">${fmtPct(r.dC1, 1)}</td>
+                    <td class="${clsPct(r.dC3)}">${fmtPct(r.dC3, 1)}</td>
+                </tr>`;
+            }).join('');
+            return grupoRow + ufRows;
+        }).join('');
+    }
+
+    function themeColors() {
+        const css = getComputedStyle(document.documentElement);
+        return {
+            grid: 'rgba(128,128,128,0.15)',
+            text: css.getPropertyValue('--text-muted').trim() || '#9A9A9A'
+        };
+    }
+
+    let chartNacional = null, chartUfTotal = null, chartUfComposicao = null;
+
+    function buildChartNacional() {
+        const el = document.getElementById('chart-nacional');
+        if (chartNacional) { chartNacional.destroy(); chartNacional = null; }
+        if (!el || typeof Chart === 'undefined' || !NACIONAL_BY_YEAR) return;
+        const c = themeColors();
+        const hist = ANOS.map(a => NACIONAL_BY_YEAR[a].ibs_historico / 1e9);
+        const dest = ANOS.map(a => NACIONAL_BY_YEAR[a].ibs_destino_liquido / 1e9);
+        const seg  = ANOS.map(a => NACIONAL_BY_YEAR[a].ibs_seguro_receita / 1e9);
+        const cgibs = ANOS.map(a => NACIONAL_BY_YEAR[a].ibs_cgibs / 1e9);
+        const alpha = ANOS.map(a => NACIONAL_BY_YEAR[a].alpha_a * 100);
+        chartNacional = new Chart(el, {
+            data: {
+                labels: ANOS,
+                datasets: [
+                    { type: 'bar', label: 'IBS, histórico', data: hist, backgroundColor: '#1e8449', stack: 'total', yAxisID: 'y' },
+                    { type: 'bar', label: 'IBS, destino líquido', data: dest, backgroundColor: '#4caf76', stack: 'total', yAxisID: 'y' },
+                    { type: 'bar', label: 'Seguro-Receita', data: seg, backgroundColor: '#d4a017', stack: 'total', yAxisID: 'y' },
+                    { type: 'bar', label: 'CGIBS', data: cgibs, backgroundColor: '#8a8a8a', stack: 'total', yAxisID: 'y' },
+                    { type: 'line', label: 'alpha_a (% histórico)', data: alpha, borderColor: '#2a78d6', backgroundColor: '#2a78d6',
+                      borderWidth: 2, pointRadius: 0, tension: 0.15, yAxisID: 'y1', order: 0 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: true, aspectRatio: 2.4,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: {
+                        label: ctx => ctx.dataset.yAxisID === 'y1'
+                            ? `${ctx.dataset.label}: ${ctx.raw.toLocaleString('pt-BR',{maximumFractionDigits:1})}%`
+                            : `${ctx.dataset.label}: R$ ${fmtBi(ctx.raw * 1e9, 2)} bi`
+                    } }
+                },
+                scales: {
+                    x: { stacked: true, grid: { display: false }, ticks: { color: c.text, font: { size: 10 }, maxTicksLimit: 12 } },
+                    y: { stacked: true, grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 } }, title: { display: true, text: 'R$ bi', color: c.text, font: { size: 10 } } },
+                    y1: { position: 'right', min: 0, max: 100, grid: { display: false }, ticks: { color: c.text, font: { size: 10 }, callback: v => v + '%' }, title: { display: true, text: 'alpha_a (%)', color: c.text, font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    function buildChartUfTotal(uf) {
+        const el = document.getElementById('chart-uf-total');
+        const titleEl = document.getElementById('chart-uf-total-title');
+        const proj = project(uf, currentEsfera, PARAMS, 'pleno', NACIONAL_BY_YEAR, REPASSE_INDEX);
+        if (chartUfTotal) { chartUfTotal.destroy(); chartUfTotal = null; }
+        if (!proj) {
+            titleEl.textContent = `Receita projetada (R$ bi): sem esfera municipal própria para ${uf}`;
+            return;
+        }
+        titleEl.textContent = `Receita projetada, ${uf} (R$ bi)`;
+        if (!el || typeof Chart === 'undefined') return;
+        const c = themeColors();
+        const comReforma = ANOS.map(a => proj.res[a].total / 1e9);
+        const semReforma = ANOS.map(a => proj.res[a].contrafactual / 1e9);
+        const allVals = comReforma.concat(semReforma);
+        const dataMin = Math.min(...allVals);
+        const dataMax = Math.max(...allVals);
+        const pad = Math.max((dataMax - dataMin) * 0.1, dataMax * 0.02);
+        const yMin = Math.max(0, dataMin - pad);
+        const yMax = dataMax + pad;
+        chartUfTotal = new Chart(el, {
+            data: {
+                labels: ANOS,
+                datasets: [
+                    { type: 'line', label: 'Com reforma', data: comReforma,
+                      borderColor: '#2a78d6', backgroundColor: '#2a78d6', borderWidth: 2, pointRadius: 0, tension: 0.1, order: 2 },
+                    { type: 'line', label: 'Sem reforma (contrafactual)', data: semReforma,
+                      borderColor: c.text, backgroundColor: c.text, borderDash: [6, 4], borderWidth: 2,
+                      pointRadius: 0, tension: 0.1, order: 1 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: true, aspectRatio: 1.4,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: R$ ${fmtBi(ctx.raw * 1e9, 2)} bi` } }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: c.text, font: { size: 10 }, maxTicksLimit: 10 } },
+                    y: { min: yMin, max: yMax, grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 } }, title: { display: true, text: 'R$ bi', color: c.text, font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    function buildChartUfComposicao(uf) {
+        const el = document.getElementById('chart-uf-composicao');
+        const titleEl = document.getElementById('chart-uf-composicao-title');
+        const comp = projectComponents(uf, currentEsfera, PARAMS, NACIONAL_BY_YEAR, REPASSE_INDEX);
+        if (chartUfComposicao) { chartUfComposicao.destroy(); chartUfComposicao = null; }
+        if (!comp) {
+            titleEl.textContent = `Composição da receita (R$ bi): sem esfera municipal própria para ${uf}`;
+            return;
+        }
+        titleEl.textContent = `Composição da receita, ${uf} (R$ bi)`;
+        if (!el || typeof Chart === 'undefined') return;
+        const c = themeColors();
+        chartUfComposicao = new Chart(el, {
+            type: 'bar',
+            data: {
+                labels: ANOS,
+                datasets: [
+                    { label: 'IBS, histórico', data: ANOS.map(a => comp[a].ibsHistorico / 1e9), backgroundColor: '#1e8449', stack: 'total' },
+                    { label: 'IBS, destino', data: ANOS.map(a => comp[a].ibsDestino / 1e9), backgroundColor: '#4caf76', stack: 'total' },
+                    { label: 'Seguro-Receita', data: ANOS.map(a => comp[a].repasseSR / 1e9), backgroundColor: '#d4a017', stack: 'total', borderRadius: 2 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: true, aspectRatio: 1.4,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: R$ ${fmtBi(ctx.raw * 1e9, 2)} bi` } }
+                },
+                scales: {
+                    x: { stacked: true, grid: { display: false }, ticks: { color: c.text, font: { size: 10 }, maxTicksLimit: 10 } },
+                    y: { stacked: true, grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 } }, title: { display: true, text: 'R$ bi', color: c.text, font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    function buildUfMilestoneTable(uf) {
+        const tbody = document.getElementById('tbody-uf-milestone');
+        const proj = project(uf, currentEsfera, PARAMS, 'pleno', NACIONAL_BY_YEAR, REPASSE_INDEX);
+        if (!proj) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-muted);font-family:var(--sans)">Sem esfera municipal própria para ${uf}</td></tr>`;
+            return;
+        }
+        tbody.innerHTML = ANOS_MARCO.map(a => {
+            const r = proj.res[a];
+            const alphaA = NACIONAL_BY_YEAR[a].alpha_a * 100;
+            return `<tr>
+                <td class="td-uf">${a}</td>
+                ${td(alphaA.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}) + '%')}
+                ${td(fmtBi(r.contrafactual, 2), ['col-divider'])}
+                ${td(fmtBi(r.total, 2))}
+                ${td(fmtPct(r.dpct, 1), [clsPct(r.dpct)])}
+            </tr>`;
+        }).join('');
+    }
+
+    function populateUfSelect() {
+        const sel = document.getElementById('select-uf-detalhe');
+        sel.innerHTML = UFS.map(uf => `<option value="${uf}"${uf === 'ES' ? ' selected' : ''}>${uf} - ${NOMES_UF[uf]}</option>`).join('');
+    }
+
+    function renderUfDetalhe() {
+        if (!PARAMS || !NACIONAL_BY_YEAR) return;
+        const uf = document.getElementById('select-uf-detalhe').value || 'ES';
+        buildChartUfTotal(uf);
+        buildChartUfComposicao(uf);
+        buildUfMilestoneTable(uf);
+    }
+
+    function renderAll() {
+        if (!PARAMS || !NACIONAL_BY_YEAR) return;
+        buildRankingTable();
+        renderUfDetalhe();
+    }
+
+    document.getElementById('select-uf-detalhe').addEventListener('change', renderUfDetalhe);
+
+    document.querySelectorAll('.esfera-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.esfera-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentEsfera = btn.dataset.esfera;
+            renderAll();
+        });
+    });
+
+    (async function init() {
+        const statusEl = document.getElementById('status-main');
+        try {
+            const [refResp, coefResp, gobettiResp, giniIdhResp, nacResp, seguroResp] = await Promise.all([
+                fetch('/data/reforma-tributaria.json?t=' + Date.now()),
+                fetch('/data/coeficientes-uf.json?t=' + Date.now()),
+                fetch('/data/gobetti-2023-perdas-ganhos-uf.json?t=' + Date.now()),
+                fetch('/data/gini-idh-uf.json?t=' + Date.now()),
+                fetch('/data/ibs-projecao-longo-prazo.json?t=' + Date.now()),
+                fetch('/data/seguro-receita-repasses-longo-prazo.json?t=' + Date.now())
+            ]);
+            if (!refResp.ok || !coefResp.ok || !gobettiResp.ok || !giniIdhResp.ok || !nacResp.ok || !seguroResp.ok) {
+                throw new Error('Erro ao carregar dados');
+            }
+            const refData        = await refResp.json();
+            const coeficientesUF = await coefResp.json();
+            const gobettiData    = await gobettiResp.json();
+            const giniIdhData    = await giniIdhResp.json();
+            const nacionalData   = await nacResp.json();
+            const seguroData     = await seguroResp.json();
+
+            const dcaIcms2025          = (refData.dca_icms_por_uf         && refData.dca_icms_por_uf['2025'])         || {};
+            const dcaIss2025           = (refData.dca_iss_por_uf          && refData.dca_iss_por_uf['2025'])          || {};
+            const dcaFecop2025         = (refData.dca_fecop_por_uf        && refData.dca_fecop_por_uf['2025'])        || {};
+            const dcaCotaDeclarada2025 = (refData.dca_transf_munis_por_uf && refData.dca_transf_munis_por_uf['2025']) || {};
+            const totalBR2025 = UFS.reduce((s, uf) =>
+                s + (dcaIcms2025[uf] || 0) + (dcaIss2025[uf] || 0) + (dcaFecop2025[uf] || 0), 0);
+
+            NACIONAL_BY_YEAR = {};
+            (nacionalData.projecao || []).forEach(row => { NACIONAL_BY_YEAR[row.ano] = row; });
+
+            PARAMS = computeParams(dcaIcms2025, dcaIss2025, dcaFecop2025, dcaCotaDeclarada2025,
+                                   totalBR2025, coeficientesUF, gobettiData.tabela4_esferas);
+            REPASSE_INDEX = buildRepasseIndex(seguroData);
+
+            buildChartNacional();
+            renderAll();
+            buildIneqTable(PARAMS, giniIdhData, NACIONAL_BY_YEAR, REPASSE_INDEX);
+            populateUfSelect();
+            renderUfDetalhe();
+
+            const ref29 = NACIONAL_BY_YEAR[2029], ref77 = NACIONAL_BY_YEAR[2077];
+            statusEl.innerHTML =
+                '<span class="status-dot" style="background:#22c55e"></span> ' +
+                `27 UFs &middot; ${ANOS.length} anos (2029&ndash;2077) &middot; ` +
+                `Bolo nacional: 2029 = ${fmtBi(ref29.bolo_projetado, 1)} bi, 2077 = ${fmtBi(ref77.bolo_projetado, 1)} bi &middot; ` +
+                `alpha_a: 2029 = ${(ref29.alpha_a*100).toFixed(0)}%, 2077 = ${(ref77.alpha_a*100).toFixed(0)}%`;
+        } catch (err) {
+            statusEl.innerHTML =
+                '<span class="status-dot" style="background:#ef4444"></span> Erro ao carregar dados: ' + err.message;
+        }
+    })();
+    </script>
+</body>
+</html>
