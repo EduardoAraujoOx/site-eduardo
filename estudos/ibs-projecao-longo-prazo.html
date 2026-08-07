@@ -229,66 +229,140 @@
         </div>
 
         <details class="methodology">
-            <summary>Metodologia: o que muda em relação ao Estudo 06</summary>
+            <summary>Metodologia: como o resultado de cada ente é projetado até 2077</summary>
             <div class="methodology-body">
                 <p class="meto-note">
-                    A fórmula de combinação por ente é <strong>idêntica</strong> à do
-                    <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> &mdash; ICMS
-                    residual pelo critério neutro, IBS histórico pelo &phi;<sup>CPT</sup>, IBS destino
-                    líquido pelo &phi;<sup>dest</sup> pleno, mais o repasse do Seguro-Receita &mdash;
-                    e não é repetida aqui; ver a metodologia do Estudo 06 para a derivação completa.
-                    O que muda são só os dois insumos que variam ano a ano.
+                    O modelo estima a receita de cada ente combinando quatro insumos: (i) a receita
+                    nacional de referência (ICMS+ISS 2013&ndash;2025, base do
+                    <a href="/estudos/ibs-projecao-nacional.html">Estudo 11</a>); (ii) o cronograma
+                    legal da transição, que fixa a divisão histórico/destino ano a ano; (iii) os
+                    coeficientes de participação de cada UF, validados contra a Nota Técnica
+                    nº&nbsp;02/2026 (SEFAZ-ES) e já usados no
+                    <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>; e (iv) o repasse
+                    do Seguro-Receita, estimado ente a ente pelo algoritmo de nivelamento do
+                    <a href="/estudos/seguro-receita-repasses.html">Estudo 12</a> &mdash; não uma
+                    retenção genérica sem destino conhecido. Esta seção descreve como as quatro peças
+                    se encaixam; a derivação completa dos coeficientes está na metodologia do Estudo 06.
                 </p>
 
-                <p class="meto-section-title">1. O cronograma real de 50 anos (não é premissa nossa)</p>
+                <p class="meto-section-title">1. O cronograma legal, 2029&ndash;2077</p>
                 <p class="meto-note">
-                    O ADCT art. 131, &sect;1&ordm; (EC 132/2023) fixa &alpha;<sub>a</sub> &mdash; a
-                    fração do IBS bruto distribuída pelo critério histórico &mdash; em 80% para
-                    2029&ndash;2032 e 90% em 2033 (os mesmos valores já usados no Estudo 06/11). A
-                    partir de 2034, a lei reduz esse valor de 2033 em <strong>1/45 a cada ano</strong>,
-                    até chegar a zero em 2078 (100% destino). É a mesma "transição de 50 anos"
-                    mencionada de passagem em outras páginas deste site, mas nunca antes modelada ano a
-                    ano. Como consequência, a fração do bolo distribuída pelo critério destino cresce
-                    exatamente 2 pontos percentuais ao ano, do primeiro ao último ano da transição
-                    (2% em 2029, 10% em 2033, 12% em 2034, ..., 98% em 2077, 100% em 2078).
+                    A Tabela A resume os parâmetros que a lei fixa para cada ano: f<sub>a</sub> (fração
+                    ainda cobrada como ICMS/ISS), s<sub>a</sub> (fração já convertida em IBS),
+                    &alpha;<sub>a</sub> (fração do IBS bruto pelo critério histórico), c<sub>a</sub>
+                    (taxa do CGIBS) e &rho; (retenção do Seguro-Receita). Até 2033, são os mesmos
+                    valores já publicados no Estudo 06/11 (ADCT art. 128 e 131, &sect;1&ordm;, I&ndash;II).
+                    De 2034 em diante, o ADCT art. 131, &sect;1&ordm; reduz o &alpha;<sub>a</sub> de 2033
+                    (90%) em <strong>1/45 a cada ano</strong>, até chegar a zero em 2078 (100% destino)
+                    &mdash; a mesma "transição de 50 anos" mencionada de passagem em outras páginas
+                    deste site, aqui modelada ano a ano pela primeira vez.
                 </p>
-                <div class="meto-formula-box">
-                    $$\alpha_a = \begin{cases} 0{,}80 & 2029 \le a \le 2032 \\ 0{,}90 \times \dfrac{2078-a}{45} & 2034 \le a \le 2077 \end{cases}$$
+                <div class="table-wrap">
+                    <table class="param-table" id="table-parametros">
+                        <thead>
+                            <tr><th>Ano</th><th>f<sub>a</sub></th><th>s<sub>a</sub></th><th>&alpha;<sub>a</sub></th><th>1&minus;&alpha;<sub>a</sub> (destino)</th><th>c<sub>a</sub></th><th>&rho;</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>2029</td><td>90%</td><td>10%</td><td>80%</td><td>2%</td><td>2,00%</td><td>5%</td></tr>
+                            <tr><td>2033</td><td>0%</td><td>100%</td><td>90%</td><td>10%</td><td>0,50%</td><td>5%</td></tr>
+                            <tr><td>2034</td><td>0%</td><td>100%</td><td>88%</td><td>12%</td><td>0,50%</td><td>5%</td></tr>
+                            <tr><td>2050</td><td>0%</td><td>100%</td><td>56%</td><td>44%</td><td>0,50%</td><td>5%</td></tr>
+                            <tr><td>2077</td><td>0%</td><td>100%</td><td>2%</td><td>98%</td><td>0,50%</td><td>5%</td></tr>
+                        </tbody>
+                    </table>
                 </div>
                 <p class="meto-note">
-                    A taxa do CGIBS (c<sub>a</sub>) fica no piso de 0,50% já vigente em 2032&ndash;2033
-                    (a lei não detalha novo valor além disso). O Seguro-Receita (&rho;) continua 5% até
-                    2077 &mdash; só cai, linearmente, a partir de 2078 (até 0% em 2097), fora do
-                    horizonte desta página. fa/sa (conversão ICMS/ISS&rarr;IBS) ficam fixos em 0/1: essa
-                    parte já terminou em 2033.
+                    Por exemplo, o &alpha;<sub>a</sub> de 2050 é 0,90&nbsp;&times;&nbsp;(2078&minus;2050)/45
+                    = 0,90&nbsp;&times;&nbsp;28/45 = <strong>56%</strong>: em 2050, 56% do IBS bruto
+                    ainda segue o critério histórico e 44% já vai pelo destino. A fórmula completa:
+                </p>
+                <div class="meto-formula-box">
+                    $$\alpha_a = \begin{cases} 0{,}80 & 2029 \le a \le 2032 \\ 0{,}90 & a = 2033 \\ 0{,}90 \times \dfrac{2078-a}{45} & 2034 \le a \le 2077 \end{cases}$$
+                </div>
+                <p class="meto-note">
+                    c<sub>a</sub> fica no piso de 0,50% já vigente em 2032&ndash;2033 (a lei não
+                    detalha novo valor além disso); &rho; continua 5% até 2077 &mdash; só cai,
+                    linearmente, a partir de 2078 (até 0% em 2097), fora do horizonte desta página.
                 </p>
 
-                <p class="meto-section-title">2. PIB e inflação de 2034 em diante (esta parte é premissa)</p>
+                <p class="meto-section-title">2. A base nacional projetada</p>
                 <p class="meto-note">
-                    O Boletim Focus cobre até 2030 e a IFI (RAF 107, dez/2025) detalha até 2033 &mdash;
-                    mas a própria IFI trata 2,2% a.a. real (IPCA convergindo a 3,0%) como válido "por
-                    simplificação" para todo o intervalo 2027&ndash;2035, sem abrir ano a ano. Esta
-                    página apenas <strong>continua essa mesma taxa</strong> para 2034&ndash;2077 &mdash;
-                    nenhum número novo, nenhuma tentativa de simular ciclo econômico ao longo de 44
-                    anos. É estado estacionário na última taxa oficial disponível, não uma previsão de
-                    longuíssimo prazo: o bolo (ICMS+ISS+FECOP/IBS) mantém a mesma razão sobre o PIB já
-                    fixada no Estudo 11 (média 2024&ndash;2026, LC 214/2025 arts. 361&ndash;365).
+                    O bolo nacional de cada ano é o PIB nominal projetado multiplicado pela razão
+                    bolo/PIB já fixada no Estudo 11 (7,9904%, média 2024&ndash;2026, LC 214/2025 arts.
+                    361&ndash;365): \(\text{bolo}_a = \text{PIB}_a \times 7{,}9904\%\). Até 2033, o PIB
+                    nominal segue Focus (2026&ndash;2030) e IFI/RAF&nbsp;107 (2031&ndash;2033). De 2034
+                    em diante, a própria IFI trata 2,2% a.a. real (IPCA convergindo a 3,0%) como válido
+                    "por simplificação" para todo o intervalo 2027&ndash;2035, sem abrir ano a ano; esta
+                    página apenas <strong>continua essa mesma taxa</strong> &mdash; nenhum número novo.
+                    Por exemplo, de 2033 para 2034: PIB<sub>2034</sub> = PIB<sub>2033</sub> &times;
+                    1,022 &times; 1,03 = R$&nbsp;19.902,05&nbsp;bi &times; 1,0527 =
+                    R$&nbsp;20.950,09&nbsp;bi, e bolo<sub>2034</sub> = R$&nbsp;20.950,09&nbsp;bi
+                    &times; 7,9904% = R$&nbsp;1.674,00&nbsp;bi. É estado estacionário na última taxa
+                    oficial disponível, não uma previsão de longuíssimo prazo.
                 </p>
 
-                <p class="meto-section-title">3. Por que não modelamos crescimento diferenciado por UF</p>
+                <p class="meto-section-title">3. Seguro-Receita: repasse estimado, não retenção genérica</p>
                 <p class="meto-note">
-                    Uma primeira versão desta ideia cogitou aplicar uma taxa de crescimento diferente a
-                    cada UF, para simular convergência ou divergência regional ao longo de décadas. Não
-                    seguimos esse caminho: não existe fonte oficial de crescimento de consumo por UF
-                    para 44 anos à frente, e qualquer número que inventássemos ali decidiria o resultado
-                    do estudo antes de ele "descobrir" qualquer coisa &mdash; o oposto do que se espera
-                    de uma projeção. Como o coeficiente de participação de cada UF fica fixo e tanto o
-                    numerador quanto o pool do Seguro-Receita crescem na mesma proporção do IBS-destino
-                    nacional, o conjunto de entes beneficiários do Seguro-Receita é <strong>idêntico em
-                    todos os anos</strong> deste modelo (777 dos 5.596 entes, do primeiro ao último ano)
-                    &mdash; só o valor em R$ cresce. Isso não é uma limitação escondida: é uma
-                    implicação direta e verificável do próprio desenho legal, quando se mantém a
-                    participação de cada ente fixa na medição mais recente disponível.
+                    Os 5% retidos (&rho;) não desaparecem: o
+                    <a href="/estudos/seguro-receita-repasses.html">Estudo 12</a> estima quem recebe
+                    esse fundo de volta, ente a ente, por nivelamento sequencial entre as 5.596
+                    entidades (27 UFs+DF e cada um dos 5.569 municípios), competindo simultaneamente
+                    pelo mesmo fundo a cada ano (ADCT art. 132; LC 227/2026 art. 117). Esta página
+                    estende esse mesmo algoritmo, com os mesmos coeficientes e receita de referência já
+                    validados, para 2034&ndash;2077.
+                </p>
+
+                <p class="meto-section-title">4. Símbolos e como o resultado de cada ente é montado</p>
+                <div class="table-wrap">
+                    <table class="param-table">
+                        <thead><tr><th>Símbolo</th><th>Definição</th></tr></thead>
+                        <tbody>
+                            <tr><td>\(R_{u,a}\)</td><td>Receita projetada do ente <em>u</em> no ano <em>a</em>.</td></tr>
+                            <tr><td>\(\text{bolo}_a\)</td><td>Bolo nacional (ICMS+ISS/IBS) projetado no ano <em>a</em> (item 2).</td></tr>
+                            <tr><td>\(\alpha_a\)</td><td>Fração do IBS bruto pelo critério histórico no ano <em>a</em> (item 1).</td></tr>
+                            <tr><td>\(p_u^{neutro}\)</td><td>Participação corrente do ente <em>u</em> (base 2025), aplicada à fração ainda cobrada como ICMS/ISS.</td></tr>
+                            <tr><td>\(p_u^{CPT}\)</td><td>Coeficiente de Participação de Transição do ente <em>u</em> (2019&ndash;2025), validado contra a Nota Técnica nº&nbsp;02/2026.</td></tr>
+                            <tr><td>\(p_u^{dest}\)</td><td>Coeficiente de destino pleno do ente <em>u</em> (Gobetti e Monteiro, 2023, reescalado).</td></tr>
+                            <tr><td>\(SR_{u,a}\)</td><td>Repasse do Seguro-Receita ao ente <em>u</em> no ano <em>a</em> (item 3, Estudo 12).</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="meto-formula-box">
+                    $$R_{u,a} = \underbrace{\text{bolo}_a f_a \, p_u^{neutro}}_{\text{ICMS residual}} + \underbrace{\text{bolo}_a s_a \alpha_a \, p_u^{CPT}}_{\text{IBS, histórico}} + \underbrace{\text{bolo}_a s_a (1-\alpha_a)(1-c_a)(1-\rho) \, p_u^{dest}}_{\text{IBS, destino líquido}} + \, SR_{u,a}$$
+                </div>
+                <p class="meto-note">
+                    Um exemplo concreto: em 2050, o Espírito Santo (esfera estado) tem
+                    \(p_{ES}^{neutro}=1{,}6288\%\), \(p_{ES}^{CPT}=1{,}5418\%\) e
+                    \(p_{ES}^{dest}=1{,}0781\%\). Como f<sub>2050</sub>=0 (ICMS já extinto), a parcela
+                    histórica é R$&nbsp;2.130,85&nbsp;bi &times; 1,5418% =
+                    R$&nbsp;32,85&nbsp;bi, a parcela destino líquida é R$&nbsp;1.582,57&nbsp;bi
+                    &times; 1,0781% = R$&nbsp;17,06&nbsp;bi, e o Estudo 12 estima um repasse de
+                    Seguro-Receita de R$&nbsp;6,40&nbsp;bi para o estado nesse ano &mdash; total de
+                    R$&nbsp;56,31&nbsp;bi, 9,1% abaixo do contrafactual (R$&nbsp;61,98&nbsp;bi, a
+                    participação de 2025 sobre o mesmo bolo). É a mesma conta que gera a linha "2050"
+                    nas tabelas abaixo, só que por esfera separada em vez de "total".
+                </p>
+
+                <p class="meto-section-title">5. Limitações</p>
+                <p class="meto-note">
+                    <strong>Cenário único.</strong> Esta página mostra só o critério de destino pleno
+                    (\(p_u^{dest}\) integral), não os cenários intermediário ou neutro que o Estudo 06
+                    já considerou em versões anteriores &mdash; o neutro aparece apenas como referência
+                    de comparação na Tabela 2. <strong>Premissa de longo prazo.</strong> PIB e inflação
+                    de 2034 em diante são a última taxa oficial (IFI) continuada, não uma previsão
+                    &mdash; ver item 2. <strong>Sem crescimento diferenciado por UF.</strong> Testamos
+                    essa ideia e descartamos: não existe fonte oficial de crescimento de consumo por UF
+                    para 44 anos à frente, e qualquer número inventado decidiria o resultado antes de o
+                    estudo "descobrir" qualquer coisa. Como consequência verificável (não escondida): o
+                    conjunto de entes beneficiários do Seguro-Receita é idêntico em todos os 49 anos
+                    deste modelo (777 dos 5.596), porque o numerador e o pool crescem na mesma
+                    proporção do IBS-destino nacional quando a participação de cada ente é fixa.
+                    <strong>Mecanismos não modelados</strong>, pelas mesmas razões do Estudo 06: FCBF
+                    (ADCT art. 65), variação de alíquota própria do IBS, cashback (ADCT art. 134) e a
+                    redução do Seguro-Receita entre 2078 e 2097 (fora do horizonte desta página).
+                    <strong>Participação corrigida até 2025.</strong> A regra legal definitiva
+                    incorporará também 2026, ainda não fechado na base pública usada aqui &mdash; mesma
+                    ressalva do Estudo 06/11.
                 </p>
             </div>
         </details>
