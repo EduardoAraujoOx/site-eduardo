@@ -5,13 +5,16 @@ deste repositório (`data/build-*.py`, `estudos/ibs-*.html`, `estudos/seguro-rec
 
 **Estado desta compilação:** o Planalto (`planalto.gov.br`) esteve inacessível
 (timeout/503) durante toda a sessão em que este arquivo foi montado — não foi
-possível baixar o texto integral bruto das três leis. O que segue é uma
-coletânea dos artigos especificamente verificados e citados nos estudos deste
-site até agora, não um espelho completo das leis. Trechos marcados **[LITERAL]**
-foram conferidos palavra por palavra (colados pelo autor do site ou extraídos
-de fontes espelho confiáveis); trechos marcados **[PARÁFRASE]** vêm de buscas/
-resumos e devem ser reconfirmados contra a fonte primária antes de qualquer uso
-que exija precisão literal (ex.: citação direta num estudo publicado).
+possível baixar o texto integral bruto das três leis diretamente da fonte
+primária. Em 11/ago/2026, o autor do site enviou três arquivos com trechos
+extraídos de fontes espelho (texto integral da LC 227/2026, o Título III da
+LC 227/2026 — arts. 103 a 131 — e os artigos constitucionais da CF/88 com a
+redação da EC 132/2023), o que permitiu confirmar literalmente praticamente
+todos os dispositivos usados nos cálculos deste site. Trechos marcados
+**[LITERAL]** foram conferidos palavra por palavra; trechos marcados
+**[PARÁFRASE]** vêm de buscas/resumos e devem ser reconfirmados contra a fonte
+primária antes de qualquer uso que exija precisão literal (ex.: citação direta
+num estudo publicado).
 
 Fontes primárias (a re-tentar quando o Planalto estiver acessível):
 - EC 132/2023: https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc132.htm
@@ -74,12 +77,22 @@ constante até 2077, só caindo (linearmente, até 0% em 2097) a partir de 2078
 ## 2. LC 214/2025
 
 ### Arts. 361-365 — cálculo da alíquota de referência
-**[PARÁFRASE — texto integral não obtido nesta sessão]** Para cada ano da
-transição (2029-2033), a alíquota de referência do IBS estadual e municipal é
-fixada de forma a equivaler à média da razão entre a receita de referência
-(ICMS+ISS+FECOP) e o PIB nos anos de 2024 a 2026 — regulamenta o mecanismo de
-neutralidade do ADCT art. 130, II e III (acima). Base de `razao_referencia`
-em `data/build-ibs-projecao-nacional.py`.
+**[LITERAL — confirmado 11/ago/2026 via arquivo enviado pelo autor do site]**
+Para cada ano da transição (2029 a 2033), a lei fixa a alíquota de referência
+(estadual e municipal, separadamente) exigindo equivalência entre (i) a razão
+apurada para o(s) ano(s)-base mais recente(s) disponíveis e (ii) **"a média da
+razão entre a receita de referência dos Estados [ou dos Municípios] e o PIB
+nos anos de 2024 a 2026"** (redação idêntica nos §§1º/2º dos cinco artigos).
+Ex., art. 361, §1º: *"A alíquota de referência do IBS estadual para 2029 será
+fixada de forma que haja equivalência entre: I - a razão entre a soma dos
+valores de que tratam os incisos I e III do caput deste artigo e o PIB em
+2027; e II - a média da razão entre a receita de referência dos Estados e o
+PIB nos anos de 2024 a 2026."* Isso **confirma literalmente e exatamente** o
+método usado no Estudo 11 (`razao_referencia` = ICMS+ISS+FECOP médio /
+PIB médio, 2024-2026, aplicado ao PIB projetado) — não é uma aproximação
+nossa, é a fórmula legal. Regulamenta o mecanismo de neutralidade do ADCT
+art. 130, II e III (acima). Base de `razao_referencia` em
+`data/build-ibs-projecao-nacional.py`.
 
 ### Art. 43 — período de apuração mensal do IBS
 **[PARÁFRASE, via Resolução CGIBS nº 14/2026]**: o período de apuração do IBS
@@ -96,29 +109,118 @@ proposta de percentual destinado ao financiamento do CGIBS, e da metodologia
 de cálculo. Ver Resolução CGIBS nº 14/2026 (2027, ano-teste, alíquota 0,1%).
 
 ### Art. 51 — financiamento do CGIBS (taxa `ca`)
-**[PARÁFRASE]** Alínea "b" do inciso I autoriza, para 2027 especificamente,
-destinação de até 50% da arrecadação do IBS ao financiamento do CGIBS (ano-
-teste, valores irrisórios em R$). Para os anos da transição (2029-2033), os
-parâmetros já usados nos estudos (`ca`: 2,00% em 2029, decrescendo a 0,50%
-em 2032-2033, mantido nesse piso daí em diante) vêm de outro dispositivo do
-mesmo artigo — texto exato ainda não confirmado nesta sessão.
+**[LITERAL — confirmado 11/ago/2026]**
+
+> Art. 51. Nos exercícios financeiros de 2026 a 2032, o percentual do produto
+> da arrecadação do IBS destinado ao financiamento do CGIBS de que trata o
+> inciso I do caput do art. 47 desta Lei Complementar:
+>
+> I - será de:
+> a) até 100% (cem por cento), limitado ao montante aprovado no orçamento do
+> CGIBS, no exercício financeiro de 2026 [...]; e
+> b) até 50% (cinquenta por cento) nos exercícios financeiros de 2027 e 2028; e
+>
+> II - não poderá ser superior a:
+> a) 2% (dois por cento) no exercício financeiro de 2029;
+> b) 1% (um por cento) no exercício financeiro de 2030;
+> c) 0,67% (sessenta e sete centésimos por cento) no exercício financeiro de
+> 2031; e
+> d) 0,5% (cinco décimos por cento) no exercício financeiro de 2032.
+
+Confirma **exatamente** o parâmetro `ca` já usado nos estudos para 2029-2032
+(2,00% / 1,00% / 0,67% / 0,50%). A lei só fixa teto explícito até 2032 — o
+valor de 2033 em diante (mantido em 0,50%, com `estimated: true` no código)
+continua sendo extrapolação nossa, não uma exigência legal, mas é a hipótese
+mais razoável (piso já atingido em 2032, sem indicação de queda adicional).
+
+### Arts. 105-111 — apuração da Receita-Base (cadeia completa)
+**[LITERAL — confirmado 11/ago/2026]** O Capítulo II do Título III define,
+em cadeia, como se chega à Receita-Base de cada ente:
+
+> Art. 105, parágrafo único. A Receita-Base de cada ente federativo
+> corresponde à receita inicial, apurada nos termos do art. 106, após os
+> ajustes de que tratam os arts. 107 a 111 desta Lei Complementar.
+>
+> Art. 109. De 2029 a 2077, serão retidos do produto da arrecadação do IBS
+> destinada a cada Estado e Município e ao Distrito Federal, nos termos do
+> art. 108 desta Lei Complementar: I - de 2029 a 2032, 80% (oitenta por
+> cento); II - em 2033, 90% (noventa por cento); e III - de 2034 a 2077,
+> percentual correspondente ao aplicado em 2033, reduzido à razão de 1/45
+> (um quarenta e cinco avos) por ano.
+>
+> Art. 110. De 2029 a 2096, serão retidos [...], após a retenção de que trata
+> o art. 109 [...]: I - de 2029 a 2077, 5% (cinco por cento); e II - de 2078
+> a 2096, o percentual [...] reduzido à razão de 1/20 (um vinte avos) por
+> ano.
+>
+> Art. 111. Considera-se Receita-Base de cada Estado e Município e do
+> Distrito Federal o produto da arrecadação apurado nos termos do art. 108,
+> **após as retenções de que tratam os arts. 109 e 110** desta Lei
+> Complementar [...].
+
+**Confirma exatamente** os parâmetros α_a (art. 109 → 80%/2029-2032, 90%/2033,
+-1/45 ao ano/2034-2077) e ρ (art. 110 → 5%/2029-2077, -1/20 ao ano/2078-2096)
+já usados em `data/build-ibs-projecao-longo-prazo.py` e
+`data/build-seguro-receita-repasses.py`, sem nenhuma divergência. E **resolve
+definitivamente** a dúvida sobre a natureza da Receita-Base: ela é apurada
+**depois** de retirados tanto o bolo histórico (art. 109) quanto o bolo do
+Seguro-Receita (art. 110) — ou seja, é especificamente a parcela **destino**
+que fica retida com o ente (φ^dest), não o IBS total do ente.
 
 ### Arts. 114-116 — critério histórico (transição)
-**[PARÁFRASE]** Definem o Coeficiente de Participação de Transição (CPT),
-base do `φ^CPT` usado em `coeficientes-uf.json`, validado contra a Nota
-Técnica nº 02/2026 (SEFAZ-ES). Conforme relato direto (não uma citação legal,
-ver seção 4 abaixo), o CPT de cada estado já é líquido da cota-parte
-municipal — a divisão estado/município desse coeficiente já embute a
-cota-parte, sem necessidade de aplicá-la de novo.
+**[LITERAL — confirmado 11/ago/2026]** Definem o Coeficiente de Participação
+de Transição, base do `φ^CPT` usado em `coeficientes-uf.json`, validado
+contra a Nota Técnica nº 02/2026 (SEFAZ-ES). O ponto central, art. 115,
+caput, incisos I e III:
+
+> I - para os Estados: a) a arrecadação com o ICMS, **após a aplicação do
+> disposto na alínea "a" do inciso IV do caput do art. 158 da Constituição
+> Federal** [...];
+> [...]
+> III - para os Municípios: a) a arrecadação do imposto de que trata o
+> inciso III do caput do art. 156 [ISS]; e b) **a parcela creditada na forma
+> da alínea "a" do inciso IV do caput do art. 158** da Constituição Federal
+> [a cota-parte de ICMS já recebida pelo Município].
+
+Isso confirma literalmente o relato do contato do autor do site (seção 5
+abaixo): o φ^CPT de cada Estado já é apurado **líquido** da cota-parte de
+ICMS que ele repassa aos seus Municípios (art. 158, IV, "a"), e o φ^CPT de
+cada Município já **inclui** a cota-parte de ICMS que ele efetivamente
+recebe. A divisão estado/município do histórico está, portanto, embutida no
+próprio coeficiente — nenhum ajuste adicional é necessário nem correto.
+**Importante:** essa cota-parte histórica (art. 158, IV, "a", §1º) usa o
+critério **antigo do ICMS** — 65% no mínimo por valor adicionado + até 35%
+por lei estadual —, diferente do critério **novo** do IBS-destino (art. 158,
+IV, "b", §2º — população/educação/ambiental/igualitário, ver CF art. 158
+abaixo). São dois critérios de cota-parte municipal diferentes, cada um
+aplicável a uma fatia diferente da receita.
 
 ### Art. 117 — Seguro-Receita (regulamentação)
-**[PARÁFRASE]** "Da distribuição complementar para os entes federativos com
-maior perda de participação relativa na receita": nivelamento sequencial
-entre os entes de menor razão entre (I) IBS-destino recebido e (II) receita
-média de referência ajustada (art. 115, limitada a 3x a média per capita da
-esfera). Implementado em `data/build-seguro-receita-repasses.py`. Pela mesma
-lógica do art. 114-116, a receita média de referência de cada ente já é
-líquida de cota-parte municipal.
+**[LITERAL — confirmado 11/ago/2026]** "Da distribuição complementar para os
+entes federativos com maior perda de participação relativa na receita":
+nivelamento sequencial entre os entes de menor razão entre:
+
+> I - a média, nos 12 (doze) meses anteriores, da receita mensal do IBS
+> apurada com base nas alíquotas de referência, nos termos do art. 108 desta
+> Lei Complementar, **após a aplicação do disposto na alínea "b" do inciso IV
+> do caput do art. 158** da Constituição Federal; e
+>
+> II - a receita média de referência ajustada, calculada nos termos dos §§
+> 3º a 6º deste artigo [receita média de referência do art. 115, limitada a
+> 3x a média per capita da esfera].
+
+Implementado em `data/build-seguro-receita-repasses.py`. **Nuance
+importante, ainda não refletida no código:** diferente do histórico (que já
+nasce líquido/bruto de cota-parte por natureza do próprio dado-fonte, ver
+arts. 114-116 acima), aqui é a **própria lei** que manda calcular o
+numerador da razão do Estado **já líquido** dos 25% que serão repassados aos
+Municípios via cota-parte do IBS-destino (art. 158, IV, "b"). Ou seja, o
+nivelamento do Seguro-Receita compara Estados e Municípios **cada um já com
+sua fatia líquida/recebida da cota-parte**, não a receita bruta do IBS-destino
+estadual antes da partilha. Isso é consistente com a leitura de que φ^dest
+deveria ser calculado por esfera (estado vs. município) já considerando a
+cota-parte — mas não da forma que o Estudo 06/12 fazem hoje (ver "Implicação
+para os estudos" abaixo).
 
 ### Art. 118 — Receita-Base do Estado (dedução e repasse da cota-parte municipal)
 **[LITERAL — colado pelo autor do site, 11/ago/2026]**
@@ -171,17 +273,16 @@ líquida de cota-parte municipal.
 > § 8º O CGIBS deverá distribuir, de forma segregada, os recursos de que
 > trata este artigo.
 
-**Nota importante para o modelo:** o caput fala em "Receita-Base de cada
-Estado apurada nos termos do art. 111" (texto do art. 111 ainda não obtido) —
-não fica explícito, só por este artigo, se essa Receita-Base é a soma de
-todos os "tipos de IBS" (histórico + destino + Seguro-Receita) ou só a
-parcela destino. Combinado com os arts. 114-117 (que já tratam separadamente
-histórico e Seguro-Receita, cada um com sua própria apuração por esfera), a
-leitura mais consistente é que a Receita-Base do art. 111/118 é
-especificamente a parcela **destino**, e é sobre ELA que os 25% de cota-parte
-municipal (art. 158, IV, "b", CF) incidem — não sobre o total do IBS estadual.
-Isso precisa de confirmação lendo o art. 111 antes de qualquer mudança de
-código baseada nele.
+**Confirmado (art. 111, acima):** a Receita-Base de que trata o caput deste
+artigo é, de fato, especificamente a parcela **destino** do IBS estadual —
+apurada após as retenções do histórico (art. 109) e do Seguro-Receita (art.
+110). É sobre ELA, depois do Fundo de Combate à Pobreza (§2º), que incide a
+cota-parte municipal de 25% (§3º: *"será deduzida a parcela pertencente aos
+Municípios do Estado, nos termos da alínea 'b' do inciso IV do caput do art.
+158 [...], a qual será distribuída nos termos do art. 128"*) — não sobre o
+IBS estadual total. O art. 119 (Município) e o art. 120 (DF), por
+contraste, **não têm** dedução de cota-parte equivalente — confirma que só o
+Estado repassa cota-parte ao Município, nunca o contrário.
 
 ### Art. 128 — critérios de distribuição da cota-parte municipal
 **[LITERAL — colado pelo autor do site, 11/ago/2026]**
@@ -224,25 +325,86 @@ intermediário — diferente da sistemática do ICMS/cota-parte tradicional.
 
 ## 4. CF/88, art. 158 (redação dada pela EC 132/2023)
 
-**[PARÁFRASE — via agregador jurídico, não confirmado direto no Planalto
-nesta sessão]**
+**[LITERAL — confirmado 11/ago/2026, via arquivo enviado pelo autor do site]**
 
-- **Inciso IV**: 25% do produto da arrecadação: a) do ICMS estadual; b) do
-  IBS (art. 156-A) distribuída aos Estados — **a mesma fração de 25% já
-  histórica do ICMS**, agora também aplicada ao IBS.
-- **§2º**: os critérios do inciso IV, "b" (a mesma lista do art. 128 da LC
-  227/2026 acima: 80% população / 10% educação-equidade / 5% ambiental / 5%
-  igualitário).
+> Art. 158. Pertencem aos Municípios: [...]
+>
+> IV - 25% (vinte e cinco por cento):
+> a) do produto da arrecadação do imposto do Estado sobre operações relativas
+> à circulação de mercadorias [...] [ICMS];
+> b) do produto da arrecadação do imposto previsto no art. 156-A [IBS]
+> distribuída aos Estados.
+>
+> § 1º As parcelas [...] mencionadas no inciso IV, "a" [ICMS], serão
+> creditadas conforme os seguintes critérios: I - 65% (sessenta e cinco por
+> cento), no mínimo, na proporção do valor adicionado [...]; II - até 35%
+> (trinta e cinco por cento), de acordo com o que dispuser lei estadual,
+> observada [...] a distribuição de, no mínimo, 10 pontos percentuais com
+> base em indicadores de melhoria [...] educação [...].
+>
+> § 2º As parcelas [...] mencionadas no inciso IV, "b" [IBS-destino], serão
+> creditadas conforme os seguintes critérios: I - 80% (oitenta por cento) na
+> proporção da população; II - 10% (dez por cento) com base em indicadores de
+> melhoria nos resultados de aprendizagem e de aumento da equidade [...];
+> III - 5% (cinco por cento) com base em indicadores de preservação
+> ambiental [...]; IV - 5% (cinco por cento) em montantes iguais para todos
+> os Municípios do Estado.
 
-**Implicação para os estudos (ainda não implementada, pendente confirmação
-do art. 111 da LC 227/2026):** hoje, a divisão estado/município do φ^dest
-(coeficiente de destino) em `coeficientes-uf.json`/Estudo 06/Estudo 12 vem da
-estimativa de Gobetti e Monteiro (IPEA, 2023) — anterior à própria EC
-132/2023, portanto anterior a este dispositivo. Se a Receita-Base do art. 111
-for de fato só a parcela destino (ver nota no art. 118 acima), a divisão
-correta seria 25% município / 75% estado, fixa e nacionalmente uniforme, em
-vez da estimativa do Gobetti. **Não implementado ainda — decisão pendente do
-autor do site.**
+**Ponto central confirmado:** são **dois critérios de cota-parte municipal
+totalmente diferentes**, aplicados a bases diferentes. O ICMS (§1º) segue o
+critério tradicional, majoritariamente por **valor adicionado** (65% mínimo)
+— reflete onde a atividade econômica ocorre. O IBS-destino (§2º) segue um
+critério **novo**, majoritariamente por **população** (80%) — não tem
+relação com o local de consumo dentro do Estado. É o mesmo critério do art.
+128 da LC 227/2026 (idêntico, ver seção 3 acima).
+
+### Implicação para os estudos — achado estrutural (não implementado, decisão pendente do autor do site)
+
+Com os arts. 105-120 da LC 227/2026 e o art. 158 da CF/88 lidos por inteiro,
+dá para fechar a questão que ficou em aberto: **o mecanismo legal não calcula
+um φ^dest por Município.** Ele funciona assim, para a fatia destino:
+
+1. O art. 108 apura, operação a operação, a receita de destino de cada
+   **Estado** (é aqui que entra o conceito de "destino" — o local da
+   operação, art. 106, §1º, II). Não há apuração de destino por Município
+   nessa etapa; o Município só aparece nas mesmas regras do art. 106-108,
+   como um ente equivalente ao Estado (a lei trata "Estado, Distrito Federal
+   e Município" em paralelo o tempo todo em relação a bens/serviços cuja
+   competência de destino é municipal — ISS/serviços — mas a fatia de
+   **IBS de competência estadual** distribuída aos Municípios não vem de
+   uma apuração de destino municipal; vem da cota-parte).
+2. A Receita-Base do Estado (art. 111 = pós-retenção histórico + Seguro-
+   Receita, isto é, especificamente destino) é reduzida pelo Fundo de
+   Combate à Pobreza e então, por força do art. 118, §3º c/c art. 158, IV,
+   "b", 25% dela é separada e repassada aos Municípios do Estado — **não
+   proporcionalmente a onde o consumo ocorreu dentro do Estado**, e sim
+   pelos critérios do art. 128/158 §2º: 80% população, 10% educação-
+   equidade, 5% ambiental, 5% igualitário entre Municípios.
+
+Ou seja: **a fatia municipal do IBS-destino não é "o IBS que o Município
+teria arrecadado como destino", é uma redistribuição do bolo destino
+estadual por população/educação/ambiente** — um critério redistributivo, não
+um critério de destino per se. Isso é estruturalmente diferente do que a
+estimativa de Gobetti e Monteiro (IPEA, 2023) tenta capturar (que é uma
+participação relativa estado/município na base tributável, no espírito de
+"quem geraria mais IBS-destino se fosse cobrado separadamente"), e também
+diferente de simplesmente aplicar 25%/75% sobre o φ^dest já calculado por
+esfera nos estudos.
+
+**O que isso significa na prática, para quem for revisar o código depois:**
+Estudo 06/12 hoje calculam φ^dest_estado e φ^dest_município como coeficientes
+paralelos e independentes (na linha do Gobetti). Uma implementação fiel à
+lei substituiria φ^dest_município por: φ^dest_estado (nacional, por UF) →
+25% dele vira um "bolo de cota-parte" → esse bolo é redistribuído aos
+Municípios do Estado por população (IBGE) + indicadores de
+educação/ambiente (ainda não definidos por lei estadual, na prática hoje
+tendem a usar só população como proxy, similar ao FPM) + parcela igualitária.
+Isso é uma mudança de arquitetura, não um ajuste de parâmetro — exigiria
+dados de população municipal e, no limite, dados dos indicadores estaduais
+de educação/ambiente que cada UF ainda vai regulamentar. **Não implementado
+ainda — decisão pendente do autor do site** sobre se vale o esforço (dado
+que Estudo 06/12 hoje já são no nível estadual, e um Estudo municipal
+completo seria um empreendimento à parte).
 
 ---
 
@@ -253,6 +415,15 @@ como fonte primária num estudo): a partir de 2029 existem "3 tipos de IBS"
 (1 — Transição/histórico, 2 — Seguro-Receita, 3 — IBS Destino); os tipos 1 e 2
 já têm coeficiente líquido de cota-parte municipal (não precisa aplicar de
 novo); só o tipo 3 passa pela cota-parte do art. 128/158 CF; o CGIBS manda
-direto ao município, sem passar pelo estado. Consistente com o que os arts.
-114-118/128 (acima) sugerem, mas os arts. 114-117 não confirmam isso
-explicitamente por si só (ver nota no art. 118).
+direto ao município, sem passar pelo estado. **Confirmado pela leitura
+literal dos arts. 105-120 (seção 3 acima):** o tipo 1 (art. 115, I "a" vs.
+III "b") já é líquido/creditado por natureza do dado-fonte; o tipo 2 (art.
+117, I) usa expressamente a receita "após a aplicação" da cota-parte b) do
+art. 158; e o tipo 3 é exatamente a Receita-Base do art. 111/118 §3º, de onde
+saem os 25% do art. 128. O único ponto do relato que a leitura da lei
+qualifica melhor é o "CGIBS manda direto ao município": tecnicamente o art.
+118, §3º diz que a parcela municipal é **deduzida da Receita-Base do
+Estado** e "distribuída nos termos do art. 128" — o art. 128 confirma que
+quem executa essa distribuição é o próprio CGIBS ("O CGIBS transferirá aos
+Municípios [...]"), então o Estado nunca chega a ter esse valor em caixa; a
+transferência é direta, como relatado.
