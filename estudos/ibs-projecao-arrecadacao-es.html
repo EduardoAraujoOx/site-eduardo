@@ -923,9 +923,10 @@
 
     // ── Coeficientes de participação (idêntico a computeParams() do Estudo 06) ─────────────
     // φ^neutro (2025, cota-parte declarada + FECOP), φ^CPT (2019-2025, coeficientes-uf.json,
-    // validado contra a Nota Técnica nº 02/2026) e φ^dest pleno (Gobetti e Monteiro 2023,
-    // reescalado, diferenciado por esfera) — os mesmos três coeficientes usados no Estudo 06/12,
-    // calculados aqui só para a esfera "estado" das 27 UFs (o Estudo 03 nunca teve fatia municipal).
+    // validado contra a Nota Técnica nº 02/2026) e φ^dest pleno estadual (Gobetti e Monteiro
+    // 2023, reescalado) — os mesmos coeficientes usados no Estudo 06/12, calculados aqui só para
+    // a esfera "estado" das 27 UFs (o Estudo 03 nunca teve fatia municipal própria); a fatia
+    // municipal entra apenas para normalizar o total nacional (25% fixo do destino do Estado).
     function computeParamsEstado(dcaIcms2025, dcaIss2025, dcaFecop2025, dcaCotaDeclarada2025, totalBR2025, coeficientesUF, tabela4) {
         const t4ByUf = {};
         (tabela4?.ufs || []).forEach(u => { t4ByUf[u.uf] = u; });
@@ -948,12 +949,12 @@
             const brutoEstado = coefNeutroEstado * (1 + vrEstado);
 
             // fatia municipal, só pra entrar na normalização de coefPleno (soma nacional das duas esferas)
+            // -- 25% fixo do destino do próprio Estado (CF art. 158, IV, "b"; LC 227/2026 arts.
+            // 118 §3º e 128), não a variação por UF do Gobetti/Monteiro (ver Estudo 06).
             const iss   = dcaIss2025[uf] || 0;
             const rMuni = isDf ? null : (iss + cota);
             const coefNeutroMuni = (rMuni != null && totalBR2025 > 0) ? rMuni / totalBR2025 : null;
-            const coefCPTMuni = (cuf.coeficiente_municipios_pct != null) ? cuf.coeficiente_municipios_pct / 100 : null;
-            const vrMuni = (t4.muni_pct != null) ? t4.muni_pct / 100 : null;
-            const brutoMuni = (coefNeutroMuni != null && vrMuni != null) ? coefNeutroMuni * (1 + vrMuni) : null;
+            const brutoMuni = (coefNeutroMuni != null) ? brutoEstado / 3 : null;
 
             params[uf] = { r0_2025: rEstado, coefNeutro: coefNeutroEstado, coefCPT: coefCPTEstado, bruto: brutoEstado, brutoMuni };
         }

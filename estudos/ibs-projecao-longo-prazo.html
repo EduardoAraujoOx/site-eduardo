@@ -322,7 +322,7 @@
                             <tr><td>\(\alpha_a\)</td><td>Fração do IBS bruto pelo critério histórico no ano <em>a</em> (item 1).</td></tr>
                             <tr><td>\(p_u^{neutro}\)</td><td>Participação corrente do ente <em>u</em> (base 2025), aplicada à fração ainda cobrada como ICMS/ISS.</td></tr>
                             <tr><td>\(p_u^{CPT}\)</td><td>Coeficiente de Participação de Transição do ente <em>u</em> (2019&ndash;2025), validado contra a Nota Técnica nº&nbsp;02/2026.</td></tr>
-                            <tr><td>\(p_u^{dest}\)</td><td>Coeficiente de destino pleno do ente <em>u</em> (Gobetti e Monteiro, 2023, reescalado).</td></tr>
+                            <tr><td>\(p_u^{dest}\)</td><td>Coeficiente de destino pleno do ente <em>u</em>: para o estado, Gobetti e Monteiro (2023, reescalado); para o agregado dos municípios da UF, 25% fixo do destino do próprio estado (CF art. 158, IV, "b").</td></tr>
                             <tr><td>\(SR_{u,a}\)</td><td>Repasse do Seguro-Receita ao ente <em>u</em> no ano <em>a</em> (item 3, Estudo 12).</td></tr>
                         </tbody>
                     </table>
@@ -573,10 +573,11 @@
             const coefCPTMuni   = (cuf.coeficiente_municipios_pct != null) ? cuf.coeficiente_municipios_pct / 100 : null;
 
             const vrEstado = (t4.estado_pct ?? 0) / 100;
-            const vrMuni   = (t4.muni_pct != null) ? t4.muni_pct / 100 : null;
 
             const brutoEstado = coefNeutroEstado * (1 + vrEstado);
-            const brutoMuni   = (coefNeutroMuni != null && vrMuni != null) ? coefNeutroMuni * (1 + vrMuni) : null;
+            // Cota-parte municipal do IBS-destino: 25% fixo e nacionalmente uniforme sobre o
+            // destino do próprio Estado (CF art. 158, IV, "b"; LC 227/2026 arts. 118 §3º e 128).
+            const brutoMuni   = (coefNeutroMuni != null) ? brutoEstado / 3 : null;
 
             params[uf] = {
                 estado: {

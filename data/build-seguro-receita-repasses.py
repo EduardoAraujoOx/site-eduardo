@@ -98,10 +98,11 @@ def compute_params_estado(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cota_
         coef_neutro_muni = (r_muni / total_br_2025) if (r_muni is not None and total_br_2025 > 0) else None
 
         vr_estado = (t4.get('estado_pct') or 0) / 100
-        vr_muni = (t4.get('muni_pct') / 100) if t4.get('muni_pct') is not None else None
 
         bruto_estado = coef_neutro_estado * (1 + vr_estado)
-        bruto_muni = (coef_neutro_muni * (1 + vr_muni)) if (coef_neutro_muni is not None and vr_muni is not None) else None
+        # Cota-parte municipal do IBS-destino: 25% fixo e nacionalmente uniforme sobre o destino
+        # do proprio Estado (CF art. 158, IV, "b"; LC 227/2026 arts. 118, par. 3o, e 128).
+        bruto_muni = (bruto_estado / 3) if coef_neutro_muni is not None else None
 
         params[uf] = {
             'is_df': is_df,

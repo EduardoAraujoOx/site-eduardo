@@ -391,20 +391,35 @@ participação relativa estado/município na base tributável, no espírito de
 diferente de simplesmente aplicar 25%/75% sobre o φ^dest já calculado por
 esfera nos estudos.
 
-**O que isso significa na prática, para quem for revisar o código depois:**
-Estudo 06/12 hoje calculam φ^dest_estado e φ^dest_município como coeficientes
-paralelos e independentes (na linha do Gobetti). Uma implementação fiel à
-lei substituiria φ^dest_município por: φ^dest_estado (nacional, por UF) →
-25% dele vira um "bolo de cota-parte" → esse bolo é redistribuído aos
-Municípios do Estado por população (IBGE) + indicadores de
-educação/ambiente (ainda não definidos por lei estadual, na prática hoje
-tendem a usar só população como proxy, similar ao FPM) + parcela igualitária.
-Isso é uma mudança de arquitetura, não um ajuste de parâmetro — exigiria
-dados de população municipal e, no limite, dados dos indicadores estaduais
-de educação/ambiente que cada UF ainda vai regulamentar. **Não implementado
-ainda — decisão pendente do autor do site** sobre se vale o esforço (dado
-que Estudo 06/12 hoje já são no nível estadual, e um Estudo municipal
-completo seria um empreendimento à parte).
+**Implementado em 11/ago/2026.** Estudo 06, Estudo 03 (ES), Estudo 12 e a
+extensão de longo prazo (2029-2077) foram ajustados:
+
+1. **Agregado município por UF** (`φ^dest_município`): deixou de vir da
+   variação relativa específica por UF publicada por Gobetti e Monteiro
+   (Tabela 2 do paper) e passou a ser exatamente **25% fixo do
+   `φ^dest_estado` da mesma UF** — a fração constitucional uniforme (CF art.
+   158, IV, "b"; LC 227/2026 arts. 118, §3º, e 128). `φ^dest_estado`
+   continua vindo de Gobetti e Monteiro (a estimativa de consumo por estado
+   é a peça legalmente relevante do lado estadual). Alterado em:
+   `estudos/ibs-projecao-arrecadacao-br.html`,
+   `estudos/ibs-projecao-arrecadacao-es.html`,
+   `estudos/ibs-projecao-longo-prazo.html`,
+   `data/build-rateio-destino-municipios.py`,
+   `data/build-seguro-receita-repasses.py`,
+   `data/build-seguro-receita-repasses-longo-prazo.py`.
+2. **Rateio entre municípios individuais de uma mesma UF** (Estudo 12): a
+   antiga aproximação pelo peso de cada município no φ^CPT foi substituída
+   pelo critério do próprio art. 128: 80% população + 5% igualitário
+   (valores exatos da lei, usando `data/populacao-municipios-media-2019-2026.json`,
+   IBGE) + 10% educação-equidade + 5% ambiental (art. 128, incisos II e III
+   — dependem de indicadores fixados por lei estadual; nenhum Estado
+   regulamentou ainda, então são aproximados pelo mesmo critério
+   populacional do inciso I). Na prática: 95% população + 5% igualitário,
+   até que algum Estado regulamente os 15% restantes.
+
+Datasets regenerados: `data/rateio-destino-municipios.json`,
+`data/seguro-receita-repasses.json`,
+`data/seguro-receita-repasses-longo-prazo.json`.
 
 ---
 

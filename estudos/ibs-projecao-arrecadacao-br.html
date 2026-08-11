@@ -202,15 +202,17 @@
             11</a>, e a comparação de cada ano é sempre contra um contrafactual que cresce junto, para
             isolar o efeito da redistribuição do efeito do crescimento da economia. A base de origem
             usa a cota-parte municipal do ICMS efetivamente declarada por cada estado (não o teórico
-            de 25%) e inclui o FECOP; o critério destino usa a redistribuição plena estimada por
-            Gobetti e Monteiro (IPEA, 2023); e o repasse do Seguro-Receita vem do
+            de 25%) e inclui o FECOP; o critério destino do estado usa a redistribuição plena
+            estimada por Gobetti e Monteiro (IPEA, 2023), e a fatia dos municípios é 25% fixo do
+            destino do próprio estado (CF art. 158, IV, "b"); e o repasse do Seguro-Receita vem do
             <a href="/estudos/seguro-receita-repasses.html">Estudo 12</a>.
         </p>
         <p class="study-meta">
             Dados: SICONFI/STN, DCA Anexo&nbsp;I-C, 2019–2025 (ICMS, ISS, FECOP e cota-parte declarada) &bull;
             Coeficientes de participação: validados contra a Nota Técnica&nbsp;nº&nbsp;02/2026 (SEFAZ-ES) &bull;
             Receita de referência: Estudo&nbsp;11 (BCB/Focus + IFI) &bull;
-            Coeficiente de destino: IPEA Carta de Conjuntura&nbsp;60 (2023), redistribuição plena &bull;
+            Coeficiente de destino estadual: IPEA Carta de Conjuntura&nbsp;60 (2023), redistribuição plena &bull;
+            Coeficiente de destino municipal: 25% fixo do destino estadual (CF art.&nbsp;158, IV, "b") &bull;
             Repasse do Seguro-Receita: Estudo&nbsp;12 &bull;
             Base legal: EC&nbsp;132/2023, LC&nbsp;214/2025, LC&nbsp;227/2026
         </p>
@@ -238,9 +240,12 @@
                     distribuída pelo critério histórico: cada ente recebe a mesma participação que
                     tinha, em média, entre 2019 e 2025 (o Coeficiente de Participação de Transição,
                     \(\varphi^{CPT}\)). Terceiro, o restante do IBS é distribuído pelo critério
-                    destino, seguindo a estimativa de onde o consumo final de fato acontece (Gobetti e
-                    Monteiro, IPEA 2023) &mdash; essa é a parcela que desloca receita da origem para o
-                    consumo, e cresce a cada ano até se tornar 100% da distribuição do IBS em 2033.
+                    destino: para o estado, seguindo a estimativa de onde o consumo final de fato
+                    acontece (Gobetti e Monteiro, IPEA 2023); para o agregado dos municípios da UF,
+                    25% fixo do destino do próprio estado, a cota-parte constitucional do IBS (CF
+                    art. 158, IV, "b"; LC 227/2026 arts. 118, §3º, e 128) &mdash; essa é a parcela
+                    que desloca receita da origem para o consumo, e cresce a cada ano até se tornar
+                    100% da distribuição do IBS em 2033.
                     Quarto, 5% da parcela distribuída por destino é retida antes de chegar a qualquer
                     ente, formando o Seguro-Receita: um fundo que devolve dinheiro aos entes que estão
                     perdendo participação mais depressa. O <a href="/estudos/seguro-receita-repasses.html">Estudo
@@ -319,10 +324,11 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
 
                 <p class="meto-section-title">Por que só o cenário de destino pleno</p>
                 <p class="meto-note">
-                    Versões anteriores desta página simulavam três cenários para o critério destino:
-                    pleno (redistribuição integral pela estimativa de consumo de Gobetti e Monteiro),
-                    intermediário (média entre pleno e a participação de origem) e neutro (sem
-                    redistribuição nenhuma). Esta atualização mantém só o pleno, por dois motivos:
+                    Versões anteriores desta página simulavam três cenários para o critério destino
+                    do estado: pleno (redistribuição integral pela estimativa de consumo de Gobetti
+                    e Monteiro), intermediário (média entre pleno e a participação de origem) e
+                    neutro (sem redistribuição nenhuma). Esta atualização mantém só o pleno, por
+                    dois motivos:
                     primeiro, é o cenário que a legislação de fato desenha &mdash; a distribuição por
                     destino é integral a partir do momento em que entra em vigor, não parcial; os
                     outros dois eram bandas de sensibilidade, não alternativas legais igualmente
@@ -374,9 +380,14 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
                             <td>coeficientes-uf.json</td>
                         </tr>
                         <tr>
-                            <td>\(\varphi^{dest}_{\text{ente}}\)</td>
-                            <td>Coeficiente de participação pelo critério destino pleno, \(\varphi^{neutro}_{\text{ente}}\times(1+vr_{\text{ente}})\), normalizado para conservar o agregado nacional entre todas as fatias. A variação relativa \(vr\) usada para deslocar cada fatia a partir de \(\varphi^{neutro}\) é <strong>diferenciada por esfera</strong>: para o estado, vem do saldo estadual (residual) de <code>tabela4_esferas</code>; para os municípios, vem do saldo municipal líquido publicado na Tabela 2 do próprio Gobetti e Monteiro (dado real do paper, não estimativa nossa &mdash; por isso os dois valores divergem por UF).</td>
+                            <td>\(\varphi^{dest}_{\text{estado}}\)</td>
+                            <td>Coeficiente de participação estadual pelo critério destino pleno, \(\varphi^{neutro}_{\text{estado}}\times(1+vr_{\text{estado}})\), normalizado para conservar o agregado nacional entre todas as fatias (estado + municípios). A variação relativa \(vr_{\text{estado}}\) vem do saldo estadual (residual) de <code>tabela4_esferas</code> &mdash; Gobetti e Monteiro (IPEA, 2023).</td>
                             <td>gobetti-2023-perdas-ganhos-uf.json, tabela4_esferas</td>
+                        </tr>
+                        <tr>
+                            <td>\(\varphi^{dest}_{\text{município}}\)</td>
+                            <td>Coeficiente de participação do agregado dos municípios de uma UF pelo critério destino pleno: 25% fixo e nacionalmente uniforme de \(\varphi^{dest}_{\text{estado}}\) da mesma UF (antes de normalizar), a cota-parte constitucional do IBS-destino (CF art. 158, IV, "b"; LC 227/2026 arts. 118, §3º, e 128) &mdash; não uma estimativa por UF: a fração de 25% não varia entre estados. Sem esfera municipal própria no DF (art. 115, LC 227/2026).</td>
+                            <td>CF art. 158, IV, "b"; LC 227/2026 arts. 118, 128</td>
                         </tr>
                         <tr>
                             <td>\(f_a\), \(s_a=1-f_a\)</td>
@@ -567,7 +578,7 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
             <p><strong>Fontes e notas metodológicas:</strong></p>
             <p>1. Receita de referência nacional (\(\mathrm{Ref}_a\), decomposta em \(\mathrm{Ref}^{ICMS+ISS}_a\) e \(\mathrm{Ref}^{IBS}_a\), este último subdividido em \(\mathrm{Ref}^{IBSt}_a\) e \(\mathrm{Ref}^{IBSd}_a\)): Estudo 11, projeção 2029&ndash;2033 sobre PIB nominal (mediana Focus 2026&ndash;2030, IFI RAF 107 2031&ndash;2033), razão receita/PIB fixada na média 2024&ndash;2026 (LC 214/2025 arts. 361&ndash;365). A divisão de \(\mathrm{Ref}^{IBS}_a\) em histórico (\(\alpha_a\)) e destino líquido de CGIBS e Seguro-Receita (\(c_a\), \(\rho\)) também é calculada no Estudo 11 e consumida diretamente daqui, sem duplicar essas constantes. Ver campos <code>ibs_historico</code> e <code>ibs_destino_liquido</code> de <code>data/ibs-projecao-nacional.json</code>.</p>
             <p>2. Coeficientes de participação histórica (\(\varphi^{CPT}\)), estado e municípios: <code>data/coeficientes-uf.json</code>, validado termo a termo contra a Nota Técnica nº 02/2026 (SEFAZ-ES, pacote v22) &mdash; ver <code>data/divergencia-vs-nota-v22.json</code>.</p>
-            <p>3. Coeficiente de destino \(\varphi^{dest}_{\text{ente}}\), critério pleno: Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura, n. 60, Nota de Conjuntura 18. IPEA, 28 ago. 2023. Disponível em: <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">repositorio.ipea.gov.br</a>. Variação relativa diferenciada por esfera (<code>tabela4_esferas</code>): saldo municipal vem da Tabela 2 do paper (dado publicado, não estimado); saldo estadual é o resíduo entre a Tabela 1 (total) e esse saldo municipal.</p>
+            <p>3. Coeficiente de destino estadual \(\varphi^{dest}_{\text{estado}}\), critério pleno: Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura, n. 60, Nota de Conjuntura 18. IPEA, 28 ago. 2023. Disponível em: <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">repositorio.ipea.gov.br</a>. Variação relativa do saldo estadual (resíduo entre a Tabela 1, total da UF, e o saldo municipal líquido publicado na Tabela 2 do paper). Coeficiente de destino municipal \(\varphi^{dest}_{\text{município}}\): não vem de Gobetti e Monteiro &mdash; é 25% fixo e nacionalmente uniforme de \(\varphi^{dest}_{\text{estado}}\) da mesma UF, a cota-parte constitucional do IBS-destino (CF art. 158, IV, "b"; LC 227/2026 arts. 118, §3º, e 128). Ver <code>data/legislacao/reforma-tributaria-referencias.md</code>.</p>
             <p>4. Cota-parte municipal do ICMS: valor declarado pelo estado, SICONFI/STN DCA Anexo I-C (<code>dca_transf_munis_por_uf</code>); sem declaração, usa-se o teórico de 25% do ICMS bruto (art. 158, IV, CF/88). FECOP: SICONFI/STN DCA Anexo I-C (<code>dca_fecop_por_uf</code>), somado à fatia estadual de \(\varphi^{neutro}\) e \(\varphi^{CPT}\), mesma base da receita de referência nacional do Estudo 11.</p>
             <p>5. Repasse do Seguro-Receita por ente (\(SR_{a,\text{ente}}\)): Estudo 12, <code>data/seguro-receita-repasses.json</code>, calculado por nivelamento sequencial entre os entes de menor razão entre IBS-destino recebido e receita média de referência ajustada (ADCT art. 132; LC 227/2026 art. 117).</p>
             <p>6. Base legal: EC 132/2023; ADCT arts. 128, 130, 131 e 132; LC 214/2025; LC 227/2026 arts. 51, 114&ndash;117.</p>
@@ -637,10 +648,14 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
             const coefCPTMuni   = (cuf.coeficiente_municipios_pct != null) ? cuf.coeficiente_municipios_pct / 100 : null;
 
             const vrEstado = (t4.estado_pct ?? 0) / 100;
-            const vrMuni   = (t4.muni_pct != null) ? t4.muni_pct / 100 : null;
 
             const brutoEstado = coefNeutroEstado * (1 + vrEstado);
-            const brutoMuni   = (coefNeutroMuni != null && vrMuni != null) ? coefNeutroMuni * (1 + vrMuni) : null;
+            // Cota-parte municipal do IBS-destino: 25% fixo e nacionalmente uniforme sobre o
+            // destino do próprio Estado (CF art. 158, IV, "b"; LC 227/2026 arts. 118, §3º, e 128)
+            // -- não a variação específica por UF estimada por Gobetti e Monteiro, que reflete
+            // efeito de consumo, não a regra legal de partilha (população/educação/ambiental/
+            // igualitário, art. 128).
+            const brutoMuni   = (coefNeutroMuni != null) ? brutoEstado / 3 : null;
 
             params[uf] = {
                 estado: {
