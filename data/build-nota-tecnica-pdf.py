@@ -46,13 +46,15 @@ def trajetoria_chart_data_uri():
     proj_por_ano = {p["ano"]: p["bolo_projetado"] for p in projecao}
 
     anos_real = [h["ano"] for h in historico]
-    valores_real = [h["bolo_nominal"] / 1e9 for h in historico]
+    valores_real = [h["bolo_real_2025"] / 1e9 for h in historico]
 
     # Linha contrafactual, 2026-2033: uma projeção pura de tendência, sem considerar a reforma.
+    # Em R$ constantes de 2025 (mesma base do histórico) desde ago/2026, para não misturar
+    # série nominal (histórico) com série real (projeção) no mesmo gráfico.
     ultimo = historico[-1]
     anos_proj = [ultimo["ano"]] + [m["ano"] for m in macro_path]
-    valores_proj = [ultimo["bolo_nominal"] / 1e9] + [
-        (proj_por_ano.get(m["ano"], razao * m["pib_nominal"])) / 1e9 for m in macro_path
+    valores_proj = [ultimo["bolo_real_2025"] / 1e9] + [
+        (proj_por_ano.get(m["ano"], razao * m["pib_real"])) / 1e9 for m in macro_path
     ]
 
     # Linha do que de fato acontece a partir de 2029: o ADCT art. 128 desvia parte da arrecadação
@@ -176,8 +178,7 @@ def macro_rows():
             <td class="l">{m['ano']}</td>
             <td>{fmtpct_signed(m['pib_real_pct']*100)}</td>
             <td>{fmtpct_signed(m['ipca_pct']*100)}</td>
-            <td>{fmtpct_signed(m['pib_nominal_pct_crescimento']*100)}</td>
-            <td>{fmtbi(m['pib_nominal'])}</td>
+            <td>{fmtbi(m['pib_real'])}</td>
             <td class="ref l">{m['fonte']}</td>
         </tr>""")
     return "\n".join(rows)
@@ -395,7 +396,7 @@ HTML = f"""<!DOCTYPE html>
         <div class="answer-label">Resposta</div>
         <div class="answer-value">
             IBS bruto nacional: de R$ {fmtbi(p2029['ibs_bruto'])} bi em 2029 a
-            R$ {fmtbi(p2033['ibs_bruto'])} bi em 2033 (valores nominais)
+            R$ {fmtbi(p2033['ibs_bruto'])} bi em 2033 (R$ constantes de 2025)
         </div>
     </div>
     <div class="meta">
@@ -431,7 +432,7 @@ HTML = f"""<!DOCTYPE html>
 </p>
 <div class="chart-block">
     <img class="chart-img" src="{trajetoria_chart_data_uri()}" alt="Arrecadação de ICMS+ISS, Brasil, realizado 2013-2025, projetado sem a reforma até 2033 e o ICMS+ISS residual com a reforma a partir de 2029">
-    <p class="chart-caption">Arrecadação de ICMS+ISS, Brasil (R$ bi, nominal). A linha azul
+    <p class="chart-caption">Arrecadação de ICMS+ISS, Brasil (R$ bi, constantes de 2025). A linha azul
     tracejada aplica a carga tributária de referência (Seção 4.2) ao PIB projetado até 2033: é uma
     projeção pura de tendência, sem considerar a reforma. A linha vermelha é o que de fato acontece
     a partir de 2029: o ADCT art. 128 desvia parte da arrecadação para o IBS ano a ano, e o
@@ -552,17 +553,21 @@ HTML = f"""<!DOCTYPE html>
     arrecadação observada para cima ou para baixo do valor projetado.
 </p>
 
-<h3>4.3 Trajetória do PIB nominal, 2026&ndash;2033</h3>
+<h3>4.3 Trajetória do PIB real, 2026&ndash;2033</h3>
 <p>
-    O PIB nominal de cada ano é obtido compondo o PIB nominal de 2025 pelo crescimento real e
-    pela inflação projetados:
+    O PIB de cada ano é obtido compondo o PIB de 2025 (ano-base) só pelo crescimento real
+    projetado &mdash; sem compor o IPCA projetado. A partir de ago/2026, este estudo projeta em
+    R$ constantes de 2025: dado o horizonte de até 50 anos da extensão de longo prazo, valores
+    nominais compostos por décadas de inflação tornariam qualquer comparação entre anos distantes
+    ilegível sem antes deflacionar. O IPCA de cada ano (Focus/IFI) é informado na tabela abaixo só
+    para referência.
 </p>
 <div class="formula-box">
-    PIB(t) = PIB(t&minus;1) &times; (1 + g<sub>t</sub>) &times; (1 + IPCA<sub>t</sub>)
+    PIB(t) = PIB(t&minus;1) &times; (1 + g<sub>t</sub>)
 </div>
 <table>
-    <thead><tr><th class="l">Ano</th><th>PIB real</th><th>IPCA</th><th>Cresc. nominal do PIB</th>
-    <th>PIB nominal projetado (R$ bi)</th><th class="l">Fonte</th></tr></thead>
+    <thead><tr><th class="l">Ano</th><th>PIB real</th><th>IPCA (referência)</th>
+    <th>PIB projetado, R$ 2025 (R$ bi)</th><th class="l">Fonte</th></tr></thead>
     <tbody>{macro_rows()}</tbody>
 </table>
 <p>
@@ -587,7 +592,7 @@ HTML = f"""<!DOCTYPE html>
 </table>
 <div class="chart-block">
     <img class="chart-img" src="{transicao_chart_data_uri()}" alt="ICMS+ISS residual encolhendo e a divisão do IBS bruto entre criterio historico, criterio destino, Seguro-Receita e CGIBS, Brasil, 2029-2033">
-    <p class="chart-caption">ICMS+ISS residual vs. divisão do IBS bruto, Brasil (R$ bi, nominal). Cada
+    <p class="chart-caption">ICMS+ISS residual vs. divisão do IBS bruto, Brasil (R$ bi, constantes de 2025). Cada
     barra é a arrecadação total projetada de um ano da transição: o total não muda por causa da
     reforma, só a composição, até a extinção do ICMS e do ISS em 2033. O detalhe de como o IBS
     bruto se divide está na Seção 4.6.</p>
@@ -668,11 +673,14 @@ HTML = f"""<!DOCTYPE html>
     projeção da IFI, que reporta uma taxa média para o intervalo 2027&ndash;2035, não ano a ano.
     Os valores de 2,2% (PIB real) e 3,0% (IPCA) são tratados como constantes nos três anos por
     simplificação explícita.</li>
-    <li>Os valores são nominais (a preços correntes de cada ano), não deflacionados. A coluna
-    "Total real, 2025" na tabela histórica (Seção 4.1) mostra o efeito da correção pela
-    inflação apenas para o período já realizado (2013&ndash;2025); a projeção 2026&ndash;2033 não
-    reapresenta essa correção porque a inflação projetada já está embutida na composição do PIB
-    nominal.</li>
+    <li>A partir de ago/2026, todos os valores deste estudo &mdash; histórico e projeção &mdash;
+    estão em R$ constantes de 2025, não em R$ nominais (a preços correntes de cada ano). Para o
+    período já realizado (2013&ndash;2025), a coluna "Total real, 2025" na tabela histórica
+    (Seção 4.1) aplica o deflator do IPCA observado sobre o valor nominal efetivamente arrecadado.
+    Para a projeção (2026 em diante), a trajetória de PIB soma só o crescimento real projetado
+    (Focus/IFI), sem compor o IPCA projetado &mdash; por isso os valores já nascem em R$
+    constantes de 2025, sem precisar de deflação posterior. O IPCA projetado continua reportado
+    na Seção 4.3 só como referência.</li>
 </ol>
 
 <h2>6. Referências</h2>

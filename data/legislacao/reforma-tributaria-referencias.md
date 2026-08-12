@@ -490,6 +490,70 @@ de referência combinada) para dar mais precisão a $r_E$/$r_M$ nos anos
 projetados (2029 em diante) — hoje a fração é fixa a partir da base
 2024-2025 e não evolui com a trajetória.
 
+**Quarta mudança, ago/2026 (vigente): projeção em R$ constantes de 2025
+(sem IPCA).** Até esta data, a trajetória de PIB usada para projetar o
+bolo nacional (Estudo 11 e extensão de longo prazo) compunha crescimento
+real E inflação projetada (Focus/IFI): `PIB(t) = PIB(t-1) × (1+g) ×
+(1+IPCA)`. Isso tornava todo R$ reportado um valor nominal (a preços
+correntes daquele ano futuro) — inofensivo em horizontes curtos, mas
+problemático na extensão de longo prazo (até 2077): 44 anos de inflação
+projetada composta (3% a.a.) multiplicam qualquer valor por
+aproximadamente 3,5×, tornando R$ de 2077 incomparável a olho nu com R$ de
+hoje sem uma etapa extra de deflação que o leitor teria que fazer sozinho.
+Decisão (autor do site, 12/ago/2026): parar de compor o IPCA. A trajetória
+de PIB soma só o crescimento real projetado a partir do PIB nominal de
+2025 (ano-base, onde nominal e real coincidem): `PIB(t) = PIB(t-1) ×
+(1+g)`. O IPCA projetado continua registrado nos datasets e tabelas, só
+como referência, mas não entra mais na conta. Efeito: todos os valores em
+R$ de "projecao"/"macro_path" no Estudo 11, na extensão de longo prazo e
+nos Estudos 06/03 (que consomem `ibs_historico`/`ibs_destino_liquido`
+diretamente do Estudo 11) passaram a ser R$ constantes de 2025, não mais
+R$ nominais de cada ano futuro — mesma base da coluna `bolo_real_2025` já
+usada para a série histórica (2013-2025). Como é uma mudança de escala
+pura (todo valor futuro fica menor, na mesma proporção), percentuais e
+razões (ex.: delta% de cada UF vs. contrafactual) não mudam.
+
+Arquivos alterados: `data/build-ibs-projecao-nacional.py`,
+`data/build-ibs-projecao-longo-prazo.py`, `data/build-nota-tecnica-pdf.py`,
+`data/build-ibs-projecao-nacional-xlsx.py`,
+`estudos/ibs-projecao-nacional.html`,
+`estudos/ibs-projecao-longo-prazo.html`,
+`estudos/ibs-projecao-arrecadacao-br.html`,
+`estudos/ibs-projecao-arrecadacao-es.html` (labels/prosa; a lógica de
+cálculo destas duas últimas não mudou, só os valores que consomem prontos
+do Estudo 11). O campo `pib_nominal` do array `projecao`/`macro_path` foi
+renomeado para `pib_real`; o array `historico` manteve `pib_nominal`
+inalterado (é dado observado, não projeção).
+
+**Quinta mudança, ago/2026: janela de PIB histórico estendida para
+2005-2025** (`data/collect-macro-focus-ifi.py`), para poder comparar a
+premissa de crescimento real de longo prazo (IFI, 2,2% a.a., continuada
+de 2034 a 2077) com uma média histórica de verdade. Resultado: CAGR real
+2005-2025 (20 anos) = 3,55% a.a.; CAGR real 2013-2025 (12 anos,
+pós-superciclo de commodities) = 1,75% a.a. A premissa da IFI fica entre
+as duas janelas. **Pendência:** decisão do autor do site sobre se troca a
+premissa de 2034-2077 pela média histórica (e qual janela) ainda não foi
+tomada; por ora a extensão de longo prazo continua usando 2,2% a.a. (IFI).
+
+**Pendência em aberto (não implementada): granularidade de município para
+a fatia "própria" do IBS-municipal.** A POF não abre por município, só por
+UF — inviabilizando replicar a fórmula POF×Censo em nível de cidade. O
+próprio paper de Gobetti e Monteiro (2023, p. 2) registra que pretendiam
+fazer exatamente isso com dados de renda municipal do Censo 2022, mas que
+"tais dados ainda não estão disponíveis ao público" na época. Em ago/2026,
+essa lacuna parece ter sido preenchida: a tabela SIDRA 10296 (Censo 2022,
+módulo Trabalho e Rendimento) publica rendimento domiciliar per capita por
+município (nível N6), e o IBGE já divulgou o valor médio por cidade
+publicamente. Um proxy baseado em ISS declarado por município (SICONFI)
+foi descartado por reintroduzir o viés de origem que a mudança para
+POF×Censo já corrigiu em nível de UF (ISS hoje é cobrado na origem, não no
+destino). Renda per capita tem uma limitação própria: consumo é uma função
+côncava da renda (famílias mais pobres consomem quase 100% da renda;
+famílias mais ricas poupam uma fração maior), então usar renda linearmente
+como proxy de consumo tende a superestimar a fatia de municípios ricos.
+Nenhuma decisão de implementação foi tomada; o autor do site pediu para
+"pensar junto" antes de qualquer código.
+
 ---
 
 ## 5. Relato direto (contato do autor do site, ago/2026) — não é fonte legal

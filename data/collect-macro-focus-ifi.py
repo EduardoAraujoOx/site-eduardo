@@ -4,7 +4,9 @@ Coleta os parâmetros macroeconômicos para o Estudo 11 (projeção do IBS
 total, Brasil, 2029-2033):
 
   - PIB nominal anual (BCB/SGS série 1207) e IPCA mensal (BCB/SGS série
-    433), 2015-2025 (histórico realizado)
+    433), 2005-2025 (histórico realizado; janela de 21 anos para permitir
+    comparar a média de crescimento real de longo prazo com a premissa da
+    IFI usada na extensão 2034-2077)
   - Mediana do Boletim Focus (BCB, Sistema de Expectativas de Mercado,
     API Olinda) para crescimento real do PIB e IPCA, 2026-2030 — o Focus
     não projeta além de ~5 anos à frente
@@ -27,7 +29,7 @@ from pathlib import Path
 DATA_DIR = Path(__file__).parent
 OUTPUT = DATA_DIR / "macro-parametros.json"
 
-ANO_HIST_INICIO = 2013
+ANO_HIST_INICIO = 2005
 ANO_HIST_FIM = 2025
 ANOS_FOCUS = [2026, 2027, 2028, 2029, 2030]
 ANOS_IFI = [2031, 2032, 2033]
@@ -99,8 +101,8 @@ def main():
         "_meta": {
             "descricao": "Parâmetros macroeconômicos para o Estudo 11 (projeção do IBS total, Brasil, 2029-2033).",
             "fontes": {
-                "pib_nominal_historico": "BCB/SGS série 1207 (Contas Nacionais Trimestrais/IBGE), 2015-2025",
-                "ipca_historico": "BCB/SGS série 433 (IPCA, variação mensal), 2015-2025",
+                "pib_nominal_historico": "BCB/SGS série 1207 (Contas Nacionais Trimestrais/IBGE), 2005-2025",
+                "ipca_historico": "BCB/SGS série 433 (IPCA, variação mensal), 2005-2025",
                 "projecao_2026_2030": "BCB, Sistema de Expectativas de Mercado (Boletim Focus), mediana, baseCalculo=0, consulta via API Olinda",
                 "projecao_2031_2033": "IFI (Instituição Fiscal Independente, Senado Federal), RAF 107, 18/dez/2025: PIB real 2,2% a.a. (2027-2035), IPCA convergindo suavemente a 3,0% (centro da meta contínua)",
             },
