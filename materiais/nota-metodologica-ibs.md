@@ -69,62 +69,84 @@ O Distrito Federal constitui exceção a esse procedimento: por não dispor de e
 
 ## 8. Síntese formal do modelo
 
-As sete seções anteriores descrevem, em prosa, um procedimento que se resume a uma única equação geral, expandida a seguir termo a termo. Seja *t* o exercício, *e* um ente federativo, *u* a unidade federativa a que pertence e, quando aplicável, *m* um município de *u*. A receita total do ente *e* no exercício *t* é:
+As seis seções anteriores descrevem, em prosa, um procedimento que se resume a uma única equação geral. Sejam *t* o exercício, *e* um ente federativo — estado, Distrito Federal ou município —, *u* a unidade federativa a que *e* pertence e, quando aplicável, *m* um município de *u*. A receita do ente *e* no exercício *t*, sob a reforma, é a soma de quatro parcelas, uma para cada critério de repartição das Seções 3 a 6:
 
 ```
-Receita(e,t) = I(e,t) + H(e,t) + D(e,t) + SR(e,t)
+Receita(e,t) = R(t)·f(t)·φ_neutro(e)                                    ①
+             + R(t)·s(t)·α(t)·φ_CPT(e)                                  ②
+             + R(t)·s(t)·(1−α(t))·(1−c(t))·(1−ρ)·φ_dest(e)              ③
+             + SR(e,t)                                                  ④
 ```
 
-Isto é: a soma de quatro parcelas, uma para cada critério de repartição descrito nas Seções 3 a 6, o resíduo do imposto antigo, a fatia histórica do IBS, a fatia de destino do IBS e o eventual repasse do Seguro-Receita. Cada uma se expande como segue.
+O termo ① é o resíduo do imposto antigo: a receita de referência do exercício (*R(t)*, Seção 2) multiplicada pela fração ainda cobrada como ICMS/ISS (*f(t)*, Tabela 1) e pela participação corrente do ente na arrecadação de 2025 (*φ_neutro(e)*, Seção 3). O termo ② é a fatia do IBS já implementado (*s(t)* = 1 − *f(t)*) distribuída pelo critério histórico, na proporção *α(t)* fixada pelo art. 131, §1º, do ADCT, segundo o Coeficiente de Participação de Transição do ente (*φ_CPT(e)*, Seção 4). O termo ③ é o complemento (1 − *α(t)*) distribuído por destino, líquido do financiamento do CGIBS (*c(t)*) e da retenção do Seguro-Receita (ρ = 5%), segundo a participação do ente no consumo nacional (*φ_dest(e)*, Seção 5). O termo ④, *SR(e,t)*, é o eventual repasse recebido do fundo constituído por essa retenção — um valor aditivo, não uma fração de *R(t)*, porque resulta de um nivelamento entre entes, não de um coeficiente fixo de participação (Seção 6). Nenhum dos termos ③ e ④ é, em si, um número simples de se calcular; ambos se desdobram em subcomponentes, apresentados adiante.
 
-**Resíduo de ICMS e ISS** (Seção 3):
-
-```
-I(e,t) = R(t) · f(t) · φ_neutro(e)
-```
-
-a receita agregada de referência do exercício (*R<sub>t</sub>*, Seção 2), multiplicada pela fração ainda cobrada como ICMS/ISS naquele ano (*f<sub>t</sub>*, Tabela 1) e pela participação corrente do ente na arrecadação de 2025 (*φ<sub>neutro</sub>(e)*, Seção 3).
-
-**Fatia histórica do IBS** (Seção 4):
+A Seção 1 definiu o efeito redistributivo da reforma como a diferença entre dois cenários que compartilham a mesma trajetória de crescimento da economia. Essa definição, até aqui apenas narrativa, formaliza-se assim:
 
 ```
-H(e,t) = R(t) · s(t) · α(t) · φ_CPT(e)
+Receita_0(e,t) = R(t) · φ_neutro(e)
+
+Δ(e,t) = Receita(e,t) − Receita_0(e,t)
 ```
 
-onde *s<sub>t</sub>* = 1 − *f<sub>t</sub>* é a fração já convertida em IBS, *α<sub>t</sub>* é a parcela dessa fração distribuída pelo critério histórico e *φ<sub>CPT</sub>(e)* é o Coeficiente de Participação de Transição do ente.
+*Receita_0* é o cenário contrafactual: a mesma receita de referência *R(t)* aplicada, por inteiro, à participação que o ente já detinha em 2025 (*φ_neutro(e)*), como se ICMS e ISS jamais fossem substituídos pelo IBS. Como as duas trajetórias — com e sem reforma — compartilham o mesmo *R(t)*, a diferença *Δ(e,t)* isola o efeito puramente redistributivo da reforma, expurgado do efeito do crescimento da economia: um desvio na projeção de *R(t)* desloca igualmente os dois lados da subtração, sem alterar *Δ*. É essa diferença, e não a receita projetada isoladamente, que mede o que cada ente ganha ou perde por efeito da reforma.
 
-**Fatia de destino do IBS** (Seção 5):
-
-```
-D(e,t) = R(t) · s(t) · (1 − α(t)) · (1 − c(t)) · (1 − ρ) · φ_dest(e)
-```
-
-o complemento (1 − *α<sub>t</sub>*) é a fração distribuída por destino; dela se deduzem a alíquota de financiamento do CGIBS (*c<sub>t</sub>*) e a retenção do Seguro-Receita (ρ = 5%) antes de se aplicar a participação do ente no consumo nacional, *φ<sub>dest</sub>(e)*. Esse último coeficiente não é um número único: decompõe-se em duas etapas, uma por unidade federativa e outra dentro dela.
-
-Primeiro, a participação da UF se divide entre a esfera estadual e a municipal:
+**Por dentro do termo ③ — o destino do consumo.** O coeficiente *φ_dest(e)* não é um número único: decompõe-se em duas etapas, uma por unidade federativa e outra dentro dela (Seções 5 e 7).
 
 ```
 φ_dest(u, estado) = φ(u) · 0,75 · rE / (rE + rM)
-
 φ_dest(u, mun.)   = φ(u) · (rM + 0,25 · rE) / (rE + rM)
-```
 
-onde *φ(u)* é a participação da UF no consumo nacional (POF × Censo, Seção 5) e *r<sub>E</sub>*, *r<sub>M</sub>* são as alíquotas de referência estadual e municipal, aproximadas pela razão ICMS+FECOP/ISS. Em seguida, a fatia municipal agregada se divide entre os municípios da UF:
-
-```
 φ_dest(m) = [φ_dest(u,estado) / 3] · w_pop(m)
           + [φ_dest(u,mun.) − φ_dest(u,estado)/3] · w_renda(m)
 ```
 
-o primeiro termo é a cota-parte, exatamente um terço da fatia estadual (Seção 7), repartida pelo peso populacional de cada município (*w<sub>pop</sub>(m)*); o segundo é o destino próprio, o restante da fatia municipal, repartido pelo peso de renda per capita multiplicada pela população (*w<sub>renda</sub>(m)*).
+A participação da UF (*φ(u)*, POF × Censo) se divide primeiro entre a esfera estadual e a municipal, na proporção entre as alíquotas de referência *rE* e *rM*; a fatia municipal agregada se divide, em seguida, entre os municípios da UF — um terço dela, a cota-parte, pelo peso populacional (*w_pop(m)*), o restante, o destino próprio, pelo peso de renda per capita multiplicada pela população (*w_renda(m)*).
 
-**Seguro-Receita** (Seção 6):
+**Por dentro do termo ④ — o Seguro-Receita.** *SR(e,t)* não resulta da aplicação de uma alíquota, e sim de um nivelamento entre entes (Seção 6):
 
 ```
-SR(e,t) = max(0, L(t) · φ_ref(e) − [H(e,t) + D(e,t)])
+SR(e,t) = max(0, L(t) · φ_ref(e) − [R(t)s(t)α(t)φ_CPT(e) + R(t)s(t)(1−α(t))(1−c(t))(1−ρ)φ_dest(e)])
 ```
 
-onde *φ<sub>ref</sub>(e)* é a receita de referência histórica ajustada do ente (Seção 6) e *L<sub>t</sub>* é o único nível que esgota exatamente o fundo do exercício, isto é, que satisfaz Σ<sub>e</sub>SR(e,t) = ρ · Σ<sub>e</sub>D(e,t) / (1−ρ).
+onde *φ_ref(e)* é a receita de referência histórica ajustada do ente e *L(t)* é o único nível que esgota exatamente o fundo do exercício, isto é, que satisfaz Σ<sub>e</sub>SR(e,t) = ρ · Σ<sub>e</sub>D(e,t) / (1−ρ), com *D(e,t)* o termo ③ acima.
+
+**Tabela 2. Símbolos e definições do modelo formal**
+
+*Modelo agregado*
+
+| Símbolo | Definição |
+|---|---|
+| Receita(e,t) | receita total do ente *e* no exercício *t*, sob a reforma |
+| R(t) | receita agregada nacional de referência do exercício (Seção 2) |
+| f(t), s(t) | frações ainda ICMS/ISS e já IBS no exercício, s(t) = 1 − f(t) (Tabela 1) |
+| α(t) | fração do IBS bruto distribuída pelo critério histórico (art. 131, §1º, ADCT) |
+| c(t) | alíquota de financiamento do CGIBS sobre a fatia de destino (art. 51, LC 227/2026) |
+| ρ | retenção do Seguro-Receita, 5% da fatia de destino líquida de CGIBS (art. 132, ADCT) |
+| φ_neutro(e) | participação corrente do ente na arrecadação de ICMS/ISS de 2025 |
+| φ_CPT(e) | Coeficiente de Participação de Transição, média deflacionada 2019–2025 (Seção 4) |
+| φ_dest(e) | participação do ente no consumo nacional (POF × Censo 2022, Seção 5) |
+
+*Cenário contrafactual*
+
+| Símbolo | Definição |
+|---|---|
+| Receita_0(e,t) | receita do ente no cenário sem reforma, mesma trajetória de R(t) |
+| Δ(e,t) | efeito redistributivo líquido do crescimento, Receita(e,t) − Receita_0(e,t) |
+
+*Decomposição do destino (Seções 5 e 7)*
+
+| Símbolo | Definição |
+|---|---|
+| φ(u) | participação da UF *u* no consumo nacional |
+| rE, rM | alíquotas de referência estadual e municipal, aproximadas por ICMS+FECOP/ISS |
+| w_pop(m), w_renda(m) | pesos populacional e de renda per capita × população do município *m* em *u* |
+
+*Seguro-Receita (Seção 6)*
+
+| Símbolo | Definição |
+|---|---|
+| φ_ref(e) | receita de referência histórica ajustada do ente, teto de 3× a média per capita da esfera |
+| L(t) | nível de nivelamento do exercício, calibrado para esgotar exatamente o fundo |
 
 ## 9. Limitações do modelo
 
