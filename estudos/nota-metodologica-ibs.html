@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nota Metodológica: a transição do ICMS/ISS para o IBS | Eduardo Reis Araújo</title>
+    <meta name="description" content="Nota metodológica completa sobre a transição do ICMS/ISS para o IBS: premissas legais, procedimento de estimativa por ente federativo e a síntese formal do modelo de projeção usado nos estudos deste site.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/nota-metodologica-ibs.html">
+
+    <meta property="og:title" content="Nota Metodológica: a transição do ICMS/ISS para o IBS">
+    <meta property="og:description" content="Premissas legais, procedimento de estimativa por ente federativo e a síntese formal do modelo de projeção usado nos estudos deste site sobre a reforma tributária.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/nota-metodologica-ibs.html">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '\\(', right: '\\)', display: false}
+            ],
+            throwOnError: false
+        })"></script>
+
+    <link rel="stylesheet" href="/css/notas.css?v=4">
+    <link rel="stylesheet" href="/css/search.css">
+
+    <style>
+        .study-hero { max-width: 820px; margin: 0 auto; padding: 3rem 2rem 1.5rem; }
+        .study-hero-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+        .study-hero-tag { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); padding: 0.25rem 0.6rem; border-radius: 4px; }
+        .study-hero-topic { font-family: var(--sans); font-size: 0.73rem; color: var(--text-secondary); background: var(--border-light); padding: 0.2rem 0.55rem; border-radius: 4px; }
+        .study-hero-date { font-family: var(--sans); font-size: 0.73rem; color: var(--text-muted); margin-left: auto; }
+        .study-hero h1 { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2.05rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 0.8rem; }
+        .study-hero .lead { font-family: var(--serif); font-size: 1rem; line-height: 1.72; color: var(--text-secondary); max-width: 760px; }
+        .study-hero .study-meta { font-family: var(--sans); font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem; }
+
+        .study-content { max-width: 820px; margin: 0 auto; padding: 0 2rem 5rem; }
+
+        .nota-section { margin-top: 3rem; }
+        .nota-section:first-of-type { margin-top: 0.5rem; }
+        .nota-section h2 { font-family: var(--display); font-size: 1.4rem; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 1.1rem; color: var(--text); scroll-margin-top: 90px; }
+        .nota-section p { font-family: var(--serif); font-size: 1rem; line-height: 1.82; color: var(--text-secondary); max-width: 72ch; margin: 0 0 1.2rem; }
+        .nota-section p:last-child { margin-bottom: 0; }
+        .nota-section strong { color: var(--text); font-weight: 600; }
+
+        .meto-section-title { font-family: var(--sans); font-size: 0.85rem; font-weight: 600; color: var(--text); margin: 1.5rem 0 0.4rem; }
+        .meto-note { font-family: var(--serif); font-size: 0.95rem; color: var(--text-secondary); line-height: 1.75; margin: 0.4rem 0 1.2rem; max-width: 72ch; }
+        .meto-note:last-child { margin-bottom: 0; }
+
+        .meto-formula-box { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 1.25rem 1.5rem; margin: 1rem 0 1.4rem; overflow-x: auto; }
+        .meto-formula-box .katex-display { margin: 0.3rem 0; }
+        .meto-formula-box + .meto-note { margin-top: -0.4rem; }
+
+        .param-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 0.5rem 0 1.4rem; }
+        .param-table th { text-align: left; font-family: var(--sans); font-weight: 600; font-size: 0.74rem; color: var(--text-muted); border-bottom: 1px solid var(--border); padding: 0.4rem 0.7rem; }
+        .param-table td { font-family: var(--serif); font-size: 0.87rem; padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--border-light); vertical-align: top; color: var(--text-secondary); }
+        .param-table td:first-child { font-family: var(--mono); font-weight: 600; font-size: 0.86rem; color: var(--text); white-space: nowrap; }
+        .param-table tr:last-child td { border-bottom: none; }
+        .param-table.transition-table td, .param-table.transition-table th { text-align: right; }
+        .param-table.transition-table td:first-child, .param-table.transition-table th:first-child { text-align: left; font-family: var(--sans); font-weight: 600; color: var(--text-secondary); }
+        .param-table.transition-table tr.extinct td { color: var(--accent); font-weight: 600; }
+
+        .closing-note { background: var(--accent-light); border-radius: 8px; padding: 1.2rem 1.4rem; font-family: var(--serif); font-size: 0.9rem; color: var(--text-secondary); line-height: 1.75; margin-top: 3rem; }
+        .closing-note strong { color: var(--text); }
+
+        .footnotes { margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+        .footnotes p { font-family: var(--serif); font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.4rem; }
+        .footnotes a { color: var(--accent); text-decoration: none; }
+        .footnotes a:hover { text-decoration: underline; }
+
+        @media (max-width: 640px) {
+            .study-hero { padding: 2rem 1.25rem 1rem; }
+            .study-content { padding: 0 1.25rem 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <div class="header-right-group">
+                <nav class="header-nav">
+                    <a href="/#publicacoes">Publicações</a>
+                    <a href="/ensino/">Ensino</a>
+                    <a href="/estudos/" class="active">Estudos</a>
+                    <a href="/#contato">Contato</a>
+                </nav>
+                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="study-hero">
+        <div class="study-hero-meta">
+            <span class="study-hero-tag">Estudo 14</span>
+            <span class="study-hero-topic">Reforma Tributária</span>
+            <span class="study-hero-topic">Federalismo Fiscal</span>
+            <span class="study-hero-topic">Metodologia</span>
+            <span class="study-hero-date">Agosto de 2026</span>
+        </div>
+        <h1>Nota Metodológica: a transição do ICMS/ISS para o IBS e seus efeitos redistributivos entre entes federativos</h1>
+        <p class="lead">
+            Os Estudos 02, 06, 07, 11, 12 e 13 deste site compartilham um único procedimento de estimativa,
+            aplicado repetidamente a diferentes recortes — nacional, estadual, municipal. Esta nota reúne
+            esse procedimento numa única descrição, do início ao fim: as premissas legais que o fundamentam,
+            os dados públicos empregados e a síntese formal do modelo, para que possa ser integralmente
+            reproduzido por terceiros.
+        </p>
+        <p class="study-meta">
+            Estimativa própria e independente, não o cálculo oficial que competirá ao Comitê Gestor do IBS.
+            Ver limitações na Seção 9.
+        </p>
+    </div>
+
+    <div class="study-content">
+
+        <section class="nota-section">
+            <h2>1. Metodologia</h2>
+            <p>A estimativa dos valores devidos a cada ente federativo resulta da comparação entre dois cenários. No primeiro, contrafactual, a arrecadação de ICMS e de ISS continuaria existindo tal como hoje, sem a reforma tributária. No segundo, essa mesma base de consumo é gradualmente convertida no Imposto sobre Bens e Serviços (IBS) ao longo do período de transição constitucional, que se estende de 2029 a 2033 no núcleo do modelo e, em sua extensão de mais longo prazo, até 2078. A diferença entre os dois cenários, calculada ano a ano e ente a ente, permite isolar o efeito redistributivo da reforma do efeito, de natureza distinta, do crescimento da economia. Sem essa separação, qualquer variação de receita observada poderia ser atribuída, de forma equivocada, à mudança de regras tributárias, quando resultaria, na realidade, da evolução do produto interno bruto (PIB).</p>
+            <p>O procedimento adotado é sequencial e cumulativo. Estima-se, em primeiro lugar, a trajetória da receita agregada de referência a ser repartida entre os entes federativos. Aplica-se, em seguida, o cronograma constitucional que determina qual fração dessa receita permanece sendo arrecadada como ICMS e ISS e qual fração já corresponde ao IBS em cada exercício da transição. A parcela do IBS é então dividida entre os dois critérios de repartição que coexistem ao longo do período de transição, a participação histórica de cada ente e a participação pelo critério de destino do consumo, do qual se deduzem, ainda, o financiamento do Comitê Gestor do IBS (CGIBS) e a retenção destinada ao Seguro-Receita. Por fim, a parcela atribuída à esfera municipal de cada unidade federativa é redistribuída entre os municípios que a compõem. As seções seguintes descrevem cada uma dessas etapas, a base legal que a fundamenta e o procedimento empregado para estimá-la a partir de dados públicos.</p>
+        </section>
+
+        <section class="nota-section">
+            <h2>2. Projeções do IBS e do ICMS/ISS nacional</h2>
+            <p>O conhecimento da trajetória agregada da arrecadação nacional constitui premissa indispensável do modelo, não um elemento meramente acessório. Os critérios de repartição estabelecidos pela reforma são definidos, quase invariavelmente, como coeficientes de participação percentual sobre um total nacional, e não como valores absolutos. Um desvio na projeção do montante agregado se propaga proporcionalmente a todos os entes federativos, ao passo que um desvio nos coeficientes de repartição afeta apenas a distribuição entre eles.</p>
+            <p>A série histórica de arrecadação de ICMS, ISS e do Fundo Estadual de Combate à Pobreza (FECOP) é obtida da Declaração de Contas Anuais (DCA), publicada pelo Sistema de Informações Contábeis e Fiscais do Setor Público Brasileiro, sob responsabilidade da Secretaria do Tesouro Nacional. A regra de projeção da receita agregada de referência não constitui escolha metodológica discricionária: os artigos 361 a 365 da LC 214/2025, na redação conferida pela LC 227/2026, determinam que a alíquota de referência do IBS seja calibrada de modo que a razão entre essa receita e o produto interno bruto nacional permaneça igual à média observada nos três anos anteriores ao início da cobrança plena, de 2024 a 2026 (ver <a href="/estudos/ibs-projecao-nacional.html">Estudo 11</a>). Adota-se essa mesma razão histórica média, aplicada a uma trajetória de PIB construída a partir de fontes oficiais: o Boletim Focus, do Banco Central, para o horizonte mais próximo, e as projeções da Instituição Fiscal Independente, vinculada ao Senado Federal, para os exercícios subsequentes. A projeção é expressa em valores reais, a preços constantes do ano-base de 2025.</p>
+        </section>
+
+        <section class="nota-section">
+            <h2>3. ICMS e ISS residual</h2>
+            <p>O Ato das Disposições Constitucionais Transitórias (ADCT), na redação conferida pela Emenda Constitucional 132/2023, estabelece em seu artigo 128 um cronograma fixo, não sujeito a estimativa: a alíquota do ICMS e do ISS é reduzida, entre 2029 e 2032, à razão de um décimo do valor original a cada ano, sendo os dois tributos integralmente extintos em 2033.</p>
+
+            <p class="meto-section-title">Tabela 1. Cronograma de extinção do ICMS/ISS e implementação do IBS (ADCT, art. 128)</p>
+            <table class="param-table transition-table">
+                <thead><tr><th>Exercício</th><th>ICMS/ISS residual (\(f_t\))</th><th>IBS bruto (\(s_t\))</th></tr></thead>
+                <tbody>
+                    <tr><td>2029</td><td>90%</td><td>10%</td></tr>
+                    <tr><td>2030</td><td>80%</td><td>20%</td></tr>
+                    <tr><td>2031</td><td>70%</td><td>30%</td></tr>
+                    <tr><td>2032</td><td>60%</td><td>40%</td></tr>
+                    <tr class="extinct"><td>2033</td><td>0% (extinção)</td><td>100%</td></tr>
+                </tbody>
+            </table>
+
+            <p>O valor residual de ICMS e ISS atribuído a cada ente, em cada exercício, resulta da multiplicação dessa fração pela receita agregada de referência do ano, distribuída segundo a participação corrente de cada ente na arrecadação nacional — o coeficiente de participação neutra, calculado diretamente a partir da arrecadação de ICMS declarada em 2025, líquida da cota-parte municipal e acrescida do FECOP nos estados que o cobram, e da arrecadação de ISS acrescida da cota-parte recebida pelos municípios. Como essa etapa não envolve nenhum critério de redistribuição, a receita residual de ICMS e ISS preserva, ao longo de toda a transição, a mesma participação relativa observada em 2025.</p>
+        </section>
+
+        <section class="nota-section">
+            <h2>4. IBS pela participação histórica</h2>
+            <p>A parcela do IBS já implementada em cada exercício não é integralmente distribuída pelo critério de destino do consumo desde o início da transição. O art. 131, §1º, do ADCT institui uma transição adicional, interna ao próprio IBS: de 2029 a 2032, 80% do IBS bruto arrecadado é distribuído segundo o critério histórico, que replica a participação relativa de cada ente anterior à reforma; em 2033, esse percentual se eleva a 90%; a partir de 2034, é reduzido em um quarenta e cinco avos a cada ano, alcançando 0% em 2078 — os cinquenta anos de transição frequentemente mencionados de forma genérica na literatura sobre a reforma (ver <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a>).</p>
+            <p>O coeficiente que expressa essa participação histórica não corresponde à arrecadação do último exercício disponível tomado isoladamente, por estar este sujeito a variações conjunturais atípicas capazes de distorcer, de forma permanente, a participação atribuída a um ente ao longo de toda a transição. Adota-se, em seu lugar, um Coeficiente de Participação de Transição, calculado em três etapas. Primeiro, a arrecadação de cada ente em cada um dos exercícios da série 2019–2025 é reescalada por um deflator específico do ano, definido pela razão entre o total nacional de 2025 e o total nacional do próprio exercício, de modo que a soma nacional de cada ano, após o ajuste, coincida com o total de 2025 — esse deflator neutraliza o crescimento nominal do agregado nacional ao longo da série, sem impor nenhuma hipótese externa de inflação. Em seguida, toma-se a média aritmética simples dos sete valores reescalados de cada ente. Por fim, essa média é expressa como percentual do total nacional de 2025, produzindo o coeficiente de participação de transição do ente.</p>
+        </section>
+
+        <section class="nota-section">
+            <h2>5. IBS pelo destino do consumo</h2>
+            <p>A parcela complementar do IBS bruto, remanescente após a separação da fração destinada ao critério histórico, é distribuída segundo o local em que o consumo é efetivamente realizado, não onde o bem foi produzido ou o serviço prestado. Trata-se da mudança estrutural central da reforma, que substitui a tributação na origem, própria do ICMS e do ISS vigentes, pela tributação no destino. O peso relativo dessa fração no total do IBS bruto cresce ao longo da transição, de 20% entre 2029 e 2032 a 10% em 2033, prosseguindo, na extensão de longo prazo do modelo, até corresponder à totalidade da arrecadação em 2078. A base legal está nos mesmos artigos 361 a 365 da LC 214/2025, que estabelecem alíquotas de referência distintas para a esfera estadual e para a esfera municipal do IBS, cada uma calculada e aplicada separadamente à respectiva base.</p>
+            <p>Não existe, até o momento desta estimativa, pesquisa oficial que meça o consumo por unidade federativa segundo os critérios exigidos pela reforma. A referência mais próxima disponível na literatura é o estudo de Gobetti e Monteiro, do Instituto de Pesquisa Econômica Aplicada (Carta de Conjuntura nº 60, 2023), que estima os efeitos redistributivos da reforma a partir da mesma Pesquisa de Orçamentos Familiares (POF) empregada neste trabalho, sem a atualização demográfica que o Censo 2022 permite incorporar — limitação que os próprios autores reconhecem, atribuindo-a à indisponibilidade, à época, dos dados de rendimento domiciliar por município do Censo 2022. A participação de cada unidade federativa no consumo nacional foi, portanto, estimada de forma independente, cruzando a despesa média mensal das famílias por estado, apurada pela POF (IBGE, 2017–2018), com o número de domicílios de cada estado no Censo Demográfico de 2022 (ver <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a>). O resultado de Gobetti e Monteiro é mantido, ao longo deste trabalho, como parâmetro de comparação, não como insumo do modelo (ver <a href="/estudos/icms-iss-ibs-atual-potencial.html">Estudo 07</a>).</p>
+            <p>Essa participação nacional de cada unidade federativa é dividida entre a esfera estadual e a esfera municipal na proporção entre as duas alíquotas de referência mencionadas acima, aproximadas pela razão observada, na média dos dois últimos exercícios fechados (2024–2025), entre a arrecadação nacional de ICMS, acrescida do FECOP, e a arrecadação nacional de ISS. Antes de alcançar o ente federativo, a fração de destino sofre ainda duas deduções sequenciais: o financiamento do CGIBS, mediante alíquota decrescente fixada pelo art. 51 da LC 227/2026, e a retenção destinada ao Seguro-Receita, descrita na seção seguinte.</p>
+        </section>
+
+        <section class="nota-section">
+            <h2>6. Seguro-Receita</h2>
+            <p>A migração da tributação da origem para o destino redistribui receita entre entes federativos: nem todo ente que hoje arrecada volume elevado de ICMS ou de ISS concentra, necessariamente e na mesma proporção, o consumo final dos bens que produz ou dos serviços que presta. Para conter o risco de quedas abruptas de receita durante a transição, o art. 132 do ADCT institui o Seguro-Receita, fundo constituído pela retenção de 5% da fração de destino já líquida do financiamento do CGIBS, distribuído exclusivamente aos entes que estejam perdendo participação relativa de forma mais acentuada (ver <a href="/estudos/seguro-receita-repasses.html">Estudo 12</a>).</p>
+            <p>O mecanismo, detalhado pelo art. 117 da LC 227/2026, calcula, para cada um dos 5.596 entes federativos do país, a razão entre a receita efetivamente recebida sob as novas regras em determinado exercício e uma receita de referência histórica ajustada — o menor valor entre a média histórica do próprio ente, calculada sobre a mesma base do Coeficiente de Participação de Transição, e um teto equivalente a três vezes a média nacional per capita da respectiva esfera federativa. O fundo constituído pela retenção de 5% é distribuído sequencialmente aos entes de menor razão, elevando cada um até o nível do ente imediatamente seguinte, até que o fundo se esgote ou até que a totalidade dos entes convirja para um único nível comum: um procedimento de nivelamento sequencial, não de partilha proporcional ao déficit individual de cada ente.</p>
+        </section>
+
+        <section class="nota-section">
+            <h2>7. Repartição intramunicipal: cota-parte e destino próprio</h2>
+            <p>A Seção 5 estabeleceu quanto, do consumo estimado de determinada unidade federativa, cabe à esfera municipal como agregado. Esta seção trata da etapa seguinte: como esse agregado se reparte entre os municípios que compõem a unidade federativa. A fração de destino atribuída à esfera municipal resulta da soma de duas parcelas que a legislação disciplina de forma distinta, estimadas separadamente antes de sua consolidação em nível de cada município.</p>
+            <p>A primeira é a cota-parte constitucional: o art. 158, IV, "b", da Constituição Federal, preservado pela reforma, determina que 25% do IBS de competência estadual seja repassado aos municípios do respectivo estado. O critério de partilha dessa cota-parte entre os municípios de uma mesma unidade federativa está definido no art. 128 da LC 227/2026: 80% na proporção da população, 10% segundo indicadores de equidade educacional e 5% segundo indicadores ambientais, ambos a serem fixados por lei estadual específica — o que nenhuma unidade federativa havia feito até o momento desta estimativa, motivo pelo qual esses 15% são aproximados pelo mesmo critério populacional — e 5% em parcelas iguais entre todos os municípios do estado.</p>
+            <p>A segunda é o destino próprio do IBS municipal: a fração sucessora direta do Imposto sobre Serviços, pertencente, por definição do art. 106 da LC 227/2026, diretamente ao município em que o consumo se realizou, e não sujeita ao critério populacional do art. 128. Sua estimativa exigiria, a rigor, uma medida de consumo no nível do próprio município, granularidade que a POF não oferece. Na ausência de pesquisa de consumo municipal, adotou-se como aproximação a renda domiciliar média por pessoa de cada município, apurada pelo Censo Demográfico de 2022, multiplicada pela respectiva população — substituindo-se despesa por renda em razão da disponibilidade de dados na escala municipal. Essa aproximação apresenta limitação conhecida: como a propensão a consumir tende a declinar à medida que a renda aumenta, o critério pode superestimar a participação de municípios de renda mais elevada dentro de cada unidade federativa.</p>
+            <p>O Distrito Federal constitui exceção a esse procedimento: por não dispor de esfera municipal própria, nos termos do art. 115 da LC 227/2026, sua receita de referência acumula as bases estadual e municipal, sem repartição posterior.</p>
+        </section>
+
+        <section class="nota-section">
+            <h2>8. Síntese formal do modelo</h2>
+            <p>As seis seções anteriores descrevem, em prosa, um procedimento que se resume a uma única equação geral. Sejam \(t\) o exercício, \(e\) um ente federativo — estado, Distrito Federal ou município —, \(u\) a unidade federativa a que \(e\) pertence e, quando aplicável, \(m\) um município de \(u\). A receita do ente \(e\) no exercício \(t\), sob a reforma, é a soma de quatro parcelas, uma para cada critério de repartição das Seções 3 a 6:</p>
+
+            <div class="meto-formula-box">
+$$\text{Receita}_{e,t} = \underbrace{R_t\,f_t\,\varphi^{\text{neutro}}_e}_{\substack{\text{resíduo}\\\text{ICMS/ISS}}} \;+\; \underbrace{R_t\,s_t\,\alpha_t\,\varphi^{\text{CPT}}_e}_{\substack{\text{IBS pela}\\\text{história}}} \;+\; \underbrace{R_t\,s_t(1-\alpha_t)(1-c_t)(1-\rho)\,\varphi^{\text{dest}}_e}_{\substack{\text{IBS pelo destino,}\\\text{líquido}}} \;+\; \underbrace{SR_{e,t}}_{\substack{\text{Seguro-}\\\text{Receita}}}$$
+            </div>
+
+            <p>O primeiro termo é o resíduo do imposto antigo: a receita de referência do exercício (\(R_t\), Seção 2) multiplicada pela fração ainda cobrada como ICMS/ISS (\(f_t\), Tabela 1) e pela participação corrente do ente na arrecadação de 2025 (\(\varphi^{\text{neutro}}_e\), Seção 3). O segundo é a fatia do IBS já implementado (\(s_t = 1-f_t\)) distribuída pelo critério histórico, na proporção \(\alpha_t\) fixada pelo art. 131, §1º, do ADCT, segundo o Coeficiente de Participação de Transição do ente (\(\varphi^{\text{CPT}}_e\), Seção 4). O terceiro é o complemento \((1-\alpha_t)\) distribuído por destino, líquido do financiamento do CGIBS (\(c_t\)) e da retenção do Seguro-Receita (\(\rho = 5\%\)), segundo a participação do ente no consumo nacional (\(\varphi^{\text{dest}}_e\), Seção 5). O quarto, \(SR_{e,t}\), é o eventual repasse recebido do fundo constituído por essa retenção — um valor aditivo, não uma fração de \(R_t\), porque resulta de um nivelamento entre entes, não de um coeficiente fixo de participação (Seção 6). Os dois últimos termos não são, em si, números simples de se calcular; ambos se desdobram em subcomponentes, apresentados adiante.</p>
+
+            <p>A Seção 1 definiu o efeito redistributivo da reforma como a diferença entre dois cenários que compartilham a mesma trajetória de crescimento da economia. Essa definição, até aqui apenas narrativa, formaliza-se assim:</p>
+
+            <div class="meto-formula-box">
+$$\text{Receita}^0_{e,t} = R_t \cdot \varphi^{\text{neutro}}_e \qquad\qquad \Delta_{e,t} = \text{Receita}_{e,t} - \text{Receita}^0_{e,t}$$
+            </div>
+
+            <p>\(\text{Receita}^0\) é o cenário contrafactual: a mesma receita de referência \(R_t\) aplicada, por inteiro, à participação que o ente já detinha em 2025 (\(\varphi^{\text{neutro}}_e\)), como se ICMS e ISS jamais fossem substituídos pelo IBS. Como as duas trajetórias — com e sem reforma — compartilham o mesmo \(R_t\), a diferença \(\Delta_{e,t}\) isola o efeito puramente redistributivo da reforma, expurgado do efeito do crescimento da economia: um desvio na projeção de \(R_t\) desloca igualmente os dois lados da subtração, sem alterar \(\Delta\). É essa diferença, e não a receita projetada isoladamente, que mede o que cada ente ganha ou perde por efeito da reforma.</p>
+
+            <p class="meto-section-title">Por dentro do destino do consumo (\(\varphi^{\text{dest}}\))</p>
+            <p class="meto-note">O coeficiente \(\varphi^{\text{dest}}_e\) não é um número único: decompõe-se em duas etapas, uma por unidade federativa e outra dentro dela (Seções 5 e 7).</p>
+            <div class="meto-formula-box">
+$$\varphi^{\text{dest}}_{u,\text{estado}} = \varphi_u \cdot \frac{0{,}75\,r_E}{r_E + r_M} \qquad\qquad \varphi^{\text{dest}}_{u,\text{mun.}} = \varphi_u \cdot \frac{r_M + 0{,}25\,r_E}{r_E + r_M}$$
+$$\varphi^{\text{dest}}_m = \frac{\varphi^{\text{dest}}_{u,\text{estado}}}{3}\,w^{\text{pop}}_m \;+\; \left(\varphi^{\text{dest}}_{u,\text{mun.}} - \frac{\varphi^{\text{dest}}_{u,\text{estado}}}{3}\right) w^{\text{renda}}_m$$
+            </div>
+            <p class="meto-note">A participação da UF (\(\varphi_u\), POF × Censo) se divide primeiro entre a esfera estadual e a municipal, na proporção entre as alíquotas de referência \(r_E\) e \(r_M\); a fatia municipal agregada se divide, em seguida, entre os municípios da UF — um terço dela, a cota-parte, pelo peso populacional (\(w^{\text{pop}}_m\)), o restante, o destino próprio, pelo peso de renda per capita multiplicada pela população (\(w^{\text{renda}}_m\)).</p>
+
+            <p class="meto-section-title">Por dentro do Seguro-Receita (\(SR_{e,t}\))</p>
+            <p class="meto-note"><em>\(SR_{e,t}\)</em> não resulta da aplicação de uma alíquota, e sim de um nivelamento entre entes (Seção 6):</p>
+            <div class="meto-formula-box">
+$$SR_{e,t} = \max\!\left(0,\; L_t\cdot\varphi^{\text{ref}}_e \;-\; \Big[R_t s_t \alpha_t \varphi^{\text{CPT}}_e + R_t s_t(1-\alpha_t)(1-c_t)(1-\rho)\varphi^{\text{dest}}_e\Big]\right)$$
+            </div>
+            <p class="meto-note">onde \(\varphi^{\text{ref}}_e\) é a receita de referência histórica ajustada do ente e \(L_t\) é o único nível que esgota exatamente o fundo do exercício, isto é, que satisfaz \(\sum_e SR_{e,t} = \rho \cdot \sum_e D_{e,t}/(1-\rho)\), com \(D_{e,t}\) o terceiro termo da equação geral acima.</p>
+
+            <p class="meto-section-title">Tabela 2. Símbolos e definições do modelo formal</p>
+            <p style="font-family: var(--sans); font-size: 0.78rem; font-weight: 600; color: var(--text-muted); margin: 0.6rem 0 0;">Modelo agregado</p>
+            <table class="param-table">
+                <tbody>
+                    <tr><td>\(\text{Receita}_{e,t}\)</td><td>receita total do ente \(e\) no exercício \(t\), sob a reforma</td></tr>
+                    <tr><td>\(R_t\)</td><td>receita agregada nacional de referência do exercício (Seção 2)</td></tr>
+                    <tr><td>\(f_t, s_t\)</td><td>frações ainda ICMS/ISS e já IBS no exercício, \(s_t = 1-f_t\) (Tabela 1)</td></tr>
+                    <tr><td>\(\alpha_t\)</td><td>fração do IBS bruto distribuída pelo critério histórico (art. 131, §1º, ADCT)</td></tr>
+                    <tr><td>\(c_t\)</td><td>alíquota de financiamento do CGIBS sobre a fatia de destino (art. 51, LC 227/2026)</td></tr>
+                    <tr><td>\(\rho\)</td><td>retenção do Seguro-Receita, 5% da fatia de destino líquida de CGIBS (art. 132, ADCT)</td></tr>
+                    <tr><td>\(\varphi^{\text{neutro}}_e\)</td><td>participação corrente do ente na arrecadação de ICMS/ISS de 2025</td></tr>
+                    <tr><td>\(\varphi^{\text{CPT}}_e\)</td><td>Coeficiente de Participação de Transição, média deflacionada 2019–2025 (Seção 4)</td></tr>
+                    <tr><td>\(\varphi^{\text{dest}}_e\)</td><td>participação do ente no consumo nacional (POF × Censo 2022, Seção 5)</td></tr>
+                </tbody>
+            </table>
+            <p style="font-family: var(--sans); font-size: 0.78rem; font-weight: 600; color: var(--text-muted); margin: 0.6rem 0 0;">Cenário contrafactual</p>
+            <table class="param-table">
+                <tbody>
+                    <tr><td>\(\text{Receita}^0_{e,t}\)</td><td>receita do ente no cenário sem reforma, mesma trajetória de \(R_t\)</td></tr>
+                    <tr><td>\(\Delta_{e,t}\)</td><td>efeito redistributivo líquido do crescimento, \(\text{Receita}_{e,t} - \text{Receita}^0_{e,t}\)</td></tr>
+                </tbody>
+            </table>
+            <p style="font-family: var(--sans); font-size: 0.78rem; font-weight: 600; color: var(--text-muted); margin: 0.6rem 0 0;">Decomposição do destino (Seções 5 e 7)</p>
+            <table class="param-table">
+                <tbody>
+                    <tr><td>\(\varphi_u\)</td><td>participação da UF \(u\) no consumo nacional</td></tr>
+                    <tr><td>\(r_E, r_M\)</td><td>alíquotas de referência estadual e municipal, aproximadas por ICMS+FECOP/ISS</td></tr>
+                    <tr><td>\(w^{\text{pop}}_m, w^{\text{renda}}_m\)</td><td>pesos populacional e de renda per capita × população do município \(m\) em \(u\)</td></tr>
+                </tbody>
+            </table>
+            <p style="font-family: var(--sans); font-size: 0.78rem; font-weight: 600; color: var(--text-muted); margin: 0.6rem 0 0;">Seguro-Receita (Seção 6)</p>
+            <table class="param-table">
+                <tbody>
+                    <tr><td>\(\varphi^{\text{ref}}_e\)</td><td>receita de referência histórica ajustada do ente, teto de 3× a média per capita da esfera</td></tr>
+                    <tr><td>\(L_t\)</td><td>nível de nivelamento do exercício, calibrado para esgotar exatamente o fundo</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="nota-section">
+            <h2>9. Limitações do modelo</h2>
+            <p>A receita de referência empregada nas Seções 2 a 5 deveria, pelo texto literal dos arts. 361 a 365 da LC 214/2025, corresponder à média do triênio 2024–2026. Como o exercício de 2026 ainda não estava encerrado na data desta estimativa, a razão entre receita e PIB foi calculada apenas sobre os dois exercícios já fechados, 2024 e 2025, e deverá ser recalculada assim que os dados de 2026 estiverem disponíveis.</p>
+            <p>Tanto o cenário com reforma quanto o cenário contrafactual dependem de uma trajetória futura de crescimento do PIB que nenhuma fonte, oficial ou não, pode conhecer com certeza. O modelo adota o consenso de mercado consolidado pelo Boletim Focus para o horizonte mais próximo e a projeção da Instituição Fiscal Independente para os exercícios mais distantes. Na extensão de mais longo prazo do modelo, essa taxa é mantida constante a partir de 2027 até 2078; qualquer desvio sistemático entre essa taxa e o crescimento efetivamente observado se propaga, em igual proporção, a todos os entes federativos, sem alterar a distribuição relativa entre eles.</p>
+            <p>O modelo tampouco incorpora o efeito das compras governamentais sobre a repartição entre entes. A imunidade recíproca, que impede a tributação do patrimônio, da renda e dos serviços de um ente federativo por outro, aplica-se ao IBS e à CBS nos mesmos termos em que se aplicava ao sistema anterior (LC 214/2025, art. 9º, I, e §1º). Gobetti e Monteiro descrevem o mecanismo operacional dessa imunidade nas compras governamentais: quando um ente público adquire bens ou serviços tributados, a integralidade do imposto correspondente é atribuída ao ente adquirente. Como municípios concentram parcela expressiva das compras governamentais do país, esse mecanismo desloca receita adicional em favor da esfera municipal por um canal inteiramente distinto da cota-parte e do destino próprio descritos na Seção 7, e que este modelo, apoiado exclusivamente no consumo das famílias medido pela POF, não mede nem redistribui.</p>
+            <p>Duas limitações adicionais, já registradas nas seções correspondentes, merecem ser reunidas aqui. Os quinze pontos percentuais da cota-parte municipal vinculados a indicadores de equidade educacional e ambiental permanecem, até o momento, sem regulamentação por qualquer unidade federativa, e são aproximados pelo mesmo critério populacional aplicável aos demais oitenta e cinco pontos percentuais da cota-parte. A estimativa da fração de destino próprio no nível municipal, obtida a partir de renda domiciliar per capita, tende a superestimar a participação de municípios de renda mais elevada dentro de cada unidade federativa, por não incorporar a propensão marginal a consumir. Em ambos os casos, optou-se por declarar a limitação em vez de corrigi-la por meio de hipóteses adicionais não amparadas em dados observados.</p>
+        </section>
+
+        <div class="closing-note">
+            <strong>Nota sobre fontes e reprodutibilidade.</strong> Todas as bases de dados empregadas são públicas: o Sistema de Informações Contábeis e Fiscais do Setor Público Brasileiro (Declaração de Contas Anuais), o Banco Central do Brasil (Boletim Focus e Sistema Gerenciador de Séries Temporais), a Instituição Fiscal Independente (Relatórios de Acompanhamento Fiscal) e o Instituto Brasileiro de Geografia e Estatística (Pesquisa de Orçamentos Familiares e Censo Demográfico de 2022). Como parte dos parâmetros legais ainda depende de regulamentação ou de dados não fechados na data desta nota, os valores produzidos nos estudos deste site constituem estimativa própria e independente, não o cálculo oficial que competirá ao Comitê Gestor do IBS.
+        </div>
+
+        <div class="footnotes">
+            <p><strong>Fontes e estudos relacionados:</strong></p>
+            <p>1. Base legal: EC 132/2023 (ADCT arts. 128, 131 e 132); LC 214/2025 (arts. 9º, 361 a 365); LC 227/2026 (arts. 51, 106, 115, 117, 118 e 128).</p>
+            <p>2. Coeficiente de Participação de Transição por UF: <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 02</a>; por município: <a href="/estudos/reforma-tributaria-coeficiente-municipios.html">Estudo 10</a>.</p>
+            <p>3. Projeção da receita agregada nacional: <a href="/estudos/ibs-projecao-nacional.html">Estudo 11</a>; por estado e município, 2029–2033: <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>; extensão 2029–2077: <a href="/estudos/ibs-projecao-longo-prazo.html">Estudo 06 · extensão</a>.</p>
+            <p>4. Coeficiente de destino (POF × Censo 2022): <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a>; comparação com Gobetti e Monteiro: <a href="/estudos/icms-iss-ibs-atual-potencial.html">Estudo 07</a>.</p>
+            <p>5. Repasses do Seguro-Receita: <a href="/estudos/seguro-receita-repasses.html">Estudo 12</a>.</p>
+            <p>6. Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura n. 60, Nota de Conjuntura 18. Instituto de Pesquisa Econômica Aplicada, 28 ago. 2023.</p>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+
+    <script src="/js/search.js"></script>
+</body>
+</html>
