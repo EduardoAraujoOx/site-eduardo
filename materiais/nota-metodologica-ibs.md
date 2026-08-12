@@ -27,7 +27,7 @@ O Ato das Disposições Constitucionais Transitórias (ADCT), na redação confe
 
 **Tabela 1. Cronograma de extinção do ICMS/ISS e implementação do IBS (ADCT, art. 128)**
 
-| Exercício | ICMS/ISS residual (*f<sub>t</sub>*) | IBS bruto (*s<sub>t</sub>*) |
+| Exercício | ICMS/ISS residual (*f(t)*) | IBS bruto (*s(t)*) |
 |---|---:|---:|
 | 2029 | 90% | 10% |
 | 2030 | 80% | 20% |
@@ -108,7 +108,7 @@ A participação da UF (*φ(u)*, POF × Censo) se divide primeiro entre a esfera
 SR(e,t) = max(0, L(t) · φ_ref(e) − [R(t)s(t)α(t)φ_CPT(e) + R(t)s(t)(1−α(t))(1−c(t))(1−ρ)φ_dest(e)])
 ```
 
-onde *φ_ref(e)* é a receita de referência histórica ajustada do ente e *L(t)* é o único nível que esgota exatamente o fundo do exercício, isto é, que satisfaz Σ<sub>e</sub>SR(e,t) = ρ · Σ<sub>e</sub>D(e,t) / (1−ρ), com *D(e,t)* o termo ③ acima.
+onde *φ_ref(e)* é a receita de referência histórica ajustada do ente e *L(t)* é o único nível que esgota exatamente o fundo do exercício, isto é, que satisfaz Σ_e SR(e,t) = ρ · Σ_e D(e,t) / (1−ρ), com *D(e,t)* o termo ③ acima.
 
 **Tabela 2. Símbolos e definições do modelo formal**
 
