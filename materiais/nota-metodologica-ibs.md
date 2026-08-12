@@ -69,50 +69,70 @@ O Distrito Federal constitui exceção a esse procedimento: por não dispor de e
 
 ## 8. Síntese formal do modelo
 
-As seções anteriores podem ser sintetizadas num sistema fechado de equações. Seja *t* o exercício, *e* um ente federativo, *u* a unidade federativa a que pertence e, quando aplicável, *m* um município de *u*. A receita agregada de referência do exercício, *R<sub>t</sub>*, é obtida conforme a Seção 2 e reparte-se em quatro componentes.
+As sete seções anteriores descrevem, em prosa, um procedimento que se resume a uma única equação geral, expandida a seguir termo a termo. Seja *t* o exercício, *e* um ente federativo, *u* a unidade federativa a que pertence e, quando aplicável, *m* um município de *u*. A receita total do ente *e* no exercício *t* é:
 
 ```
-(1)  I(e,t)  =  R(t) · f(t) · φ_neutro(e)
-
-(2)  H(e,t)  =  R(t) · s(t) · α(t) · φ_CPT(e)
-
-(3)  D(e,t)  =  R(t) · s(t) · (1 − α(t)) · (1 − c(t)) · (1 − ρ) · φ_dest(e)
-
-(4)  SR(e,t) =  max(0,  L(t) · φ_ref(e)  −  [H(e,t) + D(e,t)])
-
-(5)  Receita(e,t) = I(e,t) + H(e,t) + D(e,t) + SR(e,t)
+Receita(e,t) = I(e,t) + H(e,t) + D(e,t) + SR(e,t)
 ```
 
-Em (4), *L<sub>t</sub>* é o único nível que satisfaz Σ<sub>e</sub> SR(e,t) = ρ · Σ<sub>e</sub>D(e,t) / (1−ρ), isto é, que esgota exatamente o fundo do Seguro-Receita do exercício, e *φ<sub>ref</sub>(e)* é a receita de referência histórica ajustada definida na Seção 6. O coeficiente *φ<sub>dest</sub>(e)* de (3), por sua vez, decompõe-se conforme a esfera do ente:
+Isto é: a soma de quatro parcelas, uma para cada critério de repartição descrito nas Seções 3 a 6, o resíduo do imposto antigo, a fatia histórica do IBS, a fatia de destino do IBS e o eventual repasse do Seguro-Receita. Cada uma se expande como segue.
+
+**Resíduo de ICMS e ISS** (Seção 3):
 
 ```
-(6)  φ_dest(u, estado)  =  φ(u) · 0,75 · rE / (rE + rM)
-
-(7)  φ_dest(u, mun.)    =  φ(u) · (rM + 0,25 · rE) / (rE + rM)
-
-(8)  φ_dest(m) = [φ_dest(u,estado) / 3] · w_pop(m)
-               + [φ_dest(u,mun.) − φ_dest(u,estado)/3] · w_renda(m)
+I(e,t) = R(t) · f(t) · φ_neutro(e)
 ```
 
-A equação (8) explicita a decomposição da Seção 7: o primeiro termo é a cota-parte, exatamente um terço da fatia estadual, distribuída pelo peso populacional *w<sub>pop</sub>(m)*; o segundo é o destino próprio, o restante da fatia municipal, distribuído pelo peso *w<sub>renda</sub>(m)*, proporcional à renda domiciliar per capita do município multiplicada por sua população.
+a receita agregada de referência do exercício (*R<sub>t</sub>*, Seção 2), multiplicada pela fração ainda cobrada como ICMS/ISS naquele ano (*f<sub>t</sub>*, Tabela 1) e pela participação corrente do ente na arrecadação de 2025 (*φ<sub>neutro</sub>(e)*, Seção 3).
 
-**Legenda de símbolos**
+**Fatia histórica do IBS** (Seção 4):
 
-| Símbolo | Definição |
-|---|---|
-| *f<sub>t</sub>*, *s<sub>t</sub>* | frações de ICMS/ISS residual e de IBS bruto no ano *t* (Tabela 1, art. 128 ADCT); *s<sub>t</sub>* = 1 − *f<sub>t</sub>* |
-| *α<sub>t</sub>* | fração do IBS bruto distribuída pelo critério histórico (art. 131, §1º, ADCT) |
-| *c<sub>t</sub>*, ρ | alíquotas de financiamento do CGIBS (art. 51, LC 227/2026) e de retenção do Seguro-Receita, ρ = 5% (art. 132, ADCT) |
-| *φ<sub>neutro</sub>(e)*, *φ<sub>CPT</sub>(e)* | participação corrente (2025) e Coeficiente de Participação de Transição (média 2019–2025) do ente *e* |
-| *φ(u)* | participação da UF *u* no consumo nacional (POF × Censo 2022, Seção 5) |
-| *r<sub>E</sub>*, *r<sub>M</sub>* | alíquotas de referência estadual e municipal, aproximadas pela razão ICMS+FECOP / ISS (média 2024–2025) |
-| *w<sub>pop</sub>(m)*, *w<sub>renda</sub>(m)* | pesos intramunicipais de *m* na cota-parte (95% população + 5% igualitário, art. 128) e no destino próprio (renda per capita × população, Seção 7) |
+```
+H(e,t) = R(t) · s(t) · α(t) · φ_CPT(e)
+```
+
+onde *s<sub>t</sub>* = 1 − *f<sub>t</sub>* é a fração já convertida em IBS, *α<sub>t</sub>* é a parcela dessa fração distribuída pelo critério histórico e *φ<sub>CPT</sub>(e)* é o Coeficiente de Participação de Transição do ente.
+
+**Fatia de destino do IBS** (Seção 5):
+
+```
+D(e,t) = R(t) · s(t) · (1 − α(t)) · (1 − c(t)) · (1 − ρ) · φ_dest(e)
+```
+
+o complemento (1 − *α<sub>t</sub>*) é a fração distribuída por destino; dela se deduzem a alíquota de financiamento do CGIBS (*c<sub>t</sub>*) e a retenção do Seguro-Receita (ρ = 5%) antes de se aplicar a participação do ente no consumo nacional, *φ<sub>dest</sub>(e)*. Esse último coeficiente não é um número único: decompõe-se em duas etapas, uma por unidade federativa e outra dentro dela.
+
+Primeiro, a participação da UF se divide entre a esfera estadual e a municipal:
+
+```
+φ_dest(u, estado) = φ(u) · 0,75 · rE / (rE + rM)
+
+φ_dest(u, mun.)   = φ(u) · (rM + 0,25 · rE) / (rE + rM)
+```
+
+onde *φ(u)* é a participação da UF no consumo nacional (POF × Censo, Seção 5) e *r<sub>E</sub>*, *r<sub>M</sub>* são as alíquotas de referência estadual e municipal, aproximadas pela razão ICMS+FECOP/ISS. Em seguida, a fatia municipal agregada se divide entre os municípios da UF:
+
+```
+φ_dest(m) = [φ_dest(u,estado) / 3] · w_pop(m)
+          + [φ_dest(u,mun.) − φ_dest(u,estado)/3] · w_renda(m)
+```
+
+o primeiro termo é a cota-parte, exatamente um terço da fatia estadual (Seção 7), repartida pelo peso populacional de cada município (*w<sub>pop</sub>(m)*); o segundo é o destino próprio, o restante da fatia municipal, repartido pelo peso de renda per capita multiplicada pela população (*w<sub>renda</sub>(m)*).
+
+**Seguro-Receita** (Seção 6):
+
+```
+SR(e,t) = max(0, L(t) · φ_ref(e) − [H(e,t) + D(e,t)])
+```
+
+onde *φ<sub>ref</sub>(e)* é a receita de referência histórica ajustada do ente (Seção 6) e *L<sub>t</sub>* é o único nível que esgota exatamente o fundo do exercício, isto é, que satisfaz Σ<sub>e</sub>SR(e,t) = ρ · Σ<sub>e</sub>D(e,t) / (1−ρ).
 
 ## 9. Limitações do modelo
 
 A receita de referência empregada nas Seções 2 a 5 deveria, pelo texto literal dos arts. 361 a 365 da LC 214/2025, corresponder à média do triênio 2024–2026. Como o exercício de 2026 ainda não estava encerrado na data desta estimativa, a razão entre receita e PIB foi calculada apenas sobre os dois exercícios já fechados, 2024 e 2025. A diferença entre essa aproximação bienal e o triênio previsto em lei tende a ser pequena, dado que a razão entre receita e PIB varia pouco de um ano para o outro, mas não é nula, e deverá ser recalculada assim que os dados de 2026 estiverem disponíveis.
 
 Tanto o cenário com reforma quanto o cenário contrafactual dependem de uma trajetória futura de crescimento do produto interno bruto que nenhuma fonte, oficial ou não, pode conhecer com certeza. O modelo adota o consenso de mercado consolidado pelo Boletim Focus para o horizonte mais próximo e a projeção da Instituição Fiscal Independente para os exercícios mais distantes, por serem as estimativas mais próximas de um consenso técnico disponível publicamente, não por constituírem previsão infalível. Na extensão de mais longo prazo do modelo, essa taxa é mantida constante a partir de 2027 até 2078, o que equivale a assumir a ausência de novos ciclos econômicos ao longo de meio século; qualquer desvio sistemático entre essa taxa e o crescimento efetivamente observado se propaga, em igual proporção, a todos os entes federativos, sem alterar a distribuição relativa entre eles. Descartou-se, no lugar dessa premissa, a alternativa de estimar uma média histórica de crescimento numa janela mais longa: séries de Contas Nacionais que remontam a períodos anteriores estão sujeitas a mudanças de metodologia, como a alteração do ano de referência e revisões retroativas, não identificáveis apenas pela observação da série, o que tornaria pouco confiável a comparação entre médias de janelas distintas.
+
+O modelo tampouco incorpora o efeito das compras governamentais sobre a repartição entre entes. A imunidade recíproca, que impede a tributação do patrimônio, da renda e dos serviços de um ente federativo por outro, aplica-se ao IBS e à CBS nos mesmos termos em que se aplicava ao sistema anterior (LC 214/2025, art. 9º, I, e §1º, este último estendendo a imunidade a autarquias, fundações públicas e à empresa pública de serviço postal, restrita às finalidades essenciais de cada ente). Gobetti e Monteiro descrevem o mecanismo operacional dessa imunidade nas compras governamentais: quando um ente público adquire bens ou serviços tributados, a integralidade do imposto correspondente, incluindo a parcela subnacional, é atribuída ao ente adquirente, mediante zeramento da alíquota dos demais entes na operação e ampliação, no mesmo montante, da alíquota do ente que compra. Como municípios concentram parcela expressiva das compras governamentais do país, esse mecanismo desloca receita adicional em favor da esfera municipal por um canal inteiramente distinto da cota-parte e do destino próprio descritos na Seção 7, e que este modelo, apoiado exclusivamente no consumo das famílias medido pela POF, não mede nem redistribui.
 
 Duas limitações adicionais, já registradas nas seções correspondentes, merecem ser reunidas aqui. Os quinze pontos percentuais da cota-parte municipal vinculados a indicadores de equidade educacional e ambiental permanecem, até o momento, sem regulamentação por qualquer unidade federativa, e são aproximados pelo mesmo critério populacional aplicável aos demais oitenta e cinco pontos percentuais da cota-parte. A estimativa da fração de destino próprio no nível municipal, obtida a partir de renda domiciliar per capita, tende a superestimar a participação de municípios de renda mais elevada dentro de cada unidade federativa, por não incorporar a propensão marginal a consumir, que declina à medida que a renda aumenta. Em ambos os casos, optou-se por declarar a limitação em vez de corrigi-la por meio de hipóteses adicionais não amparadas em dados observados.
 
