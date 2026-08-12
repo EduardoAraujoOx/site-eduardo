@@ -391,35 +391,81 @@ participação relativa estado/município na base tributável, no espírito de
 diferente de simplesmente aplicar 25%/75% sobre o φ^dest já calculado por
 esfera nos estudos.
 
-**Implementado em 11/ago/2026.** Estudo 06, Estudo 03 (ES), Estudo 12 e a
-extensão de longo prazo (2029-2077) foram ajustados:
+**Primeira correção, 11/ago/2026 (parcialmente superada — ver abaixo).**
+Estudo 06, Estudo 03 (ES), Estudo 12 e a extensão de longo prazo trocaram o
+`φ^dest_município` (que vinha da variação relativa específica por UF de
+Gobetti e Monteiro, Tabela 2 do paper) por **25% fixo do `φ^dest_estado` da
+mesma UF** — só a fração de cota-parte (CF art. 158, IV, "b"; LC 227/2026
+arts. 118, §3º, e 128), mantendo Gobetti e Monteiro como fonte do
+`φ^dest_estado`.
 
-1. **Agregado município por UF** (`φ^dest_município`): deixou de vir da
-   variação relativa específica por UF publicada por Gobetti e Monteiro
-   (Tabela 2 do paper) e passou a ser exatamente **25% fixo do
-   `φ^dest_estado` da mesma UF** — a fração constitucional uniforme (CF art.
-   158, IV, "b"; LC 227/2026 arts. 118, §3º, e 128). `φ^dest_estado`
-   continua vindo de Gobetti e Monteiro (a estimativa de consumo por estado
-   é a peça legalmente relevante do lado estadual). Alterado em:
-   `estudos/ibs-projecao-arrecadacao-br.html`,
-   `estudos/ibs-projecao-arrecadacao-es.html`,
-   `estudos/ibs-projecao-longo-prazo.html`,
-   `data/build-rateio-destino-municipios.py`,
-   `data/build-seguro-receita-repasses.py`,
-   `data/build-seguro-receita-repasses-longo-prazo.py`.
-2. **Rateio entre municípios individuais de uma mesma UF** (Estudo 12): a
-   antiga aproximação pelo peso de cada município no φ^CPT foi substituída
-   pelo critério do próprio art. 128: 80% população + 5% igualitário
-   (valores exatos da lei, usando `data/populacao-municipios-media-2019-2026.json`,
-   IBGE) + 10% educação-equidade + 5% ambiental (art. 128, incisos II e III
-   — dependem de indicadores fixados por lei estadual; nenhum Estado
-   regulamentou ainda, então são aproximados pelo mesmo critério
-   populacional do inciso I). Na prática: 95% população + 5% igualitário,
-   até que algum Estado regulamente os 15% restantes.
+**Achado adicional, mesma data:** essa correção capturava só a cota-parte,
+não a segunda perna do problema. **LC 214/2025, art. 361** fixa, separada e
+independentemente, uma "alíquota de referência **estadual**" (inciso I) e
+uma "alíquota de referência **municipal**" (inciso II) — não uma derivada da
+outra. E o próprio Gobetti e Monteiro, na Carta de Conjuntura 60 (IPEA, 28
+ago. 2023, p. 3), descrevem o efeito redistributivo como a combinação de
+**três** mudanças, não duas: *"i) substituição do ICMS por um imposto
+estadual no destino; ii) redistribuição da cota-parte municipal do imposto
+estadual com base em novos critérios [...]; e iii) substituição do ISS por
+um imposto municipal de base ampla e também cobrado no destino."* O item
+(iii) — a parcela municipal do IBS, sucessora do ISS, cobrada no destino e
+pertencente diretamente ao Município (não uma cota-parte de nada) — não
+tinha nenhuma contrapartida no modelo com 25% fixo. Reproduzido de:
+`swgobetti@gmail.com`; Gobetti, S. W.; Monteiro, P. K. *Impactos
+redistributivos da reforma tributária: estimativas atualizadas.* Carta de
+Conjuntura n. 60, Nota de Conjuntura 18. IPEA, 28 ago. 2023. Disponível em
+<https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download>.
 
-Datasets regenerados: `data/rateio-destino-municipios.json`,
-`data/seguro-receita-repasses.json`,
+**Segunda correção, ago/2026 (vigente).** O site passou a usar uma
+estimativa própria e independente do coeficiente de destino — POF
+2017-2018 × Censo 2022 (<a href="/estudos/ibs-destino-pof-censo.html">Estudo
+13</a>) —, aplicada às duas esferas a partir da MESMA participação da UF no
+consumo nacional (φ_UF), já que a parcela estadual e a municipal do IBS
+incidem sobre a mesma base (LC 214/2025 art. 361 confirma que "IBS
+estadual" e "IBS municipal" são duas alíquotas de referência sobre a mesma
+base de consumo, não bases diferentes):
+
+$$\text{Estado}_{UF} = \varphi_{UF} \times 0{,}75\,\frac{r_E}{r_E+r_M}
+\qquad
+\text{Município}_{UF} = \varphi_{UF} \times \left(\frac{r_M + 0{,}25\,r_E}{r_E+r_M}\right)$$
+
+onde $r_E$ e $r_M$ (as alíquotas de referência estadual e municipal, LC
+214/2025 art. 361) são aproximadas pela razão real ICMS/ISS nacional 2025
+(85,06%/14,94%, SICONFI/STN DCA Anexo I-C) — a mesma lógica histórica do
+art. 361, sem recalcular a receita de referência separada por esfera do
+Estudo 11 (pendência futura). O fator $0{,}75$/$0{,}25$ é a cota-parte
+municipal do IBS estadual (mesma base legal acima). Gobetti e Monteiro
+(IPEA, 2023) deixou de ser insumo do modelo em qualquer esfera — permanece
+só como fonte de comparação nos Estudos 07 e 13.
+
+Arquivos alterados: `estudos/ibs-projecao-arrecadacao-br.html`,
+`estudos/ibs-projecao-arrecadacao-es.html`,
+`estudos/ibs-projecao-longo-prazo.html`,
+`data/build-rateio-destino-municipios.py`,
+`data/build-seguro-receita-repasses.py`,
+`data/build-seguro-receita-repasses-longo-prazo.py`,
+`data/build-phi-dest-pof-censo.py` (fonte de φ_UF, `data/phi-dest-pof-censo.json`).
+
+**Rateio entre municípios individuais de uma mesma UF** (Estudo 12,
+inalterado pela segunda correção): usa o critério do art. 128 — 80%
+população + 5% igualitário (valores exatos da lei, usando
+`data/populacao-municipios-media-2019-2026.json`, IBGE) + 10%
+educação-equidade + 5% ambiental (art. 128, incisos II e III — dependem de
+indicadores fixados por lei estadual; nenhum Estado regulamentou ainda,
+então são aproximados pelo mesmo critério populacional do inciso I). Na
+prática: 95% população + 5% igualitário, até que algum Estado regulamente
+os 15% restantes.
+
+Datasets regenerados: `data/phi-dest-pof-censo.json`,
+`data/rateio-destino-municipios.json`, `data/seguro-receita-repasses.json`,
 `data/seguro-receita-repasses-longo-prazo.json`.
+
+**Pendência conhecida:** $r_E$ e $r_M$ ainda vêm da razão histórica
+ICMS/ISS 2025, não da receita de referência separada por esfera que o art.
+361 realmente manda calcular (média receita/PIB 2024-2026, por esfera) — o
+Estudo 11 hoje só projeta uma receita de referência combinada. Refinar isso
+exigiria desmembrar o Estudo 11 em duas trajetórias (estadual e municipal).
 
 ---
 

@@ -197,10 +197,20 @@
                     número de domicílios contado pelo Censo mais recente, corrigindo a distribuição espacial
                     do consumo pelo que aconteceu entre 2018 e 2022. O resultado é o coeficiente de destino
                     do IBS <strong>combinado</strong> (estado mais municípios) de cada UF &mdash; a divisão
-                    entre as duas esferas usa a mesma regra de 25% fixo do <a
-                    href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> (CF art. 158, IV, "b"; LC
-                    227/2026 arts. 118, §3º, e 128), não recalculada aqui.
+                    entre as duas esferas usa a proporção entre as alíquotas de referência estadual e
+                    municipal (LC 214/2025 art. 361), aproximada pela razão ICMS/ISS nacional 2025 e
+                    combinada com a cota-parte de 25% (CF art. 158, IV, "b"; LC 227/2026 arts. 118, §3º,
+                    e 128) &mdash; ver <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>,
+                    não recalculada aqui.
                 </p>
+
+                <div class="callout" style="margin-top:1rem">
+                    <strong>Atualização (ago/2026):</strong> desde esta data, a coluna "POF &times; Censo,
+                    bruto" desta página passou a ser o coeficiente de destino usado em todo o site
+                    (Estudos 06, 03, 11, 12 e a extensão de longo prazo), substituindo Gobetti e Monteiro
+                    como insumo do modelo. Gobetti e Monteiro permanece só como fonte de comparação (Tabela
+                    2 abaixo e Estudo 07).
+                </div>
 
                 <p class="meto-section-title">A ponderação por tributabilidade &mdash; e por que ela não zera a Alimentação</p>
                 <p class="meto-note">
@@ -254,25 +264,26 @@
 
         <span class="section-label">Tabela 2 &middot; Quatro estimativas do coeficiente de destino, lado a lado (%)</span>
         <div class="callout">
-            "Nosso modelo" é o coeficiente já usado nos Estudos 06/03/11/12 (Gobetti e Monteiro 2023 para o
-            estado, mais 25% fixo de cota-parte municipal). "Gobetti, Tabela 1" reproduz a própria estimativa
-            original dos autores (2023, base 2022), sem qualquer ajuste nosso, para a UF como um todo &mdash;
-            é a mesma fonte do <a href="/estudos/icms-iss-ibs-atual-potencial.html">Estudo 07</a>. "POF x
-            Censo" (bruto e ponderado) são as duas versões construídas nesta página. Nenhuma das quatro é "a
-            resposta certa": são leituras independentes da mesma pergunta, cada uma com suas próprias
-            limitações, e a comparação serve para checar se convergem para uma faixa razoável &mdash; não
-            para escolher uma vencedora.
+            <strong>Atualização (ago/2026): a coluna "POF &times; Censo, bruto" desta página passou a ser o
+            coeficiente de destino usado em todo o site</strong> (Estudos 06, 03, 11, 12 e a extensão de longo
+            prazo) &mdash; ver nota no topo desta página. "Modelo anterior" mostra o que era usado antes dessa
+            mudança (Gobetti e Monteiro 2023 para o estado, mais 25% fixo de cota-parte municipal), para
+            dimensionar a diferença. "Gobetti, Tabela 1" reproduz a própria estimativa original dos autores
+            (2023, base 2022), sem qualquer ajuste nosso, para a UF como um todo &mdash; é a mesma fonte do
+            <a href="/estudos/icms-iss-ibs-atual-potencial.html">Estudo 07</a>, mantida só como comparação.
+            "POF x Censo, ponderado" é a versão de sensibilidade por tributabilidade construída nesta página,
+            não usada como padrão no modelo.
         </div>
         <div class="table-wrap">
             <table class="data-table" id="table-comparacao">
                 <thead>
                     <tr>
                         <th class="th-left">UF</th>
-                        <th>Nosso modelo (%)</th>
+                        <th>POF &times; Censo, bruto &mdash; modelo atual (%)</th>
+                        <th>Modelo anterior (%)</th>
                         <th>Gobetti, Tabela 1, 2023 (%)</th>
-                        <th>POF &times; Censo, bruto (%)</th>
                         <th>POF &times; Censo, ponderado (%)</th>
-                        <th>Δ bruto &minus; modelo (p.p.)</th>
+                        <th>Δ bruto &minus; modelo anterior (p.p.)</th>
                     </tr>
                 </thead>
                 <tbody id="tbody-comparacao">
@@ -292,9 +303,9 @@
             para ter uma estimativa própria e reprodutível como a desta página.
         </div>
 
-        <span class="section-label">Nosso modelo (Gobetti 2023 + cota-parte) x POF &times; Censo, bruto &mdash; as duas fontes concordam?</span>
+        <span class="section-label">Modelo anterior (Gobetti 2023 + cota-parte) x POF &times; Censo, bruto (modelo atual) &mdash; o quanto mudou?</span>
         <div class="chart-panel">
-            <p class="chart-panel-title">Nosso modelo atual (eixo X) x POF &times; Censo, bruto (eixo Y), 27 UFs</p>
+            <p class="chart-panel-title">Modelo anterior (eixo X) x POF &times; Censo, bruto (eixo Y), 27 UFs</p>
             <canvas id="chart-scatter-compare" style="max-height:480px"></canvas>
             <div class="chart-legend-note">
                 <span><span class="legend-dot" style="background:#2a78d6"></span>UF</span>
@@ -311,9 +322,9 @@
             <p>1. Despesa de consumo média mensal familiar por UF: IBGE, Pesquisa de Orçamentos Familiares 2017-2018, Tabela 1.1.13 ("Despesa de consumo monetária e não monetária média mensal familiar, por tipos de despesa, segundo a situação do domicílio, as Grandes Regiões e as Unidades da Federação"). Disponível em <a href="https://ftp.ibge.gov.br/Orcamentos_Familiares/Pesquisa_de_Orcamentos_Familiares_2017_2018/Primeiros_resultados/tabelas_despesas/" target="_blank" rel="noopener">ftp.ibge.gov.br</a>. Ver <code>data/pof-2017-2018-despesa-uf.json</code>.</p>
             <p>2. Domicílios por UF: IBGE, Censo Demográfico 2022, tabela SIDRA <a href="https://sidra.ibge.gov.br/tabela/9922" target="_blank" rel="noopener">9922</a> ("Domicílios particulares permanentes ocupados, moradores em domicílios particulares permanentes ocupados e média de moradores em domicílios particulares permanentes ocupados, segundo a situação do domicílio"). Ver <code>data/censo-2022-domicilios-uf.json</code>.</p>
             <p>3. Coeficiente bruto (Tabela 2, coluna "POF x Censo, bruto"): despesa total (POF) &times; domicílios (Censo) de cada UF, dividido pela soma nacional do mesmo produto. Coeficiente ponderado: mesma fórmula, substituindo a despesa total pela despesa ponderada &mdash; Alimentação, Saúde e Educação com peso 0,4 (redução geral de 60%, EC 132/2023 art. 9º, §1º), demais categorias em peso cheio. Ver <code>data/build-phi-dest-pof-censo.py</code> e <code>data/phi-dest-pof-censo.json</code>.</p>
-            <p>4. "Nosso modelo": φ<sup>dest</sup> total (estado mais agregado municipal) já usado nos Estudos 06, 03, 11 e 12, replicando <code>computeParams()</code> de <a href="/estudos/ibs-projecao-arrecadacao-br.html">estudos/ibs-projecao-arrecadacao-br.html</a>: coeficiente estadual de Gobetti e Monteiro (2023) mais 25% fixo de cota-parte municipal (CF art. 158, IV, "b"; LC 227/2026 arts. 118, §3º, e 128).</p>
+            <p>4. "Modelo anterior": φ<sup>dest</sup> total (estado mais agregado municipal) usado nos Estudos 06, 03, 11 e 12 até ago/2026, replicando a antiga <code>computeParams()</code> de <a href="/estudos/ibs-projecao-arrecadacao-br.html">estudos/ibs-projecao-arrecadacao-br.html</a>: coeficiente estadual de Gobetti e Monteiro (2023) mais 25% fixo de cota-parte municipal (CF art. 158, IV, "b"; LC 227/2026 arts. 118, §3º, e 128). Desde então, a coluna "POF x Censo, bruto" desta página passou a ser o insumo direto do modelo.</p>
             <p>5. "Gobetti, Tabela 1, 2023": participação de cada UF na própria Tabela 1 de Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura n.&nbsp;60, Nota de Conjuntura 18. IPEA, 28 ago. 2023. Disponível em <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">repositorio.ipea.gov.br</a>. Mesma fonte usada no <a href="/estudos/icms-iss-ibs-atual-potencial.html">Estudo 07</a>.</p>
-            <p>6. Gráfico de dispersão: cruza, para cada UF, "nosso modelo" (eixo X) com "POF x Censo, bruto" (eixo Y). A correlação é o coeficiente de Pearson entre as duas séries; a segunda estatística é a proporção de UFs cuja estimativa POF x Censo fica a menos de 0,5 ponto percentual do valor do nosso modelo. Calculados no navegador a partir dos dados de <code>data/phi-dest-pof-censo.json</code>.</p>
+            <p>6. Gráfico de dispersão: cruza, para cada UF, "modelo anterior" (eixo X) com "POF x Censo, bruto" (eixo Y, o modelo atual). A correlação é o coeficiente de Pearson entre as duas séries; a segunda estatística é a proporção de UFs cuja estimativa POF x Censo fica a menos de 0,5 ponto percentual do modelo anterior. Calculados no navegador a partir dos dados de <code>data/phi-dest-pof-censo.json</code>.</p>
             <p>7. "IBS hipotético 2025" (ES): valor apresentado por Sérgio Gobetti à SEFAZ-ES em 2026, relatado ao autor deste site; não é uma fonte publicada com metodologia disponível, e por isso não entra na Tabela 2 nem no gráfico de dispersão &mdash; fica só como referência de contexto para o Espírito Santo.</p>
         </div>
     </div>
@@ -367,18 +378,18 @@
             .sort((a, b) => b.pof_censo_bruto_pct - a.pof_censo_bruto_pct);
         document.getElementById('tbody-comparacao').innerHTML = rows.map(r => `<tr${r.uf === 'ES' ? ' class="row-es"' : ''}>
             <td class="td-uf">${r.uf} <small>${r.nome}</small></td>
-            <td>${fmtNum(r.modelo_atual_pct, 4)}%</td>
-            <td>${fmtNum(r.gobetti_tabela1_2023_pct, 4)}%</td>
             <td>${fmtNum(r.pof_censo_bruto_pct, 4)}%</td>
+            <td>${fmtNum(r.modelo_anterior_pct, 4)}%</td>
+            <td>${fmtNum(r.gobetti_tabela1_2023_pct, 4)}%</td>
             <td>${fmtNum(r.pof_censo_ponderado_pct, 4)}%</td>
             <td class="${clsPct(r.delta_bruto_vs_modelo_pp)}">${fmtPct(r.delta_bruto_vs_modelo_pp, 3).replace('%','')}</td>
         </tr>`).join('');
         const soma = k => rows.reduce((s, r) => s + r[k], 0);
         document.getElementById('tfoot-comparacao').innerHTML = `<tr>
             <td class="th-left">Brasil</td>
-            <td>${fmtNum(soma('modelo_atual_pct'), 4)}%</td>
-            <td>${fmtNum(soma('gobetti_tabela1_2023_pct'), 4)}%</td>
             <td>${fmtNum(soma('pof_censo_bruto_pct'), 4)}%</td>
+            <td>${fmtNum(soma('modelo_anterior_pct'), 4)}%</td>
+            <td>${fmtNum(soma('gobetti_tabela1_2023_pct'), 4)}%</td>
             <td>${fmtNum(soma('pof_censo_ponderado_pct'), 4)}%</td>
             <td>&mdash;</td>
         </tr>`;
@@ -399,7 +410,7 @@
     function buildCorrelationChart(data) {
         const points = UFS.map(uf => ({
             uf, nome: NOMES_UF[uf],
-            x: data.por_uf[uf].modelo_atual_pct,
+            x: data.por_uf[uf].modelo_anterior_pct,
             y: data.por_uf[uf].pof_censo_bruto_pct
         }));
 
@@ -409,7 +420,7 @@
 
         document.getElementById('callout-correlation').innerHTML =
             `Correlação entre as duas séries: <span class="corr-stat">r = ${r.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</span>. ` +
-            `Em <span class="corr-stat">${proximas} das ${points.length} UFs</span> (${fmtNum(proximas / points.length * 100, 0)}%), a estimativa POF &times; Censo fica a menos de ${TOLERANCIA_PP} ponto percentual do nosso modelo atual.`;
+            `Em <span class="corr-stat">${proximas} das ${points.length} UFs</span> (${fmtNum(proximas / points.length * 100, 0)}%), a estimativa POF &times; Censo (modelo atual) fica a menos de ${TOLERANCIA_PP} ponto percentual do modelo anterior.`;
 
         const el = document.getElementById('chart-scatter-compare');
         if (!el || typeof Chart === 'undefined') return;
@@ -450,10 +461,10 @@
                 interaction: { mode: 'nearest', intersect: true },
                 plugins: {
                     legend: { display: false },
-                    tooltip: { callbacks: { label: ctx => { const d = ctx.raw; return `${d.nome || d.uf}: modelo atual ${fmtNum(d.x)}% · POF x Censo ${fmtNum(d.y)}%`; } } }
+                    tooltip: { callbacks: { label: ctx => { const d = ctx.raw; return `${d.nome || d.uf}: modelo anterior ${fmtNum(d.x)}% · POF x Censo ${fmtNum(d.y)}%`; } } }
                 },
                 scales: {
-                    x: { min: 0, max: maxVal, title: { display: true, text: 'Nosso modelo atual (%)', color: textColor, font: { size: 11 } }, ticks: { color: textColor, callback: v => v + '%' }, grid: { color: gridColor } },
+                    x: { min: 0, max: maxVal, title: { display: true, text: 'Modelo anterior (%)', color: textColor, font: { size: 11 } }, ticks: { color: textColor, callback: v => v + '%' }, grid: { color: gridColor } },
                     y: { min: 0, max: maxVal, title: { display: true, text: 'POF x Censo, bruto (%)', color: textColor, font: { size: 11 } }, ticks: { color: textColor, callback: v => v + '%' }, grid: { color: gridColor } }
                 }
             }

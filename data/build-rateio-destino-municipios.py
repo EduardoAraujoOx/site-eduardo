@@ -5,14 +5,17 @@ individuais de cada UF, como preparacao para o estudo de repasses do
 Seguro-Receita por ente (ADCT art. 132).
 
 O Estudo 06 (estudos/ibs-projecao-arrecadacao-br.html) calcula phi^dest por
-esfera (estado e agregado dos municipios) para cada UF: a fatia estadual
-desloca phi^neutro pela variacao relativa real de Gobetti e Monteiro
-(tabela4_esferas); a fatia municipal e, desde ago/2026, exatamente 25% da
-fatia estadual da mesma UF -- fracao fixa e nacionalmente uniforme definida
-em CF art. 158, IV, "b", e LC 227/2026 arts. 118, par. 3o, e 128 (ver
-computeParams() no HTML). Esse numero, porem, so existe agregado por UF: nao
-diz quanto do "conjunto dos municipios do ES" cabe a Vitoria, Serra, Vila
-Velha etc. individualmente.
+esfera (estado e agregado dos municipios) para cada UF a partir de uma
+estimativa propria (POF 2017-2018 x Censo 2022, Estudo 13,
+data/phi-dest-pof-censo.json): phi_UF (participacao da UF no consumo
+nacional) e dividido entre estado e municipios pela proporcao entre as
+aliquotas de referencia estadual e municipal do IBS (LC 214/2025 art. 361),
+aproximada pela razao ICMS/ISS nacional 2025 e combinada com a cota-parte
+municipal de 25% (CF art. 158, IV, "b"; LC 227/2026 arts. 118, par. 3o, e
+128) -- ver computeParams() no HTML. Gobetti e Monteiro (IPEA, 2023) deixou
+de ser insumo do modelo, mantido so como comparacao (Estudos 07 e 13). Esse
+numero, porem, so existe agregado por UF: nao diz quanto do "conjunto dos
+municipios do ES" cabe a Vitoria, Serra, Vila Velha etc. individualmente.
 
 Metodo: repartir o phi^dest agregado da camada municipal de cada UF entre
 seus municipios individuais pelo criterio do proprio art. 128 da LC
@@ -50,15 +53,19 @@ UFS = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', '
 
 
 def compute_params(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cota_declarada_2025,
-                    total_br_2025, coeficientes_uf, t4_by_uf):
+                    total_br_2025, coeficientes_uf, phi_dest_por_uf):
     """Replica computeParams() de estudos/ibs-projecao-arrecadacao-br.html."""
+    r_estado_br = sum(dca_icms_2025.get(uf, 0) or 0 for uf in UFS)
+    r_muni_br = sum(dca_iss_2025.get(uf, 0) or 0 for uf in UFS)
+    frac_estado = 0.75 * r_estado_br / (r_estado_br + r_muni_br)
+    frac_muni = (r_muni_br + 0.25 * r_estado_br) / (r_estado_br + r_muni_br)
+
     params = {}
     for uf in UFS:
         icms = dca_icms_2025.get(uf, 0) or 0
         iss = dca_iss_2025.get(uf, 0) or 0
         fecop = dca_fecop_2025.get(uf, 0) or 0
         cuf = coeficientes_uf['por_uf'].get(uf, {})
-        t4 = t4_by_uf.get(uf, {})
         is_df = bool(cuf.get('is_df'))
 
         cota_declarada = dca_cota_declarada_2025.get(uf)
@@ -70,29 +77,16 @@ def compute_params(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cota_declara
         coef_neutro_estado = r_estado / total_br_2025 if total_br_2025 > 0 else 0
         coef_neutro_muni = (r_muni / total_br_2025) if (r_muni is not None and total_br_2025 > 0) else None
 
-        vr_estado = (t4.get('estado_pct') or 0) / 100
-
-        bruto_estado = coef_neutro_estado * (1 + vr_estado)
-        # Cota-parte municipal do IBS-destino: 25% fixo e nacionalmente uniforme sobre o destino
-        # do proprio Estado (CF art. 158, IV, "b"; LC 227/2026 arts. 118, par. 3o, e 128) -- nao a
-        # variacao especifica por UF estimada por Gobetti e Monteiro (efeito de consumo, nao a
-        # regra legal de partilha).
-        bruto_muni = (bruto_estado / 3) if coef_neutro_muni is not None else None
+        # phi^dest: estimativa propria (POF x Censo, Estudo 13) -- Gobetti e Monteiro deixou de
+        # ser insumo do modelo (fica so como comparacao, Estudos 07/13).
+        phi_uf = (phi_dest_por_uf.get(uf, {}).get('pof_censo_bruto_pct') or 0) / 100
+        coef_pleno_estado = phi_uf if is_df else phi_uf * frac_estado
+        coef_pleno_muni = None if is_df else phi_uf * frac_muni
 
         params[uf] = {
-            'estado': {'coefNeutro': coef_neutro_estado, 'bruto': bruto_estado},
-            'municipio': None if r_muni is None else {'coefNeutro': coef_neutro_muni, 'bruto': bruto_muni},
+            'estado': {'coefNeutro': coef_neutro_estado, 'coefPleno': coef_pleno_estado},
+            'municipio': None if r_muni is None else {'coefNeutro': coef_neutro_muni, 'coefPleno': coef_pleno_muni},
         }
-
-    soma_bruto = sum(
-        (params[uf]['estado']['bruto'] or 0) + ((params[uf]['municipio'] or {}).get('bruto') or 0)
-        for uf in UFS
-    )
-    for uf in UFS:
-        p = params[uf]
-        p['estado']['coefPleno'] = (p['estado']['bruto'] / soma_bruto) if soma_bruto > 0 else 0
-        if p['municipio']:
-            p['municipio']['coefPleno'] = (p['municipio']['bruto'] / soma_bruto) if soma_bruto > 0 else 0
     return params
 
 
@@ -101,8 +95,8 @@ def main():
         ref_data = json.load(f)
     with open(HERE / "coeficientes-uf.json") as f:
         coeficientes_uf = json.load(f)
-    with open(HERE / "gobetti-2023-perdas-ganhos-uf.json") as f:
-        gobetti = json.load(f)
+    with open(HERE / "phi-dest-pof-censo.json") as f:
+        phi_dest_por_uf = json.load(f)['por_uf']
     with open(HERE / "coeficientes-municipios.json") as f:
         cpt_municipios = json.load(f)
     with open(HERE / "populacao-municipios-media-2019-2026.json") as f:
@@ -116,10 +110,8 @@ def main():
         (dca_icms_2025.get(uf, 0) or 0) + (dca_iss_2025.get(uf, 0) or 0) + (dca_fecop_2025.get(uf, 0) or 0)
         for uf in UFS
     )
-    t4_by_uf = {u['uf']: u for u in gobetti['tabela4_esferas']['ufs']}
-
     params = compute_params(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cota_declarada_2025,
-                             total_br_2025, coeficientes_uf, t4_by_uf)
+                             total_br_2025, coeficientes_uf, phi_dest_por_uf)
 
     municipios_por_uf = {}
     for cod, r in cpt_municipios['municipios'].items():

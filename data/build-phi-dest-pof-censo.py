@@ -25,10 +25,13 @@ de alimentos, nao a excecao da cesta basica) e a aproximacao mais
 defensavel disponivel. Ainda assim, e um teste de sensibilidade, nao um
 mapeamento fino da legislacao por categoria.
 
-Tambem recalcula, para comparacao:
-  - o phi^dest atual do site (Gobetti e Monteiro 2023 + cota-parte municipal
-    de 25% fixa, ja em vigor em coeficientes-uf.json/gobetti-2023-*.json,
-    replicando compute_params() de estudos/ibs-projecao-arrecadacao-br.html);
+A partir de ago/2026, phi_dest_pof_censo (bruto) passou a ser o INSUMO do
+modelo em todo o site (Estudos 06, 03, 11, 12 e a extensao de longo prazo),
+substituindo Gobetti e Monteiro. Este script tambem recalcula, so para
+comparacao/auditoria (nao mais como fonte primaria):
+  - "modelo_anterior": o phi^dest usado no site ANTES dessa mudanca
+    (Gobetti e Monteiro 2023 + cota-parte municipal de 25% fixa), replicando
+    a formula antiga de compute_params() -- mostra o tamanho da mudanca;
   - a participacao bruta de cada UF na propria Tabela 1 de Gobetti e
     Monteiro (2023, base 2022), sem qualquer ajuste nosso.
 
@@ -46,7 +49,7 @@ UFS = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', '
        'PA', 'PB', 'PE', 'PI', 'PR', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO']
 
 
-def compute_modelo_atual(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cota_declarada_2025,
+def compute_modelo_anterior(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cota_declarada_2025,
                           total_br_2025, coeficientes_uf, t4_by_uf):
     """Replica computeParams() de estudos/ibs-projecao-arrecadacao-br.html: retorna
     o phi^dest TOTAL (estado + municipios) de cada UF, coeficiente pleno normalizado."""
@@ -130,18 +133,18 @@ def main():
     )
     t4_by_uf = {u['uf']: u for u in gobetti['tabela4_esferas']['ufs']}
 
-    modelo_atual = compute_modelo_atual(dca_icms_2025, dca_iss_2025, dca_fecop_2025,
+    modelo_anterior = compute_modelo_anterior(dca_icms_2025, dca_iss_2025, dca_fecop_2025,
                                          dca_cota_declarada_2025, total_br_2025, coeficientes_uf, t4_by_uf)
     gobetti_t1 = compute_gobetti_tabela1(gobetti)
     pof_bruto, pof_ponderado = compute_pof_censo(pof, censo)
 
     por_uf = {}
     for uf in UFS:
-        ma = modelo_atual[uf]
+        ma = modelo_anterior[uf]
         pb = pof_bruto[uf]
         pp = pof_ponderado[uf]
         por_uf[uf] = {
-            "modelo_atual_pct": ma,
+            "modelo_anterior_pct": ma,
             "gobetti_tabela1_2023_pct": gobetti_t1[uf],
             "pof_censo_bruto_pct": pb,
             "pof_censo_ponderado_pct": pp,
@@ -176,10 +179,10 @@ def main():
         json.dump(output, f, ensure_ascii=False, indent=2)
 
     print(f"Salvo em {OUT}")
-    soma_ma = sum(v["modelo_atual_pct"] for v in por_uf.values())
+    soma_ma = sum(v["modelo_anterior_pct"] for v in por_uf.values())
     soma_pb = sum(v["pof_censo_bruto_pct"] for v in por_uf.values())
-    print(f"Soma modelo atual: {soma_ma:.4f}% | Soma POF x Censo bruto: {soma_pb:.4f}%")
-    print(f"ES: modelo atual={por_uf['ES']['modelo_atual_pct']:.4f}% | "
+    print(f"Soma modelo anterior: {soma_ma:.4f}% | Soma POF x Censo bruto: {soma_pb:.4f}%")
+    print(f"ES: modelo anterior={por_uf['ES']['modelo_anterior_pct']:.4f}% | "
           f"Gobetti Tabela 1={por_uf['ES']['gobetti_tabela1_2023_pct']:.4f}% | "
           f"POF x Censo bruto={por_uf['ES']['pof_censo_bruto_pct']:.4f}% | "
           f"ponderado={por_uf['ES']['pof_censo_ponderado_pct']:.4f}%")

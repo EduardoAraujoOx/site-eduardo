@@ -43,15 +43,19 @@ ANO_FIM = 2077
 
 
 def compute_params_estado(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cota_declarada_2025,
-                           total_br_2025, coeficientes_uf, t4_by_uf):
+                           total_br_2025, coeficientes_uf, phi_dest_por_uf):
     """Idêntico a build-seguro-receita-repasses.py -- replica computeParams() do Estudo 06."""
+    r_estado_br = sum(dca_icms_2025.get(uf, 0) or 0 for uf in UFS)
+    r_muni_br = sum(dca_iss_2025.get(uf, 0) or 0 for uf in UFS)
+    frac_estado = 0.75 * r_estado_br / (r_estado_br + r_muni_br)
+    frac_muni = (r_muni_br + 0.25 * r_estado_br) / (r_estado_br + r_muni_br)
+
     params = {}
     for uf in UFS:
         icms = dca_icms_2025.get(uf, 0) or 0
         iss = dca_iss_2025.get(uf, 0) or 0
         fecop = dca_fecop_2025.get(uf, 0) or 0
         cuf = coeficientes_uf['por_uf'].get(uf, {})
-        t4 = t4_by_uf.get(uf, {})
         is_df = bool(cuf.get('is_df'))
 
         cota_declarada = dca_cota_declarada_2025.get(uf)
@@ -63,30 +67,20 @@ def compute_params_estado(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cota_
         coef_neutro_estado = r_estado / total_br_2025 if total_br_2025 > 0 else 0
         coef_neutro_muni = (r_muni / total_br_2025) if (r_muni is not None and total_br_2025 > 0) else None
 
-        vr_estado = (t4.get('estado_pct') or 0) / 100
-
-        bruto_estado = coef_neutro_estado * (1 + vr_estado)
-        # Cota-parte municipal do IBS-destino: 25% fixo e nacionalmente uniforme sobre o destino
-        # do proprio Estado (CF art. 158, IV, "b"; LC 227/2026 arts. 118, par. 3o, e 128).
-        bruto_muni = (bruto_estado / 3) if coef_neutro_muni is not None else None
+        # phi^dest: estimativa propria (POF x Censo, Estudo 13) -- Gobetti e Monteiro deixou de
+        # ser insumo do modelo (fica so como comparacao, Estudos 07/13).
+        phi_uf = (phi_dest_por_uf.get(uf, {}).get('pof_censo_bruto_pct') or 0) / 100
+        phi_dest_estado = phi_uf if is_df else phi_uf * frac_estado
+        phi_dest_muni = None if is_df else phi_uf * frac_muni
 
         params[uf] = {
             'is_df': is_df,
             'coef_cpt_estado': (cuf.get('coeficiente_estado_pct') or 0) / 100,
             'coef_cpt_total': (cuf.get('coeficiente_total_pct') or 0) / 100,
             'iss_2025': iss,
-            'bruto_estado': bruto_estado,
-            'bruto_muni': bruto_muni,
+            'phi_dest_estado': phi_dest_estado,
+            'phi_dest_muni_agregado': phi_dest_muni,
         }
-
-    soma_bruto = sum(
-        (params[uf]['bruto_estado'] or 0) + (params[uf]['bruto_muni'] or 0)
-        for uf in UFS
-    )
-    for uf in UFS:
-        p = params[uf]
-        p['phi_dest_estado'] = (p['bruto_estado'] / soma_bruto) if soma_bruto > 0 else 0
-        p['phi_dest_muni_agregado'] = (p['bruto_muni'] / soma_bruto) if (soma_bruto > 0 and p['bruto_muni'] is not None) else None
     return params
 
 
@@ -120,8 +114,8 @@ def main():
         coeficientes_uf = json.load(f)
     with open(HERE / "coeficientes-municipios.json") as f:
         coeficientes_municipios = json.load(f)
-    with open(HERE / "gobetti-2023-perdas-ganhos-uf.json") as f:
-        gobetti = json.load(f)
+    with open(HERE / "phi-dest-pof-censo.json") as f:
+        phi_dest_por_uf = json.load(f)['por_uf']
     with open(HERE / "rateio-destino-municipios.json") as f:
         rateio_muni = json.load(f)
     with open(HERE / "ibs-projecao-longo-prazo.json") as f:
@@ -139,9 +133,8 @@ def main():
         (dca_icms_2025.get(uf, 0) or 0) + (dca_iss_2025.get(uf, 0) or 0) + (dca_fecop_2025.get(uf, 0) or 0)
         for uf in UFS
     )
-    t4_by_uf = {u['uf']: u for u in gobetti['tabela4_esferas']['ufs']}
     params_estado = compute_params_estado(dca_icms_2025, dca_iss_2025, dca_fecop_2025,
-                                           dca_cota_declarada_2025, total_br_2025, coeficientes_uf, t4_by_uf)
+                                           dca_cota_declarada_2025, total_br_2025, coeficientes_uf, phi_dest_por_uf)
 
     pop_by_uf = {uf: v['pop_media'] for uf, v in pop_uf['ufs'].items()}
 

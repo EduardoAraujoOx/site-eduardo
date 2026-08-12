@@ -322,7 +322,7 @@
                             <tr><td>\(\alpha_a\)</td><td>Fração do IBS bruto pelo critério histórico no ano <em>a</em> (item 1).</td></tr>
                             <tr><td>\(p_u^{neutro}\)</td><td>Participação corrente do ente <em>u</em> (base 2025), aplicada à fração ainda cobrada como ICMS/ISS.</td></tr>
                             <tr><td>\(p_u^{CPT}\)</td><td>Coeficiente de Participação de Transição do ente <em>u</em> (2019&ndash;2025), validado contra a Nota Técnica nº&nbsp;02/2026.</td></tr>
-                            <tr><td>\(p_u^{dest}\)</td><td>Coeficiente de destino pleno do ente <em>u</em>: para o estado, Gobetti e Monteiro (2023, reescalado); para o agregado dos municípios da UF, 25% fixo do destino do próprio estado (CF art. 158, IV, "b").</td></tr>
+                            <tr><td>\(p_u^{dest}\)</td><td>Coeficiente de destino pleno do ente <em>u</em>: estimativa própria (POF 2017-2018 x Censo 2022, <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a>), dividida entre estado e agregado municipal pela razão ICMS/ISS nacional 2025 (ver Estudo 06). Gobetti e Monteiro (IPEA, 2023) permanece só como comparação.</td></tr>
                             <tr><td>\(SR_{u,a}\)</td><td>Repasse do Seguro-Receita ao ente <em>u</em> no ano <em>a</em> (item 3, Estudo 12).</td></tr>
                         </tbody>
                     </table>
@@ -333,12 +333,12 @@
                 <p class="meto-note">
                     Um exemplo concreto: em 2050, o Espírito Santo (esfera estado) tem
                     \(p_{ES}^{neutro}=1{,}6288\%\), \(p_{ES}^{CPT}=1{,}5418\%\) e
-                    \(p_{ES}^{dest}=1{,}0781\%\). Como f<sub>2050</sub>=0 (ICMS já extinto), a parcela
+                    \(p_{ES}^{dest}=1{,}1000\%\). Como f<sub>2050</sub>=0 (ICMS já extinto), a parcela
                     histórica é R$&nbsp;2.130,85&nbsp;bi &times; 1,5418% =
                     R$&nbsp;32,85&nbsp;bi, a parcela destino líquida é R$&nbsp;1.582,57&nbsp;bi
-                    &times; 1,0781% = R$&nbsp;17,06&nbsp;bi, e o Estudo 12 estima um repasse de
-                    Seguro-Receita de R$&nbsp;6,40&nbsp;bi para o estado nesse ano &mdash; total de
-                    R$&nbsp;56,31&nbsp;bi, 9,1% abaixo do contrafactual (R$&nbsp;61,98&nbsp;bi, a
+                    &times; 1,1000% = R$&nbsp;17,41&nbsp;bi, e o Estudo 12 estima um repasse de
+                    Seguro-Receita de R$&nbsp;2,11&nbsp;bi para o estado nesse ano &mdash; total de
+                    R$&nbsp;52,37&nbsp;bi, 15,5% abaixo do contrafactual (R$&nbsp;61,98&nbsp;bi, a
                     participação de 2025 sobre o mesmo bolo). É a mesma conta que gera a linha "2050"
                     nas tabelas abaixo, só que por esfera separada em vez de "total".
                 </p>
@@ -503,7 +503,7 @@
 
         <div class="footnotes">
             <p><strong>Fontes e notas metodológicas:</strong></p>
-            <p>1. Fórmula de combinação por ente, coeficientes de participação (&phi;<sup>CPT</sup>, &phi;<sup>dest</sup>), base de origem 2025 e repasse do Seguro-Receita: idênticos ao <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> &mdash; ver a metodologia lá para a derivação completa e as fontes primárias (SICONFI/STN DCA, Gobetti &amp; Monteiro/IPEA 2023, Nota Técnica nº 02/2026 SEFAZ-ES).</p>
+            <p>1. Fórmula de combinação por ente, coeficientes de participação (&phi;<sup>CPT</sup>, &phi;<sup>dest</sup>), base de origem 2025 e repasse do Seguro-Receita: idênticos ao <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> &mdash; ver a metodologia lá para a derivação completa e as fontes primárias (SICONFI/STN DCA, POF 2017-2018 x Censo 2022 &mdash; <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a>, Nota Técnica nº 02/2026 SEFAZ-ES).</p>
             <p>2. Cronograma histórico&rarr;destino, 2034&ndash;2077 (&alpha;<sub>a</sub>): ADCT art. 131, &sect;1&ordm; (EC 132/2023) &mdash; redução de 1/45 ao ano a partir do valor de 2033, chegando a 0% (100% destino) em 2078.</p>
             <p>3. PIB nominal e IBS bruto nacional, 2034&ndash;2077: <code>data/build-ibs-projecao-longo-prazo.py</code>, que lê a projeção 2029&ndash;2033 do Estudo 11 sem recalculá-la e continua o PIB com a mesma taxa da IFI (RAF 107: 2,2% a.a. real, IPCA 3,0% a.a.) usada em 2031&ndash;2033, e a mesma razão bolo/PIB do Estudo 11.</p>
             <p>4. Repasse do Seguro-Receita por ente, 2034&ndash;2077: <code>data/build-seguro-receita-repasses-longo-prazo.py</code>, mesmo algoritmo de nivelamento sequencial do Estudo 12 (art. 132 ADCT; art. 117 LC 227/2026), mesmos coeficientes e receita de referência fixos, aplicado ao IBS-destino estendido.</p>
@@ -547,9 +547,16 @@
 
     // ── As três funções abaixo são idênticas às do Estudo 06 (mesma fórmula de combinação) ──
 
-    function computeParams(dcaIcms2025, dcaIss2025, dcaFecop2025, dcaCotaDeclarada2025, totalBR2025, coeficientesUF, tabela4) {
-        const t4ByUf = {};
-        (tabela4?.ufs || []).forEach(u => { t4ByUf[u.uf] = u; });
+    function computeParams(dcaIcms2025, dcaIss2025, dcaFecop2025, dcaCotaDeclarada2025, totalBR2025, coeficientesUF, phiDestData) {
+        const phiByUf = (phiDestData && phiDestData.por_uf) || {};
+
+        // Fração estadual/municipal do IBS-destino combinado: 0,75 x rE/(rE+rM) e (rM + 0,25 rE)/(rE+rM),
+        // com rE/rM aproximados pela razão ICMS/ISS nacional 2025 (ver Estudo 06/13 e
+        // data/legislacao/reforma-tributaria-referencias.md).
+        const rEstadoBR = UFS.reduce((s, uf) => s + (dcaIcms2025[uf] || 0), 0);
+        const rMuniBR   = UFS.reduce((s, uf) => s + (dcaIss2025[uf] || 0), 0);
+        const fracEstado = 0.75 * rEstadoBR / (rEstadoBR + rMuniBR);
+        const fracMuni   = (rMuniBR + 0.25 * rEstadoBR) / (rEstadoBR + rMuniBR);
 
         const params = {};
         for (const uf of UFS) {
@@ -557,7 +564,6 @@
             const iss   = dcaIss2025[uf]   || 0;
             const fecop = dcaFecop2025[uf] || 0;
             const cuf   = (coeficientesUF.por_uf && coeficientesUF.por_uf[uf]) || {};
-            const t4    = t4ByUf[uf] || {};
             const isDf  = !!cuf.is_df;
 
             const cotaDeclarada = dcaCotaDeclarada2025[uf];
@@ -572,36 +578,22 @@
             const coefCPTEstado = (cuf.coeficiente_estado_pct ?? 0) / 100;
             const coefCPTMuni   = (cuf.coeficiente_municipios_pct != null) ? cuf.coeficiente_municipios_pct / 100 : null;
 
-            const vrEstado = (t4.estado_pct ?? 0) / 100;
-
-            const brutoEstado = coefNeutroEstado * (1 + vrEstado);
-            // Cota-parte municipal do IBS-destino: 25% fixo e nacionalmente uniforme sobre o
-            // destino do próprio Estado (CF art. 158, IV, "b"; LC 227/2026 arts. 118 §3º e 128).
-            const brutoMuni   = (coefNeutroMuni != null) ? brutoEstado / 3 : null;
+            // φ^dest: estimativa própria (POF x Censo, Estudo 13) -- Gobetti e Monteiro deixou de
+            // ser insumo do modelo (fica só como comparação, Estudos 07/13).
+            const phiUF = ((phiByUf[uf] && phiByUf[uf].pof_censo_bruto_pct) || 0) / 100;
+            const coefPlenoEstado = isDf ? phiUF : phiUF * fracEstado;
+            const coefPlenoMuni   = isDf ? null : phiUF * fracMuni;
 
             params[uf] = {
                 estado: {
                     r0_2025: rEstado, coefNeutro: coefNeutroEstado, coefCPT: coefCPTEstado,
-                    bruto: brutoEstado, lambda: coefNeutroEstado > 0 ? coefCPTEstado / coefNeutroEstado : 1
+                    coefPleno: coefPlenoEstado, lambda: coefNeutroEstado > 0 ? coefCPTEstado / coefNeutroEstado : 1
                 },
                 municipio: (rMuni == null) ? null : {
                     r0_2025: rMuni, coefNeutro: coefNeutroMuni, coefCPT: coefCPTMuni,
-                    bruto: brutoMuni, lambda: coefNeutroMuni > 0 ? coefCPTMuni / coefNeutroMuni : 1
+                    coefPleno: coefPlenoMuni, lambda: coefNeutroMuni > 0 ? coefCPTMuni / coefNeutroMuni : 1
                 }
             };
-        }
-
-        let somaBruto = 0;
-        for (const uf of UFS) {
-            somaBruto += params[uf].estado.bruto || 0;
-            somaBruto += (params[uf].municipio && params[uf].municipio.bruto) || 0;
-        }
-        for (const uf of UFS) {
-            const p = params[uf];
-            p.estado.coefPleno = somaBruto > 0 ? p.estado.bruto / somaBruto : 0;
-            if (p.municipio) {
-                p.municipio.coefPleno = somaBruto > 0 ? p.municipio.bruto / somaBruto : 0;
-            }
         }
         return params;
     }
@@ -979,20 +971,20 @@
     (async function init() {
         const statusEl = document.getElementById('status-main');
         try {
-            const [refResp, coefResp, gobettiResp, giniIdhResp, nacResp, seguroResp] = await Promise.all([
+            const [refResp, coefResp, phiDestResp, giniIdhResp, nacResp, seguroResp] = await Promise.all([
                 fetch('/data/reforma-tributaria.json?t=' + Date.now()),
                 fetch('/data/coeficientes-uf.json?t=' + Date.now()),
-                fetch('/data/gobetti-2023-perdas-ganhos-uf.json?t=' + Date.now()),
+                fetch('/data/phi-dest-pof-censo.json?t=' + Date.now()),
                 fetch('/data/gini-idh-uf.json?t=' + Date.now()),
                 fetch('/data/ibs-projecao-longo-prazo.json?t=' + Date.now()),
                 fetch('/data/seguro-receita-repasses-longo-prazo.json?t=' + Date.now())
             ]);
-            if (!refResp.ok || !coefResp.ok || !gobettiResp.ok || !giniIdhResp.ok || !nacResp.ok || !seguroResp.ok) {
+            if (!refResp.ok || !coefResp.ok || !phiDestResp.ok || !giniIdhResp.ok || !nacResp.ok || !seguroResp.ok) {
                 throw new Error('Erro ao carregar dados');
             }
             const refData        = await refResp.json();
             const coeficientesUF = await coefResp.json();
-            const gobettiData    = await gobettiResp.json();
+            const phiDestData    = await phiDestResp.json();
             const giniIdhData    = await giniIdhResp.json();
             const nacionalData   = await nacResp.json();
             const seguroData     = await seguroResp.json();
@@ -1008,7 +1000,7 @@
             (nacionalData.projecao || []).forEach(row => { NACIONAL_BY_YEAR[row.ano] = row; });
 
             PARAMS = computeParams(dcaIcms2025, dcaIss2025, dcaFecop2025, dcaCotaDeclarada2025,
-                                   totalBR2025, coeficientesUF, gobettiData.tabela4_esferas);
+                                   totalBR2025, coeficientesUF, phiDestData);
             REPASSE_INDEX = buildRepasseIndex(seguroData);
 
             buildChartNacional();

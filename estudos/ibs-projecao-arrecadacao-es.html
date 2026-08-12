@@ -406,8 +406,9 @@
                             expressa diretamente a participação do ES no bolo nacional de ICMS+ISS
                             sob o critério de consumo — o mesmo coeficiente, diferenciado por esfera,
                             já validado no <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo
-                            06</a>, construído a partir de Gobetti e Monteiro (IPEA, 2023):
-                            φ_ES = <span id="coef1-display-factor">1,08%</span> no Cenário 1 (destino pleno,
+                            06</a>, estimativa própria a partir da POF e do Censo 2022 (<a
+                            href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a>):
+                            φ_ES = <span id="coef1-display-factor">1,10%</span> no Cenário 1 (destino pleno,
                             já com o repasse do Seguro-Receita do
                             <a href="/estudos/seguro-receita-repasses.html">Estudo 12</a> somado de volta);
                             média aritmética com o neutro no Cenário 2; coeficiente vigente em 2025
@@ -578,7 +579,8 @@
                 Os fatores 1, 2 e 3 são idênticos nos três cenários. A única variável que os diferencia
                 é o coeficiente de destino φ<sup>dest</sup><sub>ES</sub> (Fator 4), o mesmo coeficiente
                 usado no <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>
-                (Gobetti e Monteiro, IPEA, 2023, diferenciado por esfera). Só o Cenário 1 soma o
+                (estimativa própria, POF e Censo 2022, diferenciada por esfera pela razão ICMS/ISS
+                2025 &mdash; ver <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a>). Só o Cenário 1 soma o
                 repasse do Seguro-Receita (<a href="/estudos/seguro-receita-repasses.html">Estudo
                 12</a>) de volta ao IBSd líquido &mdash; ver nota&nbsp;2. Por isso o Cenário 1 (menor
                 φ<sup>dest</sup>, em princípio a maior perda) pode aparecer com perda percentual
@@ -592,7 +594,7 @@
                     <div class="sc-tag">Cenário 1: Redistribuição integral</div>
                     <div class="sc-dest" id="sc-dest-pess">—</div>
                     <div class="sc-desc">
-                        Cenário de destino pleno segundo Gobetti e Monteiro (IPEA, 2023):
+                        Cenário de destino pleno, estimativa própria (POF x Censo, Estudo 13):
                         φ_ES corresponde à participação do ES no bolo nacional sob critério
                         de consumo integral, mesmo coeficiente do Estudo 06. Único cenário que
                         inclui o repasse real do Seguro-Receita (Estudo 12).
@@ -822,12 +824,14 @@
                 10% em 2033) é distribuída ao estado de consumo (destino). Para o ES, com saldo exportador positivo,
                 isso implica redução de sua participação no bolo nacional em relação ao critério de origem do ICMS.
                 O modelo usa o mesmo coeficiente de destino φ<sup>dest</sup><sub>ES</sub> já validado no
-                <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> — Gobetti e Monteiro (IPEA, 2023),
-                reescalado e <strong>diferenciado por esfera</strong> (estadual separada da municipal, não uma única
-                variação aplicada às duas, como numa versão anterior desta página). Cenário 1: φ_ES ≈ 1,08%
+                <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> — estimativa própria (POF
+                2017-2018 x Censo 2022, <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a>),
+                <strong>diferenciado por esfera</strong> pela razão ICMS/ISS nacional de 2025 (estadual
+                separada da municipal, não uma única variação aplicada às duas, como numa versão anterior
+                desta página, que usava Gobetti e Monteiro, IPEA 2023 — mantido só como comparação). Cenário 1: φ_ES ≈ 1,10%
                 (destino pleno); Cenário 2: média aritmética entre neutro e pleno; Cenário 3: coeficiente vigente
                 em 2025 (φ^neutro, ≈ 1,63%). Os valores exatos são calculados dinamicamente a partir dos dados do
-                DCA/SICONFI, de <code>coeficientes-uf.json</code> e do Gobetti JSON.</p>
+                DCA/SICONFI, de <code>coeficientes-uf.json</code> e de <code>phi-dest-pof-censo.json</code>.</p>
 
                 <p><sup>2</sup> <strong>Seguro-Receita (art. 132 ADCT):</strong> os 5% retidos sobre o IBSd
                 (pós-CGIBS) não desaparecem — o
@@ -923,20 +927,22 @@
 
     // ── Coeficientes de participação (idêntico a computeParams() do Estudo 06) ─────────────
     // φ^neutro (2025, cota-parte declarada + FECOP), φ^CPT (2019-2025, coeficientes-uf.json,
-    // validado contra a Nota Técnica nº 02/2026) e φ^dest pleno estadual (Gobetti e Monteiro
-    // 2023, reescalado) — os mesmos coeficientes usados no Estudo 06/12, calculados aqui só para
-    // a esfera "estado" das 27 UFs (o Estudo 03 nunca teve fatia municipal própria); a fatia
-    // municipal entra apenas para normalizar o total nacional (25% fixo do destino do Estado).
-    function computeParamsEstado(dcaIcms2025, dcaIss2025, dcaFecop2025, dcaCotaDeclarada2025, totalBR2025, coeficientesUF, tabela4) {
-        const t4ByUf = {};
-        (tabela4?.ufs || []).forEach(u => { t4ByUf[u.uf] = u; });
+    // validado contra a Nota Técnica nº 02/2026) e φ^dest pleno estadual (estimativa própria,
+    // POF 2017-2018 x Censo 2022, Estudo 13) — os mesmos coeficientes usados no Estudo 06/12,
+    // calculados aqui só para a esfera "estado" das 27 UFs (o Estudo 03 nunca teve fatia
+    // municipal própria); a fatia municipal entra apenas para a fração estado/município do
+    // destino (LC 214/2025 art. 361, aproximada pela razão ICMS/ISS 2025).
+    function computeParamsEstado(dcaIcms2025, dcaIss2025, dcaFecop2025, dcaCotaDeclarada2025, totalBR2025, coeficientesUF, phiDestData) {
+        const phiByUf = (phiDestData && phiDestData.por_uf) || {};
+        const rEstadoBR = UFS.reduce((s, uf) => s + (dcaIcms2025[uf] || 0), 0);
+        const rMuniBR   = UFS.reduce((s, uf) => s + (dcaIss2025[uf] || 0), 0);
+        const fracEstado = 0.75 * rEstadoBR / (rEstadoBR + rMuniBR);
 
         const params = {};
         for (const uf of UFS) {
             const icms  = dcaIcms2025[uf]  || 0;
             const fecop = dcaFecop2025[uf] || 0;
             const cuf   = (coeficientesUF.por_uf && coeficientesUF.por_uf[uf]) || {};
-            const t4    = t4ByUf[uf] || {};
             const isDf  = !!cuf.is_df;
 
             const cotaDeclarada = dcaCotaDeclarada2025[uf];
@@ -945,23 +951,14 @@
 
             const coefNeutroEstado = totalBR2025 > 0 ? rEstado / totalBR2025 : 0;
             const coefCPTEstado = (cuf.coeficiente_estado_pct ?? 0) / 100;
-            const vrEstado = (t4.estado_pct ?? 0) / 100;
-            const brutoEstado = coefNeutroEstado * (1 + vrEstado);
 
-            // fatia municipal, só pra entrar na normalização de coefPleno (soma nacional das duas esferas)
-            // -- 25% fixo do destino do próprio Estado (CF art. 158, IV, "b"; LC 227/2026 arts.
-            // 118 §3º e 128), não a variação por UF do Gobetti/Monteiro (ver Estudo 06).
-            const iss   = dcaIss2025[uf] || 0;
-            const rMuni = isDf ? null : (iss + cota);
-            const coefNeutroMuni = (rMuni != null && totalBR2025 > 0) ? rMuni / totalBR2025 : null;
-            const brutoMuni = (coefNeutroMuni != null) ? brutoEstado / 3 : null;
+            // φ^dest: estimativa própria (POF x Censo, Estudo 13), dividida pela fração estadual
+            // fixa (0,75 x rE/(rE+rM), ver Estudo 06) -- Gobetti e Monteiro deixou de ser insumo.
+            const phiUF = ((phiByUf[uf] && phiByUf[uf].pof_censo_bruto_pct) || 0) / 100;
+            const coefPleno = isDf ? phiUF : phiUF * fracEstado;
 
-            params[uf] = { r0_2025: rEstado, coefNeutro: coefNeutroEstado, coefCPT: coefCPTEstado, bruto: brutoEstado, brutoMuni };
+            params[uf] = { r0_2025: rEstado, coefNeutro: coefNeutroEstado, coefCPT: coefCPTEstado, coefPleno };
         }
-
-        let somaBruto = 0;
-        for (const uf of UFS) somaBruto += (params[uf].bruto || 0) + (params[uf].brutoMuni || 0);
-        for (const uf of UFS) params[uf].coefPleno = somaBruto > 0 ? params[uf].bruto / somaBruto : 0;
         return params;
     }
 
@@ -1103,7 +1100,7 @@
     });
 
     // ── Render ────────────────────────────────────────────────────────────────
-    // coefDests: { pess, inter, neutro } — φ^dest_ES por cenário (coeficientes-uf.json + Gobetti)
+    // coefDests: { pess, inter, neutro } — φ^dest_ES por cenário (coeficientes-uf.json + phi-dest-pof-censo.json)
     // nacionalByYear: base do Estudo 11 (data/ibs-projecao-nacional.json), ano a ano
     // srByYear: repasse do Seguro-Receita ao ES estado (Estudo 12), aplicado só no Cenário 1
     function render(coefNeutro, coefCPT, coefDests, nacionalByYear, srByYear) {
@@ -1260,7 +1257,7 @@
             rowSame('IBSt = IBS histórico nacional (Estudo 11) × φ_ES^CPT', 'já inclui sa × αa', rP.ibst, 'row-total'),
 
             secHead('E. Fator 4: IBSd bruto via coeficiente de destino (sa × (1−αa) = 2%, art. 131 §1º I ADCT) · varia por cenário'),
-            rowStatic('φ_ES^dest: coeficiente de destino ES (Gobetti e Monteiro, 2023, reescalado) ¹', 'Nota 1', `C1: ${(coefDests.pess*100).toFixed(4).replace('.',',')}% | C2: ${(coefDests.inter*100).toFixed(4).replace('.',',')}% | C3: ${(coefDests.neutro*100).toFixed(4).replace('.',',')}%`),
+            rowStatic('φ_ES^dest: coeficiente de destino ES (estimativa própria, POF x Censo) ¹', 'Nota 1', `C1: ${(coefDests.pess*100).toFixed(4).replace('.',',')}% | C2: ${(coefDests.inter*100).toFixed(4).replace('.',',')}% | C3: ${(coefDests.neutro*100).toFixed(4).replace('.',',')}%`),
             rowScen('IBSd bruto = (IBS bruto − IBS histórico) nacional × φ_ES^dest', 'já inclui sa × (1−αa)', rP.ibsd_bruto, rI.ibsd_bruto, rN.ibsd_bruto),
 
             secHead('F. Fator 3: CGIBS (art. 51 LC 227/2026), sobre o IBSd bruto — antes do Seguro-Receita'),
@@ -1291,18 +1288,18 @@
 
     // ── Carregar dados e inicializar ──────────────────────────────────────────
     async function init() {
-        let data, gobetti, coeficientesUF, nacional, seguro;
+        let data, phiDest, coeficientesUF, nacional, seguro;
         try {
-            const [resp, gResp, cResp, nResp, sResp] = await Promise.all([
+            const [resp, pResp, cResp, nResp, sResp] = await Promise.all([
                 fetch('/data/reforma-tributaria.json?t=' + Date.now()),
-                fetch('/data/gobetti-2023-perdas-ganhos-uf.json?t=' + Date.now()),
+                fetch('/data/phi-dest-pof-censo.json?t=' + Date.now()),
                 fetch('/data/coeficientes-uf.json?t=' + Date.now()),
                 fetch('/data/ibs-projecao-nacional.json?t=' + Date.now()),
                 fetch('/data/seguro-receita-repasses.json?t=' + Date.now()),
             ]);
-            if (!resp.ok || !cResp.ok || !nResp.ok || !sResp.ok) throw new Error('dado obrigatório não encontrado');
+            if (!resp.ok || !pResp.ok || !cResp.ok || !nResp.ok || !sResp.ok) throw new Error('dado obrigatório não encontrado');
             data           = await resp.json();
-            gobetti        = gResp.ok ? await gResp.json() : null;
+            phiDest        = await pResp.json();
             coeficientesUF = await cResp.json();
             nacional       = await nResp.json();
             seguro         = await sResp.json();
@@ -1323,11 +1320,9 @@
         const dcaCotaDeclarada2025 = data.dca_transf_munis_por_uf?.['2025']  || {};
         const totalBR2025 = UFS.reduce((s, uf) =>
             s + (dcaIcms2025[uf]||0) + (dcaIss2025[uf]||0) + (dcaFecop2025[uf]||0), 0);
-        const t4ByUf = {};
-        (gobetti?.tabela4_esferas?.ufs || []).forEach(u => { t4ByUf[u.uf] = u; });
 
         const PARAMS_ESTADO = computeParamsEstado(dcaIcms2025, dcaIss2025, dcaFecop2025,
-            dcaCotaDeclarada2025, totalBR2025, coeficientesUF, gobetti?.tabela4_esferas);
+            dcaCotaDeclarada2025, totalBR2025, coeficientesUF, phiDest);
         const es = PARAMS_ESTADO['ES'];
         if (!es) {
             document.getElementById('status-bar').innerHTML =
