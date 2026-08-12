@@ -579,8 +579,8 @@
                 Os fatores 1, 2 e 3 são idênticos nos três cenários. A única variável que os diferencia
                 é o coeficiente de destino φ<sup>dest</sup><sub>ES</sub> (Fator 4), o mesmo coeficiente
                 usado no <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>
-                (estimativa própria, POF e Censo 2022, diferenciada por esfera pela razão ICMS/ISS
-                2025 &mdash; ver <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a>). Só o Cenário 1 soma o
+                (estimativa própria, POF e Censo 2022, diferenciada por esfera pela média 2024-2025 da
+                razão receita de referência/PIB &mdash; ver <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a>). Só o Cenário 1 soma o
                 repasse do Seguro-Receita (<a href="/estudos/seguro-receita-repasses.html">Estudo
                 12</a>) de volta ao IBSd líquido &mdash; ver nota&nbsp;2. Por isso o Cenário 1 (menor
                 φ<sup>dest</sup>, em princípio a maior perda) pode aparecer com perda percentual
@@ -826,7 +826,8 @@
                 O modelo usa o mesmo coeficiente de destino φ<sup>dest</sup><sub>ES</sub> já validado no
                 <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> — estimativa própria (POF
                 2017-2018 x Censo 2022, <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a>),
-                <strong>diferenciado por esfera</strong> pela razão ICMS/ISS nacional de 2025 (estadual
+                <strong>diferenciado por esfera</strong> pela média 2024-2025 da razão receita de
+                referência/PIB (LC 214/2025 art. 361: Estados = ICMS+FECOP, Municípios = ISS — estadual
                 separada da municipal, não uma única variação aplicada às duas, como numa versão anterior
                 desta página, que usava Gobetti e Monteiro, IPEA 2023 — mantido só como comparação). Cenário 1: φ_ES ≈ 1,10%
                 (destino pleno); Cenário 2: média aritmética entre neutro e pleno; Cenário 3: coeficiente vigente
@@ -931,12 +932,14 @@
     // POF 2017-2018 x Censo 2022, Estudo 13) — os mesmos coeficientes usados no Estudo 06/12,
     // calculados aqui só para a esfera "estado" das 27 UFs (o Estudo 03 nunca teve fatia
     // municipal própria); a fatia municipal entra apenas para a fração estado/município do
-    // destino (LC 214/2025 art. 361, aproximada pela razão ICMS/ISS 2025).
+    // destino (LC 214/2025 art. 361, aproximada pela média 2024-2025 da razão receita de
+    // referência/PIB por esfera).
     function computeParamsEstado(dcaIcms2025, dcaIss2025, dcaFecop2025, dcaCotaDeclarada2025, totalBR2025, coeficientesUF, phiDestData) {
         const phiByUf = (phiDestData && phiDestData.por_uf) || {};
-        const rEstadoBR = UFS.reduce((s, uf) => s + (dcaIcms2025[uf] || 0), 0);
-        const rMuniBR   = UFS.reduce((s, uf) => s + (dcaIss2025[uf] || 0), 0);
-        const fracEstado = 0.75 * rEstadoBR / (rEstadoBR + rMuniBR);
+        // Fração estadual fixa e nacional (art. 361 LC 214/2025: média receita de referência/PIB
+        // 2024-2025, Estados = ICMS+FECOP), calculada uma única vez em
+        // data/build-phi-dest-pof-censo.py e lida do JSON — ver Estudo 06.
+        const fracEstado = (phiDestData.frac_estado_pct || 0) / 100;
 
         const params = {};
         for (const uf of UFS) {

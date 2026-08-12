@@ -35,6 +35,19 @@ comparacao/auditoria (nao mais como fonte primaria):
   - a participacao bruta de cada UF na propria Tabela 1 de Gobetti e
     Monteiro (2023, base 2022), sem qualquer ajuste nosso.
 
+Este script tambem calcula frac_estado_pct / frac_muni_pct: a divisao
+nacional (fixa, igual para toda UF) entre a esfera estadual e a municipal
+do phi^dest, usada por todo o site para repartir phi_UF em
+Estado_UF = phi_UF x frac_estado e Municipio_UF = phi_UF x frac_muni.
+Segue a formula do art. 361 da LC 214/2025 (redacao LC 227/2026): "a media
+da razao entre a receita de referencia [dos Estados / dos Municipios] e o
+PIB" -- aqui, media dos anos de 2024 e 2025 (2026 fica de fora por ainda
+estar incompleto; ver decisao registrada em
+data/legislacao/reforma-tributaria-referencias.md). Receita de referencia
+dos Estados = ICMS + FECOP (SICONFI/STN DCA); dos Municipios = ISS. O fator
+0,75/0,25 e a cota-parte constitucional do IBS estadual (CF art. 158, IV,
+"b"; LC 227/2026 art. 118 par. 3o e 128).
+
 Uso:
   python3 build-phi-dest-pof-censo.py
 """
@@ -82,6 +95,32 @@ def compute_modelo_anterior(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cot
     return resultado
 
 
+def compute_frac_estado_muni(ref_data, macro):
+    """Art. 361 LC 214/2025: media da razao (receita de referencia / PIB) em
+    2024-2025, separada por esfera. Estados = ICMS + FECOP; Municipios = ISS.
+    Retorna (frac_estado, frac_muni) ja com a cota-parte 0,75/0,25 aplicada,
+    fixos e iguais para toda UF (soh a base phi_UF varia por UF)."""
+    dca_icms = ref_data.get('dca_icms_por_uf', {})
+    dca_iss = ref_data.get('dca_iss_por_uf', {})
+    dca_fecop = ref_data.get('dca_fecop_por_uf', {})
+    pib_hist = macro['pib_nominal_historico']
+
+    ratios_estado, ratios_muni = [], []
+    for ano in ('2024', '2025'):
+        icms = sum((dca_icms.get(ano, {}).get(uf, 0) or 0) for uf in UFS)
+        iss = sum((dca_iss.get(ano, {}).get(uf, 0) or 0) for uf in UFS)
+        fecop = sum((dca_fecop.get(ano, {}).get(uf, 0) or 0) for uf in UFS)
+        pib = pib_hist[ano]
+        ratios_estado.append((icms + fecop) / pib)
+        ratios_muni.append(iss / pib)
+
+    r_estado = sum(ratios_estado) / len(ratios_estado)
+    r_muni = sum(ratios_muni) / len(ratios_muni)
+    frac_estado = 0.75 * r_estado / (r_estado + r_muni)
+    frac_muni = (r_muni + 0.25 * r_estado) / (r_estado + r_muni)
+    return frac_estado, frac_muni
+
+
 def compute_gobetti_tabela1(gobetti):
     t1 = gobetti['tabela1_static']
     total = t1['total_pos']
@@ -114,6 +153,8 @@ def compute_pof_censo(pof, censo):
 def main():
     with open(HERE / "reforma-tributaria.json") as f:
         ref_data = json.load(f)
+    with open(HERE / "macro-parametros.json") as f:
+        macro = json.load(f)
     with open(HERE / "coeficientes-uf.json") as f:
         coeficientes_uf = json.load(f)
     with open(HERE / "gobetti-2023-perdas-ganhos-uf.json") as f:
@@ -137,6 +178,7 @@ def main():
                                          dca_cota_declarada_2025, total_br_2025, coeficientes_uf, t4_by_uf)
     gobetti_t1 = compute_gobetti_tabela1(gobetti)
     pof_bruto, pof_ponderado = compute_pof_censo(pof, censo)
+    frac_estado, frac_muni = compute_frac_estado_muni(ref_data, macro)
 
     por_uf = {}
     for uf in UFS:
@@ -172,6 +214,16 @@ def main():
             "disponivel para o ES; nao e um dado por UF, por isso fica fora da tabela "
             "principal, so como referencia de contexto."
         ),
+        "frac_estado_pct": frac_estado * 100,
+        "frac_muni_pct": frac_muni * 100,
+        "frac_estado_muni_metodo": (
+            "Art. 361 LC 214/2025 (redacao LC 227/2026): media da razao entre a receita "
+            "de referencia (Estados = ICMS + FECOP; Municipios = ISS, SICONFI/STN DCA "
+            "Anexo I-C) e o PIB nominal, nos anos de 2024 e 2025 (2026 fica de fora por "
+            "ainda estar incompleto na data de calculo). Fixo e igual para toda UF; soh a "
+            "base phi_UF (POF x Censo) varia por UF. Cota-parte 0,75/0,25 (CF art. 158, "
+            "IV, 'b') ja aplicada nestes dois valores."
+        ),
         "por_uf": por_uf,
     }
 
@@ -186,6 +238,8 @@ def main():
           f"Gobetti Tabela 1={por_uf['ES']['gobetti_tabela1_2023_pct']:.4f}% | "
           f"POF x Censo bruto={por_uf['ES']['pof_censo_bruto_pct']:.4f}% | "
           f"ponderado={por_uf['ES']['pof_censo_ponderado_pct']:.4f}%")
+    print(f"frac_estado={frac_estado*100:.4f}% | frac_muni={frac_muni*100:.4f}% "
+          f"(media 2024-2025, art. 361 LC214/2025)")
 
 
 if __name__ == "__main__":

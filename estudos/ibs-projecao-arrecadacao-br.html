@@ -213,7 +213,7 @@
             Dados: SICONFI/STN, DCA Anexo&nbsp;I-C, 2019–2025 (ICMS, ISS, FECOP e cota-parte declarada) &bull;
             Coeficientes de participação: validados contra a Nota Técnica&nbsp;nº&nbsp;02/2026 (SEFAZ-ES) &bull;
             Receita de referência: Estudo&nbsp;11 (BCB/Focus + IFI) &bull;
-            Coeficiente de destino: Estudo&nbsp;13 (POF 2017-2018 x Censo 2022), dividido por esfera pela razão ICMS/ISS 2025 &bull;
+            Coeficiente de destino: Estudo&nbsp;13 (POF 2017-2018 x Censo 2022), dividido por esfera pela média 2024-2025 da razão receita de referência/PIB (art.&nbsp;361 LC&nbsp;214/2025) &bull;
             Repasse do Seguro-Receita: Estudo&nbsp;12 &bull;
             Base legal: EC&nbsp;132/2023, LC&nbsp;214/2025, LC&nbsp;227/2026
         </p>
@@ -388,7 +388,7 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
                         </tr>
                         <tr>
                             <td>\(\varphi^{dest}_{\text{estado}}\), \(\varphi^{dest}_{\text{município}}\)</td>
-                            <td>\(\varphi_{UF}\) dividido entre a esfera estadual e o agregado municipal pela proporção entre as alíquotas de referência estadual (\(r_E\)) e municipal (\(r_M\)) do IBS (LC 214/2025 art. 361): \(\varphi^{dest}_{\text{estado}} = \varphi_{UF}\times 0{,}75\,\frac{r_E}{r_E+r_M}\) e \(\varphi^{dest}_{\text{município}} = \varphi_{UF}\times\frac{r_M+0{,}25\,r_E}{r_E+r_M}\) -- o fator 0,75/0,25 é a cota-parte municipal do IBS estadual (CF art. 158, IV, "b"; LC 227/2026 arts. 118, §3º, e 128); \(r_M\) é a fatia própria do IBS municipal, sucessora do ISS (LC 227/2026 art. 106). \(r_E\) e \(r_M\) são aproximados pela razão real ICMS/ISS nacional de 2025 (85,06%/14,94%), nacionais e iguais para todas as UFs. Sem esfera municipal própria no DF (art. 115, LC 227/2026), que fica com \(\varphi^{dest}_{DF}=\varphi_{DF}\) integral.</td>
+                            <td>\(\varphi_{UF}\) dividido entre a esfera estadual e o agregado municipal pela proporção entre as alíquotas de referência estadual (\(r_E\)) e municipal (\(r_M\)) do IBS (LC 214/2025 art. 361): \(\varphi^{dest}_{\text{estado}} = \varphi_{UF}\times 0{,}75\,\frac{r_E}{r_E+r_M}\) e \(\varphi^{dest}_{\text{município}} = \varphi_{UF}\times\frac{r_M+0{,}25\,r_E}{r_E+r_M}\) -- o fator 0,75/0,25 é a cota-parte municipal do IBS estadual (CF art. 158, IV, "b"; LC 227/2026 arts. 118, §3º, e 128); \(r_M\) é a fatia própria do IBS municipal, sucessora do ISS (LC 227/2026 art. 106). \(r_E\) e \(r_M\) seguem o próprio texto do art. 361 -- média 2024-2025 da razão entre a receita de referência de cada esfera (Estados = ICMS+FECOP; Municípios = ISS) e o PIB nominal (85,41%/14,59%), nacionais e iguais para todas as UFs. Sem esfera municipal própria no DF (art. 115, LC 227/2026), que fica com \(\varphi^{dest}_{DF}=\varphi_{DF}\) integral.</td>
                             <td>phi-dest-pof-censo.json + reforma-tributaria.json</td>
                         </tr>
                         <tr>
@@ -626,14 +626,14 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
 
         // Fração estadual/municipal do IBS-destino combinado de cada UF: 0,75 x rE/(rE+rM) para o
         // estado e (rM + 0,25 x rE)/(rE+rM) para o agregado municipal, onde rE/rM são as alíquotas
-        // de referência estadual/municipal (LC 214/2025 art. 361) -- aproximadas aqui pela razão
-        // ICMS/ISS nacional 2025 real (DCA/SICONFI), a mesma lógica histórica que fundamenta a
-        // neutralidade por esfera do art. 361. É fixa e nacional, não recalculada por UF: o que
-        // varia por UF é só φ_UF (ver abaixo). Ver data/legislacao/reforma-tributaria-referencias.md.
-        const rEstadoBR = UFS.reduce((s, uf) => s + (dcaIcms2025[uf] || 0), 0);
-        const rMuniBR   = UFS.reduce((s, uf) => s + (dcaIss2025[uf] || 0), 0);
-        const fracEstado = 0.75 * rEstadoBR / (rEstadoBR + rMuniBR);
-        const fracMuni   = (rMuniBR + 0.25 * rEstadoBR) / (rEstadoBR + rMuniBR);
+        // de referência estadual/municipal (LC 214/2025 art. 361: "a média da razão entre a receita
+        // de referência [...] e o PIB" 2024-2026) -- aqui, média 2024-2025 real (DCA/SICONFI; 2026
+        // fica de fora por ainda estar incompleto), Estados = ICMS + FECOP e Municípios = ISS.
+        // Calculado uma única vez em data/build-phi-dest-pof-censo.py e lido do JSON: é fixa e
+        // nacional, não recalculada por UF -- o que varia por UF é só φ_UF (ver abaixo).
+        // Ver data/legislacao/reforma-tributaria-referencias.md.
+        const fracEstado = (phiDestData.frac_estado_pct || 0) / 100;
+        const fracMuni   = (phiDestData.frac_muni_pct || 0) / 100;
 
         const params = {};
         for (const uf of UFS) {

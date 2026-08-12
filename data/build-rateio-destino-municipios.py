@@ -53,12 +53,13 @@ UFS = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', '
 
 
 def compute_params(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cota_declarada_2025,
-                    total_br_2025, coeficientes_uf, phi_dest_por_uf):
+                    total_br_2025, coeficientes_uf, phi_dest_data):
     """Replica computeParams() de estudos/ibs-projecao-arrecadacao-br.html."""
-    r_estado_br = sum(dca_icms_2025.get(uf, 0) or 0 for uf in UFS)
-    r_muni_br = sum(dca_iss_2025.get(uf, 0) or 0 for uf in UFS)
-    frac_estado = 0.75 * r_estado_br / (r_estado_br + r_muni_br)
-    frac_muni = (r_muni_br + 0.25 * r_estado_br) / (r_estado_br + r_muni_br)
+    phi_dest_por_uf = phi_dest_data['por_uf']
+    # Fracao estadual/municipal (art. 361 LC 214/2025: media 2024-2025 da razao receita de
+    # referencia/PIB por esfera), calculada uma unica vez em build-phi-dest-pof-censo.py.
+    frac_estado = phi_dest_data['frac_estado_pct'] / 100
+    frac_muni = phi_dest_data['frac_muni_pct'] / 100
 
     params = {}
     for uf in UFS:
@@ -96,7 +97,7 @@ def main():
     with open(HERE / "coeficientes-uf.json") as f:
         coeficientes_uf = json.load(f)
     with open(HERE / "phi-dest-pof-censo.json") as f:
-        phi_dest_por_uf = json.load(f)['por_uf']
+        phi_dest_data = json.load(f)
     with open(HERE / "coeficientes-municipios.json") as f:
         cpt_municipios = json.load(f)
     with open(HERE / "populacao-municipios-media-2019-2026.json") as f:
@@ -111,7 +112,7 @@ def main():
         for uf in UFS
     )
     params = compute_params(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cota_declarada_2025,
-                             total_br_2025, coeficientes_uf, phi_dest_por_uf)
+                             total_br_2025, coeficientes_uf, phi_dest_data)
 
     municipios_por_uf = {}
     for cod, r in cpt_municipios['municipios'].items():

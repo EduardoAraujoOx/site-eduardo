@@ -322,7 +322,7 @@
                             <tr><td>\(\alpha_a\)</td><td>Fração do IBS bruto pelo critério histórico no ano <em>a</em> (item 1).</td></tr>
                             <tr><td>\(p_u^{neutro}\)</td><td>Participação corrente do ente <em>u</em> (base 2025), aplicada à fração ainda cobrada como ICMS/ISS.</td></tr>
                             <tr><td>\(p_u^{CPT}\)</td><td>Coeficiente de Participação de Transição do ente <em>u</em> (2019&ndash;2025), validado contra a Nota Técnica nº&nbsp;02/2026.</td></tr>
-                            <tr><td>\(p_u^{dest}\)</td><td>Coeficiente de destino pleno do ente <em>u</em>: estimativa própria (POF 2017-2018 x Censo 2022, <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a>), dividida entre estado e agregado municipal pela razão ICMS/ISS nacional 2025 (ver Estudo 06). Gobetti e Monteiro (IPEA, 2023) permanece só como comparação.</td></tr>
+                            <tr><td>\(p_u^{dest}\)</td><td>Coeficiente de destino pleno do ente <em>u</em>: estimativa própria (POF 2017-2018 x Censo 2022, <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a>), dividida entre estado e agregado municipal pela média 2024-2025 da razão receita de referência/PIB por esfera (art. 361 LC 214/2025; ver Estudo 06). Gobetti e Monteiro (IPEA, 2023) permanece só como comparação.</td></tr>
                             <tr><td>\(SR_{u,a}\)</td><td>Repasse do Seguro-Receita ao ente <em>u</em> no ano <em>a</em> (item 3, Estudo 12).</td></tr>
                         </tbody>
                     </table>
@@ -333,12 +333,12 @@
                 <p class="meto-note">
                     Um exemplo concreto: em 2050, o Espírito Santo (esfera estado) tem
                     \(p_{ES}^{neutro}=1{,}6288\%\), \(p_{ES}^{CPT}=1{,}5418\%\) e
-                    \(p_{ES}^{dest}=1{,}1000\%\). Como f<sub>2050</sub>=0 (ICMS já extinto), a parcela
+                    \(p_{ES}^{dest}=1{,}1045\%\). Como f<sub>2050</sub>=0 (ICMS já extinto), a parcela
                     histórica é R$&nbsp;2.130,85&nbsp;bi &times; 1,5418% =
                     R$&nbsp;32,85&nbsp;bi, a parcela destino líquida é R$&nbsp;1.582,57&nbsp;bi
-                    &times; 1,1000% = R$&nbsp;17,41&nbsp;bi, e o Estudo 12 estima um repasse de
-                    Seguro-Receita de R$&nbsp;2,11&nbsp;bi para o estado nesse ano &mdash; total de
-                    R$&nbsp;52,37&nbsp;bi, 15,5% abaixo do contrafactual (R$&nbsp;61,98&nbsp;bi, a
+                    &times; 1,1045% = R$&nbsp;17,48&nbsp;bi, e o Estudo 12 estima um repasse de
+                    Seguro-Receita de R$&nbsp;2,00&nbsp;bi para o estado nesse ano &mdash; total de
+                    R$&nbsp;52,34&nbsp;bi, 15,6% abaixo do contrafactual (R$&nbsp;61,98&nbsp;bi, a
                     participação de 2025 sobre o mesmo bolo). É a mesma conta que gera a linha "2050"
                     nas tabelas abaixo, só que por esfera separada em vez de "total".
                 </p>
@@ -551,12 +551,11 @@
         const phiByUf = (phiDestData && phiDestData.por_uf) || {};
 
         // Fração estadual/municipal do IBS-destino combinado: 0,75 x rE/(rE+rM) e (rM + 0,25 rE)/(rE+rM),
-        // com rE/rM aproximados pela razão ICMS/ISS nacional 2025 (ver Estudo 06/13 e
-        // data/legislacao/reforma-tributaria-referencias.md).
-        const rEstadoBR = UFS.reduce((s, uf) => s + (dcaIcms2025[uf] || 0), 0);
-        const rMuniBR   = UFS.reduce((s, uf) => s + (dcaIss2025[uf] || 0), 0);
-        const fracEstado = 0.75 * rEstadoBR / (rEstadoBR + rMuniBR);
-        const fracMuni   = (rMuniBR + 0.25 * rEstadoBR) / (rEstadoBR + rMuniBR);
+        // com rE/rM = média 2024-2025 da razão receita de referência/PIB por esfera (art. 361
+        // LC 214/2025), calculada uma única vez em data/build-phi-dest-pof-censo.py e lida do JSON
+        // (ver Estudo 06/13 e data/legislacao/reforma-tributaria-referencias.md).
+        const fracEstado = (phiDestData.frac_estado_pct || 0) / 100;
+        const fracMuni   = (phiDestData.frac_muni_pct || 0) / 100;
 
         const params = {};
         for (const uf of UFS) {

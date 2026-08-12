@@ -430,14 +430,11 @@ $$\text{Estado}_{UF} = \varphi_{UF} \times 0{,}75\,\frac{r_E}{r_E+r_M}
 \qquad
 \text{Município}_{UF} = \varphi_{UF} \times \left(\frac{r_M + 0{,}25\,r_E}{r_E+r_M}\right)$$
 
-onde $r_E$ e $r_M$ (as alíquotas de referência estadual e municipal, LC
-214/2025 art. 361) são aproximadas pela razão real ICMS/ISS nacional 2025
-(85,06%/14,94%, SICONFI/STN DCA Anexo I-C) — a mesma lógica histórica do
-art. 361, sem recalcular a receita de referência separada por esfera do
-Estudo 11 (pendência futura). O fator $0{,}75$/$0{,}25$ é a cota-parte
-municipal do IBS estadual (mesma base legal acima). Gobetti e Monteiro
-(IPEA, 2023) deixou de ser insumo do modelo em qualquer esfera — permanece
-só como fonte de comparação nos Estudos 07 e 13.
+onde $r_E$ e $r_M$ são as alíquotas de referência estadual e municipal
+(LC 214/2025 art. 361). O fator $0{,}75$/$0{,}25$ é a cota-parte municipal
+do IBS estadual (mesma base legal acima). Gobetti e Monteiro (IPEA, 2023)
+deixou de ser insumo do modelo em qualquer esfera — permanece só como
+fonte de comparação nos Estudos 07 e 13.
 
 Arquivos alterados: `estudos/ibs-projecao-arrecadacao-br.html`,
 `estudos/ibs-projecao-arrecadacao-es.html`,
@@ -457,15 +454,41 @@ então são aproximados pelo mesmo critério populacional do inciso I). Na
 prática: 95% população + 5% igualitário, até que algum Estado regulamente
 os 15% restantes.
 
+**Terceira correção, ago/2026 (vigente).** A segunda correção aproximava
+$r_E$/$r_M$ pela razão real ICMS/ISS de um único ano (2025). O texto do
+art. 361, §§1º/2º, manda algo mais específico: *"a média da razão entre a
+receita de referência [dos Estados / dos Municípios] e o PIB nos anos de
+2024 a 2026"* — não uma razão entre dois totais de um ano só. $r_E$/$r_M$
+passaram a ser calculados como a média, entre 2024 e 2025 (dois anos
+fechados; 2026 fica de fora por ainda estar incompleto na data de cálculo
+— decisão do autor do site, 12/ago/2026), da razão (receita de
+referência/PIB) de cada esfera: receita de referência dos Estados =
+ICMS + FECOP; dos Municípios = ISS (SICONFI/STN DCA Anexo I-C; PIB nominal
+de `data/macro-parametros.json`). O cálculo é feito uma única vez em
+`data/build-phi-dest-pof-censo.py` (função `compute_frac_estado_muni`) e
+gravado em `data/phi-dest-pof-censo.json` (`frac_estado_pct`,
+`frac_muni_pct`) — os seis consumidores (3 páginas HTML + 3 scripts
+Python) leem esses dois campos em vez de recalcular a razão localmente.
+Resultado: $r_E$/$r_M$ (antes da cota-parte) foi de 85,06%/14,94% (só
+2025, sem FECOP) para 85,41%/14,59% (média 2024-2025, com FECOP incluído
+em $r_E$ — mesmo tratamento que o Estudo 11 já dá ao FECOP na receita de
+referência combinada); a fração final aplicada a φ_UF foi de
+63,7971%/36,2029% para 64,0573%/35,9427% (estado/município). Efeito no
+Espírito Santo: φ_ES^dest (estado) subiu de 1,1000% para 1,1045%.
+
 Datasets regenerados: `data/phi-dest-pof-censo.json`,
 `data/rateio-destino-municipios.json`, `data/seguro-receita-repasses.json`,
 `data/seguro-receita-repasses-longo-prazo.json`.
 
-**Pendência conhecida:** $r_E$ e $r_M$ ainda vêm da razão histórica
-ICMS/ISS 2025, não da receita de referência separada por esfera que o art.
-361 realmente manda calcular (média receita/PIB 2024-2026, por esfera) — o
-Estudo 11 hoje só projeta uma receita de referência combinada. Refinar isso
-exigiria desmembrar o Estudo 11 em duas trajetórias (estadual e municipal).
+**Pendência conhecida:** o ano de 2026 ainda fica de fora da média (só
+2024-2025), então $r_E$/$r_M$ não são, ainda, o triênio 2024-2026 completo
+que o art. 361 usa para fixar a alíquota de referência definitiva de 2029.
+Quando o DCA de 2026 fechar (2027), recalcular incluindo o terceiro ano.
+Também permanece em aberto a possibilidade de, no futuro, desmembrar o
+Estudo 11 numa trajetória separada por esfera (hoje só projeta uma receita
+de referência combinada) para dar mais precisão a $r_E$/$r_M$ nos anos
+projetados (2029 em diante) — hoje a fração é fixa a partir da base
+2024-2025 e não evolui com a trajetória.
 
 ---
 
