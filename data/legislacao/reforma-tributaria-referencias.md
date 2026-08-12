@@ -525,15 +525,21 @@ do Estudo 11). O campo `pib_nominal` do array `projecao`/`macro_path` foi
 renomeado para `pib_real`; o array `historico` manteve `pib_nominal`
 inalterado (é dado observado, não projeção).
 
-**Quinta mudança, ago/2026: janela de PIB histórico estendida para
-2005-2025** (`data/collect-macro-focus-ifi.py`), para poder comparar a
-premissa de crescimento real de longo prazo (IFI, 2,2% a.a., continuada
-de 2034 a 2077) com uma média histórica de verdade. Resultado: CAGR real
-2005-2025 (20 anos) = 3,55% a.a.; CAGR real 2013-2025 (12 anos,
-pós-superciclo de commodities) = 1,75% a.a. A premissa da IFI fica entre
-as duas janelas. **Pendência:** decisão do autor do site sobre se troca a
-premissa de 2034-2077 pela média histórica (e qual janela) ainda não foi
-tomada; por ora a extensão de longo prazo continua usando 2,2% a.a. (IFI).
+**Testado e descartado, ago/2026: janela de PIB histórico estendida para
+2005-2025.** Para comparar a premissa de crescimento real de longo prazo
+(IFI, 2,2% a.a., continuada de 2034 a 2077) com uma média histórica,
+`data/collect-macro-focus-ifi.py` chegou a coletar BCB/SGS série 1207 de
+2005 em diante. Resultado do teste: CAGR real 2005-2025 (20 anos) = 3,55%
+a.a.; CAGR real 2013-2025 (12 anos, pós-superciclo de commodities) = 1,75%
+a.a. A premissa da IFI ficava entre as duas janelas. **Decisão (autor do
+site, 12/ago/2026): manter a premissa da IFI (2,2% a.a.), não trocar pela
+média histórica.** Motivo: séries de Contas Nacionais tão longas correm o
+risco de atravessar mudanças de metodologia (rebase de ano-referência,
+revisões retroativas do IBGE) sem que isso fique visível só olhando os
+números — comparar médias de janelas diferentes nessas condições pode
+levar a uma conclusão equivocada sobre qual taxa é "mais real". A coleta
+foi revertida para a janela original (2013-2025, a mesma do restante do
+Estudo 11) em `data/collect-macro-focus-ifi.py` e `data/macro-parametros.json`.
 
 **Pendência em aberto (não implementada): granularidade de município para
 a fatia "própria" do IBS-municipal.** A POF não abre por município, só por
