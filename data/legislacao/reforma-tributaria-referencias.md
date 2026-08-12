@@ -557,8 +557,40 @@ destino). Renda per capita tem uma limitação própria: consumo é uma função
 côncava da renda (famílias mais pobres consomem quase 100% da renda;
 famílias mais ricas poupam uma fração maior), então usar renda linearmente
 como proxy de consumo tende a superestimar a fatia de municípios ricos.
-Nenhuma decisão de implementação foi tomada; o autor do site pediu para
-"pensar junto" antes de qualquer código.
+
+**Implementado, ago/2026 (autor do site autorizou após a discussão acima).**
+`data/collect-censo-2022-renda-municipios.py` coleta o rendimento
+domiciliar per capita médio de 2022 por município (SIDRA tabela 10295,
+variável 13431, nível N6; 5.570 municípios, 1 sem dado por amostra
+insuficiente — Boa Esperança do Norte/MT, com fallback para a média da UF).
+
+`data/build-rateio-destino-municipios.py` foi reescrito para separar,
+dentro da fatia municipal de cada UF, as duas fontes que a lei distingue:
+
+  - **cota-parte** (25% do destino do estado, CF art. 158, IV, "b") =
+    Estado_UF / 3 (já que 0,25/0,75 = 1/3 da fatia estadual) — continua
+    rateada entre os municípios pelo critério do art. 128 (95% população +
+    5% igualitário, como antes);
+  - **destino próprio** (sucessor do ISS, LC 227/2026 art. 106) =
+    Município_UF − cota_parte_UF — agora rateada por renda domiciliar per
+    capita × população (o proxy de intensidade de consumo por município,
+    já que a POF não abre por município), não mais por população pura.
+
+`phi_dest_m = cota_parte_m + propria_m` — por construção, a soma continua
+batendo com o agregado por UF (verificado no script). `data/build-seguro-receita-repasses.py`,
+`data/build-seguro-receita-repasses-longo-prazo.py` e
+`data/build-seguro-receita-planilha.py` foram regenerados sobre o novo
+rateio (o total do fundo por ano não muda; a lista de quem se qualifica
+mudou, de 763 para 1.115 dos 5.596 entes, porque a distribuição
+intra-UF mudou). A limitação do proxy de renda (viés a favor de
+municípios mais ricos) permanece documentada, não corrigida — não há
+dado público de propensão a consumir por município.
+
+Explicação acessível e sempre visível (fora de `<details>`) dos cinco
+passos completos, do bolo nacional ao repasse anual por município, com um
+exemplo numérico (Vitória/ES, 2033): seção "Como chegamos a esse número,
+cidade por cidade" em `estudos/seguro-receita-repasses.html`, logo acima
+das tabelas.
 
 ---
 

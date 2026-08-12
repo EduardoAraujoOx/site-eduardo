@@ -83,6 +83,20 @@
         .data-table tr.row-es { background: var(--pos-bg); }
         .row-hidden { display: none; }
 
+        .section-heading { font-family: var(--display); font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin: 2.5rem 0 0.6rem; letter-spacing: -0.01em; }
+        .explicacao-visivel { border: 1px solid var(--border); border-radius: 8px; margin: 1.5rem 0 2rem; padding: 0.25rem 1.5rem 1.5rem; background: var(--surface); }
+        .explicacao-visivel .section-heading { margin-top: 1.25rem; }
+        .explicacao-passo { display: flex; gap: 0.9rem; margin: 1.5rem 0; }
+        .explicacao-passo .passo-num { flex-shrink: 0; width: 1.9rem; height: 1.9rem; border-radius: 50%; background: var(--accent-light); color: var(--accent); font-family: var(--sans); font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; }
+        .explicacao-passo .passo-corpo { flex: 1; }
+        .explicacao-passo .passo-titulo { font-family: var(--sans); font-weight: 600; font-size: 0.92rem; color: var(--text); margin-bottom: 0.3rem; }
+        .exemplo-box { background: var(--accent-bg); border-radius: 8px; padding: 1rem 1.25rem; margin: 1.5rem 0; font-family: var(--serif); font-size: 0.87rem; line-height: 1.7; color: var(--text); }
+        .exemplo-box strong { color: var(--accent); }
+        .exemplo-tabela { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin: 0.6rem 0; }
+        .exemplo-tabela td { padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--border-light); font-family: var(--sans); }
+        .exemplo-tabela td:last-child { text-align: right; font-family: var(--mono); font-weight: 600; }
+        .exemplo-tabela tr.linha-total td { font-weight: 700; border-top: 2px solid var(--border); border-bottom: none; }
+
         .methodology { border: 1px solid var(--border); border-radius: 8px; margin: 2rem 0; background: var(--surface); }
         .methodology summary { padding: 0.9rem 1.25rem; cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; list-style: none; display: flex; align-items: center; gap: 0.5rem; }
         .methodology summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; }
@@ -189,6 +203,156 @@
             fundo cresce (2029 → 2033), não a lista de quem recebe, já que os coeficientes por
             trás do cálculo (participação histórica e participação pelo critério destino) permanecem fixos ao
             longo da transição. Ver metodologia.
+        </div>
+
+        <div class="explicacao-visivel">
+            <h2 class="section-heading">Como chegamos a esse número, cidade por cidade</h2>
+            <p class="meto-note">
+                Cada valor nas tabelas abaixo — de um estado inteiro a um município de poucos
+                milhares de habitantes — é o resultado de cinco passos, encadeados. Nenhum deles
+                é uma escolha arbitrária: cada um está amarrado a um artigo específico da reforma
+                tributária ou a uma estimativa própria já publicada e citada neste site. Esta seção
+                percorre os cinco passos em linguagem direta; os detalhes técnicos completos, com
+                as fórmulas e o texto legal, estão na metodologia abaixo.
+            </p>
+
+            <div class="explicacao-passo">
+                <div class="passo-num">1</div>
+                <div class="passo-corpo">
+                    <div class="passo-titulo">O tamanho do bolo nacional</div>
+                    <p class="meto-note">
+                        Todo ano, o Brasil arrecada um determinado total de ICMS, ISS e, com a
+                        reforma, IBS. Esse total (o "bolo") não é fixo: ele cresce junto com a
+                        economia, na mesma proporção medida entre 2024 e 2026 (a "alíquota de
+                        referência" que a própria lei manda calcular, LC&nbsp;214/2025 arts.
+                        361 a 365). O <a href="/estudos/ibs-projecao-nacional.html">Estudo 11</a>
+                        projeta esse bolo ano a ano, em R$ constantes de 2025 — sem inflação
+                        embutida, para os valores de 2029 continuarem comparáveis aos de 2033. Em
+                        2033, ano em que o ICMS e o ISS deixam de existir e tudo já é IBS, o bolo
+                        projetado é de R$&nbsp;1.213,2&nbsp;bi.
+                    </p>
+                </div>
+            </div>
+
+            <div class="explicacao-passo">
+                <div class="passo-num">2</div>
+                <div class="passo-corpo">
+                    <div class="passo-titulo">A fatia de cada estado</div>
+                    <p class="meto-note">
+                        Uma parte desse bolo é distribuída pelo critério <strong>histórico</strong>
+                        (o que cada estado já arrecadava) e, com o passar da transição, uma parte
+                        cada vez maior é distribuída pelo critério <strong>destino</strong> — onde
+                        o consumo de fato acontece. A fatia de cada estado no critério destino vem
+                        de uma estimativa própria deste site (não de dados oficiais, que ainda não
+                        existem): cruzamos a despesa média das famílias por estado (Pesquisa de
+                        Orçamentos Familiares, IBGE) com o número de domicílios de cada estado
+                        (Censo 2022) para estimar a participação de cada UF no consumo nacional —
+                        ver <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a>. O
+                        Espírito Santo, por exemplo, responde por 1,72% do consumo nacional.
+                    </p>
+                </div>
+            </div>
+
+            <div class="explicacao-passo">
+                <div class="passo-num">3</div>
+                <div class="passo-corpo">
+                    <div class="passo-titulo">Dividindo entre o governo do estado e o conjunto dos seus municípios</div>
+                    <p class="meto-note">
+                        A reforma não entrega essa fatia inteira ao governo estadual: o IBS tem uma
+                        "perna" estadual (sucessora do ICMS) e uma "perna" municipal (sucessora do
+                        ISS), cada uma com sua própria alíquota de referência (LC&nbsp;214/2025 art.
+                        361). Aproximamos essa divisão pela proporção real entre o que o Brasil
+                        arrecada de ICMS e de ISS hoje, medida nos dois últimos anos fechados
+                        (2024-2025) — ver <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo
+                        06</a>. Do consumo estimado do Espírito Santo, cerca de 64% vira base do IBS
+                        estadual e 36% vira base do IBS municipal — este segundo número é o que
+                        interessa a partir daqui, porque é dele que saem os repasses para Vitória,
+                        Serra, Cariacica e os outros 75 municípios capixabas.
+                    </p>
+                </div>
+            </div>
+
+            <div class="explicacao-passo">
+                <div class="passo-num">4</div>
+                <div class="passo-corpo">
+                    <div class="passo-titulo">Dentro da fatia municipal: duas fontes diferentes, tratadas separadamente</div>
+                    <p class="meto-note">
+                        Aqui está o ponto em que a maioria das análises simplifica demais — e onde
+                        esta página deixou de simplificar. A fatia municipal de um estado não é uma
+                        coisa só: ela é a soma de duas fontes de receita que a lei distingue
+                        claramente.
+                    </p>
+                    <p class="meto-note">
+                        A primeira é a <strong>cota-parte</strong>: 25% do IBS estadual que a
+                        Constituição manda repassar aos municípios (art. 158, IV, "b"), do mesmo
+                        jeito que hoje 25% do ICMS já é repassado. A lei diz exatamente como esse
+                        dinheiro deve ser dividido entre os municípios de um estado: 80% na
+                        proporção da população, 10% por indicadores de educação, 5% por indicadores
+                        ambientais e 5% em partes iguais (LC&nbsp;227/2026 art. 128). Como nenhum
+                        estado ainda regulamentou os indicadores de educação e ambientais, esta
+                        página aproxima esses 15% pelo mesmo critério populacional — na prática,
+                        95% população + 5% partes iguais.
+                    </p>
+                    <p class="meto-note">
+                        A segunda é o <strong>destino próprio</strong>: a fatia do IBS municipal que
+                        não é cota-parte de nada — é a sucessora direta do ISS, e pertence, por lei,
+                        ao município onde o consumo realmente aconteceu (LC&nbsp;227/2026 art. 106).
+                        População não é o critério certo para essa fatia: o problema é que não
+                        existe, hoje, nenhuma pesquisa pública que meça consumo cidade por cidade —
+                        a POF, usada no passo 2, só abre por estado. Usamos como aproximação a
+                        renda domiciliar média por pessoa de cada município (Censo 2022, IBGE),
+                        multiplicada pela população: um proxy de quanto cada cidade movimenta
+                        economicamente, no mesmo espírito da conta que já fizemos por estado no
+                        passo 2, só que com renda no lugar de despesa, porque é o dado que existe em
+                        nível de município. É uma aproximação com uma limitação conhecida: como
+                        famílias mais pobres gastam quase tudo o que ganham e famílias mais ricas
+                        guardam uma parte maior, esse critério tende a favorecer ligeiramente os
+                        municípios mais ricos de cada estado. Não escondemos essa limitação — não
+                        existe, hoje, nenhum dado público que permita corrigi-la com precisão.
+                    </p>
+                    <div class="exemplo-box">
+                        <strong>Um exemplo concreto: Vitória (ES), 2033.</strong> Pelo critério de
+                        população (cota-parte), Vitória responde por 8,4% do total dos 78
+                        municípios capixabas. Mas sua renda domiciliar per capita (R$&nbsp;3.352) é
+                        bem mais alta que a média do estado — por isso, no critério de destino
+                        próprio (renda × população), o peso de Vitória quase dobra, para 17,6%. O
+                        resultado:
+                        <table class="exemplo-tabela">
+                            <tr><td>Cota-parte de Vitória (25% do estadual, por população)</td><td>0,0308% do bolo nacional</td></tr>
+                            <tr><td>Destino próprio de Vitória (sucessor do ISS, por renda × população)</td><td>0,0444% do bolo nacional</td></tr>
+                            <tr class="linha-total"><td>Total: participação de Vitória no destino municipal</td><td>0,0752% do bolo nacional</td></tr>
+                        </table>
+                        Aplicado à parcela de destino líquido nacional de 2033
+                        (R$&nbsp;114,7&nbsp;bi), isso equivale a R$&nbsp;86,2&nbsp;milhões para
+                        Vitória — antes do próximo passo.
+                    </div>
+                </div>
+            </div>
+
+            <div class="explicacao-passo">
+                <div class="passo-num">5</div>
+                <div class="passo-corpo">
+                    <div class="passo-titulo">O Seguro-Receita: o fundo que evita perdas bruscas</div>
+                    <p class="meto-note">
+                        Antes de chegar a qualquer ente, 5% da fatia de destino é retido para formar
+                        o Seguro-Receita (ADCT art. 132). Esse fundo não é dividido igualmente: a lei
+                        manda calcular, para cada um dos 5.596 entes do país, a razão entre o que ele
+                        está recebendo agora com a reforma e o que arrecadava antes dela — e atender
+                        primeiro quem está pior, até o fundo acabar (LC&nbsp;227/2026 art. 117). No
+                        nosso exemplo, a razão de Vitória em 2033 é de apenas 5,2% (isto é, a cidade
+                        estaria recebendo só 5,2% do que arrecadava antes da reforma, sem o Seguro-Receita)
+                        — por isso Vitória se qualifica para um repasse de R$&nbsp;63,3&nbsp;milhões
+                        naquele ano, quase tanto quanto os R$&nbsp;86,2&nbsp;milhões do passo 4.
+                    </p>
+                </div>
+            </div>
+
+            <p class="meto-note">
+                <strong>É esse número final — participação histórica + participação por destino
+                (já dividida entre cota-parte e destino próprio, passo 4) + repasse do
+                Seguro-Receita — que aparece, ano a ano, nas tabelas abaixo</strong>, para os 27
+                estados, o Distrito Federal e cada um dos 5.569 municípios do Brasil.
+            </p>
         </div>
 
         <span class="section-label">Tabela 1 · Estados e Distrito Federal (R$ mi)</span>
@@ -376,7 +540,7 @@ $$\text{razão}_{\text{ente},a} = \frac{\text{IBS-destino recebido no ano } a}{\
             <p><strong>Fontes e notas metodológicas:</strong></p>
             <p>1. Base legal: ADCT art. 132 (EC 132/2023); LC 227/2026 arts. 114 a 117 (critério histórico e Seguro-Receita) e art. 51 (CGIBS).</p>
             <p>2. IBS pelo critério destino (numerador) e o fundo do Seguro-Receita (5%, líquido de CGIBS): <a href="/estudos/ibs-projecao-nacional.html">Estudo 11</a>, campos <code>ibs_destino_liquido</code> e <code>ibs_seguro_receita</code> de <code>data/ibs-projecao-nacional.json</code>.</p>
-            <p>3. Coeficiente de participação pelo critério destino (φ<sup>dest</sup>), por estado: <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> (Gobetti e Monteiro, IPEA 2023). Agregado dos municípios de cada UF: 25% fixo do destino do próprio estado (CF art. 158, IV, "b"; LC 227/2026 arts. 118, §3º, e 128). Rateio entre os municípios individuais de uma UF: 80% na proporção da população + 5% em partes iguais (valores exatos do art. 128, LC 227/2026); os 15% restantes (educação-equidade e ambiental, art. 128, incisos II e III) dependem de indicadores ainda não fixados por lei estadual, e são aproximados aqui pelo mesmo critério populacional. Ver <code>data/rateio-destino-municipios.json</code>.</p>
+            <p>3. Coeficiente de participação pelo critério destino (φ<sup>dest</sup>), por estado: <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> — estimativa própria (POF 2017-2018 x Censo 2022, <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a>), dividida entre esfera estadual e municipal pela média 2024-2025 da razão receita de referência/PIB por esfera (LC 214/2025 art. 361); Gobetti e Monteiro (IPEA, 2023) permanece só como comparação (Estudos 07 e 13). Agregado dos municípios de cada UF, decomposto em duas contas: (a) cota-parte (25% do destino do próprio estado, CF art. 158, IV, "b"; LC 227/2026 arts. 118, §3º, e 128), rateada entre os municípios pelo critério do art. 128 — 80% na proporção da população + 5% em partes iguais (valores exatos da lei); os 15% restantes (educação-equidade e ambiental, art. 128, incisos II e III) dependem de indicadores ainda não fixados por lei estadual, aproximados pelo mesmo critério populacional; (b) destino próprio (sucessor do ISS, LC 227/2026 art. 106), rateado por um proxy de intensidade de consumo — renda domiciliar per capita média do Censo 2022 (SIDRA tabela 10295) multiplicada pela população, já que a POF não abre por município. Limitação documentada: consumo é função côncava da renda, então este proxy tende a favorecer municípios mais ricos dentro de cada UF; não há dado público de propensão a consumir por município para corrigir isso. Ver <code>data/build-rateio-destino-municipios.py</code>, <code>data/rateio-destino-municipios.json</code> e <code>data/censo-2022-renda-municipios.json</code>.</p>
             <p>4. Receita média de referência (denominador): <code>data/coeficientes-uf.json</code> e <code>data/coeficientes-municipios.json</code>, validados contra a Nota Técnica nº 02/2026 (SEFAZ-ES).</p>
             <p>5. População: IBGE, Estimativas da População Residente no Brasil e Unidades da Federação, e nos Municípios Brasileiros, publicação no Diário Oficial da União (2019, 2020, 2021, 2024 e 2025, média simples dos anos disponíveis; ver <code>data/populacao-uf-media-2019-2026.json</code> e <code>data/populacao-municipios-media-2019-2026.json</code>).</p>
             <p>6. Algoritmo de nivelamento e dados desta página: <code>data/build-seguro-receita-repasses.py</code>, saída em <code>data/seguro-receita-repasses.json</code>.</p>
