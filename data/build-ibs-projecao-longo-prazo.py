@@ -11,15 +11,18 @@ Só adiciona 2034-2077.
 
 Duas peças mudam depois de 2033:
 
-1. Trajetória de PIB nominal. Focus (BCB) só cobre 2026-2030 e a IFI (RAF
+1. Trajetória de PIB real. Focus (BCB) só cobre 2026-2030 e a IFI (RAF
    107) só detalha até 2033 -- mas a própria nota da IFI diz que a taxa de
-   2,2% a.a. real (IPCA convergindo a 3,0%) vale para todo o intervalo
-   2027-2035 "por simplificação, já que a IFI não detalha ano a ano". Para
-   2034-2077 esta extensão apenas continua essa MESMA taxa (nenhum número
-   novo, nenhuma tentativa de simular ciclo econômico de 44 anos): PIB real
-   +2,2% a.a., IPCA 3,0% a.a. (meta contínua do CMN), o que dá crescimento
-   nominal de (1,022 x 1,03 - 1) = 5,266% a.a. constante. É premissa nossa,
-   não é lei -- por isso fica destacada à parte na _meta.
+   2,2% a.a. real vale para todo o intervalo 2027-2035 "por simplificação,
+   já que a IFI não detalha ano a ano". Para 2034-2077 esta extensão apenas
+   continua essa MESMA taxa (nenhum número novo, nenhuma tentativa de
+   simular ciclo econômico de 44 anos): PIB real +2,2% a.a. constante. É
+   premissa nossa, não é lei -- por isso fica destacada à parte na _meta.
+   A partir de ago/2026, esta extensão (como o Estudo 11) projeta em R$
+   constantes de 2025, sem compor o IPCA: 44 anos de inflação projetada
+   composta tornariam qualquer R$ nominal de 2077 incomparável a olho nu
+   com o de hoje. O IPCA de longo prazo (3,0% a.a., meta contínua do CMN)
+   fica registrado aqui só para referência.
 
 2. Divisão histórico/destino do IBS bruto (alpha_a). Isso NÃO é premissa
    nossa: é o cronograma da própria EC 132/2023. ADCT art. 131, §1º: de 2029
@@ -65,13 +68,13 @@ def main():
     razao_referencia = nacional["_meta"]["razao_bolo_pib_base"] / 100
 
     projecao_2029_2033 = nacional["projecao"]
-    pib_nom = {p["ano"]: p["pib_nominal"] for p in projecao_2029_2033}
-    ultimo_ano = max(pib_nom)  # 2033
+    pib_real = {p["ano"]: p["pib_real"] for p in projecao_2029_2033}
+    ultimo_ano = max(pib_real)  # 2033
 
     projecao_2034_2077 = []
     for a in range(ultimo_ano + 1, ANO_FIM + 1):
-        pib_nom[a] = pib_nom[a - 1] * (1 + PIB_REAL_LONGO_PRAZO) * (1 + IPCA_LONGO_PRAZO)
-        bolo_a = razao_referencia * pib_nom[a]
+        pib_real[a] = pib_real[a - 1] * (1 + PIB_REAL_LONGO_PRAZO)
+        bolo_a = razao_referencia * pib_real[a]
 
         # fa=0, sa=1: conversão ICMS/ISS -> IBS já terminada em 2033.
         icms_iss_residual = 0.0
@@ -91,8 +94,8 @@ def main():
         projecao_2034_2077.append({
             "ano": a,
             "bolo_projetado": round(bolo_a, 2),
-            "pib_nominal": round(pib_nom[a], 2),
-            "bolo_pct_pib": round(bolo_a / pib_nom[a] * 100, 4),
+            "pib_real": round(pib_real[a], 2),
+            "bolo_pct_pib": round(bolo_a / pib_real[a] * 100, 4),
             "fa": 0.0,
             "sa": 1.0,
             "icms_iss_residual": round(icms_iss_residual, 2),
@@ -118,12 +121,13 @@ def main():
             "ano_base": nacional["_meta"]["ano_base"],
             "razao_bolo_pib_base": nacional["_meta"]["razao_bolo_pib_base"],
             "premissas_2034_em_diante": [
-                f"PIB real: {PIB_REAL_LONGO_PRAZO*100:.1f}% a.a., IPCA: {IPCA_LONGO_PRAZO*100:.1f}% a.a. "
-                "-- a MESMA taxa da IFI (RAF 107) já usada em 2031-2033 no Estudo 11, simplesmente "
-                "continuada. A própria nota da IFI diz que essa taxa vale 'por simplificação' para "
-                "todo o intervalo 2027-2035, sem detalhamento ano a ano; esta extensão não introduz "
-                "nenhuma tentativa de prever ciclo econômico further além disso -- é estado "
-                "estacionário na última taxa oficial disponível, não uma previsão de longo prazo.",
+                f"PIB real: {PIB_REAL_LONGO_PRAZO*100:.1f}% a.a. -- a MESMA taxa da IFI (RAF 107) já "
+                "usada em 2031-2033 no Estudo 11, simplesmente continuada. A própria nota da IFI diz "
+                "que essa taxa vale 'por simplificação' para todo o intervalo 2027-2035, sem "
+                "detalhamento ano a ano; esta extensão não introduz nenhuma tentativa de prever ciclo "
+                "econômico além disso -- é estado estacionário na última taxa oficial disponível, não "
+                "uma previsão de longo prazo. Todos os valores em R$ desta página estão em R$ "
+                "constantes de 2025 (sem IPCA) -- ver nota equivalente no Estudo 11.",
                 "Razão bolo (ICMS+ISS+FECOP originais) / PIB mantida na mesma constante do Estudo 11 "
                 "(média 2024-2026, art. 361-365 LC 214/2025). fa=0/sa=1 fixos: a conversão ICMS/ISS -> "
                 "IBS já terminou em 2033, não é mais uma variável.",
@@ -139,7 +143,7 @@ def main():
             "fontes": {
                 **nacional["_meta"]["fontes"],
                 "cronograma_alpha_2034_2077": "ADCT art. 131, §1º (EC 132/2023): redução de 1/45 ao ano a partir do valor de 2033, chegando a 0% em 2078",
-                "pib_ipca_2034_2077": "IFI (RAF 107, 18/dez/2025), mesma taxa de 2031-2033 (2,2% a.a. real, IPCA 3,0% a.a.), continuada sem alteração",
+                "pib_2034_2077": "IFI (RAF 107, 18/dez/2025), mesma taxa real de 2031-2033 (2,2% a.a.), continuada sem alteração; projeção em R$ constantes de 2025, IPCA não aplicado",
             },
         },
         "historico": nacional["historico"],

@@ -2,7 +2,7 @@
   "_meta": {
     "descricao": "Estudo 11: série histórica (2013-2025) e projeção do IBS total (Brasil), 2029-2033.",
     "ano_base": 2025,
-    "razao_bolo_pib_base": 7.9904,
+    "razao_bolo_pib_base": 8.1203,
     "receita_referencia": {
       "anos": [
         {
@@ -21,13 +21,13 @@
         },
         {
           "ano": 2026,
-          "bolo": 1032693242370.6,
-          "pib": 13656851382430.35,
-          "razao_pct": 7.5617,
+          "bolo": 1032976269845.68,
+          "pib": 12991145892873.13,
+          "razao_pct": 7.9514,
           "status": "estimativa preliminar (RREO 12m + PIB Focus)"
         }
       ],
-      "razao_media_pct": 7.9904
+      "razao_media_pct": 8.1203
     },
     "faixa_historica_razao_2019_2025": {
       "min": 7.6901,
@@ -44,13 +44,14 @@
       "periodo_referencia_aliquota": "LC 214/2025, arts. 361 a 365 (redação da LC 227/2026): média da razão receita de referência/PIB nos anos de 2024 a 2026",
       "divisao_ibs_bruto": "ADCT arts. 131-132 e LC 227/2026 arts. 51 e 114-116 (critério histórico/destino, CGIBS e Seguro-Receita); mesmos parâmetros do Estudo 06"
     },
-    "data_pesquisa_focus": "2026-07-24",
+    "data_pesquisa_focus": "2026-08-07",
     "premissas": [
-      "Razão bolo (ICMS+ISS+FECOP) / PIB nominal mantida constante na média de 2024-2026 a partir de 2027. Esse período de referência não é uma escolha de modelagem: é o que os arts. 361 a 365 da LC 214/2025 (redação da LC 227/2026) usam para calibrar a alíquota de referência do IBS em cada ano da transição (2029-2033), a média da razão entre a receita de referência e o PIB nos anos de 2024 a 2026, fixada por resolução do Senado Federal. O FECOP (Fundo de Combate à Pobreza) é incluído na receita de referência porque a legislação da reforma o trata como parte da base de receita substituída pelo IBS nos estados que o cobram; sem essa parcela, a receita de referência ficaria subestimada em cerca de R$ 14 bi em 2025 (~1,4% do total) frente ao dataset validado de coeficientes por UF (data/coeficientes-uf.json, conferido contra a Nota Técnica nº 02/2026).",
+      "Razão bolo (ICMS+ISS+FECOP) / PIB mantida constante na média de 2024-2026 a partir de 2027. Esse período de referência não é uma escolha de modelagem: é o que os arts. 361 a 365 da LC 214/2025 (redação da LC 227/2026) usam para calibrar a alíquota de referência do IBS em cada ano da transição (2029-2033), a média da razão entre a receita de referência e o PIB nos anos de 2024 a 2026, fixada por resolução do Senado Federal. O FECOP (Fundo de Combate à Pobreza) é incluído na receita de referência porque a legislação da reforma o trata como parte da base de receita substituída pelo IBS nos estados que o cobram; sem essa parcela, a receita de referência ficaria subestimada em cerca de R$ 14 bi em 2025 (~1,4% do total) frente ao dataset validado de coeficientes por UF (data/coeficientes-uf.json, conferido contra a Nota Técnica nº 02/2026).",
       "O art. 130, §4º e §5º, do ADCT define um mecanismo distinto: o 'Teto de Referência', que compara a média 2029-2033 de CBS+Imposto Seletivo+IBS com a média 2012-2021 de IPI+ICMS+ISS+PIS/Cofins+IOF-seguros. Não altera os valores projetados aqui: mesmo se ultrapassado, a redução da alíquota só vale a partir de 2035 (fora desta projeção), e o teto exige dados federais (CBS, PIS/Cofins, IPI, IOF-seguros) fora do escopo deste estudo, que modela só o lado subnacional (ICMS/ISS/IBS).",
       "2026 ainda não fechou: a razão desse ano usa o bolo do RREO (últimos 12 meses até abr/2026) sobre o PIB projetado pelo Focus, uma estimativa preliminar a ser substituída pelo dado fechado (DCA) quando disponível.",
       "IBS bruto = bolo projetado × sa (fração já migrada para IBS no ADCT). Esse total se divide em quatro fatias: a fração alpha_a distribuída pelo critério histórico, e a fração (1-alpha_a) distribuída pelo critério destino, da qual se deduzem o CGIBS (art. 51 LC 227/2026) e o Seguro-Receita (5%, ADCT art. 132) antes de chegar aos entes. alpha_a e a taxa do CGIBS variam a cada ano da transição (2029-2033) e são os mesmos parâmetros já publicados no Estudo 06.",
-      "Para 2031-2033, fora do horizonte do Boletim Focus (~5 anos), usa-se a projeção da IFI (2,2% a.a. real, IPCA convergindo a 3,0%), constante para os três anos por simplificação, já que a IFI não detalha ano a ano dentro do intervalo 2027-2035."
+      "Para 2031-2033, fora do horizonte do Boletim Focus (~5 anos), usa-se a projeção da IFI (2,2% a.a. real), constante para os três anos por simplificação, já que a IFI não detalha ano a ano dentro do intervalo 2027-2035.",
+      "A partir de ago/2026, este estudo projeta em R$ constantes de 2025 (sem IPCA): a trajetória de PIB usada para escalar o bolo projetado soma só a taxa de crescimento REAL de cada ano (Focus/IFI), sem compor a inflação projetada. O IPCA de cada ano (Focus/IFI) continua listado em macro_path para referência, mas não entra na conta. A série histórica (2013-2025) é nominal, por ser dado observado, não projeção; a coluna bolo_real_2025 converte para a mesma base de 2025 quando for necessário comparar com a projeção."
     ]
   },
   "historico": [
@@ -201,149 +202,141 @@
   "macro_path": [
     {
       "ano": 2026,
-      "pib_real_pct": 0.0199,
-      "ipca_pct": 0.0512,
-      "pib_nominal_pct_crescimento": 0.0721,
-      "pib_nominal": 13656851382430.35,
+      "pib_real_pct": 0.0198,
+      "ipca_pct": 0.0502,
+      "pib_real": 12991145892873.13,
       "fonte": "Focus (BCB), mediana"
     },
     {
       "ano": 2027,
-      "pib_real_pct": 0.016,
+      "pib_real_pct": 0.0152,
       "ipca_pct": 0.0422,
-      "pib_nominal_pct_crescimento": 0.0588,
-      "pib_nominal": 14460262972335.0,
+      "pib_real": 13189182920864.09,
       "fonte": "Focus (BCB), mediana"
     },
     {
       "ano": 2028,
       "pib_real_pct": 0.02,
       "ipca_pct": 0.038,
-      "pib_nominal_pct_crescimento": 0.0587,
-      "pib_nominal": 15309197536941.14,
+      "pib_real": 13452966579281.37,
       "fonte": "Focus (BCB), mediana"
     },
     {
       "ano": 2029,
       "pib_real_pct": 0.02,
       "ipca_pct": 0.035,
-      "pib_nominal_pct_crescimento": 0.0557,
-      "pib_nominal": 16161919839748.76,
+      "pib_real": 13722025910867.0,
       "fonte": "Focus (BCB), mediana"
     },
     {
       "ano": 2030,
       "pib_real_pct": 0.02,
       "ipca_pct": 0.035,
-      "pib_nominal_pct_crescimento": 0.0557,
-      "pib_nominal": 17062138774822.77,
+      "pib_real": 13996466429084.34,
       "fonte": "Focus (BCB), mediana"
     },
     {
       "ano": 2031,
       "pib_real_pct": 0.022,
       "ipca_pct": 0.03,
-      "pib_nominal_pct_crescimento": 0.0527,
-      "pib_nominal": 17960631002704.94,
+      "pib_real": 14304388690524.2,
       "fonte": "IFI, RAF 107 (dez/2025)"
     },
     {
       "ano": 2032,
       "pib_real_pct": 0.022,
       "ipca_pct": 0.03,
-      "pib_nominal_pct_crescimento": 0.0527,
-      "pib_nominal": 18906437831307.38,
+      "pib_real": 14619085241715.73,
       "fonte": "IFI, RAF 107 (dez/2025)"
     },
     {
       "ano": 2033,
       "pib_real_pct": 0.022,
       "ipca_pct": 0.03,
-      "pib_nominal_pct_crescimento": 0.0527,
-      "pib_nominal": 19902050847504.02,
+      "pib_real": 14940705117033.47,
       "fonte": "IFI, RAF 107 (dez/2025)"
     }
   ],
   "projecao": [
     {
       "ano": 2029,
-      "bolo_projetado": 1291406942066.12,
-      "pib_nominal": 16161919839748.76,
-      "bolo_pct_pib": 7.9904,
+      "bolo_projetado": 1114272187348.64,
+      "pib_real": 13722025910867.0,
+      "bolo_pct_pib": 8.1203,
       "fa": 0.9,
       "sa": 0.1,
-      "icms_iss_residual": 1162266247859.51,
-      "ibs_bruto": 129140694206.61,
+      "icms_iss_residual": 1002844968613.78,
+      "ibs_bruto": 111427218734.86,
       "alpha_a": 0.8,
       "ca": 0.02,
-      "ibs_historico": 103312555365.29,
-      "ibs_destino_liquido": 24045997261.27,
-      "ibs_seguro_receita": 1265578803.22,
-      "ibs_cgibs": 516562776.83
+      "ibs_historico": 89141774987.89,
+      "ibs_destino_liquido": 20747748128.43,
+      "ibs_seguro_receita": 1091986743.6,
+      "ibs_cgibs": 445708874.94
     },
     {
       "ano": 2030,
-      "bolo_projetado": 1363338308739.2,
-      "pib_nominal": 17062138774822.77,
-      "bolo_pct_pib": 7.9904,
+      "bolo_projetado": 1136557631095.61,
+      "pib_real": 13996466429084.34,
+      "bolo_pct_pib": 8.1203,
       "fa": 0.8,
       "sa": 0.2,
-      "icms_iss_residual": 1090670646991.36,
-      "ibs_bruto": 272667661747.84,
+      "icms_iss_residual": 909246104876.49,
+      "ibs_bruto": 227311526219.12,
       "alpha_a": 0.8,
       "ca": 0.01,
-      "ibs_historico": 218134129398.27,
-      "ibs_destino_liquido": 51288787174.77,
-      "ibs_seguro_receita": 2699409851.3,
-      "ibs_cgibs": 545335323.5
+      "ibs_historico": 181849220975.3,
+      "ibs_destino_liquido": 42757298081.82,
+      "ibs_seguro_receita": 2250384109.57,
+      "ibs_cgibs": 454623052.44
     },
     {
       "ano": 2031,
-      "bolo_projetado": 1435131704077.41,
-      "pib_nominal": 17960631002704.94,
-      "bolo_pct_pib": 7.9904,
+      "bolo_projetado": 1161561898979.72,
+      "pib_real": 14304388690524.2,
+      "bolo_pct_pib": 8.1203,
       "fa": 0.7,
       "sa": 0.3,
-      "icms_iss_residual": 1004592192854.18,
-      "ibs_bruto": 430539511223.22,
+      "icms_iss_residual": 813093329285.8,
+      "ibs_bruto": 348468569693.92,
       "alpha_a": 0.8,
       "ca": 0.0067,
-      "ibs_historico": 344431608978.58,
-      "ibs_destino_liquido": 81254430334.62,
-      "ibs_seguro_receita": 4276548964.98,
-      "ibs_cgibs": 576922945.04
+      "ibs_historico": 278774855755.13,
+      "ibs_destino_liquido": 65765427752.62,
+      "ibs_seguro_receita": 3461338302.77,
+      "ibs_cgibs": 466947883.39
     },
     {
       "ano": 2032,
-      "bolo_projetado": 1510705739614.12,
-      "pib_nominal": 18906437831307.38,
-      "bolo_pct_pib": 7.9904,
+      "bolo_projetado": 1187116260757.27,
+      "pib_real": 14619085241715.73,
+      "bolo_pct_pib": 8.1203,
       "fa": 0.6,
       "sa": 0.4,
-      "icms_iss_residual": 906423443768.47,
-      "ibs_bruto": 604282295845.65,
+      "icms_iss_residual": 712269756454.36,
+      "ibs_bruto": 474846504302.91,
       "alpha_a": 0.8,
       "ca": 0.005,
-      "ibs_historico": 483425836676.52,
-      "ibs_destino_liquido": 114239568029.62,
-      "ibs_seguro_receita": 6012608843.66,
-      "ibs_cgibs": 604282295.85
+      "ibs_historico": 379877203442.33,
+      "ibs_destino_liquido": 89769731638.46,
+      "ibs_seguro_receita": 4724722717.81,
+      "ibs_cgibs": 474846504.3
     },
     {
       "ano": 2033,
-      "bolo_projetado": 1590259503862.2,
-      "pib_nominal": 19902050847504.02,
-      "bolo_pct_pib": 7.9904,
+      "bolo_projetado": 1213232818493.93,
+      "pib_real": 14940705117033.47,
+      "bolo_pct_pib": 8.1203,
       "fa": 0.0,
       "sa": 1.0,
       "icms_iss_residual": 0.0,
-      "ibs_bruto": 1590259503862.2,
+      "ibs_bruto": 1213232818493.93,
       "alpha_a": 0.9,
       "ca": 0.005,
-      "ibs_historico": 1431233553475.98,
-      "ibs_destino_liquido": 150319279602.57,
-      "ibs_seguro_receita": 7911541031.71,
-      "ibs_cgibs": 795129751.93
+      "ibs_historico": 1091909536644.54,
+      "ibs_destino_liquido": 114680832168.14,
+      "ibs_seguro_receita": 6035833272.01,
+      "ibs_cgibs": 606616409.25
     }
   ]
 }

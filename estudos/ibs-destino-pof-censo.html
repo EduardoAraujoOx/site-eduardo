@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uma Estimativa Independente do Coeficiente de Destino do IBS: POF e Censo 2022 | Eduardo Reis Araújo</title>
+    <meta name="description" content="Uma estimativa própria e independente do coeficiente de destino do IBS por UF, cruzando a despesa média familiar da POF 2017-2018 (IBGE) com os domicílios do Censo 2022, comparada ao modelo já usado no site (Gobetti e Monteiro, IPEA 2023) e à atualização mais recente dos mesmos autores.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/ibs-destino-pof-censo.html">
+
+    <meta property="og:title" content="Uma estimativa independente do coeficiente de destino do IBS: POF e Censo 2022">
+    <meta property="og:description" content="Despesa média familiar (POF 2017-2018) x domicílios (Censo 2022), comparada ao modelo de Gobetti e Monteiro (IPEA 2023) já usado no site e à atualização mais recente dos autores.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/ibs-destino-pof-censo.html">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+
+    <link rel="stylesheet" href="/css/notas.css?v=4">
+    <link rel="stylesheet" href="/css/search.css">
+
+    <style>
+        /* ── Page layout ── */
+        .study-hero { max-width: 980px; margin: 0 auto; padding: 3rem 2rem 1.5rem; }
+        .study-hero-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+        .study-hero-tag { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); padding: 0.25rem 0.6rem; border-radius: 4px; }
+        .study-hero-topic { font-family: var(--sans); font-size: 0.73rem; color: var(--text-secondary); background: var(--border-light); padding: 0.2rem 0.55rem; border-radius: 4px; }
+        .study-hero-date { font-family: var(--sans); font-size: 0.73rem; color: var(--text-muted); margin-left: auto; }
+        .study-hero h1 { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 0.8rem; }
+        .study-hero .lead { font-family: var(--serif); font-size: 1rem; line-height: 1.72; color: var(--text-secondary); max-width: 760px; }
+        .study-hero .study-meta { font-family: var(--sans); font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem; }
+
+        .study-content { max-width: 980px; margin: 0 auto; padding: 0 2rem 5rem; }
+
+        /* ── Status bar ── */
+        .status-bar { display: flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #999; flex-shrink: 0; transition: background 0.3s; }
+
+        :root {
+            --neg:       #b03a2e;
+            --neg-bg:    #fdf3f2;
+            --pos:       #1e8449;
+            --pos-bg:    #f0faf4;
+            --border-es: #d4a017;
+        }
+
+        /* ── Metodologia ── */
+        .methodology { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 2rem; background: var(--surface); }
+        .methodology summary { padding: 0.9rem 1.25rem; cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; list-style: none; display: flex; align-items: center; gap: 0.5rem; }
+        .methodology summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; }
+        .methodology[open] summary::before { transform: rotate(90deg); }
+        .methodology-body { padding: 0 1.5rem 1.5rem; }
+        .meto-section-title { font-family: var(--sans); font-size: 0.85rem; font-weight: 600; color: var(--text); margin: 1.25rem 0 0.4rem; }
+        .meto-note { font-family: var(--serif); font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; margin-top: 0.5rem; }
+        .meto-note:first-child { margin-top: 0; }
+
+        /* ── Label de seção ── */
+        .section-label { display: block; font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 0.5rem; }
+
+        /* ── Tabela de dados ── */
+        .table-wrap { overflow-x: auto; margin-bottom: 1.5rem; }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
+        .data-table th { background: var(--bg); border: 1px solid var(--border); padding: 0.42rem 0.6rem; text-align: center; font-family: var(--sans); font-weight: 600; font-size: 0.76rem; white-space: nowrap; color: var(--text); }
+        .data-table th.th-left { text-align: left; }
+        .data-table td { border: 1px solid var(--border); padding: 0.36rem 0.6rem; text-align: right; font-family: var(--mono); font-size: 0.78rem; white-space: nowrap; color: var(--text); }
+        .data-table td.td-uf { text-align: left; font-family: var(--sans); font-weight: 600; font-size: 0.81rem; }
+        .data-table td.td-uf small { font-weight: 400; color: var(--text-muted); }
+        .data-table .td-neg { color: var(--neg); font-weight: 600; }
+        .data-table .td-pos { color: var(--pos); font-weight: 600; }
+        .data-table tr.row-es { background: color-mix(in srgb, var(--border-es) 12%, transparent); }
+        .data-table tr.row-es td { color: var(--text); }
+        .data-table tr.row-es td.td-neg { color: var(--neg); }
+        .data-table tr.row-es td.td-pos { color: var(--pos); }
+        .data-table tr.row-es td.td-uf::after { content: ' \2605'; color: var(--border-es); font-size: 0.7em; }
+        .data-table tfoot tr { background: var(--bg); border-top: 2px solid var(--border); }
+        .data-table tfoot td { font-weight: 700; }
+        .data-table tr:hover:not(tfoot tr) { background: var(--accent-bg); }
+        .data-table tr.row-es:hover { background: color-mix(in srgb, var(--border-es) 20%, transparent); }
+
+        /* ── Gráfico de correlação ── */
+        .chart-panel { background: var(--border-light); border-radius: 8px; padding: 1.25rem 1.25rem 1.5rem; margin: 0 0 1.5rem; }
+        .chart-panel-title { font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin: 0 0 1rem; }
+        .chart-legend-note { font-family: var(--sans); font-size: 0.75rem; color: var(--text-muted); margin: 0.75rem 0 0; display: flex; gap: 1.25rem; flex-wrap: wrap; }
+        .legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 0.35rem; vertical-align: middle; }
+        .corr-stat { font-family: var(--mono); font-weight: 700; color: var(--accent); }
+
+        /* ── Callout ── */
+        .callout { background: var(--accent-bg); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 0.75rem 1rem; font-family: var(--serif); font-size: 0.84rem; color: var(--text); margin: 1rem 0; line-height: 1.6; }
+        .callout-es { background: color-mix(in srgb, var(--border-es) 10%, transparent); border-left: 3px solid var(--border-es); }
+
+        /* ── Notas de rodapé ── */
+        .footnotes { margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+        .footnotes p { font-family: var(--serif); font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.4rem; }
+        .footnotes a { color: var(--accent); text-decoration: none; }
+        .footnotes a:hover { text-decoration: underline; }
+
+        @media (max-width: 640px) {
+            .study-hero { padding: 2rem 1.25rem 1rem; }
+            .study-content { padding: 0 1.25rem 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <div class="header-right-group">
+                <nav class="header-nav">
+                    <a href="/#publicacoes">Publicações</a>
+                    <a href="/ensino/">Ensino</a>
+                    <a href="/estudos/" class="active">Estudos</a>
+                    <a href="/#contato">Contato</a>
+                </nav>
+                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="study-hero">
+        <div class="study-hero-meta">
+            <span class="study-hero-tag">Estudo 13</span>
+            <span class="study-hero-topic">Reforma Tributária</span>
+            <span class="study-hero-topic">Federalismo Fiscal</span>
+            <span class="study-hero-topic">Coeficiente de Destino</span>
+            <span class="study-hero-date">Agosto de 2026</span>
+        </div>
+        <h1>Uma estimativa independente do coeficiente de destino do IBS: POF e Censo 2022</h1>
+        <p class="lead">
+            O <a href="/estudos/icms-iss-ibs-atual-potencial.html">Estudo 07</a> mostrou que a estimativa de
+            Gobetti e Monteiro (IPEA) para o coeficiente de destino do IBS por UF &mdash; usada em todo o
+            modelo de projeção deste site &mdash; não é um número fixo: a Tabela 1 do paper original (Carta
+            de Conjuntura 60, 2023, base 2022) e uma atualização mais recente dos mesmos autores, apresentada
+            à SEFAZ-ES em 2026, chegam a valores diferentes para o Espírito Santo (1,62% e 1,88% do total
+            nacional, respectivamente). Este Estudo 13 avança sobre essa pergunta construindo uma
+            <strong>terceira estimativa, independente e reprodutível</strong>: cruza a despesa de consumo
+            média mensal familiar da Pesquisa de Orçamentos Familiares (POF 2017-2018, IBGE) com o número de
+            domicílios de cada UF no Censo Demográfico 2022 (IBGE), sem depender de nenhum dado do próprio
+            Gobetti e Monteiro para a distribuição espacial do consumo.
+        </p>
+        <p class="study-meta">
+            Dados: IBGE, POF 2017-2018, Tabela 1.1.13 &bull; IBGE, Censo Demográfico 2022, tabela SIDRA 9922
+            &bull; Gobetti, S. W.; Monteiro, P. K., Carta de Conjuntura 60 (IPEA, 2023) &bull;
+            Comparação com: <a href="/estudos/icms-iss-ibs-atual-potencial.html">Estudo 07</a>,
+            <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>
+        </p>
+    </div>
+
+    <div class="study-content">
+
+        <div id="status-main" class="status-bar">
+            <span class="status-dot"></span>
+            <span>Carregando dados...</span>
+        </div>
+
+        <details class="methodology">
+            <summary>Como construímos essa terceira estimativa</summary>
+            <div class="methodology-body">
+
+                <p class="meto-section-title">Por que uma fonte independente do Gobetti e Monteiro?</p>
+                <p class="meto-note">
+                    O modelo de projeção deste site (Estudos 06, 03, 11 e 12) usa o coeficiente de destino de
+                    Gobetti e Monteiro (IPEA, Carta de Conjuntura 60, 2023) como única fonte para estimar
+                    onde o consumo de bens e serviços efetivamente acontece &mdash; a variável central da
+                    regra de destino do IBS. O <a href="/estudos/icms-iss-ibs-atual-potencial.html">Estudo
+                    07</a> já havia testado essa estimativa contra a participação populacional de cada UF
+                    como proxy alternativa. Mas uma conversa recente com o próprio Sérgio Gobetti, numa
+                    apresentação à SEFAZ-ES, revelou que os autores já têm uma versão mais recente do
+                    cálculo (base 2025, não mais 2022), com valores sensivelmente diferentes dos publicados
+                    em 2023 &mdash; sem que a planilha ou a metodologia completa dessa atualização esteja
+                    disponível publicamente. Diante disso, faz sentido ter uma estimativa própria, construída
+                    inteiramente a partir de dados públicos do IBGE, para servir de referência de robustez.
+                </p>
+
+                <p class="meto-section-title">A fórmula</p>
+                <div class="meto-formula-box" style="font-family: var(--mono); font-size: 0.85rem; background: var(--bg); border-radius: 6px; padding: 0.9rem 1.1rem; margin: 0.75rem 0;">
+                    φ<sup>dest</sup><sub>UF</sub> = despesa média mensal familiar (POF 2017-2018, UF) &times;
+                    domicílios particulares ocupados (Censo 2022, UF) / soma nacional do mesmo produto
+                </div>
+                <p class="meto-note">
+                    A POF fornece a <strong>intensidade</strong> de consumo por família em cada UF &mdash;
+                    não há pesquisa de orçamento familiar mais recente no Brasil. O Censo 2022 fornece o
+                    <strong>peso demográfico atualizado</strong>: em vez de usar a própria ponderação
+                    amostral da POF (que reflete a distribuição populacional de 2018), multiplicamos pelo
+                    número de domicílios contado pelo Censo mais recente, corrigindo a distribuição espacial
+                    do consumo pelo que aconteceu entre 2018 e 2022. O resultado é o coeficiente de destino
+                    do IBS <strong>combinado</strong> (estado mais municípios) de cada UF &mdash; a divisão
+                    entre as duas esferas usa a proporção entre as alíquotas de referência estadual e
+                    municipal (LC 214/2025 art. 361), aproximada pela média 2024-2025 da razão receita
+                    de referência/PIB por esfera (Estados = ICMS+FECOP; Municípios = ISS) e combinada
+                    com a cota-parte de 25% (CF art. 158, IV, "b"; LC 227/2026 arts. 118, §3º, e 128)
+                    &mdash; ver <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>,
+                    não recalculada aqui.
+                </p>
+
+                <div class="callout" style="margin-top:1rem">
+                    <strong>Atualização (ago/2026):</strong> desde esta data, a coluna "POF &times; Censo,
+                    bruto" desta página passou a ser o coeficiente de destino usado em todo o site
+                    (Estudos 06, 03, 11, 12 e a extensão de longo prazo), substituindo Gobetti e Monteiro
+                    como insumo do modelo. Gobetti e Monteiro permanece só como fonte de comparação (Tabela
+                    2 abaixo e Estudo 07).
+                </div>
+
+                <p class="meto-section-title">A ponderação por tributabilidade &mdash; e por que ela não zera a Alimentação</p>
+                <p class="meto-note">
+                    O IBS não tributa todos os tipos de despesa pela mesma alíquota: uma <strong>cesta básica
+                    nacional</strong>, uma lista específica e restrita de alimentos definida em lei, tem
+                    alíquota zero; a maior parte dos demais alimentos, além de saúde e educação, tem
+                    <strong>redução de 60%</strong> sobre a alíquota padrão (EC 132/2023, art. 9º, §1º); o
+                    restante paga a alíquota cheia. A categoria "Alimentação" da POF, porém, agrega tudo
+                    isso &mdash; inclusive alimentação fora do domicílio e bebidas alcoólicas, que não têm
+                    redução nenhuma &mdash; sem separar por UF a fatia que corresponde à cesta básica
+                    propriamente dita. Por isso, a versão ponderada desta página aplica peso 0,4 (a redução
+                    geral de 60%) também à Alimentação, e não peso zero: tratar toda a categoria como cesta
+                    básica isenta superestimaria a desoneração. Ainda assim, é um teste de sensibilidade de
+                    limite superior, não uma reprodução exata da legislação por categoria &mdash; a fatia
+                    real de cesta básica dentro de "Alimentação" provavelmente fica entre os dois cenários.
+                </p>
+
+                <p class="meto-section-title">Limitações</p>
+                <p class="meto-note">
+                    <strong>Vintage da POF.</strong> A pesquisa é de 2017-2018; não há uma edição mais
+                    recente disponível. <strong>Unidade de consumo, não domicílio.</strong> A POF define
+                    "família" como sua unidade de investigação (unidade de consumo), que pode não coincidir
+                    exatamente com o domicílio do Censo &mdash; usamos domicílios como proxy por ser o dado
+                    demográfico mais atual e diretamente comparável por UF. <strong>Ponderação estilizada,
+                    não a legislação completa.</strong> A versão "ponderada" usa só três categorias
+                    (Alimentação, Saúde, Educação) com um único percentual de redução; não modela benefícios
+                    fiscais específicos (Zona Franca de Manaus, por exemplo), nem trata separadamente aluguel
+                    e outros itens de "Habitação" com regimes próprios.
+                </p>
+            </div>
+        </details>
+
+        <span class="section-label">Tabela 1 &middot; Despesa de consumo média mensal familiar por UF (POF 2017-2018) e domicílios (Censo 2022)</span>
+        <div class="table-wrap">
+            <table class="data-table" id="table-pof">
+                <thead>
+                    <tr>
+                        <th class="th-left">UF</th>
+                        <th>Despesa média familiar, POF 2017-2018 (R$)</th>
+                        <th>Domicílios, Censo 2022</th>
+                        <th>Despesa total estimada (R$ mi)</th>
+                        <th>Participação (%)</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-pof">
+                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+                <tfoot id="tfoot-pof"></tfoot>
+            </table>
+        </div>
+
+        <span class="section-label">Tabela 2 &middot; Quatro estimativas do coeficiente de destino, lado a lado (%)</span>
+        <div class="callout">
+            <strong>Atualização (ago/2026): a coluna "POF &times; Censo, bruto" desta página passou a ser o
+            coeficiente de destino usado em todo o site</strong> (Estudos 06, 03, 11, 12 e a extensão de longo
+            prazo) &mdash; ver nota no topo desta página. "Modelo anterior" mostra o que era usado antes dessa
+            mudança (Gobetti e Monteiro 2023 para o estado, mais 25% fixo de cota-parte municipal), para
+            dimensionar a diferença. "Gobetti, Tabela 1" reproduz a própria estimativa original dos autores
+            (2023, base 2022), sem qualquer ajuste nosso, para a UF como um todo &mdash; é a mesma fonte do
+            <a href="/estudos/icms-iss-ibs-atual-potencial.html">Estudo 07</a>, mantida só como comparação.
+            "POF x Censo, ponderado" é a versão de sensibilidade por tributabilidade construída nesta página,
+            não usada como padrão no modelo.
+        </div>
+        <div class="table-wrap">
+            <table class="data-table" id="table-comparacao">
+                <thead>
+                    <tr>
+                        <th class="th-left">UF</th>
+                        <th>POF &times; Censo, bruto &mdash; modelo atual (%)</th>
+                        <th>Modelo anterior (%)</th>
+                        <th>Gobetti, Tabela 1, 2023 (%)</th>
+                        <th>POF &times; Censo, ponderado (%)</th>
+                        <th>Δ bruto &minus; modelo anterior (p.p.)</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-comparacao">
+                    <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+                <tfoot id="tfoot-comparacao"></tfoot>
+            </table>
+        </div>
+
+        <div class="callout callout-es">
+            <strong>Nota sobre o Espírito Santo.</strong> Numa apresentação à SEFAZ-ES em 2026, Sérgio
+            Gobetti mostrou um valor de participação de 1,88% para o ES sob o rótulo "IBS hipotético 2025"
+            &mdash; mais alto do que as quatro estimativas desta tabela (1,62% a 1,74%). Esse número só está
+            disponível para o ES (não para as outras 26 UFs), então não entra na Tabela 2 acima; fica aqui
+            como referência de contexto. A diferença entre 1,62% (Tabela 1, 2023) e 1,88% (2025) mostra que a
+            própria estimativa dos autores mudou de forma não desprezível em três anos &mdash; mais um motivo
+            para ter uma estimativa própria e reprodutível como a desta página.
+        </div>
+
+        <span class="section-label">Modelo anterior (Gobetti 2023 + cota-parte) x POF &times; Censo, bruto (modelo atual) &mdash; o quanto mudou?</span>
+        <div class="chart-panel">
+            <p class="chart-panel-title">Modelo anterior (eixo X) x POF &times; Censo, bruto (eixo Y), 27 UFs</p>
+            <canvas id="chart-scatter-compare" style="max-height:480px"></canvas>
+            <div class="chart-legend-note">
+                <span><span class="legend-dot" style="background:#2a78d6"></span>UF</span>
+                <span><span class="legend-dot" style="background:#e34948"></span>Espírito Santo</span>
+                <span>Linha tracejada: os dois cenários concordam exatamente</span>
+            </div>
+        </div>
+        <div class="callout" id="callout-correlation">
+            Calculando correlação entre os dois cenários...
+        </div>
+
+        <div class="footnotes">
+            <p><strong>Fontes e notas metodológicas:</strong></p>
+            <p>1. Despesa de consumo média mensal familiar por UF: IBGE, Pesquisa de Orçamentos Familiares 2017-2018, Tabela 1.1.13 ("Despesa de consumo monetária e não monetária média mensal familiar, por tipos de despesa, segundo a situação do domicílio, as Grandes Regiões e as Unidades da Federação"). Disponível em <a href="https://ftp.ibge.gov.br/Orcamentos_Familiares/Pesquisa_de_Orcamentos_Familiares_2017_2018/Primeiros_resultados/tabelas_despesas/" target="_blank" rel="noopener">ftp.ibge.gov.br</a>. Ver <code>data/pof-2017-2018-despesa-uf.json</code>.</p>
+            <p>2. Domicílios por UF: IBGE, Censo Demográfico 2022, tabela SIDRA <a href="https://sidra.ibge.gov.br/tabela/9922" target="_blank" rel="noopener">9922</a> ("Domicílios particulares permanentes ocupados, moradores em domicílios particulares permanentes ocupados e média de moradores em domicílios particulares permanentes ocupados, segundo a situação do domicílio"). Ver <code>data/censo-2022-domicilios-uf.json</code>.</p>
+            <p>3. Coeficiente bruto (Tabela 2, coluna "POF x Censo, bruto"): despesa total (POF) &times; domicílios (Censo) de cada UF, dividido pela soma nacional do mesmo produto. Coeficiente ponderado: mesma fórmula, substituindo a despesa total pela despesa ponderada &mdash; Alimentação, Saúde e Educação com peso 0,4 (redução geral de 60%, EC 132/2023 art. 9º, §1º), demais categorias em peso cheio. Ver <code>data/build-phi-dest-pof-censo.py</code> e <code>data/phi-dest-pof-censo.json</code>.</p>
+            <p>4. "Modelo anterior": φ<sup>dest</sup> total (estado mais agregado municipal) usado nos Estudos 06, 03, 11 e 12 até ago/2026, replicando a antiga <code>computeParams()</code> de <a href="/estudos/ibs-projecao-arrecadacao-br.html">estudos/ibs-projecao-arrecadacao-br.html</a>: coeficiente estadual de Gobetti e Monteiro (2023) mais 25% fixo de cota-parte municipal (CF art. 158, IV, "b"; LC 227/2026 arts. 118, §3º, e 128). Desde então, a coluna "POF x Censo, bruto" desta página passou a ser o insumo direto do modelo.</p>
+            <p>5. "Gobetti, Tabela 1, 2023": participação de cada UF na própria Tabela 1 de Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura n.&nbsp;60, Nota de Conjuntura 18. IPEA, 28 ago. 2023. Disponível em <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">repositorio.ipea.gov.br</a>. Mesma fonte usada no <a href="/estudos/icms-iss-ibs-atual-potencial.html">Estudo 07</a>.</p>
+            <p>6. Gráfico de dispersão: cruza, para cada UF, "modelo anterior" (eixo X) com "POF x Censo, bruto" (eixo Y, o modelo atual). A correlação é o coeficiente de Pearson entre as duas séries; a segunda estatística é a proporção de UFs cuja estimativa POF x Censo fica a menos de 0,5 ponto percentual do modelo anterior. Calculados no navegador a partir dos dados de <code>data/phi-dest-pof-censo.json</code>.</p>
+            <p>7. "IBS hipotético 2025" (ES): valor apresentado por Sérgio Gobetti à SEFAZ-ES em 2026, relatado ao autor deste site; não é uma fonte publicada com metodologia disponível, e por isso não entra na Tabela 2 nem no gráfico de dispersão &mdash; fica só como referência de contexto para o Espírito Santo.</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+
+    <script src="/js/search.js"></script>
+    <script>
+    const NOMES_UF = {
+        AC:'Acre', AL:'Alagoas', AM:'Amazonas', AP:'Amapá', BA:'Bahia',
+        CE:'Ceará', DF:'Distrito Federal', ES:'Espírito Santo', GO:'Goiás',
+        MA:'Maranhão', MG:'Minas Gerais', MS:'Mato Grosso do Sul',
+        MT:'Mato Grosso', PA:'Pará', PB:'Paraíba', PE:'Pernambuco',
+        PI:'Piauí', PR:'Paraná', RJ:'Rio de Janeiro', RN:'Rio Grande do Norte',
+        RO:'Rondônia', RR:'Roraima', RS:'Rio Grande do Sul', SC:'Santa Catarina',
+        SE:'Sergipe', SP:'São Paulo', TO:'Tocantins'
+    };
+    const UFS = Object.keys(NOMES_UF);
+
+    const fmtNum  = (v, d=1) => v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
+    const fmtMoney = (v, d=0) => v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
+    const fmtPct  = (v, d=2) => (v >= 0 ? '+' : '') + v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }) + '%';
+    const clsPct  = v => v < -0.005 ? 'td-neg' : v > 0.005 ? 'td-pos' : '';
+
+    function buildTablePof(pof, censo) {
+        const rows = UFS.map(uf => {
+            const cat = pof.despesa_por_uf[uf];
+            const dom = censo.por_uf[uf].domicilios_particulares_ocupados;
+            const totalMi = cat.total * dom / 1e6;
+            return { uf, nome: NOMES_UF[uf], despesa: cat.total, dom, totalMi };
+        }).sort((a, b) => b.totalMi - a.totalMi);
+        const somaTotalMi = rows.reduce((s, r) => s + r.totalMi, 0);
+
+        document.getElementById('tbody-pof').innerHTML = rows.map(r => `<tr${r.uf === 'ES' ? ' class="row-es"' : ''}>
+            <td class="td-uf">${r.uf} <small>${r.nome}</small></td>
+            <td>${fmtMoney(r.despesa, 2)}</td>
+            <td>${fmtMoney(r.dom, 0)}</td>
+            <td>${fmtMoney(r.totalMi, 1)}</td>
+            <td>${fmtNum(r.totalMi / somaTotalMi * 100, 3)}%</td>
+        </tr>`).join('');
+        document.getElementById('tfoot-pof').innerHTML = `<tr>
+            <td class="th-left">Brasil</td><td></td><td>${fmtMoney(rows.reduce((s,r)=>s+r.dom,0),0)}</td>
+            <td>${fmtMoney(somaTotalMi, 1)}</td><td>100,000%</td>
+        </tr>`;
+    }
+
+    function buildTableComparacao(data) {
+        const rows = UFS.map(uf => ({ uf, nome: NOMES_UF[uf], ...data.por_uf[uf] }))
+            .sort((a, b) => b.pof_censo_bruto_pct - a.pof_censo_bruto_pct);
+        document.getElementById('tbody-comparacao').innerHTML = rows.map(r => `<tr${r.uf === 'ES' ? ' class="row-es"' : ''}>
+            <td class="td-uf">${r.uf} <small>${r.nome}</small></td>
+            <td>${fmtNum(r.pof_censo_bruto_pct, 4)}%</td>
+            <td>${fmtNum(r.modelo_anterior_pct, 4)}%</td>
+            <td>${fmtNum(r.gobetti_tabela1_2023_pct, 4)}%</td>
+            <td>${fmtNum(r.pof_censo_ponderado_pct, 4)}%</td>
+            <td class="${clsPct(r.delta_bruto_vs_modelo_pp)}">${fmtPct(r.delta_bruto_vs_modelo_pp, 3).replace('%','')}</td>
+        </tr>`).join('');
+        const soma = k => rows.reduce((s, r) => s + r[k], 0);
+        document.getElementById('tfoot-comparacao').innerHTML = `<tr>
+            <td class="th-left">Brasil</td>
+            <td>${fmtNum(soma('pof_censo_bruto_pct'), 4)}%</td>
+            <td>${fmtNum(soma('modelo_anterior_pct'), 4)}%</td>
+            <td>${fmtNum(soma('gobetti_tabela1_2023_pct'), 4)}%</td>
+            <td>${fmtNum(soma('pof_censo_ponderado_pct'), 4)}%</td>
+            <td>&mdash;</td>
+        </tr>`;
+    }
+
+    function pearsonR(xs, ys) {
+        const n = xs.length;
+        const mx = xs.reduce((s, v) => s + v, 0) / n;
+        const my = ys.reduce((s, v) => s + v, 0) / n;
+        let num = 0, dx2 = 0, dy2 = 0;
+        for (let i = 0; i < n; i++) {
+            const dx = xs[i] - mx, dy = ys[i] - my;
+            num += dx * dy; dx2 += dx * dx; dy2 += dy * dy;
+        }
+        return num / Math.sqrt(dx2 * dy2);
+    }
+
+    function buildCorrelationChart(data) {
+        const points = UFS.map(uf => ({
+            uf, nome: NOMES_UF[uf],
+            x: data.por_uf[uf].modelo_anterior_pct,
+            y: data.por_uf[uf].pof_censo_bruto_pct
+        }));
+
+        const r = pearsonR(points.map(p => p.x), points.map(p => p.y));
+        const TOLERANCIA_PP = 0.5;
+        const proximas = points.filter(p => Math.abs(p.x - p.y) < TOLERANCIA_PP).length;
+
+        document.getElementById('callout-correlation').innerHTML =
+            `Correlação entre as duas séries: <span class="corr-stat">r = ${r.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</span>. ` +
+            `Em <span class="corr-stat">${proximas} das ${points.length} UFs</span> (${fmtNum(proximas / points.length * 100, 0)}%), a estimativa POF &times; Censo (modelo atual) fica a menos de ${TOLERANCIA_PP} ponto percentual do modelo anterior.`;
+
+        const el = document.getElementById('chart-scatter-compare');
+        if (!el || typeof Chart === 'undefined') return;
+        if (window.ChartDataLabels) Chart.register(ChartDataLabels);
+
+        const maxVal = Math.ceil(Math.max(...points.map(p => Math.max(p.x, p.y)))) + 1;
+        const regularPoints = points.filter(p => p.uf !== 'ES');
+        const esPoint       = points.filter(p => p.uf === 'ES');
+        const gridColor = 'rgba(0,0,0,0.07)';
+        const textColor = '#6E6E6E';
+
+        new Chart(el, {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    {
+                        label: 'Linha de paridade', type: 'line',
+                        data: [{ x: 0, y: 0 }, { x: maxVal, y: maxVal }],
+                        borderColor: 'rgba(0,0,0,0.35)', borderWidth: 1.5, borderDash: [6, 4],
+                        pointRadius: 0, fill: false, datalabels: { display: false }, order: 3
+                    },
+                    {
+                        label: 'UF', data: regularPoints,
+                        backgroundColor: 'rgba(42,120,214,0.75)', borderColor: 'rgba(42,120,214,1)', borderWidth: 1,
+                        pointRadius: 6, pointHoverRadius: 8, order: 2,
+                        datalabels: { align: 'top', offset: 4, color: '#3a3a3a', font: { size: 9, family: "'JetBrains Mono', monospace" }, formatter: v => v.uf }
+                    },
+                    {
+                        label: 'Espírito Santo', data: esPoint,
+                        backgroundColor: 'rgba(227,73,72,0.9)', borderColor: 'rgba(227,73,72,1)', borderWidth: 1.5,
+                        pointRadius: 8, pointHoverRadius: 10, order: 1,
+                        datalabels: { align: 'top', offset: 5, color: '#b0342e', font: { size: 10, weight: '700', family: "'JetBrains Mono', monospace" }, formatter: v => v.uf }
+                    }
+                ]
+            },
+            options: {
+                responsive: true, aspectRatio: 1.3,
+                interaction: { mode: 'nearest', intersect: true },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: ctx => { const d = ctx.raw; return `${d.nome || d.uf}: modelo anterior ${fmtNum(d.x)}% · POF x Censo ${fmtNum(d.y)}%`; } } }
+                },
+                scales: {
+                    x: { min: 0, max: maxVal, title: { display: true, text: 'Modelo anterior (%)', color: textColor, font: { size: 11 } }, ticks: { color: textColor, callback: v => v + '%' }, grid: { color: gridColor } },
+                    y: { min: 0, max: maxVal, title: { display: true, text: 'POF x Censo, bruto (%)', color: textColor, font: { size: 11 } }, ticks: { color: textColor, callback: v => v + '%' }, grid: { color: gridColor } }
+                }
+            }
+        });
+    }
+
+    (async function init() {
+        const statusEl = document.getElementById('status-main');
+        try {
+            const [pofResp, censoResp, dataResp] = await Promise.all([
+                fetch('/data/pof-2017-2018-despesa-uf.json?t=' + Date.now()),
+                fetch('/data/censo-2022-domicilios-uf.json?t=' + Date.now()),
+                fetch('/data/phi-dest-pof-censo.json?t=' + Date.now())
+            ]);
+            if (!pofResp.ok || !censoResp.ok || !dataResp.ok) throw new Error('Erro ao carregar dados');
+            const pof   = await pofResp.json();
+            const censo = await censoResp.json();
+            const data  = await dataResp.json();
+
+            buildTablePof(pof, censo);
+            buildTableComparacao(data);
+            buildCorrelationChart(data);
+
+            statusEl.innerHTML =
+                '<span class="status-dot" style="background:#22c55e"></span> ' +
+                '27 UFs · POF 2017-2018 (IBGE) &times; Censo 2022 (IBGE) · comparado a Gobetti e Monteiro (IPEA, 2023)';
+        } catch (err) {
+            statusEl.innerHTML =
+                '<span class="status-dot" style="background:#ef4444"></span> Erro ao carregar dados: ' + err.message;
+        }
+    })();
+    </script>
+</body>
+</html>

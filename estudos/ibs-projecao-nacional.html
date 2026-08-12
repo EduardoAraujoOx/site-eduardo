@@ -204,12 +204,13 @@
             constitucional (ADCT art. 128) desvia parte da arrecadação para o IBS ano a ano, e o que
             resta como ICMS/ISS cai abaixo da linha tracejada até a extinção do ICMS e do ISS em
             2033 (o detalhe de como o IBS cresce enquanto o ICMS+ISS cai está no gráfico de barras
-            da próxima seção). Todos os valores são nominais (preços de cada ano); a inflação
-            projetada já está embutida no PIB nominal usado para projetar, não é aplicada de novo
-            por fora.
+            da próxima seção). Todos os valores estão em R$ constantes de 2025 (poder de compra
+            de hoje), não em R$ nominais de cada ano: a série realizada é o dado observado
+            deflacionado pelo IPCA, e a projeção soma só o crescimento real do PIB, sem compor
+            inflação projetada.
         </div>
         <div class="chart-panel">
-            <p class="chart-panel-title">Arrecadação de ICMS+ISS, Brasil (R$ bi, nominal)</p>
+            <p class="chart-panel-title">Arrecadação de ICMS+ISS, Brasil (R$ bi, constantes de 2025)</p>
             <canvas id="chart-trajetoria" style="max-height:360px"></canvas>
             <div class="chart-legend-note">
                 <span><span class="legend-dot" style="background:#1A3A5C"></span>Realizado (2013&ndash;2025)</span>
@@ -265,12 +266,18 @@
                 </p>
                 <div class="lei-box">
                     <p>
-                        <span class="lei-artigo">LC 214/2025, arts. 361 a 365</span> (redação dada
-                        pela LC 227/2026): para cada ano da transição (2029 a 2033), a alíquota de
-                        referência do IBS estadual e municipal é fixada de forma a equivaler à
-                        <em>média da razão entre a receita de referência (ICMS+ISS+FECOP) e o PIB nos
-                        anos de 2024 a 2026</em>. O mesmo período de três anos vale para todos os
-                        cinco anos da transição: a lei não recalcula essa base a cada ano.
+                        <span class="lei-artigo">ADCT art. 130, II e III</span> (EC 132/2023): a
+                        alíquota de referência é fixada de forma a assegurar, de 2029 a 2033, que a
+                        receita dos Estados e do DF com o IBS equivalha à redução da receita de ICMS
+                        (inciso II) e que a receita dos Municípios e do DF com o IBS equivalha à
+                        redução da receita de ISS (inciso III) &mdash; a neutralidade, entidade por
+                        entidade, que fundamenta projetar o bolo ICMS+ISS/IBS como uma fração fixa do
+                        PIB. <span class="lei-artigo">LC 214/2025, arts. 361 a 365</span> (redação
+                        dada pela LC 227/2026) regulamenta como essa alíquota é calculada: para cada
+                        ano da transição (2029 a 2033), de forma a equivaler à <em>média da razão
+                        entre a receita de referência (ICMS+ISS+FECOP) e o PIB nos anos de 2024 a
+                        2026</em>. O mesmo período de três anos vale para todos os cinco anos da
+                        transição: a lei não recalcula essa base a cada ano.
                     </p>
                 </div>
                 <p class="meto-note">
@@ -317,7 +324,7 @@
                     como medida adicional da margem de erro possível.
                 </p>
                 <p class="meto-note">
-                    O crescimento do PIB nominal, ano a ano, vem de duas fontes oficiais diferentes,
+                    O crescimento real do PIB, ano a ano, vem de duas fontes oficiais diferentes,
                     porque nenhuma cobre sozinha todo o intervalo até 2033:
                 </p>
                 <table class="param-table">
@@ -336,13 +343,36 @@
                     </tbody>
                 </table>
                 <p class="meto-note">
-                    O PIB nominal de cada ano é obtido compondo o PIB nominal de 2025 (BCB/SGS) pelo
-                    crescimento real e pela inflação projetados: <code>PIB<sub>t</sub> = PIB<sub>t-1</sub>
-                    &times; (1 + g<sub>t</sub>) &times; (1 + IPCA<sub>t</sub>)</code>. A arrecadação
-                    projetada de cada ano aplica a razão de referência (a média 2024&ndash;2026 da
-                    Seção 2) a esse PIB: <code>Receita<sub>t</sub> = Razão<sub>2024&ndash;2026</sub>
-                    &times; PIB<sub>t</sub></code>.
+                    O PIB de cada ano é obtido compondo o PIB de 2025 (BCB/SGS, ano-base) só pelo
+                    crescimento real projetado, sem compor o IPCA projetado:
+                    <code>PIB<sub>t</sub> = PIB<sub>t-1</sub> &times; (1 + g<sub>t</sub>)</code>. A
+                    arrecadação projetada de cada ano aplica a razão de referência (a média
+                    2024&ndash;2026 da Seção 2) a esse PIB: <code>Receita<sub>t</sub> =
+                    Razão<sub>2024&ndash;2026</sub> &times; PIB<sub>t</sub></code>. Por isso, a
+                    partir de ago/2026, todos os valores projetados nesta página estão em R$
+                    constantes de 2025, não em R$ nominais de cada ano futuro &mdash; evita que o
+                    leitor precise deflacionar mentalmente para comparar, por exemplo, 2029 com
+                    2033. O IPCA projetado (Focus/IFI) continua na tabela da Seção 2 só como
+                    referência.
                 </p>
+                <p class="meto-note">
+                    A tabela abaixo resume, num único lugar, os três passos descritos nesta seção:
+                    o PIB projetado, a razão aplicada a ele e a receita de referência resultante. A
+                    quarta coluna é <strong>o mesmo número</strong> da terceira, só decomposto entre
+                    o que ainda é ICMS/ISS residual e o que já é IBS bruto naquele ano &mdash; a
+                    neutralidade do art. 130, II e III, do ADCT, citada acima, garante que o total
+                    não muda com a reforma, só a divisão interna dele.
+                </p>
+                <table class="param-table">
+                    <thead><tr>
+                        <th>Ano</th>
+                        <th>PIB projetado, R$ 2025 (R$ bi)</th>
+                        <th>Receita de referência<br>(&asymp;8% do PIB) = ICMS+ISS sem reforma (R$ bi)</th>
+                        <th>= ICMS+ISS residual, com reforma (R$ bi)</th>
+                        <th>+ IBS bruto, com reforma (R$ bi)</th>
+                    </tr></thead>
+                    <tbody id="tbody-neutralidade"></tbody>
+                </table>
 
                 <p class="meto-section-title">3. Da arrecadação de ICMS e ISS para o IBS: o cronograma da transição</p>
                 <div class="lei-box">
@@ -462,19 +492,18 @@
                     <tr>
                         <th class="th-left">Ano</th>
                         <th>Crescimento real do PIB</th>
-                        <th>IPCA</th>
-                        <th>Crescimento nominal do PIB</th>
-                        <th>PIB nominal projetado (R$ bi)</th>
+                        <th>IPCA (referência, não aplicado)</th>
+                        <th>PIB projetado, R$ 2025 (R$ bi)</th>
                         <th class="th-left">Fonte</th>
                     </tr>
                 </thead>
                 <tbody id="tbody-macro">
-                    <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
                 </tbody>
             </table>
         </div>
 
-        <span class="section-label">A transição: ICMS+ISS residual encolhendo, IBS crescendo (R$ bi, nominal)</span>
+        <span class="section-label">A transição: ICMS+ISS residual encolhendo, IBS crescendo (R$ bi, constantes de 2025)</span>
         <div class="callout">
             Cada barra é a arrecadação total projetada de um ano da transição. O vermelho é o que
             ainda é cobrado como ICMS/ISS; o restante já é IBS, mas não chega inteiro aos entes do
@@ -486,7 +515,7 @@
             IBS, até a extinção do ICMS e do ISS em 2033.
         </div>
         <div class="chart-panel">
-            <p class="chart-panel-title">ICMS+ISS residual vs. divisão do IBS bruto, Brasil (R$ bi, nominal)</p>
+            <p class="chart-panel-title">ICMS+ISS residual vs. divisão do IBS bruto, Brasil (R$ bi, constantes de 2025)</p>
             <canvas id="chart-transicao" style="max-height:340px"></canvas>
             <div class="chart-legend-note">
                 <span><span class="legend-dot" style="background:#b03a2e"></span>ICMS+ISS residual</span>
@@ -513,7 +542,7 @@
             </table>
         </div>
 
-        <span class="section-label">Como o IBS bruto se divide, ano a ano (R$ bi, nominal)</span>
+        <span class="section-label">Como o IBS bruto se divide, ano a ano (R$ bi, constantes de 2025)</span>
         <div class="table-wrap">
             <table class="data-table">
                 <thead>
@@ -547,7 +576,7 @@
             <p>4. PIB nominal e IPCA: Banco Central do Brasil, SGS, séries 1207 (PIB anual a preços correntes, Contas Nacionais Trimestrais/IBGE) e 433 (IPCA, variação mensal).</p>
             <p>5. Projeção macroeconômica 2026-2030: Banco Central do Brasil, Sistema de Expectativas de Mercado (Boletim Focus), mediana das respostas, consultada via API Olinda em tempo de geração desta página.</p>
             <p>6. Projeção macroeconômica 2031-2033: Instituição Fiscal Independente (IFI), vinculada ao Senado Federal, Relatório de Acompanhamento Fiscal (RAF) nº 107, 18 de dezembro de 2025.</p>
-            <p>7. Base legal: EC 132/2023; ADCT art. 128 (cronograma de extinção do ICMS/ISS) e art. 131 (implementação progressiva do IBS); LC 214/2025, arts. 361 a 365, com a redação dada pela LC 227/2026 (alíquota de referência do IBS calibrada pela média da razão receita/PIB em 2024-2026, para cada ano da transição); ADCT art. 130, &sect;4&ordm; e &sect;5&ordm; (Teto de Referência, média 2012-2021 de IPI+ICMS+ISS+PIS/Cofins+IOF-seguros, comparado à média 2029-2033 de CBS+Imposto Seletivo+IBS; se ultrapassado, reduz a alíquota a partir de 2035, fora do horizonte desta projeção, e exige dados federais fora do escopo deste estudo; não usado aqui); ADCT arts. 131 e 132 e LC 227/2026 arts. 51 e 114 a 116 (divisão do IBS bruto entre critério histórico e critério destino, CGIBS e Seguro-Receita).</p>
+            <p>7. Base legal: EC 132/2023; ADCT art. 128 (cronograma de extinção do ICMS/ISS) e art. 131 (implementação progressiva do IBS); ADCT art. 130, II e III (neutralidade: receita de Estados/DF com o IBS equivalente à redução do ICMS; receita de Municípios/DF com o IBS equivalente à redução do ISS), regulamentado por LC 214/2025, arts. 361 a 365, com a redação dada pela LC 227/2026 (alíquota de referência do IBS calibrada pela média da razão receita/PIB em 2024-2026, para cada ano da transição); ADCT art. 130, &sect;4&ordm; e &sect;5&ordm; (Teto de Referência, média 2012-2021 de IPI+ICMS+ISS+PIS/Cofins+IOF-seguros, comparado à média 2029-2033 de CBS+Imposto Seletivo+IBS; se ultrapassado, reduz a alíquota a partir de 2035, fora do horizonte desta projeção, e exige dados federais fora do escopo deste estudo; não usado aqui); ADCT arts. 131 e 132 e LC 227/2026 arts. 51 e 114 a 116 (divisão do IBS bruto entre critério histórico e critério destino, CGIBS e Seguro-Receita).</p>
             <p>8. Simplificações: (i) a razão receita de referência/PIB (a carga tributária) é mantida constante na média de 2024-2026 a partir de 2027, ou seja, presume-se que a arrecadação cresce sempre na mesma proporção do PIB, sem estimar por métodos estatísticos se ela historicamente cresceu mais rápido ou mais devagar que a economia; (ii) o dado de 2026 usado nessa média é uma estimativa preliminar (RREO, últimos 12 meses até abril de 2026, sobre o PIB projetado pelo Focus, mais o FECOP de 2025 como proxy), a ser substituída pelo dado fechado (DCA) quando disponível; (iii) a divisão do IBS bruto entre critério histórico, critério destino, CGIBS e Seguro-Receita usa os mesmos parâmetros \(\alpha_a\) e \(c_a\) já publicados no Estudo 06 (estudos/ibs-projecao-arrecadacao-br.html), mas só para mostrar o tamanho de cada fatia no agregado nacional, sem entrar em qual estado ou município recebe o quê; (iv) para 2031-2033, fora do horizonte do Focus, os parâmetros da IFI são tratados como constantes nos três anos, já que a IFI projeta uma taxa média para 2027-2035, não ano a ano.</p>
         </div>
     </div>
@@ -574,6 +603,7 @@
             buildFaixaHistorica(data);
             buildHistoricoTable(data);
             buildMacroTable(data);
+            buildNeutralidadeTable(data);
             buildProjecaoTable(data);
             buildIbsParametrosTable(data);
             buildIbsDivisaoTable(data);
@@ -595,7 +625,7 @@
         const p2033 = p.find(r => r.ano === 2033);
         const p2029 = p.find(r => r.ano === 2029);
         document.getElementById('resposta-numero').textContent =
-            `De R$ ${fmtNum(p2029.ibs_bruto / 1e9, 1)} bi em 2029 a R$ ${fmtNum(p2033.ibs_bruto / 1e9, 1)} bi em 2033 (valores nominais)`;
+            `De R$ ${fmtNum(p2029.ibs_bruto / 1e9, 1)} bi em 2029 a R$ ${fmtNum(p2033.ibs_bruto / 1e9, 1)} bi em 2033 (R$ constantes de 2025)`;
         document.getElementById('resposta-sub').innerHTML =
             `O IBS bruto cresce de ${fmtPct(p2029.ibs_bruto / p2029.bolo_projetado * 100, 0)} da arrecadação total em 2029 (início da transição) até 100% em 2033, quando o ICMS e o ISS são extintos (ADCT art. 128). ` +
             `Em 2033 a arrecadação total projetada (ICMS+ISS+IBS) é de R$ ${fmtNum(p2033.bolo_projetado / 1e9, 1)} bi, equivalente a ${fmtPct(p2033.bolo_pct_pib, 2)} do PIB, a mesma proporção média de 2024&ndash;2026 (LC 214/2025, arts. 361 a 365).`;
@@ -653,9 +683,18 @@
             <td class="td-left">${r.ano}</td>
             <td>${fmtPctSigned(r.pib_real_pct * 100, 2)}</td>
             <td>${fmtPctSigned(r.ipca_pct * 100, 2)}</td>
-            <td>${fmtPctSigned(r.pib_nominal_pct_crescimento * 100, 2)}</td>
-            <td>${fmtNum(r.pib_nominal / 1e9, 1)}</td>
+            <td>${fmtNum(r.pib_real / 1e9, 1)}</td>
             <td class="td-left td-ref">${r.fonte}</td>
+        </tr>`).join('');
+    }
+
+    function buildNeutralidadeTable(data) {
+        document.getElementById('tbody-neutralidade').innerHTML = data.projecao.map(r => `<tr class="row-resposta">
+            <td class="td-left">${r.ano}</td>
+            <td>${fmtNum(r.pib_real / 1e9, 1)}</td>
+            <td>${fmtNum(r.bolo_projetado / 1e9, 1)}</td>
+            <td>${fmtNum(r.icms_iss_residual / 1e9, 1)}</td>
+            <td>${fmtNum(r.ibs_bruto / 1e9, 1)}</td>
         </tr>`).join('');
     }
 
@@ -703,18 +742,18 @@
         const c = themeColors();
         const razao = data._meta.razao_bolo_pib_base / 100;
 
-        // Linha realizada: 2013-2025, dado observado (SICONFI)
-        const pontosRealizado = data.historico.map(r => ({ x: r.ano, y: r.bolo_nominal / 1e9 }));
+        // Linha realizada: 2013-2025, dado observado (SICONFI), em R$ constantes de 2025.
+        const pontosRealizado = data.historico.map(r => ({ x: r.ano, y: r.bolo_real_2025 / 1e9 }));
 
         // Linha projetada (contrafactual): começa no último ano realizado (2025), para a linha
-        // ficar contínua, e segue até 2033 (carga tributária de referência × PIB projetado). É uma
-        // projeção pura de tendência, sem considerar a reforma.
+        // ficar contínua, e segue até 2033 (carga tributária de referência × PIB projetado, R$
+        // constantes de 2025). É uma projeção pura de tendência, sem considerar a reforma.
         const projPorAno = {};
         data.projecao.forEach(r => { projPorAno[r.ano] = r.bolo_projetado; });
         const ultimo = data.historico[data.historico.length - 1];
-        const pontosProjetado = [{ x: ultimo.ano, y: ultimo.bolo_nominal / 1e9 }].concat(
+        const pontosProjetado = [{ x: ultimo.ano, y: ultimo.bolo_real_2025 / 1e9 }].concat(
             data.macro_path.map(r => {
-                const valor = projPorAno[r.ano] != null ? projPorAno[r.ano] : razao * r.pib_nominal;
+                const valor = projPorAno[r.ano] != null ? projPorAno[r.ano] : razao * r.pib_real;
                 return { x: r.ano, y: valor / 1e9 };
             })
         );
