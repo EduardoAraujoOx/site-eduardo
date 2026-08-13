@@ -105,6 +105,13 @@
         }
         .abnt-source strong { color: var(--text-secondary); font-weight: 600; }
 
+        .regressao-wrap { display: flex; gap: 1.4rem; flex-wrap: wrap; margin: 0.4rem 0 0.6rem; }
+        .regressao-panel { flex: 1 1 260px; min-width: 230px; }
+        .regressao-title { font-family: var(--sans); font-size: 0.8rem; font-weight: 600; color: var(--text); text-align: center; margin-bottom: 0.3rem; }
+        .regressao-r2 { font-weight: 400; color: var(--text-muted); margin-left: 0.4em; }
+        .regressao-svg { width: 100%; display: block; border: 1px solid var(--border); border-radius: 6px; background: #fff; }
+        .regressao-axis-x { font-family: var(--sans); font-size: 0.68rem; color: var(--text-muted); text-align: center; margin-top: 0.35rem; }
+
         .map-wrapper { position: relative; background: #EDF3F9; border-radius: 10px; overflow: visible; min-height: 200px; margin-top: 1.2rem; }
         #brazilMap { display: block; width: 100%; }
         .map-state { stroke: #fff; stroke-width: 0.6; cursor: pointer; transition: opacity 0.15s, stroke-width 0.15s; }
@@ -200,7 +207,10 @@
                 Participação de Transição (φ<sup>CPT</sup>, art. 131, §1º, do ADCT) responde pela maior parte da
                 variação observada: ele carrega de 80% a 90% do peso do IBS já implementado entre 2029 e 2033,
                 contra 10% a 20% do coeficiente de destino, cujo peso só cresce de forma substancial depois de
-                2033 (item 4).
+                2033 (item 4). A Figura 1 confirma essa atribuição: a diferença entre o φ<sup>CPT</sup> de cada
+                UF e sua participação neutra de 2025 explica <strong id="r2-cpt-inline">—</strong> da variação
+                em 2033 entre os 27 entes estaduais, contra <strong id="r2-dest-inline">—</strong> para a mesma
+                diferença no coeficiente de destino pleno.
             </p>
             <p class="abnt-caption">
                 <span class="abnt-num">Tabela 1</span> – Receita projetada do ente estadual, por unidade federativa, 2029–2033
@@ -232,6 +242,23 @@
                 </table>
             </div>
             <p class="abnt-source"><strong>Fonte:</strong> SICONFI/STN; EC n.º 132/2023; LC n.º 214/2025; LC n.º 227/2026. Elaboração própria.<br><strong>Nota:</strong> Receita pré-IBS corresponde à participação neutra de 2025 do ente estadual (ICMS + FECOP, líquido de cota-parte) aplicada à receita de referência nacional de cada ano. Ordenada por variação relativa em 2033, da mais negativa à mais positiva.</p>
+
+            <p class="abnt-caption" style="margin-top: 2rem;">
+                <span class="abnt-num">Figura 1</span> – Variação da receita do ente estadual em 2033 contra a diferença relativa entre o Coeficiente de Participação de Transição (a) e o coeficiente de destino pleno (b), e a participação neutra de 2025
+            </p>
+            <div class="regressao-wrap" id="regressaoWrap">
+                <div class="regressao-panel">
+                    <div class="regressao-title">a) Transição federativa <span class="regressao-r2" id="r2-cpt">R² = —</span></div>
+                    <svg id="chartCPT" class="regressao-svg" aria-label="Dispersão: diferença do Coeficiente de Participação de Transição contra a variação da receita em 2033"></svg>
+                    <div class="regressao-axis-x">Diferença relativa: φ<sup>CPT</sup> vs. participação neutra (%)</div>
+                </div>
+                <div class="regressao-panel">
+                    <div class="regressao-title">b) Destino pleno <span class="regressao-r2" id="r2-dest">R² = —</span></div>
+                    <svg id="chartDestino" class="regressao-svg" aria-label="Dispersão: diferença do coeficiente de destino pleno contra a variação da receita em 2033"></svg>
+                    <div class="regressao-axis-x">Diferença relativa: coeficiente de destino vs. participação neutra (%)</div>
+                </div>
+            </div>
+            <p class="abnt-source"><strong>Fonte:</strong> SICONFI/STN; EC n.º 132/2023; LC n.º 214/2025; LC n.º 227/2026. Elaboração própria.<br><strong>Nota:</strong> Cada ponto é o ente estadual de uma UF (n = 27); eixo Y idêntico nos dois painéis, variação da receita em 2033 ante o contrafactual (mesma coluna da Tabela 1). Reta de regressão linear (mínimos quadrados) e coeficiente de determinação (R²) de cada painel.</p>
         </section>
 
         <section class="result-section" id="sec-capitais">
@@ -287,7 +314,7 @@
             <div class="result-num">3</div>
             <h2>Variação da receita por UF, 2029–2033</h2>
             <p class="intro">
-                As Tabelas 1 e 2 isolam o ente estadual e as capitais, respectivamente. A Figura 1 recompõe a
+                As Tabelas 1 e 2 isolam o ente estadual e as capitais, respectivamente. A Figura 2 recompõe a
                 receita total da unidade federativa em 2033: a soma do ente estadual (ICMS e FECOP, líquidos da
                 cota-parte) com o agregado de todos os seus municípios (ISS mais a cota-parte recebida, sem
                 repeti-la do lado estadual). A variação de cada UF é medida contra o mesmo cenário contrafactual
@@ -316,7 +343,7 @@
                 <span>+20% ou melhor</span>
             </div>
             <p class="abnt-caption" style="margin-top: 0.9rem;">
-                <span class="abnt-num">Figura 1</span> – Variação da receita agregada (estado + municípios), por unidade federativa, 2033
+                <span class="abnt-num">Figura 2</span> – Variação da receita agregada (estado + municípios), por unidade federativa, 2033
             </p>
             <p class="abnt-source"><strong>Fonte:</strong> SICONFI/STN; EC n.º 132/2023; LC n.º 214/2025; LC n.º 227/2026; malha de estados do IBGE. Elaboração própria.<br><strong>Nota:</strong> Variação medida contra o cenário contrafactual (participação de 2025 aplicada à receita de referência nacional de cada ano); escala divergente centrada em zero, com amplitude de ±20 p.p.</p>
         </section>
@@ -606,6 +633,11 @@
         renderPerCapita();
         renderDispersaoIntra();
         try {
+            renderRegressao();
+        } catch (err) {
+            document.getElementById('regressaoWrap').innerHTML = '<span style="font-family:var(--sans);font-size:0.8rem;color:var(--text-muted);">Figura indisponível · veja a Tabela 1 acima</span>';
+        }
+        try {
             renderMapa();
         } catch (err) {
             document.getElementById('mapLoading').innerHTML = '<span>Mapa indisponível · veja a Tabela 1 acima</span>';
@@ -673,6 +705,67 @@
         document.getElementById('cv-2033-inline').textContent = fmtCv(cv2033);
         document.getElementById('cv-2077-inline').textContent = fmtCv(cv2077);
         document.getElementById('cv-queda-inline').textContent = queda + '%';
+    }
+
+    // ── Figura 1 (item 1): regressão phi^CPT / destino vs. variação 2033 ──
+    function renderRegressao() {
+        const reg = DATA.regressao_2033;
+        const fmtR2 = v => v.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+        document.getElementById('r2-cpt').textContent = 'R² = ' + fmtR2(reg.r2_transicao);
+        document.getElementById('r2-dest').textContent = 'R² = ' + fmtR2(reg.r2_destino);
+        document.getElementById('r2-cpt-inline').textContent = fmtR2(reg.r2_transicao).replace('R² = ', '') + ' do R²';
+        document.getElementById('r2-dest-inline').textContent = fmtR2(reg.r2_destino).replace('R² = ', '') + ' do R²';
+        drawScatter('chartCPT', reg.pontos, 'diff_cpt_pct', 'variacao_2033_pct');
+        drawScatter('chartDestino', reg.pontos, 'diff_destino_pct', 'variacao_2033_pct');
+    }
+
+    function drawScatter(svgId, pts, xKey, yKey) {
+        const svgEl = document.getElementById(svgId);
+        const W = svgEl.parentElement.clientWidth || 300;
+        const H = Math.round(W * 0.82);
+        const margin = { top: 10, right: 14, bottom: 16, left: 30 };
+        const svg = d3.select(svgEl).attr('width', W).attr('height', H).attr('viewBox', `0 0 ${W} ${H}`);
+        svg.selectAll('*').remove();
+
+        const xs = pts.map(p => p[xKey]), ys = pts.map(p => p[yKey]);
+        const xExt = d3.extent(xs), yExt = d3.extent(ys);
+        const xPad = (xExt[1] - xExt[0]) * 0.1 || 1, yPad = (yExt[1] - yExt[0]) * 0.1 || 1;
+        const x = d3.scaleLinear().domain([xExt[0] - xPad, xExt[1] + xPad]).range([margin.left, W - margin.right]);
+        const y = d3.scaleLinear().domain([yExt[0] - yPad, yExt[1] + yPad]).range([H - margin.bottom, margin.top]);
+
+        if (x.domain()[0] < 0 && x.domain()[1] > 0) {
+            svg.append('line').attr('x1', x(0)).attr('x2', x(0)).attr('y1', margin.top).attr('y2', H - margin.bottom)
+                .attr('stroke', '#d8dde4').attr('stroke-width', 1);
+        }
+        if (y.domain()[0] < 0 && y.domain()[1] > 0) {
+            svg.append('line').attr('y1', y(0)).attr('y2', y(0)).attr('x1', margin.left).attr('x2', W - margin.right)
+                .attr('stroke', '#d8dde4').attr('stroke-width', 1);
+        }
+
+        const n = xs.length, mx = d3.mean(xs), my = d3.mean(ys);
+        const sxx = d3.sum(xs.map(v => (v - mx) ** 2));
+        const sxy = d3.sum(xs.map((v, i) => (v - mx) * (ys[i] - my)));
+        const slope = sxx ? sxy / sxx : 0, intercept = my - slope * mx;
+        const [x0, x1] = x.domain();
+        svg.append('line')
+            .attr('x1', x(x0)).attr('y1', y(slope * x0 + intercept))
+            .attr('x2', x(x1)).attr('y2', y(slope * x1 + intercept))
+            .attr('stroke', '#1c4f9c').attr('stroke-width', 1.4).attr('stroke-dasharray', '4,2');
+
+        svg.selectAll('circle').data(pts).enter().append('circle')
+            .attr('cx', d => x(d[xKey])).attr('cy', d => y(d[yKey]))
+            .attr('r', 3.4).attr('fill', '#7a8ba0').attr('fill-opacity', 0.8)
+            .attr('stroke', '#456070').attr('stroke-width', 0.5)
+            .append('title').text(d => `${d.nome} (${d.uf})`);
+
+        y.ticks(4).forEach(t => {
+            svg.append('text').attr('x', margin.left - 5).attr('y', y(t) + 3).attr('text-anchor', 'end')
+                .attr('font-size', '8px').attr('font-family', 'var(--sans)').attr('fill', '#7a8ba0').text(t.toFixed(0));
+        });
+        x.ticks(4).forEach(t => {
+            svg.append('text').attr('x', x(t)).attr('y', H - 3).attr('text-anchor', 'middle')
+                .attr('font-size', '8px').attr('font-family', 'var(--sans)').attr('fill', '#7a8ba0').text(t.toFixed(0));
+        });
     }
 
     function renderDispersaoIntra() {

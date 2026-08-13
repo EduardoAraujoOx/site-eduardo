@@ -16,6 +16,12 @@ cenário único de destino pleno) para produzir, num único JSON:
      em 2077 (extensão de longo prazo, Estudo 09), população fixada na média
      2019-2025 nos três pontos para isolar o efeito da redistribuição do
      efeito do crescimento populacional.
+  5. Regressão (por UF, ente estadual): diferença relativa entre o
+     Coeficiente de Participação de Transição (phi^CPT) e a participação
+     neutra de 2025, e entre o coeficiente de destino pleno e a mesma
+     participação neutra, cada uma contra a variação da receita em 2033 --
+     evidência de qual dos dois coeficientes explica o padrão observado na
+     Tabela 1 (Figura 2, item 1).
 
 O "pré-IBS" de cada ente, em qualquer ano, é sempre o mesmo contrafactual já
 usado nas demais páginas do site: a receita de referência nacional do ano
@@ -535,6 +541,44 @@ def main():
             "per_capita_2077": total_2077 / pop,
         }
 
+    # ── 5. Regressão: o que explica a variação de 2033 (Figura 2, item 1) ──
+    # Verifica, com os dados reais do modelo, se o padrão 2029-2033 é mais
+    # consistente com o Coeficiente de Participação de Transição (phi^CPT)
+    # ou com o coeficiente de destino pleno -- mesmo recorte da Tabela 1
+    # (ente estadual). Eixo X de cada painel: a diferença relativa entre o
+    # coeficiente (CPT ou destino) e a participação neutra de 2025, por UF;
+    # eixo Y, em ambos: a variação da receita do ente estadual em 2033.
+    regressao_pontos = []
+    for uf in UFS:
+        p = params_uf[uf]["estado"]
+        coef_neutro, coef_cpt, coef_pleno = p["coefNeutro"], p["coefCPT"], p["coefPleno"]
+        if not coef_neutro:
+            continue
+        regressao_pontos.append({
+            "uf": uf,
+            "nome": NOMES_UF[uf],
+            "diff_cpt_pct": (coef_cpt / coef_neutro - 1) * 100,
+            "diff_destino_pct": (coef_pleno / coef_neutro - 1) * 100,
+            "variacao_2033_pct": por_uf_estado[uf]["variacao_por_ano"][2033] * 100,
+        })
+
+    def r2(xs, ys):
+        n = len(xs)
+        mx, my = sum(xs) / n, sum(ys) / n
+        sxx = sum((x - mx) ** 2 for x in xs)
+        syy = sum((y - my) ** 2 for y in ys)
+        sxy = sum((x - mx) * (y - my) for x, y in zip(xs, ys))
+        return (sxy / (sxx * syy) ** 0.5) ** 2 if sxx > 0 and syy > 0 else 0.0
+
+    xs_cpt = [pt["diff_cpt_pct"] for pt in regressao_pontos]
+    xs_dest = [pt["diff_destino_pct"] for pt in regressao_pontos]
+    ys = [pt["variacao_2033_pct"] for pt in regressao_pontos]
+    regressao_2033 = {
+        "pontos": regressao_pontos,
+        "r2_transicao": r2(xs_cpt, ys),
+        "r2_destino": r2(xs_dest, ys),
+    }
+
     output = {
         "fonte": "Estudos 02, 06, 09, 10, 11, 12, 13 deste site (data/*.json); ver nota-metodologica-ibs.html",
         "cenario": "destino pleno",
@@ -544,6 +588,7 @@ def main():
             "cobertura_anos_min": COBERTURA_MIN, "populacao_min": POP_MIN,
         },
         "por_uf_estado": por_uf_estado,
+        "regressao_2033": regressao_2033,
         "por_uf": por_uf,
         "variacao_municipal_por_uf_2033": variacao_municipal_por_uf,
         "destaques_municipios_2033": {
