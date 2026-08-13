@@ -11,8 +11,9 @@ cenário único de destino pleno) para produzir, num único JSON:
      para a tabela de destaques (municípios que mais ganham/perdem).
   3. Receita das 27 capitais (26 municípios + Distrito Federal, que não tem
      esfera municipal própria -- art. 115, LC 227/2026).
-  4. Receita per capita por UF, pré-reforma (2025) x pós-reforma em 2033 e em
-     2077 (extensão de longo prazo, Estudo 09), população fixada na média
+  4. Receita per capita do ente estadual (líquido de cota-parte, mesmo
+     recorte da Tabela 1) por UF, pré-reforma (2025) x pós-reforma em 2033 e
+     em 2077 (extensão de longo prazo, Estudo 09), população fixada na média
      2019-2025 nos três pontos para isolar o efeito da redistribuição do
      efeito do crescimento populacional.
 
@@ -495,22 +496,28 @@ def main():
             }
 
     # ── 4. Per capita por UF, 2025 x 2033 x 2077 (população fixa 2019-2025) ─
-    repasse_por_uf_lp = {}
     lp_2077 = (seguro_lp_data.get("anos") or {}).get(str(ANO_LONGO), {}).get("repasse_por_uf", {})
-    for uf, v in lp_2077.items():
-        repasse_por_uf_lp[uf] = (v.get("estado") or 0) + (v.get("municipio") or 0)
 
+    # Per capita do ente estadual apenas (líquido de cota-parte), o mesmo
+    # recorte da Tabela 1 -- isola o esforço arrecadatório do estado, sem
+    # misturar com o agregado municipal (esse é o objeto das Tabelas 2 e 4).
+    # DF fica de fora: sem esfera municipal própria, sua "receita estadual"
+    # já inclui o que, nas demais UFs, fica com os municípios -- não é
+    # comparável às demais neste recorte (mesmo motivo da exclusão na
+    # Tabela 4).
     per_capita_uf = {}
     for uf in UFS:
+        if uf == "DF":
+            continue
         pop = (pop_uf.get(uf) or {}).get("pop_media")
         if not pop:
             continue
         p = params_uf[uf]
-        parts = [p["estado"]] + ([p["municipio"]] if p["municipio"] else [])
+        parts = [p["estado"]]
 
         pre_2025 = sum(x["r0_2025"] for x in parts)
 
-        proj_2033 = por_uf[uf]["pos_por_ano"][2033]
+        proj_2033 = por_uf_estado[uf]["pos_por_ano"][2033]
 
         nac_2077 = lp_by_year[ANO_LONGO]
         total_2077 = 0.0
@@ -518,7 +525,7 @@ def main():
             total_2077 += (nac_2077["icms_iss_residual"] * part["coefNeutro"]
                            + nac_2077["ibs_historico"] * part["coefCPT"]
                            + nac_2077["ibs_destino_liquido"] * part["coefPleno"])
-        total_2077 += repasse_por_uf_lp.get(uf, 0)
+        total_2077 += (lp_2077.get(uf, {}).get("estado") or 0)
 
         per_capita_uf[uf] = {
             "nome": NOMES_UF[uf],
