@@ -178,14 +178,22 @@
                 <table class="data-table" id="table-uf">
                     <thead>
                         <tr>
-                            <th class="th-left">UF</th>
-                            <th>Pré-IBS (2025)<br>ente estadual</th>
+                            <th class="th-left" rowspan="2">UF</th>
+                            <th rowspan="2">Pré-IBS<br>(2025)</th>
+                            <th class="col-divider" colspan="5">Receita pós-IBS</th>
+                            <th class="col-divider" colspan="5">Variação da receita (ano contra pré-IBS)</th>
+                        </tr>
+                        <tr>
                             <th class="col-divider">2029</th>
                             <th>2030</th>
                             <th>2031</th>
                             <th>2032</th>
                             <th>2033</th>
-                            <th class="col-divider">Variação 2033</th>
+                            <th class="col-divider">2029</th>
+                            <th>2030</th>
+                            <th>2031</th>
+                            <th>2032</th>
+                            <th>2033</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-uf"></tbody>
@@ -211,14 +219,22 @@
                 <table class="data-table" id="table-capitais">
                     <thead>
                         <tr>
-                            <th class="th-left">Capital</th>
-                            <th>Pré-IBS (2025)</th>
+                            <th class="th-left" rowspan="2">Capital</th>
+                            <th rowspan="2">Pré-IBS<br>(2025)</th>
+                            <th class="col-divider" colspan="5">Receita pós-IBS</th>
+                            <th class="col-divider" colspan="5">Variação da receita (ano contra pré-IBS)</th>
+                        </tr>
+                        <tr>
                             <th class="col-divider">2029</th>
                             <th>2030</th>
                             <th>2031</th>
                             <th>2032</th>
                             <th>2033</th>
-                            <th class="col-divider">Variação 2033</th>
+                            <th class="col-divider">2029</th>
+                            <th>2030</th>
+                            <th>2031</th>
+                            <th>2032</th>
+                            <th>2033</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-capitais"></tbody>
@@ -428,7 +444,7 @@
             ${td(`${v.nome} <small>${uf}</small>`, 'td-ente')}
             ${td(fmtBi(v.pre_2025))}
             ${ANOS.map(a => td(fmtBi(v.pos_por_ano[String(a)]), a === 2029 ? 'col-divider' : '')).join('')}
-            ${td(fmtPct(v.variacao_por_ano['2033']), 'col-divider ' + clsPct(v.variacao_por_ano['2033']))}
+            ${ANOS.map(a => td(fmtPct(v.variacao_por_ano[String(a)]), (a === 2029 ? 'col-divider ' : '') + clsPct(v.variacao_por_ano[String(a)]))).join('')}
         </tr>`).join('');
     }
 
@@ -439,7 +455,7 @@
             ${td(`${v.nome} <small>${uf}${v.sem_municipio_proprio ? ' · sem município próprio' : ''}</small>`, 'td-ente')}
             ${td(fmtMi(v.pre_2025))}
             ${ANOS.map(a => td(fmtMi(v.pos_por_ano[String(a)]), a === 2029 ? 'col-divider' : '')).join('')}
-            ${td(fmtPct(v.variacao_por_ano['2033']), 'col-divider ' + clsPct(v.variacao_por_ano['2033']))}
+            ${ANOS.map(a => td(fmtPct(v.variacao_por_ano[String(a)]), (a === 2029 ? 'col-divider ' : '') + clsPct(v.variacao_por_ano[String(a)]))).join('')}
         </tr>`).join('');
     }
 
