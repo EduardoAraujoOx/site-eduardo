@@ -67,6 +67,51 @@
         .data-table tbody tr:hover { background: var(--accent-bg); }
         .table-caption { font-family: Georgia, serif; font-style: italic; font-size: 0.82rem; color: var(--text-muted); padding: 0.6rem 0.2rem 1.4rem; max-width: 74ch; }
 
+        /* ── Seção 4: prosa e tabelas em formato ABNT (NBR 14724) ── */
+        #sec-percapita p.intro { font-family: Georgia, 'Times New Roman', serif; }
+        #sec-percapita .abnt-caption {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 0.88rem;
+            color: var(--text);
+            margin: 2.2rem 0 0.7rem;
+            line-height: 1.5;
+        }
+        #sec-percapita .abnt-caption .abnt-num { font-weight: 700; }
+        #sec-percapita .abnt-caption .abnt-sub { display: block; font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem; }
+        table.abnt {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 0.83rem;
+        }
+        table.abnt thead tr:first-child th { border-top: 1.5px solid var(--text); padding-top: 0.5rem; }
+        table.abnt thead tr:last-child th { border-bottom: 1px solid var(--text); padding-bottom: 0.45rem; }
+        table.abnt thead th {
+            font-weight: 700;
+            text-align: center;
+            padding: 0.35rem 0.7rem;
+            vertical-align: bottom;
+        }
+        table.abnt th.abnt-left, table.abnt td.abnt-left { text-align: left; }
+        table.abnt td { padding: 0.32rem 0.7rem; text-align: center; }
+        table.abnt td.abnt-left { font-weight: 600; }
+        table.abnt tbody tr:nth-child(even) { background: var(--bg); }
+        table.abnt tbody tr:last-child td { border-bottom: 1.5px solid var(--text); padding-bottom: 0.5rem; }
+        table.abnt tr.abnt-total { font-weight: 700; }
+        table.abnt tr.abnt-total td { border-top: 1px solid var(--text); background: var(--bg); }
+        table.abnt .abnt-divider { border-left: 1px solid var(--border); }
+        .abnt-max { color: #1c4f9c; }
+        .abnt-min { color: var(--neg); }
+        .abnt-source {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            line-height: 1.65;
+            margin: 0.6rem 0 0;
+            max-width: 74ch;
+        }
+        .abnt-source strong { color: var(--text-secondary); font-weight: 600; }
+
         .map-wrapper { position: relative; background: #EDF3F9; border-radius: 10px; overflow: visible; min-height: 200px; margin-top: 1.2rem; }
         #brazilMap { display: block; width: 100%; }
         .map-state { stroke: #fff; stroke-width: 0.6; cursor: pointer; transition: opacity 0.15s, stroke-width 0.15s; }
@@ -263,17 +308,25 @@
 
         <section class="result-section" id="sec-percapita">
             <div class="result-num">4</div>
-            <h2>Receita per capita: 2025, 2033 e 2077</h2>
+            <h2>Dispersão da receita per capita, entre e dentro das unidades federativas</h2>
             <p class="intro">
-                Gobetti e Monteiro (IPEA, 2023) argumentam que o efeito redistributivo da reforma se acentua ao
-                longo da transição, à medida que o critério de destino ganha peso sobre o histórico (art. 131,
-                §1º, do ADCT) — isto é, que a desigualdade de receita per capita entre estados tende a diminuir
-                com o tempo, não apenas a se deslocar. Para testar essa hipótese sobre este modelo, a tabela
-                compara a receita per capita de cada UF em três pontos: 2025 (pré-reforma), 2033 (fim do núcleo
-                da transição) e 2077 (véspera da extensão de longo prazo do Estudo 09, quando o critério
-                histórico já caiu a 2% do IBS bruto). A população é fixada na média 2019–2025 nos três pontos,
-                para isolar o efeito da redistribuição do efeito, de natureza distinta, do crescimento
-                populacional — que este site não projeta.
+                Gobetti e Monteiro (2023) sustentam que o efeito redistributivo da migração do critério de
+                origem para o critério de destino se acentua ao longo da transição, à medida que a fração do
+                IBS bruto alocada pelo critério histórico — majoritária nos primeiros exercícios da reforma —
+                cede lugar à fração alocada pelo critério de destino (art. 131, §1º, do ADCT). Nessa leitura, a
+                desigualdade de receita per capita entre entes federativos tenderia a se reduzir com o tempo, e
+                não apenas a se deslocar de um grupo de entes para outro. Esta seção submete essa hipótese a
+                dois testes sobre o modelo empregado neste site: um teste da dispersão <em>entre</em> unidades
+                federativas (Tabela 3) e um teste da dispersão <em>dentro</em> de cada unidade federativa, entre
+                os seus municípios (Tabela 4).
+            </p>
+            <p class="intro">
+                A Tabela 3 compara a receita per capita projetada de cada unidade federativa em três pontos do
+                tempo: 2025 (situação pré-reforma), 2033 (encerramento do núcleo da transição constitucional) e
+                2077 (véspera do término da extensão de longo prazo do Estudo 09, quando a fração histórica já
+                se reduziu a 2% do IBS bruto). Para isolar o efeito da redistribuição do efeito, de natureza
+                distinta, do crescimento populacional — não projetado por este site —, a população de cada ente
+                é mantida fixa na média do período 2019–2025 nos três pontos de comparação.
             </p>
             <div class="stat-row" id="stat-row-dispersao">
                 <div class="stat-tile">
@@ -292,54 +345,73 @@
                     <div class="stat-sub">coeficiente de variação</div>
                 </div>
             </div>
-            <p class="intro" id="dispersao-note" style="margin-top: 0.9rem;"></p>
+            <p class="intro" style="margin-top: 0.9rem;">
+                Os resultados indicam que a dispersão entre unidades federativas — mensurada pelo coeficiente de
+                variação da receita per capita — declina de forma monotônica ao longo da transição: de
+                <strong id="cv-2025-inline">—</strong> em 2025 para <strong id="cv-2033-inline">—</strong> em
+                2033 e <strong id="cv-2077-inline">—</strong> em 2077, uma redução de
+                <strong id="cv-queda-inline">—</strong> no horizonte completo. O resultado é consistente com a
+                hipótese de Gobetti e Monteiro (2023): a redistribuição pelo critério de destino tende a
+                aproximar a receita per capita dos entes federativos, e não apenas a deslocá-la entre grupos.
+            </p>
+
+            <p class="abnt-caption">
+                <span class="abnt-num">Tabela 3</span> – Receita per capita projetada por unidade federativa, 2025, 2033 e 2077
+                <span class="abnt-sub">(Em R$ por habitante, preços constantes de 2025)</span>
+            </p>
             <div class="table-wrap">
-                <table class="data-table" id="table-percapita">
+                <table class="abnt" id="table-percapita">
                     <thead>
                         <tr>
-                            <th class="th-left">UF</th>
+                            <th class="abnt-left">UF</th>
                             <th>Per capita 2025</th>
                             <th>Per capita 2033</th>
                             <th>Per capita 2077</th>
-                            <th class="col-divider">Δ 2025→2077</th>
+                            <th class="abnt-divider">Δ 2025→2077</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-percapita"></tbody>
                 </table>
             </div>
-            <p class="table-caption">Valores em R$ por habitante, preços constantes de 2025. Ordenado do menor para o maior per capita em 2025.</p>
+            <p class="abnt-source"><strong>Fonte:</strong> SICONFI/STN; EC n.º 132/2023; LC n.º 214/2025; LC n.º 227/2026. Elaboração própria.<br><strong>Nota:</strong> ordenada do menor para o maior per capita em 2025. População fixada na média 2019–2025 nos três pontos de comparação, para isolar o efeito redistributivo do efeito do crescimento populacional.</p>
 
-            <p class="intro" style="margin-top: 2rem;">
-                A tabela acima mede dispersão <em>entre</em> UFs. Gobetti e Monteiro também apuram uma dispersão
-                <em>dentro</em> de cada UF — a razão entre o município mais rico e o mais pobre em receita per
-                capita (ISS + cota-parte do ICMS), antes e depois da reforma. Reproduzindo esse exercício sobre
-                este modelo: o Distrito Federal fica de fora, por não ter municípios próprios (art. 115 da LC
-                227/2026); municípios com cobertura de dados abaixo de 5 dos 7 anos, ou cujo registro de 2025
-                estava incompleto (faltando ISS ou cota-parte declarados especificamente naquele ano — 20 dos
-                5.569 municípios), foram excluídos da comparação, para não confundir uma falha de preenchimento
-                com um resultado real.
+            <p class="intro" style="margin-top: 2.2rem;">
+                Se a Tabela 3 mede a dispersão entre unidades federativas, a Tabela 4 replica, sobre este
+                modelo, o exercício de Gobetti e Monteiro (2023, Tabela 9) para a dispersão dentro de cada
+                unidade federativa: a razão entre a receita per capita do município mais rico e a do município
+                mais pobre, antes e depois da reforma. O Distrito Federal é excluído por não dispor de esfera
+                municipal própria (art. 115 da LC 227/2026). Foram excluídos da comparação os municípios com
+                cobertura de dados inferior a cinco dos sete anos da série 2019–2025 ou cujo registro de 2025
+                estivesse incompleto — ausência de ISS ou de cota-parte do ICMS declarados especificamente
+                naquele exercício, não obstante a existência de registros nos demais anos (20 dos 5.569
+                municípios) —, de modo a não confundir uma falha de preenchimento com um resultado substantivo.
+            </p>
+
+            <p class="abnt-caption">
+                <span class="abnt-num">Tabela 4</span> – Comparação entre a maior e a menor receita municipal per capita (ISS + cota-parte do ICMS), por unidade federativa, antes e depois da reforma
+                <span class="abnt-sub">(Em R$ e razão máximo/mínimo)</span>
             </p>
             <div class="table-wrap">
-                <table class="data-table" id="table-dispersao-intra">
+                <table class="abnt" id="table-dispersao-intra">
                     <thead>
                         <tr>
-                            <th class="th-left" rowspan="2">UF</th>
-                            <th colspan="2">Mais rico</th>
-                            <th class="col-divider" colspan="2">Mais pobre</th>
-                            <th class="col-divider" rowspan="2">Max/Min<br>pré-reforma</th>
-                            <th rowspan="2">Max/Min<br>pós-reforma</th>
+                            <th class="abnt-left" rowspan="2">UF</th>
+                            <th colspan="2"><span class="abnt-max">Mais rico</span></th>
+                            <th class="abnt-divider" colspan="2"><span class="abnt-min">Mais pobre</span></th>
+                            <th class="abnt-divider" rowspan="2">Pré-reforma<br><span class="abnt-max">Max</span>/<span class="abnt-min">Min</span></th>
+                            <th rowspan="2">Pós-reforma<br><span class="abnt-max">Max</span>/<span class="abnt-min">Min</span></th>
                         </tr>
                         <tr>
-                            <th class="th-left">Município</th>
+                            <th class="abnt-left">Município</th>
                             <th>Receita PC</th>
-                            <th class="th-left col-divider">Município</th>
+                            <th class="abnt-left abnt-divider">Município</th>
                             <th>Receita PC</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-dispersao-intra"></tbody>
                 </table>
             </div>
-            <p class="table-caption">Receita PC: receita per capita pré-reforma (participação neutra de 2025 dividida pela população média 2019-2025), em R$. Max/Min: razão entre a maior e a menor receita per capita entre os municípios elegíveis daquela UF — pré-reforma usa os mesmos dois municípios nomeados nas colunas à esquerda; pós-reforma recalcula o máximo e o mínimo em 2033, que podem já não ser os mesmos municípios.</p>
+            <p class="abnt-source"><strong>Fonte:</strong> SICONFI/STN; EC n.º 132/2023; LC n.º 214/2025; LC n.º 227/2026. Elaboração própria.<br><strong>Nota:</strong> Receita PC pré-reforma corresponde à participação neutra de 2025 (ISS + cota-parte do ICMS) dividida pela população média do município (2019–2025). Max/Min pré-reforma é a razão entre os dois municípios nomeados nas colunas à esquerda; Max/Min pós-reforma recalcula o máximo e o mínimo em 2033 entre os municípios elegíveis da UF, que podem já não ser os mesmos dois municípios. Linha "Brasil": máximo e mínimo nacionais, dentre todos os municípios elegíveis.</p>
         </section>
 
         <div class="footnotes">
@@ -347,7 +419,7 @@
             <p>1. Metodologia completa: <a href="/estudos/nota-metodologica-ibs.html">Estudo 14</a>. Esta página reaplica a mesma lógica de projeção por UF já publicada no <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>, estendida ao nível municipal com os coeficientes do <a href="/estudos/reforma-tributaria-coeficiente-municipios.html">Estudo 10</a> e do rateio de destino municipal (cota-parte + destino próprio), e ao horizonte de 2077 com os dados do <a href="/estudos/ibs-projecao-longo-prazo.html">Estudo 09</a>.</p>
             <p>2. Script de geração: <code>data/build-resultados-consolidados.py</code>, saída em <code>data/resultados-consolidados-ibs.json</code>.</p>
             <p>3. Mapa: geometria de estados obtida em tempo real da API de malhas do IBGE, com contorno alternativo do GitHub (click_that_hood) em caso de indisponibilidade — mesmo padrão do <a href="/estudos/icms-diesel-importado-v2.html">mapa do Estudo 01</a>.</p>
-            <p>4. Dispersão intramunicipal (item 4): municípios com cobertura DCA/STN abaixo de 5 dos 7 anos (2019–2025) ou registro de 2025 incompleto (faltando ISS ou cota-parte declarados especificamente naquele ano, apesar de outros anos existirem — 20 de 5.569 municípios) foram excluídos da comparação, para não confundir uma falha de preenchimento com um resultado substantivo. O ranking completo de municípios que mais ganham e mais perdem participação relativa (não exibido nesta página) permanece disponível em <code>destaques_municipios_2033</code>, no mesmo <code>data/resultados-consolidados-ibs.json</code>.</p>
+            <p>4. Tabela 4 (dispersão intramunicipal): municípios com cobertura DCA/STN abaixo de 5 dos 7 anos (2019–2025) ou registro de 2025 incompleto (faltando ISS ou cota-parte declarados especificamente naquele ano, apesar de outros anos existirem — 20 de 5.569 municípios) foram excluídos da comparação, para não confundir uma falha de preenchimento com um resultado substantivo. O ranking completo de municípios que mais ganham e mais perdem participação relativa (não exibido nesta página) permanece disponível em <code>destaques_municipios_2033</code>, no mesmo <code>data/resultados-consolidados-ibs.json</code>.</p>
         </div>
 
     </div>
@@ -433,11 +505,11 @@
         document.getElementById('tbody-percapita').innerHTML = rows.map(([uf, v]) => {
             const delta = (v.per_capita_2077 - v.per_capita_2025) / v.per_capita_2025;
             return `<tr>
-                ${td(`${v.nome} <small>${uf}</small>`, 'td-ente')}
+                ${td(`${v.nome} <small>${uf}</small>`, 'abnt-left')}
                 ${td(fmtRs(v.per_capita_2025))}
                 ${td(fmtRs(v.per_capita_2033))}
                 ${td(fmtRs(v.per_capita_2077))}
-                ${td(fmtPct(delta), 'col-divider ' + clsPct(delta))}
+                ${td(fmtPct(delta), 'abnt-divider ' + clsPct(delta))}
             </tr>`;
         }).join('');
 
@@ -450,17 +522,16 @@
             return Math.sqrt(variance) / mean;
         };
         const cv2025 = cv(vals2025), cv2033 = cv(vals2033), cv2077 = cv(vals2077);
-        document.getElementById('stat-cv-2025').textContent = cv2025.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
-        document.getElementById('stat-cv-2033').textContent = cv2033.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
-        document.getElementById('stat-cv-2077').textContent = cv2077.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+        const fmtCv = v => v.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+        document.getElementById('stat-cv-2025').textContent = fmtCv(cv2025);
+        document.getElementById('stat-cv-2033').textContent = fmtCv(cv2033);
+        document.getElementById('stat-cv-2077').textContent = fmtCv(cv2077);
 
         const queda = ((cv2025 - cv2077) / cv2025 * 100).toFixed(0);
-        document.getElementById('dispersao-note').innerHTML =
-            `Sobre este modelo, a dispersão entre UFs (coeficiente de variação da receita per capita) cai de forma ` +
-            `monotônica ao longo da transição — de ${cv2025.toFixed(3)} em 2025 para ${cv2033.toFixed(3)} em 2033 e ` +
-            `${cv2077.toFixed(3)} em 2077, uma redução de ${queda}% no horizonte completo. Isso é consistente com a ` +
-            `hipótese de Gobetti e Monteiro: a redistribuição pelo critério de destino tende a aproximar a receita ` +
-            `per capita dos estados, não apenas a deslocá-la de um grupo para outro.`;
+        document.getElementById('cv-2025-inline').textContent = fmtCv(cv2025);
+        document.getElementById('cv-2033-inline').textContent = fmtCv(cv2033);
+        document.getElementById('cv-2077-inline').textContent = fmtCv(cv2077);
+        document.getElementById('cv-queda-inline').textContent = queda + '%';
     }
 
     function renderDispersaoIntra() {
@@ -468,23 +539,23 @@
         const rows = Object.entries(DATA.dispersao_intramunicipal.por_uf)
             .sort((a, b) => a[1].max_min_pre - b[1].max_min_pre);
         const linhas = rows.map(([uf, v]) => `<tr>
-            ${td(uf, 'td-ente')}
-            ${td(`${v.municipio_mais_rico}`, 'td-ente')}
+            ${td(uf, 'abnt-left')}
+            ${td(`${v.municipio_mais_rico}`, 'abnt-left')}
             ${td(fmtRs(v.receita_pc_mais_rico_pre))}
-            ${td(`${v.municipio_mais_pobre}`, 'td-ente col-divider')}
+            ${td(`${v.municipio_mais_pobre}`, 'abnt-left abnt-divider')}
             ${td(fmtRs(v.receita_pc_mais_pobre_pre))}
-            ${td(fmtRatio(v.max_min_pre), 'col-divider')}
+            ${td(fmtRatio(v.max_min_pre), 'abnt-divider')}
             ${td(fmtRatio(v.max_min_pos))}
         </tr>`);
 
         const br = DATA.dispersao_intramunicipal.brasil;
-        linhas.push(`<tr style="font-weight:700;background:var(--bg);">
-            ${td('Brasil', 'td-ente')}
-            ${td(`${br.municipio_mais_rico} <small>${br.uf_mais_rico}</small>`, 'td-ente')}
+        linhas.push(`<tr class="abnt-total">
+            ${td('Brasil', 'abnt-left')}
+            ${td(`${br.municipio_mais_rico} <small>${br.uf_mais_rico}</small>`, 'abnt-left')}
             ${td(fmtRs(br.receita_pc_mais_rico_pre))}
-            ${td(`${br.municipio_mais_pobre} <small>${br.uf_mais_pobre}</small>`, 'td-ente col-divider')}
+            ${td(`${br.municipio_mais_pobre} <small>${br.uf_mais_pobre}</small>`, 'abnt-left abnt-divider')}
             ${td(fmtRs(br.receita_pc_mais_pobre_pre))}
-            ${td(fmtRatio(br.max_min_pre), 'col-divider')}
+            ${td(fmtRatio(br.max_min_pre), 'abnt-divider')}
             ${td(fmtRatio(br.max_min_pos))}
         </tr>`);
 
