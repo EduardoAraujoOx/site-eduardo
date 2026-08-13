@@ -55,29 +55,18 @@
         .result-section p.intro:last-of-type { margin-bottom: 1.5rem; }
 
         .table-wrap { overflow-x: auto; margin-bottom: 0.75rem; border: 1px solid var(--border); border-radius: 8px; }
-        .data-table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
-        .data-table th { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0.5rem 0.7rem; text-align: right; font-family: var(--sans); font-weight: 600; font-size: 0.72rem; white-space: nowrap; color: var(--text); position: sticky; top: 0; z-index: 1; }
-        .data-table th.th-left { text-align: left; }
-        .data-table td { border-bottom: 1px solid var(--border-light); padding: 0.4rem 0.7rem; text-align: right; font-family: var(--mono); font-size: 0.78rem; white-space: nowrap; color: var(--text); }
-        .data-table td.td-ente { text-align: left; font-family: var(--sans); font-weight: 600; font-size: 0.81rem; }
-        .data-table td.td-ente small { font-weight: 400; color: var(--text-muted); font-family: var(--mono); margin-left: 0.3em; }
-        .data-table .td-neg { color: var(--neg); font-weight: 600; }
-        .data-table .td-pos { color: var(--pos); font-weight: 600; }
-        .data-table .col-divider { border-left: 2px solid var(--border); }
-        .data-table tbody tr:hover { background: var(--accent-bg); }
-        .table-caption { font-family: Georgia, serif; font-style: italic; font-size: 0.82rem; color: var(--text-muted); padding: 0.6rem 0.2rem 1.4rem; max-width: 74ch; }
 
-        /* ── Seção 4: prosa e tabelas em formato ABNT (NBR 14724) ── */
-        #sec-percapita p.intro { font-family: Georgia, 'Times New Roman', serif; }
-        #sec-percapita .abnt-caption {
+        /* ── Prosa e tabelas em formato ABNT (NBR 14724), toda a página ── */
+        .result-section p.intro { font-family: Georgia, 'Times New Roman', serif; }
+        .abnt-caption {
             font-family: Georgia, 'Times New Roman', serif;
             font-size: 0.88rem;
             color: var(--text);
             margin: 2.2rem 0 0.7rem;
             line-height: 1.5;
         }
-        #sec-percapita .abnt-caption .abnt-num { font-weight: 700; }
-        #sec-percapita .abnt-caption .abnt-sub { display: block; font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem; }
+        .abnt-caption .abnt-num { font-weight: 700; }
+        .abnt-caption .abnt-sub { display: block; font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem; }
         table.abnt {
             width: 100%;
             border-collapse: collapse;
@@ -91,15 +80,19 @@
             text-align: center;
             padding: 0.35rem 0.7rem;
             vertical-align: bottom;
+            white-space: nowrap;
         }
         table.abnt th.abnt-left, table.abnt td.abnt-left { text-align: left; }
-        table.abnt td { padding: 0.32rem 0.7rem; text-align: center; }
+        table.abnt td { padding: 0.32rem 0.7rem; text-align: center; white-space: nowrap; }
         table.abnt td.abnt-left { font-weight: 600; }
         table.abnt tbody tr:nth-child(even) { background: var(--bg); }
         table.abnt tbody tr:last-child td { border-bottom: 1.5px solid var(--text); padding-bottom: 0.5rem; }
         table.abnt tr.abnt-total { font-weight: 700; }
         table.abnt tr.abnt-total td { border-top: 1px solid var(--text); background: var(--bg); }
         table.abnt .abnt-divider { border-left: 1px solid var(--border); }
+        table.abnt .td-neg { color: var(--neg); }
+        table.abnt .td-pos { color: var(--pos); }
+        table.abnt td small { font-weight: 400; color: var(--text-muted); margin-left: 0.3em; }
         .abnt-max { color: #1c4f9c; }
         .abnt-min { color: var(--neg); }
         .abnt-source {
@@ -199,36 +192,44 @@
             <div class="result-num">1</div>
             <h2>Receita do ente estadual por UF, 2029–2033</h2>
             <p class="intro">
-                Para cada estado e o Distrito Federal, a tabela compara a receita projetada do <strong>governo
-                estadual</strong> sob a reforma — líquida da cota-parte constitucional devida aos municípios, o
-                mesmo recorte da "receita estadual" em Gobetti e Monteiro (75% do ICMS bruto) — contra o
-                cenário contrafactual: quanto o ente arrecadaria se mantivesse, ano a ano, a mesma participação
-                de 2025 sobre uma base que também cresce com o PIB (Seção 8 do Estudo 14). A variação é sempre
-                contra esse contrafactual, não contra o valor fixo de 2025, para isolar o efeito da reforma do
-                efeito do crescimento da economia. Não inclui a receita dos municípios da UF, tratada à parte
-                nos itens 2 e 3 abaixo.
+                A Tabela 1 reporta, para cada unidade federativa, a receita projetada do <strong>ente
+                estadual</strong> sob a reforma — líquida da cota-parte constitucional devida aos municípios, no
+                mesmo recorte de "receita estadual" adotado por Gobetti e Monteiro (2023), equivalente a 75% do
+                ICMS bruto — comparada ao cenário contrafactual em que a unidade mantém, ano a ano, a
+                participação relativa observada em 2025 sobre uma base de referência que também cresce com o PIB
+                (Estudo 14, Seção 8). A variação reportada é sempre medida contra esse contrafactual, e não
+                contra o valor nominal de 2025, de modo a isolar o efeito redistributivo da reforma do efeito do
+                crescimento agregado da economia. A receita dos municípios de cada unidade federativa é tratada
+                separadamente nos itens 2 e 3.
             </p>
             <p class="intro">
-                Ordenado do maior perdedor ao maior ganhador em 2033. Estados cuja arrecadação hoje concentra
-                produção agropecuária ou industrial de exportação, tributada na origem, tendem a perder
-                participação relativa; estados com maior peso populacional e de consumo tendem a ganhar.
+                A tabela está ordenada do maior perdedor ao maior ganhador relativo em 2033. O padrão observado
+                é consistente com a migração do critério de origem para o critério de destino na tributação
+                sobre o consumo: unidades federativas cuja arrecadação concentra produção agropecuária ou
+                industrial destinada à exportação — tributada, sob o sistema atual, no local de origem — tendem
+                a perder participação relativa; unidades com maior peso populacional e de consumo interno tendem
+                a ganhar.
+            </p>
+            <p class="abnt-caption">
+                <span class="abnt-num">Tabela 1</span> – Receita projetada do ente estadual, por unidade federativa, 2029–2033
+                <span class="abnt-sub">(Em R$ bilhões, preços constantes de 2025)</span>
             </p>
             <div class="table-wrap">
-                <table class="data-table" id="table-uf">
+                <table class="abnt" id="table-uf">
                     <thead>
                         <tr>
-                            <th class="th-left" rowspan="2">UF</th>
+                            <th class="abnt-left" rowspan="2">UF</th>
                             <th rowspan="2">Pré-IBS<br>(2025)</th>
-                            <th class="col-divider" colspan="5">Receita pós-IBS</th>
-                            <th class="col-divider" colspan="5">Variação da receita (ano contra pré-IBS)</th>
+                            <th class="abnt-divider" colspan="5">Receita pós-IBS</th>
+                            <th class="abnt-divider" colspan="5">Variação (ante o contrafactual)</th>
                         </tr>
                         <tr>
-                            <th class="col-divider">2029</th>
+                            <th class="abnt-divider">2029</th>
                             <th>2030</th>
                             <th>2031</th>
                             <th>2032</th>
                             <th>2033</th>
-                            <th class="col-divider">2029</th>
+                            <th class="abnt-divider">2029</th>
                             <th>2030</th>
                             <th>2031</th>
                             <th>2032</th>
@@ -238,39 +239,44 @@
                     <tbody id="tbody-uf"></tbody>
                 </table>
             </div>
-            <p class="table-caption">Receita pré-IBS: participação neutra de 2025 do ente estadual (ICMS+FECOP, líquido de cota-parte) aplicada à receita de referência nacional de cada ano. Valores em R$ bilhões, preços constantes de 2025.</p>
+            <p class="abnt-source"><strong>Fonte:</strong> SICONFI/STN; EC n.º 132/2023; LC n.º 214/2025; LC n.º 227/2026. Elaboração própria.<br><strong>Nota:</strong> Receita pré-IBS corresponde à participação neutra de 2025 do ente estadual (ICMS + FECOP, líquido de cota-parte) aplicada à receita de referência nacional de cada ano. Ordenada do maior perdedor ao maior ganhador relativo em 2033.</p>
         </section>
 
         <section class="result-section" id="sec-capitais">
             <div class="result-num">2</div>
             <h2>Variação da receita das capitais brasileiras, 2029–2033</h2>
             <p class="intro">
-                Depois do estado, o passo natural seria olhar os 5.569 municípios um a um — mas isso é
-                informação demais para uma leitura corrida. As capitais são um recorte intermediário útil: 27
-                entes, um por UF, que já deixam ver o padrão sem exigir a lista completa (o item 3 fecha o
-                quadro geográfico agregado, e o item 4 nomeia os municípios mais ricos e mais pobres de cada
-                UF). Aqui a unidade muda: cada linha é a receita do <strong>ente municipal</strong> da própria
-                capital, no mesmo formato da Tabela 1 — não mais o governo estadual, e sim as 26 capitais
-                estaduais e o Distrito Federal, que não tem esfera municipal própria (art. 115 da LC
-                227/2026): a linha do DF nesta tabela é, excepcionalmente, a receita estadual e municipal já
-                consolidada, e não a de um município de Brasília, que não existe como ente separado.
+                A Tabela 1 não permite observar a heterogeneidade municipal dentro de cada unidade federativa.
+                Em vez de reportar o resultado dos 5.569 municípios brasileiros, o que excederia o escopo desta
+                seção, a Tabela 2 emprega um recorte intermediário: as 27 capitais, um ente por unidade
+                federativa, suficiente para caracterizar o padrão sem exigir a lista completa — o item 3 fecha
+                o quadro geográfico agregado, e o item 4 identifica os municípios mais ricos e mais pobres de
+                cada UF. A unidade de análise muda em relação à Tabela 1: cada linha reporta a receita do
+                <strong>ente municipal</strong> da capital, não mais a do governo estadual, no mesmo formato da
+                tabela anterior. O Distrito Federal constitui exceção, por não dispor de esfera municipal
+                própria (art. 115 da LC n.º 227/2026): sua linha reporta a receita estadual e municipal já
+                consolidada, dado que não existe um ente municipal de Brasília distinto do governo distrital.
+            </p>
+            <p class="abnt-caption">
+                <span class="abnt-num">Tabela 2</span> – Receita projetada do ente municipal das capitais brasileiras, 2029–2033
+                <span class="abnt-sub">(Em R$ milhões, preços constantes de 2025)</span>
             </p>
             <div class="table-wrap">
-                <table class="data-table" id="table-capitais">
+                <table class="abnt" id="table-capitais">
                     <thead>
                         <tr>
-                            <th class="th-left" rowspan="2">Capital</th>
+                            <th class="abnt-left" rowspan="2">Capital</th>
                             <th rowspan="2">Pré-IBS<br>(2025)</th>
-                            <th class="col-divider" colspan="5">Receita pós-IBS</th>
-                            <th class="col-divider" colspan="5">Variação da receita (ano contra pré-IBS)</th>
+                            <th class="abnt-divider" colspan="5">Receita pós-IBS</th>
+                            <th class="abnt-divider" colspan="5">Variação (ante o contrafactual)</th>
                         </tr>
                         <tr>
-                            <th class="col-divider">2029</th>
+                            <th class="abnt-divider">2029</th>
                             <th>2030</th>
                             <th>2031</th>
                             <th>2032</th>
                             <th>2033</th>
-                            <th class="col-divider">2029</th>
+                            <th class="abnt-divider">2029</th>
                             <th>2030</th>
                             <th>2031</th>
                             <th>2032</th>
@@ -280,16 +286,17 @@
                     <tbody id="tbody-capitais"></tbody>
                 </table>
             </div>
-            <p class="table-caption" id="capitais-caption">Valores em R$ milhões, preços constantes de 2025.</p>
+            <p class="abnt-source"><strong>Fonte:</strong> SICONFI/STN; EC n.º 132/2023; LC n.º 214/2025; LC n.º 227/2026. Elaboração própria.<br><strong>Nota:</strong> Cada linha corresponde ao ente municipal da capital (ISS + cota-parte do ICMS), exceto o Distrito Federal, cuja linha reproduz a receita estadual e municipal já consolidada. Ordenada do maior perdedor ao maior ganhador relativo em 2033.</p>
         </section>
 
         <section class="result-section" id="sec-mapa">
             <div class="result-num">3</div>
             <h2>Variação da receita por UF, 2029–2033</h2>
             <p class="intro">
-                Da capital, agora para o quadro completo: o mapa mostra a variação da UF como um todo — estado
-                e municípios somados, sem dupla contagem, o comportamento conjunto do ente estadual (Tabela 1)
-                com o agregado dos seus municípios — sobre uma escala divergente centrada em zero.
+                A Figura 1 reporta o comportamento agregado de cada unidade federativa — a soma do ente estadual
+                (Tabela 1) com o agregado dos seus municípios, sem dupla contagem da cota-parte — sobre uma
+                escala de cores divergente centrada em zero, permitindo identificar o padrão geográfico da
+                redistribuição em um único painel.
             </p>
             <div class="map-wrapper" id="mapWrapper">
                 <div class="map-loading" id="mapLoading">
@@ -304,6 +311,10 @@
                 <div class="map-legend-gradient"></div>
                 <span>+20% ou melhor</span>
             </div>
+            <p class="abnt-caption" style="margin-top: 0.9rem;">
+                <span class="abnt-num">Figura 1</span> – Variação da receita agregada (estado + municípios), por unidade federativa, 2033
+            </p>
+            <p class="abnt-source"><strong>Fonte:</strong> SICONFI/STN; EC n.º 132/2023; LC n.º 214/2025; LC n.º 227/2026; malha de estados do IBGE. Elaboração própria.<br><strong>Nota:</strong> Variação medida contra o cenário contrafactual (participação de 2025 aplicada à receita de referência nacional de cada ano); escala divergente centrada em zero, com amplitude de ±20 p.p.</p>
         </section>
 
         <section class="result-section" id="sec-percapita">
@@ -482,10 +493,10 @@
         const rows = Object.entries(DATA.por_uf_estado)
             .sort((a, b) => a[1].variacao_por_ano['2033'] - b[1].variacao_por_ano['2033']);
         document.getElementById('tbody-uf').innerHTML = rows.map(([uf, v]) => `<tr>
-            ${td(`${v.nome} <small>${uf}</small>`, 'td-ente')}
+            ${td(`${v.nome} <small>${uf}</small>`, 'abnt-left')}
             ${td(fmtBi(v.pre_2025))}
-            ${ANOS.map(a => td(fmtBi(v.pos_por_ano[String(a)]), a === 2029 ? 'col-divider' : '')).join('')}
-            ${ANOS.map(a => td(fmtPct(v.variacao_por_ano[String(a)]), (a === 2029 ? 'col-divider ' : '') + clsPct(v.variacao_por_ano[String(a)]))).join('')}
+            ${ANOS.map(a => td(fmtBi(v.pos_por_ano[String(a)]), a === 2029 ? 'abnt-divider' : '')).join('')}
+            ${ANOS.map(a => td(fmtPct(v.variacao_por_ano[String(a)]), (a === 2029 ? 'abnt-divider ' : '') + clsPct(v.variacao_por_ano[String(a)]))).join('')}
         </tr>`).join('');
     }
 
@@ -493,10 +504,10 @@
         const rows = Object.entries(DATA.capitais)
             .sort((a, b) => a[1].variacao_por_ano['2033'] - b[1].variacao_por_ano['2033']);
         document.getElementById('tbody-capitais').innerHTML = rows.map(([uf, v]) => `<tr>
-            ${td(`${v.nome} <small>${uf}${v.sem_municipio_proprio ? ' · sem município próprio' : ''}</small>`, 'td-ente')}
+            ${td(`${v.nome} <small>${uf}${v.sem_municipio_proprio ? ' · sem município próprio' : ''}</small>`, 'abnt-left')}
             ${td(fmtMi(v.pre_2025))}
-            ${ANOS.map(a => td(fmtMi(v.pos_por_ano[String(a)]), a === 2029 ? 'col-divider' : '')).join('')}
-            ${ANOS.map(a => td(fmtPct(v.variacao_por_ano[String(a)]), (a === 2029 ? 'col-divider ' : '') + clsPct(v.variacao_por_ano[String(a)]))).join('')}
+            ${ANOS.map(a => td(fmtMi(v.pos_por_ano[String(a)]), a === 2029 ? 'abnt-divider' : '')).join('')}
+            ${ANOS.map(a => td(fmtPct(v.variacao_por_ano[String(a)]), (a === 2029 ? 'abnt-divider ' : '') + clsPct(v.variacao_por_ano[String(a)]))).join('')}
         </tr>`).join('');
     }
 
