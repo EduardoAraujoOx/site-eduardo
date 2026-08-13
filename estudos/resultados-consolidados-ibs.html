@@ -118,20 +118,11 @@
         .map-legend-gradient { flex: 1; height: 9px; border-radius: 5px; background: linear-gradient(to right, var(--neg), #f4ede3, var(--pos)); }
         .map-loading { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6rem; color: var(--text-muted); font-family: var(--sans); font-size: 0.82rem; }
 
-        .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.4rem 0 0.5rem; }
-        .stat-tile { border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem 1rem; background: var(--surface); }
-        .stat-tile .stat-label { font-family: var(--mono); font-size: 0.63rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.35rem; display: block; }
-        .stat-tile .stat-value { font-family: var(--sans); font-size: 1.25rem; font-weight: 700; color: var(--text); }
-        .stat-tile .stat-sub { font-family: var(--sans); font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem; }
-
         .footnotes { margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
         .footnotes p { font-family: var(--serif); font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.4rem; }
         .footnotes a { color: var(--accent); text-decoration: none; }
         .footnotes a:hover { text-decoration: underline; }
 
-        @media (max-width: 720px) {
-            .stat-row { grid-template-columns: 1fr; }
-        }
         @media (max-width: 640px) {
             .study-hero { padding: 2rem 1.25rem 1rem; }
             .study-content { padding: 0 1.25rem 3rem; }
@@ -339,51 +330,20 @@
             <div class="result-num">4</div>
             <h2>Dispersão da receita per capita, entre e dentro das unidades federativas</h2>
             <p class="intro">
-                As três seções anteriores documentam a direção e a magnitude da redistribuição num único corte
-                temporal, 2033. Resta perguntar se esse efeito se intensifica ao longo da transição, hipótese
-                central de Gobetti e Monteiro (2023): o efeito redistributivo da migração do critério de origem
-                para o critério de destino se acentuaria ao longo do tempo, à medida que a fração do IBS bruto
-                alocada pelo critério histórico (majoritária nos primeiros exercícios da reforma) cede lugar à
-                fração alocada pelo critério de destino (art. 131, §1º, do ADCT). Nessa leitura, a desigualdade
-                de receita per capita entre entes federativos tenderia a se reduzir com o tempo, não apenas a se
-                deslocar de um grupo de entes para outro. Esta seção submete essa hipótese a dois testes sobre o
-                modelo empregado neste site: um teste da dispersão <em>entre</em> unidades federativas (Tabela
-                3) e um teste da dispersão <em>dentro</em> de cada unidade federativa, entre os seus municípios
-                (Tabela 4).
+                As três seções anteriores documentam a direção e a magnitude da redistribuição no ano de 2033.
+                Esta seção mede a mesma redistribuição em três pontos do tempo (2025, 2033 e 2077) e a decompõe
+                em dois níveis: a dispersão entre unidades federativas (Tabela 3) e a dispersão dentro de cada
+                unidade federativa, entre os seus municípios (Tabela 4).
             </p>
             <p class="intro">
                 A Tabela 3 compara a receita per capita projetada de cada unidade federativa em três pontos do
                 tempo: 2025 (situação pré-reforma), 2033 (encerramento do núcleo da transição constitucional) e
                 2077 (véspera do término da extensão de longo prazo do Estudo 09, quando a fração histórica já
-                se reduziu a 2% do IBS bruto). Para isolar o efeito da redistribuição do efeito, de natureza
-                distinta, do crescimento populacional (não projetado por este site), a população de cada ente é
-                mantida fixa na média do período 2019–2025 nos três pontos de comparação.
-            </p>
-            <div class="stat-row" id="stat-row-dispersao">
-                <div class="stat-tile">
-                    <span class="stat-label">Dispersão entre UFs · 2025</span>
-                    <div class="stat-value" id="stat-cv-2025">—</div>
-                    <div class="stat-sub">coeficiente de variação</div>
-                </div>
-                <div class="stat-tile">
-                    <span class="stat-label">Dispersão entre UFs · 2033</span>
-                    <div class="stat-value" id="stat-cv-2033">—</div>
-                    <div class="stat-sub">coeficiente de variação</div>
-                </div>
-                <div class="stat-tile">
-                    <span class="stat-label">Dispersão entre UFs · 2077</span>
-                    <div class="stat-value" id="stat-cv-2077">—</div>
-                    <div class="stat-sub">coeficiente de variação</div>
-                </div>
-            </div>
-            <p class="intro" style="margin-top: 0.9rem;">
-                Os resultados indicam que a dispersão entre unidades federativas, mensurada pelo coeficiente de
-                variação da receita per capita, declina de forma monotônica ao longo da transição: de
-                <strong id="cv-2025-inline">—</strong> em 2025 para <strong id="cv-2033-inline">—</strong> em
-                2033 e <strong id="cv-2077-inline">—</strong> em 2077, uma redução de
-                <strong id="cv-queda-inline">—</strong> no horizonte completo. O resultado é consistente com a
-                hipótese de Gobetti e Monteiro (2023): a redistribuição pelo critério de destino tende a
-                aproximar a receita per capita dos entes federativos, não apenas a deslocá-la entre grupos.
+                se reduziu a 2% do IBS bruto). Para isolar o efeito da redistribuição do efeito do crescimento
+                populacional, não projetado por este site, a população de cada ente é mantida fixa na média do
+                período 2019–2025 nos três pontos de comparação. A última linha da tabela reporta o coeficiente
+                de variação entre as 27 unidades federativas, razão entre o desvio-padrão e a média, medida
+                usual de dispersão relativa.
             </p>
 
             <p class="abnt-caption">
@@ -398,25 +358,29 @@
                             <th>Per capita 2025</th>
                             <th>Per capita 2033</th>
                             <th>Per capita 2077</th>
-                            <th class="abnt-divider">Δ 2025→2077</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-percapita"></tbody>
                 </table>
             </div>
-            <p class="abnt-source"><strong>Fonte:</strong> SICONFI/STN; EC n.º 132/2023; LC n.º 214/2025; LC n.º 227/2026. Elaboração própria.<br><strong>Nota:</strong> ordenada do menor para o maior per capita em 2025. População fixada na média 2019–2025 nos três pontos de comparação, para isolar o efeito redistributivo do efeito do crescimento populacional.</p>
+            <p class="abnt-source"><strong>Fonte:</strong> SICONFI/STN; EC n.º 132/2023; LC n.º 214/2025; LC n.º 227/2026. Elaboração própria.<br><strong>Nota:</strong> ordenada do menor para o maior per capita em 2025. População fixada na média 2019–2025 nos três pontos de comparação, para isolar o efeito redistributivo do efeito do crescimento populacional. Na última linha, os valores são o coeficiente de variação entre as 27 unidades federativas, não a receita de um ente: quanto menor, mais próxima a receita per capita das unidades federativas entre si.</p>
+            <p class="intro" style="margin-top: 0.9rem;">
+                O coeficiente de variação declina de forma monotônica ao longo da transição: de
+                <strong id="cv-2025-inline">—</strong> em 2025 para <strong id="cv-2033-inline">—</strong> em
+                2033 e <strong id="cv-2077-inline">—</strong> em 2077, uma redução de
+                <strong id="cv-queda-inline">—</strong> no horizonte completo.
+            </p>
 
             <p class="intro" style="margin-top: 2.2rem;">
-                Se a Tabela 3 mede a dispersão entre unidades federativas, a Tabela 4 replica, sobre este
-                modelo, o exercício de Gobetti e Monteiro (2023, Tabela 9) para a dispersão dentro de cada
-                unidade federativa: a razão entre a receita per capita do município mais rico e a do município
-                mais pobre, antes e depois da reforma. O Distrito Federal é excluído por não dispor de esfera
-                municipal própria (art. 115 da LC n.º 227/2026). Também foram excluídos da comparação os
-                municípios com cobertura de dados inferior a cinco dos sete anos da série 2019–2025, ou cujo
-                registro de 2025 estivesse incompleto: ausência de ISS ou de cota-parte do ICMS declarados
-                especificamente naquele exercício, apesar da existência de registros nos demais anos. Ao todo,
-                20 dos 5.569 municípios foram excluídos por esse critério, de modo a não confundir uma falha de
-                preenchimento com um resultado substantivo.
+                A Tabela 4 mede a dispersão dentro de cada unidade federativa, no mesmo formato empregado por
+                Gobetti e Monteiro (2023, Tabela 9): a razão entre a receita per capita do município mais rico e
+                a do mais pobre, antes e depois da reforma. O Distrito Federal é excluído por não dispor de
+                esfera municipal própria (art. 115 da LC n.º 227/2026). Também foram excluídos os municípios com
+                cobertura de dados inferior a cinco dos sete anos da série 2019–2025, ou cujo registro de 2025
+                estivesse incompleto: ausência de ISS ou de cota-parte do ICMS declarados especificamente
+                naquele exercício, apesar da existência de registros nos demais anos. Ao todo, 20 dos 5.569
+                municípios foram excluídos por esse critério, para não confundir uma falha de preenchimento com
+                um resultado.
             </p>
 
             <p class="abnt-caption">
@@ -448,12 +412,11 @@
             <p class="intro" style="margin-top: 1.3rem;">
                 No nível nacional, a razão entre a receita per capita do município mais rico (Paulínia, SP) e a
                 do mais pobre (Araioses, MA) cai de 93,1 vezes em 2025 para 82,9 vezes em 2033 e 11,3 vezes em
-                2077. O resultado confirma, também na dimensão intramunicipal, a trajetória de convergência
-                indicada pela Tabela 3: a maior parte da desconcentração ocorre depois de 2033, quando a fração
-                histórica de alocação do IBS, que atinge 90% naquele ano (o pico do cronograma do art. 131,
-                §1º, do ADCT), passa a declinar até os 2% projetados para 2077. Em conjunto, as Tabelas 3 e 4
-                sustentam a leitura de Gobetti e Monteiro (2023): o efeito redistributivo do critério de destino
-                não se esgota no núcleo constitucional da transição e se aprofunda no horizonte de longo prazo.
+                2077. A maior parte dessa desconcentração ocorre depois de 2033, quando a fração histórica de
+                alocação do IBS, que atinge 90% naquele ano (o pico do cronograma do art. 131, §1º, do ADCT),
+                passa a declinar até os 2% projetados para 2077. Em conjunto, as Tabelas 3 e 4 indicam
+                convergência da receita per capita tanto entre quanto dentro das unidades federativas ao longo
+                da transição.
             </p>
         </section>
 
@@ -545,16 +508,12 @@
     function renderPerCapita() {
         const rows = Object.entries(DATA.per_capita_uf)
             .sort((a, b) => a[1].per_capita_2025 - b[1].per_capita_2025);
-        document.getElementById('tbody-percapita').innerHTML = rows.map(([uf, v]) => {
-            const delta = (v.per_capita_2077 - v.per_capita_2025) / v.per_capita_2025;
-            return `<tr>
-                ${td(`${v.nome} <small>${uf}</small>`, 'abnt-left')}
-                ${td(fmtRs(v.per_capita_2025))}
-                ${td(fmtRs(v.per_capita_2033))}
-                ${td(fmtRs(v.per_capita_2077))}
-                ${td(fmtPct(delta), 'abnt-divider ' + clsPct(delta))}
-            </tr>`;
-        }).join('');
+        const linhas = rows.map(([uf, v]) => `<tr>
+            ${td(`${v.nome} <small>${uf}</small>`, 'abnt-left')}
+            ${td(fmtRs(v.per_capita_2025))}
+            ${td(fmtRs(v.per_capita_2033))}
+            ${td(fmtRs(v.per_capita_2077))}
+        </tr>`);
 
         const vals2025 = rows.map(([, v]) => v.per_capita_2025);
         const vals2033 = rows.map(([, v]) => v.per_capita_2033);
@@ -566,9 +525,14 @@
         };
         const cv2025 = cv(vals2025), cv2033 = cv(vals2033), cv2077 = cv(vals2077);
         const fmtCv = v => v.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
-        document.getElementById('stat-cv-2025').textContent = fmtCv(cv2025);
-        document.getElementById('stat-cv-2033').textContent = fmtCv(cv2033);
-        document.getElementById('stat-cv-2077').textContent = fmtCv(cv2077);
+
+        linhas.push(`<tr class="abnt-total">
+            ${td('Coeficiente de variação', 'abnt-left')}
+            ${td(fmtCv(cv2025))}
+            ${td(fmtCv(cv2033))}
+            ${td(fmtCv(cv2077))}
+        </tr>`);
+        document.getElementById('tbody-percapita').innerHTML = linhas.join('');
 
         const queda = ((cv2025 - cv2077) / cv2025 * 100).toFixed(0);
         document.getElementById('cv-2025-inline').textContent = fmtCv(cv2025);
