@@ -211,14 +211,23 @@ def compute_neutro_municipal_2025(ref_data):
         uf = v.get("uf")
         if not uf or uf == "DF":
             continue
+        # Registro parcial: falta "valor" (ISS) ou "cota_parte_icms" para
+        # 2025 especificamente, embora outros anos existam (5-15 municípios
+        # de 5.569 -- não sistemático). Tratar a ausência como zero, como
+        # antes, subestima o ente (ex.: Água Boa/MG perdia os ~74% da sua
+        # receita que vêm da cota-parte, por essa faltar só em 2025). Melhor
+        # não usar o dado de 2025 nesses casos: cai no fallback por CPT
+        # (neutro_aproximado), que reflete a média de 7 anos do próprio ente.
+        if v.get("valor") is None or v.get("cota_parte_icms") is None:
+            continue
         cota_total = dca_cota_total_dca_2025.get(uf)
         cota_alvo = cota_alvo_uf.get(uf)
-        cota_dca = v.get("cota_parte_icms") or 0
+        cota_dca = v["cota_parte_icms"]
         if cota_alvo is not None and cota_total:
             cota_muni = cota_alvo * (cota_dca / cota_total)
         else:
             cota_muni = cota_dca
-        r0_por_municipio[cod] = (v.get("valor") or 0) + cota_muni
+        r0_por_municipio[cod] = v["valor"] + cota_muni
     return r0_por_municipio
 
 
@@ -324,6 +333,18 @@ def main():
         if neutro_aproximado:
             r0 = coef_cpt * total_br_2025
 
+        # Mesmo com um registro de 2025 presente, ele pode ser um dado
+        # parcial ou mal declarado (ex.: Confins/MG reportou R$76 mil de ISS
+        # em 2025, contra R$24 milhões em 2024 -- não uma queda real, uma
+        # falha de preenchimento). Comparado contra o que a própria série de
+        # 7 anos do município (CPT) implicaria para 2025, um desvio de mais
+        # de 5x para cima ou para baixo de 0,2x é tratado como suspeito, não
+        # como resultado real -- mesmo critério de robustez usado para
+        # neutro_aproximado, aplicado aqui à consistência interna do dado.
+        implied_pelo_cpt = coef_cpt * total_br_2025
+        neutro_suspeito = (not neutro_aproximado and implied_pelo_cpt > 0
+                            and not (0.2 <= r0 / implied_pelo_cpt <= 5))
+
         res = project_municipio(cod, r0, coef_cpt, coef_pleno, uf, total_br_2025,
                                  nacional_by_year, repasse_muni_idx, ANOS)
         pop = (pop_muni.get(cod) or {}).get("pop_media")
@@ -331,6 +352,7 @@ def main():
             "nome": cm["nome"], "uf": uf,
             "cobertura_anos": cm.get("cobertura_anos", 0),
             "neutro_aproximado": neutro_aproximado,
+            "neutro_suspeito": neutro_suspeito,
             "pop_media": pop,
             "pre_2025": r0,
             "pos_2033": res[2033]["total"],
@@ -341,10 +363,60 @@ def main():
     elegiveis = [
         m for m in municipios_resultado.values()
         if m["cobertura_anos"] >= COBERTURA_MIN and (m["pop_media"] or 0) >= POP_MIN
-        and not m["neutro_aproximado"]
+        and not m["neutro_aproximado"] and not m["neutro_suspeito"]
     ]
     maiores_ganhos = sorted(elegiveis, key=lambda m: -m["variacao_2033"])[:20]
     maiores_perdas = sorted(elegiveis, key=lambda m: m["variacao_2033"])[:20]
+
+    # ── Dispersão intramunicipal de receita per capita, antes x depois ──────
+    # Mesmo exercício da Tabela 9 de Gobetti e Monteiro: por UF, a razão entre
+    # a receita per capita do município mais rico e a do mais pobre, antes e
+    # depois da reforma. Sem o piso de população usado acima (POP_MIN) -- aqui
+    # os municípios pequenos e atípicos são o próprio objeto da pergunta, não
+    # ruído a excluir -- mas mantendo o filtro de cobertura de dados e
+    # excluindo aproximações de participação neutra, pelo mesmo motivo do
+    # ranking de destaques.
+    elegiveis_percapita = [
+        m for m in municipios_resultado.values()
+        if m["cobertura_anos"] >= COBERTURA_MIN and not m["neutro_aproximado"]
+        and not m["neutro_suspeito"] and (m["pop_media"] or 0) > 0
+    ]
+    for m in elegiveis_percapita:
+        m["percapita_pre"] = m["pre_2025"] / m["pop_media"]
+        m["percapita_pos"] = m["pos_2033"] / m["pop_media"]
+
+    dispersao_intramunicipal = {}
+    for uf in UFS:
+        muni_uf = [m for m in elegiveis_percapita if m["uf"] == uf]
+        if not muni_uf:
+            continue  # DF: sem municípios próprios
+        richest = max(muni_uf, key=lambda m: m["percapita_pre"])
+        poorest = min(muni_uf, key=lambda m: m["percapita_pre"])
+        max_pos = max(m["percapita_pos"] for m in muni_uf)
+        min_pos = min(m["percapita_pos"] for m in muni_uf)
+        dispersao_intramunicipal[uf] = {
+            "n_municipios": len(muni_uf),
+            "municipio_mais_rico": richest["nome"],
+            "receita_pc_mais_rico_pre": richest["percapita_pre"],
+            "municipio_mais_pobre": poorest["nome"],
+            "receita_pc_mais_pobre_pre": poorest["percapita_pre"],
+            "max_min_pre": (richest["percapita_pre"] / poorest["percapita_pre"]
+                             if poorest["percapita_pre"] > 0 else None),
+            "max_min_pos": max_pos / min_pos if min_pos > 0 else None,
+        }
+
+    richest_br = max(elegiveis_percapita, key=lambda m: m["percapita_pre"])
+    poorest_br = min(elegiveis_percapita, key=lambda m: m["percapita_pre"])
+    max_pos_br = max(m["percapita_pos"] for m in elegiveis_percapita)
+    min_pos_br = min(m["percapita_pos"] for m in elegiveis_percapita)
+    dispersao_brasil = {
+        "municipio_mais_rico": richest_br["nome"], "uf_mais_rico": richest_br["uf"],
+        "receita_pc_mais_rico_pre": richest_br["percapita_pre"],
+        "municipio_mais_pobre": poorest_br["nome"], "uf_mais_pobre": poorest_br["uf"],
+        "receita_pc_mais_pobre_pre": poorest_br["percapita_pre"],
+        "max_min_pre": richest_br["percapita_pre"] / poorest_br["percapita_pre"],
+        "max_min_pos": max_pos_br / min_pos_br,
+    }
 
     # Agregado por UF da variação municipal (média ponderada pela receita pré,
     # 2033), para colorir o mapa junto com a variação estadual.
@@ -435,6 +507,10 @@ def main():
         },
         "capitais": capitais_resultado,
         "per_capita_uf": per_capita_uf,
+        "dispersao_intramunicipal": {
+            "por_uf": dispersao_intramunicipal,
+            "brasil": dispersao_brasil,
+        },
     }
 
     with open(OUT, "w", encoding="utf-8") as f:
