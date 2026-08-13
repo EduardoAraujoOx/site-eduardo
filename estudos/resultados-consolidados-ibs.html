@@ -80,11 +80,6 @@
         .map-legend-gradient { flex: 1; height: 9px; border-radius: 5px; background: linear-gradient(to right, var(--neg), #f4ede3, var(--pos)); }
         .map-loading { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6rem; color: var(--text-muted); font-family: var(--sans); font-size: 0.82rem; }
 
-        .highlights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.8rem; }
-        .highlight-col h3 { font-family: var(--sans); font-size: 0.82rem; font-weight: 700; margin: 0 0 0.6rem; display: flex; align-items: center; gap: 0.4rem; }
-        .highlight-col.ganhos h3 { color: var(--pos); }
-        .highlight-col.perdas h3 { color: var(--neg); }
-
         .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.4rem 0 0.5rem; }
         .stat-tile { border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem 1rem; background: var(--surface); }
         .stat-tile .stat-label { font-family: var(--mono); font-size: 0.63rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.35rem; display: block; }
@@ -97,7 +92,6 @@
         .footnotes a:hover { text-decoration: underline; }
 
         @media (max-width: 720px) {
-            .highlights-grid { grid-template-columns: 1fr; }
             .stat-row { grid-template-columns: 1fr; }
         }
         @media (max-width: 640px) {
@@ -208,8 +202,9 @@
             <p class="intro">
                 Depois do estado, o passo natural seria olhar os 5.569 municípios um a um — mas isso é
                 informação demais para uma leitura corrida. As capitais são um recorte intermediário útil: 27
-                entes, um por UF, que já deixam ver o padrão sem exigir a lista completa (essa vem no item 3).
-                Aqui a unidade muda: cada linha é a receita do <strong>ente municipal</strong> da própria
+                entes, um por UF, que já deixam ver o padrão sem exigir a lista completa (o item 3 fecha o
+                quadro geográfico agregado, e o item 4 nomeia os municípios mais ricos e mais pobres de cada
+                UF). Aqui a unidade muda: cada linha é a receita do <strong>ente municipal</strong> da própria
                 capital, no mesmo formato da Tabela 1 — não mais o governo estadual, e sim as 26 capitais
                 estaduais e o Distrito Federal, que não tem esfera municipal própria (art. 115 da LC
                 227/2026): a linha do DF nesta tabela é, excepcionalmente, a receita estadual e municipal já
@@ -245,15 +240,11 @@
 
         <section class="result-section" id="sec-mapa">
             <div class="result-num">3</div>
-            <h2>Variação da receita por UF e destaques municipais, 2029–2033</h2>
+            <h2>Variação da receita por UF, 2029–2033</h2>
             <p class="intro">
                 Da capital, agora para o quadro completo: o mapa mostra a variação da UF como um todo — estado
-                e municípios somados, sem dupla contagem — sobre uma escala divergente centrada em zero. Abaixo
-                dele, para dar a "foto dos municípios" sem depender de um mapa com ~5.570 polígonos municipais
-                — sem precedente neste site e com custo de carregamento proibitivo —, duas listas mostram os
-                municípios que mais ganham e mais perdem participação relativa, dentre os que têm população
-                acima de 10 mil habitantes e cobertura de dados suficiente (ao menos 5 dos 7 anos de 2019–2025
-                nos registros da DCA/STN).
+                e municípios somados, sem dupla contagem, o comportamento conjunto do ente estadual (Tabela 1)
+                com o agregado dos seus municípios — sobre uma escala divergente centrada em zero.
             </p>
             <div class="map-wrapper" id="mapWrapper">
                 <div class="map-loading" id="mapLoading">
@@ -268,28 +259,6 @@
                 <div class="map-legend-gradient"></div>
                 <span>+20% ou melhor</span>
             </div>
-
-            <div class="highlights-grid">
-                <div class="highlight-col ganhos">
-                    <h3>▲ Municípios que mais ganham (2033)</h3>
-                    <div class="table-wrap">
-                        <table class="data-table" id="table-ganhos">
-                            <thead><tr><th class="th-left">Município</th><th>Variação</th></tr></thead>
-                            <tbody id="tbody-ganhos"></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="highlight-col perdas">
-                    <h3>▼ Municípios que mais perdem (2033)</h3>
-                    <div class="table-wrap">
-                        <table class="data-table" id="table-perdas">
-                            <thead><tr><th class="th-left">Município</th><th>Variação</th></tr></thead>
-                            <tbody id="tbody-perdas"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <p class="table-caption">Municípios cuja base tributária atual é intensiva em produção (agropecuária, energia, mineração) tendem a aparecer entre as maiores perdas; municípios de perfil mais residencial ou comercial, entre os maiores ganhos — o mesmo padrão observado por UF, na escala municipal.</p>
         </section>
 
         <section class="result-section" id="sec-percapita">
@@ -378,7 +347,7 @@
             <p>1. Metodologia completa: <a href="/estudos/nota-metodologica-ibs.html">Estudo 14</a>. Esta página reaplica a mesma lógica de projeção por UF já publicada no <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>, estendida ao nível municipal com os coeficientes do <a href="/estudos/reforma-tributaria-coeficiente-municipios.html">Estudo 10</a> e do rateio de destino municipal (cota-parte + destino próprio), e ao horizonte de 2077 com os dados do <a href="/estudos/ibs-projecao-longo-prazo.html">Estudo 09</a>.</p>
             <p>2. Script de geração: <code>data/build-resultados-consolidados.py</code>, saída em <code>data/resultados-consolidados-ibs.json</code>.</p>
             <p>3. Mapa: geometria de estados obtida em tempo real da API de malhas do IBGE, com contorno alternativo do GitHub (click_that_hood) em caso de indisponibilidade — mesmo padrão do <a href="/estudos/icms-diesel-importado-v2.html">mapa do Estudo 01</a>.</p>
-            <p>4. Destaques municipais e dispersão intramunicipal: municípios com cobertura DCA/STN abaixo de 5 dos 7 anos (2019–2025), população média abaixo de 10 mil habitantes (só no ranking de destaques, não na dispersão intramunicipal) ou registro de 2025 incompleto (faltando ISS ou cota-parte declarados especificamente naquele ano, apesar de outros anos existirem — 20 de 5.569 municípios) foram excluídos, para não confundir uma falha de preenchimento ou uma base pequena demais com um resultado substantivo — ver <code>criterios_destaque_municipal</code> em <code>data/resultados-consolidados-ibs.json</code>.</p>
+            <p>4. Dispersão intramunicipal (item 4): municípios com cobertura DCA/STN abaixo de 5 dos 7 anos (2019–2025) ou registro de 2025 incompleto (faltando ISS ou cota-parte declarados especificamente naquele ano, apesar de outros anos existirem — 20 de 5.569 municípios) foram excluídos da comparação, para não confundir uma falha de preenchimento com um resultado substantivo. O ranking completo de municípios que mais ganham e mais perdem participação relativa (não exibido nesta página) permanece disponível em <code>destaques_municipios_2033</code>, no mesmo <code>data/resultados-consolidados-ibs.json</code>.</p>
         </div>
 
     </div>
@@ -421,7 +390,6 @@
         }
 
         renderTabelaUF();
-        renderDestaques();
         renderCapitais();
         renderPerCapita();
         renderDispersaoIntra();
@@ -457,17 +425,6 @@
             ${ANOS.map(a => td(fmtMi(v.pos_por_ano[String(a)]), a === 2029 ? 'col-divider' : '')).join('')}
             ${ANOS.map(a => td(fmtPct(v.variacao_por_ano[String(a)]), (a === 2029 ? 'col-divider ' : '') + clsPct(v.variacao_por_ano[String(a)]))).join('')}
         </tr>`).join('');
-    }
-
-    function renderDestaques() {
-        const rowHtml = m => `<tr>
-            ${td(`${m.nome} <small>${m.uf}</small>`, 'td-ente')}
-            ${td(fmtPct(m.variacao_2033), clsPct(m.variacao_2033))}
-        </tr>`;
-        document.getElementById('tbody-ganhos').innerHTML =
-            DATA.destaques_municipios_2033.maiores_ganhos.map(rowHtml).join('');
-        document.getElementById('tbody-perdas').innerHTML =
-            DATA.destaques_municipios_2033.maiores_perdas.map(rowHtml).join('');
     }
 
     function renderPerCapita() {
