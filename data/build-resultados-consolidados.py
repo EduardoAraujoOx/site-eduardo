@@ -16,6 +16,21 @@ cenário único de destino pleno) para produzir, num único JSON:
      em 2077 (extensão de longo prazo, Estudo 09), população fixada na média
      2019-2025 nos três pontos para isolar o efeito da redistribuição do
      efeito do crescimento populacional.
+  5. Regressão (por UF, ente estadual): diferença relativa entre o
+     Coeficiente de Participação de Transição (phi^CPT) e a participação
+     neutra de 2025, e entre o coeficiente de destino pleno e a mesma
+     participação neutra, cada uma contra a variação da receita em 2033 --
+     evidência de qual dos dois coeficientes explica o padrão observado na
+     Tabela 1 (Figura 2, item 1).
+  6. Índice de Gini da receita per capita do ente estadual entre as 26 UFs
+     (não ponderado, mesma distribuição do Coeficiente de Variação da
+     Tabela 3), e da receita per capita municipal dentro de cada UF e no
+     Brasil (ponderado pela população), 2025/2033/2077 -- complementa a
+     Tabela 4, que só reporta os dois extremos por UF.
+  7. Distribuição nacional da receita entre o conjunto dos entes estaduais
+     e o conjunto dos municípios, 2025/2033/2077 -- identifica se há
+     deslocamento sistemático de receita entre esferas de governo ao longo
+     da transição, em âmbito nacional (não por UF).
 
 O "pré-IBS" de cada ente, em qualquer ano, é sempre o mesmo contrafactual já
 usado nas demais páginas do site: a receita de referência nacional do ano
@@ -76,6 +91,44 @@ CAPITAIS = {
 # cobertura já usado em build-coeficientes-municipios.py (>=5 dos 7 anos).
 COBERTURA_MIN = 5
 POP_MIN = 10000
+
+
+def gini_unweighted(values):
+    """
+    Gini de uma lista de valores, cada um pesando igual (ex.: 26 UFs na
+    Tabela 3) -- mesmo tratamento estatístico já usado para o Coeficiente
+    de Variação daquela tabela, para que as duas medidas sejam comparáveis
+    sobre a mesma distribuição.
+    """
+    vals = sorted(v for v in values if v is not None)
+    n = len(vals)
+    total = sum(vals)
+    if n == 0 or total <= 0:
+        return None
+    weighted_sum = sum((i + 1) * v for i, v in enumerate(vals))
+    return (2 * weighted_sum - (n + 1) * total) / (n * total)
+
+
+def gini_weighted(pairs):
+    """
+    Gini ponderado pela população: pairs = [(valor_percapita, populacao), ...].
+    Cada habitante pesa igual (não cada município) -- tratamento padrão para
+    medir desigualdade de uma variável per capita entre unidades de porte
+    populacional muito diferente. Fórmula da curva de Lorenz discreta.
+    """
+    pares = sorted(((v, w) for v, w in pairs if v is not None and w), key=lambda p: p[0])
+    total_w = sum(w for _, w in pares)
+    total_val = sum(v * w for v, w in pares)
+    if total_w <= 0 or total_val <= 0:
+        return None
+    cum_w = cum_val = prev_x = prev_y = area = 0.0
+    for v, w in pares:
+        cum_w += w
+        cum_val += v * w
+        x, y = cum_w / total_w, cum_val / total_val
+        area += (x - prev_x) * (y + prev_y) / 2
+        prev_x, prev_y = x, y
+    return 1 - 2 * area
 
 
 def load(name):
@@ -535,6 +588,122 @@ def main():
             "per_capita_2077": total_2077 / pop,
         }
 
+    gini_percapita_uf = {
+        "gini_2025": gini_unweighted([v["per_capita_2025"] for v in per_capita_uf.values()]),
+        "gini_2033": gini_unweighted([v["per_capita_2033"] for v in per_capita_uf.values()]),
+        "gini_2077": gini_unweighted([v["per_capita_2077"] for v in per_capita_uf.values()]),
+    }
+
+    # ── Gini da receita per capita municipal, dentro de cada UF e nacional ──
+    # Complementa a Tabela 4 (que só reporta os dois extremos por UF): pesa a
+    # distribuição inteira dos municípios elegíveis, ponderada pela
+    # população (cada habitante, não cada município, pesa igual). Não é
+    # diretamente comparável ao Gini de receita (não per capita) de GOBETTI;
+    # MONTEIRO (2023) citado na Discussão -- ver nota de rodapé.
+    gini_percapita_municipal = {"por_uf": {}, "brasil": {}}
+    for uf in UFS:
+        muni_uf = [m for m in elegiveis_percapita if m["uf"] == uf]
+        if not muni_uf:
+            continue
+        gini_percapita_municipal["por_uf"][uf] = {
+            "n_municipios": len(muni_uf),
+            "gini_2025": gini_weighted([(m["percapita_pre"], m["pop_media"]) for m in muni_uf]),
+            "gini_2033": gini_weighted([(m["percapita_pos"], m["pop_media"]) for m in muni_uf]),
+            "gini_2077": gini_weighted([(m["percapita_2077"], m["pop_media"]) for m in muni_uf]),
+        }
+    gini_percapita_municipal["brasil"] = {
+        "n_municipios": len(elegiveis_percapita),
+        "gini_2025": gini_weighted([(m["percapita_pre"], m["pop_media"]) for m in elegiveis_percapita]),
+        "gini_2033": gini_weighted([(m["percapita_pos"], m["pop_media"]) for m in elegiveis_percapita]),
+        "gini_2077": gini_weighted([(m["percapita_2077"], m["pop_media"]) for m in elegiveis_percapita]),
+    }
+
+    # ── Distribuição nacional entre ente estadual e agregado municipal ──────
+    # Resposta em âmbito nacional (não por UF): dos R$ arrecadados pelo IBS,
+    # que fração fica com os 27 entes estaduais e que fração com o agregado
+    # dos 5.569 municípios, em 2025, 2033 e 2077 -- para identificar se há
+    # uma tendência sistemática de deslocamento de receita entre esferas de
+    # governo ao longo da transição (independente da redistribuição entre
+    # UFs, já tratada nos itens 1-4).
+    nac_estadual_2025 = sum(v["pre_2025"] for v in por_uf_estado.values())
+    nac_total_2025 = sum(v["pre_2025"] for v in por_uf.values())
+    nac_estadual_2033 = sum(v["pos_por_ano"][2033] for v in por_uf_estado.values())
+    nac_total_2033 = sum(v["pos_por_ano"][2033] for v in por_uf.values())
+
+    nac_2077 = lp_by_year[ANO_LONGO]
+    nac_estadual_2077 = 0.0
+    nac_municipal_2077 = 0.0
+    for uf in UFS:
+        p = params_uf[uf]
+        for esfera, part in (("estado", p["estado"]), ("municipio", p["municipio"])):
+            if part is None:
+                continue
+            total = (nac_2077["icms_iss_residual"] * part["coefNeutro"]
+                     + nac_2077["ibs_historico"] * part["coefCPT"]
+                     + nac_2077["ibs_destino_liquido"] * part["coefPleno"])
+            total += (lp_2077.get(uf, {}).get(esfera) or 0)
+            if esfera == "estado":
+                nac_estadual_2077 += total
+            else:
+                nac_municipal_2077 += total
+    nac_total_2077 = nac_estadual_2077 + nac_municipal_2077
+
+    distribuicao_estado_municipio = {
+        "2025": {
+            "estadual_rs": nac_estadual_2025, "municipal_rs": nac_total_2025 - nac_estadual_2025,
+            "estadual_pct": nac_estadual_2025 / nac_total_2025 if nac_total_2025 else None,
+            "municipal_pct": (nac_total_2025 - nac_estadual_2025) / nac_total_2025 if nac_total_2025 else None,
+        },
+        "2033": {
+            "estadual_rs": nac_estadual_2033, "municipal_rs": nac_total_2033 - nac_estadual_2033,
+            "estadual_pct": nac_estadual_2033 / nac_total_2033 if nac_total_2033 else None,
+            "municipal_pct": (nac_total_2033 - nac_estadual_2033) / nac_total_2033 if nac_total_2033 else None,
+        },
+        "2077": {
+            "estadual_rs": nac_estadual_2077, "municipal_rs": nac_municipal_2077,
+            "estadual_pct": nac_estadual_2077 / nac_total_2077 if nac_total_2077 else None,
+            "municipal_pct": nac_municipal_2077 / nac_total_2077 if nac_total_2077 else None,
+        },
+    }
+
+    # ── 5. Regressão: o que explica a variação de 2033 (Figura 2, item 1) ──
+    # Verifica, com os dados reais do modelo, se o padrão 2029-2033 é mais
+    # consistente com o Coeficiente de Participação de Transição (phi^CPT)
+    # ou com o coeficiente de destino pleno -- mesmo recorte da Tabela 1
+    # (ente estadual). Eixo X de cada painel: a diferença relativa entre o
+    # coeficiente (CPT ou destino) e a participação neutra de 2025, por UF;
+    # eixo Y, em ambos: a variação da receita do ente estadual em 2033.
+    regressao_pontos = []
+    for uf in UFS:
+        p = params_uf[uf]["estado"]
+        coef_neutro, coef_cpt, coef_pleno = p["coefNeutro"], p["coefCPT"], p["coefPleno"]
+        if not coef_neutro:
+            continue
+        regressao_pontos.append({
+            "uf": uf,
+            "nome": NOMES_UF[uf],
+            "diff_cpt_pct": (coef_cpt / coef_neutro - 1) * 100,
+            "diff_destino_pct": (coef_pleno / coef_neutro - 1) * 100,
+            "variacao_2033_pct": por_uf_estado[uf]["variacao_por_ano"][2033] * 100,
+        })
+
+    def r2(xs, ys):
+        n = len(xs)
+        mx, my = sum(xs) / n, sum(ys) / n
+        sxx = sum((x - mx) ** 2 for x in xs)
+        syy = sum((y - my) ** 2 for y in ys)
+        sxy = sum((x - mx) * (y - my) for x, y in zip(xs, ys))
+        return (sxy / (sxx * syy) ** 0.5) ** 2 if sxx > 0 and syy > 0 else 0.0
+
+    xs_cpt = [pt["diff_cpt_pct"] for pt in regressao_pontos]
+    xs_dest = [pt["diff_destino_pct"] for pt in regressao_pontos]
+    ys = [pt["variacao_2033_pct"] for pt in regressao_pontos]
+    regressao_2033 = {
+        "pontos": regressao_pontos,
+        "r2_transicao": r2(xs_cpt, ys),
+        "r2_destino": r2(xs_dest, ys),
+    }
+
     output = {
         "fonte": "Estudos 02, 06, 09, 10, 11, 12, 13 deste site (data/*.json); ver nota-metodologica-ibs.html",
         "cenario": "destino pleno",
@@ -544,6 +713,7 @@ def main():
             "cobertura_anos_min": COBERTURA_MIN, "populacao_min": POP_MIN,
         },
         "por_uf_estado": por_uf_estado,
+        "regressao_2033": regressao_2033,
         "por_uf": por_uf,
         "variacao_municipal_por_uf_2033": variacao_municipal_por_uf,
         "destaques_municipios_2033": {
@@ -552,10 +722,13 @@ def main():
         },
         "capitais": capitais_resultado,
         "per_capita_uf": per_capita_uf,
+        "gini_percapita_uf": gini_percapita_uf,
         "dispersao_intramunicipal": {
             "por_uf": dispersao_intramunicipal,
             "brasil": dispersao_brasil,
         },
+        "gini_percapita_municipal": gini_percapita_municipal,
+        "distribuicao_estado_municipio": distribuicao_estado_municipio,
     }
 
     with open(OUT, "w", encoding="utf-8") as f:
