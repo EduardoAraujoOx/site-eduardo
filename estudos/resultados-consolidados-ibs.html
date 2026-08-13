@@ -323,6 +323,38 @@
                 </table>
             </div>
             <p class="table-caption">Valores em R$ por habitante, preços constantes de 2025. Ordenado do menor para o maior per capita em 2025.</p>
+
+            <p class="intro" style="margin-top: 2rem;">
+                A tabela acima mede dispersão <em>entre</em> UFs. Gobetti e Monteiro também apuram uma dispersão
+                <em>dentro</em> de cada UF — a razão entre o município mais rico e o mais pobre em receita per
+                capita (ISS + cota-parte do ICMS), antes e depois da reforma. Reproduzindo esse exercício sobre
+                este modelo: o Distrito Federal fica de fora, por não ter municípios próprios (art. 115 da LC
+                227/2026); municípios com cobertura de dados abaixo de 5 dos 7 anos, ou cujo registro de 2025
+                estava incompleto (faltando ISS ou cota-parte declarados especificamente naquele ano — 20 dos
+                5.569 municípios), foram excluídos da comparação, para não confundir uma falha de preenchimento
+                com um resultado real.
+            </p>
+            <div class="table-wrap">
+                <table class="data-table" id="table-dispersao-intra">
+                    <thead>
+                        <tr>
+                            <th class="th-left" rowspan="2">UF</th>
+                            <th colspan="2">Mais rico</th>
+                            <th class="col-divider" colspan="2">Mais pobre</th>
+                            <th class="col-divider" rowspan="2">Max/Min<br>pré-reforma</th>
+                            <th rowspan="2">Max/Min<br>pós-reforma</th>
+                        </tr>
+                        <tr>
+                            <th class="th-left">Município</th>
+                            <th>Receita PC</th>
+                            <th class="th-left col-divider">Município</th>
+                            <th>Receita PC</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-dispersao-intra"></tbody>
+                </table>
+            </div>
+            <p class="table-caption">Receita PC: receita per capita pré-reforma (participação neutra de 2025 dividida pela população média 2019-2025), em R$. Max/Min: razão entre a maior e a menor receita per capita entre os municípios elegíveis daquela UF — pré-reforma usa os mesmos dois municípios nomeados nas colunas à esquerda; pós-reforma recalcula o máximo e o mínimo em 2033, que podem já não ser os mesmos municípios.</p>
         </section>
 
         <div class="footnotes">
@@ -330,7 +362,7 @@
             <p>1. Metodologia completa: <a href="/estudos/nota-metodologica-ibs.html">Estudo 14</a>. Esta página reaplica a mesma lógica de projeção por UF já publicada no <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>, estendida ao nível municipal com os coeficientes do <a href="/estudos/reforma-tributaria-coeficiente-municipios.html">Estudo 10</a> e do rateio de destino municipal (cota-parte + destino próprio), e ao horizonte de 2077 com os dados do <a href="/estudos/ibs-projecao-longo-prazo.html">Estudo 09</a>.</p>
             <p>2. Script de geração: <code>data/build-resultados-consolidados.py</code>, saída em <code>data/resultados-consolidados-ibs.json</code>.</p>
             <p>3. Mapa: geometria de estados obtida em tempo real da API de malhas do IBGE, com contorno alternativo do GitHub (click_that_hood) em caso de indisponibilidade — mesmo padrão do <a href="/estudos/icms-diesel-importado-v2.html">mapa do Estudo 01</a>.</p>
-            <p>4. Destaques municipais: municípios com cobertura DCA/STN abaixo de 5 dos 7 anos (2019–2025) ou população média abaixo de 10 mil habitantes foram excluídos do ranking, para não confundir oscilação percentual sobre uma base pequena ou incompleta com um resultado substantivo — ver <code>criterios_destaque_municipal</code> em <code>data/resultados-consolidados-ibs.json</code>.</p>
+            <p>4. Destaques municipais e dispersão intramunicipal: municípios com cobertura DCA/STN abaixo de 5 dos 7 anos (2019–2025), população média abaixo de 10 mil habitantes (só no ranking de destaques, não na dispersão intramunicipal) ou registro de 2025 incompleto (faltando ISS ou cota-parte declarados especificamente naquele ano, apesar de outros anos existirem — 20 de 5.569 municípios) foram excluídos, para não confundir uma falha de preenchimento ou uma base pequena demais com um resultado substantivo — ver <code>criterios_destaque_municipal</code> em <code>data/resultados-consolidados-ibs.json</code>.</p>
         </div>
 
     </div>
@@ -376,6 +408,7 @@
         renderDestaques();
         renderCapitais();
         renderPerCapita();
+        renderDispersaoIntra();
         try {
             renderMapa();
         } catch (err) {
@@ -455,6 +488,34 @@
             `${cv2077.toFixed(3)} em 2077, uma redução de ${queda}% no horizonte completo. Isso é consistente com a ` +
             `hipótese de Gobetti e Monteiro: a redistribuição pelo critério de destino tende a aproximar a receita ` +
             `per capita dos estados, não apenas a deslocá-la de um grupo para outro.`;
+    }
+
+    function renderDispersaoIntra() {
+        const fmtRatio = v => v.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + 'x';
+        const rows = Object.entries(DATA.dispersao_intramunicipal.por_uf)
+            .sort((a, b) => a[1].max_min_pre - b[1].max_min_pre);
+        const linhas = rows.map(([uf, v]) => `<tr>
+            ${td(uf, 'td-ente')}
+            ${td(`${v.municipio_mais_rico}`, 'td-ente')}
+            ${td(fmtRs(v.receita_pc_mais_rico_pre))}
+            ${td(`${v.municipio_mais_pobre}`, 'td-ente col-divider')}
+            ${td(fmtRs(v.receita_pc_mais_pobre_pre))}
+            ${td(fmtRatio(v.max_min_pre), 'col-divider')}
+            ${td(fmtRatio(v.max_min_pos))}
+        </tr>`);
+
+        const br = DATA.dispersao_intramunicipal.brasil;
+        linhas.push(`<tr style="font-weight:700;background:var(--bg);">
+            ${td('Brasil', 'td-ente')}
+            ${td(`${br.municipio_mais_rico} <small>${br.uf_mais_rico}</small>`, 'td-ente')}
+            ${td(fmtRs(br.receita_pc_mais_rico_pre))}
+            ${td(`${br.municipio_mais_pobre} <small>${br.uf_mais_pobre}</small>`, 'td-ente col-divider')}
+            ${td(fmtRs(br.receita_pc_mais_pobre_pre))}
+            ${td(fmtRatio(br.max_min_pre), 'col-divider')}
+            ${td(fmtRatio(br.max_min_pos))}
+        </tr>`);
+
+        document.getElementById('tbody-dispersao-intra').innerHTML = linhas.join('');
     }
 
     // ── Mapa (D3 + geometria de estados do IBGE, mesmo padrão do Estudo 01) ─
