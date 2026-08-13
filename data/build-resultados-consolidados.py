@@ -151,9 +151,19 @@ def build_repasse_index(seguro_data, anos):
     return idx
 
 
-def project_uf(uf, params, nacional_by_year, repasse_idx, anos):
+def project_uf(uf, params, nacional_by_year, repasse_idx, anos, esfera="total"):
+    """
+    esfera="total": soma o ente estadual com o agregado municipal da UF (sem
+    dupla contagem -- a cota-parte é subtraída de um lado e somada do outro).
+    esfera="estado": só o ente estadual, líquido da cota-parte devida aos
+    municípios -- o análogo direto da "receita estadual" na acepção de
+    Gobetti e Monteiro (75% do ICMS bruto), usado na Tabela 1.
+    """
     p = params[uf]
-    parts = [p["estado"]] + ([p["municipio"]] if p["municipio"] else [])
+    if esfera == "estado":
+        parts = [p["estado"]]
+    else:
+        parts = [p["estado"]] + ([p["municipio"]] if p["municipio"] else [])
     r0_2025 = sum(x["r0_2025"] for x in parts)
     res = {}
     for a in anos:
@@ -170,7 +180,7 @@ def project_uf(uf, params, nacional_by_year, repasse_idx, anos):
         ridx = repasse_idx.get(uf)
         if ridx:
             repasse += ridx["estado"].get(a, 0)
-            if p["municipio"]:
+            if esfera == "total" and p["municipio"]:
                 repasse += ridx["municipio"].get(a, 0)
         total += repasse
         dpct = (total - contra) / contra if contra > 0 else 0.0
@@ -249,10 +259,28 @@ def main():
     params_uf, total_br_2025 = compute_params_uf(ref_data, coef_uf, phi_dest)
     repasse_idx = build_repasse_index(seguro_data, ANOS)
 
-    # ── 1. Receita estadual por UF, 2029-2033 ───────────────────────────────
+    # ── 1a. Receita do ente estadual por UF, 2029-2033 (Tabela 1) ───────────
+    # Só a esfera estadual, líquida da cota-parte devida aos municípios -- o
+    # análogo direto da "receita estadual" de Gobetti e Monteiro (75% do
+    # ICMS bruto), não o agregado UF (que seria a soma com os municípios).
+    por_uf_estado = {}
+    for uf in UFS:
+        proj = project_uf(uf, params_uf, nacional_by_year, repasse_idx, ANOS, esfera="estado")
+        sum_total = sum(proj["res"][a]["total"] for a in ANOS)
+        sum_contra = sum(proj["res"][a]["contrafactual"] for a in ANOS)
+        por_uf_estado[uf] = {
+            "nome": NOMES_UF[uf],
+            "pre_2025": proj["r0_2025"],
+            "pos_por_ano": {a: proj["res"][a]["total"] for a in ANOS},
+            "contrafactual_por_ano": {a: proj["res"][a]["contrafactual"] for a in ANOS},
+            "variacao_por_ano": {a: proj["res"][a]["dpct"] for a in ANOS},
+            "acumulado_dpct": (sum_total - sum_contra) / sum_contra if sum_contra > 0 else 0.0,
+        }
+
+    # ── 1b. Receita total por UF (estado + municípios), 2029-2033 (mapa) ────
     por_uf = {}
     for uf in UFS:
-        proj = project_uf(uf, params_uf, nacional_by_year, repasse_idx, ANOS)
+        proj = project_uf(uf, params_uf, nacional_by_year, repasse_idx, ANOS, esfera="total")
         sum_total = sum(proj["res"][a]["total"] for a in ANOS)
         sum_contra = sum(proj["res"][a]["contrafactual"] for a in ANOS)
         por_uf[uf] = {
@@ -398,6 +426,7 @@ def main():
         "criterios_destaque_municipal": {
             "cobertura_anos_min": COBERTURA_MIN, "populacao_min": POP_MIN,
         },
+        "por_uf_estado": por_uf_estado,
         "por_uf": por_uf,
         "variacao_municipal_por_uf_2033": variacao_municipal_por_uf,
         "destaques_municipios_2033": {
