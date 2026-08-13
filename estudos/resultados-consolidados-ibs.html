@@ -398,8 +398,9 @@
                             <th class="abnt-left" rowspan="2">UF</th>
                             <th colspan="2"><span class="abnt-max">Mais rico</span></th>
                             <th class="abnt-divider" colspan="2"><span class="abnt-min">Mais pobre</span></th>
-                            <th class="abnt-divider" rowspan="2">Pré-reforma<br><span class="abnt-max">Max</span>/<span class="abnt-min">Min</span></th>
-                            <th rowspan="2">Pós-reforma<br><span class="abnt-max">Max</span>/<span class="abnt-min">Min</span></th>
+                            <th class="abnt-divider" rowspan="2">2025<br><span class="abnt-max">Max</span>/<span class="abnt-min">Min</span></th>
+                            <th rowspan="2">2033<br><span class="abnt-max">Max</span>/<span class="abnt-min">Min</span></th>
+                            <th rowspan="2">2077<br><span class="abnt-max">Max</span>/<span class="abnt-min">Min</span></th>
                         </tr>
                         <tr>
                             <th class="abnt-left">Município</th>
@@ -411,7 +412,7 @@
                     <tbody id="tbody-dispersao-intra"></tbody>
                 </table>
             </div>
-            <p class="abnt-source"><strong>Fonte:</strong> SICONFI/STN; EC n.º 132/2023; LC n.º 214/2025; LC n.º 227/2026. Elaboração própria.<br><strong>Nota:</strong> Receita PC pré-reforma corresponde à participação neutra de 2025 (ISS + cota-parte do ICMS) dividida pela população média do município (2019–2025). Max/Min pré-reforma é a razão entre os dois municípios nomeados nas colunas à esquerda; Max/Min pós-reforma recalcula o máximo e o mínimo em 2033 entre os municípios elegíveis da UF, que podem já não ser os mesmos dois municípios. Linha "Brasil": máximo e mínimo nacionais, dentre todos os municípios elegíveis.</p>
+            <p class="abnt-source"><strong>Fonte:</strong> SICONFI/STN; EC n.º 132/2023; LC n.º 214/2025; LC n.º 227/2026. Elaboração própria.<br><strong>Nota:</strong> Receita PC (2025) corresponde à participação neutra de 2025 (ISS + cota-parte do ICMS) dividida pela população média do município (2019–2025); Município e Receita PC nas colunas à esquerda referem-se sempre a 2025. Max/Min de cada ano recalcula o máximo e o mínimo entre os municípios elegíveis da UF naquele ano, que podem não ser os mesmos dois municípios nomeados à esquerda. O repasse do Seguro-Receita por município não existe para 2077 (só agregado por UF); a coluna de 2077 aproxima a fatia de cada município no repasse municipal de sua UF pela fatia observada em 2033, escalada para o tamanho do fundo em 2077. Linha "Brasil": máximo e mínimo nacionais, dentre todos os municípios elegíveis.</p>
         </section>
 
         <div class="footnotes">
@@ -546,6 +547,7 @@
             ${td(fmtRs(v.receita_pc_mais_pobre_pre))}
             ${td(fmtRatio(v.max_min_pre), 'abnt-divider')}
             ${td(fmtRatio(v.max_min_pos))}
+            ${td(v.max_min_2077 != null ? fmtRatio(v.max_min_2077) : '—')}
         </tr>`);
 
         const br = DATA.dispersao_intramunicipal.brasil;
@@ -557,6 +559,7 @@
             ${td(fmtRs(br.receita_pc_mais_pobre_pre))}
             ${td(fmtRatio(br.max_min_pre), 'abnt-divider')}
             ${td(fmtRatio(br.max_min_pos))}
+            ${td(br.max_min_2077 != null ? fmtRatio(br.max_min_2077) : '—')}
         </tr>`);
 
         document.getElementById('tbody-dispersao-intra').innerHTML = linhas.join('');

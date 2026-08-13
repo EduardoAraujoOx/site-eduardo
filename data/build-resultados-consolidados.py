@@ -349,12 +349,13 @@ def main():
                                  nacional_by_year, repasse_muni_idx, ANOS)
         pop = (pop_muni.get(cod) or {}).get("pop_media")
         municipios_resultado[cod] = {
-            "nome": cm["nome"], "uf": uf,
+            "cod": cod, "nome": cm["nome"], "uf": uf,
             "cobertura_anos": cm.get("cobertura_anos", 0),
             "neutro_aproximado": neutro_aproximado,
             "neutro_suspeito": neutro_suspeito,
             "pop_media": pop,
             "pre_2025": r0,
+            "coef_cpt": coef_cpt, "coef_pleno": coef_pleno,
             "pos_2033": res[2033]["total"],
             "contrafactual_2033": res[2033]["contrafactual"],
             "variacao_2033": res[2033]["dpct"],
@@ -385,6 +386,37 @@ def main():
         m["percapita_pre"] = m["pre_2025"] / m["pop_media"]
         m["percapita_pos"] = m["pos_2033"] / m["pop_media"]
 
+    # Extensão a 2077: o repasse do Seguro-Receita por município não existe
+    # nessa data (seguro-receita-repasses-longo-prazo.json só tem o repasse
+    # agregado por UF) -- aproxima-se a fatia de cada município dentro do
+    # repasse municipal da sua UF pela mesma fatia observada em 2033 (última
+    # safra com dado individual), escalada para o tamanho do fundo municipal
+    # da UF em 2077. A distribuição relativa dentro do fundo estadual não
+    # deveria mudar de natureza entre 2033 e 2077, só o tamanho do fundo.
+    repasse_uf_muni_2033 = {}
+    for cod, cm in coef_muni.items():
+        r33 = repasse_muni_idx.get(f"MUN-{cod}", {}).get(2033, 0)
+        repasse_uf_muni_2033[cm["uf"]] = repasse_uf_muni_2033.get(cm["uf"], 0) + r33
+
+    fundo_municipal_uf_2077 = {}
+    lp_repasse_2077 = (seguro_lp_data.get("anos") or {}).get(str(ANO_LONGO), {}).get("repasse_por_uf", {})
+    for uf, v in lp_repasse_2077.items():
+        fundo_municipal_uf_2077[uf] = v.get("municipio") or 0
+
+    nac_2077 = lp_by_year[ANO_LONGO]
+    for m in elegiveis_percapita:
+        uf = m["uf"]
+        r33 = repasse_muni_idx.get(f"MUN-{m['cod']}", {}).get(2033, 0)
+        denom = repasse_uf_muni_2033.get(uf, 0)
+        fatia = (r33 / denom) if denom > 0 else 0.0
+        repasse_2077 = fatia * fundo_municipal_uf_2077.get(uf, 0)
+        coef_neutro = m["pre_2025"] / total_br_2025 if total_br_2025 else 0
+        total_2077 = (nac_2077["icms_iss_residual"] * coef_neutro
+                      + nac_2077["ibs_historico"] * m["coef_cpt"]
+                      + nac_2077["ibs_destino_liquido"] * m["coef_pleno"]
+                      + repasse_2077)
+        m["percapita_2077"] = total_2077 / m["pop_media"]
+
     dispersao_intramunicipal = {}
     for uf in UFS:
         muni_uf = [m for m in elegiveis_percapita if m["uf"] == uf]
@@ -394,6 +426,8 @@ def main():
         poorest = min(muni_uf, key=lambda m: m["percapita_pre"])
         max_pos = max(m["percapita_pos"] for m in muni_uf)
         min_pos = min(m["percapita_pos"] for m in muni_uf)
+        max_2077 = max(m["percapita_2077"] for m in muni_uf)
+        min_2077 = min(m["percapita_2077"] for m in muni_uf)
         dispersao_intramunicipal[uf] = {
             "n_municipios": len(muni_uf),
             "municipio_mais_rico": richest["nome"],
@@ -403,12 +437,15 @@ def main():
             "max_min_pre": (richest["percapita_pre"] / poorest["percapita_pre"]
                              if poorest["percapita_pre"] > 0 else None),
             "max_min_pos": max_pos / min_pos if min_pos > 0 else None,
+            "max_min_2077": max_2077 / min_2077 if min_2077 > 0 else None,
         }
 
     richest_br = max(elegiveis_percapita, key=lambda m: m["percapita_pre"])
     poorest_br = min(elegiveis_percapita, key=lambda m: m["percapita_pre"])
     max_pos_br = max(m["percapita_pos"] for m in elegiveis_percapita)
     min_pos_br = min(m["percapita_pos"] for m in elegiveis_percapita)
+    max_2077_br = max(m["percapita_2077"] for m in elegiveis_percapita)
+    min_2077_br = min(m["percapita_2077"] for m in elegiveis_percapita)
     dispersao_brasil = {
         "municipio_mais_rico": richest_br["nome"], "uf_mais_rico": richest_br["uf"],
         "receita_pc_mais_rico_pre": richest_br["percapita_pre"],
@@ -416,6 +453,7 @@ def main():
         "receita_pc_mais_pobre_pre": poorest_br["percapita_pre"],
         "max_min_pre": richest_br["percapita_pre"] / poorest_br["percapita_pre"],
         "max_min_pos": max_pos_br / min_pos_br,
+        "max_min_2077": max_2077_br / min_2077_br,
     }
 
     # Agregado por UF da variação municipal (média ponderada pela receita pré,
