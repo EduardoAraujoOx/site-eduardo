@@ -194,17 +194,50 @@
             <p class="table-caption">Receita pré-IBS: participação neutra de 2025 do ente estadual (ICMS+FECOP, líquido de cota-parte) aplicada à receita de referência nacional de cada ano. Valores em R$ bilhões, preços constantes de 2025.</p>
         </section>
 
-        <section class="result-section" id="sec-mapa">
+        <section class="result-section" id="sec-capitais">
             <div class="result-num">2</div>
+            <h2>Variação da receita das capitais brasileiras, 2029–2033</h2>
+            <p class="intro">
+                Depois do estado, o passo natural seria olhar os 5.569 municípios um a um — mas isso é
+                informação demais para uma leitura corrida. As capitais são um recorte intermediário útil: 27
+                entes, um por UF, que já deixam ver o padrão sem exigir a lista completa (essa vem no item 3).
+                Aqui a unidade muda: cada linha é a receita do <strong>ente municipal</strong> da própria
+                capital, no mesmo formato da Tabela 1 — não mais o governo estadual, e sim as 26 capitais
+                estaduais e o Distrito Federal, que não tem esfera municipal própria (art. 115 da LC
+                227/2026): a linha do DF nesta tabela é, excepcionalmente, a receita estadual e municipal já
+                consolidada, e não a de um município de Brasília, que não existe como ente separado.
+            </p>
+            <div class="table-wrap">
+                <table class="data-table" id="table-capitais">
+                    <thead>
+                        <tr>
+                            <th class="th-left">Capital</th>
+                            <th>Pré-IBS (2025)</th>
+                            <th class="col-divider">2029</th>
+                            <th>2030</th>
+                            <th>2031</th>
+                            <th>2032</th>
+                            <th>2033</th>
+                            <th class="col-divider">Variação 2033</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-capitais"></tbody>
+                </table>
+            </div>
+            <p class="table-caption" id="capitais-caption">Valores em R$ milhões, preços constantes de 2025.</p>
+        </section>
+
+        <section class="result-section" id="sec-mapa">
+            <div class="result-num">3</div>
             <h2>Variação da receita por UF e destaques municipais, 2029–2033</h2>
             <p class="intro">
-                Diferente da Tabela 1, que isola o ente estadual, o mapa mostra a variação da UF como um todo
-                — estado e municípios somados, sem dupla contagem — sobre uma escala divergente centrada em
-                zero. Abaixo dele, para dar a "foto dos municípios" sem depender de um mapa com ~5.570
-                polígonos municipais — sem precedente neste site e com custo de carregamento proibitivo —,
-                duas listas mostram os municípios que mais ganham e mais perdem participação relativa, dentre
-                os que têm população acima de 10 mil habitantes e cobertura de dados suficiente (ao menos 5
-                dos 7 anos de 2019–2025 nos registros da DCA/STN).
+                Da capital, agora para o quadro completo: o mapa mostra a variação da UF como um todo — estado
+                e municípios somados, sem dupla contagem — sobre uma escala divergente centrada em zero. Abaixo
+                dele, para dar a "foto dos municípios" sem depender de um mapa com ~5.570 polígonos municipais
+                — sem precedente neste site e com custo de carregamento proibitivo —, duas listas mostram os
+                municípios que mais ganham e mais perdem participação relativa, dentre os que têm população
+                acima de 10 mil habitantes e cobertura de dados suficiente (ao menos 5 dos 7 anos de 2019–2025
+                nos registros da DCA/STN).
             </p>
             <div class="map-wrapper" id="mapWrapper">
                 <div class="map-loading" id="mapLoading">
@@ -241,36 +274,6 @@
                 </div>
             </div>
             <p class="table-caption">Municípios cuja base tributária atual é intensiva em produção (agropecuária, energia, mineração) tendem a aparecer entre as maiores perdas; municípios de perfil mais residencial ou comercial, entre os maiores ganhos — o mesmo padrão observado por UF, na escala municipal.</p>
-        </section>
-
-        <section class="result-section" id="sec-capitais">
-            <div class="result-num">3</div>
-            <h2>Variação da receita das capitais brasileiras, 2029–2033</h2>
-            <p class="intro">
-                Aqui a unidade muda: cada linha é a receita do <strong>ente municipal</strong> da própria
-                capital — não o governo estadual da Tabela 1, nem a UF inteira do mapa —, para as 26 capitais
-                estaduais e o Distrito Federal, que não tem esfera municipal própria (art. 115 da LC
-                227/2026): a linha do DF nesta tabela é, excepcionalmente, a receita estadual e municipal já
-                consolidada, e não a de um município de Brasília, que não existe como ente separado.
-            </p>
-            <div class="table-wrap">
-                <table class="data-table" id="table-capitais">
-                    <thead>
-                        <tr>
-                            <th class="th-left">Capital</th>
-                            <th>Pré-IBS (2025)</th>
-                            <th class="col-divider">2029</th>
-                            <th>2030</th>
-                            <th>2031</th>
-                            <th>2032</th>
-                            <th>2033</th>
-                            <th class="col-divider">Variação 2033</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-capitais"></tbody>
-                </table>
-            </div>
-            <p class="table-caption" id="capitais-caption">Valores em R$ milhões, preços constantes de 2025.</p>
         </section>
 
         <section class="result-section" id="sec-percapita">
