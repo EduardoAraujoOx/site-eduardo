@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados Consolidados: quem ganha e quem perde com a transição do ICMS/ISS para o IBS | Eduardo Reis Araújo</title>
+    <meta name="description" content="Receita estadual e municipal projetada 2029-2033, mapa da variação por UF, capitais brasileiras e receita per capita 2025-2033-2077: os principais resultados dos estudos deste site, num único lugar.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/resultados-consolidados-ibs.html">
+
+    <meta property="og:title" content="Resultados Consolidados: quem ganha e quem perde com a transição do ICMS/ISS para o IBS">
+    <meta property="og:description" content="Receita por UF, mapa da variação, capitais brasileiras e receita per capita 2025-2033-2077, aplicando a metodologia do Estudo 14.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/resultados-consolidados-ibs.html">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+
+    <link rel="stylesheet" href="/css/notas.css?v=4">
+    <link rel="stylesheet" href="/css/search.css">
+
+    <style>
+        .study-hero { max-width: 980px; margin: 0 auto; padding: 3rem 2rem 1.5rem; }
+        .study-hero-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+        .study-hero-tag { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); padding: 0.25rem 0.6rem; border-radius: 4px; }
+        .study-hero-topic { font-family: var(--sans); font-size: 0.73rem; color: var(--text-secondary); background: var(--border-light); padding: 0.2rem 0.55rem; border-radius: 4px; }
+        .study-hero-date { font-family: var(--sans); font-size: 0.73rem; color: var(--text-muted); margin-left: auto; }
+        .study-hero h1 { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2.05rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 0.8rem; }
+        .study-hero .lead { font-family: var(--serif); font-size: 1rem; line-height: 1.72; color: var(--text-secondary); max-width: 760px; }
+        .study-hero .study-meta { font-family: var(--sans); font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem; }
+
+        .study-content { max-width: 980px; margin: 0 auto; padding: 0 2rem 5rem; }
+
+        .status-bar { display: flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); margin-bottom: 2rem; flex-wrap: wrap; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #999; flex-shrink: 0; }
+        .status-dot.ok { background: #22c55e; }
+        .status-dot.err { background: #ef4444; }
+
+        :root {
+            --neg: #b03a2e; --neg-bg: #fdf3f2;
+            --pos: #1e8449; --pos-bg: #f0faf4;
+        }
+
+        .result-section { margin-top: 3.5rem; }
+        .result-section:first-of-type { margin-top: 0.5rem; }
+        .result-num { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.4rem; }
+        .result-section h2 { font-family: var(--display); font-size: 1.4rem; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 0.9rem; color: var(--text); scroll-margin-top: 90px; }
+        .result-section p.intro { font-family: var(--serif); font-size: 1rem; line-height: 1.8; color: var(--text-secondary); max-width: 74ch; margin: 0 0 1.3rem; }
+        .result-section p.intro:last-of-type { margin-bottom: 1.5rem; }
+
+        .table-wrap { overflow-x: auto; margin-bottom: 0.75rem; border: 1px solid var(--border); border-radius: 8px; }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
+        .data-table th { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0.5rem 0.7rem; text-align: right; font-family: var(--sans); font-weight: 600; font-size: 0.72rem; white-space: nowrap; color: var(--text); position: sticky; top: 0; z-index: 1; }
+        .data-table th.th-left { text-align: left; }
+        .data-table td { border-bottom: 1px solid var(--border-light); padding: 0.4rem 0.7rem; text-align: right; font-family: var(--mono); font-size: 0.78rem; white-space: nowrap; color: var(--text); }
+        .data-table td.td-ente { text-align: left; font-family: var(--sans); font-weight: 600; font-size: 0.81rem; }
+        .data-table td.td-ente small { font-weight: 400; color: var(--text-muted); font-family: var(--mono); margin-left: 0.3em; }
+        .data-table .td-neg { color: var(--neg); font-weight: 600; }
+        .data-table .td-pos { color: var(--pos); font-weight: 600; }
+        .data-table .col-divider { border-left: 2px solid var(--border); }
+        .data-table tbody tr:hover { background: var(--accent-bg); }
+        .table-caption { font-family: Georgia, serif; font-style: italic; font-size: 0.82rem; color: var(--text-muted); padding: 0.6rem 0.2rem 1.4rem; max-width: 74ch; }
+
+        .map-wrapper { position: relative; background: #EDF3F9; border-radius: 10px; overflow: visible; min-height: 200px; margin-top: 1.2rem; }
+        #brazilMap { display: block; width: 100%; }
+        .map-state { stroke: #fff; stroke-width: 0.6; cursor: pointer; transition: opacity 0.15s, stroke-width 0.15s; }
+        .map-state:hover, .map-state.is-active { opacity: 0.82; stroke-width: 1.5; stroke: #1A3A5C; }
+        .map-uf-label { pointer-events: none; font-family: 'Source Sans 3', sans-serif; font-weight: 600; }
+        .map-tooltip { position: absolute; background: #fff; border: 1px solid #d8dde4; border-radius: 8px; padding: 0.8rem 1rem 0.9rem; box-shadow: 0 6px 24px rgba(0,0,0,0.13); pointer-events: none; min-width: 190px; max-width: 240px; z-index: 20; opacity: 0; transition: opacity 0.12s; font-family: var(--sans); }
+        .map-tooltip.is-visible { opacity: 1; }
+        .map-tooltip-name { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 0.4rem; }
+        .map-tooltip-value { font-size: 1rem; font-weight: 700; }
+        .map-legend-bar { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.85rem; font-family: var(--sans); font-size: 0.72rem; color: var(--text-muted); }
+        .map-legend-gradient { flex: 1; height: 9px; border-radius: 5px; background: linear-gradient(to right, var(--neg), #f4ede3, var(--pos)); }
+        .map-loading { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6rem; color: var(--text-muted); font-family: var(--sans); font-size: 0.82rem; }
+
+        .highlights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.8rem; }
+        .highlight-col h3 { font-family: var(--sans); font-size: 0.82rem; font-weight: 700; margin: 0 0 0.6rem; display: flex; align-items: center; gap: 0.4rem; }
+        .highlight-col.ganhos h3 { color: var(--pos); }
+        .highlight-col.perdas h3 { color: var(--neg); }
+
+        .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.4rem 0 0.5rem; }
+        .stat-tile { border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem 1rem; background: var(--surface); }
+        .stat-tile .stat-label { font-family: var(--mono); font-size: 0.63rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.35rem; display: block; }
+        .stat-tile .stat-value { font-family: var(--sans); font-size: 1.25rem; font-weight: 700; color: var(--text); }
+        .stat-tile .stat-sub { font-family: var(--sans); font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+        .footnotes { margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+        .footnotes p { font-family: var(--serif); font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.4rem; }
+        .footnotes a { color: var(--accent); text-decoration: none; }
+        .footnotes a:hover { text-decoration: underline; }
+
+        @media (max-width: 720px) {
+            .highlights-grid { grid-template-columns: 1fr; }
+            .stat-row { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+            .study-hero { padding: 2rem 1.25rem 1rem; }
+            .study-content { padding: 0 1.25rem 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <div class="header-right-group">
+                <nav class="header-nav">
+                    <a href="/#publicacoes">Publicações</a>
+                    <a href="/ensino/">Ensino</a>
+                    <a href="/estudos/" class="active">Estudos</a>
+                    <a href="/#contato">Contato</a>
+                </nav>
+                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="study-hero">
+        <div class="study-hero-meta">
+            <span class="study-hero-tag">Estudo 15</span>
+            <span class="study-hero-topic">Reforma Tributária</span>
+            <span class="study-hero-topic">Federalismo Fiscal</span>
+            <span class="study-hero-topic">Resultados</span>
+            <span class="study-hero-date">Agosto de 2026</span>
+        </div>
+        <h1>Resultados Consolidados: quem ganha e quem perde com a transição do ICMS/ISS para o IBS</h1>
+        <p class="lead">
+            O <a href="/estudos/nota-metodologica-ibs.html">Estudo 14</a> descreveu o procedimento; esta página aplica
+            esse procedimento aos dados e reúne, num único lugar, os quatro resultados que resumem o efeito
+            redistributivo da reforma: a receita projetada por estado, sua distribuição geográfica até o nível
+            municipal, o caso específico das capitais e a trajetória da receita per capita no longo prazo.
+        </p>
+        <p class="study-meta">
+            Cenário de destino pleno, mesma base do Estudo 06. Estimativa própria e independente, não o cálculo
+            oficial que competirá ao Comitê Gestor do IBS.
+        </p>
+    </div>
+
+    <div class="study-content">
+
+        <div class="status-bar" id="status-main">
+            <span class="status-dot" id="status-dot"></span>
+            <span id="status-text">Carregando dados…</span>
+        </div>
+
+        <section class="result-section" id="sec-uf">
+            <div class="result-num">1</div>
+            <h2>Receita estadual projetada por UF, 2029–2033</h2>
+            <p class="intro">
+                Para cada estado e o Distrito Federal, a tabela compara a receita projetada sob a reforma
+                (estadual + municipal agregada) contra o cenário contrafactual — quanto o ente arrecadaria se
+                mantivesse, ano a ano, a mesma participação de 2025 sobre uma base que também cresce com o PIB
+                (Seção 8 do Estudo 14). A variação é sempre contra esse contrafactual, não contra o valor fixo
+                de 2025, para isolar o efeito da reforma do efeito do crescimento da economia.
+            </p>
+            <p class="intro">
+                Ordenado do maior perdedor ao maior ganhador em 2033. Estados cuja arrecadação hoje concentra
+                produção agropecuária ou industrial de exportação, tributada na origem, tendem a perder
+                participação relativa; estados com maior peso populacional e de consumo tendem a ganhar.
+            </p>
+            <div class="table-wrap">
+                <table class="data-table" id="table-uf">
+                    <thead>
+                        <tr>
+                            <th class="th-left">UF</th>
+                            <th>Pré-IBS (2025)</th>
+                            <th class="col-divider">2029</th>
+                            <th>2030</th>
+                            <th>2031</th>
+                            <th>2032</th>
+                            <th>2033</th>
+                            <th class="col-divider">Variação 2033</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-uf"></tbody>
+                </table>
+            </div>
+            <p class="table-caption">Receita pré-IBS: participação neutra de 2025 (ICMS+FECOP, líquido de cota-parte, mais ISS+cota-parte) aplicada à receita de referência nacional de cada ano. Valores em R$ bilhões, preços constantes de 2025.</p>
+        </section>
+
+        <section class="result-section" id="sec-mapa">
+            <div class="result-num">2</div>
+            <h2>Variação da receita por UF e destaques municipais, 2029–2033</h2>
+            <p class="intro">
+                O mapa replica a última coluna da Tabela 1, com a variação de cada UF sobre uma escala
+                divergente centrada em zero. Abaixo dele, para dar a "foto dos municípios" sem depender de um
+                mapa com ~5.570 polígonos municipais — sem precedente neste site e com custo de carregamento
+                proibitivo —, duas listas mostram os municípios que mais ganham e mais perdem participação
+                relativa, dentre os que têm população acima de 10 mil habitantes e cobertura de dados
+                suficiente (ao menos 5 dos 7 anos de 2019–2025 nos registros da DCA/STN).
+            </p>
+            <div class="map-wrapper" id="mapWrapper">
+                <div class="map-loading" id="mapLoading">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7a8ba0" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke-dasharray="47" stroke-dashoffset="15"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/></circle></svg>
+                    <span>Carregando mapa…</span>
+                </div>
+                <svg id="brazilMap" aria-label="Mapa do Brasil com a variação da receita por UF, 2033"></svg>
+                <div class="map-tooltip" id="mapTooltip" role="tooltip" aria-live="polite"></div>
+            </div>
+            <div class="map-legend-bar">
+                <span>-20% ou pior</span>
+                <div class="map-legend-gradient"></div>
+                <span>+20% ou melhor</span>
+            </div>
+
+            <div class="highlights-grid">
+                <div class="highlight-col ganhos">
+                    <h3>▲ Municípios que mais ganham (2033)</h3>
+                    <div class="table-wrap">
+                        <table class="data-table" id="table-ganhos">
+                            <thead><tr><th class="th-left">Município</th><th>Variação</th></tr></thead>
+                            <tbody id="tbody-ganhos"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="highlight-col perdas">
+                    <h3>▼ Municípios que mais perdem (2033)</h3>
+                    <div class="table-wrap">
+                        <table class="data-table" id="table-perdas">
+                            <thead><tr><th class="th-left">Município</th><th>Variação</th></tr></thead>
+                            <tbody id="tbody-perdas"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <p class="table-caption">Municípios cuja base tributária atual é intensiva em produção (agropecuária, energia, mineração) tendem a aparecer entre as maiores perdas; municípios de perfil mais residencial ou comercial, entre os maiores ganhos — o mesmo padrão observado por UF, na escala municipal.</p>
+        </section>
+
+        <section class="result-section" id="sec-capitais">
+            <div class="result-num">3</div>
+            <h2>Variação da receita das capitais brasileiras, 2029–2033</h2>
+            <p class="intro">
+                Mesma lógica da Tabela 1, agora apenas para as 26 capitais estaduais e o Distrito Federal — que
+                não tem esfera municipal própria (art. 115 da LC 227/2026): a linha do DF nesta tabela é a
+                receita estadual e municipal já consolidada, e não a de um município de Brasília, que não
+                existe como ente separado.
+            </p>
+            <div class="table-wrap">
+                <table class="data-table" id="table-capitais">
+                    <thead>
+                        <tr>
+                            <th class="th-left">Capital</th>
+                            <th>Pré-IBS (2025)</th>
+                            <th class="col-divider">2029</th>
+                            <th>2030</th>
+                            <th>2031</th>
+                            <th>2032</th>
+                            <th>2033</th>
+                            <th class="col-divider">Variação 2033</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-capitais"></tbody>
+                </table>
+            </div>
+            <p class="table-caption" id="capitais-caption">Valores em R$ milhões, preços constantes de 2025.</p>
+        </section>
+
+        <section class="result-section" id="sec-percapita">
+            <div class="result-num">4</div>
+            <h2>Receita per capita: 2025, 2033 e 2077</h2>
+            <p class="intro">
+                Gobetti e Monteiro (IPEA, 2023) argumentam que o efeito redistributivo da reforma se acentua ao
+                longo da transição, à medida que o critério de destino ganha peso sobre o histórico (art. 131,
+                §1º, do ADCT) — isto é, que a desigualdade de receita per capita entre estados tende a diminuir
+                com o tempo, não apenas a se deslocar. Para testar essa hipótese sobre este modelo, a tabela
+                compara a receita per capita de cada UF em três pontos: 2025 (pré-reforma), 2033 (fim do núcleo
+                da transição) e 2077 (véspera da extensão de longo prazo do Estudo 09, quando o critério
+                histórico já caiu a 2% do IBS bruto). A população é fixada na média 2019–2025 nos três pontos,
+                para isolar o efeito da redistribuição do efeito, de natureza distinta, do crescimento
+                populacional — que este site não projeta.
+            </p>
+            <div class="stat-row" id="stat-row-dispersao">
+                <div class="stat-tile">
+                    <span class="stat-label">Dispersão entre UFs · 2025</span>
+                    <div class="stat-value" id="stat-cv-2025">—</div>
+                    <div class="stat-sub">coeficiente de variação</div>
+                </div>
+                <div class="stat-tile">
+                    <span class="stat-label">Dispersão entre UFs · 2033</span>
+                    <div class="stat-value" id="stat-cv-2033">—</div>
+                    <div class="stat-sub">coeficiente de variação</div>
+                </div>
+                <div class="stat-tile">
+                    <span class="stat-label">Dispersão entre UFs · 2077</span>
+                    <div class="stat-value" id="stat-cv-2077">—</div>
+                    <div class="stat-sub">coeficiente de variação</div>
+                </div>
+            </div>
+            <p class="intro" id="dispersao-note" style="margin-top: 0.9rem;"></p>
+            <div class="table-wrap">
+                <table class="data-table" id="table-percapita">
+                    <thead>
+                        <tr>
+                            <th class="th-left">UF</th>
+                            <th>Per capita 2025</th>
+                            <th>Per capita 2033</th>
+                            <th>Per capita 2077</th>
+                            <th class="col-divider">Δ 2025→2077</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-percapita"></tbody>
+                </table>
+            </div>
+            <p class="table-caption">Valores em R$ por habitante, preços constantes de 2025. Ordenado do menor para o maior per capita em 2025.</p>
+        </section>
+
+        <div class="footnotes">
+            <p><strong>Fontes e reprodutibilidade:</strong></p>
+            <p>1. Metodologia completa: <a href="/estudos/nota-metodologica-ibs.html">Estudo 14</a>. Esta página reaplica a mesma lógica de projeção por UF já publicada no <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>, estendida ao nível municipal com os coeficientes do <a href="/estudos/reforma-tributaria-coeficiente-municipios.html">Estudo 10</a> e do rateio de destino municipal (cota-parte + destino próprio), e ao horizonte de 2077 com os dados do <a href="/estudos/ibs-projecao-longo-prazo.html">Estudo 09</a>.</p>
+            <p>2. Script de geração: <code>data/build-resultados-consolidados.py</code>, saída em <code>data/resultados-consolidados-ibs.json</code>.</p>
+            <p>3. Mapa: geometria de estados obtida em tempo real da API de malhas do IBGE, com contorno alternativo do GitHub (click_that_hood) em caso de indisponibilidade — mesmo padrão do <a href="/estudos/icms-diesel-importado-v2.html">mapa do Estudo 01</a>.</p>
+            <p>4. Destaques municipais: municípios com cobertura DCA/STN abaixo de 5 dos 7 anos (2019–2025) ou população média abaixo de 10 mil habitantes foram excluídos do ranking, para não confundir oscilação percentual sobre uma base pequena ou incompleta com um resultado substantivo — ver <code>criterios_destaque_municipal</code> em <code>data/resultados-consolidados-ibs.json</code>.</p>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+
+    <script src="/js/search.js"></script>
+    <script>
+    const NOMES_UF = {
+        AC:'Acre', AL:'Alagoas', AM:'Amazonas', AP:'Amapá', BA:'Bahia',
+        CE:'Ceará', DF:'Distrito Federal', ES:'Espírito Santo', GO:'Goiás',
+        MA:'Maranhão', MG:'Minas Gerais', MS:'Mato Grosso do Sul',
+        MT:'Mato Grosso', PA:'Pará', PB:'Paraíba', PE:'Pernambuco',
+        PI:'Piauí', PR:'Paraná', RJ:'Rio de Janeiro', RN:'Rio Grande do Norte',
+        RO:'Rondônia', RR:'Roraima', RS:'Rio Grande do Sul', SC:'Santa Catarina',
+        SE:'Sergipe', SP:'São Paulo', TO:'Tocantins'
+    };
+    const ANOS = [2029, 2030, 2031, 2032, 2033];
+
+    const fmtBi = v => (v / 1e9).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    const fmtMi = v => (v / 1e6).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    const fmtPct = v => (v >= 0 ? '+' : '') + (v * 100).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%';
+    const fmtRs = v => 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+    const clsPct = v => v < -0.0005 ? 'td-neg' : v > 0.0005 ? 'td-pos' : '';
+    const td = (content, cls) => `<td${cls ? ` class="${cls}"` : ''}>${content}</td>`;
+
+    let DATA = null;
+
+    async function loadData() {
+        try {
+            const resp = await fetch('/data/resultados-consolidados-ibs.json?t=' + Date.now());
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            DATA = await resp.json();
+        } catch (err) {
+            document.getElementById('status-dot').classList.add('err');
+            document.getElementById('status-text').textContent = 'Erro ao carregar dados: ' + err.message;
+            return;
+        }
+
+        renderTabelaUF();
+        renderDestaques();
+        renderCapitais();
+        renderPerCapita();
+        try {
+            renderMapa();
+        } catch (err) {
+            document.getElementById('mapLoading').innerHTML = '<span>Mapa indisponível · veja a Tabela 1 acima</span>';
+        }
+
+        const nUF = Object.keys(DATA.por_uf).length;
+        document.getElementById('status-dot').classList.add('ok');
+        document.getElementById('status-text').textContent =
+            `${nUF} UFs · 27 capitais · cenário de destino pleno, 2029–2033, extensão até 2077.`;
+    }
+
+    function renderTabelaUF() {
+        const rows = Object.entries(DATA.por_uf)
+            .sort((a, b) => a[1].variacao_por_ano['2033'] - b[1].variacao_por_ano['2033']);
+        document.getElementById('tbody-uf').innerHTML = rows.map(([uf, v]) => `<tr>
+            ${td(`${v.nome} <small>${uf}</small>`, 'td-ente')}
+            ${td(fmtBi(v.pre_2025))}
+            ${ANOS.map(a => td(fmtBi(v.pos_por_ano[String(a)]), a === 2029 ? 'col-divider' : '')).join('')}
+            ${td(fmtPct(v.variacao_por_ano['2033']), 'col-divider ' + clsPct(v.variacao_por_ano['2033']))}
+        </tr>`).join('');
+    }
+
+    function renderCapitais() {
+        const rows = Object.entries(DATA.capitais)
+            .sort((a, b) => a[1].variacao_por_ano['2033'] - b[1].variacao_por_ano['2033']);
+        document.getElementById('tbody-capitais').innerHTML = rows.map(([uf, v]) => `<tr>
+            ${td(`${v.nome} <small>${uf}${v.sem_municipio_proprio ? ' · sem município próprio' : ''}</small>`, 'td-ente')}
+            ${td(fmtMi(v.pre_2025))}
+            ${ANOS.map(a => td(fmtMi(v.pos_por_ano[String(a)]), a === 2029 ? 'col-divider' : '')).join('')}
+            ${td(fmtPct(v.variacao_por_ano['2033']), 'col-divider ' + clsPct(v.variacao_por_ano['2033']))}
+        </tr>`).join('');
+    }
+
+    function renderDestaques() {
+        const rowHtml = m => `<tr>
+            ${td(`${m.nome} <small>${m.uf}</small>`, 'td-ente')}
+            ${td(fmtPct(m.variacao_2033), clsPct(m.variacao_2033))}
+        </tr>`;
+        document.getElementById('tbody-ganhos').innerHTML =
+            DATA.destaques_municipios_2033.maiores_ganhos.map(rowHtml).join('');
+        document.getElementById('tbody-perdas').innerHTML =
+            DATA.destaques_municipios_2033.maiores_perdas.map(rowHtml).join('');
+    }
+
+    function renderPerCapita() {
+        const rows = Object.entries(DATA.per_capita_uf)
+            .sort((a, b) => a[1].per_capita_2025 - b[1].per_capita_2025);
+        document.getElementById('tbody-percapita').innerHTML = rows.map(([uf, v]) => {
+            const delta = (v.per_capita_2077 - v.per_capita_2025) / v.per_capita_2025;
+            return `<tr>
+                ${td(`${v.nome} <small>${uf}</small>`, 'td-ente')}
+                ${td(fmtRs(v.per_capita_2025))}
+                ${td(fmtRs(v.per_capita_2033))}
+                ${td(fmtRs(v.per_capita_2077))}
+                ${td(fmtPct(delta), 'col-divider ' + clsPct(delta))}
+            </tr>`;
+        }).join('');
+
+        const vals2025 = rows.map(([, v]) => v.per_capita_2025);
+        const vals2033 = rows.map(([, v]) => v.per_capita_2033);
+        const vals2077 = rows.map(([, v]) => v.per_capita_2077);
+        const cv = arr => {
+            const mean = arr.reduce((s, x) => s + x, 0) / arr.length;
+            const variance = arr.reduce((s, x) => s + (x - mean) ** 2, 0) / arr.length;
+            return Math.sqrt(variance) / mean;
+        };
+        const cv2025 = cv(vals2025), cv2033 = cv(vals2033), cv2077 = cv(vals2077);
+        document.getElementById('stat-cv-2025').textContent = cv2025.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+        document.getElementById('stat-cv-2033').textContent = cv2033.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+        document.getElementById('stat-cv-2077').textContent = cv2077.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+
+        const queda = ((cv2025 - cv2077) / cv2025 * 100).toFixed(0);
+        document.getElementById('dispersao-note').innerHTML =
+            `Sobre este modelo, a dispersão entre UFs (coeficiente de variação da receita per capita) cai de forma ` +
+            `monotônica ao longo da transição — de ${cv2025.toFixed(3)} em 2025 para ${cv2033.toFixed(3)} em 2033 e ` +
+            `${cv2077.toFixed(3)} em 2077, uma redução de ${queda}% no horizonte completo. Isso é consistente com a ` +
+            `hipótese de Gobetti e Monteiro: a redistribuição pelo critério de destino tende a aproximar a receita ` +
+            `per capita dos estados, não apenas a deslocá-la de um grupo para outro.`;
+    }
+
+    // ── Mapa (D3 + geometria de estados do IBGE, mesmo padrão do Estudo 01) ─
+    function renderMapa() {
+        const varByUf = {};
+        Object.entries(DATA.por_uf).forEach(([uf, v]) => { varByUf[uf] = v.variacao_por_ano['2033']; });
+
+        const wrapper = document.getElementById('mapWrapper');
+        const loading = document.getElementById('mapLoading');
+        const tooltip = document.getElementById('mapTooltip');
+        const svgEl = document.getElementById('brazilMap');
+        const svg = d3.select(svgEl);
+        let activeUf = null;
+
+        let W = wrapper.clientWidth || 680;
+        let H = Math.round(W * 0.88);
+        svg.attr('width', W).attr('height', H).attr('viewBox', '0 0 ' + W + ' ' + H);
+
+        const projection = d3.geoMercator();
+        const pathGen = d3.geoPath().projection(projection);
+
+        const codeToUf = {
+            '11':'RO','12':'AC','13':'AM','14':'RR','15':'PA',
+            '16':'AP','17':'TO','21':'MA','22':'PI','23':'CE',
+            '24':'RN','25':'PB','26':'PE','27':'AL','28':'SE',
+            '29':'BA','31':'MG','32':'ES','33':'RJ','35':'SP',
+            '41':'PR','42':'SC','43':'RS','50':'MS','51':'MT',
+            '52':'GO','53':'DF'
+        };
+
+        function getUf(d) {
+            if (d.properties && d.properties.sigla) return d.properties.sigla;
+            if (d.properties && d.properties.codarea) return codeToUf[String(d.properties.codarea)] || null;
+            return null;
+        }
+
+        const DOMAIN = 0.20; // ±20%, calibrado sobre o intervalo observado (-19,9% a +15,0% em 2033)
+        function getColor(v) {
+            if (v == null || !isFinite(v)) return '#C8DBE8';
+            const t = Math.max(-1, Math.min(1, v / DOMAIN)); // -1..1
+            if (t < 0) {
+                const k = -t; // 0..1, 1 = pior
+                const r = Math.round(244 * (1 - k) + 176 * k);
+                const g = Math.round(237 * (1 - k) + 58  * k);
+                const b = Math.round(227 * (1 - k) + 46  * k);
+                return `rgb(${r},${g},${b})`;
+            }
+            const k = t; // 0..1, 1 = melhor
+            const r = Math.round(244 * (1 - k) + 30  * k);
+            const g = Math.round(237 * (1 - k) + 132 * k);
+            const b = Math.round(227 * (1 - k) + 73  * k);
+            return `rgb(${r},${g},${b})`;
+        }
+
+        function showTooltip(uf, v, event) {
+            const cls = v > 0.0005 ? 'color:var(--pos)' : v < -0.0005 ? 'color:var(--neg)' : '';
+            tooltip.innerHTML =
+                `<div class="map-tooltip-name">${NOMES_UF[uf] || uf} <span style="font-family:var(--mono);font-size:0.7rem;color:var(--text-muted)">${uf}</span></div>` +
+                `<div class="map-tooltip-value" style="${cls}">${fmtPct(v)}</div>` +
+                `<div style="font-size:0.72rem;color:var(--text-muted);margin-top:0.2rem;">vs. contrafactual sem reforma, 2033</div>`;
+            tooltip.classList.add('is-visible');
+            positionTooltip(event);
+        }
+
+        function positionTooltip(event) {
+            const wRect = wrapper.getBoundingClientRect();
+            const x = event.clientX - wRect.left, y = event.clientY - wRect.top;
+            const ttW = tooltip.offsetWidth || 200, ttH = tooltip.offsetHeight || 90;
+            let left = x + 16, top = y - ttH / 2;
+            if (left + ttW > wRect.width - 8) left = x - ttW - 16;
+            if (left < 8) left = 8;
+            if (top < 8) top = 8;
+            if (top + ttH > wRect.height - 8) top = wRect.height - ttH - 8;
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
+        }
+
+        function renderGeo(geo) {
+            loading.style.display = 'none';
+            svgEl.style.display = 'block';
+            projection.fitSize([W, H], geo);
+            const fontSize = Math.max(7, Math.round(W / 72));
+
+            svg.selectAll('path.map-state')
+                .data(geo.features).enter().append('path')
+                .attr('class', 'map-state')
+                .attr('d', pathGen)
+                .attr('fill', d => getColor(varByUf[getUf(d)]))
+                .on('mouseenter', function(event, d) {
+                    const uf = getUf(d);
+                    if (!uf || varByUf[uf] == null) return;
+                    activeUf = uf;
+                    d3.selectAll('path.map-state').classed('is-active', false);
+                    d3.select(this).classed('is-active', true);
+                    showTooltip(uf, varByUf[uf], event);
+                })
+                .on('mousemove', event => positionTooltip(event))
+                .on('mouseleave', function() {
+                    d3.select(this).classed('is-active', false);
+                    activeUf = null;
+                    tooltip.classList.remove('is-visible');
+                });
+
+            svg.selectAll('text.map-uf-label')
+                .data(geo.features).enter().append('text')
+                .attr('class', 'map-uf-label')
+                .attr('transform', d => { const c = pathGen.centroid(d); return `translate(${c[0]},${c[1]})`; })
+                .attr('text-anchor', 'middle')
+                .attr('dy', '0.35em')
+                .attr('font-size', fontSize + 'px')
+                .attr('fill', d => {
+                    const uf = getUf(d);
+                    const v = uf ? varByUf[uf] : null;
+                    if (v == null) return '#456';
+                    return Math.abs(v) / DOMAIN > 0.55 ? '#fff' : '#1A3A5C';
+                })
+                .text(d => getUf(d) || '');
+        }
+
+        function showError() {
+            svgEl.style.display = 'none';
+            loading.innerHTML = '<span>Mapa indisponível · veja a Tabela 1 acima</span>';
+        }
+
+        const GEO_URLS = [
+            'https://servicodados.ibge.gov.br/api/v3/malhas/estados?formato=application/vnd.geo+json&resolucao=2',
+            'https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson'
+        ];
+        function tryLoad(i) {
+            if (i >= GEO_URLS.length) { showError(); return; }
+            fetch(GEO_URLS[i])
+                .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+                .then(geo => { if (!geo || !geo.features || !geo.features.length) throw new Error('empty'); renderGeo(geo); })
+                .catch(() => tryLoad(i + 1));
+        }
+        tryLoad(0);
+
+        document.addEventListener('click', () => {
+            tooltip.classList.remove('is-visible');
+            d3.selectAll('path.map-state').classed('is-active', false);
+            activeUf = null;
+        });
+
+        window.addEventListener('resize', () => {
+            const newW = wrapper.clientWidth;
+            if (Math.abs(newW - W) < 20) return;
+            W = newW; H = Math.round(W * 0.88);
+            svg.attr('width', W).attr('height', H).attr('viewBox', '0 0 ' + W + ' ' + H);
+        });
+    }
+
+    loadData();
+    </script>
+</body>
+</html>
