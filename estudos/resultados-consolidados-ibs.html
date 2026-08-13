@@ -358,13 +358,12 @@
                             <th>Per capita 2025</th>
                             <th>Per capita 2033</th>
                             <th>Per capita 2077</th>
-                            <th class="abnt-divider">Δ 2025→2077</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-percapita"></tbody>
                 </table>
             </div>
-            <p class="abnt-source"><strong>Fonte:</strong> SICONFI/STN; EC n.º 132/2023; LC n.º 214/2025; LC n.º 227/2026. Elaboração própria.<br><strong>Nota:</strong> ordenada do menor para o maior per capita em 2025. População fixada na média 2019–2025 nos três pontos de comparação, para isolar o efeito redistributivo do efeito do crescimento populacional. Na última linha, os valores são o coeficiente de variação entre as 27 unidades federativas, não a receita de um ente: quanto menor, mais próxima a receita per capita das unidades federativas entre si. Nessa linha, a coluna Δ mede a variação do próprio coeficiente; um valor negativo indica redução da dispersão (maior uniformidade), não perda de receita.</p>
+            <p class="abnt-source"><strong>Fonte:</strong> SICONFI/STN; EC n.º 132/2023; LC n.º 214/2025; LC n.º 227/2026. Elaboração própria.<br><strong>Nota:</strong> ordenada do menor para o maior per capita em 2025. População fixada na média 2019–2025 nos três pontos de comparação, para isolar o efeito redistributivo do efeito do crescimento populacional. Na última linha, os valores são o coeficiente de variação entre as 27 unidades federativas, não a receita de um ente: quanto menor, mais próxima a receita per capita das unidades federativas entre si.</p>
             <p class="intro" style="margin-top: 0.9rem;">
                 O coeficiente de variação declina de forma monotônica ao longo da transição: de
                 <strong id="cv-2025-inline">—</strong> em 2025 para <strong id="cv-2033-inline">—</strong> em
@@ -509,16 +508,12 @@
     function renderPerCapita() {
         const rows = Object.entries(DATA.per_capita_uf)
             .sort((a, b) => a[1].per_capita_2025 - b[1].per_capita_2025);
-        const linhas = rows.map(([uf, v]) => {
-            const delta = (v.per_capita_2077 - v.per_capita_2025) / v.per_capita_2025;
-            return `<tr>
-                ${td(`${v.nome} <small>${uf}</small>`, 'abnt-left')}
-                ${td(fmtRs(v.per_capita_2025))}
-                ${td(fmtRs(v.per_capita_2033))}
-                ${td(fmtRs(v.per_capita_2077))}
-                ${td(fmtPct(delta), 'abnt-divider ' + clsPct(delta))}
-            </tr>`;
-        });
+        const linhas = rows.map(([uf, v]) => `<tr>
+            ${td(`${v.nome} <small>${uf}</small>`, 'abnt-left')}
+            ${td(fmtRs(v.per_capita_2025))}
+            ${td(fmtRs(v.per_capita_2033))}
+            ${td(fmtRs(v.per_capita_2077))}
+        </tr>`);
 
         const vals2025 = rows.map(([, v]) => v.per_capita_2025);
         const vals2033 = rows.map(([, v]) => v.per_capita_2033);
@@ -530,14 +525,12 @@
         };
         const cv2025 = cv(vals2025), cv2033 = cv(vals2033), cv2077 = cv(vals2077);
         const fmtCv = v => v.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
-        const deltaCv = (cv2077 - cv2025) / cv2025;
 
         linhas.push(`<tr class="abnt-total">
             ${td('Coeficiente de variação', 'abnt-left')}
             ${td(fmtCv(cv2025))}
             ${td(fmtCv(cv2033))}
             ${td(fmtCv(cv2077))}
-            ${td(fmtPct(deltaCv), 'abnt-divider')}
         </tr>`);
         document.getElementById('tbody-percapita').innerHTML = linhas.join('');
 
