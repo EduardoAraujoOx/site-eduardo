@@ -643,6 +643,113 @@
             </p>
         </section>
 
+        <section class="result-section" id="sec-anexo-a">
+            <div class="result-num">Anexo A</div>
+            <h2>Coeficientes de participação por ente (2025)</h2>
+            <p class="intro">
+                O Coeficiente de Participação de Transição (φ<sup>CPT</sup>) e o coeficiente de destino estimado
+                (φ<sup>dest</sup>, POF 2017-2018 x Censo 2022) são os coeficientes efetivamente utilizados nas
+                projeções desta página, para cada governo estadual (Tabela A.1) e cada capital (Tabela A.2). A
+                terceira coluna de cada tabela é <code>coefNeutro</code>, a participação neutra observada em 2025
+                (mesma variável usada em todo o modelo como base do cenário contrafactual) — não é um insumo do
+                modelo, é o ponto de comparação pré-reforma. As três colunas de cada tabela são sempre uma
+                participação na mesma base de referência nacional (ICMS + ISS + FECOP, 2025), por isso comparáveis
+                em ordem de grandeza.
+            </p>
+            <p class="abnt-caption">
+                <span class="abnt-num">Tabela A.1</span> – Governos estaduais
+                <span class="abnt-sub">(φ^CPT, φ^dest e participação no ICMS líquido de cota-parte, 2025)</span>
+            </p>
+            <div class="table-wrap">
+                <table class="abnt" id="table-anexo-estados">
+                    <thead>
+                        <tr>
+                            <th class="abnt-left">UF</th>
+                            <th>φ^CPT (%)</th>
+                            <th>φ^dest (%)</th>
+                            <th>Participação no ICMS líq. cota-parte, 2025 (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-anexo-estados"></tbody>
+                </table>
+            </div>
+            <p class="abnt-source"><strong>Fonte:</strong> <code>data/coeficientes-uf.json</code>, <code>data/phi-dest-pof-censo.json</code>, <code>data/reforma-tributaria.json</code>. Elaboração própria.<br><strong>Nota:</strong> ICMS + FECOP (quando houver), líquidos da cota-parte de 25% devida aos Municípios (CF, art. 158, IV; declarada quando disponível na DCA/STN, senão estimada em 25% do ICMS bruto), como participação na base de referência nacional (ICMS+ISS+FECOP, 2025) — a mesma variável <code>coefNeutro</code> usada em todo o modelo, não o total nacional de ICMS isoladamente. O Distrito Federal não tem cota-parte municipal (art. 115, LC n.º 227/2026): sua participação usa ICMS + FECOP brutos, sem dedução. As colunas φ^CPT e φ^dest somam, entre os 27 governos estaduais, cerca de 66% e 65% — o restante cabe aos governos municipais (Tabela A.2); nenhuma coluna soma 100% isoladamente, pois todas dividem pela base nacional total (estadual + municipal).</p>
+
+            <p class="abnt-caption" style="margin-top: 2.2rem;">
+                <span class="abnt-num">Tabela A.2</span> – Capitais
+                <span class="abnt-sub">(φ^CPT, φ^dest e participação no ISS, 2025)</span>
+            </p>
+            <div class="table-wrap">
+                <table class="abnt" id="table-anexo-capitais">
+                    <thead>
+                        <tr>
+                            <th class="abnt-left">Capital</th>
+                            <th>φ^CPT (%)</th>
+                            <th>φ^dest (%)</th>
+                            <th>Participação no ISS, 2025 (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-anexo-capitais"></tbody>
+                </table>
+            </div>
+            <p class="abnt-source"><strong>Fonte:</strong> <code>data/coeficientes-municipios.json</code>, <code>data/rateio-destino-municipios.json</code>, <code>data/reforma-tributaria.json</code>. Elaboração própria.<br><strong>Nota:</strong> ISS próprio arrecadado em 2025 (não inclui cota-parte do ICMS recebida do Estado, já contabilizada líquida na Tabela A.1), na mesma base de referência nacional (ICMS+ISS+FECOP, 2025) — mesmo denominador da Tabela A.1, não o total nacional de ISS isoladamente. Calculada apenas para municípios com registro válido na DCA/STN para 2025. Brasília não tem esfera municipal própria (art. 115, LC n.º 227/2026): os coeficientes reportados são os do ente estadual (Tabela A.1, linha DF); a participação em ISS não se aplica.</p>
+
+            <p class="intro" style="margin-top: 2.2rem;">
+                O φ<sup>dest</sup> autônomo desta página (POF 2017-2018 x Censo 2022) pode ser comparado, por UF, à
+                Tabela 1 de Gobetti e Monteiro (2023, base 2022) — a estimativa mais citada na literatura para essa
+                mesma grandeza, obtida por método e ano-base independentes. A Tabela A.3 reporta essa validação
+                externa.
+            </p>
+            <p class="abnt-caption">
+                <span class="abnt-num">Tabela A.3</span> – Validação externa: φ^dest autônomo x Gobetti e Monteiro (2023)
+                <span class="abnt-sub">(participação total na distribuição pelo destino, sem separar estado e municípios)</span>
+            </p>
+            <div class="table-wrap">
+                <table class="abnt" id="table-anexo-validacao">
+                    <thead>
+                        <tr>
+                            <th class="abnt-left">UF</th>
+                            <th>φ^dest autônomo (%)</th>
+                            <th>φ^dest Gobetti e Monteiro, 2023 (%)</th>
+                            <th>Δ (p.p.)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-anexo-validacao"></tbody>
+                </table>
+            </div>
+            <p class="abnt-source"><strong>Fonte:</strong> <code>data/phi-dest-pof-censo.json</code> (Tabela 1 de GOBETTI, S. W.; MONTEIRO, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura n. 60, Nota de Conjuntura 18. Ipea, 28 ago. 2023). Elaboração própria.<br><strong>Nota:</strong> Δ = φ^dest autônomo − φ^dest Gobetti e Monteiro. Correlação de Pearson entre as duas séries: <span id="anexo-validacao-r">—</span>. Divergência média (valor absoluto): <span id="anexo-validacao-media">—</span> p.p.; maior divergência: <span id="anexo-validacao-max">—</span> — explicável pelo peso de São Paulo na base nacional (pequenas diferenças metodológicas na intensidade de consumo se traduzem em maior variação absoluta no estado de maior participação). As duas estimativas divergem em metodologia (despesa de consumo familiar x Censo 2022, aqui; renda e outras variáveis socioeconômicas, em Gobetti e Monteiro) e em ano-base, mas convergem em magnitude e ordenação entre UFs — evidência de robustez do critério adotado. Referência adicional, fora da tabela por não ser um dado por UF: em apresentação "IBS hipotético 2025" à SEFAZ-ES (2026), Gobetti reporta <span id="anexo-es-sefaz">—</span> para o Espírito Santo, acima tanto do autônomo quanto da Tabela 1/2023 — o que sugere que essa estimativa mais recente e específica também não é diretamente comparável às demais (ano-base e método distintos).</p>
+
+            <p class="intro" style="margin-top: 2.2rem;">
+                A Tabela A.3 valida o coeficiente de destino em si; a Tabela A.4 propaga essa diferença para o
+                resultado publicado, recalculando a receita do ente estadual em 2033 e 2077 com o φ^dest de
+                Gobetti e Monteiro no lugar do autônomo — todo o resto do modelo (φ^CPT, CGIBS, repasse do
+                Seguro-Receita) é mantido igual ao já publicado nas Tabelas 1 e 3. Só para os governos estaduais:
+                Gobetti e Monteiro (2023) não reportam um φ^dest por capital, e aplicar nosso próprio rateio
+                intra-UF sobre o total deles atribuiria a Gobetti um resultado que ele não divulgou.
+            </p>
+            <p class="abnt-caption">
+                <span class="abnt-num">Tabela A.4</span> – Validação externa: receita do ente estadual com φ^dest de Gobetti e Monteiro
+                <span class="abnt-sub">(Em R$ bilhões, preços constantes de 2025; Δ em relação ao já publicado nas Tabelas 1 e 3)</span>
+            </p>
+            <div class="table-wrap">
+                <table class="abnt" id="table-anexo-validacao-receita">
+                    <thead>
+                        <tr>
+                            <th class="abnt-left">UF</th>
+                            <th>Receita 2033 (autônomo)</th>
+                            <th>Receita 2033 (Gobetti)</th>
+                            <th>Δ 2033 (%)</th>
+                            <th>Receita 2077 (autônomo)</th>
+                            <th>Receita 2077 (Gobetti)</th>
+                            <th>Δ 2077 (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-anexo-validacao-receita"></tbody>
+                </table>
+            </div>
+            <p class="abnt-source"><strong>Fonte:</strong> <code>data/resultados-consolidados-ibs.json</code> (mesmo pipeline das Tabelas 1 e 3), com φ^dest substituído pela Tabela 1 de GOBETTI; MONTEIRO (2023). Elaboração própria.<br><strong>Nota:</strong> "autônomo" reproduz exatamente a receita já publicada na Tabela 1 (2033) e usada na Tabela 3 (2077); "Gobetti" isola o efeito de substituir só o φ^dest, mantendo φ^CPT, CGIBS e o repasse do Seguro-Receita inalterados — este último não é re-simulado sob a hipótese alternativa (efeito de segunda ordem, fora do escopo desta validação). Δ cresce de 2033 para 2077 porque o peso do φ^dest na receita do ente também cresce ao longo da transição (item 1). Os dois extremos da Tabela 1 (maior perda, Mato Grosso do Sul; maior ganho, Goiás) permanecem os mesmos sob o φ^dest de Gobetti e Monteiro, mas a ordenação completa dos 27 entes não é idêntica: algumas UFs no meio da distribuição trocam de posição em até três lugares — a magnitude da divergência entre os dois φ^dest se propaga para o resultado, e no longo prazo (2077) é grande o bastante para alterar rankings intermediários, não só o nível da receita.</p>
+        </section>
+
         <div class="footnotes">
             <p><strong>Fontes e reprodutibilidade:</strong></p>
             <p>1. Metodologia completa: <a href="/estudos/nota-metodologica-ibs.html">Estudo 14</a>. Esta página reaplica a mesma lógica de projeção por UF já publicada no <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>, estendida ao nível municipal com os coeficientes do <a href="/estudos/reforma-tributaria-coeficiente-municipios.html">Estudo 10</a> e do rateio de destino municipal (cota-parte + destino próprio), e ao horizonte de 2077 com os dados do <a href="/estudos/ibs-projecao-longo-prazo.html">Estudo 09</a>.</p>
@@ -702,6 +809,7 @@
         renderDispersaoIntra();
         renderGiniMunicipal();
         renderEstadoMunicipio();
+        renderAnexoA();
         try {
             renderRegressao();
         } catch (err) {
@@ -912,6 +1020,57 @@
         document.getElementById('em-2025-inline').textContent = fmtPctPlain(d['2025'].estadual_pct);
         document.getElementById('em-2033-inline').textContent = fmtPctPlain(d['2033'].estadual_pct);
         document.getElementById('em-2077-inline').textContent = fmtPctPlain(d['2077'].estadual_pct);
+    }
+
+    // ── Anexo A: coeficientes por ente e validação externa (Gobetti e Monteiro) ─
+    function renderAnexoA() {
+        const a = DATA.anexo_a;
+        const fmtNum3 = v => v.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+        const fmtNum2 = v => v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const fmtDeltaPP = v => (v >= 0 ? '+' : '') + fmtNum3(v);
+
+        const estados = [...a.estados].sort((x, y) => x.uf.localeCompare(y.uf));
+        document.getElementById('tbody-anexo-estados').innerHTML = estados.map(e => `<tr>
+            ${td(`${e.nome} <small>${e.uf}${e.is_df ? ' · sem cota-parte municipal' : ''}</small>`, 'abnt-left')}
+            ${td(fmtNum3(e.coef_cpt_pct))}
+            ${td(fmtNum3(e.coef_pleno_pct))}
+            ${td(fmtNum3(e.coef_neutro_icms_pct))}
+        </tr>`).join('');
+
+        const capitais = [...a.capitais].sort((x, y) => x.uf.localeCompare(y.uf));
+        document.getElementById('tbody-anexo-capitais').innerHTML = capitais.map(c => `<tr>
+            ${td(`${c.nome} <small>${c.uf}${c.sem_municipio_proprio ? ' · sem esfera municipal própria' : ''}</small>`, 'abnt-left')}
+            ${td(fmtNum3(c.coef_cpt_pct))}
+            ${td(fmtNum3(c.coef_pleno_pct))}
+            ${td(c.participacao_iss_pct != null ? fmtNum3(c.participacao_iss_pct) : 'n.d.')}
+        </tr>`).join('');
+
+        const val = a.validacao_gobetti;
+        const pontos = [...val.pontos].sort((x, y) => x.uf.localeCompare(y.uf));
+        document.getElementById('tbody-anexo-validacao').innerHTML = pontos.map(p => `<tr>
+            ${td(`${p.nome} <small>${p.uf}</small>`, 'abnt-left')}
+            ${td(fmtNum3(p.autonomo_pct))}
+            ${td(fmtNum3(p.gobetti_pct))}
+            ${td(fmtDeltaPP(p.delta_pp), clsPct(p.delta_pp / 100))}
+        </tr>`).join('');
+        document.getElementById('anexo-validacao-r').textContent = 'r = ' + fmtNum3(val.pearson_r);
+        document.getElementById('anexo-validacao-media').textContent = fmtNum3(val.media_abs_delta_pp);
+        document.getElementById('anexo-validacao-max').textContent =
+            `${val.uf_max_delta} (${fmtNum3(val.max_abs_delta_pp)} p.p.)`;
+        if (a.es_gobetti_sefaz_pct != null) {
+            document.getElementById('anexo-es-sefaz').textContent = fmtNum2(a.es_gobetti_sefaz_pct) + '%';
+        }
+
+        const receita = [...a.validacao_receita_estados].sort((x, y) => x.delta_2077_pct - y.delta_2077_pct);
+        document.getElementById('tbody-anexo-validacao-receita').innerHTML = receita.map(r => `<tr>
+            ${td(`${r.nome} <small>${r.uf}</small>`, 'abnt-left')}
+            ${td(fmtBi(r.total_2033_autonomo))}
+            ${td(fmtBi(r.total_2033_gobetti))}
+            ${td(fmtPct(r.delta_2033_pct), clsPct(r.delta_2033_pct))}
+            ${td(fmtBi(r.total_2077_autonomo), 'abnt-divider')}
+            ${td(fmtBi(r.total_2077_gobetti))}
+            ${td(fmtPct(r.delta_2077_pct), clsPct(r.delta_2077_pct))}
+        </tr>`).join('');
     }
 
     // ── Mapa (D3 + geometria de estados do IBGE, mesmo padrão do Estudo 01) ─
