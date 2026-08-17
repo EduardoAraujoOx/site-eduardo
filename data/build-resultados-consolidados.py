@@ -190,6 +190,171 @@ def compute_params_uf(ref_data, coef_uf, phi_dest):
     return params, total_br_2025
 
 
+def compute_anexo_a(ref_data, coef_uf, phi_dest, coef_muni, rateio_muni, params_uf, total_br_2025):
+    """
+    Anexo A: coeficientes de participação por ente (φ^CPT, φ^dest autônomo)
+    e sua participação neutra observada em 2025 (coefNeutro, mesma variável
+    de compute_params_uf), para os 27 governos estaduais e as 27 capitais --
+    um retrato estático dos insumos do modelo, não da receita projetada.
+    Inclui também a validação externa do φ^dest autônomo (POF 2017-2018 x
+    Censo 2022) contra a Tabela 1 de Gobetti e Monteiro (2023).
+
+    coefNeutro é sempre uma participação na MESMA base de referência
+    nacional (ICMS+ISS+FECOP, 2025) usada para φ^CPT e φ^dest -- não a
+    soma nacional do tributo isoladamente (ICMS-só ou ISS-só), que teria
+    escala incomparável às outras duas colunas.
+    """
+    dca_icms = ref_data.get("dca_icms_por_uf", {}).get("2025", {})
+    dca_fecop = ref_data.get("dca_fecop_por_uf", {}).get("2025", {})
+    dca_cota = ref_data.get("dca_transf_munis_por_uf", {}).get("2025", {})
+    dca_det_2025 = ref_data.get("dca_detalhes", {}).get("2025", {})
+    frac_estado = (phi_dest.get("frac_estado_pct", 0) or 0) / 100
+    phi_by_uf = phi_dest.get("por_uf", {})
+
+    r_estado = {}
+    for uf in UFS:
+        icms = dca_icms.get(uf, 0) or 0
+        fecop = dca_fecop.get(uf, 0) or 0
+        is_df = bool((coef_uf.get("por_uf", {}).get(uf, {}) or {}).get("is_df"))
+        cota_decl = dca_cota.get(uf)
+        cota = 0.0 if is_df else (cota_decl if cota_decl is not None else icms * 0.25)
+        r_estado[uf] = (icms + fecop) if is_df else (icms - cota + fecop)
+
+    estados = []
+    for uf in UFS:
+        cuf = coef_uf.get("por_uf", {}).get(uf, {})
+        is_df = bool(cuf.get("is_df"))
+        coef_cpt = (cuf.get("coeficiente_estado_pct") or 0) / 100
+        phi_uf = ((phi_by_uf.get(uf) or {}).get("pof_censo_bruto_pct") or 0) / 100
+        coef_pleno = phi_uf if is_df else phi_uf * frac_estado
+        coef_neutro = r_estado[uf] / total_br_2025 if total_br_2025 else 0
+        estados.append({
+            "uf": uf, "nome": NOMES_UF[uf], "is_df": is_df,
+            "coef_cpt_pct": coef_cpt * 100, "coef_pleno_pct": coef_pleno * 100,
+            "coef_neutro_icms_pct": coef_neutro * 100,
+        })
+
+    capitais = []
+    for uf in UFS:
+        cod, nome = CAPITAIS[uf]
+        if cod is None:
+            cuf = coef_uf.get("por_uf", {}).get(uf, {})
+            coef_cpt = (cuf.get("coeficiente_estado_pct") or 0) / 100
+            phi_uf = ((phi_by_uf.get(uf) or {}).get("pof_censo_bruto_pct") or 0) / 100
+            capitais.append({
+                "uf": uf, "nome": nome, "sem_municipio_proprio": True,
+                "coef_cpt_pct": coef_cpt * 100, "coef_pleno_pct": phi_uf * 100,
+                "participacao_iss_pct": None,
+            })
+            continue
+        cm = coef_muni.get(cod, {})
+        rd = rateio_muni.get(cod, {})
+        coef_cpt = (cm.get("coeficiente_pct") or 0) / 100
+        coef_pleno = (rd.get("phi_dest_pct") or 0) / 100
+        iss_val = dca_det_2025.get(cod, {}).get("valor")
+        part_iss = (iss_val / total_br_2025 * 100) if (iss_val is not None and total_br_2025) else None
+        capitais.append({
+            "uf": uf, "nome": nome, "sem_municipio_proprio": False,
+            "coef_cpt_pct": coef_cpt * 100, "coef_pleno_pct": coef_pleno * 100,
+            "participacao_iss_pct": part_iss,
+        })
+
+    validacao = []
+    for uf in UFS:
+        v = phi_by_uf.get(uf, {})
+        autonomo = v.get("pof_censo_bruto_pct") or 0
+        gobetti = v.get("gobetti_tabela1_2023_pct") or 0
+        validacao.append({
+            "uf": uf, "nome": NOMES_UF[uf],
+            "autonomo_pct": autonomo, "gobetti_pct": gobetti,
+            "delta_pp": autonomo - gobetti,
+        })
+    deltas = [abs(v["delta_pp"]) for v in validacao]
+    media_abs_delta = sum(deltas) / len(deltas)
+    max_abs_delta = max(deltas)
+    uf_max_delta = next(v["uf"] for v in validacao if abs(v["delta_pp"]) == max_abs_delta)
+    xs = [v["autonomo_pct"] for v in validacao]
+    ys = [v["gobetti_pct"] for v in validacao]
+    mx, my = sum(xs) / len(xs), sum(ys) / len(ys)
+    cov = sum((x - mx) * (y - my) for x, y in zip(xs, ys))
+    sx = sum((x - mx) ** 2 for x in xs) ** 0.5
+    sy = sum((y - my) ** 2 for y in ys) ** 0.5
+    pearson_r = cov / (sx * sy) if sx > 0 and sy > 0 else 0.0
+
+    return {
+        "estados": estados,
+        "capitais": capitais,
+        "validacao_gobetti": {
+            "pontos": validacao,
+            "pearson_r": pearson_r,
+            "media_abs_delta_pp": media_abs_delta,
+            "max_abs_delta_pp": max_abs_delta,
+            "uf_max_delta": uf_max_delta,
+        },
+        "es_gobetti_sefaz_pct": phi_dest.get("es_gobetti_2025_sefaz_referencia_pct"),
+    }
+
+
+def compute_validacao_receita_gobetti(coef_uf, phi_dest, params_uf, por_uf_estado,
+                                       nacional_by_year, lp_by_year, lp_2077, ano_longo):
+    """
+    Validação externa de RESULTADO (não só do coeficiente de insumo, como a
+    Tabela A.3): recalcula a receita do ente estadual em 2033 e 2077
+    substituindo, só no termo de destino, o phi^dest autônomo pelo de
+    Gobetti e Monteiro (2023) -- todo o resto do modelo (phi^CPT, CGIBS,
+    repasse do Seguro-Receita) é mantido igual ao já publicado.
+
+    Só para os 27 governos estaduais -- Gobetti e Monteiro (2023) não
+    reportam um phi^dest por capital/município (só por UF), então uma
+    versão "capitais" exigiria aplicar o nosso próprio rateio intra-UF
+    (renda per capita, Censo 2022) sobre o total de Gobetti, o que
+    atribuiria a ele um resultado que não divulgou -- por isso não é feita.
+
+    Como phi^CPT, coefNeutro e o repasse do Seguro-Receita não dependem de
+    phi^dest, a diferença entre os dois cenários se reduz exatamente ao
+    termo de destino: delta = ibs_destino_liquido * (coefPleno_gobetti -
+    coefPleno_autonomo) -- por isso não é preciso reprojetar o modelo
+    inteiro, só isolar esse termo.
+    """
+    frac_estado = (phi_dest.get("frac_estado_pct", 0) or 0) / 100
+    phi_by_uf = phi_dest.get("por_uf", {})
+    nac_2033 = nacional_by_year[2033]
+    nac_2077 = lp_by_year[ano_longo]
+    ca_2077 = nac_2077.get("ca", 0.0)
+
+    linhas = []
+    for uf in UFS:
+        cuf = coef_uf.get("por_uf", {}).get(uf, {})
+        is_df = bool(cuf.get("is_df"))
+        v = phi_by_uf.get(uf, {})
+        phi_gobetti = (v.get("gobetti_tabela1_2023_pct") or 0) / 100
+        coef_pleno_gobetti = phi_gobetti if is_df else phi_gobetti * frac_estado
+        coef_pleno_autonomo = params_uf[uf]["estado"]["coefPleno"]
+        delta_coef = coef_pleno_gobetti - coef_pleno_autonomo
+
+        total_2033_autonomo = por_uf_estado[uf]["pos_por_ano"][2033]
+        total_2033_gobetti = total_2033_autonomo + nac_2033["ibs_destino_liquido"] * delta_coef
+
+        p_estado = params_uf[uf]["estado"]
+        repasse_2077 = (lp_2077.get(uf, {}).get("estado") or 0)
+        total_2077_autonomo = (nac_2077["icms_iss_residual"] * p_estado["coefNeutro"]
+                                + (1 - ca_2077) * nac_2077["ibs_historico"] * p_estado["coefCPT"]
+                                + nac_2077["ibs_destino_liquido"] * p_estado["coefPleno"]
+                                + (1 - ca_2077) * repasse_2077)
+        total_2077_gobetti = total_2077_autonomo + nac_2077["ibs_destino_liquido"] * delta_coef
+
+        linhas.append({
+            "uf": uf, "nome": NOMES_UF[uf],
+            "total_2033_autonomo": total_2033_autonomo, "total_2033_gobetti": total_2033_gobetti,
+            "delta_2033_pct": (total_2033_gobetti - total_2033_autonomo) / total_2033_autonomo
+                               if total_2033_autonomo else 0.0,
+            "total_2077_autonomo": total_2077_autonomo, "total_2077_gobetti": total_2077_gobetti,
+            "delta_2077_pct": (total_2077_gobetti - total_2077_autonomo) / total_2077_autonomo
+                               if total_2077_autonomo else 0.0,
+        })
+    return linhas
+
+
 def build_repasse_index(seguro_data, anos):
     idx = {}
     for a in anos:
@@ -333,6 +498,7 @@ def main():
 
     params_uf, total_br_2025 = compute_params_uf(ref_data, coef_uf, phi_dest)
     repasse_idx = build_repasse_index(seguro_data, ANOS)
+    anexo_a = compute_anexo_a(ref_data, coef_uf, phi_dest, coef_muni, rateio_muni, params_uf, total_br_2025)
 
     # ── 1a. Receita do ente estadual por UF, 2029-2033 (Tabela 1) ───────────
     # Só a esfera estadual, líquida da cota-parte devida aos municípios -- o
@@ -566,6 +732,9 @@ def main():
     # ── 4. Per capita por UF, 2025 x 2033 x 2077 (população fixa 2019-2025) ─
     lp_2077 = (seguro_lp_data.get("anos") or {}).get(str(ANO_LONGO), {}).get("repasse_por_uf", {})
 
+    anexo_a["validacao_receita_estados"] = compute_validacao_receita_gobetti(
+        coef_uf, phi_dest, params_uf, por_uf_estado, nacional_by_year, lp_by_year, lp_2077, ANO_LONGO)
+
     # Per capita do ente estadual apenas (líquido de cota-parte), o mesmo
     # recorte da Tabela 1 -- isola o esforço arrecadatório do estado, sem
     # misturar com o agregado municipal (esse é o objeto das Tabelas 2 e 4).
@@ -746,6 +915,7 @@ def main():
         },
         "gini_percapita_municipal": gini_percapita_municipal,
         "distribuicao_estado_municipio": distribuicao_estado_municipio,
+        "anexo_a": anexo_a,
     }
 
     with open(OUT, "w", encoding="utf-8") as f:
