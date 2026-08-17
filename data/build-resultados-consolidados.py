@@ -212,6 +212,14 @@ def project_uf(uf, params, nacional_by_year, repasse_idx, anos, esfera="total"):
     esfera="estado": só o ente estadual, líquido da cota-parte devida aos
     municípios -- o análogo direto da "receita estadual" na acepção de
     Gobetti e Monteiro (75% do ICMS bruto), usado na Tabela 1.
+
+    O CGIBS (nac["ca"]) é deduzido aqui do bloco histórico e do repasse do
+    Seguro-Receita -- "ibs_destino_liquido" já vem líquido de CGIBS de
+    build-ibs-projecao-nacional.py/-longo-prazo.py, então não é deduzido de
+    novo. LC 227/2026, arts. 118 §4º, 122 §1º e 123 §1º: a dedução do CGIBS
+    ocorre separadamente em cada artigo de distribuição da receita ao
+    ente, tanto na Receita-Base (destino) quanto na receita distribuída
+    pelos Capítulos III/IV (histórico) -- não só no destino.
     """
     p = params[uf]
     if esfera == "estado":
@@ -223,11 +231,12 @@ def project_uf(uf, params, nacional_by_year, repasse_idx, anos, esfera="total"):
     for a in anos:
         nac = nacional_by_year[a]
         ref_a = nac["icms_iss_residual"] + nac["ibs_bruto"]
+        ca = nac.get("ca", 0.0)
         total = 0.0
         contra = 0.0
         for part in parts:
             total += (nac["icms_iss_residual"] * part["coefNeutro"]
-                      + nac["ibs_historico"] * part["coefCPT"]
+                      + (1 - ca) * nac["ibs_historico"] * part["coefCPT"]
                       + nac["ibs_destino_liquido"] * part["coefPleno"])
             contra += ref_a * part["coefNeutro"]
         repasse = 0.0
@@ -236,7 +245,7 @@ def project_uf(uf, params, nacional_by_year, repasse_idx, anos, esfera="total"):
             repasse += ridx["estado"].get(a, 0)
             if esfera == "total" and p["municipio"]:
                 repasse += ridx["municipio"].get(a, 0)
-        total += repasse
+        total += (1 - ca) * repasse
         dpct = (total - contra) / contra if contra > 0 else 0.0
         res[a] = {"total": total, "contrafactual": contra, "repasse": repasse, "dpct": dpct}
     return {"res": res, "r0_2025": r0_2025}
@@ -287,16 +296,19 @@ def compute_neutro_municipal_2025(ref_data):
 
 def project_municipio(cod, r0_2025, coef_cpt, coef_pleno, uf, total_br_2025,
                        nacional_by_year, repasse_muni_idx, anos):
+    """CGIBS: mesmo tratamento de project_uf (ver docstring lá) -- deduzido
+    do histórico e do repasse; "ibs_destino_liquido" já vem líquido."""
     coef_neutro = r0_2025 / total_br_2025 if total_br_2025 else 0
     res = {}
     for a in anos:
         nac = nacional_by_year[a]
         ref_a = nac["icms_iss_residual"] + nac["ibs_bruto"]
-        total = (nac["icms_iss_residual"] * coef_neutro
-                 + nac["ibs_historico"] * coef_cpt
-                 + nac["ibs_destino_liquido"] * coef_pleno)
+        ca = nac.get("ca", 0.0)
         repasse = repasse_muni_idx.get(f"MUN-{cod}", {}).get(a, 0)
-        total += repasse
+        total = (nac["icms_iss_residual"] * coef_neutro
+                 + (1 - ca) * nac["ibs_historico"] * coef_cpt
+                 + nac["ibs_destino_liquido"] * coef_pleno
+                 + (1 - ca) * repasse)
         contra = ref_a * coef_neutro
         dpct = (total - contra) / contra if contra > 0 else 0.0
         res[a] = {"total": total, "contrafactual": contra, "repasse": repasse, "dpct": dpct}
@@ -458,6 +470,7 @@ def main():
         fundo_municipal_uf_2077[uf] = v.get("municipio") or 0
 
     nac_2077 = lp_by_year[ANO_LONGO]
+    ca_2077 = nac_2077.get("ca", 0.0)
     for m in elegiveis_percapita:
         uf = m["uf"]
         r33 = repasse_muni_idx.get(f"MUN-{m['cod']}", {}).get(2033, 0)
@@ -465,10 +478,12 @@ def main():
         fatia = (r33 / denom) if denom > 0 else 0.0
         repasse_2077 = fatia * fundo_municipal_uf_2077.get(uf, 0)
         coef_neutro = m["pre_2025"] / total_br_2025 if total_br_2025 else 0
+        # CGIBS (ca_2077): deduzido do histórico e do repasse, mesmo
+        # tratamento de project_uf/project_municipio (ver docstring lá).
         total_2077 = (nac_2077["icms_iss_residual"] * coef_neutro
-                      + nac_2077["ibs_historico"] * m["coef_cpt"]
+                      + (1 - ca_2077) * nac_2077["ibs_historico"] * m["coef_cpt"]
                       + nac_2077["ibs_destino_liquido"] * m["coef_pleno"]
-                      + repasse_2077)
+                      + (1 - ca_2077) * repasse_2077)
         m["percapita_2077"] = total_2077 / m["pop_media"]
 
     dispersao_intramunicipal = {}
@@ -573,12 +588,13 @@ def main():
         proj_2033 = por_uf_estado[uf]["pos_por_ano"][2033]
 
         nac_2077 = lp_by_year[ANO_LONGO]
+        ca_2077 = nac_2077.get("ca", 0.0)
         total_2077 = 0.0
         for part in parts:
             total_2077 += (nac_2077["icms_iss_residual"] * part["coefNeutro"]
-                           + nac_2077["ibs_historico"] * part["coefCPT"]
+                           + (1 - ca_2077) * nac_2077["ibs_historico"] * part["coefCPT"]
                            + nac_2077["ibs_destino_liquido"] * part["coefPleno"])
-        total_2077 += (lp_2077.get(uf, {}).get("estado") or 0)
+        total_2077 += (1 - ca_2077) * (lp_2077.get(uf, {}).get("estado") or 0)
 
         per_capita_uf[uf] = {
             "nome": NOMES_UF[uf],
@@ -631,6 +647,7 @@ def main():
     nac_total_2033 = sum(v["pos_por_ano"][2033] for v in por_uf.values())
 
     nac_2077 = lp_by_year[ANO_LONGO]
+    ca_2077 = nac_2077.get("ca", 0.0)
     nac_estadual_2077 = 0.0
     nac_municipal_2077 = 0.0
     for uf in UFS:
@@ -639,9 +656,9 @@ def main():
             if part is None:
                 continue
             total = (nac_2077["icms_iss_residual"] * part["coefNeutro"]
-                     + nac_2077["ibs_historico"] * part["coefCPT"]
+                     + (1 - ca_2077) * nac_2077["ibs_historico"] * part["coefCPT"]
                      + nac_2077["ibs_destino_liquido"] * part["coefPleno"])
-            total += (lp_2077.get(uf, {}).get(esfera) or 0)
+            total += (1 - ca_2077) * (lp_2077.get(uf, {}).get(esfera) or 0)
             if esfera == "estado":
                 nac_estadual_2077 += total
             else:

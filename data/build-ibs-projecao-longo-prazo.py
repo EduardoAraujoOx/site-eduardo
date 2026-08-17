@@ -32,10 +32,12 @@ Duas peças mudam depois de 2033:
    "50 anos de transição" (2029-2078) citados de passagem em outras páginas
    do site, aqui finalmente modelados ano a ano. sa=1/fa=0 (a conversão
    ICMS/ISS->IBS já terminou em 2033, não muda mais). ca (taxa do CGIBS)
-   mantida no piso de 0,50% já vigente em 2032-2033 (não há indicação de
-   nova mudança na lei); rho (Seguro-Receita) continua 5% -- a lei só reduz
-   esse percentual a partir de 2078, linearmente até 0% em 2097, fora do
-   horizonte desta página.
+   segue o teto permanente do art. 47, I, da LC 227/2026 (0,2%) -- não o
+   piso de instalação de 0,5% do art. 51, que só vale até 2032/2033
+   (confirmado no texto literal em planalto.gov.br/ccivil_03/leis/lcp/
+   lcp227.htm, 13/ago/2026); rho (Seguro-Receita) continua 5% -- a lei só
+   reduz esse percentual a partir de 2078, linearmente até 0% em 2097, fora
+   do horizonte desta página.
 
 Uso: python3 build-ibs-projecao-longo-prazo.py
 """
@@ -59,7 +61,9 @@ ANO_ALPHA_BASE = 2033
 ANO_ALPHA_ZERO = 2078
 PASSOS_ALPHA = ANO_ALPHA_ZERO - ANO_ALPHA_BASE  # 45
 
-CA_PISO = 0.0050  # taxa do CGIBS, piso já vigente em 2032-2033, mantida
+CA_PISO = 0.0020  # teto permanente do CGIBS, art. 47, I, LC 227/2026 -- vale
+                   # de 2033 em diante (o piso de instalação de 0,5% do
+                   # art. 51 só cobre até 2032)
 RHO_SEGURO_RECEITA = 0.05  # ADCT art. 132: 5% flat até 2077 (só cai a partir de 2078)
 
 
@@ -84,6 +88,9 @@ def main():
         alpha_a = ALPHA_2033 * (1 - passos / PASSOS_ALPHA)
         ca = CA_PISO
 
+        # ibs_historico fica bruto de CGIBS aqui -- essa dedução só é
+        # aplicada por ente, em build-resultados-consolidados.py (mesmo
+        # motivo documentado em build-ibs-projecao-nacional.py).
         ibs_historico = ibs_bruto * alpha_a
         ibs_destino_bruto = ibs_bruto * (1 - alpha_a)
         ibs_cgibs = ibs_destino_bruto * ca

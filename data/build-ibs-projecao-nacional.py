@@ -53,12 +53,17 @@ seu tamanho total. Por isso a fórmula nacional se reduz a:
 Seguro-Receita. Diferente dos φ (que só redistribuem entre entes, sem
 afetar o total nacional), a fração α_a (histórico vs. destino) e as taxas
 de CGIBS/Seguro-Receita AFETAM o total nacional que efetivamente chega
-aos entes, porque essas duas deduções incidem só sobre a parcela destino
-— por isso são detalhadas à parte, na decomposição de IBS bruto em
-quatro categorias (ver "ibs_historico"/"ibs_destino_liquido"/
+aos entes — por isso são detalhadas à parte, na decomposição de IBS bruto
+em quatro categorias (ver "ibs_historico"/"ibs_destino_liquido"/
 "ibs_seguro_receita"/"ibs_cgibs" em cada ano de "projecao", e a Seção 4
-da metodologia na página). Os parâmetros α_a e c_a (CGIBS) usados aqui
-são os mesmos já publicados no Estudo 06
+da metodologia na página). O Seguro-Receita incide só sobre a parcela
+destino (ADCT art. 132); o CGIBS incide sobre toda a receita de IBS já
+destinada ao ente, histórico e destino (LC 227/2026, arts. 118 §4º,
+122 §1º e 123 §1º) — por isso "ibs_historico" abaixo permanece bruto de
+CGIBS, e a dedução sobre o bloco histórico e sobre o repasse do
+Seguro-Receita só é aplicada por ente, em
+build-resultados-consolidados.py. Os parâmetros α_a e c_a (CGIBS) usados
+aqui são os mesmos já publicados no Estudo 06
 (estudos/ibs-projecao-arrecadacao-br.html).
 
 Uso: python3 build-ibs-projecao-nacional.py
@@ -85,20 +90,36 @@ ADCT = {
 }
 ANOS_PROJ = [2029, 2030, 2031, 2032, 2033]
 
-# Como o IBS bruto de cada ano se divide entre os critérios de distribuição
-# e as duas retenções que incidem só sobre a parcela destino. Mesmos valores
-# já publicados no Estudo 06 (estudos/ibs-projecao-arrecadacao-br.html):
+# Como o IBS bruto de cada ano se divide entre os critérios de distribuição.
 # alpha_a = fração do IBS distribuída pelo critério histórico (IBSt); a
 # parcela (1-alpha_a) vai pelo critério destino (IBSd). Base legal: ADCT
-# arts. 131-132 e LC 227/2026 arts. 114-116. ca = taxa de financiamento do
-# CGIBS (Comitê Gestor do IBS, art. 51 LC 227/2026), incide só sobre o IBSd,
-# antes da redistribuição por destino.
+# arts. 131-132 e LC 227/2026 arts. 114-116.
+#
+# ca = teto do percentual de financiamento do CGIBS. 2029-2032: regra de
+# transição/instalação do art. 51, II, LC 227/2026 (2%/1%/0,67%/0,5%, texto
+# literal confirmado em planalto.gov.br/ccivil_03/leis/lcp/lcp227.htm,
+# 13/ago/2026). 2033 em diante: essa regra transitória não se aplica mais
+# (o art. 51 só cobre até 2032); vale a regra geral e permanente do art. 47,
+# I -- teto de 0,2% -- não o piso de 0,5% de 2032 mantido por engano em
+# versão anterior deste script.
+#
+# ca incide sobre TODA a receita de IBS já destinada ao ente (histórico e
+# destino), não só sobre o destino: arts. 118 §4º (Receita-Base/destino) e
+# 122 §1º/123 §1º (receita distribuída pelos Capítulos III/IV/histórico)
+# têm cada um sua própria dedução de CGIBS, em paralelo -- não uma dedução
+# única na Receita-Base. Por isso a dedução de `ca` sobre o bloco histórico
+# e sobre o repasse do Seguro-Receita é aplicada em
+# build-resultados-consolidados.py (por ente, onde o histórico e o repasse
+# já estão segregados); aqui, `ibs_historico` permanece bruto de CGIBS --
+# só `ibs_destino_liquido` já sai líquido (de Seguro-Receita e de CGIBS),
+# porque a parcela destino não depende de nenhum outro dado além do bloco
+# nacional do ano.
 ADCT_IBS = {
     2029: {"alpha_a": 0.80, "ca": 0.0200},
     2030: {"alpha_a": 0.80, "ca": 0.0100},
     2031: {"alpha_a": 0.80, "ca": 0.0067},
     2032: {"alpha_a": 0.80, "ca": 0.0050},
-    2033: {"alpha_a": 0.90, "ca": 0.0050},
+    2033: {"alpha_a": 0.90, "ca": 0.0020},
 }
 # Seguro-Receita (ADCT art. 132): retenção de 5% sobre o IBSd líquido de
 # CGIBS, também antes da redistribuição por destino.
@@ -212,8 +233,12 @@ def main():
         icms_iss_residual = bolo_a * fa
         ibs_bruto = bolo_a * sa
 
-        # Decomposição do IBS bruto em quatro fatias: histórico, destino
-        # líquido, Seguro-Receita e CGIBS (ver ADCT_IBS acima).
+        # Decomposição do IBS bruto em quatro fatias: histórico (bruto de
+        # CGIBS -- a dedução sobre esse bloco só é possível por ente, em
+        # build-resultados-consolidados.py, e não está incluída em
+        # "ibs_cgibs" abaixo), destino líquido (de CGIBS e Seguro-Receita),
+        # Seguro-Receita retido e CGIBS retido do destino (só uma fatia do
+        # CGIBS total; ver ADCT_IBS acima e a nota do módulo).
         alpha_a, ca = ADCT_IBS[a]["alpha_a"], ADCT_IBS[a]["ca"]
         ibs_historico = ibs_bruto * alpha_a
         ibs_destino_bruto = ibs_bruto * (1 - alpha_a)

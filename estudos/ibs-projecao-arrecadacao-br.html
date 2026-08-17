@@ -267,10 +267,17 @@
                 <div class="meto-formula-box">
 $$R_{a,\,\text{ente}} \;=\;
 \underbrace{\mathrm{Ref}^{ICMS+ISS}_a\cdot\varphi^{neutro}_{\text{ente}}}_{\text{1. ICMS residual}}
-\;+\;\underbrace{\mathrm{Ref}^{IBSt}_a\cdot\varphi^{CPT}_{\text{ente}}}_{\text{2. IBS, histórico}}
-\;+\;\underbrace{\mathrm{Ref}^{IBSd}_a\cdot\varphi^{dest}_{\text{ente}}}_{\text{3. IBS, destino}}
-\;+\;\underbrace{SR_{a,\,\text{ente}}}_{\text{4. repasse Seguro-Receita}}$$
+\;+\;\underbrace{(1-c_a)\cdot\mathrm{Ref}^{IBSt}_a\cdot\varphi^{CPT}_{\text{ente}}}_{\text{2. IBS, histórico líquido}}
+\;+\;\underbrace{\mathrm{Ref}^{IBSd}_a\cdot\varphi^{dest}_{\text{ente}}}_{\text{3. IBS, destino líquido}}
+\;+\;\underbrace{(1-c_a)\cdot SR_{a,\,\text{ente}}}_{\text{4. repasse Seguro-Receita líquido}}$$
                 </div>
+                <p class="meto-note">
+                    O CGIBS (\(c_a\)) incide sobre as peças 2, 3 e 4 (histórico, destino e repasse do
+                    Seguro-Receita) &mdash; não só sobre o destino, que já vem líquido de \(\mathrm{Ref}^{IBSd}_a\).
+                    A dedução sobre a peça 2 e a peça 4 só é possível por ente, por isso aparece aqui
+                    de forma explícita, ao contrário da peça 3, que já vem líquida do Estudo 11 (LC
+                    227/2026, arts. 118, §4º, 122, §1º, e 123, §1º).
+                </p>
                 <p class="meto-note">
                     A tabela abaixo resume, ano a ano, como a receita de referência nacional se divide
                     entre as quatro peças &mdash; cada coluna é a fração do total daquele ano (as
@@ -279,26 +286,32 @@ $$R_{a,\,\text{ente}} \;=\;
                 <div class="table-wrap">
                     <table class="param-table">
                         <thead>
-                            <tr><th>Ano</th><th>1. ICMS residual</th><th>2. IBS, histórico</th><th>3. IBS, destino líquido</th><th>Seguro-Receita retido<sup>*</sup></th><th>CGIBS retido</th></tr>
+                            <tr><th>Ano</th><th>1. ICMS residual</th><th>2. IBS, histórico líquido</th><th>3. IBS, destino líquido</th><th>Seguro-Receita retido<sup>*</sup></th><th>CGIBS retido<sup>**</sup></th></tr>
                         </thead>
                         <tbody>
-                            <tr><td>2029</td><td>90,00%</td><td>8,00%</td><td>1,86%</td><td>0,10%</td><td>0,04%</td></tr>
-                            <tr><td>2030</td><td>80,00%</td><td>16,00%</td><td>3,76%</td><td>0,20%</td><td>0,04%</td></tr>
-                            <tr><td>2031</td><td>70,00%</td><td>24,00%</td><td>5,66%</td><td>0,30%</td><td>0,04%</td></tr>
-                            <tr><td>2032</td><td>60,00%</td><td>32,00%</td><td>7,56%</td><td>0,40%</td><td>0,05%</td></tr>
-                            <tr><td>2033</td><td>0,00%</td><td>90,00%</td><td>9,45%</td><td>0,50%</td><td>0,05%</td></tr>
+                            <tr><td>2029</td><td>90,00%</td><td>7,84%</td><td>1,86%</td><td>0,10%</td><td>0,20%</td></tr>
+                            <tr><td>2030</td><td>80,00%</td><td>15,84%</td><td>3,76%</td><td>0,20%</td><td>0,20%</td></tr>
+                            <tr><td>2031</td><td>70,00%</td><td>23,84%</td><td>5,66%</td><td>0,30%</td><td>0,20%</td></tr>
+                            <tr><td>2032</td><td>60,00%</td><td>31,84%</td><td>7,56%</td><td>0,40%</td><td>0,20%</td></tr>
+                            <tr><td>2033</td><td>0,00%</td><td>89,82%</td><td>9,48%</td><td>0,50%</td><td>0,20%</td></tr>
                         </tbody>
                     </table>
                 </div>
                 <p class="meto-note">
                     <sup>*</sup>O Seguro-Receita retido não é perdido: é a peça 4 da fórmula acima,
                     redistribuída ente a ente pelo Estudo 12. O CGIBS retido, ao contrário, financia o
-                    Comitê Gestor e não volta a nenhum ente. Base legal: ADCT arts. 128, 131 e 132; LC
-                    227/2026 arts. 51 e 114 a 116. Esses parâmetros não são recalculados nesta página:
-                    vêm prontos do Estudo 11 (campos <code>ibs_historico</code>,
-                    <code>ibs_destino_liquido</code>, <code>ibs_seguro_receita</code> e
-                    <code>ibs_cgibs</code> de <code>data/ibs-projecao-nacional.json</code>), para que
-                    as duas páginas sempre usem a mesma base.
+                    Comitê Gestor e não volta a nenhum ente. Base legal: LC 227/2026, art. 51, II
+                    (percentual até 2032), art. 47, I (percentual permanente, 0,20%, a partir de 2033),
+                    arts. 118, §4º, 122, §1º, e 123, §1º (a dedução ocorre em cada artigo de
+                    distribuição, tanto na receita pelo critério de destino quanto na receita pelo
+                    critério histórico). <sup>**</sup>O CGIBS retido incide sobre a peça 2 e a peça 3
+                    juntas (histórico e destino), não só sobre o destino: as colunas 2 e 3 desta tabela
+                    já mostram os valores líquidos dessa dedução, para que as cinco colunas continuem
+                    somando 100%. A coluna 3 (destino) vem líquida diretamente do campo
+                    <code>ibs_destino_liquido</code> do Estudo 11; a dedução sobre a coluna 2
+                    (histórico) só é calculada por ente, no <a
+                    href="/estudos/resultados-consolidados-ibs.html">Estudo 15</a>, e está refletida
+                    aqui de forma agregada.
                 </p>
 
                 <p class="meto-section-title">O contrafactual: contra o quê medir ganho ou perda</p>
@@ -398,7 +411,7 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
                         </tr>
                         <tr>
                             <td>\(\alpha_a\), \(c_a\), \(\rho\)</td>
-                            <td>Fração do IBS pelo critério histórico (\(\alpha_a\), ADCT arts. 131&ndash;132, LC 227/2026 arts. 114&ndash;116); taxa do CGIBS sobre a parcela destino (\(c_a\), art. 51 LC 227/2026); retenção do Seguro-Receita sobre a parcela destino líquida de CGIBS (\(\rho=5\%\), ADCT art. 132). Todas aplicadas dentro da série do Estudo 11 &mdash; não recalculadas aqui.</td>
+                            <td>Fração do IBS pelo critério histórico (\(\alpha_a\), ADCT arts. 131&ndash;132, LC 227/2026 arts. 114&ndash;116); taxa do CGIBS (\(c_a\), art. 51 LC 227/2026 até 2032, art. 47 a partir de 2033), que incide sobre a receita histórica e destino já atribuída ao ente (arts. 118, §4º, 122, §1º, e 123, §1º), não só sobre o destino; retenção do Seguro-Receita sobre a parcela destino líquida de CGIBS (\(\rho=5\%\), ADCT art. 132). \(\alpha_a\) e a parcela de \(c_a\) sobre o destino vêm prontas do Estudo 11; a parcela de \(c_a\) sobre o histórico e o repasse é aplicada por ente, nesta página.</td>
                             <td>ver tabela acima</td>
                         </tr>
                     </tbody>
@@ -578,7 +591,7 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
 
         <div class="footnotes">
             <p><strong>Fontes e notas metodológicas:</strong></p>
-            <p>1. Receita de referência nacional (\(\mathrm{Ref}_a\), decomposta em \(\mathrm{Ref}^{ICMS+ISS}_a\) e \(\mathrm{Ref}^{IBS}_a\), este último subdividido em \(\mathrm{Ref}^{IBSt}_a\) e \(\mathrm{Ref}^{IBSd}_a\)): Estudo 11, projeção 2029&ndash;2033 sobre PIB real (mediana Focus 2026&ndash;2030, IFI RAF 107 2031&ndash;2033), razão receita/PIB fixada na média 2024&ndash;2026 (LC 214/2025 arts. 361&ndash;365). Valores em R$ constantes de 2025 (o IPCA projetado não é composto na trajetória, para os números permanecerem comparáveis entre anos distantes). A divisão de \(\mathrm{Ref}^{IBS}_a\) em histórico (\(\alpha_a\)) e destino líquido de CGIBS e Seguro-Receita (\(c_a\), \(\rho\)) também é calculada no Estudo 11 e consumida diretamente daqui, sem duplicar essas constantes. Ver campos <code>ibs_historico</code> e <code>ibs_destino_liquido</code> de <code>data/ibs-projecao-nacional.json</code>.</p>
+            <p>1. Receita de referência nacional (\(\mathrm{Ref}_a\), decomposta em \(\mathrm{Ref}^{ICMS+ISS}_a\) e \(\mathrm{Ref}^{IBS}_a\), este último subdividido em \(\mathrm{Ref}^{IBSt}_a\) e \(\mathrm{Ref}^{IBSd}_a\)): Estudo 11, projeção 2029&ndash;2033 sobre PIB real (mediana Focus 2026&ndash;2030, IFI RAF 107 2031&ndash;2033), razão receita/PIB fixada na média 2024&ndash;2026 (LC 214/2025 arts. 361&ndash;365). Valores em R$ constantes de 2025 (o IPCA projetado não é composto na trajetória, para os números permanecerem comparáveis entre anos distantes). A divisão de \(\mathrm{Ref}^{IBS}_a\) em histórico (\(\alpha_a\)) e destino líquido de CGIBS e Seguro-Receita (\(c_a\), \(\rho\)) também é calculada no Estudo 11 e consumida diretamente daqui, sem duplicar essas constantes; a dedução de \(c_a\) sobre a parcela histórica e sobre o repasse do Seguro-Receita, por depender do coeficiente de cada ente, é aplicada nesta página. Ver campos <code>ibs_historico</code> e <code>ibs_destino_liquido</code> de <code>data/ibs-projecao-nacional.json</code>.</p>
             <p>2. Coeficientes de participação histórica (\(\varphi^{CPT}\)), estado e municípios: <code>data/coeficientes-uf.json</code>, validado termo a termo contra a Nota Técnica nº 02/2026 (SEFAZ-ES, pacote v22) &mdash; ver <code>data/divergencia-vs-nota-v22.json</code>.</p>
             <p>3. Coeficiente de destino \(\varphi_{UF}\): estimativa própria, <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a> desta série &mdash; despesa de consumo média mensal familiar (IBGE, POF 2017-2018, Tabela 1.1.13) x domicílios particulares ocupados (IBGE, Censo 2022, tabela SIDRA 9922), normalizada para somar 100% entre as 27 UFs. Dividido entre \(\varphi^{dest}_{\text{estado}}\) e \(\varphi^{dest}_{\text{município}}\) pela proporção entre as alíquotas de referência estadual e municipal do IBS (LC 214/2025 art. 361), aproximada pela razão real entre ICMS e ISS nacionais em 2025 (SICONFI/STN, DCA Anexo I-C) e combinada com a cota-parte municipal de 25% do IBS estadual (CF art. 158, IV, "b"; LC 227/2026 arts. 118, §3º, e 128) &mdash; ver fórmula na tabela de variáveis acima. Substitui, como insumo do modelo, a estimativa de Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura, n. 60, Nota de Conjuntura 18. IPEA, 28 ago. 2023 (disponível em <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">repositorio.ipea.gov.br</a>), que permanece como fonte de comparação nos Estudos 07 e 13, não mais como insumo direto. Ver <code>data/legislacao/reforma-tributaria-referencias.md</code>.</p>
             <p>4. Cota-parte municipal do ICMS: valor declarado pelo estado, SICONFI/STN DCA Anexo I-C (<code>dca_transf_munis_por_uf</code>); sem declaração, usa-se o teórico de 25% do ICMS bruto (art. 158, IV, CF/88). FECOP: SICONFI/STN DCA Anexo I-C (<code>dca_fecop_por_uf</code>), somado à fatia estadual de \(\varphi^{neutro}\) e \(\varphi^{CPT}\), mesma base da receita de referência nacional do Estudo 11.</p>
@@ -699,8 +712,13 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
     // travado em 2025 misturaria os dois efeitos.
     //
     // ibs_historico(a) e ibs_destino_liquido(a) vêm prontos do Estudo 11 (data/ibs-projecao-nacional.json),
-    // que já aplica alpha_a (histórico vs. destino), o CGIBS e o Seguro-Receita (5%) sobre o IBS
-    // bruto nacional — não são recalculados aqui, para as duas páginas usarem sempre a mesma base.
+    // que já aplica alpha_a (histórico vs. destino) e o Seguro-Receita (5%) sobre o IBS bruto
+    // nacional — não são recalculados aqui, para as duas páginas usarem sempre a mesma base.
+    // ibs_destino_liquido já sai líquido de CGIBS também (dedução nacional, sobre o destino); o
+    // CGIBS sobre o bloco histórico e sobre o repasse do Seguro-Receita só é possível calcular por
+    // ente, e por isso é aplicado aqui: LC 227/2026, arts. 118 §4º (Receita-Base/destino) e 122
+    // §1º/123 §1º (receita distribuída pelos Capítulos III/IV/histórico) têm cada um sua própria
+    // dedução de CGIBS, em paralelo — a lei não deduz uma vez só na Receita-Base.
     // O repasse do Seguro-Receita (Estudo 12) é somado de volta a `total`: o ente já perdeu essa
     // fatia na dedução embutida em ibs_destino_liquido, e ganha de volta aqui se for beneficiário
     // do nivelamento naquele ano.
@@ -712,11 +730,12 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
         for (const a of ANOS) {
             const nac = nacionalByYear[a];
             const refA = nac.icms_iss_residual + nac.ibs_bruto;
+            const ca = nac.ca || 0;
             let total = 0, contrafactual = 0;
             for (const part of parts) {
                 const coefDest = coefKey === 'pleno' ? part.coefPleno : part.coefNeutro;
                 total += nac.icms_iss_residual * part.coefNeutro
-                       + nac.ibs_historico * part.coefCPT
+                       + (1 - ca) * nac.ibs_historico * part.coefCPT
                        + nac.ibs_destino_liquido * coefDest;
                 contrafactual += refA * part.coefNeutro;
             }
@@ -725,7 +744,7 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
                 if (esfera === 'estado' || esfera === 'total') repasse += repasseIndex[uf].estado[a] || 0;
                 if ((esfera === 'municipio' || esfera === 'total') && params[uf].municipio) repasse += repasseIndex[uf].municipio[a] || 0;
             }
-            total += repasse;
+            total += (1 - ca) * repasse;
             res[a] = { total, contrafactual, repasse, dpct: contrafactual > 0 ? (total - contrafactual) / contrafactual : 0 };
         }
         return { res, r0_2025 };
@@ -884,17 +903,20 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
     }
 
     // Mesma decomposição de project(), mas mantendo as quatro peças separadas (não somadas em
-    // "total") para o gráfico de composição por UF.
+    // "total") para o gráfico de composição por UF. ibsHistorico e repasseSR líquidos de CGIBS,
+    // mesmo tratamento de project(), para que os quatro segmentos do gráfico somem exatamente o
+    // "total" mostrado nas tabelas.
     function projectComponents(uf, esfera, params, nacionalByYear, repasseIndex) {
         const parts = partsFor(uf, esfera, params);
         if (parts.length === 0) return null;
         const res = {};
         for (const a of ANOS) {
             const nac = nacionalByYear[a];
+            const ca = nac.ca || 0;
             let icmsResidual = 0, ibsHistorico = 0, ibsDestino = 0;
             for (const part of parts) {
                 icmsResidual += nac.icms_iss_residual * part.coefNeutro;
-                ibsHistorico += nac.ibs_historico * part.coefCPT;
+                ibsHistorico += (1 - ca) * nac.ibs_historico * part.coefCPT;
                 ibsDestino += nac.ibs_destino_liquido * part.coefPleno;
             }
             let repasseSR = 0;
@@ -902,6 +924,7 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
                 if (esfera === 'estado' || esfera === 'total') repasseSR += repasseIndex[uf].estado[a] || 0;
                 if ((esfera === 'municipio' || esfera === 'total') && params[uf].municipio) repasseSR += repasseIndex[uf].municipio[a] || 0;
             }
+            repasseSR *= (1 - ca);
             res[a] = { icmsResidual, ibsHistorico, ibsDestino, repasseSR };
         }
         return res;
