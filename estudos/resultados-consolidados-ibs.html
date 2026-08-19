@@ -677,7 +677,7 @@
 
             <p class="abnt-caption" style="margin-top: 2.2rem;">
                 <span class="abnt-num">Tabela A.2</span> – Capitais
-                <span class="abnt-sub">(φ^CPT, φ^dest e participação no ISS, 2025)</span>
+                <span class="abnt-sub">(φ^CPT, φ^dest e participação neutra do município, 2025)</span>
             </p>
             <div class="table-wrap">
                 <table class="abnt" id="table-anexo-capitais">
@@ -686,13 +686,13 @@
                             <th class="abnt-left">Capital</th>
                             <th>φ^CPT (%)</th>
                             <th>φ^dest (%)</th>
-                            <th>Participação no ISS, 2025 (%)</th>
+                            <th>Participação neutra (ISS + cota-parte), 2025 (%)</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-anexo-capitais"></tbody>
                 </table>
             </div>
-            <p class="abnt-source"><strong>Fonte:</strong> <code>data/coeficientes-municipios.json</code>, <code>data/rateio-destino-municipios.json</code>, <code>data/reforma-tributaria.json</code>. Elaboração própria.<br><strong>Nota:</strong> ISS próprio arrecadado em 2025 (não inclui cota-parte do ICMS recebida do Estado, já contabilizada líquida na Tabela A.1), na mesma base de referência nacional (ICMS+ISS+FECOP, 2025) — mesmo denominador da Tabela A.1, não o total nacional de ISS isoladamente. Calculada apenas para municípios com registro válido na DCA/STN para 2025. Brasília não tem esfera municipal própria (art. 115, LC n.º 227/2026): os coeficientes reportados são os do ente estadual (Tabela A.1, linha DF); a participação em ISS não se aplica.</p>
+            <p class="abnt-source"><strong>Fonte:</strong> <code>data/coeficientes-municipios.json</code>, <code>data/rateio-destino-municipios.json</code>, <code>data/reforma-tributaria.json</code>. Elaboração própria.<br><strong>Nota:</strong> ISS próprio arrecadado em 2025 somado à cota-parte do ICMS recebida do Estado (a mesma receita municipal usada na Tabela 2 do corpo e no φ^CPT), como participação na base de referência nacional (ICMS+ISS+FECOP, 2025) — mesmo denominador da Tabela A.1, não o total nacional de ISS isoladamente. A cota-parte aqui soma-se ao município exatamente porque a Tabela A.1 a subtrai do estado: as duas tabelas juntas não contam a cota-parte duas vezes nem a omitem. Calculada apenas para municípios com registro válido de ISS e cota-parte na DCA/STN para 2025 (5.448 de 5.569). Brasília não tem esfera municipal própria (art. 115, LC n.º 227/2026): os coeficientes reportados são os do ente estadual (Tabela A.1, linha DF); a participação neutra do município não se aplica.</p>
 
             <p class="intro" style="margin-top: 2.2rem;">
                 O φ<sup>dest</sup> autônomo desta página (POF 2017-2018 x Censo 2022) pode ser comparado, por UF, à
@@ -1042,7 +1042,7 @@
             ${td(`${c.nome} <small>${c.uf}${c.sem_municipio_proprio ? ' · sem esfera municipal própria' : ''}</small>`, 'abnt-left')}
             ${td(fmtNum3(c.coef_cpt_pct))}
             ${td(fmtNum3(c.coef_pleno_pct))}
-            ${td(c.participacao_iss_pct != null ? fmtNum3(c.participacao_iss_pct) : 'n.d.')}
+            ${td(c.coef_neutro_muni_pct != null ? fmtNum3(c.coef_neutro_muni_pct) : 'n.d.')}
         </tr>`).join('');
 
         const val = a.validacao_gobetti;
