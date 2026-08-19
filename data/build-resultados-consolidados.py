@@ -207,9 +207,9 @@ def compute_anexo_a(ref_data, coef_uf, phi_dest, coef_muni, rateio_muni, params_
     dca_icms = ref_data.get("dca_icms_por_uf", {}).get("2025", {})
     dca_fecop = ref_data.get("dca_fecop_por_uf", {}).get("2025", {})
     dca_cota = ref_data.get("dca_transf_munis_por_uf", {}).get("2025", {})
-    dca_det_2025 = ref_data.get("dca_detalhes", {}).get("2025", {})
     frac_estado = (phi_dest.get("frac_estado_pct", 0) or 0) / 100
     phi_by_uf = phi_dest.get("por_uf", {})
+    r0_neutro_muni = compute_neutro_municipal_2025(ref_data)
 
     r_estado = {}
     for uf in UFS:
@@ -244,19 +244,19 @@ def compute_anexo_a(ref_data, coef_uf, phi_dest, coef_muni, rateio_muni, params_
             capitais.append({
                 "uf": uf, "nome": nome, "sem_municipio_proprio": True,
                 "coef_cpt_pct": coef_cpt * 100, "coef_pleno_pct": phi_uf * 100,
-                "participacao_iss_pct": None,
+                "coef_neutro_muni_pct": None,
             })
             continue
         cm = coef_muni.get(cod, {})
         rd = rateio_muni.get(cod, {})
         coef_cpt = (cm.get("coeficiente_pct") or 0) / 100
         coef_pleno = (rd.get("phi_dest_pct") or 0) / 100
-        iss_val = dca_det_2025.get(cod, {}).get("valor")
-        part_iss = (iss_val / total_br_2025 * 100) if (iss_val is not None and total_br_2025) else None
+        r0_neutro = r0_neutro_muni.get(cod)
+        part_neutro = (r0_neutro / total_br_2025 * 100) if (r0_neutro is not None and total_br_2025) else None
         capitais.append({
             "uf": uf, "nome": nome, "sem_municipio_proprio": False,
             "coef_cpt_pct": coef_cpt * 100, "coef_pleno_pct": coef_pleno * 100,
-            "participacao_iss_pct": part_iss,
+            "coef_neutro_muni_pct": part_neutro,
         })
 
     validacao = []
