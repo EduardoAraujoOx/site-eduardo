@@ -133,6 +133,10 @@ def main():
     dca_icms_por_uf = dict(ref["dca_icms_por_uf"])
     dca_iss_por_uf = dict(ref["dca_iss_por_uf"])
     dca_fecop_br = ref.get("dca_fecop_br", {})
+    # "Outras Deduções da Receita" do ICMS (DCA Anexo I-C, 2019-2025 apenas --
+    # ver data/collect-dca-outras-deducoes.py): grande para MT/TO/MS/RO/GO,
+    # desprezível para as demais UFs. Sem dado equivalente para 2013-2018.
+    dca_outras_deducoes_por_uf = ref.get("dca_icms_outras_deducoes_por_uf", {})
 
     icms_dca_2013_2018 = json.load(open(DATA_DIR / "icms-dca-2013-2018.json"))
     iss_dca_2013_2014 = json.load(open(DATA_DIR / "iss-dca-2013-2014.json"))["dca_iss_por_uf"]
@@ -143,7 +147,8 @@ def main():
     historico = []
     for y in range(ANO_HIST_INICIO, ANO_HIST_FIM + 1):
         ys = str(y)
-        icms = sum(dca_icms_por_uf[ys].values())
+        outras_deducoes = sum((dca_outras_deducoes_por_uf.get(ys) or {}).values())
+        icms = sum(dca_icms_por_uf[ys].values()) - outras_deducoes
         fonte_icms = "DCA"
         iss = sum(dca_iss_por_uf.get(ys, {}).values())
         fecop = dca_fecop_br.get(ys, 0) or 0

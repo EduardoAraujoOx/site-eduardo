@@ -63,14 +63,16 @@ UFS = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', '
 
 
 def compute_modelo_anterior(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cota_declarada_2025,
-                          total_br_2025, coeficientes_uf, t4_by_uf):
+                          total_br_2025, coeficientes_uf, t4_by_uf, dca_outras_deducoes_2025=None):
     """Replica computeParams() de estudos/ibs-projecao-arrecadacao-br.html: retorna
     o phi^dest TOTAL (estado + municipios) de cada UF, coeficiente pleno normalizado."""
+    dca_outras_deducoes_2025 = dca_outras_deducoes_2025 or {}
     brutos_estado, brutos_muni = {}, {}
     for uf in UFS:
         icms = dca_icms_2025.get(uf, 0) or 0
         iss = dca_iss_2025.get(uf, 0) or 0
         fecop = dca_fecop_2025.get(uf, 0) or 0
+        outras = dca_outras_deducoes_2025.get(uf, 0) or 0
         cuf = coeficientes_uf['por_uf'].get(uf, {})
         t4 = t4_by_uf.get(uf, {})
         is_df = bool(cuf.get('is_df'))
@@ -78,7 +80,7 @@ def compute_modelo_anterior(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cot
         cota_declarada = dca_cota_declarada_2025.get(uf)
         cota = 0 if is_df else (cota_declarada if cota_declarada is not None else icms * 0.25)
 
-        r_estado = (icms + fecop) if is_df else (icms - cota + fecop)
+        r_estado = (icms - outras + fecop) if is_df else (icms - outras - cota + fecop)
         coef_neutro_estado = r_estado / total_br_2025 if total_br_2025 > 0 else 0
         vr_estado = (t4.get('estado_pct') or 0) / 100
         bruto_estado = coef_neutro_estado * (1 + vr_estado)
@@ -103,11 +105,13 @@ def compute_frac_estado_muni(ref_data, macro):
     dca_icms = ref_data.get('dca_icms_por_uf', {})
     dca_iss = ref_data.get('dca_iss_por_uf', {})
     dca_fecop = ref_data.get('dca_fecop_por_uf', {})
+    dca_outras_deducoes = ref_data.get('dca_icms_outras_deducoes_por_uf', {})
     pib_hist = macro['pib_nominal_historico']
 
     ratios_estado, ratios_muni = [], []
     for ano in ('2024', '2025'):
-        icms = sum((dca_icms.get(ano, {}).get(uf, 0) or 0) for uf in UFS)
+        outras = sum((dca_outras_deducoes.get(ano, {}) or {}).values())
+        icms = sum((dca_icms.get(ano, {}).get(uf, 0) or 0) for uf in UFS) - outras
         iss = sum((dca_iss.get(ano, {}).get(uf, 0) or 0) for uf in UFS)
         fecop = sum((dca_fecop.get(ano, {}).get(uf, 0) or 0) for uf in UFS)
         pib = pib_hist[ano]
@@ -168,14 +172,17 @@ def main():
     dca_iss_2025 = ref_data.get('dca_iss_por_uf', {}).get('2025', {})
     dca_fecop_2025 = ref_data.get('dca_fecop_por_uf', {}).get('2025', {})
     dca_cota_declarada_2025 = ref_data.get('dca_transf_munis_por_uf', {}).get('2025', {})
+    dca_outras_deducoes_2025 = ref_data.get('dca_icms_outras_deducoes_por_uf', {}).get('2025', {})
     total_br_2025 = sum(
-        (dca_icms_2025.get(uf, 0) or 0) + (dca_iss_2025.get(uf, 0) or 0) + (dca_fecop_2025.get(uf, 0) or 0)
+        (dca_icms_2025.get(uf, 0) or 0) - (dca_outras_deducoes_2025.get(uf, 0) or 0)
+        + (dca_iss_2025.get(uf, 0) or 0) + (dca_fecop_2025.get(uf, 0) or 0)
         for uf in UFS
     )
     t4_by_uf = {u['uf']: u for u in gobetti['tabela4_esferas']['ufs']}
 
     modelo_anterior = compute_modelo_anterior(dca_icms_2025, dca_iss_2025, dca_fecop_2025,
-                                         dca_cota_declarada_2025, total_br_2025, coeficientes_uf, t4_by_uf)
+                                         dca_cota_declarada_2025, total_br_2025, coeficientes_uf, t4_by_uf,
+                                         dca_outras_deducoes_2025)
     gobetti_t1 = compute_gobetti_tabela1(gobetti)
     pof_bruto, pof_ponderado = compute_pof_censo(pof, censo)
     frac_estado, frac_muni = compute_frac_estado_muni(ref_data, macro)

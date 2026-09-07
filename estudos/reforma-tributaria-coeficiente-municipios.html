@@ -398,9 +398,19 @@
             iss_br[ano]  = dca_iss_br_raw[s]  ?? null;
             icms_br[ano] = dca_icms_br_raw[s] ?? null;
         }
+        // "Outras Deduções da Receita" do ICMS (DCA Anexo I-C): dedução oficial do SICONFI,
+        // desprezível na maioria das UFs, grande (9%-37% do bruto) em MT/TO/MS/RO/GO — ver
+        // data/collect-dca-outras-deducoes.py.
+        const dca_outras_deducoes_br_raw = data.dca_icms_outras_deducoes_por_uf || {};
+        const outras_br = {};
+        for (const ano of ANOS) {
+            outras_br[ano] = Object.values(dca_outras_deducoes_br_raw[String(ano)] || {})
+                .reduce((acc, v) => acc + (v || 0), 0);
+        }
         const totalBR = {};
         for (const ano of ANOS) {
-            totalBR[ano] = (icms_br[ano] != null && iss_br[ano] != null) ? icms_br[ano] + iss_br[ano] : null;
+            totalBR[ano] = (icms_br[ano] != null && iss_br[ano] != null)
+                ? (icms_br[ano] - outras_br[ano]) + iss_br[ano] : null;
         }
         const totalB = totalBR[2025];
         const deflators = {};

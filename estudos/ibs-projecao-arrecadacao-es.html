@@ -935,7 +935,8 @@
     // municipal própria); a fatia municipal entra apenas para a fração estado/município do
     // destino (LC 214/2025 art. 361, aproximada pela média 2024-2025 da razão receita de
     // referência/PIB por esfera).
-    function computeParamsEstado(dcaIcms2025, dcaIss2025, dcaFecop2025, dcaCotaDeclarada2025, totalBR2025, coeficientesUF, phiDestData) {
+    function computeParamsEstado(dcaIcms2025, dcaIss2025, dcaFecop2025, dcaCotaDeclarada2025, totalBR2025, coeficientesUF, phiDestData, dcaOutrasDeducoes2025) {
+        dcaOutrasDeducoes2025 = dcaOutrasDeducoes2025 || {};
         const phiByUf = (phiDestData && phiDestData.por_uf) || {};
         // Fração estadual fixa e nacional (art. 361 LC 214/2025: média receita de referência/PIB
         // 2024-2025, Estados = ICMS+FECOP), calculada uma única vez em
@@ -946,12 +947,15 @@
         for (const uf of UFS) {
             const icms  = dcaIcms2025[uf]  || 0;
             const fecop = dcaFecop2025[uf] || 0;
+            const outras = dcaOutrasDeducoes2025[uf] || 0;
             const cuf   = (coeficientesUF.por_uf && coeficientesUF.por_uf[uf]) || {};
             const isDf  = !!cuf.is_df;
 
             const cotaDeclarada = dcaCotaDeclarada2025[uf];
             const cota = isDf ? 0 : (cotaDeclarada != null ? cotaDeclarada : icms * 0.25);
-            const rEstado = isDf ? (icms + fecop) : (icms - cota + fecop);
+            // "Outras Deduções da Receita" do ICMS (DCA Anexo I-C): desprezível para o ES, grande
+            // para MT/TO/MS/RO/GO -- ver data/collect-dca-outras-deducoes.py.
+            const rEstado = isDf ? (icms - outras + fecop) : (icms - outras - cota + fecop);
 
             const coefNeutroEstado = totalBR2025 > 0 ? rEstado / totalBR2025 : 0;
             const coefCPTEstado = (cuf.coeficiente_estado_pct ?? 0) / 100;
@@ -1322,11 +1326,12 @@
         const dcaIss2025           = data.dca_iss_por_uf?.['2025']           || {};
         const dcaFecop2025         = data.dca_fecop_por_uf?.['2025']         || {};
         const dcaCotaDeclarada2025 = data.dca_transf_munis_por_uf?.['2025']  || {};
+        const dcaOutrasDeducoes2025 = data.dca_icms_outras_deducoes_por_uf?.['2025'] || {};
         const totalBR2025 = UFS.reduce((s, uf) =>
-            s + (dcaIcms2025[uf]||0) + (dcaIss2025[uf]||0) + (dcaFecop2025[uf]||0), 0);
+            s + (dcaIcms2025[uf]||0) - (dcaOutrasDeducoes2025[uf]||0) + (dcaIss2025[uf]||0) + (dcaFecop2025[uf]||0), 0);
 
         const PARAMS_ESTADO = computeParamsEstado(dcaIcms2025, dcaIss2025, dcaFecop2025,
-            dcaCotaDeclarada2025, totalBR2025, coeficientesUF, phiDest);
+            dcaCotaDeclarada2025, totalBR2025, coeficientesUF, phiDest, dcaOutrasDeducoes2025);
         const es = PARAMS_ESTADO['ES'];
         if (!es) {
             document.getElementById('status-bar').innerHTML =

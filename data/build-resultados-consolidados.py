@@ -142,9 +142,11 @@ def compute_params_uf(ref_data, coef_uf, phi_dest):
     dca_iss = ref_data.get("dca_iss_por_uf", {}).get("2025", {})
     dca_fecop = ref_data.get("dca_fecop_por_uf", {}).get("2025", {})
     dca_cota_decl = ref_data.get("dca_transf_munis_por_uf", {}).get("2025", {})
+    dca_outras = ref_data.get("dca_icms_outras_deducoes_por_uf", {}).get("2025", {})
 
     total_br_2025 = sum(
-        (dca_icms.get(uf, 0) or 0) + (dca_iss.get(uf, 0) or 0) + (dca_fecop.get(uf, 0) or 0)
+        (dca_icms.get(uf, 0) or 0) - (dca_outras.get(uf, 0) or 0)
+        + (dca_iss.get(uf, 0) or 0) + (dca_fecop.get(uf, 0) or 0)
         for uf in UFS
     )
 
@@ -157,13 +159,14 @@ def compute_params_uf(ref_data, coef_uf, phi_dest):
         icms = dca_icms.get(uf, 0) or 0
         iss = dca_iss.get(uf, 0) or 0
         fecop = dca_fecop.get(uf, 0) or 0
+        outras = dca_outras.get(uf, 0) or 0
         cuf = coef_uf.get("por_uf", {}).get(uf, {})
         is_df = bool(cuf.get("is_df"))
 
         cota_decl = dca_cota_decl.get(uf)
         cota = 0.0 if is_df else (cota_decl if cota_decl is not None else icms * 0.25)
 
-        r_estado = (icms + fecop) if is_df else (icms - cota + fecop)
+        r_estado = (icms - outras + fecop) if is_df else (icms - outras - cota + fecop)
         r_muni = None if is_df else (iss + cota)
 
         coef_neutro_estado = r_estado / total_br_2025 if total_br_2025 else 0
@@ -207,6 +210,7 @@ def compute_anexo_a(ref_data, coef_uf, phi_dest, coef_muni, rateio_muni, params_
     dca_icms = ref_data.get("dca_icms_por_uf", {}).get("2025", {})
     dca_fecop = ref_data.get("dca_fecop_por_uf", {}).get("2025", {})
     dca_cota = ref_data.get("dca_transf_munis_por_uf", {}).get("2025", {})
+    dca_outras = ref_data.get("dca_icms_outras_deducoes_por_uf", {}).get("2025", {})
     frac_estado = (phi_dest.get("frac_estado_pct", 0) or 0) / 100
     phi_by_uf = phi_dest.get("por_uf", {})
     r0_neutro_muni = compute_neutro_municipal_2025(ref_data)
@@ -215,10 +219,11 @@ def compute_anexo_a(ref_data, coef_uf, phi_dest, coef_muni, rateio_muni, params_
     for uf in UFS:
         icms = dca_icms.get(uf, 0) or 0
         fecop = dca_fecop.get(uf, 0) or 0
+        outras = dca_outras.get(uf, 0) or 0
         is_df = bool((coef_uf.get("por_uf", {}).get(uf, {}) or {}).get("is_df"))
         cota_decl = dca_cota.get(uf)
         cota = 0.0 if is_df else (cota_decl if cota_decl is not None else icms * 0.25)
-        r_estado[uf] = (icms + fecop) if is_df else (icms - cota + fecop)
+        r_estado[uf] = (icms - outras + fecop) if is_df else (icms - outras - cota + fecop)
 
     estados = []
     for uf in UFS:

@@ -35,7 +35,19 @@ def main():
     dca_transf_uf = d.get("dca_transf_munis_por_uf", {})
     dca_icms_uf = d.get("dca_icms_por_uf", {})
     dca_fecop_uf = d.get("dca_fecop_por_uf", {})
+    dca_outras_deducoes_uf = d.get("dca_icms_outras_deducoes_por_uf", {})
     dca_iss_uf_by_ano = {ano: (d.get("dca_iss_por_uf", {}).get(str(ano)) or {}) for ano in ANOS}
+
+    # "Outras Deduções da Receita" do ICMS (DCA Anexo I-C): dedução oficial que o
+    # SICONFI já reporta na conta do ICMS, além da cota-parte municipal e do
+    # FUNDEB, mas que este pipeline não extraía. Desprezível (<1%) para a
+    # maioria das UFs; grande (9%-37% do bruto) para MT/TO/MS/RO/GO, ligada a
+    # mecanismos de diferimento/incentivo fiscal do ICMS sobre o agronegócio
+    # (ex.: FETHAB/MT, FUNDERSUL/MS). Ver data/collect-dca-outras-deducoes.py.
+    outras_ded_total_por_ano = {
+        ano: sum((dca_outras_deducoes_uf.get(str(ano), {}) or {}).values())
+        for ano in ANOS
+    }
 
     total_br = {}
     for ano in ANOS:
@@ -43,7 +55,8 @@ def main():
         icms = dca_icms_br.get(s)
         iss = dca_iss_br.get(s)
         fecop = dca_fecop_br.get(s, 0) or 0
-        total_br[ano] = (icms + iss + fecop) if (icms is not None and iss is not None) else None
+        total_br[ano] = (icms - outras_ded_total_por_ano[ano] + iss + fecop) if (
+            icms is not None and iss is not None) else None
 
     total_b = total_br[2025]
     deflators = {ano: (1.0 if ano == 2025 else (total_b / total_br[ano] if total_br[ano] else None))
@@ -64,8 +77,9 @@ def main():
             icms_val = (dca_icms_uf.get(s) or {}).get(uf)
             iss_val = dca_iss_uf_by_ano[ano].get(uf)
             fecop_val = (dca_fecop_uf.get(s) or {}).get(uf, 0) or 0
+            outras_val = (dca_outras_deducoes_uf.get(s) or {}).get(uf, 0) or 0
             if icms_val is not None:
-                soma_icms += icms_val * defl
+                soma_icms += (icms_val - outras_val) * defl
                 n_icms += 1
             if iss_val is not None:
                 soma_iss += iss_val * defl

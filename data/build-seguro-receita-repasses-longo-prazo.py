@@ -130,8 +130,12 @@ def main():
     dca_iss_2025 = ref_data.get('dca_iss_por_uf', {}).get('2025', {})
     dca_fecop_2025 = ref_data.get('dca_fecop_por_uf', {}).get('2025', {})
     dca_cota_declarada_2025 = ref_data.get('dca_transf_munis_por_uf', {}).get('2025', {})
+    dca_outras_deducoes_2025 = ref_data.get('dca_icms_outras_deducoes_por_uf', {}).get('2025', {})
+    # Precisa reproduzir exatamente o total usado em coeficientes-uf.json (ver
+    # nota equivalente em build-seguro-receita-repasses.py).
     total_br_2025 = sum(
-        (dca_icms_2025.get(uf, 0) or 0) + (dca_iss_2025.get(uf, 0) or 0) + (dca_fecop_2025.get(uf, 0) or 0)
+        (dca_icms_2025.get(uf, 0) or 0) - (dca_outras_deducoes_2025.get(uf, 0) or 0)
+        + (dca_iss_2025.get(uf, 0) or 0) + (dca_fecop_2025.get(uf, 0) or 0)
         for uf in UFS
     )
     params_estado = compute_params_estado(dca_icms_2025, dca_iss_2025, dca_fecop_2025,
