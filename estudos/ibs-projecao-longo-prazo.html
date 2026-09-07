@@ -576,13 +576,15 @@
 
             // "Outras Deduções da Receita" do ICMS (DCA Anexo I-C): desprezível na maioria das
             // UFs, grande em MT/TO/MS/RO/GO -- ver data/collect-dca-outras-deducoes.py.
-            const rEstado = isDf ? (icms - outras + fecop) : (icms - outras - cota + fecop);
+            // DF não tem esfera municipal própria: soma-se +iss à sua receita "estadual".
+            const rEstado = isDf ? (icms - outras + iss + fecop) : (icms - outras - cota + fecop);
             const rMuni   = isDf ? null : (iss + cota);
 
             const coefNeutroEstado = totalBR2025 > 0 ? rEstado / totalBR2025 : 0;
             const coefNeutroMuni   = (rMuni != null && totalBR2025 > 0) ? rMuni / totalBR2025 : null;
 
-            const coefCPTEstado = (cuf.coeficiente_estado_pct ?? 0) / 100;
+            // DF: coeficiente_estado_pct é só ICMS+FECOP -- usa-se coeficiente_total_pct para o DF.
+            const coefCPTEstado = ((isDf ? cuf.coeficiente_total_pct : cuf.coeficiente_estado_pct) ?? 0) / 100;
             const coefCPTMuni   = (cuf.coeficiente_municipios_pct != null) ? cuf.coeficiente_municipios_pct / 100 : null;
 
             // φ^dest: estimativa própria (POF x Censo, Estudo 13) -- Gobetti e Monteiro deixou de

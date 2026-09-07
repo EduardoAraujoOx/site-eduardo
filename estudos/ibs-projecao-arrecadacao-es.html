@@ -946,6 +946,7 @@
         const params = {};
         for (const uf of UFS) {
             const icms  = dcaIcms2025[uf]  || 0;
+            const iss   = dcaIss2025[uf]   || 0;
             const fecop = dcaFecop2025[uf] || 0;
             const outras = dcaOutrasDeducoes2025[uf] || 0;
             const cuf   = (coeficientesUF.por_uf && coeficientesUF.por_uf[uf]) || {};
@@ -955,10 +956,12 @@
             const cota = isDf ? 0 : (cotaDeclarada != null ? cotaDeclarada : icms * 0.25);
             // "Outras Deduções da Receita" do ICMS (DCA Anexo I-C): desprezível para o ES, grande
             // para MT/TO/MS/RO/GO -- ver data/collect-dca-outras-deducoes.py.
-            const rEstado = isDf ? (icms - outras + fecop) : (icms - outras - cota + fecop);
+            // DF não tem esfera municipal própria: soma-se +iss à sua receita "estadual".
+            const rEstado = isDf ? (icms - outras + iss + fecop) : (icms - outras - cota + fecop);
 
             const coefNeutroEstado = totalBR2025 > 0 ? rEstado / totalBR2025 : 0;
-            const coefCPTEstado = (cuf.coeficiente_estado_pct ?? 0) / 100;
+            // DF: coeficiente_estado_pct é só ICMS+FECOP -- usa-se coeficiente_total_pct para o DF.
+            const coefCPTEstado = ((isDf ? cuf.coeficiente_total_pct : cuf.coeficiente_estado_pct) ?? 0) / 100;
 
             // φ^dest: estimativa própria (POF x Censo, Estudo 13), dividida pela fração estadual
             // fixa (0,75 x rE/(rE+rM), ver Estudo 06) -- Gobetti e Monteiro deixou de ser insumo.

@@ -670,13 +670,17 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
             // desprezível na maioria das UFs mas grande (9%-37% do bruto) em MT/TO/MS/RO/GO —
             // ligada a diferimento/incentivo fiscal do ICMS sobre o agronegócio (ex.: FETHAB/MT,
             // FUNDERSUL/MS). Ver data/collect-dca-outras-deducoes.py.
-            const rEstado = isDf ? (icms - outras + fecop) : (icms - outras - cota + fecop);
+            // DF não tem esfera municipal própria (art. 115, LC 227/2026): todo o ISS que
+            // arrecada (como um município) fica na sua própria receita "estadual".
+            const rEstado = isDf ? (icms - outras + iss + fecop) : (icms - outras - cota + fecop);
             const rMuni   = isDf ? null : (iss + cota);
 
             const coefNeutroEstado = totalBR2025 > 0 ? rEstado / totalBR2025 : 0;
             const coefNeutroMuni   = (rMuni != null && totalBR2025 > 0) ? rMuni / totalBR2025 : null;
 
-            const coefCPTEstado = (cuf.coeficiente_estado_pct ?? 0) / 100;
+            // DF: coeficiente_estado_pct é só ICMS+FECOP (sem o ISS que o DF arrecada como
+            // esfera única) -- usa-se coeficiente_total_pct para o DF.
+            const coefCPTEstado = ((isDf ? cuf.coeficiente_total_pct : cuf.coeficiente_estado_pct) ?? 0) / 100;
             const coefCPTMuni   = (cuf.coeficiente_municipios_pct != null) ? cuf.coeficiente_municipios_pct / 100 : null;
 
             // φ^dest: estimativa própria (POF 2017-2018 x Censo 2022, Estudo 13) -- Gobetti e
