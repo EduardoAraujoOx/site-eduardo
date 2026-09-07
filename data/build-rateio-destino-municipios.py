@@ -89,8 +89,9 @@ UFS = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', '
 
 
 def compute_params(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cota_declarada_2025,
-                    total_br_2025, coeficientes_uf, phi_dest_data):
+                    total_br_2025, coeficientes_uf, phi_dest_data, dca_outras_deducoes_2025=None):
     """Replica computeParams() de estudos/ibs-projecao-arrecadacao-br.html."""
+    dca_outras_deducoes_2025 = dca_outras_deducoes_2025 or {}
     phi_dest_por_uf = phi_dest_data['por_uf']
     # Fracao estadual/municipal (art. 361 LC 214/2025: media 2024-2025 da razao receita de
     # referencia/PIB por esfera), calculada uma unica vez em build-phi-dest-pof-censo.py.
@@ -102,13 +103,14 @@ def compute_params(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cota_declara
         icms = dca_icms_2025.get(uf, 0) or 0
         iss = dca_iss_2025.get(uf, 0) or 0
         fecop = dca_fecop_2025.get(uf, 0) or 0
+        outras = dca_outras_deducoes_2025.get(uf, 0) or 0
         cuf = coeficientes_uf['por_uf'].get(uf, {})
         is_df = bool(cuf.get('is_df'))
 
         cota_declarada = dca_cota_declarada_2025.get(uf)
         cota = 0 if is_df else (cota_declarada if cota_declarada is not None else icms * 0.25)
 
-        r_estado = (icms + fecop) if is_df else (icms - cota + fecop)
+        r_estado = (icms - outras + fecop) if is_df else (icms - outras - cota + fecop)
         r_muni = None if is_df else (iss + cota)
 
         coef_neutro_estado = r_estado / total_br_2025 if total_br_2025 > 0 else 0
@@ -153,12 +155,14 @@ def main():
     dca_iss_2025 = ref_data.get('dca_iss_por_uf', {}).get('2025', {})
     dca_fecop_2025 = ref_data.get('dca_fecop_por_uf', {}).get('2025', {})
     dca_cota_declarada_2025 = ref_data.get('dca_transf_munis_por_uf', {}).get('2025', {})
+    dca_outras_deducoes_2025 = ref_data.get('dca_icms_outras_deducoes_por_uf', {}).get('2025', {})
     total_br_2025 = sum(
-        (dca_icms_2025.get(uf, 0) or 0) + (dca_iss_2025.get(uf, 0) or 0) + (dca_fecop_2025.get(uf, 0) or 0)
+        (dca_icms_2025.get(uf, 0) or 0) - (dca_outras_deducoes_2025.get(uf, 0) or 0)
+        + (dca_iss_2025.get(uf, 0) or 0) + (dca_fecop_2025.get(uf, 0) or 0)
         for uf in UFS
     )
     params = compute_params(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cota_declarada_2025,
-                             total_br_2025, coeficientes_uf, phi_dest_data)
+                             total_br_2025, coeficientes_uf, phi_dest_data, dca_outras_deducoes_2025)
 
     municipios_por_uf = {}
     for cod, r in cpt_municipios['municipios'].items():

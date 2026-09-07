@@ -764,12 +764,27 @@
             cotaMunEs[ano] = real != null ? real : (bruto != null ? bruto * 0.25 : null);
         }
 
+        // "Outras Deduções da Receita" do ICMS (DCA Anexo I-C, SICONFI): dedução oficial que o
+        // Tesouro Nacional já reporta na conta do ICMS, além da cota-parte municipal e do FUNDEB,
+        // mas que este pipeline não extraía até agora. Desprezível (<1%) para o ES e a maioria das
+        // UFs; grande (9%-37% do bruto) para MT/TO/MS/RO/GO, ligada a mecanismos de diferimento/
+        // incentivo fiscal do ICMS sobre o agronegócio (ex.: FETHAB/MT, FUNDERSUL/MS). Só afeta o
+        // TotalBR (denominador nacional) aqui, pois o numerador desta página é só o ES, cuja
+        // própria dedução é desprezível. Ver data/collect-dca-outras-deducoes.py.
+        const dca_outras_deducoes_uf_raw = data.dca_icms_outras_deducoes_por_uf || {};
+        const outrasDeducoesBr = {};
+        for (const ano of ANOS) {
+            const s = String(ano);
+            outrasDeducoesBr[ano] = Object.values(dca_outras_deducoes_uf_raw[s] || {})
+                .reduce((acc, v) => acc + (v || 0), 0);
+        }
+
         // TotalBR por ano — necessário para deflator (ICMS + ISS + FECOP, art. 115 §§1º-2º)
         const totalBR = {};
         for (const ano of ANOS) {
             const ib = icms_br[ano] ?? null;
             const is = iss_br[ano] ?? null;
-            totalBR[ano] = (ib != null && is != null) ? ib + is + (fecop_br[ano] ?? 0) : null;
+            totalBR[ano] = (ib != null && is != null) ? (ib - outrasDeducoesBr[ano]) + is + (fecop_br[ano] ?? 0) : null;
         }
 
         // Denominador = TotalBR_2025 (deflator base 2025 = 1)
@@ -942,9 +957,13 @@
                     const icmsVal = ano <= 2025
                         ? (dca_icms_uf_raw[String(ano)]?.[uf] ?? null)
                         : (icms_por_uf_rreo_tab3[uf]?.[ano] ?? icms_por_uf_rreo_tab3[uf]?.[String(ano)] ?? null);
+                    // "Outras Deduções da Receita" do ICMS (DCA Anexo I-C): só existe para
+                    // ano <= 2025 (fonte DCA); desprezível na maioria das UFs, grande em
+                    // MT/TO/MS/RO/GO — ver data/collect-dca-outras-deducoes.py.
+                    const outrasVal = ano <= 2025 ? (dca_outras_deducoes_uf_raw[String(ano)]?.[uf] ?? 0) : 0;
                     const issVal   = iss_por_uf?.[ano]?.[uf] ?? iss_por_uf?.[String(ano)]?.[uf] ?? null;
                     const fecopVal = dca_fecop_uf_raw[String(ano)]?.[uf] ?? 0;
-                    if (icmsVal != null) { somaICMS += icmsVal * d; nICMS++; }
+                    if (icmsVal != null) { somaICMS += (icmsVal - outrasVal) * d; nICMS++; }
                     if (issVal  != null) { somaISS  += issVal  * d; nISS++;  }
                     somaFECOP += fecopVal * d;
                     // Cota-parte municipal (art. 158, IV, "a", CF) não existe para o DF: sem
@@ -987,14 +1006,16 @@
                                 ?? null;
                 const iss2025    = iss_por_uf?.['2025']?.[uf] ?? null;
                 const fecop2025  = dca_fecop_uf_raw['2025']?.[uf] ?? 0;
-                // Cota-parte não se aplica ao DF (sem municípios) — ver nota acima.
+                const outras2025 = dca_outras_deducoes_uf_raw['2025']?.[uf] ?? 0;
+                // Cota-parte não se aplica ao DF (sem municípios) — ver nota acima. Base BRUTA
+                // (antes de "Outras Deduções"), pois a partilha de 25% incide sobre o total arrecadado.
                 const cota2025   = isDF ? null : (dca_transf_uf_raw['2025']?.[uf]
                                 ?? (icms2025 != null ? icms2025 * 0.25 : null));
                 const totalBR2025 = totalB; // deflator 2025 = 1, so totalB = totalBR[2025]
                 const idx2025Est  = isDF
-                    ? ((icms2025 != null && totalBR2025) ? (icms2025 + fecop2025) / totalBR2025 * 100 : null)
+                    ? ((icms2025 != null && totalBR2025) ? (icms2025 - outras2025 + fecop2025) / totalBR2025 * 100 : null)
                     : ((icms2025 != null && cota2025 != null && totalBR2025)
-                        ? (icms2025 - cota2025 + fecop2025) / totalBR2025 * 100 : null);
+                        ? (icms2025 - outras2025 - cota2025 + fecop2025) / totalBR2025 * 100 : null);
                 const idx2025Mun  = isDF ? null
                     : (iss2025 != null && cota2025 != null && totalBR2025)
                         ? (iss2025 + cota2025) / totalBR2025 * 100 : null;

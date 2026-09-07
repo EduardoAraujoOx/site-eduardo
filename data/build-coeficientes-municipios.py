@@ -47,15 +47,23 @@ def main():
     dca_icms_uf = d.get("dca_icms_por_uf", {})
     dca_cota_uf = d.get("dca_cota_icms_por_uf", {})  # {ano: {uf: valor}} -- soma municipal declarada
     dca_det = d.get("dca_detalhes", {})  # {ano: {cod: {ente, uf, valor, cota_parte_icms}}}
+    dca_outras_deducoes_uf = d.get("dca_icms_outras_deducoes_por_uf", {})
 
     # ── Agregado nacional e deflatores ──────────────────────────────────────
+    # Outras Deduções da Receita do ICMS (DCA Anexo I-C) -- ver
+    # data/collect-dca-outras-deducoes.py e o mesmo ajuste em
+    # build-coeficientes-uf.py. Aqui só entra no denominador nacional; a
+    # cota-parte municipal (dca_cota_uf/dca_transf_uf) não é afetada, pois é
+    # calculada sobre o ICMS bruto (25% teórico ou valor declarado pelo
+    # estado), não sobre o líquido dessa dedução.
     total_br = {}
     for ano in ANOS:
         s = str(ano)
         icms = dca_icms_br.get(s)
         iss = dca_iss_br.get(s)
         fecop = dca_fecop_br.get(s, 0) or 0
-        total_br[ano] = (icms + iss + fecop) if (icms is not None and iss is not None) else None
+        outras = sum((dca_outras_deducoes_uf.get(s, {}) or {}).values())
+        total_br[ano] = (icms - outras + iss + fecop) if (icms is not None and iss is not None) else None
 
     total_b = total_br[2025]
     if total_b is None:
