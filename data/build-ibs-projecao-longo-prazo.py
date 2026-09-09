@@ -91,12 +91,16 @@ def main():
         # ibs_historico fica bruto de CGIBS aqui -- essa dedução só é
         # aplicada por ente, em build-resultados-consolidados.py (mesmo
         # motivo documentado em build-ibs-projecao-nacional.py).
+        # Ordem legal (LC 227/2026, arts. 109-111 e 118 §§2º-4º): Seguro-Receita
+        # primeiro (sobre o destino bruto, formando a Receita-Base do art. 111),
+        # CGIBS depois (sobre a Receita-Base) -- não o contrário. Ver a mesma
+        # correção e a nota legal completa em build-ibs-projecao-nacional.py.
         ibs_historico = ibs_bruto * alpha_a
         ibs_destino_bruto = ibs_bruto * (1 - alpha_a)
-        ibs_cgibs = ibs_destino_bruto * ca
-        ibs_destino_liquido_cgibs = ibs_destino_bruto * (1 - ca)
-        ibs_seguro_receita = ibs_destino_liquido_cgibs * RHO_SEGURO_RECEITA
-        ibs_destino_liquido = ibs_destino_liquido_cgibs * (1 - RHO_SEGURO_RECEITA)
+        ibs_seguro_receita = ibs_destino_bruto * RHO_SEGURO_RECEITA
+        ibs_destino_liquido_seguro = ibs_destino_bruto * (1 - RHO_SEGURO_RECEITA)
+        ibs_cgibs = ibs_destino_liquido_seguro * ca
+        ibs_destino_liquido = ibs_destino_liquido_seguro * (1 - ca)
 
         projecao_2034_2077.append({
             "ano": a,

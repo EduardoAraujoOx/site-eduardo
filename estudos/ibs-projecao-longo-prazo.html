@@ -331,7 +331,7 @@
                     </table>
                 </div>
                 <div class="meto-formula-box">
-                    $$R_{u,a} = \underbrace{\text{bolo}_a f_a \, p_u^{neutro}}_{\text{ICMS residual}} + \underbrace{\text{bolo}_a s_a \alpha_a \, p_u^{CPT}}_{\text{IBS, histórico}} + \underbrace{\text{bolo}_a s_a (1-\alpha_a)(1-c_a)(1-\rho) \, p_u^{dest}}_{\text{IBS, destino líquido}} + \, SR_{u,a}$$
+                    $$R_{u,a} = \underbrace{\text{bolo}_a f_a \, p_u^{neutro}}_{\text{ICMS residual}} + \underbrace{\text{bolo}_a s_a \alpha_a \, p_u^{CPT}}_{\text{IBS, histórico}} + \underbrace{\text{bolo}_a s_a (1-\alpha_a)(1-\rho)(1-c_a) \, p_u^{dest}}_{\text{IBS, destino líquido}} + \, SR_{u,a}$$
                 </div>
                 <p class="meto-note">
                     Um exemplo concreto: em 2050, o Espírito Santo (esfera estado) tem
@@ -374,8 +374,9 @@
         <span class="section-label">Gráfico 1 &middot; Bolo nacional e sua composição (R$ bi, constantes de 2025)</span>
         <div class="callout">
             A barra empilhada mostra como o bolo total de IBS se divide, a cada ano, entre a fatia
-            histórica (&alpha;<sub>a</sub>), a fatia destino líquida de CGIBS e Seguro-Receita, o
-            próprio Seguro-Receita retido e o CGIBS. A linha mostra &alpha;<sub>a</sub> caindo de 90%
+            histórica (&alpha;<sub>a</sub>), a fatia destino líquida de Seguro-Receita e CGIBS, o
+            próprio Seguro-Receita retido (primeiro) e o CGIBS (retido depois, sobre a Receita-Base).
+            A linha mostra &alpha;<sub>a</sub> caindo de 90%
             (2033) a 2% (2077) &mdash; o eixo direito. Valores nominais (não descontados de inflação):
             o crescimento do bolo aqui reflete tanto o PIB real quanto a inflação acumulada.
         </div>
@@ -576,13 +577,15 @@
 
             // "Outras Deduções da Receita" do ICMS (DCA Anexo I-C): desprezível na maioria das
             // UFs, grande em MT/TO/MS/RO/GO -- ver data/collect-dca-outras-deducoes.py.
-            const rEstado = isDf ? (icms - outras + fecop) : (icms - outras - cota + fecop);
+            // DF não tem esfera municipal própria: soma-se +iss à sua receita "estadual".
+            const rEstado = isDf ? (icms - outras + iss + fecop) : (icms - outras - cota + fecop);
             const rMuni   = isDf ? null : (iss + cota);
 
             const coefNeutroEstado = totalBR2025 > 0 ? rEstado / totalBR2025 : 0;
             const coefNeutroMuni   = (rMuni != null && totalBR2025 > 0) ? rMuni / totalBR2025 : null;
 
-            const coefCPTEstado = (cuf.coeficiente_estado_pct ?? 0) / 100;
+            // DF: coeficiente_estado_pct é só ICMS+FECOP -- usa-se coeficiente_total_pct para o DF.
+            const coefCPTEstado = ((isDf ? cuf.coeficiente_total_pct : cuf.coeficiente_estado_pct) ?? 0) / 100;
             const coefCPTMuni   = (cuf.coeficiente_municipios_pct != null) ? cuf.coeficiente_municipios_pct / 100 : null;
 
             // φ^dest: estimativa própria (POF x Censo, Estudo 13) -- Gobetti e Monteiro deixou de

@@ -166,13 +166,21 @@ def compute_params_uf(ref_data, coef_uf, phi_dest):
         cota_decl = dca_cota_decl.get(uf)
         cota = 0.0 if is_df else (cota_decl if cota_decl is not None else icms * 0.25)
 
-        r_estado = (icms - outras + fecop) if is_df else (icms - outras - cota + fecop)
+        # DF não tem esfera municipal própria (art. 115, LC 227/2026): todo o
+        # ISS que arrecada (como um município) fica na sua própria receita
+        # "estadual" -- por isso soma-se +iss aqui, ao contrário dos demais
+        # estados, cujo ISS pertence aos seus municípios (r_muni).
+        r_estado = (icms - outras + iss + fecop) if is_df else (icms - outras - cota + fecop)
         r_muni = None if is_df else (iss + cota)
 
         coef_neutro_estado = r_estado / total_br_2025 if total_br_2025 else 0
         coef_neutro_muni = (r_muni / total_br_2025) if (r_muni is not None and total_br_2025) else None
 
-        coef_cpt_estado = (cuf.get("coeficiente_estado_pct") or 0) / 100
+        # DF: coeficiente_estado_pct (build-coeficientes-uf.py) é só ICMS+FECOP,
+        # sem o ISS que o DF arrecada como esfera única -- por isso usa-se
+        # coeficiente_total_pct para o DF (mesmo padrão de
+        # build-seguro-receita-repasses.py).
+        coef_cpt_estado = ((cuf.get("coeficiente_total_pct") if is_df else cuf.get("coeficiente_estado_pct")) or 0) / 100
         coef_cpt_muni = (cuf.get("coeficiente_municipios_pct") / 100
                           if cuf.get("coeficiente_municipios_pct") is not None else None)
 
@@ -208,6 +216,7 @@ def compute_anexo_a(ref_data, coef_uf, phi_dest, coef_muni, rateio_muni, params_
     escala incomparável às outras duas colunas.
     """
     dca_icms = ref_data.get("dca_icms_por_uf", {}).get("2025", {})
+    dca_iss = ref_data.get("dca_iss_por_uf", {}).get("2025", {})
     dca_fecop = ref_data.get("dca_fecop_por_uf", {}).get("2025", {})
     dca_cota = ref_data.get("dca_transf_munis_por_uf", {}).get("2025", {})
     dca_outras = ref_data.get("dca_icms_outras_deducoes_por_uf", {}).get("2025", {})
@@ -218,18 +227,19 @@ def compute_anexo_a(ref_data, coef_uf, phi_dest, coef_muni, rateio_muni, params_
     r_estado = {}
     for uf in UFS:
         icms = dca_icms.get(uf, 0) or 0
+        iss = dca_iss.get(uf, 0) or 0
         fecop = dca_fecop.get(uf, 0) or 0
         outras = dca_outras.get(uf, 0) or 0
         is_df = bool((coef_uf.get("por_uf", {}).get(uf, {}) or {}).get("is_df"))
         cota_decl = dca_cota.get(uf)
         cota = 0.0 if is_df else (cota_decl if cota_decl is not None else icms * 0.25)
-        r_estado[uf] = (icms - outras + fecop) if is_df else (icms - outras - cota + fecop)
+        r_estado[uf] = (icms - outras + iss + fecop) if is_df else (icms - outras - cota + fecop)
 
     estados = []
     for uf in UFS:
         cuf = coef_uf.get("por_uf", {}).get(uf, {})
         is_df = bool(cuf.get("is_df"))
-        coef_cpt = (cuf.get("coeficiente_estado_pct") or 0) / 100
+        coef_cpt = ((cuf.get("coeficiente_total_pct") if is_df else cuf.get("coeficiente_estado_pct")) or 0) / 100
         phi_uf = ((phi_by_uf.get(uf) or {}).get("pof_censo_bruto_pct") or 0) / 100
         coef_pleno = phi_uf if is_df else phi_uf * frac_estado
         coef_neutro = r_estado[uf] / total_br_2025 if total_br_2025 else 0
@@ -244,7 +254,7 @@ def compute_anexo_a(ref_data, coef_uf, phi_dest, coef_muni, rateio_muni, params_
         cod, nome = CAPITAIS[uf]
         if cod is None:
             cuf = coef_uf.get("por_uf", {}).get(uf, {})
-            coef_cpt = (cuf.get("coeficiente_estado_pct") or 0) / 100
+            coef_cpt = (cuf.get("coeficiente_total_pct") or 0) / 100
             phi_uf = ((phi_by_uf.get(uf) or {}).get("pof_censo_bruto_pct") or 0) / 100
             capitais.append({
                 "uf": uf, "nome": nome, "sem_municipio_proprio": True,

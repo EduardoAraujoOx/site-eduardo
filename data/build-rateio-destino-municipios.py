@@ -110,7 +110,8 @@ def compute_params(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cota_declara
         cota_declarada = dca_cota_declarada_2025.get(uf)
         cota = 0 if is_df else (cota_declarada if cota_declarada is not None else icms * 0.25)
 
-        r_estado = (icms - outras + fecop) if is_df else (icms - outras - cota + fecop)
+        # DF não tem esfera municipal própria: soma-se +iss à sua receita "estadual".
+        r_estado = (icms - outras + iss + fecop) if is_df else (icms - outras - cota + fecop)
         r_muni = None if is_df else (iss + cota)
 
         coef_neutro_estado = r_estado / total_br_2025 if total_br_2025 > 0 else 0

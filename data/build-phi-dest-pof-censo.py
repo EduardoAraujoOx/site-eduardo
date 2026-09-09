@@ -80,7 +80,8 @@ def compute_modelo_anterior(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cot
         cota_declarada = dca_cota_declarada_2025.get(uf)
         cota = 0 if is_df else (cota_declarada if cota_declarada is not None else icms * 0.25)
 
-        r_estado = (icms - outras + fecop) if is_df else (icms - outras - cota + fecop)
+        # DF não tem esfera municipal própria: soma-se +iss à sua receita "estadual".
+        r_estado = (icms - outras + iss + fecop) if is_df else (icms - outras - cota + fecop)
         coef_neutro_estado = r_estado / total_br_2025 if total_br_2025 > 0 else 0
         vr_estado = (t4.get('estado_pct') or 0) / 100
         bruto_estado = coef_neutro_estado * (1 + vr_estado)

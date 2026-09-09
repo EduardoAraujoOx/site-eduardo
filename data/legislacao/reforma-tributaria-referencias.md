@@ -613,3 +613,90 @@ Estado** e "distribuída nos termos do art. 128" — o art. 128 confirma que
 quem executa essa distribuição é o próprio CGIBS ("O CGIBS transferirá aos
 Municípios [...]"), então o Estado nunca chega a ter esse valor em caixa; a
 transferência é direta, como relatado.
+
+---
+
+## 6. Correções e decisões registradas, set/2026
+
+**Correção, 08/set/2026 (vigente, PR #265): receita estadual do DF soma o
+ISS que arrecada como esfera única.** O DF não tem municípios (art. 115,
+LC 227/2026), então todo o ISS que arrecada deveria contar como receita
+"estadual" — mas duas fórmulas omitiam essa soma: (a) `r_estado`
+(base do coeficiente neutro/contrafactual) não somava `+iss` para o DF; (b)
+`coefCPT` lia `coeficiente_estado_pct` (só ICMS+FECOP) em vez de
+`coeficiente_total_pct` (ICMS+FECOP+ISS) para o DF — este segundo ponto
+afeta valores em R$ reais da transição 2029-2033, não só a comparação com
+Gobetti e Monteiro. Corrigido em `data/build-resultados-consolidados.py`,
+`data/build-phi-dest-pof-censo.py`, `data/build-rateio-destino-municipios.py`
+e nas três páginas que replicam a fórmula em JS (`ibs-projecao-arrecadacao-br.html`,
+`ibs-projecao-arrecadacao-es.html`, `ibs-projecao-longo-prazo.html`).
+Efeito: receita estadual do DF em 2031 subiu de R$ 15,1 bi para R$ 19,1 bi;
+a divergência do DF vs. a base 2025 de Gobetti e Monteiro, antes +30,7%
+(sinalizada como discrepância grande), caiu para -0,001% (dentro da margem
+esperada). Não afeta nenhuma outra UF, inclusive o ES (confirmado por
+regeneração e comparação bit a bit dos artefatos dependentes).
+
+**Pendência conhecida, não implementada (decisão do autor do site,
+set/2026): divergência de AM, GO e MT vs. Gobetti e Monteiro.** Uma
+apresentação do COMSEFAZ (2026, Tabela 8, "Média sem fundos" vs. "Média com
+fundos") indica que a LC 227/2026 exige somar de volta, à base do
+coeficiente histórico desses três estados especificamente, valores de
+"fundos vinculados a diferimento/regime especial de ICMS" (médias 2019-2026:
+AM +R$ 3,16 bi, GO +R$ 2,14 bi, MT +R$ 0,11 bi). Investigação exaustiva no
+SICONFI (contas do DCA Anexo I-C, registro de entes, fundos reais como
+Fundeinfra/GOINFRA em GO e FTI/FMPES/FDH no AM) não encontrou esses valores
+de forma independentemente verificável nas fontes públicas. Decisão: manter
+os coeficientes de AM/GO/MT como estão hoje (sem o ajuste dos fundos),
+documentando a divergência como limitação conhecida — não corrigir sem uma
+fonte primária verificável.
+
+**Correção, 09/set/2026 (vigente): ordem das retenções de Seguro-Receita e
+CGIBS sobre a parcela destino do IBS.** O texto literal da LC 227/2026
+(arts. 109 a 111 e 118, §§2º a 4º) mostra que a retenção de 5% do
+Seguro-Receita (art. 110) incide sobre a parcela destino **bruta**, logo
+após a retenção do critério histórico (art. 109), formando a "Receita-Base"
+do art. 111 — **antes** de qualquer menção ao CGIBS, que só aparece bem
+depois, no art. 118 §4º, já após o Fundo de Combate à Pobreza (§2º) e a
+cota-parte municipal (§3º). O pipeline calculava na ordem inversa (CGIBS
+primeiro, Seguro-Receita depois, sobre a base já líquida de CGIBS).
+Corrigidos: `data/build-ibs-projecao-nacional.py`,
+`data/build-ibs-projecao-longo-prazo.py` (ordem das retenções),
+`estudos/ibs-projecao-arrecadacao-es.html` (mesma reimplementação local em
+JS), e textos/fórmulas em `data/build-nota-tecnica-pdf.py`,
+`data/build-ibs-projecao-nacional-xlsx.py`,
+`materiais/nota-metodologica-ibs.md` e as páginas HTML correspondentes
+(`ibs-projecao-nacional.html`, `ibs-projecao-arrecadacao-br.html`,
+`ibs-projecao-longo-prazo.html`, `seguro-receita-repasses.html`,
+`nota-metodologica-ibs.html`). Efeito: o valor final que chega a cada ente
+("IBS destino líquido") **não muda** — a ordem entre duas deduções
+percentuais é matematicamente comutativa. Mas o tamanho do fundo do
+Seguro-Receita aumenta (base bruta, maior) e o CGIBS cai exatos 5% em todos
+os anos; no ES, o efeito é irrisório (Δ% de 2033 no cenário principal foi de
+-7,6893% para -7,6858%, 0,0035 ponto percentual). Pipeline reexecutado na
+ordem correta de dependências.
+
+**Pesquisado e descartado por decisão do autor do site, set/2026:
+indicador de sustentabilidade (IDSC-BR) como proxy do critério "5%
+ambiental" da cota-parte municipal.** O art. 128, LC 227/2026 reserva 5% da
+cota-parte municipal do IBS-destino a "indicadores de preservação
+ambiental", a serem regulamentados por lei estadual — nenhum estado o fez
+ainda sob a lei nova (o ES nunca chegou a regulamentar nem o antigo "ICMS
+Ecológico", Lei 5.265/1996, ainda pendente do PL 7/2021). O Índice de
+Desenvolvimento Sustentável das Cidades - Brasil (IDSC-BR, SDSN/Instituto
+Cidades Sustentáveis, 100 indicadores, 17 ODS, cobre os 5.570 municípios)
+foi identificado como candidato a proxy uniforme e independente para esse
+critério — pesquisa concluída, mas o autor optou por não avançar com essa
+frente. Hoje o modelo aproxima os 15% de educação-equidade + ambiental pelo
+próprio critério populacional (ver "Implementado, ago/2026" acima).
+
+**Pendência para próxima etapa: nota técnica sobre compras governamentais.**
+O IBS sobre compras governamentais (GND 3 e 4 — bens e serviços de custeio
+e investimento comprados pelo poder público) retorna 100% ao ente
+**comprador**, não segue o critério de destino normal do consumo privado
+(realocação dentro do bolo já calibrado pelo PIB, não uma adição a ele — ver
+a explicação já dada na conversa: base nacional de compras governamentais
+R$ 533,8 bi, Estados 28%/Municípios 55%/União 17%, alíquota efetiva 15,9%,
+conforme dados levantados por Gobetti). Esse mecanismo ainda não está
+incorporado nas estimativas por ente. Planejado como um estudo novo e
+independente (nota técnica dedicada), a partir de uma nota técnica mais
+recente que o autor do site vai fornecer para revisão.
