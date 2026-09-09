@@ -49,7 +49,7 @@
       "Razão bolo (ICMS+ISS+FECOP) / PIB mantida constante na média de 2024-2026 a partir de 2027. Esse período de referência não é uma escolha de modelagem: é o que os arts. 361 a 365 da LC 214/2025 (redação da LC 227/2026) usam para calibrar a alíquota de referência do IBS em cada ano da transição (2029-2033), a média da razão entre a receita de referência e o PIB nos anos de 2024 a 2026, fixada por resolução do Senado Federal. O FECOP (Fundo de Combate à Pobreza) é incluído na receita de referência porque a legislação da reforma o trata como parte da base de receita substituída pelo IBS nos estados que o cobram; sem essa parcela, a receita de referência ficaria subestimada em cerca de R$ 14 bi em 2025 (~1,4% do total) frente ao dataset validado de coeficientes por UF (data/coeficientes-uf.json, conferido contra a Nota Técnica nº 02/2026).",
       "O art. 130, §4º e §5º, do ADCT define um mecanismo distinto: o 'Teto de Referência', que compara a média 2029-2033 de CBS+Imposto Seletivo+IBS com a média 2012-2021 de IPI+ICMS+ISS+PIS/Cofins+IOF-seguros. Não altera os valores projetados aqui: mesmo se ultrapassado, a redução da alíquota só vale a partir de 2035 (fora desta projeção), e o teto exige dados federais (CBS, PIS/Cofins, IPI, IOF-seguros) fora do escopo deste estudo, que modela só o lado subnacional (ICMS/ISS/IBS).",
       "2026 ainda não fechou: a razão desse ano usa o bolo do RREO (últimos 12 meses até abr/2026) sobre o PIB projetado pelo Focus, uma estimativa preliminar a ser substituída pelo dado fechado (DCA) quando disponível.",
-      "IBS bruto = bolo projetado × sa (fração já migrada para IBS no ADCT). Esse total se divide em quatro fatias: a fração alpha_a distribuída pelo critério histórico, e a fração (1-alpha_a) distribuída pelo critério destino, da qual se deduzem o CGIBS (art. 51 LC 227/2026) e o Seguro-Receita (5%, ADCT art. 132) antes de chegar aos entes. alpha_a e a taxa do CGIBS variam a cada ano da transição (2029-2033) e são os mesmos parâmetros já publicados no Estudo 06.",
+      "IBS bruto = bolo projetado × sa (fração já migrada para IBS no ADCT). Esse total se divide em quatro fatias: a fração alpha_a distribuída pelo critério histórico, e a fração (1-alpha_a) distribuída pelo critério destino, da qual se deduzem, nesta ordem (LC 227/2026, arts. 109-111 e 118 §§2º-4º), o Seguro-Receita (5%, ADCT art. 132, sobre o destino bruto) e só depois o CGIBS (art. 51 LC 227/2026, sobre a Receita-Base já líquida de Seguro-Receita) antes de chegar aos entes. alpha_a e a taxa do CGIBS variam a cada ano da transição (2029-2033) e são os mesmos parâmetros já publicados no Estudo 06.",
       "Para 2031-2033, fora do horizonte do Boletim Focus (~5 anos), usa-se a projeção da IFI (2,2% a.a. real), constante para os três anos por simplificação, já que a IFI não detalha ano a ano dentro do intervalo 2027-2035.",
       "A partir de ago/2026, este estudo projeta em R$ constantes de 2025 (sem IPCA): a trajetória de PIB usada para escalar o bolo projetado soma só a taxa de crescimento REAL de cada ano (Focus/IFI), sem compor a inflação projetada. O IPCA de cada ano (Focus/IFI) continua listado em macro_path para referência, mas não entra na conta. A série histórica (2013-2025) é nominal, por ser dado observado, não projeção; a coluna bolo_real_2025 converte para a mesma base de 2025 quando for necessário comparar com a projeção."
     ]
@@ -271,8 +271,8 @@
       "ca": 0.02,
       "ibs_historico": 87759360873.13,
       "ibs_destino_liquido": 20425991243.22,
-      "ibs_seguro_receita": 1075052170.7,
-      "ibs_cgibs": 438796804.37
+      "ibs_seguro_receita": 1096992010.91,
+      "ibs_cgibs": 416856964.15
     },
     {
       "ano": 2030,
@@ -287,8 +287,8 @@
       "ca": 0.01,
       "ibs_historico": 179029096181.19,
       "ibs_destino_liquido": 42094216239.6,
-      "ibs_seguro_receita": 2215485065.24,
-      "ibs_cgibs": 447572740.45
+      "ibs_seguro_receita": 2237863702.26,
+      "ibs_cgibs": 425194103.43
     },
     {
       "ano": 2031,
@@ -303,8 +303,8 @@
       "ca": 0.0067,
       "ibs_historico": 274451604445.76,
       "ibs_destino_liquido": 64745534940.29,
-      "ibs_seguro_receita": 3407659733.7,
-      "ibs_cgibs": 459706437.45
+      "ibs_seguro_receita": 3430645055.57,
+      "ibs_cgibs": 436721115.57
     },
     {
       "ano": 2032,
@@ -319,8 +319,8 @@
       "ca": 0.005,
       "ibs_historico": 373986052991.42,
       "ibs_destino_liquido": 88377579147.53,
-      "ibs_seguro_receita": 4651451534.08,
-      "ibs_cgibs": 467482566.24
+      "ibs_seguro_receita": 4674825662.39,
+      "ibs_cgibs": 444108437.93
     },
     {
       "ano": 2033,
@@ -335,8 +335,8 @@
       "ca": 0.002,
       "ibs_historico": 1074976161067.21,
       "ibs_destino_liquido": 113242766478.65,
-      "ibs_seguro_receita": 5960145604.14,
-      "ibs_cgibs": 238883591.35
+      "ibs_seguro_receita": 5972089783.71,
+      "ibs_cgibs": 226939411.78
     }
   ]
 }

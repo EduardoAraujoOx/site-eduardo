@@ -121,8 +121,9 @@ ADCT_IBS = {
     2032: {"alpha_a": 0.80, "ca": 0.0050},
     2033: {"alpha_a": 0.90, "ca": 0.0020},
 }
-# Seguro-Receita (ADCT art. 132): retenção de 5% sobre o IBSd líquido de
-# CGIBS, também antes da redistribuição por destino.
+# Seguro-Receita (ADCT art. 132; LC 227/2026 art. 110): retenção de 5% sobre
+# o IBSd BRUTO (antes do CGIBS, logo após a retenção do histórico), formando
+# a "Receita-Base" do art. 111 -- ambos antes da redistribuição por destino.
 RHO_SEGURO_RECEITA = 0.05
 
 
@@ -247,10 +248,18 @@ def main():
         alpha_a, ca = ADCT_IBS[a]["alpha_a"], ADCT_IBS[a]["ca"]
         ibs_historico = ibs_bruto * alpha_a
         ibs_destino_bruto = ibs_bruto * (1 - alpha_a)
-        ibs_cgibs = ibs_destino_bruto * ca
-        ibs_destino_liquido_cgibs = ibs_destino_bruto * (1 - ca)
-        ibs_seguro_receita = ibs_destino_liquido_cgibs * RHO_SEGURO_RECEITA
-        ibs_destino_liquido = ibs_destino_liquido_cgibs * (1 - RHO_SEGURO_RECEITA)
+        # Ordem legal (LC 227/2026, arts. 109-111 e 118, §§2º-4º): a retenção do
+        # Seguro-Receita (art. 110) incide sobre a parcela destino logo após a
+        # retenção do histórico (art. 109), formando a "Receita-Base" (art. 111)
+        # -- ANTES de qualquer menção ao CGIBS. O CGIBS só aparece bem depois,
+        # no art. 118 §4º, já após o Fundo de Combate à Pobreza (§2º) e a
+        # cota-parte municipal (§3º). Ou seja: Seguro-Receita primeiro, CGIBS
+        # depois -- não o contrário (correção de ago/2026; texto literal
+        # confirmado em data/legislacao/reforma-tributaria-referencias.md).
+        ibs_seguro_receita = ibs_destino_bruto * RHO_SEGURO_RECEITA
+        ibs_destino_liquido_seguro = ibs_destino_bruto * (1 - RHO_SEGURO_RECEITA)  # Receita-Base, art. 111
+        ibs_cgibs = ibs_destino_liquido_seguro * ca
+        ibs_destino_liquido = ibs_destino_liquido_seguro * (1 - ca)
 
         projecao.append({
             "ano": a,
@@ -292,7 +301,7 @@ def main():
                 "Razão bolo (ICMS+ISS+FECOP) / PIB mantida constante na média de 2024-2026 a partir de 2027. Esse período de referência não é uma escolha de modelagem: é o que os arts. 361 a 365 da LC 214/2025 (redação da LC 227/2026) usam para calibrar a alíquota de referência do IBS em cada ano da transição (2029-2033), a média da razão entre a receita de referência e o PIB nos anos de 2024 a 2026, fixada por resolução do Senado Federal. O FECOP (Fundo de Combate à Pobreza) é incluído na receita de referência porque a legislação da reforma o trata como parte da base de receita substituída pelo IBS nos estados que o cobram; sem essa parcela, a receita de referência ficaria subestimada em cerca de R$ 14 bi em 2025 (~1,4% do total) frente ao dataset validado de coeficientes por UF (data/coeficientes-uf.json, conferido contra a Nota Técnica nº 02/2026).",
                 "O art. 130, §4º e §5º, do ADCT define um mecanismo distinto: o 'Teto de Referência', que compara a média 2029-2033 de CBS+Imposto Seletivo+IBS com a média 2012-2021 de IPI+ICMS+ISS+PIS/Cofins+IOF-seguros. Não altera os valores projetados aqui: mesmo se ultrapassado, a redução da alíquota só vale a partir de 2035 (fora desta projeção), e o teto exige dados federais (CBS, PIS/Cofins, IPI, IOF-seguros) fora do escopo deste estudo, que modela só o lado subnacional (ICMS/ISS/IBS).",
                 "2026 ainda não fechou: a razão desse ano usa o bolo do RREO (últimos 12 meses até abr/2026) sobre o PIB projetado pelo Focus, uma estimativa preliminar a ser substituída pelo dado fechado (DCA) quando disponível.",
-                "IBS bruto = bolo projetado × sa (fração já migrada para IBS no ADCT). Esse total se divide em quatro fatias: a fração alpha_a distribuída pelo critério histórico, e a fração (1-alpha_a) distribuída pelo critério destino, da qual se deduzem o CGIBS (art. 51 LC 227/2026) e o Seguro-Receita (5%, ADCT art. 132) antes de chegar aos entes. alpha_a e a taxa do CGIBS variam a cada ano da transição (2029-2033) e são os mesmos parâmetros já publicados no Estudo 06.",
+                "IBS bruto = bolo projetado × sa (fração já migrada para IBS no ADCT). Esse total se divide em quatro fatias: a fração alpha_a distribuída pelo critério histórico, e a fração (1-alpha_a) distribuída pelo critério destino, da qual se deduzem, nesta ordem (LC 227/2026, arts. 109-111 e 118 §§2º-4º), o Seguro-Receita (5%, ADCT art. 132, sobre o destino bruto) e só depois o CGIBS (art. 51 LC 227/2026, sobre a Receita-Base já líquida de Seguro-Receita) antes de chegar aos entes. alpha_a e a taxa do CGIBS variam a cada ano da transição (2029-2033) e são os mesmos parâmetros já publicados no Estudo 06.",
                 "Para 2031-2033, fora do horizonte do Boletim Focus (~5 anos), usa-se a projeção da IFI (2,2% a.a. real), constante para os três anos por simplificação, já que a IFI não detalha ano a ano dentro do intervalo 2027-2035.",
                 "A partir de ago/2026, este estudo projeta em R$ constantes de 2025 (sem IPCA): a trajetória de PIB usada para escalar o bolo projetado soma só a taxa de crescimento REAL de cada ano (Focus/IFI), sem compor a inflação projetada. O IPCA de cada ano (Focus/IFI) continua listado em macro_path para referência, mas não entra na conta. A série histórica (2013-2025) é nominal, por ser dado observado, não projeção; a coluna bolo_real_2025 converte para a mesma base de 2025 quando for necessário comparar com a projeção.",
             ],

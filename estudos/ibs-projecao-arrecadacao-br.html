@@ -376,7 +376,7 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
                         </tr>
                         <tr>
                             <td>\(\mathrm{Ref}^{IBSd}_a\)</td>
-                            <td>Parcela do IBS bruto distribuída pelo critério destino, já líquida do CGIBS e do Seguro-Receita: \(\mathrm{Ref}^{IBS}_a\cdot(1-\alpha_a)\cdot(1-c_a)\cdot(1-\rho)\). Vem pronta do campo <code>ibs_destino_liquido</code> do Estudo 11.</td>
+                            <td>Parcela do IBS bruto distribuída pelo critério destino, já líquida do Seguro-Receita (retido primeiro) e do CGIBS (retido depois, sobre a Receita-Base -- LC 227/2026 arts. 109-111 e 118 §§2º-4º): \(\mathrm{Ref}^{IBS}_a\cdot(1-\alpha_a)\cdot(1-\rho)\cdot(1-c_a)\). Vem pronta do campo <code>ibs_destino_liquido</code> do Estudo 11.</td>
                             <td>ibs-projecao-nacional.json</td>
                         </tr>
                         <tr>
@@ -411,7 +411,7 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
                         </tr>
                         <tr>
                             <td>\(\alpha_a\), \(c_a\), \(\rho\)</td>
-                            <td>Fração do IBS pelo critério histórico (\(\alpha_a\), ADCT arts. 131&ndash;132, LC 227/2026 arts. 114&ndash;116); taxa do CGIBS (\(c_a\), art. 51 LC 227/2026 até 2032, art. 47 a partir de 2033), que incide sobre a receita histórica e destino já atribuída ao ente (arts. 118, §4º, 122, §1º, e 123, §1º), não só sobre o destino; retenção do Seguro-Receita sobre a parcela destino líquida de CGIBS (\(\rho=5\%\), ADCT art. 132). \(\alpha_a\) e a parcela de \(c_a\) sobre o destino vêm prontas do Estudo 11; a parcela de \(c_a\) sobre o histórico e o repasse é aplicada por ente, nesta página.</td>
+                            <td>Fração do IBS pelo critério histórico (\(\alpha_a\), ADCT arts. 131&ndash;132, LC 227/2026 arts. 114&ndash;116); retenção do Seguro-Receita sobre a parcela destino bruta, retida primeiro (\(\rho=5\%\), ADCT art. 132; LC 227/2026 arts. 109&ndash;111); taxa do CGIBS (\(c_a\), art. 51 LC 227/2026 até 2032, art. 47 a partir de 2033), retida depois, sobre a receita já líquida de Seguro-Receita, incidente tanto sobre a receita histórica quanto sobre a destino já atribuída ao ente (arts. 118, §4º, 122, §1º, e 123, §1º), não só sobre o destino. \(\alpha_a\) e a parcela de \(c_a\) sobre o destino vêm prontas do Estudo 11; a parcela de \(c_a\) sobre o histórico e o repasse é aplicada por ente, nesta página.</td>
                             <td>ver tabela acima</td>
                         </tr>
                     </tbody>

@@ -411,26 +411,28 @@
                     parte é distribuída pelo critério histórico (a participação de cada estado e
                     município na arrecadação de ICMS+ISS em 2019&ndash;2025), e o restante pelo
                     critério destino (onde o consumo de fato acontece). Da parcela distribuída por
-                    destino, duas deduções saem antes de chegar aos entes: o financiamento do
-                    Comitê Gestor do IBS (CGIBS) e a retenção para o Seguro-Receita, um fundo que
-                    garante um piso de receita aos entes durante a transição.
+                    destino, duas deduções saem antes de chegar aos entes: a retenção para o
+                    Seguro-Receita, um fundo que garante um piso de receita aos entes durante a
+                    transição, e o financiamento do Comitê Gestor do IBS (CGIBS).
                 </p>
                 <div class="lei-box">
-                    <p><span class="lei-artigo">ADCT arts. 131 e 132; LC 227/2026 arts. 51 e 114 a 116</span>:
+                    <p><span class="lei-artigo">LC 227/2026 arts. 109 a 111 e 118, §§2º a 4º</span>:
                     a fração \(\alpha_a\) do IBS é distribuída pelo critério histórico; a parcela
                     \((1-\alpha_a)\) restante é distribuída pelo critério destino, mas antes disso
-                    sofre duas deduções, nesta ordem: primeiro a taxa de financiamento do CGIBS
-                    (\(c_a\), art. 51 LC 227/2026), depois a retenção de 5% para o Seguro-Receita
-                    (\(\rho\), ADCT art. 132).</p>
+                    sofre duas deduções, nesta ordem: primeiro a retenção de 5% para o Seguro-Receita
+                    (\(\rho\), art. 110, logo após a retenção do histórico, formando a
+                    "Receita-Base" do art. 111), depois a taxa de financiamento do CGIBS
+                    (\(c_a\), art. 51 e art. 118 §4º, já sobre a Receita-Base) &mdash; nesta ordem, não
+                    a inversa.</p>
                 </div>
                 <div class="meto-formula-box">
                     IBS histórico(a) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= IBS bruto(a) &times; &alpha;<sub>a</sub><br>
-                    CGIBS(a) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= IBS bruto(a) &times; (1&minus;&alpha;<sub>a</sub>) &times; c<sub>a</sub><br>
-                    Seguro-Receita(a) &nbsp;= IBS bruto(a) &times; (1&minus;&alpha;<sub>a</sub>) &times; (1&minus;c<sub>a</sub>) &times; &rho;<br>
-                    IBS destino, líquido(a) = IBS bruto(a) &times; (1&minus;&alpha;<sub>a</sub>) &times; (1&minus;c<sub>a</sub>) &times; (1&minus;&rho;)
+                    Seguro-Receita(a) &nbsp;= IBS bruto(a) &times; (1&minus;&alpha;<sub>a</sub>) &times; &rho;<br>
+                    CGIBS(a) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= IBS bruto(a) &times; (1&minus;&alpha;<sub>a</sub>) &times; (1&minus;&rho;) &times; c<sub>a</sub><br>
+                    IBS destino, líquido(a) = IBS bruto(a) &times; (1&minus;&alpha;<sub>a</sub>) &times; (1&minus;&rho;) &times; (1&minus;c<sub>a</sub>)
                 </div>
                 <table class="param-table">
-                    <thead><tr><th>Ano</th><th>\(\alpha_a\) (histórico)</th><th>\(c_a\) (CGIBS, sobre a parcela destino)</th><th>\(\rho\) (Seguro-Receita)</th></tr></thead>
+                    <thead><tr><th>Ano</th><th>\(\alpha_a\) (histórico)</th><th>\(c_a\) (CGIBS, sobre a Receita-Base)</th><th>\(\rho\) (Seguro-Receita)</th></tr></thead>
                     <tbody id="tbody-ibs-parametros"></tbody>
                 </table>
                 <p class="meto-note">

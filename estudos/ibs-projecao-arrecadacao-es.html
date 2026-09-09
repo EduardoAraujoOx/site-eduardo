@@ -978,7 +978,8 @@
     // (data/ibs-projecao-nacional.json), que já projeta a receita de referência crescendo com o
     // PIB — a mesma base usada no Estudo 06, para os dois estudos ficarem sempre comparáveis.
     // coefNeutro/coefCPT são fixos (medidos em 2019-2025); coefDest varia por cenário.
-    // Ordem de dedução sobre o IBSd (igual ao Estudo 11/06): CGIBS primeiro, Seguro-Receita depois.
+    // Ordem de dedução sobre o IBSd (igual ao Estudo 11/06): Seguro-Receita primeiro, CGIBS depois
+    // (LC 227/2026, arts. 109-111 e 118 §§2º-4º).
     function calcYear(coefNeutro, coefCPT, coefDest, nac, srRepasse) {
         const refA = nac.icms_iss_residual + nac.ibs_bruto;          // receita de referência do ano (Estudo 11)
         const cntEstadual = refA * coefNeutro;                       // referência sem reforma
@@ -986,12 +987,16 @@
         const icmsReform = nac.icms_iss_residual * coefNeutro;       // Fator 1: ICMS residual
         const ibst        = nac.ibs_historico * coefCPT;             // Fator 2: IBSt via CPT histórico
 
+        // Ordem legal (LC 227/2026, arts. 109-111 e 118 §§2º-4º): Seguro-Receita
+        // primeiro (sobre o IBSd bruto, formando a Receita-Base do art. 111),
+        // CGIBS depois (sobre a Receita-Base) -- não o contrário. Ver a mesma
+        // correção em data/build-ibs-projecao-nacional.py.
         const ibsd_bruto    = (nac.ibs_bruto - nac.ibs_historico) * coefDest; // Fator 4: IBSd bruto
-        const ibsd_cgibs    = ibsd_bruto * nac.ca;                    // Fator 3: CGIBS, sobre o IBSd bruto
-        const ibsd_poscgibs = ibsd_bruto - ibsd_cgibs;
-        const ibsSeguro      = ibsd_poscgibs * RHO;                   // Seguro-Receita retido, sobre o IBSd pós-CGIBS
+        const ibsSeguro      = ibsd_bruto * RHO;                      // Seguro-Receita retido, sobre o IBSd bruto
+        const ibsd_posSeguro = ibsd_bruto - ibsSeguro;                // Receita-Base (art. 111)
+        const ibsd_cgibs    = ibsd_posSeguro * nac.ca;                // Fator 3: CGIBS, sobre a Receita-Base
         const repasse         = srRepasse || 0;                       // Seguro-Receita recebido (Estudo 12; só Cenário 1)
-        const ibsd_liq        = (ibsd_poscgibs - ibsSeguro) + repasse;
+        const ibsd_liq        = (ibsd_posSeguro - ibsd_cgibs) + repasse;
 
         const ibsTotal      = ibst + ibsd_liq;
         const totalReform   = icmsReform + ibsTotal;

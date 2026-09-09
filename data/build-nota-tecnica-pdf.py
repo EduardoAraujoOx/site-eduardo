@@ -620,25 +620,27 @@ HTML = f"""<!DOCTYPE html>
     O IBS bruto de cada ano não chega inteiro, do mesmo jeito, a todos os entes: uma parte é
     distribuída pelo critério histórico (a participação de cada estado e município na arrecadação
     de ICMS+ISS em 2019&ndash;2025), e o restante pelo critério destino (onde o consumo de fato
-    acontece). Da parcela distribuída por destino, duas deduções saem antes de chegar aos entes: o
-    financiamento do Comitê Gestor do IBS (CGIBS) e a retenção para o Seguro-Receita, um fundo que
-    garante um piso de receita aos entes durante a transição.
+    acontece). Da parcela distribuída por destino, duas deduções saem antes de chegar aos entes: a
+    retenção para o Seguro-Receita, um fundo que garante um piso de receita aos entes durante a
+    transição, e o financiamento do Comitê Gestor do IBS (CGIBS).
 </p>
 <div class="law-box">
-    <span class="art">ADCT arts. 131 e 132; LC 227/2026 arts. 51 e 114 a 116</span>: a fração
+    <span class="art">LC 227/2026 arts. 109 a 111 e 118, &sect;&sect;2&ordm; a 4&ordm;</span>: a fração
     &alpha;<sub>a</sub> do IBS é distribuída pelo critério histórico; a parcela
     (1&minus;&alpha;<sub>a</sub>) restante é distribuída pelo critério destino, mas antes disso
-    sofre duas deduções, nesta ordem: primeiro a taxa de financiamento do CGIBS (c<sub>a</sub>,
-    art. 51 LC 227/2026), depois a retenção de 5% para o Seguro-Receita (&rho;, ADCT art. 132).
+    sofre duas deduções, nesta ordem: primeiro a retenção de 5% para o Seguro-Receita (&rho;,
+    art. 110, logo após a retenção do histórico, formando a "Receita-Base" do art. 111), depois a
+    taxa de financiamento do CGIBS (c<sub>a</sub>, art. 51 e art. 118 &sect;4&ordm;, já sobre a
+    Receita-Base) &mdash; nesta ordem, não a inversa.
 </div>
 <div class="formula-box">
     IBS histórico(a) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= IBS bruto(a) &times; &alpha;<sub>a</sub><br>
-    CGIBS(a) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= IBS bruto(a) &times; (1&minus;&alpha;<sub>a</sub>) &times; c<sub>a</sub><br>
-    Seguro-Receita(a) &nbsp;= IBS bruto(a) &times; (1&minus;&alpha;<sub>a</sub>) &times; (1&minus;c<sub>a</sub>) &times; &rho;<br>
-    IBS destino, líquido(a) = IBS bruto(a) &times; (1&minus;&alpha;<sub>a</sub>) &times; (1&minus;c<sub>a</sub>) &times; (1&minus;&rho;)
+    Seguro-Receita(a) &nbsp;= IBS bruto(a) &times; (1&minus;&alpha;<sub>a</sub>) &times; &rho;<br>
+    CGIBS(a) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= IBS bruto(a) &times; (1&minus;&alpha;<sub>a</sub>) &times; (1&minus;&rho;) &times; c<sub>a</sub><br>
+    IBS destino, líquido(a) = IBS bruto(a) &times; (1&minus;&alpha;<sub>a</sub>) &times; (1&minus;&rho;) &times; (1&minus;c<sub>a</sub>)
 </div>
 <table>
-    <thead><tr><th class="l">Ano</th><th>&alpha;<sub>a</sub> (histórico)</th><th>c<sub>a</sub> (CGIBS, sobre a parcela destino)</th><th>&rho; (Seguro-Receita)</th></tr></thead>
+    <thead><tr><th class="l">Ano</th><th>&alpha;<sub>a</sub> (histórico)</th><th>c<sub>a</sub> (CGIBS, sobre a Receita-Base)</th><th>&rho; (Seguro-Receita)</th></tr></thead>
     <tbody>{ibs_parametros_rows()}</tbody>
 </table>
 <table>
@@ -665,8 +667,8 @@ HTML = f"""<!DOCTYPE html>
     meses até abril de 2026, sobre o PIB projetado pelo Focus, mais o FECOP de 2025 como proxy), a
     ser substituída pelo dado fechado (DCA) assim que disponível.</li>
     <li>"IBS bruto", nas Seções 2 a 4.5, é a arrecadação total antes de qualquer dedução. A divisão
-    entre critério histórico, critério destino, CGIBS (art. 51 LC 227/2026) e Seguro-Receita (ADCT
-    art. 132), na Seção 4.6, usa os mesmos parâmetros &alpha;<sub>a</sub> e c<sub>a</sub> já
+    entre critério histórico, critério destino, Seguro-Receita (ADCT art. 132) e CGIBS (art. 51 LC
+    227/2026), na Seção 4.6, usa os mesmos parâmetros &alpha;<sub>a</sub> e c<sub>a</sub> já
     publicados no Estudo 06, mas só para mostrar o tamanho de cada fatia no agregado nacional, sem
     entrar em qual estado ou município recebe o quê.</li>
     <li>Para 2031&ndash;2033, fora do horizonte do Boletim Focus (~5 anos à frente), usa-se a

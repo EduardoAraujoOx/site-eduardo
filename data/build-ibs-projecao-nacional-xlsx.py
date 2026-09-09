@@ -110,7 +110,7 @@ def main():
         ("Fonte do FECOP", "SICONFI/STN, DCA Anexo I-C (2019-2025); zero em 2013-2018; 2026 usa o valor de 2025 como estimativa preliminar. Mesmo critério do coeficiente validado no Estudo 06."),
         ("Base legal da transição", "ADCT arts. 128, 130, 131 e 132 (EC 132/2023); LC 227/2026, arts. 51 e 114 a 116 (CGIBS e critério histórico/destino)."),
         ("Cronograma f_a/s_a", "Fração remanescente de ICMS/ISS (f_a) e fração já convertida em IBS (s_a=1-f_a) a cada ano da transição, conforme ADCT arts. 128 e 131."),
-        ("Divisão do IBS bruto", "Fração alpha_a distribuída pelo critério histórico; o restante pelo critério destino, líquido do CGIBS (art. 51 LC 227/2026) e do Seguro-Receita (5%, ADCT art. 132). Mesmos parâmetros já publicados no Estudo 06, usados aqui só para o agregado nacional (aba 'Projeção IBS 2029-2033')."),
+        ("Divisão do IBS bruto", "Fração alpha_a distribuída pelo critério histórico; o restante pelo critério destino, líquido do Seguro-Receita (5%, ADCT art. 132, retido primeiro) e do CGIBS (art. 51 LC 227/2026, retido depois -- LC 227/2026 arts. 109-111 e 118 §§2º-4º). Mesmos parâmetros já publicados no Estudo 06, usados aqui só para o agregado nacional (aba 'Projeção IBS 2029-2033')."),
         ("O que este arquivo mostra", "Aba 'Série histórica': dados de entrada SICONFI 2013-2025. Aba 'Premissas macro': dados de entrada Focus/IFI 2026-2033. Aba 'PIB projetado': fórmulas que compõem o PIB real ano a ano (R$ constantes de 2025, IPCA projetado não aplicado). Aba 'Projeção IBS': fórmulas que aplicam a carga tributária constante, o cronograma ADCT e a divisão do IBS bruto. Mude qualquer premissa nas abas de entrada (em azul) e a projeção recalcula."),
         ("Gerado em", date.today().isoformat()),
         ("Página do estudo", "https://www.eduardoreisaraujo.com.br/estudos/ibs-projecao-nacional.html"),
@@ -320,7 +320,7 @@ def main():
     ws5.cell(row=note_row5, column=1,
              value="f_a (fração remanescente de ICMS+ISS) e s_a=1-f_a (fração já convertida em IBS) seguem o cronograma da transição "
                    "constitucional (ADCT arts. 128 e 131, LC 227/2026). \"IBS bruto\" é a arrecadação total antes de qualquer dedução; "
-                   "a divisão entre critério histórico, critério destino, CGIBS e Seguro-Receita está na seção abaixo.").font = NOTE_FONT
+                   "a divisão entre critério histórico, critério destino, Seguro-Receita e CGIBS está na seção abaixo.").font = NOTE_FONT
     ws5.merge_cells(start_row=note_row5, start_column=1, end_row=note_row5, end_column=8)
     ws5.cell(row=note_row5, column=1).alignment = WRAP
     ws5.row_dimensions[note_row5].height = 45
@@ -352,13 +352,16 @@ def main():
         chist = ws5.cell(row=rr, column=5, value=f"=G{proj_row}*B{rr}")
         chist.font = FORMULA_FONT
         chist.number_format = RS_FMT_FULL
-        ccgibs = ws5.cell(row=rr, column=6, value=f"=G{proj_row}*(1-B{rr})*C{rr}")
-        ccgibs.font = FORMULA_FONT
-        ccgibs.number_format = RS_FMT_FULL
-        cseguro = ws5.cell(row=rr, column=7, value=f"=G{proj_row}*(1-B{rr})*(1-C{rr})*D{rr}")
+        # Ordem legal (LC 227/2026, arts. 109-111 e 118 §§2º-4º): Seguro-Receita (rho)
+        # retido primeiro, sobre o destino bruto (forma a "Receita-Base" do art. 111);
+        # CGIBS (c_a) retido depois, sobre essa Receita-Base -- não o contrário.
+        cseguro = ws5.cell(row=rr, column=7, value=f"=G{proj_row}*(1-B{rr})*D{rr}")
         cseguro.font = FORMULA_FONT
         cseguro.number_format = RS_FMT_FULL
-        cdest = ws5.cell(row=rr, column=8, value=f"=G{proj_row}*(1-B{rr})*(1-C{rr})*(1-D{rr})")
+        ccgibs = ws5.cell(row=rr, column=6, value=f"=G{proj_row}*(1-B{rr})*(1-D{rr})*C{rr}")
+        ccgibs.font = FORMULA_FONT
+        ccgibs.number_format = RS_FMT_FULL
+        cdest = ws5.cell(row=rr, column=8, value=f"=G{proj_row}*(1-B{rr})*(1-D{rr})*(1-C{rr})")
         cdest.font = FORMULA_FONT
         cdest.number_format = RS_FMT_FULL
         ctotal = ws5.cell(row=rr, column=9, value=f"=E{rr}+F{rr}+G{rr}+H{rr}")
@@ -370,7 +373,8 @@ def main():
     note_row_div = div_start_row + len(PROJ["projecao"]) + 1
     ws5.cell(row=note_row_div, column=1,
              value="alpha_a = fração do IBS bruto distribuída pelo critério histórico; (1-alpha_a) vai pelo critério destino, mas antes sofre "
-                   "duas deduções, nesta ordem: c_a (CGIBS, art. 51 LC 227/2026) e rho=5% (Seguro-Receita, ADCT art. 132). As quatro colunas de "
+                   "duas deduções, nesta ordem: rho=5% (Seguro-Receita, ADCT art. 132, art. 110 LC 227/2026 -- forma a Receita-Base do art. 111) "
+                   "e c_a (CGIBS, art. 51 e art. 118 §4º LC 227/2026, sobre a Receita-Base). As quatro colunas de "
                    "reais somam exatamente o IBS bruto do ano (coluna \"Total\" confere isso). alpha_a e c_a são os mesmos parâmetros já "
                    "publicados no Estudo 06 (estudos/ibs-projecao-arrecadacao-br.html), usados aqui só para mostrar o tamanho de cada fatia no "
                    "agregado nacional, sem entrar em qual estado ou município recebe o quê.").font = NOTE_FONT
