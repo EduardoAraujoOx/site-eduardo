@@ -209,8 +209,8 @@ footer.site-foot a:hover{text-decoration:underline}
 
 <div class="utility-bar">
     <div class="utility-inner">
-        <span>sefaz.es.gov.br · Reforma Tributária</span>
-        <a href="/estudos/">Metodologia e estudos técnicos completos →</a>
+        <span>sefaz.es.gov.br · EC 132/2023, LC 214/2024, LC 227/2026</span>
+        <a href="/estudos/">Metodologia completa →</a>
     </div>
 </div>
 
@@ -218,7 +218,7 @@ footer.site-foot a:hover{text-decoration:underline}
     <div class="masthead-inner">
         <div>
             <h1>Painel de Indicadores da Reforma Tributária</h1>
-            <p class="sub">Arrecadação histórica e projeção 2029–2033 de estados e municípios na transição do ICMS/ISS para o IBS — EC 132/2023, LC 214/2024 e LC 227/2026.</p>
+            <p class="sub">Histórico e projeção 2029–2033 da arrecadação de estados e municípios na transição para o IBS.</p>
         </div>
         <div class="masthead-author">
             <div>
@@ -261,10 +261,13 @@ footer.site-foot a:hover{text-decoration:underline}
 <section class="view active" id="view-visao-geral">
     <div class="view-head">
         <h2>Visão geral do Brasil</h2>
-        <p class="sub">Arrecadação nacional de ICMS + ISS (2013–2025) e projeção da arrecadação de IBS/CBS estadual e municipal na transição (2029–2033), cenário de destino pleno.</p>
+        <p class="sub">Arrecadação nacional de ICMS e ISS até 2025, e projeção do IBS até 2033.</p>
     </div>
 
-    <div class="section-label">Indicadores-chave</div>
+    <div class="view-head-row" style="margin-bottom:0.6rem">
+        <div class="section-label" style="margin-bottom:0">Indicadores-chave</div>
+        <span class="badge" style="background:var(--paper-alt);color:var(--ink-muted);border:1px solid var(--border)">Cenário: destino pleno</span>
+    </div>
     <div class="kpi-grid" id="kpiNacional">
         <div class="loading-inline">Carregando indicadores…</div>
     </div>
@@ -272,19 +275,19 @@ footer.site-foot a:hover{text-decoration:underline}
     <div class="panel-grid2">
         <div class="panel accent">
             <h3>Trajetória da arrecadação nacional</h3>
-            <p class="panel-sub">ICMS + ISS + FECOP, valores reais (R$ de 2025). Histórico 2013–2025; projeção 2029–2033 (Estudo 11).</p>
+            <p class="panel-sub">Valores reais (R$ de 2025). Histórico até 2025, projeção até 2033.</p>
             <div class="chart-box"><canvas id="chartNacional"></canvas></div>
         </div>
         <div class="panel accent">
-            <h3>Composição da transição</h3>
-            <p class="panel-sub">Parcela do bolo nacional ainda distribuída pelo critério histórico (origem) x já distribuída por destino, ano a ano do cronograma do ADCT.</p>
+            <h3>Estado x município</h3>
+            <p class="panel-sub">Como a receita nacional se divide entre os governos estaduais e os municípios.</p>
             <div class="chart-box"><canvas id="chartComposicao"></canvas></div>
         </div>
     </div>
 
     <div class="panel accent" style="margin-top:0.2rem">
-        <h3>Variação da receita projetada por UF em 2033</h3>
-        <p class="panel-sub">Receita do ente estadual + municípios em 2033, projetada, contra o contrafactual sem a reforma. Clique num estado para ver o detalhe.</p>
+        <h3>Variação da receita por UF em 2033</h3>
+        <p class="panel-sub">Estado e municípios, contra o cenário sem a reforma. Clique num estado para ver o detalhe.</p>
         <div class="map-wrapper" id="mapWrapper" style="min-height:420px">
             <div class="map-loading" id="mapLoading">carregando mapa…</div>
             <svg id="brazilMap" style="display:none"></svg>
@@ -303,29 +306,41 @@ footer.site-foot a:hover{text-decoration:underline}
     <div class="view-head view-head-row">
         <div>
             <h2>Detalhe por estado</h2>
-            <p class="sub">Receita do ente estadual, receita per capita e municípios da unidade federativa selecionada.</p>
+            <p class="sub">Receita, per capita e municípios do estado selecionado.</p>
         </div>
         <select class="select-uf" id="ufSelect" aria-label="Selecionar estado"></select>
     </div>
 
     <div class="kpi-grid" id="kpiUf"></div>
 
+    <div class="panel">
+        <h3>Coeficientes do ente estadual</h3>
+        <p class="panel-sub">Participação de 2025, critério histórico da transição e critério de destino pleno.</p>
+        <div class="kpi-grid" id="kpiUfCoef" style="margin-bottom:0"></div>
+    </div>
+
     <div class="panel-grid2">
         <div class="panel accent">
-            <h3 id="ufChartTitle">Receita do ente estadual — projeção 2029–2033</h3>
-            <p class="panel-sub">Referência histórica (2025) e projeção líquida da cota-parte municipal, contra o contrafactual sem a reforma.</p>
+            <h3 id="ufChartTitle">Receita do ente estadual</h3>
+            <p class="panel-sub">Referência de 2025 e projeção, contra o cenário sem a reforma.</p>
             <div class="chart-box"><canvas id="chartUf"></canvas></div>
         </div>
         <div class="panel accent">
             <h3>Receita per capita</h3>
-            <p class="panel-sub">Ente estadual, população fixada na média 2019–2025 para isolar o efeito da redistribuição.</p>
+            <p class="panel-sub">Ente estadual, população fixada na média 2019–2025.</p>
             <div class="chart-box"><canvas id="chartUfPerCapita"></canvas></div>
         </div>
     </div>
 
     <div class="panel">
+        <h3>Desigualdade entre municípios</h3>
+        <p class="panel-sub">Distância entre a receita per capita do município mais rico e do mais pobre do estado.</p>
+        <div class="kpi-grid" id="kpiUfDesigualdade" style="margin-bottom:0"></div>
+    </div>
+
+    <div class="panel">
         <h3>Municípios do estado</h3>
-        <p class="panel-sub">Projeção de receita municipal 2029–2033. Clique num município para ver a página completa.</p>
+        <p class="panel-sub">Clique num município para ver a página completa.</p>
         <div class="table-tools">
             <input type="text" class="search-input" id="ufMuniSearch" placeholder="Buscar município neste estado…">
         </div>
@@ -349,7 +364,7 @@ footer.site-foot a:hover{text-decoration:underline}
 <section class="view" id="view-municipios">
     <div class="view-head">
         <h2>Busca por município</h2>
-        <p class="sub">Coeficiente de participação, estimativa de destino e projeção de receita 2029–2033 de cada um dos 5.569 municípios brasileiros.</p>
+        <p class="sub">Coeficientes, dados usados no cálculo e projeção de receita, para cada um dos 5.569 municípios.</p>
     </div>
 
     <div class="muni-search-wrap">
@@ -368,8 +383,9 @@ footer.site-foot a:hover{text-decoration:underline}
 <!-- ============ RANKINGS ============ -->
 <section class="view" id="view-rankings">
     <div class="view-head">
-        <h2>Rankings nacionais — 2033</h2>
-        <p class="sub">Os 20 municípios que mais ganham e os 20 que mais perdem receita projetada em 2033, entre os elegíveis (cobertura de dados ≥ 5 dos 7 anos, população média ≥ 10 mil e sem ressalva de qualidade). Clique numa linha para ver o detalhe do município.</p>
+        <h2>Rankings nacionais de 2033</h2>
+        <p class="sub">Os 20 municípios que mais ganham e os 20 que mais perdem receita projetada, entre os elegíveis. Clique numa linha para ver o detalhe.</p>
+        <p style="font-size:0.76rem;color:var(--ink-muted);margin-top:0.3rem">Elegível: cobertura de dados de ao menos 5 dos 7 anos, população média de 10 mil habitantes ou mais, sem ressalva de qualidade.</p>
     </div>
     <div class="panel-grid2">
         <div class="panel accent">
@@ -434,7 +450,7 @@ footer.site-foot a:hover{text-decoration:underline}
 </main>
 
 <footer class="site-foot">
-    <p>Secretaria da Fazenda do Espírito Santo. Modelo técnico e base de dados desenvolvidos por <a href="/">Eduardo Reis Araújo</a>. Metodologia e fontes replicáveis — ver <a href="/estudos/">Estudos técnicos</a>.</p>
+    <p>Secretaria da Fazenda do Espírito Santo. Modelo técnico e base de dados desenvolvidos por <a href="/">Eduardo Reis Araújo</a>. Metodologia e fontes replicáveis em <a href="/estudos/">Estudos técnicos</a>.</p>
 </footer>
 
 <script>
@@ -525,28 +541,28 @@ function renderKpiNacional(){
     const el = document.getElementById('kpiNacional');
     el.innerHTML = `
         <div class="kpi-card highlight">
-            <div class="kpi-label">Bolo tributário — 2025</div>
+            <div class="kpi-label">Bolo tributário, 2025</div>
             <div class="kpi-value">${fmtMoney(h2025.bolo_nominal)}</div>
             <div class="kpi-delta">${h2025.bolo_pct_pib.toLocaleString('pt-BR',{maximumFractionDigits:2})}% do PIB</div>
             <div class="kpi-foot">SICONFI/STN · DCA</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-label">Bolo projetado — 2033</div>
+            <div class="kpi-label">Bolo projetado, 2033</div>
             <div class="kpi-value">${fmtMoney(totalPos2033)}</div>
-            <div class="kpi-delta">${p2033.bolo_pct_pib.toLocaleString('pt-BR',{maximumFractionDigits:2})}% do PIB (razão mantida)</div>
+            <div class="kpi-delta">${p2033.bolo_pct_pib.toLocaleString('pt-BR',{maximumFractionDigits:2})}% do PIB</div>
             <div class="kpi-foot">Estudo 11 · IBS pleno</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-label">IBS já em destino, 2033</div>
             <div class="kpi-value">100%</div>
-            <div class="kpi-delta">0% histórico (origem) · cronograma ADCT concluído</div>
+            <div class="kpi-delta">Cronograma do ADCT concluído</div>
             <div class="kpi-foot">EC 132/2023, art. 131, §1º</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-label">Redistribuição entre UFs, 2033</div>
+            <div class="kpi-label">Redistribuição entre UFs</div>
             <div class="kpi-value">${nGanha} <span style="font-size:1rem;font-weight:600;color:var(--ink-muted)">de 27</span></div>
             <div class="kpi-delta pos">ganham receita · ${nPerde} perdem</div>
-            <div class="kpi-foot">O bolo nacional não cresce nem encolhe com a reforma — só a distribuição entre entes muda</div>
+            <div class="kpi-foot">Bolo nacional fixo, só muda a distribuição</div>
         </div>
     `;
 }
@@ -575,21 +591,22 @@ function renderChartNacional(){
 }
 
 function renderChartComposicao(){
-    const proj = NACIONAL.projecao;
+    const d = RESULTADOS.distribuicao_estado_municipio;
+    const anos = ['2025','2033','2077'];
     new Chart(document.getElementById('chartComposicao'), {
         type: 'bar',
         data: {
-            labels: proj.map(d=>d.ano),
+            labels: anos,
             datasets: [
-                { label:'Histórico (origem)', data: proj.map(d=>d.icms_iss_residual), backgroundColor:'#365a6d', stack:'s' },
-                { label:'IBS bruto (destino)', data: proj.map(d=>d.ibs_bruto), backgroundColor:'#0080a3', stack:'s' },
+                { label:'Governos estaduais', data: anos.map(a=>d[a].estadual_pct*100), backgroundColor:'#0080a3', stack:'s' },
+                { label:'Municípios', data: anos.map(a=>d[a].municipal_pct*100), backgroundColor:'#9d5c6b', stack:'s' },
             ]
         },
         options: {
-            responsive:true, maintainAspectRatio:false,
-            scales: { x:{ stacked:true, grid:{display:false} }, y:{ stacked:true, ticks:{callback:v=>fmtMoney(v)}, grid:{color:'#eee'} } },
+            indexAxis: 'y', responsive:true, maintainAspectRatio:false,
+            scales: { x:{ stacked:true, max:100, ticks:{callback:v=>v+'%'}, grid:{color:'#eee'} }, y:{ stacked:true, grid:{display:false} } },
             plugins: { legend:{ position:'bottom', labels:{boxWidth:14,font:{size:11}} },
-                tooltip:{ callbacks:{ label: ctx => ctx.dataset.label + ': ' + fmtMoney(ctx.parsed.y) } } },
+                tooltip:{ callbacks:{ label: ctx => ctx.dataset.label + ': ' + ctx.parsed.x.toLocaleString('pt-BR',{maximumFractionDigits:1}) + '%' } } },
         }
     });
 }
@@ -696,7 +713,7 @@ function renderUfView(){
 
     document.getElementById('kpiUf').innerHTML = `
         <div class="kpi-card highlight">
-            <div class="kpi-label">${NOMES_UF[selectedUf]} — referência 2025</div>
+            <div class="kpi-label">${NOMES_UF[selectedUf]}, referência 2025</div>
             <div class="kpi-value">${fmtMoney(est.pre_2025)}</div>
             <div class="kpi-foot">Ente estadual, líquido da cota-parte</div>
         </div>
@@ -707,19 +724,38 @@ function renderUfView(){
             <div class="kpi-foot">Ente estadual</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-label">Variação acumulada 2029–2033</div>
+            <div class="kpi-label">Variação acumulada, 2029–2033</div>
             <div class="kpi-value" style="color:${est.acumulado_dpct>=0?'var(--pos)':'var(--neg)'}">${fmtPct(est.acumulado_dpct)}</div>
             <div class="kpi-foot">Soma do período, ente estadual</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-label">Estado + municípios — 2033</div>
+            <div class="kpi-label">Estado e municípios, 2033</div>
             <div class="kpi-value">${fmtMoney(tot.pos_por_ano['2033'])}</div>
             <div class="kpi-delta ${clsPct(tot.variacao_por_ano['2033'])}">${fmtPct(tot.variacao_por_ano['2033'])} vs. contrafactual</div>
             <div class="kpi-foot">Agregado da UF</div>
         </div>
     `;
 
-    document.getElementById('ufChartTitle').textContent = `Receita do ente estadual — ${NOMES_UF[selectedUf]}`;
+    const coefUf = (RESULTADOS.anexo_a && RESULTADOS.anexo_a.estados || []).find(e => e.uf === selectedUf);
+    document.getElementById('kpiUfCoef').innerHTML = coefUf ? `
+        <div class="kpi-card">
+            <div class="kpi-label">Participação neutra, 2025</div>
+            <div class="kpi-value" style="font-size:1.2rem">${coefUf.coef_neutro_icms_pct.toLocaleString('pt-BR',{maximumFractionDigits:4})}%</div>
+            <div class="kpi-foot">Fatia do estado hoje, sem a reforma</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Coeficiente de transição (φ<sup>CPT</sup>)</div>
+            <div class="kpi-value" style="font-size:1.2rem">${coefUf.coef_cpt_pct.toLocaleString('pt-BR',{maximumFractionDigits:4})}%</div>
+            <div class="kpi-foot">Base do cronograma 2029–2033</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Coeficiente de destino pleno (φ<sup>dest</sup>)</div>
+            <div class="kpi-value" style="font-size:1.2rem">${coefUf.coef_pleno_pct.toLocaleString('pt-BR',{maximumFractionDigits:4})}%</div>
+            <div class="kpi-foot">Vigora por inteiro a partir de 2033</div>
+        </div>
+    ` : '<p style="color:var(--ink-muted);font-size:0.85rem">Coeficientes não disponíveis para este estado.</p>';
+
+    document.getElementById('ufChartTitle').textContent = 'Receita do ente estadual';
     const labels = ['2025 (ref.)', ...ANOS.map(String)];
     const posData = [est.pre_2025, ...ANOS.map(a => est.pos_por_ano[String(a)])];
     const contraData = [est.pre_2025, ...ANOS.map(a => est.contrafactual_por_ano[String(a)])];
@@ -746,6 +782,31 @@ function renderUfView(){
     } else {
         document.getElementById('chartUfPerCapita').parentElement.innerHTML = '<p style="color:var(--ink-muted);font-size:0.85rem">Per capita não disponível para ' + NOMES_UF[selectedUf] + ' (Distrito Federal não tem esfera municipal própria).</p>';
     }
+
+    const disp = RESULTADOS.dispersao_intramunicipal && RESULTADOS.dispersao_intramunicipal.por_uf[selectedUf];
+    const gini = RESULTADOS.gini_percapita_municipal && RESULTADOS.gini_percapita_municipal.por_uf[selectedUf];
+    document.getElementById('kpiUfDesigualdade').innerHTML = (disp && gini) ? `
+        <div class="kpi-card">
+            <div class="kpi-label">Razão entre o mais rico e o mais pobre</div>
+            <div class="kpi-value" style="font-size:1.2rem">${disp.max_min_pre.toLocaleString('pt-BR',{maximumFractionDigits:1})}x <span style="font-size:0.9rem;color:var(--ink-muted)">→</span> ${disp.max_min_pos.toLocaleString('pt-BR',{maximumFractionDigits:1})}x</div>
+            <div class="kpi-foot">Referência 2025 → projeção 2033</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Município com maior receita per capita</div>
+            <div class="kpi-value" style="font-size:1.1rem">${disp.municipio_mais_rico}</div>
+            <div class="kpi-foot">R$ ${fmtRs2(disp.receita_pc_mais_rico_pre)} por habitante, 2025</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Município com menor receita per capita</div>
+            <div class="kpi-value" style="font-size:1.1rem">${disp.municipio_mais_pobre}</div>
+            <div class="kpi-foot">R$ ${fmtRs2(disp.receita_pc_mais_pobre_pre)} por habitante, 2025</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Índice de Gini per capita</div>
+            <div class="kpi-value" style="font-size:1.2rem">${gini.gini_2025.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3})} <span style="font-size:0.9rem;color:var(--ink-muted)">→</span> ${gini.gini_2033.toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3})}</div>
+            <div class="kpi-foot">Entre os ${gini.n_municipios} municípios, 2025 → 2033</div>
+        </div>
+    ` : '<p style="color:var(--ink-muted);font-size:0.85rem">Não disponível para ' + NOMES_UF[selectedUf] + ' (Distrito Federal não tem esfera municipal própria).</p>';
 
     renderUfMuniTable();
 }
@@ -833,7 +894,7 @@ async function openMunicipio(cod){
         <div class="panel">
             <div class="muni-detail-head">
                 <div>
-                    <h3>${m.nome} <span class="muni-uf">— ${NOMES_UF[m.uf]}</span></h3>
+                    <h3>${m.nome}<span class="muni-uf">, ${NOMES_UF[m.uf]}</span></h3>
                     <div class="muni-badges">${badges.join('')}</div>
                 </div>
                 <div style="text-align:right">
