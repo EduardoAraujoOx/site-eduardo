@@ -127,10 +127,11 @@ def main():
             defl = deflators_hist.get(ano)
             if det is None or defl is None:
                 continue
-            iss_v = det.get("valor")
-            cota_dca_v = det.get("cota_parte_icms")
-            if iss_v is None or cota_dca_v is None:
-                continue
+            # mesmo tratamento de build-coeficientes-municipios.py: valor
+            # ausente vira 0, não descarta o ano (ISS e cota-parte são
+            # reportados em registros separados do DCA Anexo I-C).
+            iss_v = det.get("valor") or 0
+            cota_dca_v = det.get("cota_parte_icms") or 0
             cota_total = cota_total_dca_uf_hist.get(ano, {}).get(uf)
             cota_alvo = cota_alvo_uf_hist.get(ano, {}).get(uf)
             cota_v = (cota_alvo * (cota_dca_v / cota_total)) if (cota_alvo is not None and cota_total) else cota_dca_v

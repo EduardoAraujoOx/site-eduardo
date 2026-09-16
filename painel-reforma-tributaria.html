@@ -748,12 +748,19 @@ function coefTilesHtml(neutro, cpt, pleno){
 
 function seguroCardHtml(repasseByYear, posByYear){
     const v2033 = (repasseByYear && repasseByYear['2033']) || 0;
-    const recebe = v2033 > 1;
-    if (!recebe) {
+    const recebeAlgumAno = ANOS.some(a => ((repasseByYear && repasseByYear[String(a)]) || 0) > 1);
+    if (!recebeAlgumAno) {
         return `<div class="seguro-card">
             <div class="seguro-label">Seguro-Receita (ADCT art. 132)</div>
             <div class="seguro-value muted">Não recebe</div>
             <div class="seguro-note">Em 2029–2033, a receita deste ente pelo critério de destino fica acima do nível de nivelamento em todos os anos do período — não há repasse.</div>
+        </div>`;
+    }
+    if (v2033 <= 1) {
+        return `<div class="seguro-card recebe">
+            <div class="seguro-label">Seguro-Receita (ADCT art. 132)</div>
+            <div class="seguro-value muted">Não recebe em 2033</div>
+            <div class="seguro-note">Recebeu repasse em anos anteriores da transição, mas deixa de receber a partir de 2033. Mecanismo temporário: tende a diminuir e se encerrar ao longo da transição.</div>
         </div>`;
     }
     const total2033 = posByYear && posByYear['2033'];
