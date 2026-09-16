@@ -4,22 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Painel da Reforma Tributária | Secretaria da Fazenda do Espírito Santo</title>
-<meta name="description" content="Arrecadação histórica e projeção 2029–2033 de estados e municípios brasileiros na transição do ICMS/ISS para o IBS (EC 132/2023, LC 214/2024, LC 227/2026). Mapa interativo, coeficientes de participação e estimativas de destino por ente. Secretaria da Fazenda do Espírito Santo.">
+<meta name="description" content="Para onde vai a arrecadação de cada estado e município brasileiro na transição do ICMS/ISS para o IBS: histórico, projeção 2029–2033, coeficientes de participação e destino, e Seguro-Receita, ente por ente (EC 132/2023, LC 214/2024, LC 227/2026).">
 <meta name="author" content="Secretaria da Fazenda do Espírito Santo">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://painelufir.vercel.app/">
+<link rel="canonical" href="https://www.eduardoreisaraujo.com.br/painel-reforma-tributaria.html">
 <link rel="icon" type="image/png" href="/images/brasao-es.png">
 
 <meta property="og:title" content="Painel da Reforma Tributária | SEFAZ-ES">
-<meta property="og:description" content="Arrecadação histórica e projeção 2029–2033 de todos os estados e municípios brasileiros na transição do ICMS/ISS para o IBS. Mapa interativo e dados por ente.">
+<meta property="og:description" content="Para onde vai a arrecadação de cada estado e município brasileiro na transição do ICMS/ISS para o IBS: histórico, projeção 2029–2033 e coeficientes, ente por ente.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://painelufir.vercel.app/">
+<meta property="og:url" content="https://www.eduardoreisaraujo.com.br/painel-reforma-tributaria.html">
 <meta property="og:image" content="https://www.eduardoreisaraujo.com.br/images/og-share.jpg">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Secretaria da Fazenda do Espírito Santo">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Painel da Reforma Tributária | SEFAZ-ES">
-<meta name="twitter:description" content="Arrecadação histórica e projeção 2029–2033 de todos os estados e municípios brasileiros na transição do ICMS/ISS para o IBS.">
+<meta name="twitter:description" content="Para onde vai a arrecadação de cada estado e município brasileiro na transição do ICMS/ISS para o IBS.">
 <meta name="twitter:image" content="https://www.eduardoreisaraujo.com.br/images/og-share.jpg">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -101,6 +101,17 @@ main{max-width:var(--max);margin:0 auto;padding:1.75rem 1.25rem 4rem}
 
 .section-label{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.09em;text-transform:uppercase;color:var(--teal-dark);font-weight:700;margin-bottom:0.6rem}
 
+/* ── busca de ente (hero) ── */
+.hero-search-wrap{max-width:640px;margin:0 auto 1.5rem;position:relative}
+.hero-search-wrap input{width:100%;padding:1rem 1.1rem;font-size:1.05rem;border:2px solid var(--border-strong);border-radius:var(--radius);background:#fff}
+.hero-search-wrap input:focus{outline:none;border-color:var(--teal)}
+.hero-search-results{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;max-height:360px;overflow-y:auto;box-shadow:0 10px 30px rgba(0,0,0,0.14);z-index:30;display:none;text-align:left}
+.hero-search-results.show{display:block}
+.hero-search-item{padding:0.65rem 1rem;font-size:0.92rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:0.6rem}
+.hero-search-item:hover{background:var(--paper-alt)}
+.hero-search-item .tag{font-family:var(--mono);font-size:0.62rem;font-weight:700;text-transform:uppercase;color:#fff;background:var(--teal);padding:0.15rem 0.5rem;border-radius:4px;flex-shrink:0}
+.hero-search-item .tag.muni{background:var(--marsala)}
+
 /* ── KPI cards ── */
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.9rem;margin-bottom:1.6rem}
 .kpi-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem}
@@ -111,6 +122,14 @@ main{max-width:var(--max);margin:0 auto;padding:1.75rem 1.25rem 4rem}
 .kpi-delta.pos{color:var(--pos)}
 .kpi-delta.neg{color:var(--neg)}
 .kpi-foot{font-family:var(--mono);font-size:0.66rem;letter-spacing:0.04em;text-transform:uppercase;color:#9aa4a9;margin-top:0.6rem;padding-top:0.5rem;border-top:1px solid #eee}
+.coef-explain{font-size:0.74rem;color:var(--ink-muted);margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid #eee;line-height:1.4}
+
+/* ── contexto nacional (secundário) ── */
+.contexto-nacional{margin-top:1.6rem;padding-top:1.3rem;border-top:1px solid var(--border)}
+.contexto-strip{display:flex;flex-wrap:wrap;gap:1.4rem;font-size:0.85rem;color:var(--ink-light)}
+.contexto-strip b{color:var(--teal-dark);font-weight:700}
+.contexto-strip b.neg{color:var(--neg)}
+.contexto-strip b.pos{color:var(--pos)}
 
 /* ── panels/cards ── */
 .panel{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem 1.3rem 1.4rem;margin-bottom:1.2rem}
@@ -119,6 +138,31 @@ main{max-width:var(--max);margin:0 auto;padding:1.75rem 1.25rem 4rem}
 .panel .panel-sub{color:var(--ink-muted);font-size:0.82rem;margin-bottom:0.9rem}
 .panel-grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:1.2rem}
 @media (max-width:860px){.panel-grid2{grid-template-columns:1fr}}
+
+/* ── frase-resumo ── */
+.frase-resumo{font-size:1.05rem;line-height:1.65;color:var(--ink);background:#fff;border:1px solid var(--border);border-left:4px solid var(--teal);padding:1rem 1.2rem;margin-bottom:1.2rem;border-radius:0 var(--radius) var(--radius) 0}
+.frase-resumo b{color:var(--teal-dark)}
+.frase-resumo b.neg{color:var(--neg)}
+.frase-resumo b.pos{color:var(--pos)}
+.frase-resumo .agregado-note{display:block;margin-top:0.5rem;font-size:0.82rem;color:var(--ink-muted)}
+
+/* ── toggle de composição ── */
+.comp-toggle{display:flex;gap:0.4rem}
+.comp-toggle button{border:1px solid var(--border-strong);background:#fff;padding:0.3rem 0.75rem;font-size:0.75rem;border-radius:5px;font-weight:600;color:var(--ink-muted)}
+.comp-toggle button.active{background:var(--teal);border-color:var(--teal);color:#fff}
+
+/* ── seguro-receita ── */
+.seguro-card{border-radius:var(--radius);padding:1.1rem 1.2rem;border:1px solid var(--border)}
+.seguro-card.recebe{border-color:var(--gold);background:#fdf9f0}
+.seguro-label{font-family:var(--mono);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-muted);margin-bottom:0.5rem}
+.seguro-value{font-size:1.5rem;font-weight:700;color:var(--gold)}
+.seguro-value.muted{color:var(--ink-muted);font-size:1.15rem}
+.seguro-note{font-size:0.8rem;color:var(--ink-light);margin-top:0.6rem;line-height:1.55}
+
+/* ── breadcrumb ── */
+.breadcrumb{font-size:0.82rem;color:var(--ink-muted);margin-bottom:0.9rem}
+.breadcrumb a{color:var(--teal-dark);font-weight:600;text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
 
 /* ── map ── */
 .map-wrapper{position:relative;background:#eaf1f5;border-radius:var(--radius);min-height:220px}
@@ -170,10 +214,10 @@ table.data td.neg{color:var(--neg);font-weight:600}
 .muni-result-item .uf-tag{color:var(--ink-muted);font-family:var(--mono);font-size:0.75rem}
 
 #muniDetailWrap{scroll-margin-top:64px}
-.muni-detail-head{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.8rem;margin-bottom:1rem}
-.muni-detail-head h3{font-size:1.3rem;font-weight:700}
-.muni-detail-head .muni-uf{color:var(--ink-muted);font-size:0.9rem}
-.muni-badges{display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.4rem}
+.ficha-head{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.8rem;margin-bottom:1rem}
+.ficha-head h2{font-size:1.3rem;font-weight:700}
+.ficha-head .muni-uf{color:var(--ink-muted);font-size:0.9rem}
+.ficha-badges{display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.4rem}
 .empty-state{text-align:center;padding:3rem 1rem;color:var(--ink-muted)}
 .empty-state svg{opacity:0.4;margin-bottom:0.8rem}
 
@@ -185,6 +229,10 @@ table.data td.neg{color:var(--neg);font-weight:600}
 .study-links{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.6rem}
 .study-links a{display:block;padding:0.7rem 0.9rem;border:1px solid var(--border);border-radius:6px;text-decoration:none;font-size:0.85rem;font-weight:600;color:var(--teal-dark);background:#fff}
 .study-links a:hover{border-color:var(--teal)}
+.proveniencia{width:100%;border-collapse:collapse;font-size:0.82rem;margin-top:0.8rem}
+.proveniencia th{text-align:left;padding:0.5rem 0.7rem;background:var(--paper-alt);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.03em;color:var(--ink-muted);border-bottom:1px solid var(--border)}
+.proveniencia td{padding:0.5rem 0.7rem;border-bottom:1px solid #eef1f2;color:var(--ink-light)}
+.proveniencia code{font-family:var(--mono);font-size:0.78rem;background:var(--paper-alt);padding:0.1rem 0.3rem;border-radius:3px}
 
 .disclaimer{background:#eaf5f8;border:1px solid #bcdce6;border-radius:8px;padding:0.85rem 1.1rem;font-size:0.8rem;color:#0a4a5c;line-height:1.55;margin-bottom:1.3rem}
 .disclaimer strong{color:#053445}
@@ -203,6 +251,7 @@ footer.site-foot a:hover{text-decoration:underline}
     .utility-inner span{display:none}
     main{padding:1.1rem 0.9rem 3rem}
     .kpi-value{font-size:1.3rem}
+    .contexto-strip{gap:0.8rem 1.2rem}
 }
 </style>
 </head>
@@ -212,7 +261,7 @@ footer.site-foot a:hover{text-decoration:underline}
 <div class="utility-bar">
     <div class="utility-inner">
         <span>sefaz.es.gov.br · EC 132/2023, LC 214/2024, LC 227/2026</span>
-        <a href="https://www.eduardoreisaraujo.com.br/estudos/" target="_blank" rel="noopener">Metodologia completa ↗</a>
+        <a href="https://www.eduardoreisaraujo.com.br/estudos/" target="_blank" rel="noopener">Metodologia completa →</a>
     </div>
 </div>
 
@@ -220,7 +269,7 @@ footer.site-foot a:hover{text-decoration:underline}
     <div class="masthead-inner">
         <div>
             <h1>Painel da Reforma Tributária</h1>
-            <p class="sub">Arrecadação e projeção 2029–2033 de estados e municípios</p>
+            <p class="sub">Para onde vai a arrecadação de cada estado e município</p>
         </div>
         <div class="masthead-author">
             <div class="masthead-author-text">
@@ -261,35 +310,19 @@ footer.site-foot a:hover{text-decoration:underline}
 
 <!-- ============ VISÃO GERAL ============ -->
 <section class="view active" id="view-visao-geral">
-    <div class="view-head">
-        <h2>Visão geral do Brasil</h2>
-        <p class="sub">Arrecadação nacional de ICMS e ISS até 2025, e projeção do IBS até 2033.</p>
+    <div class="view-head" style="text-align:center">
+        <h2>Para onde vai a arrecadação?</h2>
+        <p class="sub">Busque um estado ou município para ver o histórico, a projeção 2029–2033 e os coeficientes que explicam o resultado.</p>
     </div>
 
-    <div class="view-head-row" style="margin-bottom:0.6rem">
-        <div class="section-label" style="margin-bottom:0">Indicadores-chave</div>
-        <span class="badge" style="background:var(--paper-alt);color:var(--ink-muted);border:1px solid var(--border)">Cenário: destino pleno</span>
-    </div>
-    <div class="kpi-grid" id="kpiNacional">
-        <div class="loading-inline">Carregando indicadores…</div>
-    </div>
-
-    <div class="panel-grid2">
-        <div class="panel accent">
-            <h3>Trajetória da arrecadação nacional</h3>
-            <p class="panel-sub">Valores reais (R$ de 2025). Histórico até 2025, projeção até 2033.</p>
-            <div class="chart-box"><canvas id="chartNacional"></canvas></div>
-        </div>
-        <div class="panel accent">
-            <h3>Estado x município</h3>
-            <p class="panel-sub">Como a receita nacional se divide entre os governos estaduais e os municípios.</p>
-            <div class="chart-box"><canvas id="chartComposicao"></canvas></div>
-        </div>
+    <div class="hero-search-wrap">
+        <input type="text" id="heroSearchInput" placeholder="Digite o nome de um estado ou município…" autocomplete="off">
+        <div class="hero-search-results" id="heroSearchResults"></div>
     </div>
 
     <div class="panel accent" style="margin-top:0.2rem">
         <h3>Variação da receita por UF em 2033</h3>
-        <p class="panel-sub">Estado e municípios, contra o cenário sem a reforma. Clique num estado para ver o detalhe.</p>
+        <p class="panel-sub">Estado e municípios, contra o cenário sem a reforma. Clique num estado para ver a ficha completa.</p>
         <div class="map-wrapper" id="mapWrapper" style="min-height:420px">
             <div class="map-loading" id="mapLoading">carregando mapa…</div>
             <svg id="brazilMap" style="display:none"></svg>
@@ -301,48 +334,30 @@ footer.site-foot a:hover{text-decoration:underline}
             <span>ganha mais</span>
         </div>
     </div>
+
+    <div class="contexto-nacional">
+        <div class="section-label">Contexto nacional</div>
+        <div class="contexto-strip" id="contextoNacional">
+            <span class="loading-inline">Carregando…</span>
+        </div>
+    </div>
 </section>
 
 <!-- ============ ESTADOS ============ -->
 <section class="view" id="view-estados">
     <div class="view-head view-head-row">
         <div>
-            <h2>Detalhe por estado</h2>
-            <p class="sub">Receita, per capita e municípios do estado selecionado.</p>
+            <h2 id="ufFichaTitle">Espírito Santo</h2>
+            <p class="sub">Ente estadual — histórico, projeção e coeficientes.</p>
         </div>
         <select class="select-uf" id="ufSelect" aria-label="Selecionar estado"></select>
     </div>
 
-    <div class="kpi-grid" id="kpiUf"></div>
-
-    <div class="panel">
-        <h3>Coeficientes do ente estadual</h3>
-        <p class="panel-sub">Participação de 2025, critério histórico da transição e critério de destino pleno.</p>
-        <div class="kpi-grid" id="kpiUfCoef" style="margin-bottom:0"></div>
-    </div>
-
-    <div class="panel-grid2">
-        <div class="panel accent">
-            <h3 id="ufChartTitle">Receita do ente estadual</h3>
-            <p class="panel-sub">Referência de 2025 e projeção, contra o cenário sem a reforma.</p>
-            <div class="chart-box"><canvas id="chartUf"></canvas></div>
-        </div>
-        <div class="panel accent">
-            <h3>Receita per capita</h3>
-            <p class="panel-sub">Ente estadual, população fixada na média 2019–2025.</p>
-            <div class="chart-box"><canvas id="chartUfPerCapita"></canvas></div>
-        </div>
-    </div>
-
-    <div class="panel">
-        <h3>Desigualdade entre municípios</h3>
-        <p class="panel-sub">Distância entre a receita per capita do município mais rico e do mais pobre do estado.</p>
-        <div class="kpi-grid" id="kpiUfDesigualdade" style="margin-bottom:0"></div>
-    </div>
+    <div id="ufFichaWrap"></div>
 
     <div class="panel">
         <h3>Municípios do estado</h3>
-        <p class="panel-sub">Clique num município para ver a página completa.</p>
+        <p class="panel-sub">Clique num município para ver a ficha completa.</p>
         <div class="table-tools">
             <input type="text" class="search-input" id="ufMuniSearch" placeholder="Buscar município neste estado…">
         </div>
@@ -360,13 +375,19 @@ footer.site-foot a:hover{text-decoration:underline}
             <div class="table-more" id="ufMuniMore" style="display:none">Mostrar mais municípios</div>
         </div>
     </div>
+
+    <div class="panel">
+        <h3>Desigualdade entre municípios</h3>
+        <p class="panel-sub">Distância entre a receita per capita do município mais rico e do mais pobre do estado.</p>
+        <div class="kpi-grid" id="kpiUfDesigualdade" style="margin-bottom:0"></div>
+    </div>
 </section>
 
 <!-- ============ MUNICÍPIOS ============ -->
 <section class="view" id="view-municipios">
     <div class="view-head">
         <h2>Busca por município</h2>
-        <p class="sub">Coeficientes, dados usados no cálculo e projeção de receita, para cada um dos 5.569 municípios.</p>
+        <p class="sub">Histórico, projeção, coeficientes e Seguro-Receita, para cada um dos 5.569 municípios.</p>
     </div>
 
     <div class="muni-search-wrap">
@@ -377,7 +398,7 @@ footer.site-foot a:hover{text-decoration:underline}
     <div id="muniDetailWrap">
         <div class="empty-state" id="muniEmpty">
             <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
-            <p>Busque um município acima para ver todos os indicadores dele numa única página.</p>
+            <p>Busque um município acima para ver a ficha completa.</p>
         </div>
     </div>
 </section>
@@ -386,7 +407,7 @@ footer.site-foot a:hover{text-decoration:underline}
 <section class="view" id="view-rankings">
     <div class="view-head">
         <h2>Rankings nacionais de 2033</h2>
-        <p class="sub">Os 20 municípios que mais ganham e os 20 que mais perdem receita projetada, entre os elegíveis. Clique numa linha para ver o detalhe.</p>
+        <p class="sub">Os 20 municípios que mais ganham e os 20 que mais perdem receita projetada, entre os elegíveis. Clique numa linha para ver a ficha.</p>
         <p style="font-size:0.76rem;color:var(--ink-muted);margin-top:0.3rem">Elegível: cobertura de dados de ao menos 5 dos 7 anos, população média de 10 mil habitantes ou mais, sem ressalva de qualidade.</p>
     </div>
     <div class="panel-grid2">
@@ -413,11 +434,11 @@ footer.site-foot a:hover{text-decoration:underline}
 <section class="view" id="view-metodologia">
     <div class="view-head">
         <h2>Metodologia</h2>
-        <p class="sub">Resumo dos métodos e fontes. O detalhamento técnico completo está na nota metodológica e nos quinze estudos que alimentam este painel.</p>
+        <p class="sub">Como o modelo funciona, como este painel foi construído, e créditos.</p>
     </div>
 
     <div class="disclaimer">
-        <strong>Painel elaborado pela Secretaria da Fazenda do Espírito Santo (SEFAZ-ES)</strong>, a partir de modelo técnico desenvolvido por Eduardo Reis Araújo, economista e consultor do Tesouro Estadual. As estimativas resultam de metodologia própria, construída com dados públicos (SICONFI/STN, IBGE, POF/IBGE) e descrita em detalhe abaixo, para que os resultados possam ser conferidos e replicados.
+        <strong>Painel elaborado pela Secretaria da Fazenda do Espírito Santo (SEFAZ-ES)</strong>, a partir de modelo técnico desenvolvido por Eduardo Reis Araújo, economista e consultor do Tesouro Estadual. As estimativas resultam de metodologia própria, construída com dados públicos (SICONFI/STN, IBGE, POF/IBGE) e descrita em detalhe abaixo, para que os resultados possam ser conferidos e replicados. Não são o cálculo oficial do Comitê Gestor do IBS.
     </div>
 
     <div class="prose">
@@ -430,11 +451,30 @@ footer.site-foot a:hover{text-decoration:underline}
         <h3>Coeficiente de destino pleno (φ<sup>dest</sup>)</h3>
         <p>Quando a transição se completa, a distribuição passa a seguir o local de consumo. Como não há uma medida direta de consumo por município, o painel usa como proxy a renda domiciliar per capita do Censo 2022 combinada com a Pesquisa de Orçamentos Familiares (POF 2017–2018), que mostra como a propensão a consumir cai com a renda — famílias mais pobres consomem quase 100% do que ganham. Essa proxy é validada externamente contra Gobetti e Monteiro (2023) por UF; o desvio médio absoluto e a correlação de Pearson estão no Estudo 15.</p>
 
+        <h3>Seguro-Receita</h3>
+        <p>O ADCT (art. 132) reserva uma fração do IBS bruto (5%) para um fundo que repassa aos entes cuja receita, pelo critério de destino, ficar abaixo de um nível de nivelamento em relação à sua receita de referência. É um mecanismo temporário: o repasse tende a diminuir ao longo da transição, à medida que os entes se adaptam ao novo critério.</p>
+
         <h3>Projeção 2029–2033</h3>
         <p>Há dois cronogramas distintos, e é fácil confundi-los. O ADCT (art. 128) reduz a alíquota do ICMS e do ISS a cada ano, de 2029 a 2032, e os extingue por completo em 2033 — a partir desse ano, todo o "bolo" já é IBS. Dentro do IBS, um segundo cronograma, separado (ADCT art. 131, §1º), pondera o critério histórico e o de destino: a fração histórica é de 80% em 2029–2032 e sobe para 90% em 2033, só caindo a partir de 2034, à razão de um quarenta e cinco avos por ano, até chegar a 100% destino em 2078 — não em 2033. A projeção da receita de referência nacional segue as medianas do Boletim Focus (BCB) para o crescimento real do PIB, mantendo constante a razão observada entre o "bolo" tributário e o PIB (Estudo 11). O contrafactual usado para calcular a variação percentual de cada ente é a mesma receita de referência nacional projetada, aplicada à participação neutra do ente em 2025 — não um valor fixo de 2025.</p>
 
         <h3>Ressalvas de qualidade dos dados municipais</h3>
         <p>Municípios sinalizados como <span class="badge warn">estimativa aproximada</span> não têm registro individualizado de ISS e cota-parte de ICMS para 2025 no SICONFI; a participação neutra do ente é aproximada pela própria média de sete anos. Municípios sinalizados como <span class="badge err">dado a conferir</span> têm um valor declarado para 2025 que diverge de forma incompatível (mais de 5 vezes) do que a série histórica do próprio ente implicaria — provável falha de preenchimento na fonte primária, não uma mudança real de receita. Nos dois casos, o valor é exibido, mas não entra nos rankings nacionais de maiores ganhos e perdas.</p>
+
+        <h3>Como este painel foi construído</h3>
+        <p>É uma página estática (HTML, CSS e JavaScript), sem servidor por trás: os dados são arquivos JSON pré-computados por scripts em Python, versionados junto com o código (<code>data/build-*.py</code>), a partir das coletas do SICONFI/STN, IBGE e Censo/POF. Os gráficos usam Chart.js e o mapa usa D3.js com a malha de estados da API do IBGE. O painel não recalcula nada em tempo real: ele exibe os mesmos números já publicados nos estudos técnicos, gerados pelas mesmas funções de projeção, só reorganizados por ente em vez de por estudo.</p>
+
+        <h3>De onde vem cada indicador</h3>
+        <table class="proveniencia">
+            <thead><tr><th>Indicador</th><th>Arquivo de dados</th><th>Estudo de origem</th></tr></thead>
+            <tbody>
+                <tr><td>Histórico 2019–2025, por ente</td><td><code>data/painel-estados.json</code>, <code>data/painel-municipios/*.json</code></td><td>Estudos 02, 06</td></tr>
+                <tr><td>Projeção 2029–2033</td><td><code>resultados-consolidados-ibs.json</code>, <code>painel-municipios/*.json</code></td><td>Estudos 11, 15</td></tr>
+                <tr><td>Componentes da receita (origem/CPT/destino/seguro)</td><td><code>data/painel-estados.json</code>, <code>data/painel-municipios/*.json</code></td><td>Estudos 06, 11, 12</td></tr>
+                <tr><td>Coeficientes φ<sup>CPT</sup> e φ<sup>dest</sup></td><td><code>coeficientes-uf.json</code>, <code>coeficientes-municipios.json</code>, <code>rateio-destino-municipios.json</code></td><td>Estudos 02, 13</td></tr>
+                <tr><td>Seguro-Receita</td><td><code>seguro-receita-repasses-longo-prazo.json</code></td><td>Estudo 12</td></tr>
+                <tr><td>Rankings e desigualdade intramunicipal</td><td><code>resultados-consolidados-ibs.json</code></td><td>Estudo 15</td></tr>
+            </tbody>
+        </table>
 
         <h3>Estudos que alimentam este painel</h3>
         <div class="study-links">
@@ -444,8 +484,11 @@ footer.site-foot a:hover{text-decoration:underline}
             <a href="https://www.eduardoreisaraujo.com.br/estudos/ibs-projecao-longo-prazo.html" target="_blank" rel="noopener">Extensão de longo prazo (2034–2077)</a>
             <a href="https://www.eduardoreisaraujo.com.br/estudos/reforma-tributaria-coeficiente-municipios.html" target="_blank" rel="noopener">Coeficiente de Participação de Transição dos municípios</a>
             <a href="https://www.eduardoreisaraujo.com.br/estudos/ibs-destino-pof-censo.html" target="_blank" rel="noopener">Estudo — Coeficiente de destino (POF x Censo)</a>
-            <a href="https://www.eduardoreisaraujo.com.br/estudos/" target="_blank" rel="noopener">Ver todos os 15 estudos ↗</a>
+            <a href="https://www.eduardoreisaraujo.com.br/estudos/" target="_blank" rel="noopener">Ver todos os 15 estudos</a>
         </div>
+
+        <h3>Créditos e versão</h3>
+        <p>Modelo, base de dados e este painel: Eduardo Reis Araújo. Dados de referência: exercício DCA/SICONFI 2025. Estimativas próprias e independentes — não substituem projeções oficiais do Comitê Gestor do IBS ou da União.</p>
     </div>
 </section>
 
@@ -462,6 +505,7 @@ footer.site-foot a:hover{text-decoration:underline}
 const NOMES_UF = {AC:'Acre',AL:'Alagoas',AM:'Amazonas',AP:'Amapá',BA:'Bahia',CE:'Ceará',DF:'Distrito Federal',ES:'Espírito Santo',GO:'Goiás',MA:'Maranhão',MG:'Minas Gerais',MS:'Mato Grosso do Sul',MT:'Mato Grosso',PA:'Pará',PB:'Paraíba',PE:'Pernambuco',PI:'Piauí',PR:'Paraná',RJ:'Rio de Janeiro',RN:'Rio Grande do Norte',RO:'Rondônia',RR:'Roraima',RS:'Rio Grande do Sul',SC:'Santa Catarina',SE:'Sergipe',SP:'São Paulo',TO:'Tocantins'};
 const UFS = Object.keys(NOMES_UF).sort((a,b)=>NOMES_UF[a].localeCompare(NOMES_UF[b],'pt-BR'));
 const ANOS = [2029,2030,2031,2032,2033];
+const HIST_ANOS = [2019,2020,2021,2022,2023,2024,2025];
 const DEFAULT_UF = 'ES';
 
 const fmtPct = v => (v==null||!isFinite(v)) ? '—' : (v>=0?'+':'') + (v*100).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}) + '%';
@@ -476,16 +520,32 @@ function fmtMoney(v){
 }
 function fmtNum(v){ return v==null ? '—' : Math.round(v).toLocaleString('pt-BR'); }
 function fmtRs2(v){ return v==null ? '—' : v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fmtPctPlain(v, dec){ return v==null ? '—' : v.toLocaleString('pt-BR',{maximumFractionDigits:dec==null?4:dec})+'%'; }
 function norm(s){ return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase(); }
 
 // ── estado global ──
-let RESULTADOS = null;   // resultados-consolidados-ibs.json
-let NACIONAL = null;     // ibs-projecao-nacional.json
-let MUNICIPIOS = null;   // painel-municipios-2033.json (lazy)
-let muniLoadPromise = null;
+let RESULTADOS = null;      // resultados-consolidados-ibs.json
+let NACIONAL = null;        // ibs-projecao-nacional.json
+let ESTADOS = null;         // painel-estados.json .estados
+let MUNI_INDEX = null;      // painel-municipios/index.json .municipios (cod -> {nome,uf})
+const ufMuniCache = {};     // uf -> {cod: registro completo}
+const ufMuniPromises = {};
 let selectedUf = DEFAULT_UF;
 let ufMuniShown = 50;
 let ufMuniSort = {key:'variacao_2033', dir:-1};
+
+function ensureUfMunicipios(uf){
+    if (ufMuniCache[uf]) return Promise.resolve(ufMuniCache[uf]);
+    if (ufMuniPromises[uf]) return ufMuniPromises[uf];
+    ufMuniPromises[uf] = fetch('/data/painel-municipios/' + uf + '.json')
+        .then(r => r.ok ? r.json() : {municipios:{}})
+        .catch(() => ({municipios:{}}))
+        .then(d => {
+            ufMuniCache[uf] = d.municipios || {};
+            return ufMuniCache[uf];
+        });
+    return ufMuniPromises[uf];
+}
 
 // ── navegação por abas ──
 const views = document.querySelectorAll('.view');
@@ -493,8 +553,8 @@ const tabs = document.querySelectorAll('.tab-btn');
 function showView(name){
     views.forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
     tabs.forEach(t => t.classList.toggle('active', t.dataset.view === name));
-    if (name === 'municipios') ensureMunicipios();
     if (name === 'estados' && RESULTADOS) renderUfView();
+    window.scrollTo({top:0});
     history.replaceState(null, '', '#' + name);
 }
 tabs.forEach(t => t.addEventListener('click', () => showView(t.dataset.view)));
@@ -503,114 +563,41 @@ if (['visao-geral','estados','municipios','rankings','metodologia'].includes(ini
     showView(initialHash);
 }
 
-// ── carregamento dos dados principais ──
+// ── carregamento dos dados principais (leves; municípios completos são por UF, sob demanda) ──
 async function loadCore(){
-    const [r1, r2] = await Promise.all([
+    const [r1, r2, r3, r4] = await Promise.all([
         fetch('/data/resultados-consolidados-ibs.json').then(r=>r.json()),
         fetch('/data/ibs-projecao-nacional.json').then(r=>r.json()),
+        fetch('/data/painel-estados.json').then(r=>r.json()),
+        fetch('/data/painel-municipios/index.json').then(r=>r.json()),
     ]);
     RESULTADOS = r1;
     NACIONAL = r2;
-    renderKpiNacional();
-    renderChartNacional();
-    renderChartComposicao();
+    ESTADOS = r3.estados;
+    MUNI_INDEX = r4.municipios;
+    renderContextoNacional();
     renderMap();
     populateUfSelect();
     renderRankings();
     if (document.getElementById('view-estados').classList.contains('active')) renderUfView();
 }
 
-function ensureMunicipios(){
-    if (MUNICIPIOS || muniLoadPromise) return muniLoadPromise;
-    muniLoadPromise = fetch('/data/painel-municipios-2033.json').then(r=>r.json()).then(d => {
-        MUNICIPIOS = d.municipios;
-    });
-    return muniLoadPromise;
-}
-
-// ── KPIs nacionais ──
-function renderKpiNacional(){
+// ── contexto nacional (secundário, não é mais a abertura do painel) ──
+function renderContextoNacional(){
     const hist = NACIONAL.historico;
     const h2025 = hist[hist.length-1];
     const proj = NACIONAL.projecao;
     const p2033 = proj[proj.length-1];
-    const totalPos2033 = p2033.icms_iss_residual + p2033.ibs_bruto;
-
     const variacoes = Object.values(RESULTADOS.por_uf).map(v => v.variacao_por_ano['2033']);
     const nGanha = variacoes.filter(v => v > 0.0005).length;
     const nPerde = variacoes.filter(v => v < -0.0005).length;
-
-    const el = document.getElementById('kpiNacional');
-    el.innerHTML = `
-        <div class="kpi-card highlight">
-            <div class="kpi-label">Bolo tributário, 2025</div>
-            <div class="kpi-value">${fmtMoney(h2025.bolo_nominal)}</div>
-            <div class="kpi-delta">${h2025.bolo_pct_pib.toLocaleString('pt-BR',{maximumFractionDigits:2})}% do PIB</div>
-            <div class="kpi-foot">SICONFI/STN · DCA</div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-label">Bolo projetado, 2033</div>
-            <div class="kpi-value">${fmtMoney(totalPos2033)}</div>
-            <div class="kpi-delta">${p2033.bolo_pct_pib.toLocaleString('pt-BR',{maximumFractionDigits:2})}% do PIB</div>
-            <div class="kpi-foot">Estudo 11 · IBS pleno</div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-label">IBS já por destino, 2033</div>
-            <div class="kpi-value">${(p2033.ibs_destino_liquido/p2033.ibs_bruto*100).toLocaleString('pt-BR',{maximumFractionDigits:0})}%</div>
-            <div class="kpi-delta">ICMS/ISS já extinto — mas dentro do IBS, ainda ~90% segue o critério histórico</div>
-            <div class="kpi-foot">Pleno só em 2078 · ADCT, art. 131, §1º</div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-label">Redistribuição entre UFs</div>
-            <div class="kpi-value">${nGanha} <span style="font-size:1rem;font-weight:600;color:var(--ink-muted)">de 27</span></div>
-            <div class="kpi-delta pos">ganham receita · ${nPerde} perdem</div>
-            <div class="kpi-foot">Bolo nacional fixo, só muda a distribuição</div>
-        </div>
+    const destPct = p2033.ibs_destino_liquido/p2033.ibs_bruto*100;
+    document.getElementById('contextoNacional').innerHTML = `
+        <span>Bolo tributário 2025: <b>${fmtMoney(h2025.bolo_nominal)}</b></span>
+        <span>Projetado 2033: <b>${fmtMoney(p2033.icms_iss_residual + p2033.ibs_bruto)}</b></span>
+        <span><b>${nGanha}</b> de 27 UFs ganham receita, <b class="neg">${nPerde}</b> perdem</span>
+        <span>IBS já por destino em 2033: <b>${destPct.toLocaleString('pt-BR',{maximumFractionDigits:0})}%</b> (pleno só em 2078)</span>
     `;
-}
-
-function renderChartNacional(){
-    const hist = NACIONAL.historico.map(d => ({x:d.ano, y:d.bolo_real_2025}));
-    const proj = NACIONAL.projecao.map(d => ({x:d.ano, y:d.icms_iss_residual + d.ibs_bruto}));
-    const bridge = [hist[hist.length-1], {x:proj[0].x, y:proj[0].y}];
-    new Chart(document.getElementById('chartNacional'), {
-        type: 'line',
-        data: { datasets: [
-            { label:'Histórico (real, R$ 2025)', data: hist, borderColor:'#0080a3', backgroundColor:'#0080a3', tension:0.15, pointRadius:2, borderWidth:2.5 },
-            { label:'Projeção 2029–2033', data: proj, borderColor:'#9d5c6b', backgroundColor:'#9d5c6b', borderDash:[5,4], tension:0.15, pointRadius:2, borderWidth:2.5 },
-            { label:'', data: bridge, borderColor:'#c9c9c9', borderDash:[2,3], pointRadius:0, borderWidth:1.5 },
-        ]},
-        options: {
-            responsive:true, maintainAspectRatio:false,
-            scales: {
-                x: { type:'linear', ticks:{ stepSize:1, callback:v=>Math.round(v) }, grid:{ display:false } },
-                y: { ticks:{ callback:v=>fmtMoney(v) }, grid:{ color:'#eee' } },
-            },
-            plugins: { legend:{ position:'bottom', labels:{ filter:l=>l.text!=='' , boxWidth:14, font:{size:11} } },
-                tooltip:{ callbacks:{ label: ctx => fmtMoney(ctx.parsed.y) } } },
-        }
-    });
-}
-
-function renderChartComposicao(){
-    const d = RESULTADOS.distribuicao_estado_municipio;
-    const anos = ['2025','2033','2077'];
-    new Chart(document.getElementById('chartComposicao'), {
-        type: 'bar',
-        data: {
-            labels: anos,
-            datasets: [
-                { label:'Governos estaduais', data: anos.map(a=>d[a].estadual_pct*100), backgroundColor:'#0080a3', stack:'s' },
-                { label:'Municípios', data: anos.map(a=>d[a].municipal_pct*100), backgroundColor:'#9d5c6b', stack:'s' },
-            ]
-        },
-        options: {
-            indexAxis: 'y', responsive:true, maintainAspectRatio:false,
-            scales: { x:{ stacked:true, max:100, ticks:{callback:v=>v+'%'}, grid:{color:'#eee'} }, y:{ stacked:true, grid:{display:false} } },
-            plugins: { legend:{ position:'bottom', labels:{boxWidth:14,font:{size:11}} },
-                tooltip:{ callbacks:{ label: ctx => ctx.dataset.label + ': ' + ctx.parsed.x.toLocaleString('pt-BR',{maximumFractionDigits:1}) + '%' } } },
-        }
-    });
 }
 
 // ── mapa ──
@@ -651,7 +638,7 @@ function renderMap(){
         tooltip.style.left = left+'px'; tooltip.style.top = top+'px';
     }
     function showTooltip(uf, v, event){
-        tooltip.innerHTML = `<div class="map-tooltip-name">${NOMES_UF[uf]||uf}</div><div class="map-tooltip-value" style="color:${v>=0?'var(--pos)':'var(--neg)'}">${fmtPct(v)}</div><div class="map-tooltip-hint">vs. contrafactual, 2033 · clique para ver detalhe</div>`;
+        tooltip.innerHTML = `<div class="map-tooltip-name">${NOMES_UF[uf]||uf}</div><div class="map-tooltip-value" style="color:${v>=0?'var(--pos)':'var(--neg)'}">${fmtPct(v)}</div><div class="map-tooltip-hint">vs. contrafactual, 2033 · clique para ver a ficha</div>`;
         tooltip.classList.add('visible');
         positionTooltip(event);
     }
@@ -697,6 +684,200 @@ function renderMap(){
     });
 }
 
+// ── busca de ente unificada (visão geral) ──
+const heroInput = document.getElementById('heroSearchInput');
+const heroResults = document.getElementById('heroSearchResults');
+heroInput.addEventListener('input', () => {
+    const q = norm(heroInput.value.trim());
+    if (q.length < 2) { heroResults.classList.remove('show'); return; }
+    const ufMatches = UFS.filter(uf => norm(NOMES_UF[uf]).includes(q)).slice(0,6)
+        .map(uf => ({type:'estado', uf, nome: NOMES_UF[uf]}));
+    let muniMatches = [];
+    if (MUNI_INDEX) {
+        const all = Object.entries(MUNI_INDEX).filter(([cod,m]) => norm(m.nome).includes(q));
+        all.sort((a,b) => {
+            const an = norm(a[1].nome), bn = norm(b[1].nome);
+            const aStarts = an.startsWith(q) ? 0 : 1, bStarts = bn.startsWith(q) ? 0 : 1;
+            if (aStarts !== bStarts) return aStarts - bStarts;
+            return a[1].nome.length - b[1].nome.length;
+        });
+        muniMatches = all.slice(0,8).map(([cod,m]) => ({type:'municipio', cod, nome:m.nome, uf:m.uf}));
+    }
+    const items = [...ufMatches, ...muniMatches];
+    if (!items.length) { heroResults.innerHTML = '<div class="hero-search-item">Nenhum resultado</div>'; heroResults.classList.add('show'); return; }
+    heroResults.innerHTML = items.map(it => it.type==='estado'
+        ? `<div class="hero-search-item" data-type="estado" data-uf="${it.uf}"><span>${it.nome}</span><span class="tag">Estado</span></div>`
+        : `<div class="hero-search-item" data-type="municipio" data-cod="${it.cod}"><span>${it.nome}, ${it.uf}</span><span class="tag muni">Município</span></div>`
+    ).join('');
+    heroResults.querySelectorAll('.hero-search-item[data-type]').forEach(el => el.addEventListener('click', () => {
+        heroInput.value = ''; heroResults.classList.remove('show');
+        if (el.dataset.type === 'estado') { selectedUf = el.dataset.uf; showView('estados'); }
+        else { showView('municipios'); openMunicipio(el.dataset.cod); }
+    }));
+    heroResults.classList.add('show');
+});
+document.addEventListener('click', e => { if (!e.target.closest('.hero-search-wrap')) heroResults.classList.remove('show'); });
+
+// ── frase-resumo e seções compartilhadas da ficha do ente ──
+function fraseResumo(nome, pre2025, pos2033, varPct){
+    const dir = varPct >= 0 ? 'acima' : 'abaixo';
+    const cls = varPct >= 0 ? 'pos' : 'neg';
+    return `${nome} arrecadou ${fmtMoney(pre2025)} em 2025. Em 2033, a projeção é de ${fmtMoney(pos2033)} — <b class="${cls}">${fmtPct(varPct)}</b> ${dir} do que arrecadaria sem a reforma.`;
+}
+
+function coefTilesHtml(neutro, cpt, pleno){
+    return `
+    <div class="kpi-grid" style="margin-bottom:0">
+        <div class="kpi-card">
+            <div class="kpi-label">Participação neutra, 2025</div>
+            <div class="kpi-value" style="font-size:1.15rem">${fmtPctPlain(neutro)}</div>
+            <div class="coef-explain">A fatia deste ente hoje, sem a reforma — o ponto de partida da comparação.</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Coeficiente histórico (φ<sup>CPT</sup>)</div>
+            <div class="kpi-value" style="font-size:1.15rem">${fmtPctPlain(cpt)}</div>
+            <div class="coef-explain">Média de 7 anos (2019–2025) da receita de referência. É o critério que ainda pesa mais até 2033.</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Coeficiente de destino (φ<sup>dest</sup>)</div>
+            <div class="kpi-value" style="font-size:1.15rem">${fmtPctPlain(pleno)}</div>
+            <div class="coef-explain">Baseado em consumo (renda × POF). Pesa ~10% em 2033; por inteiro, só em 2078.</div>
+        </div>
+    </div>`;
+}
+
+function seguroCardHtml(repasseByYear, posByYear){
+    const v2033 = (repasseByYear && repasseByYear['2033']) || 0;
+    const recebe = v2033 > 1;
+    if (!recebe) {
+        return `<div class="seguro-card">
+            <div class="seguro-label">Seguro-Receita (ADCT art. 132)</div>
+            <div class="seguro-value muted">Não recebe</div>
+            <div class="seguro-note">Em 2029–2033, a receita deste ente pelo critério de destino fica acima do nível de nivelamento em todos os anos do período — não há repasse.</div>
+        </div>`;
+    }
+    const total2033 = posByYear && posByYear['2033'];
+    const share = total2033 ? (v2033/total2033*100) : null;
+    return `<div class="seguro-card recebe">
+        <div class="seguro-label">Seguro-Receita (ADCT art. 132)</div>
+        <div class="seguro-value">${fmtMoney(v2033)}</div>
+        <div class="seguro-note">Repasse bruto em 2033${share!=null ? ' — '+share.toLocaleString('pt-BR',{maximumFractionDigits:1})+'% da receita projetada do ente naquele ano' : ''}. Mecanismo temporário: tende a diminuir ao longo da transição.</div>
+    </div>`;
+}
+
+function historicoTableHtml(historico, fieldKey){
+    const rows = HIST_ANOS.map(a => {
+        const h = historico ? historico[String(a)] : null;
+        return `<tr><td>${a}</td><td class="num">${h ? fmtMoney(h[fieldKey]) : '—'}</td></tr>`;
+    }).join('');
+    return `<table class="data" style="font-size:0.82rem"><thead><tr><th>Ano</th><th class="num">Receita (R$ de 2025)</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function fichaSectionsHtml(idPrefix){
+    return `
+        <div class="frase-resumo" id="${idPrefix}Frase"></div>
+        <div class="panel accent">
+            <h3>Para onde vai a arrecadação</h3>
+            <p class="panel-sub">Histórico real (2019–2025) e projeção 2029–2033, contra o cenário sem a reforma.</p>
+            <div class="chart-box" style="height:340px"><canvas id="${idPrefix}HeroChart"></canvas></div>
+        </div>
+        <div class="panel accent">
+            <div class="view-head-row" style="margin-bottom:0.15rem">
+                <h3 style="margin-bottom:0">Como fica o ICMS/ISS na transição</h3>
+                <div class="comp-toggle" id="${idPrefix}CompToggle">
+                    <button type="button" data-mode="pct" class="active">%</button>
+                    <button type="button" data-mode="rs">R$</button>
+                </div>
+            </div>
+            <p class="panel-sub">Composição da receita projetada: quanto ainda vem do ICMS/ISS residual, quanto já é IBS pelos dois critérios, e quanto é Seguro-Receita.</p>
+            <div class="chart-box"><canvas id="${idPrefix}CompChart"></canvas></div>
+        </div>
+        <div class="panel">
+            <h3>Coeficientes de participação</h3>
+            <p class="panel-sub">Os critérios que, ponderados pelo cronograma do ADCT, definem a fatia deste ente no IBS.</p>
+            <div id="${idPrefix}CoefTiles"></div>
+        </div>
+        <div class="panel-grid2">
+            <div class="panel" style="margin-bottom:0">
+                <h3>Seguro-Receita</h3>
+                <p class="panel-sub">Repasse compensatório para entes cuja receita pelo destino fica abaixo do nível de nivelamento.</p>
+                <div id="${idPrefix}Seguro"></div>
+            </div>
+            <div class="panel" style="margin-bottom:0">
+                <h3>Dados históricos usados no cálculo</h3>
+                <p class="panel-sub">Receita real declarada ao SICONFI, deflacionada a R$ de 2025.</p>
+                <div id="${idPrefix}Historico"></div>
+            </div>
+        </div>
+        <p style="font-size:0.78rem;color:var(--ink-muted);margin-top:-0.4rem">Estimativa própria (não oficial), a partir de dados do SICONFI/STN, IBGE e Censo/POF. Veja como em <a href="#metodologia" data-goto-metodologia style="color:var(--teal-dark);font-weight:600">Metodologia</a>.</p>
+    `;
+}
+
+function renderComponentesChart(canvasEl, componentesPorAno, refs, asPercent){
+    if (refs.comp) refs.comp.destroy();
+    const anos = ANOS.map(String);
+    const rows = anos.map(a => (componentesPorAno && componentesPorAno[a]) || {origem:0,cpt:0,destino:0,seguro:0});
+    const totals = rows.map(r => r.origem+r.cpt+r.destino+r.seguro);
+    const val = arr => asPercent ? arr.map((v,i)=> totals[i] ? v/totals[i]*100 : 0) : arr;
+    refs.comp = new Chart(canvasEl, {
+        type:'bar',
+        data:{ labels: anos, datasets:[
+            { label:'ICMS/ISS (origem)', data: val(rows.map(r=>r.origem)), backgroundColor:'#77a1bb', stack:'s' },
+            { label:'IBS histórico (φCPT)', data: val(rows.map(r=>r.cpt)), backgroundColor:'#0080a3', stack:'s' },
+            { label:'IBS destino (φdest)', data: val(rows.map(r=>r.destino)), backgroundColor:'#9d5c6b', stack:'s' },
+            { label:'Seguro-Receita', data: val(rows.map(r=>r.seguro)), backgroundColor:'#947a42', stack:'s' },
+        ]},
+        options:{ responsive:true, maintainAspectRatio:false,
+            scales:{ x:{ stacked:true, grid:{display:false} }, y:{ stacked:true, ticks:{ callback:v=> asPercent ? v+'%' : fmtMoney(v) }, grid:{color:'#eee'} } },
+            plugins:{ legend:{ position:'bottom', labels:{boxWidth:12,font:{size:10}} },
+                tooltip:{ callbacks:{ label: c => c.dataset.label + ': ' + (asPercent ? c.parsed.y.toLocaleString('pt-BR',{maximumFractionDigits:1})+'%' : fmtMoney(c.parsed.y)) } } } }
+    });
+}
+
+const fichaChartRefs = {};
+function renderFicha(idPrefix, nome, ctx){
+    fichaChartRefs[idPrefix] = fichaChartRefs[idPrefix] || {};
+    const refs = fichaChartRefs[idPrefix];
+
+    document.getElementById(idPrefix+'Frase').innerHTML = fraseResumo(nome, ctx.pre2025, ctx.posByYear['2033'], ctx.varByYear['2033']);
+    document.getElementById(idPrefix+'CoefTiles').innerHTML = coefTilesHtml(ctx.neutro, ctx.cpt, ctx.pleno);
+    document.getElementById(idPrefix+'Seguro').innerHTML = seguroCardHtml(ctx.repasse, ctx.posByYear);
+    document.getElementById(idPrefix+'Historico').innerHTML = historicoTableHtml(ctx.historico, ctx.fieldKey);
+
+    const labels = [...HIST_ANOS.map(String), ...ANOS.map(String)];
+    const histData = labels.map(l => { const y=Number(l); return (y<=2025 && ctx.historico && ctx.historico[l]) ? ctx.historico[l][ctx.fieldKey] : null; });
+    const projData = labels.map(l => { const y=Number(l); if (y===2025) return ctx.pre2025; if (y>=2029) return ctx.posByYear[l]; return null; });
+    const contraData = labels.map(l => { const y=Number(l); if (y===2025) return ctx.pre2025; if (y>=2029) return ctx.contraByYear[l]; return null; });
+    if (refs.hero) refs.hero.destroy();
+    refs.hero = new Chart(document.getElementById(idPrefix+'HeroChart'), {
+        type:'line',
+        data:{ labels, datasets:[
+            { label:'Histórico (real)', data:histData, borderColor:'#365a6d', backgroundColor:'#365a6d', borderWidth:2.5, spanGaps:false, tension:0.1, pointRadius:2 },
+            { label:'Projeção (com reforma)', data:projData, borderColor:'#0080a3', backgroundColor:'rgba(0,128,163,0.10)', borderWidth:2.5, spanGaps:false, tension:0.1, pointRadius:2, fill:'+1' },
+            { label:'Contrafactual (sem reforma)', data:contraData, borderColor:'#b0b8bc', backgroundColor:'#b0b8bc', borderDash:[5,4], borderWidth:2, spanGaps:false, tension:0.1, pointRadius:2, fill:false },
+        ]},
+        options:{ responsive:true, maintainAspectRatio:false,
+            scales:{ y:{ ticks:{ callback:v=>fmtMoney(v) }, grid:{color:'#eee'} }, x:{ grid:{display:false} } },
+            plugins:{ legend:{ position:'bottom', labels:{boxWidth:14,font:{size:11}} }, tooltip:{ callbacks:{ label: c => c.dataset.label+': '+fmtMoney(c.parsed.y) } } } }
+    });
+
+    let mode = 'pct';
+    const compCanvas = document.getElementById(idPrefix+'CompChart');
+    const draw = () => renderComponentesChart(compCanvas, ctx.componentes, refs, mode==='pct');
+    draw();
+    const toggle = document.getElementById(idPrefix+'CompToggle');
+    toggle.querySelectorAll('button').forEach(btn => {
+        btn.onclick = () => {
+            mode = btn.dataset.mode;
+            toggle.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b===btn));
+            draw();
+        };
+    });
+}
+document.addEventListener('click', e => {
+    if (e.target.closest('[data-goto-metodologia]')) { e.preventDefault(); showView('metodologia'); }
+});
+
 // ── ESTADOS ──
 function populateUfSelect(){
     const sel = document.getElementById('ufSelect');
@@ -704,86 +885,37 @@ function populateUfSelect(){
     sel.addEventListener('change', () => { selectedUf = sel.value; ufMuniShown = 50; renderUfView(); });
 }
 
-let chartUfInst = null, chartUfPcInst = null;
+function buildEstadoCtx(uf){
+    const est = RESULTADOS.por_uf_estado[uf];
+    const edata = ESTADOS[uf];
+    return {
+        pre2025: est.pre_2025,
+        posByYear: est.pos_por_ano,
+        contraByYear: est.contrafactual_por_ano,
+        varByYear: est.variacao_por_ano,
+        historico: edata.historico_por_ano,
+        fieldKey: 'estado_reais_2025',
+        componentes: edata.componentes_por_ano.estado,
+        neutro: edata.coef_neutro_estado_pct,
+        cpt: edata.coef_cpt_estado_pct,
+        pleno: edata.coef_pleno_estado_pct,
+        repasse: edata.repasse_seguro_receita_por_ano.estado,
+    };
+}
+
 function renderUfView(){
-    if (!RESULTADOS) return;
+    if (!RESULTADOS || !ESTADOS) return;
     document.getElementById('ufSelect').value = selectedUf;
-    const est = RESULTADOS.por_uf_estado[selectedUf];
+    document.getElementById('ufFichaTitle').textContent = NOMES_UF[selectedUf];
+
+    const wrap = document.getElementById('ufFichaWrap');
+    wrap.innerHTML = fichaSectionsHtml('uf');
+    const ctx = buildEstadoCtx(selectedUf);
+    renderFicha('uf', NOMES_UF[selectedUf], ctx);
+
     const tot = RESULTADOS.por_uf[selectedUf];
-    const pc = RESULTADOS.per_capita_uf ? RESULTADOS.per_capita_uf[selectedUf] : null;
-    const v2033 = est.variacao_por_ano['2033'];
-
-    document.getElementById('kpiUf').innerHTML = `
-        <div class="kpi-card highlight">
-            <div class="kpi-label">${NOMES_UF[selectedUf]}, referência 2025</div>
-            <div class="kpi-value">${fmtMoney(est.pre_2025)}</div>
-            <div class="kpi-foot">Ente estadual, líquido da cota-parte</div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-label">Projeção 2033</div>
-            <div class="kpi-value">${fmtMoney(est.pos_por_ano['2033'])}</div>
-            <div class="kpi-delta ${clsPct(v2033)}">${fmtPct(v2033)} vs. contrafactual</div>
-            <div class="kpi-foot">Ente estadual</div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-label">Variação acumulada, 2029–2033</div>
-            <div class="kpi-value" style="color:${est.acumulado_dpct>=0?'var(--pos)':'var(--neg)'}">${fmtPct(est.acumulado_dpct)}</div>
-            <div class="kpi-foot">Soma do período, ente estadual</div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-label">Estado e municípios, 2033</div>
-            <div class="kpi-value">${fmtMoney(tot.pos_por_ano['2033'])}</div>
-            <div class="kpi-delta ${clsPct(tot.variacao_por_ano['2033'])}">${fmtPct(tot.variacao_por_ano['2033'])} vs. contrafactual</div>
-            <div class="kpi-foot">Agregado da UF</div>
-        </div>
-    `;
-
-    const coefUf = (RESULTADOS.anexo_a && RESULTADOS.anexo_a.estados || []).find(e => e.uf === selectedUf);
-    document.getElementById('kpiUfCoef').innerHTML = coefUf ? `
-        <div class="kpi-card">
-            <div class="kpi-label">Participação neutra, 2025</div>
-            <div class="kpi-value" style="font-size:1.2rem">${coefUf.coef_neutro_icms_pct.toLocaleString('pt-BR',{maximumFractionDigits:4})}%</div>
-            <div class="kpi-foot">Fatia do estado hoje, sem a reforma</div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-label">Coeficiente de transição (φ<sup>CPT</sup>)</div>
-            <div class="kpi-value" style="font-size:1.2rem">${coefUf.coef_cpt_pct.toLocaleString('pt-BR',{maximumFractionDigits:4})}%</div>
-            <div class="kpi-foot">Base do cronograma 2029–2033</div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-label">Coeficiente de destino pleno (φ<sup>dest</sup>)</div>
-            <div class="kpi-value" style="font-size:1.2rem">${coefUf.coef_pleno_pct.toLocaleString('pt-BR',{maximumFractionDigits:4})}%</div>
-            <div class="kpi-foot">Peso ~10% em 2033, pleno só em 2078</div>
-        </div>
-    ` : '<p style="color:var(--ink-muted);font-size:0.85rem">Coeficientes não disponíveis para este estado.</p>';
-
-    document.getElementById('ufChartTitle').textContent = 'Receita do ente estadual';
-    const labels = ['2025 (ref.)', ...ANOS.map(String)];
-    const posData = [est.pre_2025, ...ANOS.map(a => est.pos_por_ano[String(a)])];
-    const contraData = [est.pre_2025, ...ANOS.map(a => est.contrafactual_por_ano[String(a)])];
-    if (chartUfInst) chartUfInst.destroy();
-    chartUfInst = new Chart(document.getElementById('chartUf'), {
-        type:'line',
-        data:{ labels, datasets:[
-            { label:'Projeção (com reforma)', data:posData, borderColor:'#0080a3', backgroundColor:'#0080a3', borderWidth:2.5, tension:0.1 },
-            { label:'Contrafactual (sem reforma)', data:contraData, borderColor:'#b0b8bc', backgroundColor:'#b0b8bc', borderDash:[5,4], borderWidth:2, tension:0.1 },
-        ]},
-        options:{ responsive:true, maintainAspectRatio:false,
-            scales:{ y:{ ticks:{ callback:v=>fmtMoney(v) }, grid:{color:'#eee'} }, x:{ grid:{display:false} } },
-            plugins:{ legend:{ position:'bottom', labels:{boxWidth:14,font:{size:11}} }, tooltip:{ callbacks:{ label: ctx => ctx.dataset.label+': '+fmtMoney(ctx.parsed.y) } } } }
-    });
-
-    if (chartUfPcInst) chartUfPcInst.destroy();
-    if (pc) {
-        chartUfPcInst = new Chart(document.getElementById('chartUfPerCapita'), {
-            type:'bar',
-            data:{ labels:['2025','2033','2077 (longo prazo)'], datasets:[{ data:[pc.per_capita_2025, pc.per_capita_2033, pc.per_capita_2077], backgroundColor:['#77a1bb','#0080a3','#365a6d'] }] },
-            options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => 'R$ '+fmtRs2(ctx.parsed.y)+' por habitante' } } },
-                scales:{ y:{ ticks:{ callback:v=>'R$ '+Math.round(v) }, grid:{color:'#eee'} }, x:{ grid:{display:false} } } }
-        });
-    } else {
-        document.getElementById('chartUfPerCapita').parentElement.innerHTML = '<p style="color:var(--ink-muted);font-size:0.85rem">Per capita não disponível para ' + NOMES_UF[selectedUf] + ' (Distrito Federal não tem esfera municipal própria).</p>';
-    }
+    const fraseEl = document.getElementById('ufFrase');
+    fraseEl.innerHTML += `<span class="agregado-note">Somando os municípios, o agregado da UF projetado para 2033 é ${fmtMoney(tot.pos_por_ano['2033'])} (${fmtPct(tot.variacao_por_ano['2033'])} vs. contrafactual).</span>`;
 
     const disp = RESULTADOS.dispersao_intramunicipal && RESULTADOS.dispersao_intramunicipal.por_uf[selectedUf];
     const gini = RESULTADOS.gini_percapita_municipal && RESULTADOS.gini_percapita_municipal.por_uf[selectedUf];
@@ -814,17 +946,17 @@ function renderUfView(){
 }
 
 function ufEntries(){
-    if (!MUNICIPIOS) return [];
-    return Object.entries(MUNICIPIOS).filter(([cod,m]) => m.uf === selectedUf)
-        .map(([cod,m]) => ({ cod, nome:m.nome, pop_media:m.pop_media, pre_2025:m.pre_2025, pos_2033:m.pos_por_ano['2033'], variacao_2033:m.variacao_por_ano['2033'], flag: m.neutro_aproximado||m.neutro_suspeito }));
+    const munis = ufMuniCache[selectedUf];
+    if (!munis) return [];
+    return Object.entries(munis).map(([cod,m]) => ({ cod, nome:m.nome, pop_media:m.pop_media, pre_2025:m.pre_2025, pos_2033:m.pos_por_ano['2033'], variacao_2033:m.variacao_por_ano['2033'], flag: m.neutro_aproximado||m.neutro_suspeito }));
 }
 function renderUfMuniTable(){
     const body = document.getElementById('ufMuniBody');
     const more = document.getElementById('ufMuniMore');
-    if (!MUNICIPIOS) {
+    if (!ufMuniCache[selectedUf]) {
         body.innerHTML = '<tr><td colspan="5" class="table-empty">Carregando municípios…</td></tr>';
         more.style.display = 'none';
-        ensureMunicipios().then(() => { if (document.getElementById('view-estados').classList.contains('active')) renderUfMuniTable(); });
+        ensureUfMunicipios(selectedUf).then(() => { if (document.getElementById('view-estados').classList.contains('active')) renderUfMuniTable(); });
         return;
     }
     const q = norm(document.getElementById('ufMuniSearch').value||'');
@@ -834,7 +966,10 @@ function renderUfMuniTable(){
     if (typeof rows[0] !== 'undefined' && typeof rows[0][ufMuniSort.key] === 'string') {
         rows.sort((a,b) => a[ufMuniSort.key].localeCompare(b[ufMuniSort.key],'pt-BR') * ufMuniSort.dir);
     }
-    if (!rows.length) { body.innerHTML = '<tr><td colspan="5" class="table-empty">Nenhum município encontrado.</td></tr>'; more.style.display='none'; return; }
+    if (!rows.length) {
+        const msg = selectedUf === 'DF' ? 'Distrito Federal não tem esfera municipal própria.' : 'Nenhum município encontrado.';
+        body.innerHTML = '<tr><td colspan="5" class="table-empty">' + msg + '</td></tr>'; more.style.display='none'; return;
+    }
     const shown = rows.slice(0, ufMuniShown);
     body.innerHTML = shown.map(r => `
         <tr data-cod="${r.cod}">
@@ -857,14 +992,13 @@ document.getElementById('ufMuniTable').querySelectorAll('thead th').forEach(th =
     });
 });
 
-// ── MUNICÍPIOS: busca e detalhe ──
+// ── MUNICÍPIOS: busca e ficha ──
 const muniInput = document.getElementById('muniSearchInput');
 const muniResults = document.getElementById('muniResults');
-muniInput.addEventListener('input', async () => {
+muniInput.addEventListener('input', () => {
     const q = norm(muniInput.value.trim());
-    if (q.length < 2) { muniResults.classList.remove('show'); return; }
-    await ensureMunicipios();
-    const all = Object.entries(MUNICIPIOS).filter(([cod,m]) => norm(m.nome).includes(q));
+    if (q.length < 2 || !MUNI_INDEX) { muniResults.classList.remove('show'); return; }
+    const all = Object.entries(MUNI_INDEX).filter(([cod,m]) => norm(m.nome).includes(q));
     all.sort((a,b) => {
         const an = norm(a[1].nome), bn = norm(b[1].nome);
         const aStarts = an.startsWith(q) ? 0 : 1, bStarts = bn.startsWith(q) ? 0 : 1;
@@ -880,90 +1014,55 @@ muniInput.addEventListener('input', async () => {
 });
 document.addEventListener('click', e => { if (!e.target.closest('.muni-search-wrap')) muniResults.classList.remove('show'); });
 
-let chartMuniInst = null;
+function buildMunicipioCtx(m){
+    return {
+        pre2025: m.pre_2025,
+        posByYear: m.pos_por_ano,
+        contraByYear: m.contrafactual_por_ano,
+        varByYear: m.variacao_por_ano,
+        historico: m.historico_por_ano,
+        fieldKey: 'total_reais_2025',
+        componentes: m.componentes_por_ano,
+        neutro: m.coef_neutro_pct,
+        cpt: m.coef_cpt_pct,
+        pleno: m.coef_pleno_pct,
+        repasse: m.repasse_seguro_receita_por_ano,
+    };
+}
+
 async function openMunicipio(cod){
-    await ensureMunicipios();
-    const m = MUNICIPIOS[cod];
-    if (!m) return;
+    if (!MUNI_INDEX) return;
+    const idx = MUNI_INDEX[cod];
+    if (!idx) return;
     const wrap = document.getElementById('muniDetailWrap');
+    wrap.innerHTML = '<div class="loading-inline">Carregando ' + idx.nome + '…</div>';
+    const munis = await ensureUfMunicipios(idx.uf);
+    const m = munis[cod];
+    if (!m) return;
+
     const badges = [];
     if (m.neutro_aproximado) badges.push('<span class="badge warn">estimativa aproximada</span>');
     if (m.neutro_suspeito) badges.push('<span class="badge err">dado a conferir</span>');
     if (!m.neutro_aproximado && !m.neutro_suspeito) badges.push('<span class="badge ok">sem ressalva de qualidade</span>');
-    const v2033 = m.variacao_por_ano['2033'];
 
     wrap.innerHTML = `
         <div class="panel">
-            <div class="muni-detail-head">
+            <div class="breadcrumb"><a href="#" data-back-uf="${m.uf}">← ${NOMES_UF[m.uf]}</a></div>
+            <div class="ficha-head">
                 <div>
-                    <h3>${m.nome}<span class="muni-uf">, ${NOMES_UF[m.uf]}</span></h3>
-                    <div class="muni-badges">${badges.join('')}</div>
+                    <h2>${m.nome}<span class="muni-uf">, ${NOMES_UF[m.uf]}</span></h2>
+                    <div class="ficha-badges">${badges.join('')}</div>
                 </div>
                 <div style="text-align:right">
                     <div class="kpi-label">População média 2019–2026</div>
                     <div class="kpi-value" style="font-size:1.2rem">${fmtNum(m.pop_media)}</div>
                 </div>
             </div>
-
-            <div class="kpi-grid">
-                <div class="kpi-card highlight">
-                    <div class="kpi-label">Referência histórica (base 2025)</div>
-                    <div class="kpi-value">${fmtMoney(m.pre_2025)}</div>
-                    <div class="kpi-foot">Participação neutra usada na projeção</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">Projeção 2033</div>
-                    <div class="kpi-value">${fmtMoney(m.pos_por_ano['2033'])}</div>
-                    <div class="kpi-delta ${clsPct(v2033)}">${fmtPct(v2033)} vs. contrafactual</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">Coeficiente de participação (φ<sup>CPT</sup>)</div>
-                    <div class="kpi-value" style="font-size:1.2rem">${m.coef_cpt_pct.toLocaleString('pt-BR',{maximumFractionDigits:5})}%</div>
-                    <div class="kpi-foot">Média histórica 2019–2025 (${m.cobertura_anos}/7 anos)</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">Coeficiente de destino pleno (φ<sup>dest</sup>)</div>
-                    <div class="kpi-value" style="font-size:1.2rem">${m.coef_pleno_pct.toLocaleString('pt-BR',{maximumFractionDigits:5})}%</div>
-                    <div class="kpi-foot">Peso ~10% em 2033, pleno só em 2078</div>
-                </div>
-            </div>
-
-            <div class="panel-grid2">
-                <div class="panel accent" style="margin-bottom:0">
-                    <h3>Projeção de receita municipal, 2029–2033</h3>
-                    <p class="panel-sub">Contra o contrafactual sem a reforma (mesma participação neutra de 2025, aplicada à receita nacional projetada).</p>
-                    <div class="chart-box"><canvas id="chartMuni"></canvas></div>
-                </div>
-                <div class="panel accent" style="margin-bottom:0">
-                    <h3>Dados usados no cálculo</h3>
-                    <p class="panel-sub">Insumos históricos e de destino, por trás dos dois coeficientes acima.</p>
-                    <table class="data" style="font-size:0.82rem">
-                        <tbody>
-                            <tr><td>Receita de referência (média 7 anos)</td><td class="num">${fmtMoney(m.receita_media_referencia_7anos)}</td></tr>
-                            <tr><td>Cobertura de dados (DCA/SICONFI)</td><td class="num">${m.cobertura_anos} de 7 anos</td></tr>
-                            <tr><td>Cota-parte do ICMS (destino, % nacional)</td><td class="num">${m.cota_parte_pct!=null ? m.cota_parte_pct.toLocaleString('pt-BR',{maximumFractionDigits:5})+'%' : '—'}</td></tr>
-                            <tr><td>IBS municipal próprio (destino, % nacional)</td><td class="num">${m.propria_pct!=null ? m.propria_pct.toLocaleString('pt-BR',{maximumFractionDigits:5})+'%' : '—'}</td></tr>
-                            <tr><td>Renda domiciliar per capita (Censo 2022)</td><td class="num">${m.renda_domiciliar_per_capita_2022!=null ? 'R$ '+fmtRs2(m.renda_domiciliar_per_capita_2022) : '—'}</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            ${fichaSectionsHtml('muni')}
         </div>
     `;
-    const labels = ['2025 (ref.)', ...ANOS.map(String)];
-    const posData = [m.pre_2025, ...ANOS.map(a => m.pos_por_ano[String(a)])];
-    const contraData = [m.pre_2025, ...ANOS.map(a => m.contrafactual_por_ano[String(a)])];
-    if (chartMuniInst) chartMuniInst.destroy();
-    chartMuniInst = new Chart(document.getElementById('chartMuni'), {
-        type:'line',
-        data:{ labels, datasets:[
-            { label:'Projeção (com reforma)', data:posData, borderColor:'#0080a3', backgroundColor:'#0080a3', borderWidth:2.5, tension:0.1 },
-            { label:'Contrafactual (sem reforma)', data:contraData, borderColor:'#b0b8bc', backgroundColor:'#b0b8bc', borderDash:[5,4], borderWidth:2, tension:0.1 },
-        ]},
-        options:{ responsive:true, maintainAspectRatio:false,
-            scales:{ y:{ ticks:{ callback:v=>fmtMoney(v) }, grid:{color:'#eee'} }, x:{ grid:{display:false} } },
-            plugins:{ legend:{ position:'bottom', labels:{boxWidth:14,font:{size:11}} }, tooltip:{ callbacks:{ label: ctx => ctx.dataset.label+': '+fmtMoney(ctx.parsed.y) } } } }
-    });
+    wrap.querySelector('[data-back-uf]').addEventListener('click', e => { e.preventDefault(); selectedUf = m.uf; showView('estados'); });
+    renderFicha('muni', m.nome, buildMunicipioCtx(m));
     wrap.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
