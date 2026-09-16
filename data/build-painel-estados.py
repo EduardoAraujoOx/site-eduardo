@@ -86,6 +86,7 @@ def main():
             r_muni = None if is_df else (iss_v + cota_v)
             historico_por_ano[ano] = {
                 "icms_reais_2025": icms_v * defl,
+                "outras_deducoes_reais_2025": outras_v * defl,
                 "iss_reais_2025": iss_v * defl,
                 "fecop_reais_2025": fecop_v * defl,
                 "cota_parte_reais_2025": cota_v * defl,
@@ -141,8 +142,10 @@ def main():
                 "só exposta por parte, esferas estado e total), repasse do "
                 "Seguro-Receita por ano e esfera (direto de "
                 "seguro-receita-repasses-longo-prazo.json), e série histórica "
-                "2019-2025 (ICMS, ISS, FECOP, cota-parte, real R$ 2025, mesmo "
-                "deflator e proporcionalização de build-coeficientes-uf.py). "
+                "2019-2025 (ICMS bruto, outras deduções do ICMS, ISS, FECOP, "
+                "cota-parte, real R$ 2025, mesmo deflator e proporcionalização "
+                "de build-coeficientes-uf.py; os mesmos componentes que "
+                "formam o coeficiente φCPT do estado em coeficientes-uf.json). "
                 "pos/contrafactual/variação por ano já estão publicados em "
                 "resultados-consolidados-ibs.json (por_uf, por_uf_estado) e não são "
                 "repetidos aqui."
