@@ -30,19 +30,36 @@
 
 <style>
 :root {
+    /* ── Identidade institucional. Cromo da página, nunca codificação de dado. ── */
     --teal: #0080a3;
     --teal-dark: #006885;
     --teal-darker: #1a3a5c;
     --nav-bg: #c2687a;
     --nav-active: #1a3a5c;
     --marsala: #9d5c6b;
-    --marsala-dark: #7c4b56;
-    --gold: #947a42;
-    --lightblue: #77a1bb;
-    --pos: #1e8449;
-    --pos-bg: #f0faf4;
-    --neg: #b03a2e;
-    --neg-bg: #fdf3f2;
+
+    /* ── Cores de dado, na ordem da pilha da composição da receita.
+       Conferidas com validador de paleta: pior par adjacente ΔE 14,7 em
+       deuteranopia e 19,0 em visão normal, acima dos pisos de 8 e 15. ── */
+    --s-origem:  #eb6834;
+    --s-cpt:     #0080a3;
+    --s-destino: #4a3aa7;
+    --s-seguro:  #eda100;
+
+    /* ── Escala divergente do mapa: perda ↔ neutro ↔ ganho.
+       Vermelho e azul, não vermelho e verde: esse par é indistinguível
+       na deuteranopia. O meio é cinza, para ler como "nenhuma variação". ── */
+    --div-neg: #a02525;
+    --div-mid: #f0efec;
+    --div-pos: #1c5cab;
+
+    /* ── Sinal de variação. Sempre acompanhado do sinal + ou −, nunca só cor. ── */
+    --pos: #1c5cab;
+    --pos-bg: #eef4fd;
+    --neg: #b3261e;
+    --neg-bg: #fdf1f0;
+
+    /* ── Tinta e cromo de gráfico ── */
     --ink: #141414;
     --ink-light: #444;
     --ink-muted: #6b6b6b;
@@ -50,6 +67,8 @@
     --paper-alt: #f6f8f9;
     --border: #dbe2e6;
     --border-strong: #b9c4ca;
+    --grid: #e9edf0;
+    --axis: #c8d0d6;
     --radius: 8px;
     --sans: 'Open Sans', 'Segoe UI', system-ui, sans-serif;
     --mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
@@ -139,8 +158,28 @@ main{max-width:var(--max);margin:0 auto;padding:1.75rem 1.25rem 4rem}
 .panel-grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:1.2rem}
 @media (max-width:860px){.panel-grid2{grid-template-columns:1fr}}
 
+/* ── faixa de indicadores da ficha ──
+   Um número-herói e três medidas de apoio. Os valores usam algarismos
+   proporcionais; tabular fica reservado às colunas que alinham na vertical. */
+.stat-band{display:grid;grid-template-columns:minmax(220px,0.9fr) 2fr;gap:1rem;margin-bottom:1.2rem}
+.stat-hero{background:#fff;border:1px solid var(--border);border-left:4px solid var(--border-strong);border-radius:var(--radius);padding:1.2rem 1.3rem;display:flex;flex-direction:column;justify-content:center;box-shadow:0 1px 2px rgba(20,20,20,0.04)}
+.stat-hero.pos{border-left-color:var(--pos)}
+.stat-hero.neg{border-left-color:var(--neg)}
+.stat-hero-value{font-size:clamp(2.5rem,5.5vw,3.1rem);font-weight:700;line-height:1.05;letter-spacing:-0.02em;margin-top:0.3rem;color:var(--ink)}
+.stat-hero-value.pos{color:var(--pos)}
+.stat-hero-value.neg{color:var(--neg)}
+.stat-hero-note{font-size:0.78rem;color:var(--ink-muted);margin-top:0.4rem;line-height:1.45}
+.stat-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem}
+.stat-tile{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;box-shadow:0 1px 2px rgba(20,20,20,0.04);display:flex;flex-direction:column;justify-content:center}
+.stat-label{font-family:var(--mono);font-size:0.66rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);line-height:1.35}
+.stat-value{font-size:1.45rem;font-weight:700;color:var(--ink);line-height:1.15;margin-top:0.4rem;letter-spacing:-0.01em}
+
+/* ── controles de gráfico ── */
+.chart-controls{display:flex;gap:0.5rem;flex-wrap:wrap}
+.map-fallback-note{font-size:0.72rem;color:var(--ink-muted);align-self:center;margin-right:0.6rem}
+
 /* ── frase-resumo ── */
-.frase-resumo{font-size:1.05rem;line-height:1.65;color:var(--ink);background:#fff;border:1px solid var(--border);border-left:4px solid var(--teal);padding:1rem 1.2rem;margin-bottom:1.2rem;border-radius:0 var(--radius) var(--radius) 0}
+.frase-resumo{font-size:1.02rem;line-height:1.65;color:var(--ink);background:#fff;border:1px solid var(--border);border-left:4px solid var(--teal);padding:1rem 1.2rem;margin-bottom:1.2rem;border-radius:0 var(--radius) var(--radius) 0}
 .frase-resumo b{color:var(--teal-dark)}
 .frase-resumo b.neg{color:var(--neg)}
 .frase-resumo b.pos{color:var(--pos)}
@@ -153,9 +192,9 @@ main{max-width:var(--max);margin:0 auto;padding:1.75rem 1.25rem 4rem}
 
 /* ── seguro-receita ── */
 .seguro-card{border-radius:var(--radius);padding:1.1rem 1.2rem;border:1px solid var(--border);background:#fff;box-shadow:0 1px 2px rgba(20,20,20,0.04)}
-.seguro-card.recebe{border-color:var(--gold);background:#fdf9f0}
+.seguro-card.recebe{border-color:var(--s-seguro);background:#fdf8ec}
 .seguro-label{font-family:var(--mono);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-muted);margin-bottom:0.5rem}
-.seguro-value{font-size:1.5rem;font-weight:700;color:var(--gold)}
+.seguro-value{font-size:1.5rem;font-weight:700;color:#8a6200}
 .seguro-value.muted{color:var(--ink-muted);font-size:1.15rem}
 .seguro-note{font-size:0.8rem;color:var(--ink-light);margin-top:0.6rem;line-height:1.55}
 
@@ -165,7 +204,7 @@ main{max-width:var(--max);margin:0 auto;padding:1.75rem 1.25rem 4rem}
 .breadcrumb a:hover{text-decoration:underline}
 
 /* ── map ── */
-.map-wrapper{position:relative;background:#eaf1f5;border-radius:var(--radius);min-height:220px}
+.map-wrapper{position:relative;background:var(--paper-alt);border-radius:var(--radius);min-height:220px}
 .map-state{stroke:#fff;stroke-width:0.6;cursor:pointer;transition:opacity .15s,stroke-width .15s}
 .map-state:hover,.map-state.is-active{opacity:0.85;stroke-width:1.6;stroke:var(--teal-darker)}
 .map-uf-label{pointer-events:none;font-family:var(--sans);font-weight:700}
@@ -175,8 +214,12 @@ main{max-width:var(--max);margin:0 auto;padding:1.75rem 1.25rem 4rem}
 .map-tooltip-value{font-size:1.05rem;font-weight:700}
 .map-tooltip-hint{font-size:0.72rem;color:var(--ink-muted);margin-top:0.3rem}
 .map-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--ink-muted);font-size:0.85rem;gap:0.5rem}
-.map-legend{display:flex;align-items:center;gap:0.7rem;margin-top:0.8rem;font-size:0.72rem;color:var(--ink-muted)}
-.map-legend-bar{flex:1;height:8px;border-radius:5px;background:linear-gradient(to right,var(--neg),#f4ede3,var(--pos))}
+/* Legenda de escala: barra contínua + marcas numéricas, para que a cor
+   possa ser convertida em valor sem depender do cursor. */
+.scale-legend{margin-top:1rem;max-width:520px}
+.scale-legend-bar{height:10px;border-radius:5px;background:linear-gradient(to right,var(--div-neg),#e8a9a7 25%,var(--div-mid) 50%,#7fa9e3 75%,var(--div-pos))}
+.scale-legend-ticks{display:flex;justify-content:space-between;margin-top:0.35rem;font-size:0.7rem;color:var(--ink-muted);font-variant-numeric:tabular-nums}
+.scale-legend-note{font-size:0.75rem;color:var(--ink-muted);line-height:1.5;margin-top:0.5rem}
 
 /* ── tables ── */
 .table-tools{display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;margin-bottom:0.8rem}
@@ -187,7 +230,9 @@ main{max-width:var(--max);margin:0 auto;padding:1.75rem 1.25rem 4rem}
 table.data{width:100%;border-collapse:collapse;font-size:0.83rem}
 table.data thead th{background:var(--paper-alt);text-align:left;padding:0.55rem 0.7rem;font-size:0.7rem;letter-spacing:0.03em;text-transform:uppercase;color:var(--ink-muted);border-bottom:1px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none}
 table.data thead th:hover{color:var(--teal-dark)}
+/* Algarismos de largura fixa só onde os números alinham na vertical. */
 table.data thead th.num,table.data td.num{text-align:right}
+table.data td.num{font-variant-numeric:tabular-nums}
 table.data tbody tr{border-bottom:1px solid #eef1f2;cursor:pointer;transition:background .1s}
 table.data tbody tr:hover{background:var(--paper-alt)}
 table.data td{padding:0.55rem 0.7rem}
@@ -226,9 +271,6 @@ table.data td.neg{color:var(--neg);font-weight:600}
 .prose p{margin-bottom:1rem;line-height:1.75;color:var(--ink-light);font-size:0.94rem}
 .prose h3{font-size:1.05rem;font-weight:700;margin:1.6rem 0 0.6rem;color:var(--ink)}
 .prose a{color:var(--teal-dark);font-weight:600;text-decoration:underline}
-.study-links{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.6rem}
-.study-links a{display:block;padding:0.7rem 0.9rem;border:1px solid var(--border);border-radius:6px;text-decoration:none;font-size:0.85rem;font-weight:600;color:var(--teal-dark);background:#fff}
-.study-links a:hover{border-color:var(--teal)}
 .proveniencia{width:100%;border-collapse:collapse;font-size:0.82rem;margin-top:0.8rem}
 .proveniencia th{text-align:left;padding:0.5rem 0.7rem;background:var(--paper-alt);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.03em;color:var(--ink-muted);border-bottom:1px solid var(--border)}
 .proveniencia td{padding:0.5rem 0.7rem;border-bottom:1px solid #eef1f2;color:var(--ink-light)}
@@ -242,7 +284,7 @@ table.data td.neg{color:var(--neg);font-weight:600}
 table.detalhe{width:100%;border-collapse:collapse;font-size:0.78rem}
 table.detalhe th{text-align:right;padding:0.4rem 0.55rem;background:var(--paper-alt);font-size:0.66rem;text-transform:uppercase;letter-spacing:0.02em;color:var(--ink-muted);border-bottom:1px solid var(--border)}
 table.detalhe th:first-child{text-align:left}
-table.detalhe td{padding:0.4rem 0.55rem;border-bottom:1px solid #eef1f2;text-align:right;color:var(--ink-light)}
+table.detalhe td{padding:0.4rem 0.55rem;border-bottom:1px solid #eef1f2;text-align:right;color:var(--ink-light);font-variant-numeric:tabular-nums}
 table.detalhe td:first-child{text-align:left}
 
 .disclaimer{background:#eaf5f8;border:1px solid #bcdce6;border-radius:8px;padding:0.85rem 1.1rem;font-size:0.8rem;color:#0a4a5c;line-height:1.55;margin-bottom:1.3rem}
@@ -252,9 +294,23 @@ footer.site-foot{background:#fff;border-top:1px solid var(--border);padding:2rem
 footer.site-foot a{color:var(--teal-dark);font-weight:600;text-decoration:none}
 footer.site-foot a:hover{text-decoration:underline}
 
-.chart-box{position:relative;height:280px}
+/* A altura inclui a faixa de rótulos do eixo, para o cartão nunca
+   ganhar uma barra de rolagem vertical própria. */
+.chart-box{position:relative;height:300px}
+.chart-box-hero{height:360px}
+/* Cinco barras empilhadas não precisam da largura inteira do painel: com a
+   faixa estreitada, a barra fica na espessura certa e sobra ar em volta. */
+.chart-box-narrow{max-width:620px;margin:0 auto}
 .loading-inline{color:var(--ink-muted);font-size:0.85rem;padding:1.5rem;text-align:center}
 
+/* ── telas médias ── */
+@media (max-width:900px){
+    .stat-band{grid-template-columns:1fr}
+    .stat-tiles{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+    .panel-grid2{grid-template-columns:1fr}
+}
+
+/* ── celular ── */
 @media (max-width:640px){
     .masthead-author-text{display:none}
     .masthead-author{gap:0}
@@ -263,6 +319,32 @@ footer.site-foot a:hover{text-decoration:underline}
     main{padding:1.1rem 0.9rem 3rem}
     .kpi-value{font-size:1.3rem}
     .contexto-strip{gap:0.8rem 1.2rem}
+
+    /* Abas com rolagem horizontal e alvos de toque maiores. */
+    .tabnav-inner{padding:0 0.6rem;scrollbar-width:none}
+    .tabnav-inner::-webkit-scrollbar{display:none}
+    .tab-btn{padding:0.8rem 0.85rem;font-size:0.8rem;min-height:44px}
+    .tab-btn svg{display:none}
+
+    .panel{padding:1rem 1rem 1.2rem}
+    .chart-box{height:260px}
+    .chart-box-hero{height:300px}
+    .stat-tiles{grid-template-columns:1fr 1fr;gap:0.7rem}
+    .stat-tile{padding:0.8rem 0.9rem}
+    .stat-value{font-size:1.2rem}
+    .stat-hero{padding:1rem 1.1rem}
+    .frase-resumo{font-size:0.95rem;padding:0.9rem 1rem}
+    .kpi-grid{gap:0.7rem}
+
+    /* Controles e campos com altura de toque confortável. */
+    .comp-toggle button{padding:0.5rem 0.8rem;min-height:36px}
+    .hero-search-wrap input,.muni-search-wrap input{font-size:1rem;padding:0.85rem 1rem}
+    .select-uf,.search-input{min-height:42px}
+
+    .view-head h2{font-size:1.25rem}
+    .prose p{font-size:0.92rem}
+    table.data{font-size:0.8rem}
+    table.data td,table.data thead th{padding:0.5rem 0.55rem}
 }
 </style>
 </head>
@@ -335,17 +417,24 @@ footer.site-foot a:hover{text-decoration:underline}
     </div>
 
     <div class="panel accent" style="margin-top:0.2rem">
-        <h3>Variação da receita por UF em 2033</h3>
+        <div class="view-head-row" style="margin-bottom:0.15rem">
+            <h3 style="margin-bottom:0">Variação da receita por UF em 2033</h3>
+            <div class="comp-toggle" id="mapViewToggle">
+                <button type="button" data-viz="mapa" class="active">Mapa</button>
+                <button type="button" data-viz="tabela">Tabela</button>
+            </div>
+        </div>
         <p class="panel-sub">Estado e municípios, contra o cenário sem a reforma. Clique num estado para ver a ficha completa.</p>
         <div class="map-wrapper" id="mapWrapper" style="min-height:420px">
             <div class="map-loading" id="mapLoading">carregando mapa…</div>
             <svg id="brazilMap" style="display:none"></svg>
             <div class="map-tooltip" id="mapTooltip"></div>
         </div>
-        <div class="map-legend">
-            <span>perde mais</span>
-            <div class="map-legend-bar"></div>
-            <span>ganha mais</span>
+        <div class="table-wrap" id="mapTabela" style="display:none"></div>
+        <div class="scale-legend">
+            <div class="scale-legend-bar" aria-hidden="true"></div>
+            <div class="scale-legend-ticks" id="scaleLegendTicks" aria-hidden="true"></div>
+            <p class="scale-legend-note">Vermelho: o ente arrecada menos do que arrecadaria sem a reforma. Azul: arrecada mais. O valor exato de cada estado aparece ao passar o cursor e na aba Estados.</p>
         </div>
     </div>
 
@@ -452,7 +541,7 @@ footer.site-foot a:hover{text-decoration:underline}
     </div>
 
     <div class="disclaimer">
-        <strong>Painel elaborado pela UFAR, Unidade Fazendária da Reforma Tributária da Secretaria da Fazenda do Espírito Santo (SEFAZ-ES)</strong>, a partir de modelo técnico de responsabilidade do economista Eduardo Reis Araújo, consultor do Tesouro Estadual. As estimativas resultam de metodologia própria, construída com dados públicos (SICONFI/STN, IBGE, POF/IBGE) e descrita em detalhe abaixo, para que os resultados possam ser conferidos e replicados. Não são o cálculo oficial do Comitê Gestor do IBS.
+        <strong>Painel elaborado pela UFAR, Unidade Fazendária da Reforma Tributária da Secretaria da Fazenda do Espírito Santo (SEFAZ-ES).</strong> As estimativas resultam de metodologia própria, construída com dados públicos (SICONFI/STN, IBGE, Censo e POF/IBGE) e descrita em detalhe abaixo, para que os resultados possam ser conferidos e replicados. Não são o cálculo oficial do Comitê Gestor do IBS.
     </div>
 
     <div class="prose">
@@ -463,46 +552,35 @@ footer.site-foot a:hover{text-decoration:underline}
         <p>Para cada ente, o coeficiente de participação de transição é a média de sete anos (2019–2025) da receita de referência (ICMS bruto menos deduções, mais ISS, mais FECOP, para o ente estadual; ISS bruto mais cota-parte de ICMS, para o município), deflacionada a valores de 2025 e dividida pelo total nacional do mesmo agregado. É o critério histórico (origem) que rege a distribuição do "bolo" enquanto o cronograma do ADCT (art. 131, §1º) ainda não migrou totalmente para o destino.</p>
 
         <h3>Coeficiente de destino pleno (φ<sup>dest</sup>)</h3>
-        <p>Quando a transição se completa, a distribuição passa a seguir o local de consumo. Como não há uma medida direta de consumo por município, o painel usa como proxy a renda domiciliar per capita do Censo 2022 combinada com a Pesquisa de Orçamentos Familiares (POF 2017–2018), que mostra como a propensão a consumir cai com a renda: famílias mais pobres consomem quase 100% do que ganham. Essa proxy é validada externamente contra Gobetti e Monteiro (2023) por UF; o desvio médio absoluto e a correlação de Pearson estão no Estudo 15.</p>
+        <p>Quando a transição se completa, a distribuição passa a seguir o local de consumo. Como não há uma medida direta de consumo por município, o painel usa como proxy a renda domiciliar per capita do Censo 2022 combinada com a Pesquisa de Orçamentos Familiares (POF 2017–2018), que mostra como a propensão a consumir cai com a renda: famílias mais pobres consomem quase 100% do que ganham. Essa proxy é validada externamente contra a estimativa de Gobetti e Monteiro (2023) por UF, pelo desvio médio absoluto e pela correlação de Pearson entre as duas séries.</p>
 
         <h3>Seguro-Receita</h3>
         <p>O ADCT (art. 132) reserva uma fração do IBS bruto (5%) para um fundo que repassa aos entes cuja receita, pelo critério de destino, ficar abaixo de um nível de nivelamento em relação à sua receita de referência. É um mecanismo temporário: o repasse tende a diminuir ao longo da transição, à medida que os entes se adaptam ao novo critério.</p>
 
         <h3>Projeção 2029–2033</h3>
-        <p>Há dois cronogramas distintos, e é fácil confundi-los. O ADCT (art. 128) reduz a alíquota do ICMS e do ISS a cada ano, de 2029 a 2032, e os extingue por completo em 2033; a partir desse ano, todo o "bolo" já é IBS. Dentro do IBS, um segundo cronograma, separado (ADCT art. 131, §1º), pondera o critério histórico e o de destino: a fração histórica é de 80% em 2029–2032 e sobe para 90% em 2033, só caindo a partir de 2034, à razão de um quarenta e cinco avos por ano, até chegar a 100% destino em 2078, não em 2033. A projeção da receita de referência nacional segue as medianas do Boletim Focus (BCB) para o crescimento real do PIB, mantendo constante a razão observada entre o "bolo" tributário e o PIB (Estudo 11). O contrafactual usado para calcular a variação percentual de cada ente é a mesma receita de referência nacional projetada, aplicada à participação neutra do ente em 2025, não um valor fixo de 2025.</p>
+        <p>Há dois cronogramas distintos, e é fácil confundi-los. O ADCT (art. 128) reduz a alíquota do ICMS e do ISS a cada ano, de 2029 a 2032, e os extingue por completo em 2033; a partir desse ano, todo o "bolo" já é IBS. Dentro do IBS, um segundo cronograma, separado (ADCT art. 131, §1º), pondera o critério histórico e o de destino: a fração histórica é de 80% em 2029–2032 e sobe para 90% em 2033, só caindo a partir de 2034, à razão de um quarenta e cinco avos por ano, até chegar a 100% destino em 2078, não em 2033. A projeção da receita de referência nacional segue as medianas do Boletim Focus (BCB) para o crescimento real do PIB, mantendo constante a razão observada entre o "bolo" tributário e o PIB. O contrafactual usado para calcular a variação percentual de cada ente é a mesma receita de referência nacional projetada, aplicada à participação neutra do ente em 2025, não um valor fixo de 2025.</p>
 
         <h3>Ressalvas de qualidade dos dados municipais</h3>
         <p>Municípios sinalizados como <span class="badge warn">estimativa aproximada</span> não têm registro individualizado de ISS e cota-parte de ICMS para 2025 no SICONFI; a participação neutra do ente é aproximada pela própria média de sete anos. Municípios sinalizados como <span class="badge err">dado a conferir</span> têm um valor declarado para 2025 que diverge de forma incompatível (mais de 5 vezes) do que a série histórica do próprio ente implicaria: provável falha de preenchimento na fonte primária, não uma mudança real de receita. Nos dois casos, o valor é exibido, mas não entra nos rankings nacionais de maiores ganhos e perdas.</p>
 
         <h3>Como este painel foi construído</h3>
-        <p>É uma página estática (HTML, CSS e JavaScript), sem servidor por trás: os dados são arquivos JSON pré-computados por scripts em Python, versionados junto com o código (<code>data/build-*.py</code>), a partir das coletas do SICONFI/STN, IBGE e Censo/POF. Os gráficos usam Chart.js e o mapa usa D3.js com a malha de estados da API do IBGE. O painel não recalcula nada em tempo real: ele exibe os mesmos números já publicados nos estudos técnicos, gerados pelas mesmas funções de projeção, só reorganizados por ente em vez de por estudo.</p>
+        <p>É uma página estática (HTML, CSS e JavaScript), sem servidor por trás: os dados são arquivos JSON pré-computados por rotinas em Python, versionadas junto com o código (<code>data/build-*.py</code>), a partir das coletas do SICONFI/STN, IBGE e Censo/POF. Os gráficos usam Chart.js e o mapa usa D3.js com a malha de estados da API do IBGE. O painel não recalcula nada em tempo real: as rotinas de projeção rodam antes da publicação e o navegador só lê o resultado, de modo que todos os números exibidos vêm de uma mesma execução, reorganizada por ente.</p>
 
         <h3>De onde vem cada indicador</h3>
         <table class="proveniencia">
-            <thead><tr><th>Indicador</th><th>Arquivo de dados</th><th>Estudo de origem</th></tr></thead>
+            <thead><tr><th>Indicador</th><th>Fonte primária</th><th>Período</th></tr></thead>
             <tbody>
-                <tr><td>Histórico 2019–2025, por ente</td><td><code>data/painel-estados.json</code>, <code>data/painel-municipios/*.json</code></td><td>Estudos 02, 06</td></tr>
-                <tr><td>Projeção 2029–2033</td><td><code>resultados-consolidados-ibs.json</code>, <code>painel-municipios/*.json</code></td><td>Estudos 11, 15</td></tr>
-                <tr><td>Componentes da receita (origem/CPT/destino/seguro)</td><td><code>data/painel-estados.json</code>, <code>data/painel-municipios/*.json</code></td><td>Estudos 06, 11, 12</td></tr>
-                <tr><td>Coeficientes φ<sup>CPT</sup> e φ<sup>dest</sup></td><td><code>coeficientes-uf.json</code>, <code>coeficientes-municipios.json</code>, <code>rateio-destino-municipios.json</code></td><td>Estudos 02, 13</td></tr>
-                <tr><td>Seguro-Receita</td><td><code>seguro-receita-repasses-longo-prazo.json</code></td><td>Estudo 12</td></tr>
-                <tr><td>Rankings e desigualdade intramunicipal</td><td><code>resultados-consolidados-ibs.json</code></td><td>Estudo 15</td></tr>
+                <tr><td>Arrecadação histórica de ICMS, ISS, FECOP e cota-parte</td><td>SICONFI/STN, DCA Anexo I-C e RREO Anexo 3</td><td>2019–2025</td></tr>
+                <tr><td>População por ente</td><td>Estimativas do IBGE (média simples do período)</td><td>2019–2026</td></tr>
+                <tr><td>Renda domiciliar per capita, proxy de consumo</td><td>Censo Demográfico do IBGE</td><td>2022</td></tr>
+                <tr><td>Propensão a consumir por faixa de renda</td><td>Pesquisa de Orçamentos Familiares (POF/IBGE)</td><td>2017–2018</td></tr>
+                <tr><td>Crescimento real do PIB usado na projeção</td><td>Medianas do Boletim Focus (Banco Central)</td><td>2026–2033</td></tr>
+                <tr><td>Regras de transição, coeficientes e Seguro-Receita</td><td>EC 132/2023, LC 214/2024 e LC 227/2026 (ADCT, arts. 128, 131 e 132)</td><td>vigentes</td></tr>
             </tbody>
         </table>
 
-        <h3>Estudos que alimentam este painel</h3>
-        <div class="study-links">
-            <a href="/estudos/nota-metodologica-ibs.html">Nota metodológica completa (Estudo 09)</a>
-            <a href="/estudos/resultados-consolidados-ibs.html">Estudo 15: Resultados Consolidados, quem ganha e quem perde</a>
-            <a href="/estudos/ibs-projecao-nacional.html">Estudo 11: Projeção da arrecadação nacional de IBS</a>
-            <a href="/estudos/ibs-projecao-longo-prazo.html">Extensão de longo prazo (2034–2077)</a>
-            <a href="/estudos/reforma-tributaria-coeficiente-municipios.html">Coeficiente de Participação de Transição dos municípios</a>
-            <a href="/estudos/ibs-destino-pof-censo.html">Estudo: Coeficiente de destino (POF x Censo)</a>
-            <a href="/estudos/">Ver todos os 15 estudos</a>
-        </div>
-
         <h3>Créditos e versão</h3>
-        <p>Painel elaborado pela UFAR, Unidade Fazendária da Reforma Tributária da Secretaria da Fazenda do Espírito Santo (SEFAZ-ES). Economista responsável pelo modelo técnico e pela base de dados: Eduardo Reis Araújo. Dados de referência: exercício DCA/SICONFI 2025. Estimativas próprias e independentes; não substituem projeções oficiais do Comitê Gestor do IBS ou da União.</p>
+        <p>Painel elaborado pela UFAR, Unidade Fazendária da Reforma Tributária da Secretaria da Fazenda do Espírito Santo (SEFAZ-ES). Dados de referência: exercício DCA/SICONFI 2025. Estimativas próprias e independentes; não substituem projeções oficiais do Comitê Gestor do IBS ou da União. A responsabilidade técnica está descrita na aba Sobre.</p>
     </div>
 </section>
 
@@ -518,7 +596,7 @@ footer.site-foot a:hover{text-decoration:underline}
         <p>Este painel existe para colaborar com estados e municípios brasileiros durante a transição do ICMS e do ISS para o IBS. O objetivo é oferecer, ente por ente, indicadores sobre o comportamento esperado da arrecadação nos primeiros anos de implementação da reforma (2029–2033): para onde vai a receita, como essa estimativa foi construída, qual o histórico recente do ente e como fica sua posição nos critérios de participação usados pelo novo imposto.</p>
 
         <h3>Responsabilidade técnica</h3>
-        <p>O painel é elaborado pela UFAR, Unidade Fazendária da Reforma Tributária da Secretaria da Fazenda do Espírito Santo (SEFAZ-ES). O modelo técnico e a base de dados que o alimentam são de responsabilidade do economista Eduardo Reis Araújo, consultor do Tesouro Estadual do Espírito Santo. A metodologia completa, com fontes e fórmulas, está na aba Metodologia.</p>
+        <p>O painel é elaborado pela UFAR, Unidade Fazendária da Reforma Tributária da Secretaria da Fazenda do Espírito Santo (SEFAZ-ES). O modelo técnico e a base de dados que o alimentam são de responsabilidade do economista Eduardo Araújo (Registro Técnico no Corecon nº 1401), Auditor de Finanças do Tesouro Estadual do Espírito Santo. A metodologia completa, com fontes e fórmulas, está na aba Metodologia.</p>
 
         <h3>Natureza das estimativas</h3>
         <p>São estimativas próprias e independentes, construídas com dados públicos (SICONFI/STN, IBGE, Censo/POF) e metodologia replicável. Não substituem o cálculo oficial do Comitê Gestor do IBS, da União ou dos demais entes federativos, e devem ser lidas como uma referência técnica, não como o valor definitivo que cada ente vai receber.</p>
@@ -531,7 +609,7 @@ footer.site-foot a:hover{text-decoration:underline}
 </main>
 
 <footer class="site-foot">
-    <p>Secretaria da Fazenda do Espírito Santo, UFAR, Unidade Fazendária da Reforma Tributária. Modelo técnico e base de dados: economista Eduardo Reis Araújo. Metodologia e fontes replicáveis em <a href="/estudos/">Estudos técnicos</a>.</p>
+    <p>Secretaria da Fazenda do Espírito Santo · UFAR, Unidade Fazendária da Reforma Tributária. Estimativas próprias a partir de dados públicos do SICONFI/STN, IBGE e Censo/POF; metodologia detalhada na aba Metodologia.</p>
 </footer>
 
 <script>
@@ -543,6 +621,17 @@ const UFS = Object.keys(NOMES_UF).sort((a,b)=>NOMES_UF[a].localeCompare(NOMES_UF
 const ANOS = [2029,2030,2031,2032,2033];
 const HIST_ANOS = [2019,2020,2021,2022,2023,2024,2025];
 const DEFAULT_UF = 'ES';
+
+// Cores de dado, espelhando os tokens do CSS. Os quatro primeiros são as
+// categorias da composição da receita; os três seguintes, as séries do
+// gráfico de linha. Conferidos com validador de paleta antes de entrar aqui.
+const CORES = {
+    origem:'#eb6834', cpt:'#0080a3', destino:'#4a3aa7', seguro:'#eda100',
+    realizado:'#0080a3', projetado:'#eb6834', contrafactual:'#6b6b6b',
+    divNeg:'#a02525', divMid:'#f0efec', divPos:'#1c5cab',
+    superficie:'#ffffff', grade:'#e9edf0', eixo:'#c8d0d6',
+    tinta:'#141414', tintaFraca:'#6b6b6b',
+};
 
 const fmtPct = v => (v==null||!isFinite(v)) ? '—' : (v>=0?'+':'') + (v*100).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}) + '%';
 const clsPct = v => v==null ? '' : v < -0.0005 ? 'neg' : v > 0.0005 ? 'pos' : '';
@@ -612,11 +701,40 @@ async function loadCore(){
     ESTADOS = r3.estados;
     MUNI_INDEX = r4.municipios;
     renderContextoNacional();
+    renderMapaTabela();
     renderMap();
     populateUfSelect();
     renderRankings();
     if (document.getElementById('view-estados').classList.contains('active')) renderUfView();
 }
+
+// Equivalente em tabela do mapa. Um mapa coroplético codifica valor em cor,
+// então os mesmos números precisam estar disponíveis em texto. Esta tabela
+// também assume quando a malha do IBGE não carrega.
+function renderMapaTabela(){
+    const linhas = UFS.map(uf => {
+        const r = RESULTADOS.por_uf[uf];
+        if (!r) return '';
+        const v = r.variacao_por_ano['2033'];
+        return `<tr data-uf="${uf}"><td>${NOMES_UF[uf]}</td><td class="num">${fmtMoney(r.pre_2025)}</td><td class="num">${fmtMoney(r.pos_por_ano['2033'])}</td><td class="num ${clsPct(v)}">${fmtPct(v)}</td></tr>`;
+    }).join('');
+    const el = document.getElementById('mapTabela');
+    el.innerHTML = `<table class="data"><thead><tr><th>Estado</th><th class="num">Referência 2025</th><th class="num">Projeção 2033</th><th class="num">Variação</th></tr></thead><tbody>${linhas}</tbody></table>`;
+    el.querySelectorAll('tr[data-uf]').forEach(tr => {
+        tr.onclick = () => { selectedUf = tr.dataset.uf; showView('estados'); };
+    });
+}
+
+function mostrarMapaOuTabela(tabela){
+    document.getElementById('mapWrapper').style.display = tabela ? 'none' : '';
+    document.getElementById('mapTabela').style.display = tabela ? '' : 'none';
+    document.querySelectorAll('#mapViewToggle button').forEach(b =>
+        b.classList.toggle('active', (b.dataset.viz === 'tabela') === tabela));
+}
+
+document.querySelectorAll('#mapViewToggle button').forEach(btn => {
+    btn.onclick = () => mostrarMapaOuTabela(btn.dataset.viz === 'tabela');
+});
 
 // ── contexto nacional (secundário, não é mais a abertura do painel) ──
 function renderContextoNacional(){
@@ -655,12 +773,31 @@ function renderMap(){
     const codeToUf = {'11':'RO','12':'AC','13':'AM','14':'RR','15':'PA','16':'AP','17':'TO','21':'MA','22':'PI','23':'CE','24':'RN','25':'PB','26':'PE','27':'AL','28':'SE','29':'BA','31':'MG','32':'ES','33':'RJ','35':'SP','41':'PR','42':'SC','43':'RS','50':'MS','51':'MT','52':'GO','53':'DF'};
     function getUf(d){ if (d.properties && d.properties.sigla) return d.properties.sigla; if (d.properties && d.properties.codarea) return codeToUf[String(d.properties.codarea)] || null; return null; }
 
-    const DOMAIN = 0.20;
+    // Escala divergente com meio cinza: o centro precisa ler como "nenhuma
+    // variação", e os dois polos como opostos. Interpolação em Lab para que
+    // passos iguais de variação pareçam passos iguais de cor.
+    // O domínio vem do próprio dado, arredondado para cima ao múltiplo de 2
+    // pontos, e é simétrico, para que a mesma distância do zero tenha a mesma
+    // intensidade dos dois lados. Um domínio fixo e largo demais achataria
+    // todos os estados perto do cinza.
+    const absValores = Object.values(varByUf).filter(v => v!=null && isFinite(v)).map(Math.abs);
+    const DOMAIN = absValores.length ? Math.ceil(Math.max(...absValores)*50)/50 : 0.10;
+    (function preencherLegenda(){
+        const el = document.getElementById('scaleLegendTicks');
+        if (!el) return;
+        const p = DOMAIN*100;
+        const marcas = [-p, -p/2, 0, p/2, p];
+        el.innerHTML = marcas.map(m => {
+            const t = m === 0 ? '0' : (m>0?'+':'−') + Math.abs(m).toLocaleString('pt-BR',{maximumFractionDigits:0}) + '%';
+            return `<span>${t}</span>`;
+        }).join('');
+    })();
+    const rampaPerda = d3.scaleLinear().domain([0,1]).range([CORES.divMid, CORES.divNeg]).interpolate(d3.interpolateLab);
+    const rampaGanho = d3.scaleLinear().domain([0,1]).range([CORES.divMid, CORES.divPos]).interpolate(d3.interpolateLab);
     function getColor(v){
-        if (v==null || !isFinite(v)) return '#C8DBE8';
+        if (v==null || !isFinite(v)) return '#e8ecef';
         const t = Math.max(-1, Math.min(1, v/DOMAIN));
-        if (t < 0){ const k=-t; return `rgb(${Math.round(244*(1-k)+176*k)},${Math.round(237*(1-k)+58*k)},${Math.round(227*(1-k)+46*k)})`; }
-        const k=t; return `rgb(${Math.round(244*(1-k)+30*k)},${Math.round(237*(1-k)+132*k)},${Math.round(227*(1-k)+73*k)})`;
+        return t < 0 ? rampaPerda(-t) : rampaGanho(t);
     }
     function positionTooltip(event){
         const wRect = wrapper.getBoundingClientRect();
@@ -691,16 +828,37 @@ function renderMap(){
             .on('mousemove', event => positionTooltip(event))
             .on('mouseleave', function(){ d3.select(this).classed('is-active',false); tooltip.classList.remove('visible'); })
             .on('click', function(event,d){ event.stopPropagation(); const uf=getUf(d); if(!uf) return; selectedUf=uf; showView('estados'); });
-        svg.selectAll('text.map-uf-label').data(geo.features).enter().append('text')
+        // A sigla só entra quando cabe dentro do próprio estado. Onde não cabe
+        // (DF, SE, AL e a faixa do Sudeste), ela sairia recortada ou por cima
+        // do vizinho; ali a identificação fica com o tooltip e com a tabela.
+        const cabeRotulo = d => {
+            const b = pathGen.bounds(d);
+            return (b[1][0]-b[0][0]) >= fontSize*2.4 && (b[1][1]-b[0][1]) >= fontSize*1.7;
+        };
+        // Branco ou tinta escura conforme a luminância do preenchimento, em vez
+        // de um limiar fixo: assim o contraste vale para toda a rampa.
+        const tintaSobre = cor => {
+            const c = d3.color(cor); if (!c) return '#1A3A5C';
+            const f = u => { u/=255; return u <= 0.03928 ? u/12.92 : Math.pow((u+0.055)/1.055, 2.4); };
+            return (0.2126*f(c.r) + 0.7152*f(c.g) + 0.0722*f(c.b)) > 0.32 ? '#1A3A5C' : '#fff';
+        };
+        svg.selectAll('text.map-uf-label').data(geo.features.filter(cabeRotulo)).enter().append('text')
             .attr('class','map-uf-label')
             .attr('transform', d => { const c=pathGen.centroid(d); return `translate(${c[0]},${c[1]})`; })
             .attr('text-anchor','middle').attr('dy','0.35em').attr('font-size', fontSize+'px')
-            .attr('fill', d => { const uf=getUf(d); const v=uf?varByUf[uf]:null; if (v==null) return '#456'; return Math.abs(v)/DOMAIN>0.55 ? '#fff' : '#1A3A5C'; })
+            .attr('fill', d => { const uf=getUf(d); const v=uf?varByUf[uf]:null; return v==null ? '#456' : tintaSobre(getColor(v)); })
             .style('cursor','pointer')
             .text(d => getUf(d)||'')
             .on('click', function(event,d){ event.stopPropagation(); const uf=getUf(d); if(!uf) return; selectedUf=uf; showView('estados'); });
     }
-    function showError(){ svgEl.style.display='none'; loading.innerHTML = '<span>Mapa indisponível · veja a aba Estados</span>'; }
+    // Sem a malha do IBGE não há mapa, mas os números continuam disponíveis:
+    // cai na tabela equivalente em vez de deixar uma caixa vazia.
+    function showError(){
+        svgEl.style.display = 'none';
+        mostrarMapaOuTabela(true);
+        document.getElementById('mapViewToggle').insertAdjacentHTML('beforebegin',
+            '<span class="map-fallback-note">Mapa indisponível no momento</span>');
+    }
     const GEO_URLS = [
         'https://servicodados.ibge.gov.br/api/v3/malhas/estados?formato=application/vnd.geo+json&resolucao=2',
         'https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson'
@@ -755,10 +913,45 @@ heroInput.addEventListener('input', () => {
 document.addEventListener('click', e => { if (!e.target.closest('.hero-search-wrap')) heroResults.classList.remove('show'); });
 
 // ── frase-resumo e seções compartilhadas da ficha do ente ──
-function fraseResumo(nome, pre2025, pos2033, varPct){
-    const dir = varPct >= 0 ? 'acima' : 'abaixo';
+// A faixa de indicadores acima já mostra referência, projeção e variação.
+// Esta frase acrescenta o contrafactual, que é o número que falta para a
+// comparação fazer sentido, em vez de repetir os mesmos valores.
+function fraseResumo(nome, contra2033, pos2033, varPct){
+    const dir = varPct >= 0 ? 'a mais' : 'a menos';
     const cls = varPct >= 0 ? 'pos' : 'neg';
-    return `${nome} arrecadou ${fmtMoney(pre2025)} em 2025. Em 2033, a projeção é de ${fmtMoney(pos2033)}, <b class="${cls}">${fmtPct(varPct)}</b> ${dir} do que arrecadaria sem a reforma.`;
+    return `Sem a reforma, ${nome} arrecadaria ${fmtMoney(contra2033)} em 2033. Com a reforma, a projeção é de ${fmtMoney(pos2033)}: <b class="${cls}">${fmtPct(varPct)}</b> ${dir}.`;
+}
+
+// Faixa de indicadores no topo da ficha: um número-herói (a variação, que é
+// a pergunta que o gestor traz) e três medidas de apoio. O sinal + ou −
+// acompanha sempre o número, para que a leitura não dependa da cor.
+function statBandHtml(ctx){
+    const v = ctx.varByYear['2033'];
+    const cls = v == null ? '' : (v >= 0 ? 'pos' : 'neg');
+    const rumo = v == null ? '' : (v >= 0 ? 'acima do cenário sem a reforma' : 'abaixo do cenário sem a reforma');
+    const seguro2033 = (ctx.repasse && ctx.repasse['2033']) || 0;
+    const recebeSeguro = ANOS.some(a => ((ctx.repasse && ctx.repasse[String(a)]) || 0) > 1);
+    const seguroTexto = seguro2033 > 1 ? fmtMoney(seguro2033) : (recebeSeguro ? 'Só até 2032' : 'Não recebe');
+    return `
+        <div class="stat-hero ${cls}">
+            <div class="stat-label">Variação em 2033</div>
+            <div class="stat-hero-value ${cls}">${fmtPct(v)}</div>
+            <div class="stat-hero-note">${rumo}</div>
+        </div>
+        <div class="stat-tiles">
+            <div class="stat-tile">
+                <div class="stat-label">Referência 2025</div>
+                <div class="stat-value">${fmtMoney(ctx.pre2025)}</div>
+            </div>
+            <div class="stat-tile">
+                <div class="stat-label">Projeção 2033</div>
+                <div class="stat-value">${fmtMoney(ctx.posByYear['2033'])}</div>
+            </div>
+            <div class="stat-tile">
+                <div class="stat-label">Seguro-Receita 2033</div>
+                <div class="stat-value">${seguroTexto}</div>
+            </div>
+        </div>`;
 }
 
 function coefTilesHtml(neutro, cpt, pleno){
@@ -835,22 +1028,30 @@ function historicoTableHtml(historico, fieldKey){
 
 function fichaSectionsHtml(idPrefix){
     return `
+        <div class="stat-band" id="${idPrefix}StatBand"></div>
         <div class="frase-resumo" id="${idPrefix}Frase"></div>
         <div class="panel accent">
             <h3>Para onde vai a arrecadação</h3>
-            <p class="panel-sub">Histórico real (2019–2025) e projeção 2029–2033, contra o cenário sem a reforma.</p>
-            <div class="chart-box" style="height:340px"><canvas id="${idPrefix}HeroChart"></canvas></div>
+            <p class="panel-sub">Receita realizada de 2019 a 2025 e projeção de 2029 a 2033, contra o cenário sem a reforma. A área preenchida é a diferença entre os dois cenários.</p>
+            <div class="chart-box chart-box-hero"><canvas id="${idPrefix}HeroChart"></canvas></div>
         </div>
         <div class="panel accent">
             <div class="view-head-row" style="margin-bottom:0.15rem">
                 <h3 style="margin-bottom:0">Como fica o ICMS/ISS na transição</h3>
-                <div class="comp-toggle" id="${idPrefix}CompToggle">
-                    <button type="button" data-mode="pct" class="active">%</button>
-                    <button type="button" data-mode="rs">R$</button>
+                <div class="chart-controls">
+                    <div class="comp-toggle" id="${idPrefix}CompToggle">
+                        <button type="button" data-mode="pct" class="active">%</button>
+                        <button type="button" data-mode="rs">R$</button>
+                    </div>
+                    <div class="comp-toggle" id="${idPrefix}ViewToggle">
+                        <button type="button" data-viz="grafico" class="active">Gráfico</button>
+                        <button type="button" data-viz="tabela">Tabela</button>
+                    </div>
                 </div>
             </div>
             <p class="panel-sub">Composição da receita projetada: quanto ainda vem do ICMS/ISS residual, quanto já é IBS pelos dois critérios, e quanto é Seguro-Receita.</p>
-            <div class="chart-box"><canvas id="${idPrefix}CompChart"></canvas></div>
+            <div class="chart-box chart-box-narrow" id="${idPrefix}CompChartBox"><canvas id="${idPrefix}CompChart"></canvas></div>
+            <div class="table-wrap" id="${idPrefix}CompTable" style="display:none"></div>
         </div>
         <div class="panel">
             <h3>Coeficientes de participação</h3>
@@ -880,19 +1081,49 @@ function renderComponentesChart(canvasEl, componentesPorAno, refs, asPercent){
     const rows = anos.map(a => (componentesPorAno && componentesPorAno[a]) || {origem:0,cpt:0,destino:0,seguro:0});
     const totals = rows.map(r => r.origem+r.cpt+r.destino+r.seguro);
     const val = arr => asPercent ? arr.map((v,i)=> totals[i] ? v/totals[i]*100 : 0) : arr;
+    // A folga de 2px na cor da superfície é o que separa os segmentos
+    // empilhados; nenhum contorno é desenhado em volta das marcas.
+    const gap = { top: 2, right: 0, bottom: 0, left: 0 };
     refs.comp = new Chart(canvasEl, {
         type:'bar',
         data:{ labels: anos, datasets:[
-            { label:'ICMS/ISS (origem)', data: val(rows.map(r=>r.origem)), backgroundColor:'#77a1bb', stack:'s' },
-            { label:'IBS histórico (φCPT)', data: val(rows.map(r=>r.cpt)), backgroundColor:'#0080a3', stack:'s' },
-            { label:'IBS destino (φdest)', data: val(rows.map(r=>r.destino)), backgroundColor:'#9d5c6b', stack:'s' },
-            { label:'Seguro-Receita', data: val(rows.map(r=>r.seguro)), backgroundColor:'#947a42', stack:'s' },
-        ]},
+            { label:'ICMS/ISS (origem)', data: val(rows.map(r=>r.origem)), backgroundColor:CORES.origem, stack:'s' },
+            { label:'IBS histórico (φCPT)', data: val(rows.map(r=>r.cpt)), backgroundColor:CORES.cpt, stack:'s' },
+            { label:'IBS destino (φdest)', data: val(rows.map(r=>r.destino)), backgroundColor:CORES.destino, stack:'s' },
+            { label:'Seguro-Receita', data: val(rows.map(r=>r.seguro)), backgroundColor:CORES.seguro, stack:'s' },
+        ].map(d => Object.assign(d, { borderColor:CORES.superficie, borderWidth:gap, borderSkipped:false, maxBarThickness:28 }))},
         options:{ responsive:true, maintainAspectRatio:false,
-            scales:{ x:{ stacked:true, grid:{display:false} }, y:{ stacked:true, ticks:{ callback:v=> asPercent ? v+'%' : fmtMoney(v) }, grid:{color:'#eee'} } },
-            plugins:{ legend:{ position:'bottom', labels:{boxWidth:12,font:{size:10}} },
+            interaction:{ mode:'index', intersect:false },
+            scales:{
+                x:{ stacked:true, grid:{display:false}, border:{color:CORES.eixo}, ticks:{color:CORES.tintaFraca, font:{size:11}} },
+                // Em percentual a pilha soma exatamente 100: fixar o teto evita
+                // uma faixa vazia acima das barras, que sugeriria folga que não existe.
+                y:{ stacked:true, max: asPercent ? 100 : undefined,
+                    grid:{color:CORES.grade, drawTicks:false}, border:{display:false},
+                    ticks:{ color:CORES.tintaFraca, font:{size:11}, padding:8, callback:v=> asPercent ? v+'%' : fmtMoney(v) } } },
+            plugins:{ legend:{ position:'bottom', labels:{boxWidth:10, boxHeight:10, usePointStyle:true, pointStyle:'rectRounded', color:CORES.tinta, font:{size:11}, padding:14} },
                 tooltip:{ callbacks:{ label: c => c.dataset.label + ': ' + (asPercent ? c.parsed.y.toLocaleString('pt-BR',{maximumFractionDigits:1})+'%' : fmtMoney(c.parsed.y)) } } } }
     });
+}
+
+// Equivalente em tabela do gráfico de composição: nenhum valor do painel
+// depende de distinguir cores para ser lido.
+function composicaoTabelaHtml(componentesPorAno, asPercent){
+    const cats = [
+        ['origem','ICMS/ISS (origem)'], ['cpt','IBS histórico (φCPT)'],
+        ['destino','IBS destino (φdest)'], ['seguro','Seguro-Receita'],
+    ];
+    const head = ANOS.map(a => `<th>${a}</th>`).join('');
+    const linhas = cats.map(([k,rotulo]) => {
+        const celulas = ANOS.map(a => {
+            const r = (componentesPorAno && componentesPorAno[String(a)]) || {};
+            const total = (r.origem||0)+(r.cpt||0)+(r.destino||0)+(r.seguro||0);
+            const v = r[k] || 0;
+            return `<td>${asPercent ? (total ? (v/total*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%' : '—') : fmtMoney(v)}</td>`;
+        }).join('');
+        return `<tr><td>${rotulo}</td>${celulas}</tr>`;
+    }).join('');
+    return `<table class="detalhe"><thead><tr><th>Categoria</th>${head}</tr></thead><tbody>${linhas}</tbody></table>`;
 }
 
 const fichaChartRefs = {};
@@ -900,7 +1131,8 @@ function renderFicha(idPrefix, nome, ctx){
     fichaChartRefs[idPrefix] = fichaChartRefs[idPrefix] || {};
     const refs = fichaChartRefs[idPrefix];
 
-    document.getElementById(idPrefix+'Frase').innerHTML = fraseResumo(nome, ctx.pre2025, ctx.posByYear['2033'], ctx.varByYear['2033']);
+    document.getElementById(idPrefix+'StatBand').innerHTML = statBandHtml(ctx);
+    document.getElementById(idPrefix+'Frase').innerHTML = fraseResumo(nome, ctx.contraByYear['2033'], ctx.posByYear['2033'], ctx.varByYear['2033']);
     document.getElementById(idPrefix+'CoefTiles').innerHTML = coefTilesHtml(ctx.neutro, ctx.cpt, ctx.pleno);
     if (idPrefix === 'uf') {
         document.getElementById(idPrefix+'CoefDetalhe').innerHTML = coefDetalhamentoHtml(ctx.historico, ctx.cpt);
@@ -913,21 +1145,41 @@ function renderFicha(idPrefix, nome, ctx){
     const projData = labels.map(l => { const y=Number(l); if (y===2025) return ctx.pre2025; if (y>=2029) return ctx.posByYear[l]; return null; });
     const contraData = labels.map(l => { const y=Number(l); if (y===2025) return ctx.pre2025; if (y>=2029) return ctx.contraByYear[l]; return null; });
     if (refs.hero) refs.hero.destroy();
+    // Marcas: linha de 2px, ponto de 8px com anel de 2px na cor da superfície
+    // (para continuar legível onde as séries se cruzam) e área de acerto
+    // folgada, de modo que o toque no celular não precise de pontaria.
+    const linha = { borderWidth:2, spanGaps:false, tension:0.1,
+        pointRadius:4, pointHoverRadius:6, pointBorderWidth:2,
+        pointBorderColor:CORES.superficie, hitRadius:14 };
     refs.hero = new Chart(document.getElementById(idPrefix+'HeroChart'), {
         type:'line',
         data:{ labels, datasets:[
-            { label:'Histórico (real)', data:histData, borderColor:'#365a6d', backgroundColor:'#365a6d', borderWidth:2.5, spanGaps:false, tension:0.1, pointRadius:2 },
-            { label:'Projeção (com reforma)', data:projData, borderColor:'#0080a3', backgroundColor:'rgba(0,128,163,0.10)', borderWidth:2.5, spanGaps:false, tension:0.1, pointRadius:2, fill:'+1' },
-            { label:'Contrafactual (sem reforma)', data:contraData, borderColor:'#b0b8bc', backgroundColor:'#b0b8bc', borderDash:[5,4], borderWidth:2, spanGaps:false, tension:0.1, pointRadius:2, fill:false },
+            Object.assign({ label:'Realizado (2019–2025)', data:histData,
+                borderColor:CORES.realizado, backgroundColor:CORES.realizado, pointBackgroundColor:CORES.realizado }, linha),
+            Object.assign({ label:'Projeção com a reforma', data:projData,
+                borderColor:CORES.projetado, backgroundColor:'rgba(235,104,52,0.10)', pointBackgroundColor:CORES.projetado, fill:'+1' }, linha),
+            Object.assign({ label:'Cenário sem a reforma', data:contraData,
+                borderColor:CORES.contrafactual, backgroundColor:CORES.contrafactual, pointBackgroundColor:CORES.contrafactual,
+                borderDash:[5,4], fill:false }, linha),
         ]},
         options:{ responsive:true, maintainAspectRatio:false,
-            scales:{ y:{ ticks:{ callback:v=>fmtMoney(v) }, grid:{color:'#eee'} }, x:{ grid:{display:false} } },
-            plugins:{ legend:{ position:'bottom', labels:{boxWidth:14,font:{size:11}} }, tooltip:{ callbacks:{ label: c => c.dataset.label+': '+fmtMoney(c.parsed.y) } } } }
+            interaction:{ mode:'index', intersect:false },
+            scales:{
+                y:{ grid:{color:CORES.grade, drawTicks:false}, border:{display:false},
+                    ticks:{ color:CORES.tintaFraca, font:{size:11}, padding:8, callback:v=>fmtMoney(v) } },
+                x:{ grid:{display:false}, border:{color:CORES.eixo}, ticks:{color:CORES.tintaFraca, font:{size:11}} } },
+            plugins:{ legend:{ position:'bottom', labels:{boxWidth:26, boxHeight:2, usePointStyle:false, color:CORES.tinta, font:{size:11}, padding:16} },
+                tooltip:{ callbacks:{ label: c => c.parsed.y==null ? null : c.dataset.label+': '+fmtMoney(c.parsed.y) } } } }
     });
 
     let mode = 'pct';
     const compCanvas = document.getElementById(idPrefix+'CompChart');
-    const draw = () => renderComponentesChart(compCanvas, ctx.componentes, refs, mode==='pct');
+    const compBox = document.getElementById(idPrefix+'CompChartBox');
+    const compTable = document.getElementById(idPrefix+'CompTable');
+    const draw = () => {
+        renderComponentesChart(compCanvas, ctx.componentes, refs, mode==='pct');
+        compTable.innerHTML = composicaoTabelaHtml(ctx.componentes, mode==='pct');
+    };
     draw();
     const toggle = document.getElementById(idPrefix+'CompToggle');
     toggle.querySelectorAll('button').forEach(btn => {
@@ -935,6 +1187,15 @@ function renderFicha(idPrefix, nome, ctx){
             mode = btn.dataset.mode;
             toggle.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b===btn));
             draw();
+        };
+    });
+    const vizToggle = document.getElementById(idPrefix+'ViewToggle');
+    vizToggle.querySelectorAll('button').forEach(btn => {
+        btn.onclick = () => {
+            const tabela = btn.dataset.viz === 'tabela';
+            vizToggle.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b===btn));
+            compBox.style.display = tabela ? 'none' : '';
+            compTable.style.display = tabela ? '' : 'none';
         };
     });
 }
