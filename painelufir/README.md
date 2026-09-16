@@ -28,7 +28,8 @@ repositório, replique manualmente aqui (ou peça para o Claude replicar):
 - `index.html` ← `painel-reforma-tributaria.html`
 - `data/resultados-consolidados-ibs.json`
 - `data/ibs-projecao-nacional.json`
-- `data/painel-municipios-2033.json`
+- `data/painel-estados.json`
+- `data/painel-municipios/` (pasta inteira: `index.json` + um arquivo por UF)
 - `images/brasao-es.png`, `images/brasao-es-branco.png`
 
 Diferenças propositais em relação ao arquivo original: os links de
