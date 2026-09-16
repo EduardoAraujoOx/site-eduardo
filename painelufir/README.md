@@ -32,7 +32,13 @@ repositório, replique manualmente aqui (ou peça para o Claude replicar):
 - `data/painel-municipios/` (pasta inteira: `index.json` + um arquivo por UF)
 - `images/brasao-es.png`, `images/brasao-es-branco.png`
 
-Diferenças propositais em relação ao arquivo original: os links de
-metodologia apontam para `https://www.eduardoreisaraujo.com.br/estudos/...`
-(absolutos, com `target="_blank"`), já que a pasta `estudos/` não existe
-neste deploy.
+Diferenças propositais em relação ao arquivo original, e apenas estas três:
+
+- `<link rel="canonical">` e `og:url` apontam para `https://painelufir.vercel.app/`,
+  o endereço do próprio deploy.
+- `og:image` e `twitter:image` são servidos por este deploy
+  (`/images/brasao-es.png`), não pelo site pessoal.
+
+O conteúdo é idêntico ao da raiz. O painel é autossuficiente: a aba
+Metodologia descreve fontes e fórmulas sem remeter a nenhuma página fora
+deste deploy, então não há links a converter.
