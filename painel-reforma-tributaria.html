@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel de Indicadores da Reforma Tributária | Secretaria da Fazenda do Espírito Santo</title>
+<title>Painel da Reforma Tributária | Secretaria da Fazenda do Espírito Santo</title>
 <meta name="description" content="Arrecadação histórica e projeção 2029–2033 de estados e municípios brasileiros na transição do ICMS/ISS para o IBS (EC 132/2023, LC 214/2024, LC 227/2026). Mapa interativo, coeficientes de participação e estimativas de destino por ente. Secretaria da Fazenda do Espírito Santo.">
 <meta name="author" content="Secretaria da Fazenda do Espírito Santo">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/painel-reforma-tributaria.html">
 <link rel="icon" type="image/png" href="/images/brasao-es.png">
 
-<meta property="og:title" content="Painel de Indicadores da Reforma Tributária | SEFAZ-ES">
+<meta property="og:title" content="Painel da Reforma Tributária | SEFAZ-ES">
 <meta property="og:description" content="Arrecadação histórica e projeção 2029–2033 de todos os estados e municípios brasileiros na transição do ICMS/ISS para o IBS. Mapa interativo e dados por ente.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/painel-reforma-tributaria.html">
@@ -18,7 +18,7 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Secretaria da Fazenda do Espírito Santo">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Painel de Indicadores da Reforma Tributária | SEFAZ-ES">
+<meta name="twitter:title" content="Painel da Reforma Tributária | SEFAZ-ES">
 <meta name="twitter:description" content="Arrecadação histórica e projeção 2029–2033 de todos os estados e municípios brasileiros na transição do ICMS/ISS para o IBS.">
 <meta name="twitter:image" content="https://www.eduardoreisaraujo.com.br/images/og-share.jpg">
 
@@ -74,13 +74,13 @@ input,select{font-family:inherit}
 
 /* ── header band ── */
 .masthead{background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%);color:#fff}
-.masthead-inner{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem;display:flex;justify-content:space-between;align-items:flex-end;gap:1.5rem;flex-wrap:wrap}
-.masthead h1{font-size:clamp(1.35rem,2.6vw,1.85rem);font-weight:700;letter-spacing:-0.01em;margin-bottom:0.3rem}
-.masthead .sub{font-size:0.87rem;opacity:0.92;max-width:52ch;line-height:1.5}
-.masthead-author{text-align:right;font-size:0.8rem;line-height:1.5;display:flex;align-items:center;gap:0.8rem}
-.masthead-author .brasao{height:48px;width:auto;flex-shrink:0}
-.masthead-author .name{font-weight:700;font-size:0.92rem}
-.masthead-author .role{opacity:0.85;font-style:italic}
+.masthead-inner{max-width:var(--max);margin:0 auto;padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.masthead h1{font-size:clamp(1.05rem,2.6vw,1.5rem);font-weight:700;letter-spacing:-0.01em;line-height:1.2}
+.masthead .sub{font-size:0.8rem;opacity:0.88;line-height:1.4;margin-top:0.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.masthead-author{text-align:right;font-size:0.8rem;line-height:1.4;display:flex;align-items:center;gap:0.6rem;flex-shrink:0}
+.masthead-author .brasao{height:36px;width:auto;flex-shrink:0}
+.masthead-author .name{font-weight:700;font-size:0.72rem}
+.masthead-author .role{opacity:0.85;font-style:italic;font-size:0.72rem}
 
 /* ── tab nav ── */
 .tabnav{background:var(--nav-bg);position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
@@ -197,8 +197,10 @@ footer.site-foot a:hover{text-decoration:underline}
 .loading-inline{color:var(--ink-muted);font-size:0.85rem;padding:1.5rem;text-align:center}
 
 @media (max-width:640px){
-    .masthead-inner{flex-direction:column;align-items:flex-start}
-    .masthead-author{text-align:left}
+    .masthead-author-text{display:none}
+    .masthead-author{gap:0}
+    .masthead .sub{max-width:60vw}
+    .utility-inner span{display:none}
     main{padding:1.1rem 0.9rem 3rem}
     .kpi-value{font-size:1.3rem}
 }
@@ -217,11 +219,11 @@ footer.site-foot a:hover{text-decoration:underline}
 <header class="masthead">
     <div class="masthead-inner">
         <div>
-            <h1>Painel de Indicadores da Reforma Tributária</h1>
-            <p class="sub">Histórico e projeção 2029–2033 da arrecadação de estados e municípios na transição para o IBS.</p>
+            <h1>Painel da Reforma Tributária</h1>
+            <p class="sub">Arrecadação e projeção 2029–2033 de estados e municípios</p>
         </div>
         <div class="masthead-author">
-            <div>
+            <div class="masthead-author-text">
                 <div class="name">GOVERNO DO ESTADO<br>DO ESPÍRITO SANTO</div>
                 <div class="role">Secretaria da Fazenda</div>
             </div>
