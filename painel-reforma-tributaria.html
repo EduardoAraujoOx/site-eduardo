@@ -429,7 +429,7 @@ footer.site-foot a:hover{text-decoration:underline}
         <p>Quando a transição se completa, a distribuição passa a seguir o local de consumo. Como não há uma medida direta de consumo por município, o painel usa como proxy a renda domiciliar per capita do Censo 2022 combinada com a Pesquisa de Orçamentos Familiares (POF 2017–2018), que mostra como a propensão a consumir cai com a renda — famílias mais pobres consomem quase 100% do que ganham. Essa proxy é validada externamente contra Gobetti e Monteiro (2023) por UF; o desvio médio absoluto e a correlação de Pearson estão no Estudo 15.</p>
 
         <h3>Projeção 2029–2033</h3>
-        <p>Cada ano do cronograma pondera o critério histórico e o de destino pelos fatores do ADCT (art. 131, §1º): em 2029, 90% histórico e 10% destino; a proporção se inverte progressivamente até 2033, quando resta 100% destino. A projeção da receita de referência nacional segue as medianas do Boletim Focus (BCB) para o crescimento real do PIB, mantendo constante a razão observada entre o "bolo" tributário e o PIB (Estudo 11). O contrafactual usado para calcular a variação percentual de cada ente é a mesma receita de referência nacional projetada, aplicada à participação neutra do ente em 2025 — não um valor fixo de 2025.</p>
+        <p>Há dois cronogramas distintos, e é fácil confundi-los. O ADCT (art. 128) reduz a alíquota do ICMS e do ISS a cada ano, de 2029 a 2032, e os extingue por completo em 2033 — a partir desse ano, todo o "bolo" já é IBS. Dentro do IBS, um segundo cronograma, separado (ADCT art. 131, §1º), pondera o critério histórico e o de destino: a fração histórica é de 80% em 2029–2032 e sobe para 90% em 2033, só caindo a partir de 2034, à razão de um quarenta e cinco avos por ano, até chegar a 100% destino em 2078 — não em 2033. A projeção da receita de referência nacional segue as medianas do Boletim Focus (BCB) para o crescimento real do PIB, mantendo constante a razão observada entre o "bolo" tributário e o PIB (Estudo 11). O contrafactual usado para calcular a variação percentual de cada ente é a mesma receita de referência nacional projetada, aplicada à participação neutra do ente em 2025 — não um valor fixo de 2025.</p>
 
         <h3>Ressalvas de qualidade dos dados municipais</h3>
         <p>Municípios sinalizados como <span class="badge warn">estimativa aproximada</span> não têm registro individualizado de ISS e cota-parte de ICMS para 2025 no SICONFI; a participação neutra do ente é aproximada pela própria média de sete anos. Municípios sinalizados como <span class="badge err">dado a conferir</span> têm um valor declarado para 2025 que diverge de forma incompatível (mais de 5 vezes) do que a série histórica do próprio ente implicaria — provável falha de preenchimento na fonte primária, não uma mudança real de receita. Nos dois casos, o valor é exibido, mas não entra nos rankings nacionais de maiores ganhos e perdas.</p>
@@ -553,10 +553,10 @@ function renderKpiNacional(){
             <div class="kpi-foot">Estudo 11 · IBS pleno</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-label">IBS já em destino, 2033</div>
-            <div class="kpi-value">100%</div>
-            <div class="kpi-delta">Cronograma do ADCT concluído</div>
-            <div class="kpi-foot">EC 132/2023, art. 131, §1º</div>
+            <div class="kpi-label">IBS já por destino, 2033</div>
+            <div class="kpi-value">${(p2033.ibs_destino_liquido/p2033.ibs_bruto*100).toLocaleString('pt-BR',{maximumFractionDigits:0})}%</div>
+            <div class="kpi-delta">ICMS/ISS já extinto — mas dentro do IBS, ainda ~90% segue o critério histórico</div>
+            <div class="kpi-foot">Pleno só em 2078 · ADCT, art. 131, §1º</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-label">Redistribuição entre UFs</div>
@@ -751,7 +751,7 @@ function renderUfView(){
         <div class="kpi-card">
             <div class="kpi-label">Coeficiente de destino pleno (φ<sup>dest</sup>)</div>
             <div class="kpi-value" style="font-size:1.2rem">${coefUf.coef_pleno_pct.toLocaleString('pt-BR',{maximumFractionDigits:4})}%</div>
-            <div class="kpi-foot">Vigora por inteiro a partir de 2033</div>
+            <div class="kpi-foot">Peso ~10% em 2033, pleno só em 2078</div>
         </div>
     ` : '<p style="color:var(--ink-muted);font-size:0.85rem">Coeficientes não disponíveis para este estado.</p>';
 
@@ -922,7 +922,7 @@ async function openMunicipio(cod){
                 <div class="kpi-card">
                     <div class="kpi-label">Coeficiente de destino pleno (φ<sup>dest</sup>)</div>
                     <div class="kpi-value" style="font-size:1.2rem">${m.coef_pleno_pct.toLocaleString('pt-BR',{maximumFractionDigits:5})}%</div>
-                    <div class="kpi-foot">Vigora por inteiro a partir de 2033</div>
+                    <div class="kpi-foot">Peso ~10% em 2033, pleno só em 2078</div>
                 </div>
             </div>
 
