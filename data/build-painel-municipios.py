@@ -221,12 +221,27 @@ def main():
         with open(OUT_DIR / f"{uf}.json", "w", encoding="utf-8") as f:
             json.dump({"_meta": meta, "uf": uf, "municipios": muns}, f, ensure_ascii=False, indent=1)
 
+    # O índice carrega, além de nome e UF, a variação de 2033 e a marca de
+    # ressalva de qualidade. Isso é o suficiente para o mapa nacional pintar
+    # os 5.569 municípios sem baixar nenhum fragmento por UF; os valores
+    # completos continuam vindo do fragmento quando a ficha é aberta.
     indice = {
-        cod: {"nome": m["nome"], "uf": m["uf"]}
+        cod: {
+            "nome": m["nome"],
+            "uf": m["uf"],
+            # Cinco casas dão precisão de 0,001 ponto percentual, bem além do
+            # que o mapa pinta e do que a tela mostra. A ficha continua lendo
+            # o valor cheio do fragmento da UF.
+            "v": round(m["variacao_por_ano"][2033], 5),
+            "r": 1 if (m["neutro_aproximado"] or m["neutro_suspeito"]) else 0,
+        }
         for cod, m in municipios.items()
     }
+    # Compacto, sem indentação: este arquivo é lido em toda visita à página e
+    # nunca por uma pessoa. Os fragmentos por UF seguem indentados.
     with open(OUT_DIR / "index.json", "w", encoding="utf-8") as f:
-        json.dump({"_meta": meta, "n_municipios": len(indice), "municipios": indice}, f, ensure_ascii=False, indent=1)
+        json.dump({"_meta": meta, "n_municipios": len(indice), "municipios": indice},
+                  f, ensure_ascii=False, separators=(",", ":"))
 
     n_ok = sum(1 for m in municipios.values() if not m["neutro_aproximado"] and not m["neutro_suspeito"])
     print(f"Salvo em {OUT_DIR}/ ({len(por_uf)} arquivos por UF + index.json)")

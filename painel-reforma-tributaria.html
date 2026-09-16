@@ -30,13 +30,19 @@
 
 <style>
 :root {
-    /* ── Identidade institucional. Cromo da página, nunca codificação de dado. ── */
+    /* ── Identidade institucional. Cromo da página, nunca codificação de dado.
+       O cromo é sóbrio e azul; a cor viva fica reservada aos dados, como
+       manda a separação entre moldura e codificação. Contrastes com texto
+       branco: marinho 15,6:1, ardósia 6,1:1, vinho 7,5:1. ── */
+    --navy: #0f2440;
+    --navy-mid: #16345a;
+    --navy-soft: #1a3a5c;
+    --nav-bg: #4d6480;
+    --nav-active: #0f2440;
+    --wine: #8c3a44;
     --teal: #0080a3;
     --teal-dark: #006885;
     --teal-darker: #1a3a5c;
-    --nav-bg: #c2687a;
-    --nav-active: #1a3a5c;
-    --marsala: #9d5c6b;
 
     /* ── Cores de dado, na ordem da pilha da composição da receita.
        Conferidas com validador de paleta: pior par adjacente ΔE 14,7 em
@@ -92,7 +98,7 @@ input,select{font-family:inherit}
 .utility-inner a:hover{text-decoration:underline}
 
 /* ── header band ── */
-.masthead{background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%);color:#fff}
+.masthead{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);color:#fff}
 .masthead-inner{max-width:var(--max);margin:0 auto;padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
 .masthead h1{font-size:clamp(1.05rem,2.6vw,1.5rem);font-weight:700;letter-spacing:-0.01em;line-height:1.2}
 .masthead .sub{font-size:0.8rem;opacity:0.88;line-height:1.4;margin-top:0.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -129,7 +135,7 @@ main{max-width:var(--max);margin:0 auto;padding:1.75rem 1.25rem 4rem}
 .hero-search-item{padding:0.65rem 1rem;font-size:0.92rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:0.6rem}
 .hero-search-item:hover{background:var(--paper-alt)}
 .hero-search-item .tag{font-family:var(--mono);font-size:0.62rem;font-weight:700;text-transform:uppercase;color:#fff;background:var(--teal);padding:0.15rem 0.5rem;border-radius:4px;flex-shrink:0}
-.hero-search-item .tag.muni{background:var(--marsala)}
+.hero-search-item .tag.muni{background:var(--wine)}
 
 /* ── KPI cards ── */
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.9rem;margin-bottom:1.6rem}
@@ -152,7 +158,7 @@ main{max-width:var(--max);margin:0 auto;padding:1.75rem 1.25rem 4rem}
 
 /* ── panels/cards ── */
 .panel{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem 1.3rem 1.4rem;margin-bottom:1.2rem;box-shadow:0 1px 2px rgba(20,20,20,0.04)}
-.panel.accent{border-top:3px solid var(--marsala)}
+.panel.accent{border-top:3px solid var(--wine)}
 .panel h3{font-size:1.02rem;font-weight:700;margin-bottom:0.15rem}
 .panel .panel-sub{color:var(--ink-muted);font-size:0.82rem;margin-bottom:0.9rem}
 .panel-grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:1.2rem}
@@ -210,10 +216,48 @@ main{max-width:var(--max);margin:0 auto;padding:1.75rem 1.25rem 4rem}
 .map-uf-label{pointer-events:none;font-family:var(--sans);font-weight:700}
 .map-tooltip{position:absolute;background:#fff;border:1px solid var(--border);border-radius:8px;padding:0.7rem 0.9rem;box-shadow:0 8px 26px rgba(0,0,0,0.15);pointer-events:none;min-width:180px;z-index:20;opacity:0;transition:opacity .12s}
 .map-tooltip.visible{opacity:1}
-.map-tooltip-name{font-weight:700;font-size:0.88rem;margin-bottom:0.25rem}
-.map-tooltip-value{font-size:1.05rem;font-weight:700}
-.map-tooltip-hint{font-size:0.72rem;color:var(--ink-muted);margin-top:0.3rem}
+.map-tooltip-name{font-weight:700;font-size:0.9rem;color:var(--navy);padding-bottom:0.4rem;border-bottom:1px solid var(--border)}
+.map-tooltip-value{font-size:1.5rem;font-weight:700;line-height:1.1;margin-top:0.5rem;color:var(--ink)}
+.map-tooltip-value.pos{color:var(--pos)}
+.map-tooltip-value.neg{color:var(--neg)}
+.map-tooltip-sub{font-size:0.7rem;color:var(--ink-muted);margin-bottom:0.5rem}
+.map-tooltip-row{display:flex;justify-content:space-between;gap:1.2rem;font-size:0.76rem;color:var(--ink-light);padding:0.2rem 0}
+.map-tooltip-row b{font-variant-numeric:tabular-nums;color:var(--ink)}
+.map-tooltip-hint{font-size:0.7rem;color:var(--teal-dark);font-weight:600;margin-top:0.5rem;padding-top:0.45rem;border-top:1px solid var(--border)}
 .map-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--ink-muted);font-size:0.85rem;gap:0.5rem}
+/* ── mapa com lista ordenada ao lado ──
+   O mapa dá a forma, a lista dá a ordem. No desktop os dois ficam visíveis
+   juntos; no celular a lista sai e a alternância Mapa/Tabela assume. */
+.mapa-layout{display:grid;grid-template-columns:minmax(0,1fr) 288px;gap:1.2rem;align-items:start}
+.mapa-rail{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:#fff}
+.mapa-rail-head{font-family:var(--mono);font-size:0.64rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink-muted);padding:0.6rem 0.75rem;background:var(--paper-alt);border-bottom:1px solid var(--border)}
+.mapa-rail-list{max-height:560px;overflow-y:auto}
+.mapa-rail-item{display:grid;grid-template-columns:1.4rem 1fr auto;align-items:center;gap:0.5rem;padding:0.4rem 0.75rem;cursor:pointer;border-bottom:1px solid #eef1f2;font-size:0.8rem}
+.mapa-rail-item:hover,.mapa-rail-item.is-active{background:var(--paper-alt)}
+.mapa-rail-pos{font-family:var(--mono);font-size:0.68rem;color:var(--ink-muted);text-align:right}
+.mapa-rail-nome{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mapa-rail-val{font-variant-numeric:tabular-nums;font-weight:600;font-size:0.78rem}
+.mapa-rail-val.pos{color:var(--pos)}
+.mapa-rail-val.neg{color:var(--neg)}
+.mapa-rail-bar{grid-column:1 / -1;height:3px;border-radius:2px;margin-top:0.15rem}
+@media (max-width:980px){
+    .mapa-layout{grid-template-columns:1fr}
+    .mapa-rail{display:none}
+}
+
+/* ── mapa municipal ──
+   Traço bem fino porque são 5.570 polígonos; com a borda do mapa estadual
+   as divisas cobririam os municípios menores. */
+#muniMap .map-state{stroke:#fff;stroke-width:0.18}
+#muniMap .map-state:hover,#muniMap .map-state.is-active{stroke-width:1.1;stroke:var(--navy);opacity:1}
+
+/* Legenda de classes: cada faixa com seu tom, seu intervalo e quantos
+   municípios caem nela, para a cor virar número sem depender do cursor. */
+.classes-legend{display:flex;flex-wrap:wrap;gap:0.5rem 1.1rem;margin-top:1rem;font-size:0.74rem;color:var(--ink-light)}
+.classes-legend-item{display:flex;align-items:center;gap:0.4rem}
+.classes-legend-sw{width:14px;height:14px;border-radius:3px;border:1px solid rgba(0,0,0,0.08);flex-shrink:0}
+.classes-legend-n{color:var(--ink-muted);font-variant-numeric:tabular-nums}
+
 /* Legenda de escala: barra contínua + marcas numéricas, para que a cor
    possa ser convertida em valor sem depender do cursor. */
 .scale-legend{margin-top:1rem;max-width:520px}
@@ -425,17 +469,25 @@ footer.site-foot a:hover{text-decoration:underline}
             </div>
         </div>
         <p class="panel-sub">Estado e municípios, contra o cenário sem a reforma. Clique num estado para ver a ficha completa.</p>
-        <div class="map-wrapper" id="mapWrapper" style="min-height:420px">
-            <div class="map-loading" id="mapLoading">carregando mapa…</div>
-            <svg id="brazilMap" style="display:none"></svg>
-            <div class="map-tooltip" id="mapTooltip"></div>
+        <div class="mapa-layout" id="mapaLayout">
+            <div>
+                <div class="map-wrapper" id="mapWrapper" style="min-height:420px">
+                    <div class="map-loading" id="mapLoading">carregando mapa…</div>
+                    <svg id="brazilMap" style="display:none"></svg>
+                    <div class="map-tooltip" id="mapTooltip"></div>
+                </div>
+                <div class="scale-legend">
+                    <div class="scale-legend-bar" aria-hidden="true"></div>
+                    <div class="scale-legend-ticks" id="scaleLegendTicks" aria-hidden="true"></div>
+                    <p class="scale-legend-note">Vermelho: o ente arrecada menos do que arrecadaria sem a reforma. Azul: arrecada mais. O valor exato de cada estado aparece ao passar o cursor e na lista ao lado.</p>
+                </div>
+            </div>
+            <aside class="mapa-rail" aria-label="Estados ordenados por variação">
+                <div class="mapa-rail-head">Do maior ganho à maior perda</div>
+                <div class="mapa-rail-list" id="mapRail"></div>
+            </aside>
         </div>
         <div class="table-wrap" id="mapTabela" style="display:none"></div>
-        <div class="scale-legend">
-            <div class="scale-legend-bar" aria-hidden="true"></div>
-            <div class="scale-legend-ticks" id="scaleLegendTicks" aria-hidden="true"></div>
-            <p class="scale-legend-note">Vermelho: o ente arrecada menos do que arrecadaria sem a reforma. Azul: arrecada mais. O valor exato de cada estado aparece ao passar o cursor e na aba Estados.</p>
-        </div>
     </div>
 
     <div class="contexto-nacional">
@@ -489,8 +541,8 @@ footer.site-foot a:hover{text-decoration:underline}
 <!-- ============ MUNICÍPIOS ============ -->
 <section class="view" id="view-municipios">
     <div class="view-head">
-        <h2>Busca por município</h2>
-        <p class="sub">Histórico, projeção, coeficientes e Seguro-Receita, para cada um dos 5.569 municípios.</p>
+        <h2>Municípios</h2>
+        <p class="sub">Histórico, projeção, coeficientes e Seguro-Receita, para cada um dos 5.569 municípios. Busque pelo nome ou clique no mapa.</p>
     </div>
 
     <div class="muni-search-wrap">
@@ -498,10 +550,28 @@ footer.site-foot a:hover{text-decoration:underline}
         <div class="muni-results" id="muniResults"></div>
     </div>
 
+    <div class="panel accent">
+        <div class="view-head-row" style="margin-bottom:0.15rem">
+            <h3 style="margin-bottom:0">Variação da receita municipal em 2033</h3>
+            <div class="comp-toggle" id="muniMapViewToggle">
+                <button type="button" data-viz="mapa" class="active">Mapa</button>
+                <button type="button" data-viz="tabela">Distribuição</button>
+            </div>
+        </div>
+        <p class="panel-sub">Cada município colorido pela variação da própria receita contra o cenário sem a reforma. Clique para abrir a ficha.</p>
+        <div class="map-wrapper" id="muniMapWrapper" style="min-height:520px">
+            <div class="map-loading" id="muniMapLoading">carregando mapa…</div>
+            <svg id="muniMap" style="display:none"></svg>
+            <div class="map-tooltip" id="muniMapTooltip"></div>
+        </div>
+        <div class="classes-legend" id="muniClassesLegend"></div>
+        <div class="table-wrap" id="muniMapTabela" style="display:none"></div>
+    </div>
+
     <div id="muniDetailWrap">
         <div class="empty-state" id="muniEmpty">
             <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
-            <p>Busque um município acima para ver a ficha completa.</p>
+            <p>Busque um município acima, ou clique no mapa, para ver a ficha completa.</p>
         </div>
     </div>
 </section>
@@ -510,8 +580,29 @@ footer.site-foot a:hover{text-decoration:underline}
 <section class="view" id="view-rankings">
     <div class="view-head">
         <h2>Rankings nacionais de 2033</h2>
-        <p class="sub">Os 20 municípios que mais ganham e os 20 que mais perdem receita projetada, entre os elegíveis. Clique numa linha para ver a ficha.</p>
-        <p style="font-size:0.76rem;color:var(--ink-muted);margin-top:0.3rem">Elegível: cobertura de dados de ao menos 5 dos 7 anos, população média de 10 mil habitantes ou mais, sem ressalva de qualidade.</p>
+        <p class="sub">Como cada ente se posiciona na variação da receita projetada para 2033, contra o cenário sem a reforma. Clique numa linha para ver a ficha.</p>
+    </div>
+
+    <div class="panel">
+        <h3>Estados</h3>
+        <p class="panel-sub">As 27 unidades da federação, do maior ganho à maior perda. Considera o estado e seus municípios somados.</p>
+        <div class="table-wrap">
+            <table class="data" id="rankEstadosTable">
+                <thead><tr>
+                    <th class="num" style="width:3rem">#</th>
+                    <th>Estado</th>
+                    <th class="num">Referência 2025</th>
+                    <th class="num">Projeção 2033</th>
+                    <th class="num">Variação</th>
+                </tr></thead>
+                <tbody id="rankEstadosBody"><tr><td colspan="5" class="table-empty">Carregando…</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="view-head" style="margin-top:1.8rem">
+        <h3 style="font-size:1.05rem;font-weight:700">Municípios</h3>
+        <p class="sub" style="font-size:0.85rem">Os 20 que mais ganham e os 20 que mais perdem, entre os elegíveis: cobertura de ao menos 5 dos 7 anos, população média de 10 mil habitantes ou mais e sem ressalva de qualidade.</p>
     </div>
     <div class="panel-grid2">
         <div class="panel accent">
@@ -576,6 +667,7 @@ footer.site-foot a:hover{text-decoration:underline}
                 <tr><td>Propensão a consumir por faixa de renda</td><td>Pesquisa de Orçamentos Familiares (POF/IBGE)</td><td>2017–2018</td></tr>
                 <tr><td>Crescimento real do PIB usado na projeção</td><td>Medianas do Boletim Focus (Banco Central)</td><td>2026–2033</td></tr>
                 <tr><td>Regras de transição, coeficientes e Seguro-Receita</td><td>EC 132/2023, LC 214/2024 e LC 227/2026 (ADCT, arts. 128, 131 e 132)</td><td>vigentes</td></tr>
+                <tr><td>Malhas territoriais dos mapas</td><td>Malhas do IBGE, estadual e municipal, em qualidade generalizada</td><td>vigentes</td></tr>
             </tbody>
         </table>
 
@@ -633,7 +725,14 @@ const CORES = {
     tinta:'#141414', tintaFraca:'#6b6b6b',
 };
 
-const fmtPct = v => (v==null||!isFinite(v)) ? '—' : (v>=0?'+':'') + (v*100).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}) + '%';
+// O sinal sai do valor já arredondado: sem isso, uma variação de -0,004%
+// apareceria como "-0,0%", sugerindo perda onde não há.
+const fmtPct = v => {
+    if (v==null || !isFinite(v)) return '—';
+    const p = Math.round(v*1000)/10;
+    const sinal = p > 0 ? '+' : (p < 0 ? '−' : '');
+    return sinal + Math.abs(p).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}) + '%';
+};
 const clsPct = v => v==null ? '' : v < -0.0005 ? 'neg' : v > 0.0005 ? 'pos' : '';
 function fmtMoney(v){
     if (v==null||!isFinite(v)) return '—';
@@ -679,6 +778,11 @@ function showView(name){
     views.forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
     tabs.forEach(t => t.classList.toggle('active', t.dataset.view === name));
     if (name === 'estados' && RESULTADOS) renderUfView();
+    // A malha municipal só é buscada quando a aba é aberta: são 5.570
+    // feições, que não precisam pesar na primeira visita à página. A guarda
+    // por MUNI_INDEX também cobre a abertura direta em #municipios, que roda
+    // antes de os dados existirem; nesse caso quem desenha é o loadCore.
+    if (name === 'municipios' && MUNI_INDEX) renderMuniMapa();
     window.scrollTo({top:0});
     history.replaceState(null, '', '#' + name);
 }
@@ -706,6 +810,7 @@ async function loadCore(){
     populateUfSelect();
     renderRankings();
     if (document.getElementById('view-estados').classList.contains('active')) renderUfView();
+    if (document.getElementById('view-municipios').classList.contains('active')) renderMuniMapa();
 }
 
 // Equivalente em tabela do mapa. Um mapa coroplético codifica valor em cor,
@@ -725,8 +830,36 @@ function renderMapaTabela(){
     });
 }
 
+// Lista ordenada ao lado do mapa: mesma escala de cor da mancha geográfica,
+// com a posição e o valor em texto, para a ordem não depender de comparar
+// tons vizinhos no mapa.
+function renderMapRail(dominio){
+    const el = document.getElementById('mapRail');
+    if (!el) return;
+    const ordenadas = UFS
+        .filter(uf => RESULTADOS.por_uf[uf])
+        .map(uf => ({ uf, v: RESULTADOS.por_uf[uf].variacao_por_ano['2033'] }))
+        .sort((a, b) => b.v - a.v);
+    el.innerHTML = ordenadas.map((e, i) => {
+        // O comprimento carrega a magnitude e a cor carrega só a direção. Usar
+        // a cor da escala aqui repetiria a magnitude e apagaria as barras
+        // pequenas, que ficariam quase brancas.
+        const largura = dominio ? Math.max(2, Math.min(100, Math.abs(e.v) / dominio * 100)) : 0;
+        const cor = e.v >= 0 ? 'var(--pos)' : 'var(--neg)';
+        return `<div class="mapa-rail-item" data-uf="${e.uf}">
+            <span class="mapa-rail-pos">${i+1}</span>
+            <span class="mapa-rail-nome">${NOMES_UF[e.uf]}</span>
+            <span class="mapa-rail-val ${clsPct(e.v)}">${fmtPct(e.v)}</span>
+            <span class="mapa-rail-bar" style="width:${largura}%;background:${cor}"></span>
+        </div>`;
+    }).join('');
+    el.querySelectorAll('.mapa-rail-item').forEach(item => {
+        item.onclick = () => { selectedUf = item.dataset.uf; showView('estados'); };
+    });
+}
+
 function mostrarMapaOuTabela(tabela){
-    document.getElementById('mapWrapper').style.display = tabela ? 'none' : '';
+    document.getElementById('mapaLayout').style.display = tabela ? 'none' : '';
     document.getElementById('mapTabela').style.display = tabela ? '' : 'none';
     document.querySelectorAll('#mapViewToggle button').forEach(b =>
         b.classList.toggle('active', (b.dataset.viz === 'tabela') === tabela));
@@ -799,6 +932,8 @@ function renderMap(){
         const t = Math.max(-1, Math.min(1, v/DOMAIN));
         return t < 0 ? rampaPerda(-t) : rampaGanho(t);
     }
+    renderMapRail(DOMAIN);
+
     function positionTooltip(event){
         const wRect = wrapper.getBoundingClientRect();
         const x = event.clientX - wRect.left, y = event.clientY - wRect.top;
@@ -811,7 +946,17 @@ function renderMap(){
         tooltip.style.left = left+'px'; tooltip.style.top = top+'px';
     }
     function showTooltip(uf, v, event){
-        tooltip.innerHTML = `<div class="map-tooltip-name">${NOMES_UF[uf]||uf}</div><div class="map-tooltip-value" style="color:${v>=0?'var(--pos)':'var(--neg)'}">${fmtPct(v)}</div><div class="map-tooltip-hint">vs. contrafactual, 2033 · clique para ver a ficha</div>`;
+        // O cartão responde de uma vez quem é o ente, quanto varia, de quanto
+        // para quanto, e o que acontece se clicar.
+        const r = RESULTADOS.por_uf[uf] || {};
+        const linha = (rot, val) => `<div class="map-tooltip-row"><span>${rot}</span><b>${val}</b></div>`;
+        tooltip.innerHTML =
+            `<div class="map-tooltip-name">${NOMES_UF[uf]||uf}</div>` +
+            `<div class="map-tooltip-value ${clsPct(v)}">${fmtPct(v)}</div>` +
+            `<div class="map-tooltip-sub">em 2033, contra o cenário sem a reforma</div>` +
+            (r.pre_2025 != null ? linha('Referência 2025', fmtMoney(r.pre_2025)) : '') +
+            (r.pos_por_ano ? linha('Projeção 2033', fmtMoney(r.pos_por_ano['2033'])) : '') +
+            `<div class="map-tooltip-hint">Clique para ver a ficha completa →</div>`;
         tooltip.classList.add('visible');
         positionTooltip(event);
     }
@@ -869,7 +1014,9 @@ function renderMap(){
             .then(geo => { if(!geo||!geo.features||!geo.features.length) throw new Error(); renderGeo(geo); })
             .catch(() => tryLoad(i+1));
     })(0);
-    document.addEventListener('click', () => { tooltip.classList.remove('visible'); d3.selectAll('path.map-state').classed('is-active', false); });
+    // Escopo no mapa estadual: sem isso o seletor alcançaria também os 5.570
+    // polígonos do mapa municipal a cada clique na página.
+    document.addEventListener('click', () => { tooltip.classList.remove('visible'); d3.selectAll('#brazilMap path.map-state').classed('is-active', false); });
     window.addEventListener('resize', () => {
         const newW = wrapper.clientWidth;
         if (Math.abs(newW-W) < 20) return;
@@ -1317,6 +1464,170 @@ document.getElementById('ufMuniTable').querySelectorAll('thead th').forEach(th =
     });
 });
 
+// ── MAPA MUNICIPAL ──
+// Sete classes em vez de escala contínua: a variação municipal vai de -72%
+// a +282%, e num degradê linear a cauda achataria a cor de quase todo mundo
+// perto do meio. Com faixas fixas, cada classe fica povoada e a legenda diz
+// exatamente o que cada tom significa.
+const CLASSES_MUNI = [
+    { ate: -30, cor:'#9c2222', rotulo:'−30% ou menos' },
+    { ate: -15, cor:'#c9524f', rotulo:'−30% a −15%' },
+    { ate:  -5, cor:'#e08a88', rotulo:'−15% a −5%' },
+    { ate:   5, cor:'#f0efec', rotulo:'−5% a +5%' },
+    { ate:  15, cor:'#7cafec', rotulo:'+5% a +15%' },
+    { ate:  30, cor:'#4a8ce0', rotulo:'+15% a +30%' },
+    { ate: Infinity, cor:'#1c5cab', rotulo:'+30% ou mais' },
+];
+const COR_RESSALVA = '#b9bec2';
+// Brasília e Fernando de Noronha estão na malha do IBGE mas não no painel:
+// nenhum dos dois tem esfera municipal própria de arrecadação no modelo.
+const COR_SEM_ESFERA = '#e8ecef';
+
+function classeMunicipal(m){
+    if (!m) return null;
+    if (m.r) return { cor: COR_RESSALVA, rotulo: 'sem dado confiável' };
+    const p = m.v * 100;
+    return CLASSES_MUNI.find(c => p < c.ate) || CLASSES_MUNI[CLASSES_MUNI.length-1];
+}
+
+let MALHA_MUNI = null, malhaMuniPromise = null, muniMapaDesenhado = false;
+function ensureMalhaMunicipios(){
+    if (MALHA_MUNI) return Promise.resolve(MALHA_MUNI);
+    if (malhaMuniPromise) return malhaMuniPromise;
+    malhaMuniPromise = fetch('/data/malha-municipios.json')
+        .then(r => r.ok ? r.json() : null)
+        .catch(() => null)
+        .then(g => { MALHA_MUNI = g; return g; });
+    return malhaMuniPromise;
+}
+
+function renderMuniClassesLegenda(contagem, semEsfera){
+    const el = document.getElementById('muniClassesLegend');
+    if (!el) return;
+    const item = (cor, rotulo, n) =>
+        `<span class="classes-legend-item"><span class="classes-legend-sw" style="background:${cor}"></span>${rotulo}<span class="classes-legend-n">${n.toLocaleString('pt-BR')}</span></span>`;
+    el.innerHTML = CLASSES_MUNI.map(c => item(c.cor, c.rotulo, contagem[c.rotulo]||0)).join('')
+        + item(COR_RESSALVA, 'sem dado confiável', contagem['sem dado confiável']||0)
+        + (semEsfera ? item(COR_SEM_ESFERA, 'sem esfera municipal própria', semEsfera) : '');
+}
+
+function renderMuniMapaTabela(contagem, total){
+    const el = document.getElementById('muniMapTabela');
+    if (!el) return;
+    const linha = (cor, rotulo, n) => `<tr>
+        <td><span class="classes-legend-sw" style="background:${cor};display:inline-block;vertical-align:-2px;margin-right:0.45rem"></span>${rotulo}</td>
+        <td class="num">${n.toLocaleString('pt-BR')}</td>
+        <td class="num">${total ? (n/total*100).toLocaleString('pt-BR',{maximumFractionDigits:1}) : '0'}%</td>
+    </tr>`;
+    el.innerHTML = `<table class="data"><thead><tr><th>Faixa de variação em 2033</th><th class="num">Municípios</th><th class="num">Do total</th></tr></thead><tbody>`
+        + CLASSES_MUNI.map(c => linha(c.cor, c.rotulo, contagem[c.rotulo]||0)).join('')
+        + linha(COR_RESSALVA, 'Sem dado confiável', contagem['sem dado confiável']||0)
+        + `</tbody></table>`;
+}
+
+function renderMuniMapa(){
+    if (muniMapaDesenhado || !MUNI_INDEX) return;
+    muniMapaDesenhado = true;
+    const wrapper = document.getElementById('muniMapWrapper');
+    const loading = document.getElementById('muniMapLoading');
+    const svgEl = document.getElementById('muniMap');
+    const tooltip = document.getElementById('muniMapTooltip');
+
+    const contagem = {};
+    Object.values(MUNI_INDEX).forEach(m => {
+        const c = classeMunicipal(m);
+        if (c) contagem[c.rotulo] = (contagem[c.rotulo]||0) + 1;
+    });
+    const total = Object.keys(MUNI_INDEX).length;
+    renderMuniMapaTabela(contagem, total);
+
+    ensureMalhaMunicipios().then(geo => {
+        if (!geo || !geo.features) {
+            loading.innerHTML = '<span>Mapa indisponível. Use a busca acima ou a aba Estados.</span>';
+            renderMuniClassesLegenda(contagem, 0);
+            return;
+        }
+        const semEsfera = geo.features.filter(f => !MUNI_INDEX[f.properties.cod]).length;
+        renderMuniClassesLegenda(contagem, semEsfera);
+        let W = wrapper.clientWidth || 720, H = Math.round(W*0.92);
+        const svg = d3.select(svgEl).attr('width',W).attr('height',H).attr('viewBox',`0 0 ${W} ${H}`);
+        const projection = d3.geoMercator().fitSize([W,H], geo);
+        const pathGen = d3.geoPath().projection(projection);
+
+        // Um <path> por município, sem ouvinte próprio: com 5.570 elementos,
+        // delegar os eventos ao <svg> evita criar milhares de closures.
+        svg.append('g').selectAll('path').data(geo.features).enter().append('path')
+            .attr('class','map-state')
+            .attr('d', pathGen)
+            .attr('data-cod', d => d.properties.cod)
+            .attr('fill', d => { const c = classeMunicipal(MUNI_INDEX[d.properties.cod]); return c ? c.cor : COR_SEM_ESFERA; });
+
+        loading.style.display = 'none';
+        svgEl.style.display = 'block';
+
+        const posiciona = event => {
+            const wRect = wrapper.getBoundingClientRect();
+            const x = event.clientX - wRect.left, y = event.clientY - wRect.top;
+            const ttW = tooltip.offsetWidth||200, ttH = tooltip.offsetHeight||90;
+            let left = x+16, top = y-ttH/2;
+            if (left+ttW > wRect.width-8) left = x-ttW-16;
+            tooltip.style.left = Math.max(8,left)+'px';
+            tooltip.style.top = Math.min(Math.max(8,top), wRect.height-ttH-8)+'px';
+        };
+        const codDe = alvo => (alvo && alvo.classList && alvo.classList.contains('map-state')) ? alvo.getAttribute('data-cod') : null;
+
+        svgEl.addEventListener('mousemove', e => {
+            const cod = codDe(e.target);
+            if (!cod) { tooltip.classList.remove('visible'); return; }
+            const m = MUNI_INDEX[cod];
+            if (!m) {
+                // Existe na malha, mas não no painel: sem esfera municipal
+                // própria. Dizer isso é melhor do que não reagir ao cursor.
+                tooltip.innerHTML =
+                    `<div class="map-tooltip-name">Sem esfera municipal própria</div>` +
+                    `<div class="map-tooltip-sub" style="margin-top:0.5rem">Este território não arrecada ISS nem recebe cota-parte como município, então não entra na projeção municipal.</div>`;
+                tooltip.classList.add('visible');
+                posiciona(e);
+                return;
+            }
+            tooltip.innerHTML =
+                `<div class="map-tooltip-name">${m.nome} <span style="color:var(--ink-muted);font-weight:400">${m.uf}</span></div>` +
+                (m.r
+                    ? `<div class="map-tooltip-value" style="font-size:1rem;color:var(--ink-muted)">Sem dado confiável</div>
+                       <div class="map-tooltip-sub">A participação de 2025 deste município tem ressalva de qualidade na fonte.</div>`
+                    : `<div class="map-tooltip-value ${clsPct(m.v)}">${fmtPct(m.v)}</div>
+                       <div class="map-tooltip-sub">em 2033, contra o cenário sem a reforma</div>`) +
+                `<div class="map-tooltip-hint">Clique para ver a ficha completa →</div>`;
+            tooltip.classList.add('visible');
+            posiciona(e);
+        });
+        svgEl.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+        svgEl.addEventListener('click', e => {
+            const cod = codDe(e.target);
+            if (cod && MUNI_INDEX[cod]) { e.stopPropagation(); openMunicipio(cod); }
+        });
+
+        window.addEventListener('resize', () => {
+            const novoW = wrapper.clientWidth;
+            if (Math.abs(novoW-W) < 24) return;
+            W = novoW; H = Math.round(W*0.92);
+            svg.attr('width',W).attr('height',H).attr('viewBox',`0 0 ${W} ${H}`);
+            projection.fitSize([W,H], geo);
+            svg.selectAll('path.map-state').attr('d', pathGen);
+        });
+    });
+}
+
+document.querySelectorAll('#muniMapViewToggle button').forEach(btn => {
+    btn.onclick = () => {
+        const tabela = btn.dataset.viz === 'tabela';
+        document.querySelectorAll('#muniMapViewToggle button').forEach(b => b.classList.toggle('active', b === btn));
+        document.getElementById('muniMapWrapper').style.display = tabela ? 'none' : '';
+        document.getElementById('muniClassesLegend').style.display = tabela ? 'none' : '';
+        document.getElementById('muniMapTabela').style.display = tabela ? '' : 'none';
+    };
+});
+
 // ── MUNICÍPIOS: busca e ficha ──
 const muniInput = document.getElementById('muniSearchInput');
 const muniResults = document.getElementById('muniResults');
@@ -1393,6 +1704,25 @@ async function openMunicipio(cod){
 
 // ── RANKINGS ──
 function renderRankings(){
+    // Estados: as 27 UFs cabem inteiras, então mostrar o ranking completo em
+    // vez de recortar um topo, que esconderia metade da federação.
+    const ufsOrdenadas = UFS
+        .filter(uf => RESULTADOS.por_uf[uf])
+        .map(uf => ({ uf, r: RESULTADOS.por_uf[uf], v: RESULTADOS.por_uf[uf].variacao_por_ano['2033'] }))
+        .sort((a, b) => b.v - a.v);
+    const eBody = document.getElementById('rankEstadosBody');
+    eBody.innerHTML = ufsOrdenadas.map((e, i) => `
+        <tr data-uf="${e.uf}">
+            <td class="num" style="color:var(--ink-muted);font-variant-numeric:tabular-nums">${i+1}</td>
+            <td>${NOMES_UF[e.uf]}</td>
+            <td class="num">${fmtMoney(e.r.pre_2025)}</td>
+            <td class="num">${fmtMoney(e.r.pos_por_ano['2033'])}</td>
+            <td class="num ${clsPct(e.v)}">${fmtPct(e.v)}</td>
+        </tr>`).join('');
+    eBody.querySelectorAll('tr[data-uf]').forEach(tr => {
+        tr.addEventListener('click', () => { selectedUf = tr.dataset.uf; showView('estados'); });
+    });
+
     const d = RESULTADOS.destaques_municipios_2033;
     const rowsHtml = (list, cls) => list.map(m => `
         <tr data-cod="${m.cod}">
