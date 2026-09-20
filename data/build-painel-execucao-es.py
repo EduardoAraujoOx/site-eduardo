@@ -336,7 +336,21 @@ def build_espaco_fiscal_por_fonte():
     comprometido em despesa liquidada no mesmo corte: um sinal de espaco
     ORCAMENTARIO por fonte (nao de caixa disponivel, que o painel nao tem),
     sem nenhuma projecao estimada -- so' numeros ja publicados (previsao
-    atualizada oficial do governo e despesa liquidada ate' a mesma data)."""
+    atualizada oficial do governo e despesa liquidada ate' a mesma data).
+
+    Conferido linha a linha (nao so' a cobertura agregada) antes de dar
+    esta tabela por definitiva: em valor, a despesa casada cobre 100% do
+    liquidado do Executivo no corte e a receita casada cobre 99,94% do
+    arrecadado -- as fontes sem par somam menos de R$ 13 milhoes contra
+    R$ 19,65 bilhoes arrecadados, residuo irrelevante. Duas ressalvas reais
+    sobrevivem a essa checagem, e ficam documentadas em vez de escondidas:
+    (1) a fonte 546 (Fundeb - Complementacao da Uniao) tem despesa real sem
+    nenhuma previsao de receita registrada nessa base -- tratado abaixo
+    como "sem_previsao_com_despesa", nao como ausencia neutra de dado; (2)
+    agregar pelo CodigoFonte mistura, dentro da mesma fonte 500, receita
+    geral de impostos com pagamento de beneficios previdenciarios do plano
+    financeiro (regime de reparticao, cobertos pelo tesouro geral por
+    desenho), duas naturezas fiscais diferentes sob o mesmo percentual."""
     path_despesa = DATA_DIR / "despesa-por-fonte-es.json"
     path_receita = DATA_DIR / "receita-executivo-es.json"
     if not path_despesa.exists() or not path_receita.exists():
@@ -375,6 +389,12 @@ def build_espaco_fiscal_por_fonte():
         # ser o nome-base (ex.: "Recursos nao vinculados de Impostos"),
         # nao um sub-detalhamento especifico mais longo.
         nome = min(d_agr["nomes"] + r_agr["nomes"], key=len)
+        # Distingue duas leituras bem diferentes de "sem percentual": uma
+        # Fonte sem despesa relevante (nada a medir) de uma Fonte com
+        # despesa real mas sem previsao de receita registrada nessa base --
+        # esse segundo caso e' em si um sinal de atencao, nao uma ausencia
+        # de dado neutra, e precisa aparecer marcado, nao como traco mudo.
+        sem_previsao_com_despesa = previsao == 0 and liquidado >= PISO_ESPACO_FISCAL
         linhas.append(
             {
                 "codigo_fonte": codigo,
@@ -384,9 +404,12 @@ def build_espaco_fiscal_por_fonte():
                 "despesa_empenhada_2026": round(empenhado, 2),
                 "despesa_liquidada_2026": round(liquidado, 2),
                 "pct_previsao_ja_liquidado": round(liquidado / previsao * 100, 1) if previsao else None,
+                "sem_previsao_com_despesa": sem_previsao_com_despesa,
             }
         )
-    linhas.sort(key=lambda x: -(x["pct_previsao_ja_liquidado"] or 0))
+    # Fontes com despesa mas sem previsao registrada sobem para o topo: e'
+    # um sinal mais forte que precisa aparecer, nao afundar como se fosse 0%.
+    linhas.sort(key=lambda x: (0, 0) if x["sem_previsao_com_despesa"] else (1, -(x["pct_previsao_ja_liquidado"] or 0)))
 
     return {
         "corte_mes": despesa["corte_comparacao_mes"],

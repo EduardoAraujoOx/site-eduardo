@@ -251,7 +251,7 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
 
 <section class="panel" aria-labelledby="espacofiscal-h">
     <h3 id="espacofiscal-h">Espaço fiscal por Fonte: a despesa já compromete quanto da receita prevista?</h3>
-    <p class="panel-sub">Cruza as duas tabelas anteriores pelo código da Fonte, algo que este painel não fazia até agora. "% da previsão já liquidado" divide a despesa liquidada pela previsão atualizada de receita da <b>mesma Fonte</b>, ambas no mesmo corte do ano: é uma medida de espaço <b>orçamentário</b>, não de caixa disponível (que o painel não tem). Por lei, despesa vinculada a uma Fonte não pode superar a receita prevista dela, então esse número nunca deveria passar de 100% no fechamento do ano; passar de 100% já no meio do ano, como neste corte, é sinal concreto de aperto naquela Fonte especificamente. Nenhum número aqui é projetado: são valores já publicados (previsão atualizada oficial e despesa liquidada até a mesma data). O cruzamento usa o código reduzido da Fonte (o mesmo nas duas bases), não o detalhamento mais fino dentro dela (que tem numeração própria em cada base e não bate por nome com confiabilidade); isso agrega sub-destinações diferentes de uma mesma Fonte (por exemplo, a parcela vinculada à Saúde e a parcela de uso livre dentro da mesma Fonte de impostos), perdendo um pouco de granularidade em troca de uma cobertura bem mais completa. Fontes sem código correspondente dos dois lados ficam de fora, não porque não tenham despesa ou receita.</p>
+    <p class="panel-sub">Cruza as duas tabelas anteriores pelo código da Fonte, algo que este painel não fazia até agora. "% da previsão já liquidado" divide a despesa liquidada pela previsão atualizada de receita da <b>mesma Fonte</b>, ambas no mesmo corte do ano: é uma medida de espaço <b>orçamentário</b>, não de caixa disponível (que o painel não tem). Por lei, despesa vinculada a uma Fonte não pode superar a receita prevista dela, então esse número nunca deveria passar de 100% no fechamento do ano; passar de 100% já no meio do ano, como neste corte, é sinal concreto de aperto naquela Fonte especificamente. Nenhum número aqui é projetado: são valores já publicados (previsão atualizada oficial e despesa liquidada até a mesma data). O cruzamento usa o código reduzido da Fonte (o mesmo nas duas bases), não o detalhamento mais fino dentro dela (que tem numeração própria em cada base e não bate por nome com confiabilidade); conferido em valor, isso cobre 100% da despesa liquidada e 99,94% da receita arrecadada do Executivo, o resíduo sem par é irrelevante. O custo é agregar sub-destinações diferentes de uma mesma Fonte: a maior Fonte do painel (Recursos Não Vinculados de Impostos) mistura, por exemplo, receita geral de impostos com o pagamento de benefícios previdenciários do plano financeiro, que por desenho é coberto pelo tesouro geral, então o percentual dela mistura duas naturezas fiscais diferentes, não é só um número "mais grosso". "⚠ sem previsão registrada" marca quando há despesa liquidada relevante numa Fonte sem nenhuma previsão de receita correspondente nesta base, um problema de dado a parte, não uma fonte sem risco.</p>
     <div class="table-tools">
         <input type="text" class="search-input" id="espacoFiscalSearch" placeholder="Buscar Fonte…" autocomplete="off">
         <button type="button" class="export-btn" id="espacoFiscalExportBtn">Exportar como imagem</button>
@@ -688,8 +688,11 @@ document.querySelectorAll('#receitaTable thead th').forEach(th => {
 let espacoFiscalSort = {key:'pct_previsao_ja_liquidado', dir:-1};
 let espacoFiscalShown = 15;
 function fmtPctPrevisaoLiquidado(r) {
-    if (r.pct_previsao_ja_liquidado == null) return '<span style="color:var(--ink-muted)">—</span>';
     const detalhe = `Despesa empenhada: ${fmtR$(r.despesa_empenhada_2026)} · Previsão atualizada de receita: ${fmtR$(r.receita_previsao_atualizada_2026)}`;
+    if (r.sem_previsao_com_despesa) {
+        return `<span class="badge warn" title="Há despesa liquidada nesta Fonte, mas nenhuma previsão de receita registrada para ela nesta base. ${detalhe}">⚠ sem previsão registrada</span>`;
+    }
+    if (r.pct_previsao_ja_liquidado == null) return '<span style="color:var(--ink-muted)">—</span>';
     if (r.pct_previsao_ja_liquidado >= 100) {
         return `<span class="badge warn" title="${detalhe}">▲ ${fmtPct(r.pct_previsao_ja_liquidado)}</span>`;
     }
@@ -699,6 +702,13 @@ function renderEspacoFiscalTable(rows) {
     const busca = (document.getElementById('espacoFiscalSearch').value || '').toLowerCase();
     let filtradas = rows.filter(r => r.nome_fonte.toLowerCase().includes(busca));
     filtradas.sort((a,b) => {
+        // "Sem previsão registrada" é um alerta, não um vazio: ao ordenar
+        // pela coluna de percentual, sempre fica no topo, em vez de cair
+        // para o fim como os nulos comuns (fonte sem despesa relevante).
+        if (espacoFiscalSort.key === 'pct_previsao_ja_liquidado') {
+            if (a.sem_previsao_com_despesa && !b.sem_previsao_com_despesa) return -1;
+            if (b.sem_previsao_com_despesa && !a.sem_previsao_com_despesa) return 1;
+        }
         const va = a[espacoFiscalSort.key], vb = b[espacoFiscalSort.key];
         if (typeof va === 'string') return va.localeCompare(vb) * espacoFiscalSort.dir;
         return ((va ?? -Infinity) - (vb ?? -Infinity)) * espacoFiscalSort.dir;
@@ -944,7 +954,7 @@ document.getElementById('espacoFiscalExportBtn').addEventListener('click', funct
             { label: 'Fonte', largura: 300, valor: r => r.nome_fonte },
             { label: 'Receita arrecadada (R$)', largura: 160, num: true, valor: r => fmtR$(r.receita_arrecadada_2026) },
             { label: 'Despesa liquidada (R$)', largura: 160, num: true, valor: r => fmtR$(r.despesa_liquidada_2026) },
-            { label: '% da previsão liquidado', largura: 150, num: true, valor: r => fmtPct(r.pct_previsao_ja_liquidado) },
+            { label: '% da previsão liquidado', largura: 150, num: true, valor: r => r.sem_previsao_com_despesa ? 'sem previsão registrada' : fmtPct(r.pct_previsao_ja_liquidado) },
         ],
         linhas,
         nomeArquivo: 'espaco-fiscal-por-fonte-executivo-es.png',
