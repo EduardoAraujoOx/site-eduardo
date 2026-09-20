@@ -264,28 +264,6 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
     <div class="table-more" id="prazoMore" style="display:none">Mostrar mais Unidades Gestoras</div>
 </section>
 
-<section class="panel" aria-labelledby="implicito-h">
-    <h3 id="implicito-h">Estimativa de dias de fila para pagamento, por Unidade Gestora (2023-2026)</h3>
-    <p class="panel-sub"><b>Atenção: não é o prazo real da tabela acima.</b> É uma estimativa indireta, construída só para cobrir os dois anos que a base de prazo real ainda não tem (2023 e 2024): divide o estoque represado no mesmo corte de calendário (18 de setembro) pelo ritmo médio de pagamento da própria UG naquele ano, como se perguntasse "no ritmo atual de pagamento, quantos dias seriam necessários para zerar a fila represada?". Isso pode se distorcer em Unidades Gestoras que concentram pagamentos em poucos lotes ao longo do ano, em vez de pagar de forma constante. Só entram UGs com pelo menos R$ 1 milhão pago no período e dados em pelo menos 3 dos 4 anos. "▲" marca quando 2026 é o maior valor da série disponível para aquela UG.</p>
-    <div class="table-tools">
-        <input type="text" class="search-input" id="implicitoSearch" placeholder="Buscar Unidade Gestora…" autocomplete="off">
-        <button type="button" class="export-btn" id="implicitoExportBtn">Exportar como imagem</button>
-    </div>
-    <div class="table-wrap">
-        <table class="data" id="implicitoTable" aria-labelledby="implicito-h">
-            <thead><tr>
-                <th scope="col" data-key="unidade_gestora">Unidade Gestora</th>
-                <th scope="col" class="num" data-key="dias_2023">2023</th>
-                <th scope="col" class="num" data-key="dias_2024">2024</th>
-                <th scope="col" class="num" data-key="dias_2025">2025</th>
-                <th scope="col" class="num" data-key="dias_2026">2026</th>
-            </tr></thead>
-            <tbody id="implicitoBody"><tr><td colspan="5">Carregando…</td></tr></tbody>
-        </table>
-    </div>
-    <div class="table-more" id="implicitoMore" style="display:none">Mostrar mais Unidades Gestoras</div>
-</section>
-
 <section class="panel" aria-labelledby="fontes-h">
     <h3 id="fontes-h">Fontes e metodologia</h3>
     <div class="meta-list">
@@ -374,7 +352,6 @@ function render(d) {
     renderChartTable(k.saude_fes.comparativo_mesmo_corte);
     renderRankTable(d.ranking_executivo);
     renderPrazoTable(d.prazos_executivo);
-    renderImplicitoTable(d.prazo_implicito_por_ug);
 }
 
 // ══════════════════ GRÁFICO DE LINHAS ══════════════════
@@ -581,49 +558,6 @@ document.querySelectorAll('#prazoTable thead th').forEach(th => {
     th.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); ativa(); } });
 });
 
-// ══════════════════ TABELA: DIAS DE FILA IMPLÍCITOS (ESTIMATIVA 2023-2026) ══════════════════
-let implicitoSort = {key:'dias_2026', dir:-1};
-let implicitoShown = 15;
-function fmtAnoImplicito(r, ano) {
-    const v = r['dias_' + ano];
-    if (v == null) return '<span style="color:var(--ink-muted)">—</span>';
-    if (ano === 2026 && r.eh_recorde) return `<span class="badge warn" title="Maior valor da série disponível para esta UG">▲ ${fmtDias(v)}</span>`;
-    return fmtDias(v);
-}
-function renderImplicitoTable(rows) {
-    const busca = (document.getElementById('implicitoSearch').value || '').toLowerCase();
-    let filtradas = rows.filter(r => r.unidade_gestora.toLowerCase().includes(busca));
-    filtradas.sort((a,b) => {
-        const va = a[implicitoSort.key], vb = b[implicitoSort.key];
-        if (typeof va === 'string') return va.localeCompare(vb) * implicitoSort.dir;
-        return ((va ?? -Infinity) - (vb ?? -Infinity)) * implicitoSort.dir;
-    });
-    const visiveis = filtradas.slice(0, implicitoShown);
-    window.implicitoVisiveisAtual = visiveis;
-    document.getElementById('implicitoBody').innerHTML = visiveis.map(r => `
-        <tr class="${r.codigo_ug === '440901' ? 'destaque' : ''}">
-            <td class="ug-nome">${r.unidade_gestora}${r.codigo_ug === '440901' ? ' <span class="badge info">Saúde (FES)</span>' : ''}</td>
-            <td class="num">${fmtAnoImplicito(r, 2023)}</td>
-            <td class="num">${fmtAnoImplicito(r, 2024)}</td>
-            <td class="num">${fmtAnoImplicito(r, 2025)}</td>
-            <td class="num">${fmtAnoImplicito(r, 2026)}</td>
-        </tr>
-    `).join('');
-    document.getElementById('implicitoMore').style.display = filtradas.length > implicitoShown ? 'block' : 'none';
-}
-document.getElementById('implicitoSearch').addEventListener('input', () => { implicitoShown = 15; renderImplicitoTable(PAINEL.prazo_implicito_por_ug); });
-document.getElementById('implicitoMore').addEventListener('click', () => { implicitoShown += 30; renderImplicitoTable(PAINEL.prazo_implicito_por_ug); });
-document.querySelectorAll('#implicitoTable thead th').forEach(th => {
-    th.setAttribute('tabindex', '0');
-    const ativa = () => {
-        const key = th.dataset.key;
-        implicitoSort = (implicitoSort.key === key) ? {key, dir:-implicitoSort.dir} : {key, dir: key==='unidade_gestora' ? 1 : -1};
-        renderImplicitoTable(PAINEL.prazo_implicito_por_ug);
-    };
-    th.addEventListener('click', ativa);
-    th.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); ativa(); } });
-});
-
 // ══════════════════ EXPORTAR TABELA COMO IMAGEM ══════════════════
 // Gera um cartão neutro (sem nome de site ou de autor) citando apenas a
 // fonte oficial dos dados, em formato de referência ABNT, para
@@ -809,22 +743,6 @@ document.getElementById('prazoExportBtn').addEventListener('click', function () 
     });
 });
 
-document.getElementById('implicitoExportBtn').addEventListener('click', function () {
-    const linhas = window.implicitoVisiveisAtual || [];
-    exportarTabelaComoImagem({
-        titulo: 'Estimativa de Dias de Fila para Pagamento do Poder Executivo do Espírito Santo',
-        subtitulo: 'Estoque represado ÷ ritmo médio de pagamento, mesmo corte de calendário, 2023-2026 (não é o prazo real por documento)',
-        colunas: [
-            { label: 'Unidade Gestora', largura: 300, valor: r => r.unidade_gestora },
-            { label: '2023', largura: 90, num: true, valor: r => r.dias_2023 == null ? '—' : fmtDias(r.dias_2023) },
-            { label: '2024', largura: 90, num: true, valor: r => r.dias_2024 == null ? '—' : fmtDias(r.dias_2024) },
-            { label: '2025', largura: 90, num: true, valor: r => r.dias_2025 == null ? '—' : fmtDias(r.dias_2025) },
-            { label: '2026', largura: 90, num: true, valor: r => (r.dias_2026 == null ? '—' : fmtDias(r.dias_2026)) + (r.eh_recorde ? ' (recorde)' : '') },
-        ],
-        linhas,
-        nomeArquivo: 'prazo-implicito-executivo-es.png',
-    });
-});
 </script>
 </body>
 </html>

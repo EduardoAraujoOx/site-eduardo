@@ -145,64 +145,6 @@ def build_gap_mesmo_corte_por_ug():
     return resultado
 
 
-PISO_PAGO_PARA_PRAZO_IMPLICITO = 1_000_000  # abaixo disso a razao vira ruido
-
-
-def build_prazo_implicito_por_ug():
-    """Estimativa indireta de dias de fila para pagamento, por UG, 2023-2026 --
-    NAO e' o prazo real por documento (isso so' existe para 2025-2026, ver
-    build_prazos_executivo). E' o estoque represado no mesmo corte de
-    calendario dividido pelo pagamento diario medio da UG naquele ano ate' o
-    corte, uma logica parecida com "dias de contas a pagar" em analise de
-    balanco. Serve so' para dar uma leitura de tendencia nos dois anos que o
-    dado real ainda nao cobre (2023-2024); onde os dois existem (2025-2026),
-    a tabela de prazo real e' a fonte que deve prevalecer.
-    Quando o estoque no corte e' zero ou negativo (pagou mais do que
-    liquidou no periodo, sinal de que estava quitando atraso antigo), o
-    "dias de fila" e' zero, nao negativo."""
-    path = DATA_DIR / "execucao-executivo-es.json"
-    if not path.exists():
-        return []
-    serie = json.load(open(path))["series"]
-    por_ug = defaultdict(dict)
-    nomes = {}
-    for chave, info in serie.items():
-        ano_str, ug = chave.split("|")
-        ano = int(ano_str)
-        nomes[ug] = info["unidade_gestora"]
-        cum_liq = cum_pago = 0.0
-        n_dias = 0
-        for ponto in sorted(info["diario"], key=lambda p: p["data"]):
-            if ponto["data"][5:] > CUTOFF_MMDD:
-                break
-            cum_liq += ponto["liquidado"]
-            cum_pago += ponto["pago"]
-            n_dias += 1
-        if n_dias == 0 or cum_pago < PISO_PAGO_PARA_PRAZO_IMPLICITO:
-            continue
-        gap = cum_liq - cum_pago
-        pago_medio_dia = cum_pago / n_dias
-        por_ug[ug][ano] = round(max(gap, 0) / pago_medio_dia, 1)
-
-    linhas = []
-    for ug, anos in por_ug.items():
-        if 2026 not in anos or len(anos) < 3:
-            continue
-        eh_recorde = anos[2026] == max(anos.values())
-        linhas.append(
-            {
-                "codigo_ug": ug,
-                "unidade_gestora": nomes[ug],
-                "dias_2023": anos.get(2023),
-                "dias_2024": anos.get(2024),
-                "dias_2025": anos.get(2025),
-                "dias_2026": anos.get(2026),
-                "eh_recorde": eh_recorde,
-            }
-        )
-    return sorted(linhas, key=lambda x: -x["dias_2026"])
-
-
 def build_ranking_executivo():
     orc = json.load(open(DATA_DIR / "orcamentos-execucoes-es.json"))
     rows = [r for r in orc["por_ano"]["2026"]["registros"] if r["poder"] == "Executivo"]
@@ -318,7 +260,6 @@ def main():
         "serie_saude_por_dia_do_ano": serie_saude,
         "ranking_executivo": build_ranking_executivo(),
         "prazos_executivo": build_prazos_executivo(),
-        "prazo_implicito_por_ug": build_prazo_implicito_por_ug(),
     }
     OUTPUT.write_text(json.dumps(output, ensure_ascii=False, indent=2))
     print(f"Salvo em {OUTPUT}")
