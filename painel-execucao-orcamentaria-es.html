@@ -251,7 +251,7 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
 
 <section class="panel" aria-labelledby="espacofiscal-h">
     <h3 id="espacofiscal-h">Espaço fiscal por Fonte: a despesa já compromete quanto da receita prevista?</h3>
-    <p class="panel-sub">Cruza as duas tabelas anteriores pelo nome da Fonte, algo que este painel não fazia até agora. "% da previsão já liquidado" divide a despesa liquidada pela previsão atualizada de receita da <b>mesma Fonte</b>, ambas no mesmo corte do ano: é uma medida de espaço <b>orçamentário</b>, não de caixa disponível (que o painel não tem). Por lei, despesa vinculada a uma Fonte não pode superar a receita prevista dela, então esse número nunca deveria passar de 100% no fechamento do ano; passar de 100% já no meio do ano, como neste corte, é sinal concreto de aperto naquela Fonte especificamente. Nenhum número aqui é projetado: são valores já publicados (previsão atualizada oficial e despesa liquidada até a mesma data). O cruzamento é feito pelo nome do detalhamento da Fonte, porque os códigos numéricos não coincidem entre a base de despesa (SIGEFES) e a de receita (TCE-ES); Fontes cujo nome não bateve dos dois lados ficam de fora, não porque não tenham despesa ou receita.</p>
+    <p class="panel-sub">Cruza as duas tabelas anteriores pelo código da Fonte, algo que este painel não fazia até agora. "% da previsão já liquidado" divide a despesa liquidada pela previsão atualizada de receita da <b>mesma Fonte</b>, ambas no mesmo corte do ano: é uma medida de espaço <b>orçamentário</b>, não de caixa disponível (que o painel não tem). Por lei, despesa vinculada a uma Fonte não pode superar a receita prevista dela, então esse número nunca deveria passar de 100% no fechamento do ano; passar de 100% já no meio do ano, como neste corte, é sinal concreto de aperto naquela Fonte especificamente. Nenhum número aqui é projetado: são valores já publicados (previsão atualizada oficial e despesa liquidada até a mesma data). O cruzamento usa o código reduzido da Fonte (o mesmo nas duas bases), não o detalhamento mais fino dentro dela (que tem numeração própria em cada base e não bate por nome com confiabilidade); isso agrega sub-destinações diferentes de uma mesma Fonte (por exemplo, a parcela vinculada à Saúde e a parcela de uso livre dentro da mesma Fonte de impostos), perdendo um pouco de granularidade em troca de uma cobertura bem mais completa. Fontes sem código correspondente dos dois lados ficam de fora, não porque não tenham despesa ou receita.</p>
     <div class="table-tools">
         <input type="text" class="search-input" id="espacoFiscalSearch" placeholder="Buscar Fonte…" autocomplete="off">
         <button type="button" class="export-btn" id="espacoFiscalExportBtn">Exportar como imagem</button>
@@ -430,7 +430,7 @@ function render(d) {
         renderEspacoFiscalTable(ef.por_fonte);
         document.getElementById('espacoFiscalCobertura').textContent =
             `${ef.cobertura.fontes_casadas} Fontes cruzadas com sucesso entre as duas bases. ` +
-            `${ef.cobertura.fontes_receita_sem_correspondencia} Fontes de receita e ${ef.cobertura.fontes_despesa_sem_correspondencia} de despesa não encontraram par pelo nome e ficaram de fora.`;
+            `${ef.cobertura.fontes_receita_sem_correspondencia} Fontes de receita e ${ef.cobertura.fontes_despesa_sem_correspondencia} de despesa não encontraram código correspondente do outro lado e ficaram de fora.`;
     }
 }
 

@@ -7,7 +7,6 @@ painel consumir direto, sem reprocessar nada no navegador.
 """
 
 import json
-import unicodedata
 from collections import defaultdict
 from datetime import datetime, date
 from pathlib import Path
@@ -315,21 +314,24 @@ def build_receita_executivo():
     }
 
 
-def _normaliza_nome_fonte(nome):
-    """Remove acentos e normaliza espacos/caixa para cruzar o nome da fonte
-    entre a base de despesa (SIGEFES) e a de receita (TCE-ES) -- os codigos
-    numericos de detalhamento nao coincidem entre as duas, so' o nome."""
-    sem_acento = unicodedata.normalize("NFKD", nome).encode("ascii", "ignore").decode("ascii")
-    return " ".join(sem_acento.upper().split())
-
-
 PISO_ESPACO_FISCAL = 10_000_000  # abaixo disso a fonte fica de fora da tabela cruzada
 
 
 def build_espaco_fiscal_por_fonte():
-    """Cruza despesa-por-fonte-es.json com receita-executivo-es.json pelo NOME
-    normalizado do detalhamento da fonte (os codigos numericos de
-    detalhamento nao batem entre as duas bases -- ver os dois coletores).
+    """Cruza despesa-por-fonte-es.json com receita-executivo-es.json pelo
+    CodigoFonte (o codigo reduzido de 3 digitos, ex.: "500"), nao pelo nome
+    do detalhamento. Testado empiricamente antes de decidir: cruzar pelo
+    nome do detalhamento (o nivel mais fino, que distingue por exemplo a
+    parcela de uma Fonte vinculada a' Saude da parcela vinculada ao MDE) so'
+    bateu 24 das ~67 fontes de receita, porque as duas bases divergem em
+    pontuacao, acentuacao e ate' caracteres corrompidos ("?" no lugar de
+    travessao em alguns nomes de despesa) -- cobertura baixa demais para
+    uma tabela publica. O CodigoFonte reduzido, em compensacao, e' o MESMO
+    numero nas duas bases (confirmado: 54 dos ~55-60 codigos batem em
+    ambas), entao o cruzamento agrega despesa e receita no nivel da Fonte
+    inteira, nao do detalhamento -- perde a distincao mais fina dentro de
+    uma mesma Fonte, mas ganha cobertura quase completa em vez de parcial.
+
     Mostra, por Fonte, quanto da previsao atualizada de receita ja foi
     comprometido em despesa liquidada no mesmo corte: um sinal de espaco
     ORCAMENTARIO por fonte (nao de caixa disponivel, que o painel nao tem),
@@ -343,26 +345,40 @@ def build_espaco_fiscal_por_fonte():
     despesa = json.load(open(path_despesa))
     receita = json.load(open(path_receita))
 
-    receita_por_nome = {_normaliza_nome_fonte(f["nome_fonte"]): f for f in receita["fontes_receita"]}
+    despesa_por_codigo = defaultdict(lambda: {"liquidado": 0.0, "empenhado": 0.0, "nomes": []})
+    for d in despesa["despesa_por_fonte"]:
+        desp_2026 = d["despesa_mesmo_corte_por_ano"].get("2026", {})
+        agr = despesa_por_codigo[d["codigo_fonte"]]
+        agr["liquidado"] += desp_2026.get("liquidado", 0.0)
+        agr["empenhado"] += desp_2026.get("empenhado", 0.0)
+        agr["nomes"].append(d["detalhamento_fonte"])
+
+    receita_por_codigo = defaultdict(lambda: {"previsao": 0.0, "arrecadado": 0.0, "nomes": []})
+    for f in receita["fontes_receita"]:
+        agr = receita_por_codigo[f["codigo_fonte_reduzida"]]
+        agr["previsao"] += f["previsao_atualizada_no_corte_por_ano"].get("2026", 0.0)
+        agr["arrecadado"] += f["arrecadado_mesmo_corte_por_ano"].get("2026", 0.0)
+        agr["nomes"].append(f["nome_fonte"])
 
     linhas = []
-    nomes_despesa_vistos = set()
-    for d in despesa["despesa_por_fonte"]:
-        nome_norm = _normaliza_nome_fonte(d["detalhamento_fonte"])
-        nomes_despesa_vistos.add(nome_norm)
-        r = receita_por_nome.get(nome_norm)
-        if r is None:
+    for codigo, d_agr in despesa_por_codigo.items():
+        r_agr = receita_por_codigo.get(codigo)
+        if r_agr is None:
             continue
-        desp_2026 = d["despesa_mesmo_corte_por_ano"].get("2026", {})
-        liquidado = desp_2026.get("liquidado", 0.0)
-        empenhado = desp_2026.get("empenhado", 0.0)
-        previsao = r["previsao_atualizada_no_corte_por_ano"].get("2026", 0.0)
-        arrecadado = r["arrecadado_mesmo_corte_por_ano"].get("2026", 0.0)
+        liquidado = d_agr["liquidado"]
+        empenhado = d_agr["empenhado"]
+        previsao = r_agr["previsao"]
+        arrecadado = r_agr["arrecadado"]
         if liquidado < PISO_ESPACO_FISCAL and arrecadado < PISO_ESPACO_FISCAL:
             continue
+        # Rotulo: o nome mais curto entre os vistos para essa Fonte costuma
+        # ser o nome-base (ex.: "Recursos nao vinculados de Impostos"),
+        # nao um sub-detalhamento especifico mais longo.
+        nome = min(d_agr["nomes"] + r_agr["nomes"], key=len)
         linhas.append(
             {
-                "nome_fonte": d["detalhamento_fonte"],
+                "codigo_fonte": codigo,
+                "nome_fonte": nome,
                 "receita_arrecadada_2026": round(arrecadado, 2),
                 "receita_previsao_atualizada_2026": round(previsao, 2),
                 "despesa_empenhada_2026": round(empenhado, 2),
@@ -372,14 +388,13 @@ def build_espaco_fiscal_por_fonte():
         )
     linhas.sort(key=lambda x: -(x["pct_previsao_ja_liquidado"] or 0))
 
-    nomes_receita = set(receita_por_nome.keys())
     return {
         "corte_mes": despesa["corte_comparacao_mes"],
         "gerado_em": despesa["gerado_em"],
         "cobertura": {
             "fontes_casadas": len(linhas),
-            "fontes_receita_sem_correspondencia": len(nomes_receita - nomes_despesa_vistos),
-            "fontes_despesa_sem_correspondencia": len(nomes_despesa_vistos - nomes_receita),
+            "fontes_receita_sem_correspondencia": len(set(receita_por_codigo) - set(despesa_por_codigo)),
+            "fontes_despesa_sem_correspondencia": len(set(despesa_por_codigo) - set(receita_por_codigo)),
         },
         "por_fonte": linhas,
     }
