@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-Consolida os tres coletores (execucao-saude-es.json, orcamentos-execucoes-es.json,
-ordem-cronologica-es.json) num unico JSON compacto, pronto para a pagina do
-painel consumir direto, sem reprocessar nada no navegador.
+Consolida os coletores (execucao-saude-es.json, orcamentos-execucoes-es.json,
+ordem-cronologica-es.json, execucao-executivo-es.json, receita-executivo-es.json)
+num unico JSON compacto, pronto para a pagina do painel consumir direto, sem
+reprocessar nada no navegador.
 """
 
 import json
@@ -247,6 +248,72 @@ def build_prazos_executivo():
     return sorted(prazos, key=lambda x: -x["dias_p90"])
 
 
+PISO_ARRECADACAO_FONTE = 10_000_000  # abaixo disso a fonte fica de fora da tabela por fonte
+
+
+def build_receita_executivo():
+    """Consolida receita-executivo-es.json (arrecadacao por Fonte, TCE-ES) num
+    KPI agregado e numa tabela por Fonte, comparando sempre no mesmo mes de
+    corte entre os anos (nunca ano em curso contra fechamento de ano
+    encerrado -- ver metodologia em collect-receita-executivo-es.py)."""
+    path = DATA_DIR / "receita-executivo-es.json"
+    if not path.exists():
+        return None
+    dados = json.load(open(path))
+    fontes = dados["fontes_receita"]
+    corte_mes = dados["corte_comparacao_mes"]
+
+    def soma_ano(campo, ano):
+        return sum(f[campo].get(str(ano), 0.0) for f in fontes)
+
+    total_arrecadado = {ano: soma_ano("arrecadado_mesmo_corte_por_ano", ano) for ano in (2023, 2024, 2025, 2026)}
+    total_previsto_2026 = soma_ano("previsao_atualizada_no_corte_por_ano", 2026)
+
+    por_fonte = []
+    for f in fontes:
+        arr = f["arrecadado_mesmo_corte_por_ano"]
+        arr_2026 = arr.get("2026", 0.0)
+        arr_2025 = arr.get("2025", 0.0)
+        if arr_2026 < PISO_ARRECADACAO_FONTE:
+            continue
+        razao_2025 = round(arr_2026 / arr_2025 * 100, 0) if arr_2025 >= PISO_ARRECADACAO_FONTE else None
+        prev_2026 = f["previsao_atualizada_no_corte_por_ano"].get("2026", 0.0)
+
+        # Um unico ano abaixo de 2025 pode so' refletir que 2025 foi um ano alto
+        # para aquela fonte (efeito de base), nao uma fonte secando de verdade --
+        # mesma logica ja aplicada ao estoque represado por UG. So' marca como
+        # minimo historico quando 2026 tambem fica abaixo de 2023 e 2024.
+        anos_anteriores = {a: v for a, v in arr.items() if a != "2026" and v >= PISO_ARRECADACAO_FONTE}
+        eh_minimo_historico = (
+            len(anos_anteriores) >= 2 and arr_2026 < min(anos_anteriores.values())
+        )
+
+        por_fonte.append(
+            {
+                "fonte_key": f["fonte_key"],
+                "nome_fonte": f["nome_fonte"],
+                "eh_minimo_historico": eh_minimo_historico,
+                "arrecadado_2026": round(arr_2026, 2),
+                "previsao_atualizada_2026": round(prev_2026, 2),
+                "pct_previsao_realizada": round(arr_2026 / prev_2026 * 100, 1) if prev_2026 else None,
+                "arrecadado_mesmo_corte_por_ano": {a: round(v, 2) for a, v in arr.items()},
+                "razao_vs_2025": razao_2025,
+            }
+        )
+    por_fonte.sort(key=lambda x: -x["arrecadado_2026"])
+
+    return {
+        "corte_mes": corte_mes,
+        "gerado_em": dados["gerado_em"],
+        "total_arrecadado_mesmo_corte_por_ano": {str(a): round(v, 2) for a, v in total_arrecadado.items()},
+        "total_previsao_atualizada_2026": round(total_previsto_2026, 2),
+        "pct_previsao_realizada": round(total_arrecadado[2026] / total_previsto_2026 * 100, 1)
+        if total_previsto_2026
+        else None,
+        "por_fonte": por_fonte,
+    }
+
+
 def main():
     serie_saude = build_serie_saude()
     output = {
@@ -255,11 +322,13 @@ def main():
             "dados.es.gov.br - Despesas-<ano>.csv (funcao Saude), via API DataStore",
             "dados.es.gov.br - OrcamentosExecucoes-<ano>.csv, via API DataStore",
             "dados.es.gov.br - Contratos - Ordem Cronologica de Pagamentos, via API DataStore",
+            "dados.es.gov.br - pacote receitas-e-despesas-estaduais (TCE-ES, CidadES)",
         ],
         "kpis": build_kpis(serie_saude),
         "serie_saude_por_dia_do_ano": serie_saude,
         "ranking_executivo": build_ranking_executivo(),
         "prazos_executivo": build_prazos_executivo(),
+        "receita_executivo": build_receita_executivo(),
     }
     OUTPUT.write_text(json.dumps(output, ensure_ascii=False, indent=2))
     print(f"Salvo em {OUTPUT}")
