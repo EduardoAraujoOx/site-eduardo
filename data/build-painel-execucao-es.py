@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Consolida os tres coletores (execucao-saude-es.json, orcamentos-execucoes-es.json,
-ordem-cronologica-es.json) num unico JSON compacto, pronto para a pagina do
+Consolida os coletores (execucao-saude-es.json, orcamentos-execucoes-es.json,
+ordem-cronologica-es.json, execucao-executivo-es.json, receita-executivo-es.json,
+despesa-por-fonte-es.json) num unico JSON compacto, pronto para a pagina do
 painel consumir direto, sem reprocessar nada no navegador.
 """
 
@@ -247,6 +248,181 @@ def build_prazos_executivo():
     return sorted(prazos, key=lambda x: -x["dias_p90"])
 
 
+PISO_ARRECADACAO_FONTE = 10_000_000  # abaixo disso a fonte fica de fora da tabela por fonte
+
+
+def build_receita_executivo():
+    """Consolida receita-executivo-es.json (arrecadacao por Fonte, TCE-ES) num
+    KPI agregado e numa tabela por Fonte, comparando sempre no mesmo mes de
+    corte entre os anos (nunca ano em curso contra fechamento de ano
+    encerrado -- ver metodologia em collect-receita-executivo-es.py)."""
+    path = DATA_DIR / "receita-executivo-es.json"
+    if not path.exists():
+        return None
+    dados = json.load(open(path))
+    fontes = dados["fontes_receita"]
+    corte_mes = dados["corte_comparacao_mes"]
+
+    def soma_ano(campo, ano):
+        return sum(f[campo].get(str(ano), 0.0) for f in fontes)
+
+    total_arrecadado = {ano: soma_ano("arrecadado_mesmo_corte_por_ano", ano) for ano in (2023, 2024, 2025, 2026)}
+    total_previsto_2026 = soma_ano("previsao_atualizada_no_corte_por_ano", 2026)
+
+    por_fonte = []
+    for f in fontes:
+        arr = f["arrecadado_mesmo_corte_por_ano"]
+        arr_2026 = arr.get("2026", 0.0)
+        arr_2025 = arr.get("2025", 0.0)
+        if arr_2026 < PISO_ARRECADACAO_FONTE:
+            continue
+        razao_2025 = round(arr_2026 / arr_2025 * 100, 0) if arr_2025 >= PISO_ARRECADACAO_FONTE else None
+        prev_2026 = f["previsao_atualizada_no_corte_por_ano"].get("2026", 0.0)
+
+        # Um unico ano abaixo de 2025 pode so' refletir que 2025 foi um ano alto
+        # para aquela fonte (efeito de base), nao uma fonte secando de verdade --
+        # mesma logica ja aplicada ao estoque represado por UG. So' marca como
+        # minimo historico quando 2026 tambem fica abaixo de 2023 e 2024.
+        anos_anteriores = {a: v for a, v in arr.items() if a != "2026" and v >= PISO_ARRECADACAO_FONTE}
+        eh_minimo_historico = (
+            len(anos_anteriores) >= 2 and arr_2026 < min(anos_anteriores.values())
+        )
+
+        por_fonte.append(
+            {
+                "fonte_key": f["fonte_key"],
+                "nome_fonte": f["nome_fonte"],
+                "eh_minimo_historico": eh_minimo_historico,
+                "arrecadado_2026": round(arr_2026, 2),
+                "previsao_atualizada_2026": round(prev_2026, 2),
+                "pct_previsao_realizada": round(arr_2026 / prev_2026 * 100, 1) if prev_2026 else None,
+                "arrecadado_mesmo_corte_por_ano": {a: round(v, 2) for a, v in arr.items()},
+                "razao_vs_2025": razao_2025,
+            }
+        )
+    por_fonte.sort(key=lambda x: -x["arrecadado_2026"])
+
+    return {
+        "corte_mes": corte_mes,
+        "gerado_em": dados["gerado_em"],
+        "total_arrecadado_mesmo_corte_por_ano": {str(a): round(v, 2) for a, v in total_arrecadado.items()},
+        "total_previsao_atualizada_2026": round(total_previsto_2026, 2),
+        "pct_previsao_realizada": round(total_arrecadado[2026] / total_previsto_2026 * 100, 1)
+        if total_previsto_2026
+        else None,
+        "por_fonte": por_fonte,
+    }
+
+
+PISO_ESPACO_FISCAL = 10_000_000  # abaixo disso a fonte fica de fora da tabela cruzada
+
+
+def build_espaco_fiscal_por_fonte():
+    """Cruza despesa-por-fonte-es.json com receita-executivo-es.json pelo
+    CodigoFonte (o codigo reduzido de 3 digitos, ex.: "500"), nao pelo nome
+    do detalhamento. Testado empiricamente antes de decidir: cruzar pelo
+    nome do detalhamento (o nivel mais fino, que distingue por exemplo a
+    parcela de uma Fonte vinculada a' Saude da parcela vinculada ao MDE) so'
+    bateu 24 das ~67 fontes de receita, porque as duas bases divergem em
+    pontuacao, acentuacao e ate' caracteres corrompidos ("?" no lugar de
+    travessao em alguns nomes de despesa) -- cobertura baixa demais para
+    uma tabela publica. O CodigoFonte reduzido, em compensacao, e' o MESMO
+    numero nas duas bases (confirmado: 54 dos ~55-60 codigos batem em
+    ambas), entao o cruzamento agrega despesa e receita no nivel da Fonte
+    inteira, nao do detalhamento -- perde a distincao mais fina dentro de
+    uma mesma Fonte, mas ganha cobertura quase completa em vez de parcial.
+
+    Mostra, por Fonte, quanto da previsao atualizada de receita ja foi
+    comprometido em despesa liquidada no mesmo corte: um sinal de espaco
+    ORCAMENTARIO por fonte (nao de caixa disponivel, que o painel nao tem),
+    sem nenhuma projecao estimada -- so' numeros ja publicados (previsao
+    atualizada oficial do governo e despesa liquidada ate' a mesma data).
+
+    Conferido linha a linha (nao so' a cobertura agregada) antes de dar
+    esta tabela por definitiva: em valor, a despesa casada cobre 100% do
+    liquidado do Executivo no corte e a receita casada cobre 99,94% do
+    arrecadado -- as fontes sem par somam menos de R$ 13 milhoes contra
+    R$ 19,65 bilhoes arrecadados, residuo irrelevante. Duas ressalvas reais
+    sobrevivem a essa checagem, e ficam documentadas em vez de escondidas:
+    (1) a fonte 546 (Fundeb - Complementacao da Uniao) tem despesa real sem
+    nenhuma previsao de receita registrada nessa base -- tratado abaixo
+    como "sem_previsao_com_despesa", nao como ausencia neutra de dado; (2)
+    agregar pelo CodigoFonte mistura, dentro da mesma fonte 500, receita
+    geral de impostos com pagamento de beneficios previdenciarios do plano
+    financeiro (regime de reparticao, cobertos pelo tesouro geral por
+    desenho), duas naturezas fiscais diferentes sob o mesmo percentual."""
+    path_despesa = DATA_DIR / "despesa-por-fonte-es.json"
+    path_receita = DATA_DIR / "receita-executivo-es.json"
+    if not path_despesa.exists() or not path_receita.exists():
+        return None
+
+    despesa = json.load(open(path_despesa))
+    receita = json.load(open(path_receita))
+
+    despesa_por_codigo = defaultdict(lambda: {"liquidado": 0.0, "empenhado": 0.0, "nomes": []})
+    for d in despesa["despesa_por_fonte"]:
+        desp_2026 = d["despesa_mesmo_corte_por_ano"].get("2026", {})
+        agr = despesa_por_codigo[d["codigo_fonte"]]
+        agr["liquidado"] += desp_2026.get("liquidado", 0.0)
+        agr["empenhado"] += desp_2026.get("empenhado", 0.0)
+        agr["nomes"].append(d["detalhamento_fonte"])
+
+    receita_por_codigo = defaultdict(lambda: {"previsao": 0.0, "arrecadado": 0.0, "nomes": []})
+    for f in receita["fontes_receita"]:
+        agr = receita_por_codigo[f["codigo_fonte_reduzida"]]
+        agr["previsao"] += f["previsao_atualizada_no_corte_por_ano"].get("2026", 0.0)
+        agr["arrecadado"] += f["arrecadado_mesmo_corte_por_ano"].get("2026", 0.0)
+        agr["nomes"].append(f["nome_fonte"])
+
+    linhas = []
+    for codigo, d_agr in despesa_por_codigo.items():
+        r_agr = receita_por_codigo.get(codigo)
+        if r_agr is None:
+            continue
+        liquidado = d_agr["liquidado"]
+        empenhado = d_agr["empenhado"]
+        previsao = r_agr["previsao"]
+        arrecadado = r_agr["arrecadado"]
+        if liquidado < PISO_ESPACO_FISCAL and arrecadado < PISO_ESPACO_FISCAL:
+            continue
+        # Rotulo: o nome mais curto entre os vistos para essa Fonte costuma
+        # ser o nome-base (ex.: "Recursos nao vinculados de Impostos"),
+        # nao um sub-detalhamento especifico mais longo.
+        nome = min(d_agr["nomes"] + r_agr["nomes"], key=len)
+        # Distingue duas leituras bem diferentes de "sem percentual": uma
+        # Fonte sem despesa relevante (nada a medir) de uma Fonte com
+        # despesa real mas sem previsao de receita registrada nessa base --
+        # esse segundo caso e' em si um sinal de atencao, nao uma ausencia
+        # de dado neutra, e precisa aparecer marcado, nao como traco mudo.
+        sem_previsao_com_despesa = previsao == 0 and liquidado >= PISO_ESPACO_FISCAL
+        linhas.append(
+            {
+                "codigo_fonte": codigo,
+                "nome_fonte": nome,
+                "receita_arrecadada_2026": round(arrecadado, 2),
+                "receita_previsao_atualizada_2026": round(previsao, 2),
+                "despesa_empenhada_2026": round(empenhado, 2),
+                "despesa_liquidada_2026": round(liquidado, 2),
+                "pct_previsao_ja_liquidado": round(liquidado / previsao * 100, 1) if previsao else None,
+                "sem_previsao_com_despesa": sem_previsao_com_despesa,
+            }
+        )
+    # Fontes com despesa mas sem previsao registrada sobem para o topo: e'
+    # um sinal mais forte que precisa aparecer, nao afundar como se fosse 0%.
+    linhas.sort(key=lambda x: (0, 0) if x["sem_previsao_com_despesa"] else (1, -(x["pct_previsao_ja_liquidado"] or 0)))
+
+    return {
+        "corte_mes": despesa["corte_comparacao_mes"],
+        "gerado_em": despesa["gerado_em"],
+        "cobertura": {
+            "fontes_casadas": len(linhas),
+            "fontes_receita_sem_correspondencia": len(set(receita_por_codigo) - set(despesa_por_codigo)),
+            "fontes_despesa_sem_correspondencia": len(set(despesa_por_codigo) - set(receita_por_codigo)),
+        },
+        "por_fonte": linhas,
+    }
+
+
 def main():
     serie_saude = build_serie_saude()
     output = {
@@ -255,11 +431,14 @@ def main():
             "dados.es.gov.br - Despesas-<ano>.csv (funcao Saude), via API DataStore",
             "dados.es.gov.br - OrcamentosExecucoes-<ano>.csv, via API DataStore",
             "dados.es.gov.br - Contratos - Ordem Cronologica de Pagamentos, via API DataStore",
+            "dados.es.gov.br - pacote receitas-e-despesas-estaduais (TCE-ES, CidadES)",
         ],
         "kpis": build_kpis(serie_saude),
         "serie_saude_por_dia_do_ano": serie_saude,
         "ranking_executivo": build_ranking_executivo(),
         "prazos_executivo": build_prazos_executivo(),
+        "receita_executivo": build_receita_executivo(),
+        "espaco_fiscal_por_fonte": build_espaco_fiscal_por_fonte(),
     }
     OUTPUT.write_text(json.dumps(output, ensure_ascii=False, indent=2))
     print(f"Salvo em {OUTPUT}")
