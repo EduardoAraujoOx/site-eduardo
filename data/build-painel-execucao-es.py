@@ -113,15 +113,24 @@ def build_ranking_executivo():
         # sentido comparativo (ex.: de R$5 mil para R$1 mi "e'" 20000%, mas so'
         # descreve que a UG saiu do irrelevante, nao uma deterioracao real).
         razao_2025 = (r["liquidado_nao_pago"] / g25 * 100) if g25 and g25 >= 1_000_000 else None
+        # Espaco orcamentario: quanto da dotacao atualizada (autorizacao legal
+        # para gastar) ja foi empenhado. Isso e' ortogonal ao gap de pagamento
+        # -- uma UG pode ter caixa apertado com MUITO espaco de dotacao sobrando
+        # (problema e' so' de fluxo de caixa), ou pode estar no limite da propria
+        # autorizacao orcamentaria (problema e' tambem de orcamento, nao so' de
+        # caixa). Nenhuma das duas leituras aparece no gap liquidado-pago sozinho.
+        pct_dotacao = (r["empenhado"] / r["dotacao_atualizada"] * 100) if r["dotacao_atualizada"] else None
         ranking.append(
             {
                 "codigo_ug": r["codigo_ug"],
                 "unidade_gestora": r["unidade_gestora"],
+                "dotacao_atualizada": r["dotacao_atualizada"],
                 "liquidado": r["liquidado"],
                 "pago": r["pago"],
                 "gap": r["liquidado_nao_pago"],
                 "rap": r["rap"],
                 "pct_pago": round(pct_pago, 1) if pct_pago is not None else None,
+                "pct_dotacao_empenhada": round(pct_dotacao, 1) if pct_dotacao is not None else None,
                 "gap_fechamento_2025": g25,
                 "gap_fechamento_2024": g24,
                 "razao_vs_fechamento_2025": round(razao_2025, 0) if razao_2025 is not None else None,
