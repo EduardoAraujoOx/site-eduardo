@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
 Consolida os coletores (execucao-saude-es.json, orcamentos-execucoes-es.json,
-ordem-cronologica-es.json, execucao-executivo-es.json, receita-executivo-es.json)
-num unico JSON compacto, pronto para a pagina do painel consumir direto, sem
-reprocessar nada no navegador.
+ordem-cronologica-es.json, execucao-executivo-es.json, receita-executivo-es.json,
+despesa-por-fonte-es.json) num unico JSON compacto, pronto para a pagina do
+painel consumir direto, sem reprocessar nada no navegador.
 """
 
 import json
+import unicodedata
 from collections import defaultdict
 from datetime import datetime, date
 from pathlib import Path
@@ -314,6 +315,76 @@ def build_receita_executivo():
     }
 
 
+def _normaliza_nome_fonte(nome):
+    """Remove acentos e normaliza espacos/caixa para cruzar o nome da fonte
+    entre a base de despesa (SIGEFES) e a de receita (TCE-ES) -- os codigos
+    numericos de detalhamento nao coincidem entre as duas, so' o nome."""
+    sem_acento = unicodedata.normalize("NFKD", nome).encode("ascii", "ignore").decode("ascii")
+    return " ".join(sem_acento.upper().split())
+
+
+PISO_ESPACO_FISCAL = 10_000_000  # abaixo disso a fonte fica de fora da tabela cruzada
+
+
+def build_espaco_fiscal_por_fonte():
+    """Cruza despesa-por-fonte-es.json com receita-executivo-es.json pelo NOME
+    normalizado do detalhamento da fonte (os codigos numericos de
+    detalhamento nao batem entre as duas bases -- ver os dois coletores).
+    Mostra, por Fonte, quanto da previsao atualizada de receita ja foi
+    comprometido em despesa liquidada no mesmo corte: um sinal de espaco
+    ORCAMENTARIO por fonte (nao de caixa disponivel, que o painel nao tem),
+    sem nenhuma projecao estimada -- so' numeros ja publicados (previsao
+    atualizada oficial do governo e despesa liquidada ate' a mesma data)."""
+    path_despesa = DATA_DIR / "despesa-por-fonte-es.json"
+    path_receita = DATA_DIR / "receita-executivo-es.json"
+    if not path_despesa.exists() or not path_receita.exists():
+        return None
+
+    despesa = json.load(open(path_despesa))
+    receita = json.load(open(path_receita))
+
+    receita_por_nome = {_normaliza_nome_fonte(f["nome_fonte"]): f for f in receita["fontes_receita"]}
+
+    linhas = []
+    nomes_despesa_vistos = set()
+    for d in despesa["despesa_por_fonte"]:
+        nome_norm = _normaliza_nome_fonte(d["detalhamento_fonte"])
+        nomes_despesa_vistos.add(nome_norm)
+        r = receita_por_nome.get(nome_norm)
+        if r is None:
+            continue
+        desp_2026 = d["despesa_mesmo_corte_por_ano"].get("2026", {})
+        liquidado = desp_2026.get("liquidado", 0.0)
+        empenhado = desp_2026.get("empenhado", 0.0)
+        previsao = r["previsao_atualizada_no_corte_por_ano"].get("2026", 0.0)
+        arrecadado = r["arrecadado_mesmo_corte_por_ano"].get("2026", 0.0)
+        if liquidado < PISO_ESPACO_FISCAL and arrecadado < PISO_ESPACO_FISCAL:
+            continue
+        linhas.append(
+            {
+                "nome_fonte": d["detalhamento_fonte"],
+                "receita_arrecadada_2026": round(arrecadado, 2),
+                "receita_previsao_atualizada_2026": round(previsao, 2),
+                "despesa_empenhada_2026": round(empenhado, 2),
+                "despesa_liquidada_2026": round(liquidado, 2),
+                "pct_previsao_ja_liquidado": round(liquidado / previsao * 100, 1) if previsao else None,
+            }
+        )
+    linhas.sort(key=lambda x: -(x["pct_previsao_ja_liquidado"] or 0))
+
+    nomes_receita = set(receita_por_nome.keys())
+    return {
+        "corte_mes": despesa["corte_comparacao_mes"],
+        "gerado_em": despesa["gerado_em"],
+        "cobertura": {
+            "fontes_casadas": len(linhas),
+            "fontes_receita_sem_correspondencia": len(nomes_receita - nomes_despesa_vistos),
+            "fontes_despesa_sem_correspondencia": len(nomes_despesa_vistos - nomes_receita),
+        },
+        "por_fonte": linhas,
+    }
+
+
 def main():
     serie_saude = build_serie_saude()
     output = {
@@ -329,6 +400,7 @@ def main():
         "ranking_executivo": build_ranking_executivo(),
         "prazos_executivo": build_prazos_executivo(),
         "receita_executivo": build_receita_executivo(),
+        "espaco_fiscal_por_fonte": build_espaco_fiscal_por_fonte(),
     }
     OUTPUT.write_text(json.dumps(output, ensure_ascii=False, indent=2))
     print(f"Salvo em {OUTPUT}")

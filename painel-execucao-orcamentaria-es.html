@@ -249,6 +249,28 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
     <div class="table-more" id="receitaMore" style="display:none">Mostrar mais Fontes</div>
 </section>
 
+<section class="panel" aria-labelledby="espacofiscal-h">
+    <h3 id="espacofiscal-h">Espaço fiscal por Fonte: a despesa já compromete quanto da receita prevista?</h3>
+    <p class="panel-sub">Cruza as duas tabelas anteriores pelo nome da Fonte, algo que este painel não fazia até agora. "% da previsão já liquidado" divide a despesa liquidada pela previsão atualizada de receita da <b>mesma Fonte</b>, ambas no mesmo corte do ano: é uma medida de espaço <b>orçamentário</b>, não de caixa disponível (que o painel não tem). Por lei, despesa vinculada a uma Fonte não pode superar a receita prevista dela, então esse número nunca deveria passar de 100% no fechamento do ano; passar de 100% já no meio do ano, como neste corte, é sinal concreto de aperto naquela Fonte especificamente. Nenhum número aqui é projetado: são valores já publicados (previsão atualizada oficial e despesa liquidada até a mesma data). O cruzamento é feito pelo nome do detalhamento da Fonte, porque os códigos numéricos não coincidem entre a base de despesa (SIGEFES) e a de receita (TCE-ES); Fontes cujo nome não bateve dos dois lados ficam de fora, não porque não tenham despesa ou receita.</p>
+    <div class="table-tools">
+        <input type="text" class="search-input" id="espacoFiscalSearch" placeholder="Buscar Fonte…" autocomplete="off">
+        <button type="button" class="export-btn" id="espacoFiscalExportBtn">Exportar como imagem</button>
+    </div>
+    <div class="table-wrap">
+        <table class="data" id="espacoFiscalTable" aria-labelledby="espacofiscal-h">
+            <thead><tr>
+                <th scope="col" data-key="nome_fonte">Fonte</th>
+                <th scope="col" class="num" data-key="receita_arrecadada_2026">Receita arrecadada (R$)</th>
+                <th scope="col" class="num" data-key="despesa_liquidada_2026">Despesa liquidada (R$)</th>
+                <th scope="col" class="num" data-key="pct_previsao_ja_liquidado">% da previsão já liquidado</th>
+            </tr></thead>
+            <tbody id="espacoFiscalBody"><tr><td colspan="4">Carregando…</td></tr></tbody>
+        </table>
+    </div>
+    <div class="table-more" id="espacoFiscalMore" style="display:none">Mostrar mais Fontes</div>
+    <p class="panel-sub" id="espacoFiscalCobertura" style="margin-top:0.6rem;margin-bottom:0"></p>
+</section>
+
 <section class="panel" aria-labelledby="rank-h">
     <h3 id="rank-h">Executivo por Unidade Gestora: estoque, histórico e espaço orçamentário</h3>
     <p class="panel-sub">Ordenado pelo maior valor represado. Poder Executivo, exercício de 2026 (dado mais recente disponível). "vs. 2025" compara o gap acumulado até a mesma data do calendário (18 de setembro) nos dois anos, para não misturar um exercício em curso com o fechamento de um exercício encerrado. Passar de 100% já é acima do observado em 2025, mas isso pode só significar que 2025 foi um ano baixo para aquela UG: "recorde desde 2023" marca quando 2026 também supera 2023 e 2024 no mesmo corte, o que é um sinal bem mais forte do que superar um único ano de referência; "já visto antes de 2025" marca quando não é o caso. "% da dotação empenhada" é outra coisa: mede se ainda sobra autorização orçamentária para gastar, não se há caixa para pagar. Uma UG pode ter caixa apertado com dotação de sobra (problema só de fluxo), ou estar no limite da própria dotação (problema também orçamentário).</p>
@@ -403,6 +425,13 @@ function render(d) {
     renderRankTable(d.ranking_executivo);
     renderPrazoTable(d.prazos_executivo);
     if (rec) renderReceitaTable(rec.por_fonte);
+    const ef = d.espaco_fiscal_por_fonte;
+    if (ef) {
+        renderEspacoFiscalTable(ef.por_fonte);
+        document.getElementById('espacoFiscalCobertura').textContent =
+            `${ef.cobertura.fontes_casadas} Fontes cruzadas com sucesso entre as duas bases. ` +
+            `${ef.cobertura.fontes_receita_sem_correspondencia} Fontes de receita e ${ef.cobertura.fontes_despesa_sem_correspondencia} de despesa não encontraram par pelo nome e ficaram de fora.`;
+    }
 }
 
 // ══════════════════ GRÁFICO DE LINHAS ══════════════════
@@ -655,6 +684,50 @@ document.querySelectorAll('#receitaTable thead th').forEach(th => {
     th.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); ativa(); } });
 });
 
+// ══════════════════ TABELA: ESPAÇO FISCAL POR FONTE ══════════════════
+let espacoFiscalSort = {key:'pct_previsao_ja_liquidado', dir:-1};
+let espacoFiscalShown = 15;
+function fmtPctPrevisaoLiquidado(r) {
+    if (r.pct_previsao_ja_liquidado == null) return '<span style="color:var(--ink-muted)">—</span>';
+    const detalhe = `Despesa empenhada: ${fmtR$(r.despesa_empenhada_2026)} · Previsão atualizada de receita: ${fmtR$(r.receita_previsao_atualizada_2026)}`;
+    if (r.pct_previsao_ja_liquidado >= 100) {
+        return `<span class="badge warn" title="${detalhe}">▲ ${fmtPct(r.pct_previsao_ja_liquidado)}</span>`;
+    }
+    return `<span title="${detalhe}">${fmtPct(r.pct_previsao_ja_liquidado)}</span>`;
+}
+function renderEspacoFiscalTable(rows) {
+    const busca = (document.getElementById('espacoFiscalSearch').value || '').toLowerCase();
+    let filtradas = rows.filter(r => r.nome_fonte.toLowerCase().includes(busca));
+    filtradas.sort((a,b) => {
+        const va = a[espacoFiscalSort.key], vb = b[espacoFiscalSort.key];
+        if (typeof va === 'string') return va.localeCompare(vb) * espacoFiscalSort.dir;
+        return ((va ?? -Infinity) - (vb ?? -Infinity)) * espacoFiscalSort.dir;
+    });
+    const visiveis = filtradas.slice(0, espacoFiscalShown);
+    window.espacoFiscalVisiveisAtual = visiveis;
+    document.getElementById('espacoFiscalBody').innerHTML = visiveis.map(r => `
+        <tr>
+            <td class="ug-nome">${r.nome_fonte}</td>
+            <td class="num">${fmtR$(r.receita_arrecadada_2026)}</td>
+            <td class="num">${fmtR$(r.despesa_liquidada_2026)}</td>
+            <td class="num">${fmtPctPrevisaoLiquidado(r)}</td>
+        </tr>
+    `).join('');
+    document.getElementById('espacoFiscalMore').style.display = filtradas.length > espacoFiscalShown ? 'block' : 'none';
+}
+document.getElementById('espacoFiscalSearch').addEventListener('input', () => { espacoFiscalShown = 15; renderEspacoFiscalTable(PAINEL.espaco_fiscal_por_fonte.por_fonte); });
+document.getElementById('espacoFiscalMore').addEventListener('click', () => { espacoFiscalShown += 30; renderEspacoFiscalTable(PAINEL.espaco_fiscal_por_fonte.por_fonte); });
+document.querySelectorAll('#espacoFiscalTable thead th').forEach(th => {
+    th.setAttribute('tabindex', '0');
+    const ativa = () => {
+        const key = th.dataset.key;
+        espacoFiscalSort = (espacoFiscalSort.key === key) ? {key, dir:-espacoFiscalSort.dir} : {key, dir: key==='nome_fonte' ? 1 : -1};
+        renderEspacoFiscalTable(PAINEL.espaco_fiscal_por_fonte.por_fonte);
+    };
+    th.addEventListener('click', ativa);
+    th.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); ativa(); } });
+});
+
 // ══════════════════ EXPORTAR TABELA COMO IMAGEM ══════════════════
 // Gera um cartão neutro (sem nome de site ou de autor) citando apenas a
 // fonte oficial dos dados, em formato de referência ABNT, para
@@ -858,6 +931,27 @@ document.getElementById('receitaExportBtn').addEventListener('click', function (
         nomeArquivo: 'arrecadacao-por-fonte-executivo-es.png',
         fonteCitacao: 'Fonte: ESPÍRITO SANTO (Estado). Tribunal de Contas. Portal de Dados Abertos do Espírito ' +
             'Santo: receitas e despesas estaduais (CidadES). Vitória: TCE-ES, ' + new Date().getFullYear() + '.',
+    });
+});
+
+document.getElementById('espacoFiscalExportBtn').addEventListener('click', function () {
+    const linhas = window.espacoFiscalVisiveisAtual || [];
+    const mes = PAINEL && PAINEL.espaco_fiscal_por_fonte ? MESES[PAINEL.espaco_fiscal_por_fonte.corte_mes] : '';
+    exportarTabelaComoImagem({
+        titulo: 'Espaço Fiscal por Fonte do Poder Executivo do Espírito Santo',
+        subtitulo: `Receita e despesa acumuladas até ${mes} de 2026, cruzadas pela mesma Fonte`,
+        colunas: [
+            { label: 'Fonte', largura: 300, valor: r => r.nome_fonte },
+            { label: 'Receita arrecadada (R$)', largura: 160, num: true, valor: r => fmtR$(r.receita_arrecadada_2026) },
+            { label: 'Despesa liquidada (R$)', largura: 160, num: true, valor: r => fmtR$(r.despesa_liquidada_2026) },
+            { label: '% da previsão liquidado', largura: 150, num: true, valor: r => fmtPct(r.pct_previsao_ja_liquidado) },
+        ],
+        linhas,
+        nomeArquivo: 'espaco-fiscal-por-fonte-executivo-es.png',
+        fonteCitacao: 'Fontes: ESPÍRITO SANTO (Estado). Secretaria de Estado da Fazenda. Portal de Dados Abertos ' +
+            'do Espírito Santo: execução orçamentária e financeira (SIGEFES). Vitória: SEFAZ-ES, ' + new Date().getFullYear() + '. ' +
+            'ESPÍRITO SANTO (Estado). Tribunal de Contas. Portal de Dados Abertos do Espírito Santo: receitas e ' +
+            'despesas estaduais (CidadES). Vitória: TCE-ES, ' + new Date().getFullYear() + '.',
     });
 });
 
