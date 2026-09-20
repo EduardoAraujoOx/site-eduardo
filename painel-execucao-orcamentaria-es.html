@@ -213,7 +213,7 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
 
 <section class="panel" aria-labelledby="rank-h">
     <h3 id="rank-h">Executivo por Unidade Gestora — estoque liquidado e não pago</h3>
-    <p class="panel-sub">Ordenado pelo maior valor represado. Poder Executivo, exercício de 2026 (dado mais recente disponível).</p>
+    <p class="panel-sub">Ordenado pelo maior valor represado. Poder Executivo, exercício de 2026 (dado mais recente disponível). A coluna "vs. fechamento 2025" compara o gap em curso com o ano <em>inteiro</em> anterior — acima de 100% significa que 2026, ainda incompleto, já superou o fechamento de 2025.</p>
     <div class="table-tools">
         <input type="text" class="search-input" id="rankSearch" placeholder="Buscar Unidade Gestora…" autocomplete="off">
     </div>
@@ -225,8 +225,9 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
                 <th scope="col" class="num" data-key="pago">Pago</th>
                 <th scope="col" class="num" data-key="pct_pago">% pago</th>
                 <th scope="col" class="num" data-key="gap">Gap (liq. − pago)</th>
+                <th scope="col" class="num" data-key="razao_vs_fechamento_2025">vs. fechamento 2025</th>
             </tr></thead>
-            <tbody id="rankBody"><tr><td colspan="5">Carregando…</td></tr></tbody>
+            <tbody id="rankBody"><tr><td colspan="6">Carregando…</td></tr></tbody>
         </table>
     </div>
     <div class="table-more" id="rankMore" style="display:none">Mostrar mais Unidades Gestoras</div>
@@ -431,9 +432,16 @@ function renderRankTable(rows) {
             <td class="num">${fmtR$(r.pago)}</td>
             <td class="num">${fmtPct(r.pct_pago)}</td>
             <td class="num"><div class="gap-bar-wrap"><span class="gap-bar-track"><span class="gap-bar-fill" style="width:${Math.max(r.gap/maxGap*100,2)}%"></span></span>${fmtR$(r.gap)}</div></td>
+            <td class="num">${fmtRazao(r.razao_vs_fechamento_2025)}</td>
         </tr>
-    `).join('') || '<tr><td colspan="5">Nenhuma Unidade Gestora encontrada.</td></tr>';
+    `).join('') || '<tr><td colspan="6">Nenhuma Unidade Gestora encontrada.</td></tr>';
     document.getElementById('rankMore').style.display = filtradas.length > rankShown ? 'block' : 'none';
+}
+function fmtRazao(v) {
+    if (v == null) return '<span style="color:var(--ink-muted)">— base 2025 pequena</span>';
+    const pct = Math.round(v);
+    if (pct >= 100) return `<span class="badge warn">${pct}% do ano passado</span>`;
+    return `${pct}% do ano passado`;
 }
 document.getElementById('rankSearch').addEventListener('input', () => { rankShown = 15; renderRankTable(PAINEL.ranking_executivo); });
 document.getElementById('rankMore').addEventListener('click', () => { rankShown += 30; renderRankTable(PAINEL.ranking_executivo); });

@@ -94,9 +94,25 @@ def build_kpis(serie_saude):
 def build_ranking_executivo():
     orc = json.load(open(DATA_DIR / "orcamentos-execucoes-es.json"))
     rows = [r for r in orc["por_ano"]["2026"]["registros"] if r["poder"] == "Executivo"]
+    gap_2025 = {r["codigo_ug"]: r["liquidado_nao_pago"] for r in orc["por_ano"]["2025"]["registros"]}
+    gap_2024 = {r["codigo_ug"]: r["liquidado_nao_pago"] for r in orc["por_ano"]["2024"]["registros"]}
+
     ranking = []
     for r in rows:
         pct_pago = (r["pago"] / r["liquidado"] * 100) if r["liquidado"] else None
+        g25 = gap_2025.get(r["codigo_ug"])
+        g24 = gap_2024.get(r["codigo_ug"])
+        # Compara o gap corrente (2026, ano em curso) com o FECHAMENTO do ano
+        # anterior (2025, ano encerrado) -- nao e' o mesmo corte de calendario,
+        # entao so e' comparavel numa direcao: se o valor em curso ja supera o
+        # fechamento do ano inteiro anterior, isso e' sinal forte, mesmo faltando
+        # meses; o inverso (estar abaixo) nao quer dizer que esta "melhor", so
+        # que o ano ainda nao fechou. Ver metodologia na pagina.
+        # Piso de materialidade: com base de comparacao muito pequena (< R$1 mi
+        # de gap no fechamento de 2025), a razao vira um numero enorme e sem
+        # sentido comparativo (ex.: de R$5 mil para R$1 mi "e'" 20000%, mas so'
+        # descreve que a UG saiu do irrelevante, nao uma deterioracao real).
+        razao_2025 = (r["liquidado_nao_pago"] / g25 * 100) if g25 and g25 >= 1_000_000 else None
         ranking.append(
             {
                 "codigo_ug": r["codigo_ug"],
@@ -106,6 +122,9 @@ def build_ranking_executivo():
                 "gap": r["liquidado_nao_pago"],
                 "rap": r["rap"],
                 "pct_pago": round(pct_pago, 1) if pct_pago is not None else None,
+                "gap_fechamento_2025": g25,
+                "gap_fechamento_2024": g24,
+                "razao_vs_fechamento_2025": round(razao_2025, 0) if razao_2025 is not None else None,
             }
         )
     return sorted(ranking, key=lambda x: -x["gap"])
