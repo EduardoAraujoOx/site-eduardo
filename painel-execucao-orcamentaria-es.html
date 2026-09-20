@@ -81,6 +81,7 @@ main{max-width:var(--max);margin:0 auto;padding:1.75rem 1.25rem 4rem}
 .badge.info{background:var(--teal-light);color:var(--teal-dark)}
 .badge.warn{background:#fdf3e0;color:#8a5a00}
 .badge.neutral{background:#eef1f2;color:#555}
+.badge.good{background:#e6f4ea;color:#1e6b34}
 
 /* ── gráfico de linhas (SVG) ── */
 .chart-wrap{position:relative}
@@ -243,7 +244,7 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
 
 <section class="panel" aria-labelledby="prazo-h">
     <h3 id="prazo-h">Prazo de pagamento por Unidade Gestora (dias entre liquidação e ordem bancária)</h3>
-    <p class="panel-sub">Só considera pagamentos de contratos já realizados (Ordem Cronológica de Pagamentos), 2026, Unidades Gestoras com pelo menos 30 pagamentos no ano. As três colunas de prazo mostram: o valor típico (metade dos pagamentos saiu em até esse tempo), o prazo de 3 em cada 4 pagamentos, e o prazo de 9 em cada 10, que capta os casos mais demorados sem depender do único pagamento mais extremo do ano. Sujeito a censura à direita: obrigações ainda não pagas não entram aqui.</p>
+    <p class="panel-sub">Só considera pagamentos de contratos já realizados (Ordem Cronológica de Pagamentos), 2026, Unidades Gestoras com pelo menos 30 pagamentos no ano. As três colunas de prazo mostram: o valor típico (metade dos pagamentos saiu em até esse tempo), o prazo de 3 em cada 4 pagamentos, e o prazo de 9 em cada 10, que capta os casos mais demorados sem depender do único pagamento mais extremo do ano. "vs. 2025 (mediana)" compara o prazo típico com o mesmo período do ano passado, só quando a UG também teve pelo menos 30 pagamentos em 2025 (abaixo disso a mediana de 2025 é ruído, não referência confiável); "▲" indica que o pagamento típico ficou mais lento, "▼" que ficou mais rápido. Sujeito a censura à direita: obrigações ainda não pagas não entram aqui.</p>
     <div class="table-tools">
         <button type="button" class="export-btn" id="prazoExportBtn">Exportar como imagem</button>
     </div>
@@ -255,8 +256,9 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
                 <th scope="col" class="num" data-key="dias_p50" title="Prazo típico: metade dos pagamentos saiu em até esse tempo">Mediana (dias)</th>
                 <th scope="col" class="num" data-key="dias_p75" title="Prazo dentro do qual 3 em cada 4 pagamentos foram feitos">3 em cada 4</th>
                 <th scope="col" class="num" data-key="dias_p90" title="Prazo dentro do qual 9 em cada 10 pagamentos foram feitos">9 em cada 10</th>
+                <th scope="col" class="num" data-key="delta_p50" title="Variação da mediana em relação ao mesmo período de 2025">vs. 2025 (mediana)</th>
             </tr></thead>
-            <tbody id="prazoBody"><tr><td colspan="5">Carregando…</td></tr></tbody>
+            <tbody id="prazoBody"><tr><td colspan="6">Carregando…</td></tr></tbody>
         </table>
     </div>
     <div class="table-more" id="prazoMore" style="display:none">Mostrar mais Unidades Gestoras</div>
@@ -516,11 +518,19 @@ document.querySelectorAll('#rankTable thead th').forEach(th => {
 // ══════════════════ TABELA: PRAZO DE PAGAMENTO ══════════════════
 let prazoSort = {key:'dias_p90', dir:-1};
 let prazoShown = 15;
+function fmtDeltaPrazo(r) {
+    if (r.delta_p50 == null) return '<span style="color:var(--ink-muted)">(sem comparação)</span>';
+    const d = r.delta_p50;
+    const detalhe = `Mediana: ${fmtDias(r.dias_p50_2025)} → ${fmtDias(r.dias_p50)} · 3 em cada 4: ${fmtDias(r.dias_p75_2025)} → ${fmtDias(r.dias_p75)} · 9 em cada 10: ${fmtDias(r.dias_p90_2025)} → ${fmtDias(r.dias_p90)}`;
+    if (d > 0) return `<span class="badge warn" title="${detalhe}">▲ +${fmtDias(d)}</span>`;
+    if (d < 0) return `<span class="badge good" title="${detalhe}">▼ ${fmtDias(d)}</span>`;
+    return `<span class="badge neutral" title="${detalhe}">= 0 dias</span>`;
+}
 function renderPrazoTable(rows) {
     let ordenadas = [...rows].sort((a,b) => {
         const va = a[prazoSort.key], vb = b[prazoSort.key];
         if (typeof va === 'string') return va.localeCompare(vb) * prazoSort.dir;
-        return (va - vb) * prazoSort.dir;
+        return ((va ?? -Infinity) - (vb ?? -Infinity)) * prazoSort.dir;
     });
     const visiveis = ordenadas.slice(0, prazoShown);
     window.prazoVisiveisAtual = visiveis;
@@ -531,6 +541,7 @@ function renderPrazoTable(rows) {
             <td class="num">${fmtDias(r.dias_p50)}</td>
             <td class="num">${fmtDias(r.dias_p75)}</td>
             <td class="num">${fmtDias(r.dias_p90)}</td>
+            <td class="num">${fmtDeltaPrazo(r)}</td>
         </tr>
     `).join('');
     document.getElementById('prazoMore').style.display = ordenadas.length > prazoShown ? 'block' : 'none';
@@ -725,11 +736,13 @@ document.getElementById('prazoExportBtn').addEventListener('click', function () 
             { label: 'Mediana (dias)', largura: 120, num: true, valor: r => fmtDias(r.dias_p50) },
             { label: '3 em cada 4', largura: 110, num: true, valor: r => fmtDias(r.dias_p75) },
             { label: '9 em cada 10', largura: 120, num: true, valor: r => fmtDias(r.dias_p90) },
+            { label: 'vs. 2025 (mediana)', largura: 150, num: true, valor: r => r.delta_p50 == null ? 'sem comparação' : (r.delta_p50 > 0 ? '+' : '') + fmtDias(r.delta_p50) },
         ],
         linhas,
         nomeArquivo: 'prazo-pagamento-executivo-es.png',
     });
 });
+
 </script>
 </body>
 </html>
