@@ -162,7 +162,7 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
             <div class="stat-side-row"><span>Gap em 18/set/2025 (mesmo corte)</span><b id="ssGapCorte2025">—</b></div>
             <div class="stat-side-row"><span>Gap no fechamento de 2025 (31/dez)</span><b id="ssGap2025">—</b></div>
             <div class="stat-side-row"><span>Gap no fechamento de 2024 (31/dez)</span><b id="ssGap2024">—</b></div>
-            <div class="stat-side-row"><span>Prazo mediano de pagamento (NL→OB), 2026</span><b id="ssPrazo">—</b></div>
+            <div class="stat-side-row"><span>Prazo típico de pagamento (NL→OB), 2026</span><b id="ssPrazo">—</b></div>
         </div>
     </div>
 </section>
@@ -187,9 +187,9 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
         <div class="kpi-foot" id="kpiGapFoot">—</div>
     </div>
     <div class="kpi-card">
-        <div class="kpi-label">Prazo mediano de pagamento</div>
+        <div class="kpi-label">Prazo típico de pagamento</div>
         <div class="kpi-value" id="kpiPrazoP50">—</div>
-        <div class="kpi-foot">p90: <span id="kpiPrazoP90">—</span></div>
+        <div class="kpi-foot">9 em cada 10 pagamentos saem em até <span id="kpiPrazoP90">—</span></div>
     </div>
 </div>
 
@@ -242,7 +242,7 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
 
 <section class="panel" aria-labelledby="prazo-h">
     <h3 id="prazo-h">Prazo de pagamento por Unidade Gestora (dias entre liquidação e ordem bancária)</h3>
-    <p class="panel-sub">Só considera pagamentos de contratos já realizados (Ordem Cronológica de Pagamentos), 2026, Unidades Gestoras com pelo menos 30 pagamentos no ano. Sujeito a censura à direita: obrigações ainda não pagas não entram aqui.</p>
+    <p class="panel-sub">Só considera pagamentos de contratos já realizados (Ordem Cronológica de Pagamentos), 2026, Unidades Gestoras com pelo menos 30 pagamentos no ano. As três colunas de prazo mostram: o valor típico (metade dos pagamentos saiu em até esse tempo), o prazo de 3 em cada 4 pagamentos, e o prazo de 9 em cada 10, que capta os casos mais demorados sem depender do único pagamento mais extremo do ano. Sujeito a censura à direita: obrigações ainda não pagas não entram aqui.</p>
     <div class="table-tools">
         <button type="button" class="export-btn" id="prazoExportBtn">Exportar como imagem</button>
     </div>
@@ -251,9 +251,9 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
             <thead><tr>
                 <th scope="col" data-key="unidade_gestora">Unidade Gestora</th>
                 <th scope="col" class="num" data-key="n_pagamentos">Pagamentos</th>
-                <th scope="col" class="num" data-key="dias_p50">Mediana (dias)</th>
-                <th scope="col" class="num" data-key="dias_p75">p75</th>
-                <th scope="col" class="num" data-key="dias_p90">p90</th>
+                <th scope="col" class="num" data-key="dias_p50" title="Prazo típico: metade dos pagamentos saiu em até esse tempo">Mediana (dias)</th>
+                <th scope="col" class="num" data-key="dias_p75" title="Prazo dentro do qual 3 em cada 4 pagamentos foram feitos">3 em cada 4</th>
+                <th scope="col" class="num" data-key="dias_p90" title="Prazo dentro do qual 9 em cada 10 pagamentos foram feitos">9 em cada 10</th>
             </tr></thead>
             <tbody id="prazoBody"><tr><td colspan="5">Carregando…</td></tr></tbody>
         </table>
@@ -332,7 +332,7 @@ function render(d) {
     document.getElementById('ssGapCorte2025').textContent = corte2025 ? fmtR$(corte2025.gap_no_corte) : '—';
     document.getElementById('ssGap2024').textContent = fmtR$(k.saude_fes.gap_fechamento_2024);
     document.getElementById('ssGap2025').textContent = fmtR$(k.saude_fes.gap_fechamento_2025);
-    document.getElementById('ssPrazo').textContent = `mediana ${fmtDias(k.saude_fes.prazo_p50_2026)} · p90 ${fmtDias(k.saude_fes.prazo_p90_2026)} (${k.saude_fes.prazo_n_2026.toLocaleString('pt-BR')} pagamentos)`;
+    document.getElementById('ssPrazo').textContent = `metade em até ${fmtDias(k.saude_fes.prazo_p50_2026)}; 9 em cada 10, em até ${fmtDias(k.saude_fes.prazo_p90_2026)} (${k.saude_fes.prazo_n_2026.toLocaleString('pt-BR')} pagamentos)`;
 
     // ── KPIs do Executivo ──
     document.getElementById('kpiNUgs').textContent = k.executivo.n_ugs;
@@ -707,8 +707,8 @@ document.getElementById('prazoExportBtn').addEventListener('click', function () 
             { label: 'Unidade Gestora', largura: 320, valor: r => r.unidade_gestora },
             { label: 'Pagamentos', largura: 110, num: true, valor: r => r.n_pagamentos.toLocaleString('pt-BR') },
             { label: 'Mediana (dias)', largura: 120, num: true, valor: r => fmtDias(r.dias_p50) },
-            { label: 'p75', largura: 100, num: true, valor: r => fmtDias(r.dias_p75) },
-            { label: 'p90', largura: 100, num: true, valor: r => fmtDias(r.dias_p90) },
+            { label: '3 em cada 4', largura: 110, num: true, valor: r => fmtDias(r.dias_p75) },
+            { label: '9 em cada 10', largura: 120, num: true, valor: r => fmtDias(r.dias_p90) },
         ],
         linhas,
         nomeArquivo: 'prazo-pagamento-executivo-es.png',
