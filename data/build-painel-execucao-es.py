@@ -219,19 +219,31 @@ def build_ranking_executivo():
 
 
 def build_prazos_executivo():
+    """Prazo de pagamento (NL->OB) por UG em 2026, com comparativo contra 2025
+    (mesma base de dados, os dois unicos anos com cobertura sistematica). So'
+    calcula a comparacao quando a UG tambem tem pelo menos 30 pagamentos em
+    2025 -- abaixo disso a mediana de 2025 e' ruido, nao um prazo de referencia
+    confiavel para julgar se 2026 piorou ou melhorou."""
     d = json.load(open(DATA_DIR / "ordem-cronologica-es.json"))
+    por_ug_2025 = {r["codigo_ug"]: r for r in d["por_ug"] if r["ano"] == 2025 and r["n_pagamentos"] >= 30}
     rows = [r for r in d["por_ug"] if r["ano"] == 2026 and r["n_pagamentos"] >= 30]
-    prazos = [
-        {
-            "codigo_ug": r["codigo_ug"],
-            "unidade_gestora": r["unidade_gestora"],
-            "n_pagamentos": r["n_pagamentos"],
-            "dias_p50": r["dias_p50"],
-            "dias_p75": r["dias_p75"],
-            "dias_p90": r["dias_p90"],
-        }
-        for r in rows
-    ]
+    prazos = []
+    for r in rows:
+        r25 = por_ug_2025.get(r["codigo_ug"])
+        prazos.append(
+            {
+                "codigo_ug": r["codigo_ug"],
+                "unidade_gestora": r["unidade_gestora"],
+                "n_pagamentos": r["n_pagamentos"],
+                "dias_p50": r["dias_p50"],
+                "dias_p75": r["dias_p75"],
+                "dias_p90": r["dias_p90"],
+                "dias_p50_2025": r25["dias_p50"] if r25 else None,
+                "dias_p75_2025": r25["dias_p75"] if r25 else None,
+                "dias_p90_2025": r25["dias_p90"] if r25 else None,
+                "delta_p50": round(r["dias_p50"] - r25["dias_p50"], 1) if r25 else None,
+            }
+        )
     return sorted(prazos, key=lambda x: -x["dias_p90"])
 
 
