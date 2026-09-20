@@ -22,20 +22,48 @@ def dia_do_ano(data_iso):
     return (date(y, m, d) - date(y, 1, 1)).days + 1
 
 
+def _dia_para_mmdd(ano, dia_do_ano_int):
+    from datetime import timedelta
+    d = date(ano, 1, 1) + timedelta(days=dia_do_ano_int - 1)
+    return d.strftime("%m-%d")
+
+
 def build_serie_saude():
-    d = json.load(open(DATA_DIR / "execucao-saude-es.json"))
+    """Serie diaria do Fundo Estadual de Saude especificamente (nao a funcao
+    Saude inteira, que tambem inclui hospitais e superintendencias regionais).
+    Usa execucao-executivo-es.json (coleta por UG) quando disponivel, que e'
+    mais preciso e consistente com o resto do painel (ranking, KPIs), todos
+    por UG; cai para a serie por funcao (execucao-saude-es.json) so' se a
+    coleta do Executivo inteiro ainda nao tiver rodado."""
+    path_executivo = DATA_DIR / "execucao-executivo-es.json"
     por_ano = defaultdict(list)
     cum = defaultdict(lambda: {"liq": 0.0, "pago": 0.0})
-    for row in d["diario"]:
-        ano = row["data"][:4]
-        cum[ano]["liq"] += row["liquidado"]
-        cum[ano]["pago"] += row["pago"]
-        por_ano[ano].append(
-            {
-                "dia": dia_do_ano(row["data"]),
-                "gap_acum": round(cum[ano]["liq"] - cum[ano]["pago"], 2),
-            }
-        )
+
+    if path_executivo.exists():
+        serie = json.load(open(path_executivo))["series"]
+        pontos_por_ano = defaultdict(list)
+        for chave, info in serie.items():
+            ano_str, ug = chave.split("|")
+            if ug != FES_CODIGO_UG:
+                continue
+            pontos_por_ano[ano_str] = info["diario"]
+        for ano, pontos in pontos_por_ano.items():
+            for row in sorted(pontos, key=lambda p: p["data"]):
+                cum[ano]["liq"] += row["liquidado"]
+                cum[ano]["pago"] += row["pago"]
+                por_ano[ano].append(
+                    {"dia": dia_do_ano(row["data"]), "gap_acum": round(cum[ano]["liq"] - cum[ano]["pago"], 2)}
+                )
+    else:
+        d = json.load(open(DATA_DIR / "execucao-saude-es.json"))
+        for row in d["diario"]:
+            ano = row["data"][:4]
+            cum[ano]["liq"] += row["liquidado"]
+            cum[ano]["pago"] += row["pago"]
+            por_ano[ano].append(
+                {"dia": dia_do_ano(row["data"]), "gap_acum": round(cum[ano]["liq"] - cum[ano]["pago"], 2)}
+            )
+
     return {ano: v for ano, v in sorted(por_ano.items())}
 
 
@@ -53,13 +81,17 @@ def build_kpis(serie_saude):
     fes_2024 = next(r for r in orc["por_ano"]["2024"]["registros"] if r["codigo_ug"] == FES_CODIGO_UG)
     fes_2025 = next(r for r in orc["por_ano"]["2025"]["registros"] if r["codigo_ug"] == FES_CODIGO_UG)
 
-    # comparativo no mesmo corte do calendario (jan-set), a partir da serie diaria
+    # Comparativo no MESMO corte do calendario (ate' CUTOFF_MMDD em cada ano).
+    # Cuidado: nao da' para pegar so' o ultimo ponto de "serie_saude", porque
+    # anos ja encerrados (2023-2025) tem a serie inteira ate' 31/12 -- o ultimo
+    # ponto deles e' o fechamento do ano, nao o corte de setembro. Precisa
+    # filtrar explicitamente por CUTOFF_MMDD em cada ano antes de pegar o
+    # ultimo valor acumulado.
     comparativo_corte = []
     for ano, pontos in serie_saude.items():
-        pontos_corte = [p for p in pontos]
-        if pontos_corte:
-            ultimo = pontos_corte[-1]
-            comparativo_corte.append({"ano": int(ano), "gap_no_corte": ultimo["gap_acum"]})
+        pontos_ate_corte = [p for p in pontos if _dia_para_mmdd(int(ano), p["dia"]) <= CUTOFF_MMDD]
+        if pontos_ate_corte:
+            comparativo_corte.append({"ano": int(ano), "gap_no_corte": pontos_ate_corte[-1]["gap_acum"]})
 
     geral_prazo = {g["ano"]: g for g in ordem["geral_por_ano"]}
     fes_prazo = {r["ano"]: r for r in ordem["por_ug"] if r["codigo_ug"] == FES_CODIGO_UG}
@@ -91,28 +123,58 @@ def build_kpis(serie_saude):
     }
 
 
+def build_gap_mesmo_corte_por_ug():
+    """Le' execucao-executivo-es.json (serie diaria, todo o Executivo, 2023-2026)
+    e devolve, por UG, o gap acumulado (liquidado-pago) ate' o mesmo dia do ano
+    (CUTOFF_MMDD) em cada ano -- comparacao ano-contra-ano de verdade, em vez de
+    ano em curso contra fechamento do ano inteiro anterior."""
+    path = DATA_DIR / "execucao-executivo-es.json"
+    if not path.exists():
+        return {}
+    serie = json.load(open(path))["series"]
+    resultado = defaultdict(dict)  # codigo_ug -> {ano: gap_no_corte}
+    for chave, info in serie.items():
+        ano_str, ug = chave.split("|")
+        cum_liq = cum_pago = 0.0
+        for ponto in info["diario"]:
+            if ponto["data"][5:] > CUTOFF_MMDD:
+                break
+            cum_liq += ponto["liquidado"]
+            cum_pago += ponto["pago"]
+        resultado[ug][int(ano_str)] = cum_liq - cum_pago
+    return resultado
+
+
 def build_ranking_executivo():
     orc = json.load(open(DATA_DIR / "orcamentos-execucoes-es.json"))
     rows = [r for r in orc["por_ano"]["2026"]["registros"] if r["poder"] == "Executivo"]
     gap_2025 = {r["codigo_ug"]: r["liquidado_nao_pago"] for r in orc["por_ano"]["2025"]["registros"]}
     gap_2024 = {r["codigo_ug"]: r["liquidado_nao_pago"] for r in orc["por_ano"]["2024"]["registros"]}
+    gap_mesmo_corte = build_gap_mesmo_corte_por_ug()
 
     ranking = []
     for r in rows:
         pct_pago = (r["pago"] / r["liquidado"] * 100) if r["liquidado"] else None
         g25 = gap_2025.get(r["codigo_ug"])
         g24 = gap_2024.get(r["codigo_ug"])
-        # Compara o gap corrente (2026, ano em curso) com o FECHAMENTO do ano
-        # anterior (2025, ano encerrado) -- nao e' o mesmo corte de calendario,
-        # entao so e' comparavel numa direcao: se o valor em curso ja supera o
-        # fechamento do ano inteiro anterior, isso e' sinal forte, mesmo faltando
-        # meses; o inverso (estar abaixo) nao quer dizer que esta "melhor", so
-        # que o ano ainda nao fechou. Ver metodologia na pagina.
-        # Piso de materialidade: com base de comparacao muito pequena (< R$1 mi
-        # de gap no fechamento de 2025), a razao vira um numero enorme e sem
-        # sentido comparativo (ex.: de R$5 mil para R$1 mi "e'" 20000%, mas so'
-        # descreve que a UG saiu do irrelevante, nao uma deterioracao real).
-        razao_2025 = (r["liquidado_nao_pago"] / g25 * 100) if g25 and g25 >= 1_000_000 else None
+
+        # Comparacao ano-contra-ano no MESMO corte de calendario (ate' 18/09 em
+        # todos os anos), a partir da serie diaria -- substitui a comparacao
+        # contra o fechamento do ano inteiro anterior, que misturava ano
+        # incompleto com ano encerrado. So' cai no fallback do fechamento
+        # quando a UG nao aparece na serie diaria (nao deveria acontecer).
+        corte = gap_mesmo_corte.get(r["codigo_ug"], {})
+        corte_2026 = corte.get(2026)
+        corte_2025 = corte.get(2025)
+        if corte_2026 is not None and corte_2025 and corte_2025 >= 1_000_000:
+            razao_2025 = corte_2026 / corte_2025 * 100
+        else:
+            # Piso de materialidade: com base de comparacao muito pequena
+            # (< R$1 mi), a razao vira um numero enorme e sem sentido
+            # comparativo (ex.: de R$5 mil para R$1 mi "e'" 20000%, mas so'
+            # descreve que a UG saiu do irrelevante, nao uma deterioracao real).
+            razao_2025 = (r["liquidado_nao_pago"] / g25 * 100) if g25 and g25 >= 1_000_000 else None
+
         # Espaco orcamentario: quanto da dotacao atualizada (autorizacao legal
         # para gastar) ja foi empenhado. Isso e' ortogonal ao gap de pagamento
         # -- uma UG pode ter caixa apertado com MUITO espaco de dotacao sobrando
@@ -133,6 +195,7 @@ def build_ranking_executivo():
                 "pct_dotacao_empenhada": round(pct_dotacao, 1) if pct_dotacao is not None else None,
                 "gap_fechamento_2025": g25,
                 "gap_fechamento_2024": g24,
+                "gap_mesmo_corte_2025": round(corte_2025, 2) if corte_2025 is not None else None,
                 "razao_vs_fechamento_2025": round(razao_2025, 0) if razao_2025 is not None else None,
             }
         )

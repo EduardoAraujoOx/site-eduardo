@@ -159,8 +159,9 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
         <div class="stat-side">
             <div class="stat-side-row"><span>Liquidado em 2026 (até o corte da coleta)</span><b id="ssLiquidado">—</b></div>
             <div class="stat-side-row"><span>Pago em 2026</span><b id="ssPago">—</b></div>
-            <div class="stat-side-row"><span>Gap fechamento 2024</span><b id="ssGap2024">—</b></div>
-            <div class="stat-side-row"><span>Gap fechamento 2025</span><b id="ssGap2025">—</b></div>
+            <div class="stat-side-row"><span>Gap em 18/set/2025 (mesmo corte)</span><b id="ssGapCorte2025">—</b></div>
+            <div class="stat-side-row"><span>Gap no fechamento de 2025 (31/dez)</span><b id="ssGap2025">—</b></div>
+            <div class="stat-side-row"><span>Gap no fechamento de 2024 (31/dez)</span><b id="ssGap2024">—</b></div>
             <div class="stat-side-row"><span>Prazo mediano de pagamento (NL→OB), 2026</span><b id="ssPrazo">—</b></div>
         </div>
     </div>
@@ -212,12 +213,12 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
 </section>
 
 <div class="callout">
-    <b>Como ler este painel:</b> o gap liquidado-menos-pago mede um <b>estoque</b>: quanto de despesa já reconhecida ainda não foi paga. O prazo de pagamento (NL→OB) mede um <b>fluxo</b>: quão rápido andam os pagamentos que efetivamente saem. No Fundo Estadual de Saúde os dois contam histórias diferentes: o estoque represado cresceu, mas o prazo dos pagamentos realizados continua rápido e estável. A leitura mais defensável é que a pressão está na <b>fila de espera</b>, não na velocidade de quem já foi priorizado. A base de prazos não enxerga quem ainda não chegou a ser pago, então ela tende a subestimar o problema nos meses mais recentes.
+    <b>Como ler este painel:</b> o gap liquidado-menos-pago mede um <b>estoque</b>: quanto de despesa já reconhecida ainda não foi paga. O prazo de pagamento (NL→OB) mede um <b>fluxo</b>: quão rápido andam os pagamentos que efetivamente saem. No Fundo Estadual de Saúde esse estoque oscila muito de ano para ano (variou de cerca de R$ 8 milhões a R$ 154 milhões no mesmo dia do calendário, entre 2023 e 2025), então um único ano isolado não define tendência; o gráfico abaixo mostra essa variação ano a ano. O prazo dos pagamentos que de fato se realizam, por outro lado, continua rápido e estável. A base de prazos também tem um limite: ela não enxerga quem ainda não chegou a ser pago, então tende a subestimar o problema nos meses mais recentes. O sinal mais consistente deste painel não está isolado num único ano da Saúde, mas na tabela abaixo: várias Unidades Gestoras já represam, no mesmo ponto do calendário, mais do que represavam em 2025.
 </div>
 
 <section class="panel" aria-labelledby="rank-h">
     <h3 id="rank-h">Executivo por Unidade Gestora: estoque, histórico e espaço orçamentário</h3>
-    <p class="panel-sub">Ordenado pelo maior valor represado. Poder Executivo, exercício de 2026 (dado mais recente disponível). "vs. fechamento 2025" compara o gap em curso com o ano <em>inteiro</em> anterior: acima de 100% significa que 2026, ainda incompleto, já superou o fechamento de 2025. "% da dotação empenhada" é outra coisa: mede se ainda sobra autorização orçamentária para gastar, não se há caixa para pagar. Uma UG pode ter caixa apertado com dotação de sobra (problema só de fluxo), ou estar no limite da própria dotação (problema também orçamentário).</p>
+    <p class="panel-sub">Ordenado pelo maior valor represado. Poder Executivo, exercício de 2026 (dado mais recente disponível). "vs. 2025" compara o gap acumulado até a mesma data do calendário (18 de setembro) nos dois anos, para não misturar um exercício em curso com o fechamento de um exercício encerrado. "% da dotação empenhada" é outra coisa: mede se ainda sobra autorização orçamentária para gastar, não se há caixa para pagar. Uma UG pode ter caixa apertado com dotação de sobra (problema só de fluxo), ou estar no limite da própria dotação (problema também orçamentário).</p>
     <div class="table-tools">
         <input type="text" class="search-input" id="rankSearch" placeholder="Buscar Unidade Gestora…" autocomplete="off">
         <button type="button" class="export-btn" id="rankExportBtn">Exportar como imagem</button>
@@ -231,7 +232,7 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
                 <th scope="col" class="num" data-key="pago">Pago</th>
                 <th scope="col" class="num" data-key="pct_pago">% pago</th>
                 <th scope="col" class="num" data-key="gap">Gap (liq. − pago)</th>
-                <th scope="col" class="num" data-key="razao_vs_fechamento_2025">vs. fechamento 2025</th>
+                <th scope="col" class="num" data-key="razao_vs_fechamento_2025">vs. 2025</th>
             </tr></thead>
             <tbody id="rankBody"><tr><td colspan="7">Carregando…</td></tr></tbody>
         </table>
@@ -265,7 +266,7 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
     <div class="meta-list">
         <p style="margin-bottom:0.6rem">Todos os dados vêm de bases abertas do Portal de Dados Abertos do Espírito Santo (<code>dados.es.gov.br</code>), extraídas do SIGEFES e coletadas via API DataStore do CKAN, sem baixar os arquivos brutos completos, que passam de 1&nbsp;GB por ano.</p>
         <p style="margin-bottom:0.3rem"><b>Execução por Unidade Gestora:</b> <code>OrcamentosExecucoes-&lt;ano&gt;.csv</code>, fotografia consolidada por UG (dotação, empenho, liquidação, pagamento, restos a pagar). Usada como total de controle.</p>
-        <p style="margin-bottom:0.3rem"><b>Série diária da Saúde:</b> <code>Despesas-&lt;ano&gt;.csv</code>, microdado de eventos (empenho/liquidação/pagamento), filtrado pela função orçamentária Saúde e agregado por dia.</p>
+        <p style="margin-bottom:0.3rem"><b>Série diária por Unidade Gestora:</b> <code>Despesas-&lt;ano&gt;.csv</code>, microdado de eventos (empenho/liquidação/pagamento), agregado por dia para cada UG do Executivo. Usada para comparar o gap acumulado no mesmo dia do calendário entre anos, em vez de comparar um exercício em curso com o fechamento de um exercício já encerrado.</p>
         <p style="margin-bottom:0.6rem"><b>Prazo de pagamento:</b> <code>Contratos - Ordem Cronológica de Pagamentos</code>, que pareia a data de emissão da nota de liquidação (NL) e da ordem bancária (OB) do mesmo documento.</p>
         <p style="margin-bottom:0.6rem">Poder classificado pelo número de dígitos do código de Unidade Gestora (5 = Legislativo/TCE/Judiciário/Ministério Público/Defensoria; 6 = Executivo).</p>
         <p style="margin-bottom:0.3rem"><b>O que este painel ainda não mostra:</b> receita (arrecadação realizada vs. prevista, por fonte) e disponibilidade de caixa do Tesouro. O lado da despesa aqui mede autorização orçamentária (dotação) e represamento de pagamento, mas não diz se a causa é falta de receita, de caixa liberado por fonte, ou só de ritmo de pagamento; essas três coisas são conceitualmente distintas e não podem ser lidas uma pela outra. A base de Receitas do SIGEFES existe e será incorporada numa próxima etapa, com o mesmo cuidado de reconciliação aplicado à despesa.</p>
@@ -288,6 +289,32 @@ const fmtDias = v => v == null ? '—' : Number(v).toLocaleString('pt-BR', {maxi
 
 let PAINEL = null;
 
+// Compara o gap atual (2026, ate' 18/set) com o mesmo dia do calendario nos
+// anos anteriores. Evita comparar um exercicio em curso com o fechamento de
+// um exercicio encerrado, que e' o que a versao anterior desta nota fazia
+// (e por isso exagerava a leitura: o gap da Saude costuma cair bastante
+// entre setembro e dezembro, entao comparar setembro de 2026 com o
+// fechamento de dezembro de anos passados sempre pareceria pior do que e').
+function montarNotaHero(fes) {
+    const corte = fes.comparativo_mesmo_corte || [];
+    const atual = corte.find(c => c.ano === 2026);
+    const anteriores = corte.filter(c => c.ano !== 2026).sort((a, b) => a.ano - b.ano);
+    if (!atual || anteriores.length === 0) {
+        return 'é o estoque de despesa <b>liquidada e ainda não paga</b> do Fundo Estadual de Saúde em 2026.';
+    }
+    const acima = anteriores.filter(c => atual.gap_no_corte > c.gap_no_corte).map(c => c.ano);
+    const abaixo = anteriores.filter(c => atual.gap_no_corte <= c.gap_no_corte).map(c => c.ano);
+    let comparacao;
+    if (abaixo.length === 0) {
+        comparacao = `é o maior valor da série desde ${anteriores[0].ano}`;
+    } else if (acima.length === 0) {
+        comparacao = `fica abaixo do observado em ${abaixo.join(' e ')}`;
+    } else {
+        comparacao = `fica acima do observado em ${acima.join(' e ')}, mas abaixo do valor de ${abaixo.join(' e ')}`;
+    }
+    return `é o estoque de despesa <b>liquidada e ainda não paga</b> do Fundo Estadual de Saúde em 2026. Na mesma data do calendário (18 de setembro) em anos anteriores, e não no fechamento de exercícios já encerrados (que tende a ser bem menor), esse valor ${comparacao}.`;
+}
+
 fetch('data/painel-execucao-es.json')
     .then(r => r.json())
     .then(d => { PAINEL = d; render(d); })
@@ -298,12 +325,11 @@ function render(d) {
 
     // ── stat hero ──
     document.getElementById('statHeroValue').textContent = fmtR$M(k.saude_fes.gap_atual);
-    document.getElementById('statHeroNote').innerHTML =
-        `é o estoque de despesa <b>liquidada e ainda não paga</b> do Fundo Estadual de Saúde em 2026, ` +
-        `já ${(k.saude_fes.gap_atual > k.saude_fes.gap_fechamento_2024 ? 'mais que o dobro' : 'acima')} do fechamento do ano inteiro de 2024 ` +
-        `(${fmtR$M(k.saude_fes.gap_fechamento_2024)}) e de 2025 (${fmtR$M(k.saude_fes.gap_fechamento_2025)}), com o exercício ainda em curso.`;
+    document.getElementById('statHeroNote').innerHTML = montarNotaHero(k.saude_fes);
     document.getElementById('ssLiquidado').textContent = fmtR$(k.saude_fes.liquidado);
     document.getElementById('ssPago').textContent = fmtR$(k.saude_fes.pago);
+    const corte2025 = (k.saude_fes.comparativo_mesmo_corte || []).find(c => c.ano === 2025);
+    document.getElementById('ssGapCorte2025').textContent = corte2025 ? fmtR$(corte2025.gap_no_corte) : '—';
     document.getElementById('ssGap2024').textContent = fmtR$(k.saude_fes.gap_fechamento_2024);
     document.getElementById('ssGap2025').textContent = fmtR$(k.saude_fes.gap_fechamento_2025);
     document.getElementById('ssPrazo').textContent = `mediana ${fmtDias(k.saude_fes.prazo_p50_2026)} · p90 ${fmtDias(k.saude_fes.prazo_p90_2026)} (${k.saude_fes.prazo_n_2026.toLocaleString('pt-BR')} pagamentos)`;
@@ -457,10 +483,10 @@ function fmtDotacao(v) {
     return fmtPct(pct);
 }
 function fmtRazao(v) {
-    if (v == null) return '<span style="color:var(--ink-muted)">(base 2025 pequena)</span>';
+    if (v == null) return '<span style="color:var(--ink-muted)">(base pequena)</span>';
     const pct = Math.round(v);
-    if (pct >= 100) return `<span class="badge warn">${pct}% do ano passado</span>`;
-    return `${pct}% do ano passado`;
+    if (pct >= 100) return `<span class="badge warn">${pct}%</span>`;
+    return `${pct}%`;
 }
 document.getElementById('rankSearch').addEventListener('input', () => { rankShown = 15; renderRankTable(PAINEL.ranking_executivo); });
 document.getElementById('rankMore').addEventListener('click', () => { rankShown += 30; renderRankTable(PAINEL.ranking_executivo); });
@@ -665,7 +691,7 @@ document.getElementById('rankExportBtn').addEventListener('click', function () {
             { label: 'Liquidado', largura: 130, num: true, valor: r => fmtR$(r.liquidado) },
             { label: 'Pago', largura: 130, num: true, valor: r => fmtR$(r.pago) },
             { label: 'Gap (liq. - pago)', largura: 140, num: true, valor: r => fmtR$(r.gap) },
-            { label: 'vs. fechamento 2025', largura: 130, num: true, valor: r => r.razao_vs_fechamento_2025 == null ? 'base pequena' : Math.round(r.razao_vs_fechamento_2025) + '%' },
+            { label: 'vs. 2025 (mesmo período)', largura: 150, num: true, valor: r => r.razao_vs_fechamento_2025 == null ? 'base pequena' : Math.round(r.razao_vs_fechamento_2025) + '%' },
         ],
         linhas,
         nomeArquivo: 'execucao-orcamentaria-executivo-es.png',
