@@ -80,6 +80,7 @@ main{max-width:var(--max);margin:0 auto;padding:1.75rem 1.25rem 4rem}
 .badge{display:inline-block;font-size:0.66rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:99px;letter-spacing:0.02em;white-space:nowrap}
 .badge.info{background:var(--teal-light);color:var(--teal-dark)}
 .badge.warn{background:#fdf3e0;color:#8a5a00}
+.badge.neutral{background:#eef1f2;color:#555}
 
 /* ── gráfico de linhas (SVG) ── */
 .chart-wrap{position:relative}
@@ -213,12 +214,12 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
 </section>
 
 <div class="callout">
-    <b>Como ler este painel:</b> o gap liquidado-menos-pago mede um <b>estoque</b>: quanto de despesa já reconhecida ainda não foi paga. O prazo de pagamento (NL→OB) mede um <b>fluxo</b>: quão rápido andam os pagamentos que efetivamente saem. No Fundo Estadual de Saúde esse estoque oscila muito de ano para ano (variou de cerca de R$ 8 milhões a R$ 154 milhões no mesmo dia do calendário, entre 2023 e 2025), então um único ano isolado não define tendência; o gráfico abaixo mostra essa variação ano a ano. O prazo dos pagamentos que de fato se realizam, por outro lado, continua rápido e estável. A base de prazos também tem um limite: ela não enxerga quem ainda não chegou a ser pago, então tende a subestimar o problema nos meses mais recentes. O sinal mais consistente deste painel não está isolado num único ano da Saúde, mas na tabela abaixo: várias Unidades Gestoras já represam, no mesmo ponto do calendário, mais do que represavam em 2025.
+    <b>Como ler este painel:</b> o gap liquidado-menos-pago mede um <b>estoque</b>: quanto de despesa já reconhecida ainda não foi paga. O prazo de pagamento (NL→OB) mede um <b>fluxo</b>: quão rápido andam os pagamentos que efetivamente saem. No Fundo Estadual de Saúde esse estoque oscila muito de ano para ano (variou de cerca de R$ 8 milhões a R$ 154 milhões no mesmo dia do calendário, entre 2023 e 2025), então um único ano isolado não define tendência; o gráfico abaixo mostra essa variação ano a ano. O prazo dos pagamentos que de fato se realizam, por outro lado, continua rápido e estável. A base de prazos também tem um limite: ela não enxerga quem ainda não chegou a ser pago, então tende a subestimar o problema nos meses mais recentes. Esse mesmo padrão (estoque cresce, prazo realizado se mantém) se repete na maioria das Unidades Gestoras marcadas como "recorde desde 2023" na tabela abaixo: a fila aumenta, mas quem já é pago continua sendo pago rápido. A exceção é o Hospital Doutor Roberto Arnizaut Silvares, onde as duas coisas pioram juntas (estoque em recorde e prazo de pagamento subindo de 19 para 23 dias no p90 entre 2025 e 2026), o caso com o sinal mais completo do painel.
 </div>
 
 <section class="panel" aria-labelledby="rank-h">
     <h3 id="rank-h">Executivo por Unidade Gestora: estoque, histórico e espaço orçamentário</h3>
-    <p class="panel-sub">Ordenado pelo maior valor represado. Poder Executivo, exercício de 2026 (dado mais recente disponível). "vs. 2025" compara o gap acumulado até a mesma data do calendário (18 de setembro) nos dois anos, para não misturar um exercício em curso com o fechamento de um exercício encerrado. "% da dotação empenhada" é outra coisa: mede se ainda sobra autorização orçamentária para gastar, não se há caixa para pagar. Uma UG pode ter caixa apertado com dotação de sobra (problema só de fluxo), ou estar no limite da própria dotação (problema também orçamentário).</p>
+    <p class="panel-sub">Ordenado pelo maior valor represado. Poder Executivo, exercício de 2026 (dado mais recente disponível). "vs. 2025" compara o gap acumulado até a mesma data do calendário (18 de setembro) nos dois anos, para não misturar um exercício em curso com o fechamento de um exercício encerrado. Passar de 100% já é acima do observado em 2025, mas isso pode só significar que 2025 foi um ano baixo para aquela UG: "recorde desde 2023" marca quando 2026 também supera 2023 e 2024 no mesmo corte, o que é um sinal bem mais forte do que superar um único ano de referência; "já visto antes de 2025" marca quando não é o caso. "% da dotação empenhada" é outra coisa: mede se ainda sobra autorização orçamentária para gastar, não se há caixa para pagar. Uma UG pode ter caixa apertado com dotação de sobra (problema só de fluxo), ou estar no limite da própria dotação (problema também orçamentário).</p>
     <div class="table-tools">
         <input type="text" class="search-input" id="rankSearch" placeholder="Buscar Unidade Gestora…" autocomplete="off">
         <button type="button" class="export-btn" id="rankExportBtn">Exportar como imagem</button>
@@ -471,7 +472,7 @@ function renderRankTable(rows) {
             <td class="num">${fmtR$(r.pago)}</td>
             <td class="num">${fmtPct(r.pct_pago)}</td>
             <td class="num"><div class="gap-bar-wrap"><span class="gap-bar-track"><span class="gap-bar-fill" style="width:${Math.max(r.gap/maxGap*100,2)}%"></span></span>${fmtR$(r.gap)}</div></td>
-            <td class="num">${fmtRazao(r.razao_vs_fechamento_2025)}</td>
+            <td class="num">${fmtRazao(r)}</td>
         </tr>
     `).join('') || '<tr><td colspan="7">Nenhuma Unidade Gestora encontrada.</td></tr>';
     document.getElementById('rankMore').style.display = filtradas.length > rankShown ? 'block' : 'none';
@@ -482,11 +483,22 @@ function fmtDotacao(v) {
     if (pct >= 95) return `<span class="badge warn">${fmtPct(pct)}</span>`;
     return fmtPct(pct);
 }
-function fmtRazao(v) {
+function fmtRazao(r) {
+    const v = r.razao_vs_fechamento_2025;
     if (v == null) return '<span style="color:var(--ink-muted)">(base pequena)</span>';
     const pct = Math.round(v);
-    if (pct >= 100) return `<span class="badge warn">${pct}%</span>`;
-    return `${pct}%`;
+    if (pct < 100) return `${pct}%`;
+    // Acima de 100% pode ser recorde de verdade (nunca visto desde 2023) ou
+    // so' um valor alto comparado com um 2025 que, para aquela UG, foi
+    // especialmente baixo -- sem olhar 2023 e 2024 nao da' para distinguir
+    // as duas coisas, e foi exatamente esse erro que gerou a leitura inicial
+    // (e equivocada) da Saude.
+    const hist = r.historico_mesmo_corte || {};
+    const serieHist = Object.entries(hist).map(([ano, val]) => `${ano}: ${fmtR$(val)}`).join(' · ');
+    if (r.eh_recorde_historico) {
+        return `<span class="badge warn" title="Recorde desde 2023: ${serieHist}">▲ ${pct}%</span>`;
+    }
+    return `<span class="badge neutral" title="Já visto antes de 2025: ${serieHist}">${pct}%</span>`;
 }
 document.getElementById('rankSearch').addEventListener('input', () => { rankShown = 15; renderRankTable(PAINEL.ranking_executivo); });
 document.getElementById('rankMore').addEventListener('click', () => { rankShown += 30; renderRankTable(PAINEL.ranking_executivo); });
@@ -691,7 +703,11 @@ document.getElementById('rankExportBtn').addEventListener('click', function () {
             { label: 'Liquidado', largura: 130, num: true, valor: r => fmtR$(r.liquidado) },
             { label: 'Pago', largura: 130, num: true, valor: r => fmtR$(r.pago) },
             { label: 'Gap (liq. - pago)', largura: 140, num: true, valor: r => fmtR$(r.gap) },
-            { label: 'vs. 2025 (mesmo período)', largura: 150, num: true, valor: r => r.razao_vs_fechamento_2025 == null ? 'base pequena' : Math.round(r.razao_vs_fechamento_2025) + '%' },
+            { label: 'vs. 2025 (mesmo período)', largura: 170, num: true, valor: r => {
+                if (r.razao_vs_fechamento_2025 == null) return 'base pequena';
+                const pct = Math.round(r.razao_vs_fechamento_2025) + '%';
+                return pct + (r.eh_recorde_historico ? ' (recorde 2023-26)' : '');
+            } },
         ],
         linhas,
         nomeArquivo: 'execucao-orcamentaria-executivo-es.png',

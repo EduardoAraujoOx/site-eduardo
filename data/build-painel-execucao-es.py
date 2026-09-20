@@ -175,6 +175,20 @@ def build_ranking_executivo():
             # descreve que a UG saiu do irrelevante, nao uma deterioracao real).
             razao_2025 = (r["liquidado_nao_pago"] / g25 * 100) if g25 and g25 >= 1_000_000 else None
 
+        # Um unico ano acima de 2025 pode so' significar que 2025 foi um ano
+        # baixo para aquela UG (efeito de base), nao uma deterioracao real --
+        # foi exatamente o que aconteceu com a Saude ao comparar com o
+        # fechamento em vez do mesmo corte. Para nao repetir o erro num nivel
+        # mais fino, verifica se 2026 tambem supera 2023 e 2024 no mesmo
+        # corte: so' nesse caso e' um recorde historico de verdade, nao so'
+        # uma comparacao favoravel contra um unico ano de referencia.
+        anos_anteriores_corte = {a: v for a, v in corte.items() if a != 2026}
+        eh_recorde_historico = (
+            corte_2026 is not None
+            and len(anos_anteriores_corte) >= 2
+            and corte_2026 > max(anos_anteriores_corte.values())
+        )
+
         # Espaco orcamentario: quanto da dotacao atualizada (autorizacao legal
         # para gastar) ja foi empenhado. Isso e' ortogonal ao gap de pagamento
         # -- uma UG pode ter caixa apertado com MUITO espaco de dotacao sobrando
@@ -197,6 +211,8 @@ def build_ranking_executivo():
                 "gap_fechamento_2024": g24,
                 "gap_mesmo_corte_2025": round(corte_2025, 2) if corte_2025 is not None else None,
                 "razao_vs_fechamento_2025": round(razao_2025, 0) if razao_2025 is not None else None,
+                "eh_recorde_historico": eh_recorde_historico,
+                "historico_mesmo_corte": {str(a): round(v, 2) for a, v in sorted(corte.items())},
             }
         )
     return sorted(ranking, key=lambda x: -x["gap"])
