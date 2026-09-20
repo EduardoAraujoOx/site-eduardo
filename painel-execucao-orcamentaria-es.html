@@ -96,6 +96,10 @@ main{max-width:var(--max);margin:0 auto;padding:1.75rem 1.25rem 4rem}
 .table-tools{display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;margin-bottom:0.8rem}
 .search-input{border:1px solid var(--border-strong);border-radius:6px;padding:0.5rem 0.75rem;font-size:0.85rem;flex:1;min-width:180px}
 .search-input:focus{outline:2px solid var(--teal);outline-offset:-1px}
+.export-btn{border:1px solid var(--border-strong);border-radius:6px;padding:0.5rem 0.85rem;font-size:0.82rem;font-weight:600;background:#fff;color:var(--teal-dark);white-space:nowrap}
+.export-btn:hover{background:var(--paper-alt)}
+.export-btn:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
+.export-btn:disabled{opacity:0.6;cursor:wait}
 .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px}
 table.data{width:100%;border-collapse:collapse;font-size:0.83rem}
 table.data thead th{background:var(--paper-alt);text-align:left;padding:0.55rem 0.7rem;font-size:0.68rem;letter-spacing:0.03em;text-transform:uppercase;color:var(--ink-muted);border-bottom:1px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none}
@@ -134,7 +138,7 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
     <div class="masthead-inner">
         <div>
             <h1>Painel de Execução Orçamentária do Espírito Santo</h1>
-            <p class="sub">Ritmo de empenho, liquidação e pagamento do Poder Executivo estadual, a partir de dados abertos do SIGEFES — atualizado com mais frequência que o RREO, com abertura por Unidade Gestora.</p>
+            <p class="sub">Ritmo de empenho, liquidação e pagamento do Poder Executivo estadual, a partir de dados abertos do SIGEFES, atualizado com mais frequência que o RREO e com abertura por Unidade Gestora.</p>
         </div>
         <div class="masthead-byline">
             <b>Eduardo Araújo</b><br>
@@ -155,14 +159,15 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
         <div class="stat-side">
             <div class="stat-side-row"><span>Liquidado em 2026 (até o corte da coleta)</span><b id="ssLiquidado">—</b></div>
             <div class="stat-side-row"><span>Pago em 2026</span><b id="ssPago">—</b></div>
-            <div class="stat-side-row"><span>Gap fechamento 2024</span><b id="ssGap2024">—</b></div>
-            <div class="stat-side-row"><span>Gap fechamento 2025</span><b id="ssGap2025">—</b></div>
-            <div class="stat-side-row"><span>Prazo mediano de pagamento (NL→OB), 2026</span><b id="ssPrazo">—</b></div>
+            <div class="stat-side-row"><span>Gap em 18/set/2025 (mesmo corte)</span><b id="ssGapCorte2025">—</b></div>
+            <div class="stat-side-row"><span>Gap no fechamento de 2025 (31/dez)</span><b id="ssGap2025">—</b></div>
+            <div class="stat-side-row"><span>Gap no fechamento de 2024 (31/dez)</span><b id="ssGap2024">—</b></div>
+            <div class="stat-side-row"><span>Prazo típico de pagamento (NL→OB), 2026</span><b id="ssPrazo">—</b></div>
         </div>
     </div>
 </section>
 
-<h2 id="kpi-h" style="font-size:1rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.04em;margin:0 0 0.7rem;font-family:var(--mono)">Executivo consolidado — visão geral</h2>
+<h2 id="kpi-h" style="font-size:1rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.04em;margin:0 0 0.7rem;font-family:var(--mono)">Executivo consolidado: visão geral</h2>
 <div class="kpi-grid" aria-labelledby="kpi-h">
     <div class="kpi-card">
         <div class="kpi-label">UGs do Executivo cobertas</div>
@@ -182,15 +187,15 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
         <div class="kpi-foot" id="kpiGapFoot">—</div>
     </div>
     <div class="kpi-card">
-        <div class="kpi-label">Prazo mediano de pagamento</div>
+        <div class="kpi-label">Prazo típico de pagamento</div>
         <div class="kpi-value" id="kpiPrazoP50">—</div>
-        <div class="kpi-foot">p90: <span id="kpiPrazoP90">—</span></div>
+        <div class="kpi-foot">9 em cada 10 pagamentos saem em até <span id="kpiPrazoP90">—</span></div>
     </div>
 </div>
 
 <section class="panel" aria-labelledby="chart-h">
-    <h3 id="chart-h">Descolamento acumulado entre liquidado e pago — Fundo Estadual de Saúde</h3>
-    <p class="panel-sub">Diferença acumulada, dia a dia do ano civil, entre o que foi liquidado e o que foi pago. Anos anteriores em cinza, ano corrente em destaque — quanto mais alta a linha, maior o valor represado sem pagamento.</p>
+    <h3 id="chart-h">Descolamento acumulado entre liquidado e pago no Fundo Estadual de Saúde</h3>
+    <p class="panel-sub">Diferença acumulada, dia a dia do ano civil, entre o que foi liquidado e o que foi pago. Anos anteriores aparecem em cinza e o ano corrente em destaque. Quanto mais alta a linha, maior o valor represado sem pagamento.</p>
     <div class="chart-legend" id="chartLegend"></div>
     <div class="chart-wrap">
         <svg id="lineChart" width="100%" viewBox="0 0 900 320" role="img" aria-labelledby="chart-h chart-desc" preserveAspectRatio="xMidYMid meet">
@@ -208,14 +213,15 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
 </section>
 
 <div class="callout">
-    <b>Como ler este painel:</b> o gap liquidado-menos-pago mede um <b>estoque</b> — quanto de despesa já reconhecida ainda não foi paga. O prazo de pagamento (NL→OB) mede um <b>fluxo</b> — quão rápido andam os pagamentos que efetivamente saem. No Fundo Estadual de Saúde os dois contam histórias diferentes: o estoque represado cresceu, mas o prazo dos pagamentos realizados continua rápido e estável. A leitura mais defensável é que a pressão está na <b>fila de espera</b>, não na velocidade de quem já foi priorizado — e a base de prazos não enxerga quem ainda não chegou a ser pago, então ela tende a subestimar o problema nos meses mais recentes.
+    <b>Como ler este painel:</b> o gap liquidado-menos-pago mede um <b>estoque</b>: quanto de despesa já reconhecida ainda não foi paga. O prazo de pagamento (NL→OB) mede um <b>fluxo</b>: quão rápido andam os pagamentos que efetivamente saem. No Fundo Estadual de Saúde esse estoque oscila muito de ano para ano (variou de cerca de R$ 8 milhões a R$ 154 milhões no mesmo dia do calendário, entre 2023 e 2025), então um único ano isolado não define tendência; o gráfico abaixo mostra essa variação ano a ano. O prazo dos pagamentos que de fato se realizam, por outro lado, continua rápido e estável. A base de prazos também tem um limite: ela não enxerga quem ainda não chegou a ser pago, então tende a subestimar o problema nos meses mais recentes. O sinal mais consistente deste painel não está isolado num único ano da Saúde, mas na tabela abaixo: várias Unidades Gestoras já represam, no mesmo ponto do calendário, mais do que represavam em 2025.
 </div>
 
 <section class="panel" aria-labelledby="rank-h">
-    <h3 id="rank-h">Executivo por Unidade Gestora — estoque, histórico e espaço orçamentário</h3>
-    <p class="panel-sub">Ordenado pelo maior valor represado. Poder Executivo, exercício de 2026 (dado mais recente disponível). "vs. fechamento 2025" compara o gap em curso com o ano <em>inteiro</em> anterior — acima de 100% significa que 2026, ainda incompleto, já superou o fechamento de 2025. "% da dotação empenhada" é outra coisa: mede se ainda sobra autorização orçamentária para gastar, não se há caixa para pagar — uma UG pode ter caixa apertado com dotação de sobra (problema só de fluxo), ou estar no limite da própria dotação (problema também orçamentário).</p>
+    <h3 id="rank-h">Executivo por Unidade Gestora: estoque, histórico e espaço orçamentário</h3>
+    <p class="panel-sub">Ordenado pelo maior valor represado. Poder Executivo, exercício de 2026 (dado mais recente disponível). "vs. 2025" compara o gap acumulado até a mesma data do calendário (18 de setembro) nos dois anos, para não misturar um exercício em curso com o fechamento de um exercício encerrado. "% da dotação empenhada" é outra coisa: mede se ainda sobra autorização orçamentária para gastar, não se há caixa para pagar. Uma UG pode ter caixa apertado com dotação de sobra (problema só de fluxo), ou estar no limite da própria dotação (problema também orçamentário).</p>
     <div class="table-tools">
         <input type="text" class="search-input" id="rankSearch" placeholder="Buscar Unidade Gestora…" autocomplete="off">
+        <button type="button" class="export-btn" id="rankExportBtn">Exportar como imagem</button>
     </div>
     <div class="table-wrap">
         <table class="data" id="rankTable" aria-labelledby="rank-h">
@@ -226,7 +232,7 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
                 <th scope="col" class="num" data-key="pago">Pago</th>
                 <th scope="col" class="num" data-key="pct_pago">% pago</th>
                 <th scope="col" class="num" data-key="gap">Gap (liq. − pago)</th>
-                <th scope="col" class="num" data-key="razao_vs_fechamento_2025">vs. fechamento 2025</th>
+                <th scope="col" class="num" data-key="razao_vs_fechamento_2025">vs. 2025</th>
             </tr></thead>
             <tbody id="rankBody"><tr><td colspan="7">Carregando…</td></tr></tbody>
         </table>
@@ -236,15 +242,18 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
 
 <section class="panel" aria-labelledby="prazo-h">
     <h3 id="prazo-h">Prazo de pagamento por Unidade Gestora (dias entre liquidação e ordem bancária)</h3>
-    <p class="panel-sub">Só considera pagamentos de contratos já realizados (Ordem Cronológica de Pagamentos), 2026, Unidades Gestoras com pelo menos 30 pagamentos no ano. Sujeito a censura à direita: obrigações ainda não pagas não entram aqui.</p>
+    <p class="panel-sub">Só considera pagamentos de contratos já realizados (Ordem Cronológica de Pagamentos), 2026, Unidades Gestoras com pelo menos 30 pagamentos no ano. As três colunas de prazo mostram: o valor típico (metade dos pagamentos saiu em até esse tempo), o prazo de 3 em cada 4 pagamentos, e o prazo de 9 em cada 10, que capta os casos mais demorados sem depender do único pagamento mais extremo do ano. Sujeito a censura à direita: obrigações ainda não pagas não entram aqui.</p>
+    <div class="table-tools">
+        <button type="button" class="export-btn" id="prazoExportBtn">Exportar como imagem</button>
+    </div>
     <div class="table-wrap">
         <table class="data" id="prazoTable" aria-labelledby="prazo-h">
             <thead><tr>
                 <th scope="col" data-key="unidade_gestora">Unidade Gestora</th>
                 <th scope="col" class="num" data-key="n_pagamentos">Pagamentos</th>
-                <th scope="col" class="num" data-key="dias_p50">Mediana (dias)</th>
-                <th scope="col" class="num" data-key="dias_p75">p75</th>
-                <th scope="col" class="num" data-key="dias_p90">p90</th>
+                <th scope="col" class="num" data-key="dias_p50" title="Prazo típico: metade dos pagamentos saiu em até esse tempo">Mediana (dias)</th>
+                <th scope="col" class="num" data-key="dias_p75" title="Prazo dentro do qual 3 em cada 4 pagamentos foram feitos">3 em cada 4</th>
+                <th scope="col" class="num" data-key="dias_p90" title="Prazo dentro do qual 9 em cada 10 pagamentos foram feitos">9 em cada 10</th>
             </tr></thead>
             <tbody id="prazoBody"><tr><td colspan="5">Carregando…</td></tr></tbody>
         </table>
@@ -255,13 +264,13 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
 <section class="panel" aria-labelledby="fontes-h">
     <h3 id="fontes-h">Fontes e metodologia</h3>
     <div class="meta-list">
-        <p style="margin-bottom:0.6rem">Todos os dados vêm de bases abertas do Portal de Dados Abertos do Espírito Santo (<code>dados.es.gov.br</code>), extraídas do SIGEFES e coletadas via API DataStore do CKAN — sem baixar os arquivos brutos completos, que passam de 1&nbsp;GB por ano.</p>
+        <p style="margin-bottom:0.6rem">Todos os dados vêm de bases abertas do Portal de Dados Abertos do Espírito Santo (<code>dados.es.gov.br</code>), extraídas do SIGEFES e coletadas via API DataStore do CKAN, sem baixar os arquivos brutos completos, que passam de 1&nbsp;GB por ano.</p>
         <p style="margin-bottom:0.3rem"><b>Execução por Unidade Gestora:</b> <code>OrcamentosExecucoes-&lt;ano&gt;.csv</code>, fotografia consolidada por UG (dotação, empenho, liquidação, pagamento, restos a pagar). Usada como total de controle.</p>
-        <p style="margin-bottom:0.3rem"><b>Série diária da Saúde:</b> <code>Despesas-&lt;ano&gt;.csv</code>, microdado de eventos (empenho/liquidação/pagamento), filtrado pela função orçamentária Saúde e agregado por dia.</p>
+        <p style="margin-bottom:0.3rem"><b>Série diária por Unidade Gestora:</b> <code>Despesas-&lt;ano&gt;.csv</code>, microdado de eventos (empenho/liquidação/pagamento), agregado por dia para cada UG do Executivo. Usada para comparar o gap acumulado no mesmo dia do calendário entre anos, em vez de comparar um exercício em curso com o fechamento de um exercício já encerrado.</p>
         <p style="margin-bottom:0.6rem"><b>Prazo de pagamento:</b> <code>Contratos - Ordem Cronológica de Pagamentos</code>, que pareia a data de emissão da nota de liquidação (NL) e da ordem bancária (OB) do mesmo documento.</p>
         <p style="margin-bottom:0.6rem">Poder classificado pelo número de dígitos do código de Unidade Gestora (5 = Legislativo/TCE/Judiciário/Ministério Público/Defensoria; 6 = Executivo).</p>
-        <p style="margin-bottom:0.3rem"><b>O que este painel ainda não mostra:</b> receita (arrecadação realizada vs. prevista, por fonte) e disponibilidade de caixa do Tesouro. O lado da despesa aqui mede autorização orçamentária (dotação) e represamento de pagamento, mas não diz se a causa é falta de receita, de caixa liberado por fonte, ou só de ritmo de pagamento — essas três coisas são conceitualmente distintas e não podem ser lidas uma pela outra. A base de Receitas do SIGEFES existe e será incorporada numa próxima etapa, com o mesmo cuidado de reconciliação aplicado à despesa.</p>
-        <p style="margin-bottom:0.6rem"><b>Por que a disponibilidade de caixa importa mais neste ano específico:</b> o art. 42 da LRF veda, nos últimos dois quadrimestres do mandato, contrair obrigação cujas parcelas a pagar no exercício seguinte não tenham disponibilidade de caixa suficiente — considerados os encargos já compromissados (art. 42, parágrafo único). 2026 é ano eleitoral no ES, com o mandato atual se encerrando em 31/12/2026; os últimos dois quadrimestres (mai-dez/2026) são, portanto, agora. Isso não significa que os números deste painel testem esse artigo — testam apenas o lado da obrigação (liquidado/empenhado não pago), não o lado da disponibilidade de caixa, que seguimos sem ter. Uma tentativa de usar o empenhado-menos-pago como proxy mais próxima do texto do parágrafo único esbarrou num problema real: a maior parte desse saldo em UGs como o Fundo Financeiro ou a Educação é empenho global do início do ano ainda não liquidado (contrato anual reservado, não dívida vencida), não risco de heranças de fim de mandato — misturar os dois superestimaria o sinal. Isolar apenas os empenhos contraídos a partir de maio de 2026 exigiria outra rodada de tratamento sobre o microdado de eventos, ainda não feita.</p>
+        <p style="margin-bottom:0.3rem"><b>O que este painel ainda não mostra:</b> receita (arrecadação realizada vs. prevista, por fonte) e disponibilidade de caixa do Tesouro. O lado da despesa aqui mede autorização orçamentária (dotação) e represamento de pagamento, mas não diz se a causa é falta de receita, de caixa liberado por fonte, ou só de ritmo de pagamento; essas três coisas são conceitualmente distintas e não podem ser lidas uma pela outra. A base de Receitas do SIGEFES existe e será incorporada numa próxima etapa, com o mesmo cuidado de reconciliação aplicado à despesa.</p>
+        <p style="margin-bottom:0.6rem"><b>Por que a disponibilidade de caixa importa mais neste ano específico:</b> o art. 42 da LRF veda, nos últimos dois quadrimestres do mandato, contrair obrigação cujas parcelas a pagar no exercício seguinte não tenham disponibilidade de caixa suficiente, considerados os encargos já compromissados (art. 42, parágrafo único). 2026 é ano eleitoral no ES, com o mandato atual se encerrando em 31/12/2026; os últimos dois quadrimestres (mai-dez/2026) são, portanto, agora. Isso não significa que os números deste painel testem esse artigo: testam apenas o lado da obrigação (liquidado/empenhado não pago), não o lado da disponibilidade de caixa, que seguimos sem ter. Uma tentativa de usar o empenhado-menos-pago como proxy mais próxima do texto do parágrafo único esbarrou num problema real: a maior parte desse saldo em UGs como o Fundo Financeiro ou a Educação é empenho global do início do ano ainda não liquidado (contrato anual reservado, não dívida vencida), não risco de heranças de fim de mandato; misturar os dois superestimaria o sinal. Isolar apenas os empenhos contraídos a partir de maio de 2026 exigiria outra rodada de tratamento sobre o microdado de eventos, ainda não feita.</p>
         <p>Código de coleta e reconciliação em <code>data/collect-*.py</code> e <code>data/build-painel-execucao-es.py</code> no repositório deste site. Dados gerados em <span id="metaGeradoEm">—</span>.</p>
     </div>
 </section>
@@ -280,6 +289,32 @@ const fmtDias = v => v == null ? '—' : Number(v).toLocaleString('pt-BR', {maxi
 
 let PAINEL = null;
 
+// Compara o gap atual (2026, ate' 18/set) com o mesmo dia do calendario nos
+// anos anteriores. Evita comparar um exercicio em curso com o fechamento de
+// um exercicio encerrado, que e' o que a versao anterior desta nota fazia
+// (e por isso exagerava a leitura: o gap da Saude costuma cair bastante
+// entre setembro e dezembro, entao comparar setembro de 2026 com o
+// fechamento de dezembro de anos passados sempre pareceria pior do que e').
+function montarNotaHero(fes) {
+    const corte = fes.comparativo_mesmo_corte || [];
+    const atual = corte.find(c => c.ano === 2026);
+    const anteriores = corte.filter(c => c.ano !== 2026).sort((a, b) => a.ano - b.ano);
+    if (!atual || anteriores.length === 0) {
+        return 'é o estoque de despesa <b>liquidada e ainda não paga</b> do Fundo Estadual de Saúde em 2026.';
+    }
+    const acima = anteriores.filter(c => atual.gap_no_corte > c.gap_no_corte).map(c => c.ano);
+    const abaixo = anteriores.filter(c => atual.gap_no_corte <= c.gap_no_corte).map(c => c.ano);
+    let comparacao;
+    if (abaixo.length === 0) {
+        comparacao = `é o maior valor da série desde ${anteriores[0].ano}`;
+    } else if (acima.length === 0) {
+        comparacao = `fica abaixo do observado em ${abaixo.join(' e ')}`;
+    } else {
+        comparacao = `fica acima do observado em ${acima.join(' e ')}, mas abaixo do valor de ${abaixo.join(' e ')}`;
+    }
+    return `é o estoque de despesa <b>liquidada e ainda não paga</b> do Fundo Estadual de Saúde em 2026. Na mesma data do calendário (18 de setembro) em anos anteriores, e não no fechamento de exercícios já encerrados (que tende a ser bem menor), esse valor ${comparacao}.`;
+}
+
 fetch('data/painel-execucao-es.json')
     .then(r => r.json())
     .then(d => { PAINEL = d; render(d); })
@@ -290,15 +325,14 @@ function render(d) {
 
     // ── stat hero ──
     document.getElementById('statHeroValue').textContent = fmtR$M(k.saude_fes.gap_atual);
-    document.getElementById('statHeroNote').innerHTML =
-        `é o estoque de despesa <b>liquidada e ainda não paga</b> do Fundo Estadual de Saúde em 2026 — ` +
-        `já ${(k.saude_fes.gap_atual > k.saude_fes.gap_fechamento_2024 ? 'mais que o dobro' : 'acima')} do fechamento do ano inteiro de 2024 ` +
-        `(${fmtR$M(k.saude_fes.gap_fechamento_2024)}) e de 2025 (${fmtR$M(k.saude_fes.gap_fechamento_2025)}), com o exercício ainda em curso.`;
+    document.getElementById('statHeroNote').innerHTML = montarNotaHero(k.saude_fes);
     document.getElementById('ssLiquidado').textContent = fmtR$(k.saude_fes.liquidado);
     document.getElementById('ssPago').textContent = fmtR$(k.saude_fes.pago);
+    const corte2025 = (k.saude_fes.comparativo_mesmo_corte || []).find(c => c.ano === 2025);
+    document.getElementById('ssGapCorte2025').textContent = corte2025 ? fmtR$(corte2025.gap_no_corte) : '—';
     document.getElementById('ssGap2024').textContent = fmtR$(k.saude_fes.gap_fechamento_2024);
     document.getElementById('ssGap2025').textContent = fmtR$(k.saude_fes.gap_fechamento_2025);
-    document.getElementById('ssPrazo').textContent = `mediana ${fmtDias(k.saude_fes.prazo_p50_2026)} · p90 ${fmtDias(k.saude_fes.prazo_p90_2026)} (${k.saude_fes.prazo_n_2026.toLocaleString('pt-BR')} pagamentos)`;
+    document.getElementById('ssPrazo').textContent = `metade em até ${fmtDias(k.saude_fes.prazo_p50_2026)}; 9 em cada 10, em até ${fmtDias(k.saude_fes.prazo_p90_2026)} (${k.saude_fes.prazo_n_2026.toLocaleString('pt-BR')} pagamentos)`;
 
     // ── KPIs do Executivo ──
     document.getElementById('kpiNUgs').textContent = k.executivo.n_ugs;
@@ -428,6 +462,7 @@ function renderRankTable(rows) {
         return ((va ?? -Infinity) - (vb ?? -Infinity)) * rankSort.dir;
     });
     const visiveis = filtradas.slice(0, rankShown);
+    window.rankVisiveisAtual = visiveis;
     document.getElementById('rankBody').innerHTML = visiveis.map(r => `
         <tr class="${r.codigo_ug === '440901' ? 'destaque' : ''}">
             <td class="ug-nome">${r.unidade_gestora}${r.codigo_ug === '440901' ? ' <span class="badge info">Saúde (FES)</span>' : ''}</td>
@@ -448,10 +483,10 @@ function fmtDotacao(v) {
     return fmtPct(pct);
 }
 function fmtRazao(v) {
-    if (v == null) return '<span style="color:var(--ink-muted)">— base 2025 pequena</span>';
+    if (v == null) return '<span style="color:var(--ink-muted)">(base pequena)</span>';
     const pct = Math.round(v);
-    if (pct >= 100) return `<span class="badge warn">${pct}% do ano passado</span>`;
-    return `${pct}% do ano passado`;
+    if (pct >= 100) return `<span class="badge warn">${pct}%</span>`;
+    return `${pct}%`;
 }
 document.getElementById('rankSearch').addEventListener('input', () => { rankShown = 15; renderRankTable(PAINEL.ranking_executivo); });
 document.getElementById('rankMore').addEventListener('click', () => { rankShown += 30; renderRankTable(PAINEL.ranking_executivo); });
@@ -476,6 +511,7 @@ function renderPrazoTable(rows) {
         return (va - vb) * prazoSort.dir;
     });
     const visiveis = ordenadas.slice(0, prazoShown);
+    window.prazoVisiveisAtual = visiveis;
     document.getElementById('prazoBody').innerHTML = visiveis.map(r => `
         <tr class="${r.codigo_ug === '440901' ? 'destaque' : ''}">
             <td class="ug-nome">${r.unidade_gestora}${r.codigo_ug === '440901' ? ' <span class="badge info">Saúde (FES)</span>' : ''}</td>
@@ -497,6 +533,186 @@ document.querySelectorAll('#prazoTable thead th').forEach(th => {
     };
     th.addEventListener('click', ativa);
     th.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); ativa(); } });
+});
+
+// ══════════════════ EXPORTAR TABELA COMO IMAGEM ══════════════════
+// Gera um cartão neutro (sem nome de site ou de autor) citando apenas a
+// fonte oficial dos dados, em formato de referência ABNT, para
+// compartilhamento (WhatsApp etc.) sem associar o documento a uma pessoa.
+function quebrarLinha(ctx, texto, larguraMax) {
+    const palavras = texto.split(' ');
+    const linhas = [];
+    let atual = '';
+    palavras.forEach(p => {
+        const teste = atual ? atual + ' ' + p : p;
+        if (ctx.measureText(teste).width > larguraMax && atual) {
+            linhas.push(atual);
+            atual = p;
+        } else {
+            atual = teste;
+        }
+    });
+    if (atual) linhas.push(atual);
+    return linhas;
+}
+function truncarTexto(ctx, texto, larguraMax) {
+    if (ctx.measureText(texto).width <= larguraMax) return texto;
+    let t = texto;
+    while (t.length > 1 && ctx.measureText(t + '…').width > larguraMax) {
+        t = t.slice(0, -1);
+    }
+    return t + '…';
+}
+function baixarOuCompartilhar(canvas, nomeArquivo) {
+    canvas.toBlob(async (blob) => {
+        if (!blob) return;
+        const file = new File([blob], nomeArquivo, { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+                await navigator.share({ files: [file] });
+                return;
+            } catch (e) {
+                if (e && e.name === 'AbortError') return;
+                // cai para download se o compartilhamento falhar
+            }
+        }
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = nomeArquivo;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+    }, 'image/png');
+}
+function exportarTabelaComoImagem({ titulo, subtitulo, colunas, linhas, nomeArquivo }) {
+    const escala = 2;
+    const paddingH = 32;
+    const larguraTabela = colunas.reduce((s, c) => s + c.largura, 0);
+    const larguraCanvas = larguraTabela + paddingH * 2;
+    const alturaLinha = 32;
+    const alturaHeaderTabela = 36;
+    const alturaTopo = 92;
+    const linhasRodape = [
+        'Fonte: ESPÍRITO SANTO (Estado). Secretaria de Estado da Fazenda. Portal de Dados Abertos do ' +
+        'Espírito Santo: execução orçamentária e financeira (SIGEFES). Vitória: SEFAZ-ES, ' + new Date().getFullYear() + '.',
+        'Disponível em: https://dados.es.gov.br. Acesso em: ' +
+        new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }) + '.',
+    ];
+    const alturaRodape = 20 + linhasRodape.length * 15 + 14;
+    const alturaTabela = alturaHeaderTabela + linhas.length * alturaLinha;
+    const alturaCanvas = alturaTopo + alturaTabela + alturaRodape;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = larguraCanvas * escala;
+    canvas.height = alturaCanvas * escala;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(escala, escala);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, larguraCanvas, alturaCanvas);
+
+    let y = 34;
+    ctx.fillStyle = '#1a1a1a';
+    ctx.textAlign = 'left';
+    ctx.font = 'bold 18px Arial, sans-serif';
+    ctx.fillText(titulo, paddingH, y);
+    y += 22;
+    ctx.fillStyle = '#555555';
+    ctx.font = '13px Arial, sans-serif';
+    ctx.fillText(subtitulo, paddingH, y);
+    y = alturaTopo;
+
+    // cabecalho da tabela
+    ctx.fillStyle = '#eeeeee';
+    ctx.fillRect(paddingH, y, larguraTabela, alturaHeaderTabela);
+    ctx.font = 'bold 11px Arial, sans-serif';
+    ctx.fillStyle = '#333333';
+    let x = paddingH;
+    colunas.forEach(c => {
+        ctx.textAlign = c.num ? 'right' : 'left';
+        ctx.fillText(c.label.toUpperCase(), c.num ? x + c.largura - 10 : x + 10, y + 23, c.largura - 16);
+        x += c.largura;
+    });
+    y += alturaHeaderTabela;
+
+    // linhas de dados
+    ctx.font = '12px Arial, sans-serif';
+    linhas.forEach((linha, li) => {
+        ctx.fillStyle = li % 2 === 0 ? '#ffffff' : '#f7f7f7';
+        ctx.fillRect(paddingH, y, larguraTabela, alturaLinha);
+        x = paddingH;
+        colunas.forEach(c => {
+            ctx.fillStyle = '#1a1a1a';
+            ctx.textAlign = c.num ? 'right' : 'left';
+            const texto = truncarTexto(ctx, String(c.valor(linha) ?? '-'), c.largura - 20);
+            ctx.fillText(texto, c.num ? x + c.largura - 10 : x + 10, y + 21);
+            x += c.largura;
+        });
+        y += alturaLinha;
+    });
+
+    ctx.strokeStyle = '#cccccc';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(paddingH + 0.5, alturaTopo + 0.5, larguraTabela, alturaTabela);
+    x = paddingH;
+    colunas.slice(0, -1).forEach(c => {
+        x += c.largura;
+        ctx.beginPath();
+        ctx.moveTo(x, alturaTopo);
+        ctx.lineTo(x, alturaTopo + alturaTabela);
+        ctx.stroke();
+    });
+
+    // rodape com citacao no formato ABNT, sem nome de site ou de autor
+    y = alturaTopo + alturaTabela + 24;
+    ctx.font = 'italic 10.5px Arial, sans-serif';
+    ctx.fillStyle = '#666666';
+    ctx.textAlign = 'left';
+    linhasRodape.forEach(linha => {
+        quebrarLinha(ctx, linha, larguraTabela).forEach(l => {
+            ctx.fillText(l, paddingH, y);
+            y += 15;
+        });
+    });
+
+    baixarOuCompartilhar(canvas, nomeArquivo);
+}
+
+document.getElementById('rankExportBtn').addEventListener('click', function () {
+    const linhas = window.rankVisiveisAtual || [];
+    exportarTabelaComoImagem({
+        titulo: 'Execução Orçamentária do Poder Executivo do Espírito Santo',
+        subtitulo: 'Liquidado, pago e estoque represado por Unidade Gestora, exercício de 2026',
+        colunas: [
+            { label: 'Unidade Gestora', largura: 300, valor: r => r.unidade_gestora },
+            { label: '% dotação empenhada', largura: 110, num: true, valor: r => fmtPct(r.pct_dotacao_empenhada).replace(/<[^>]+>/g, '') },
+            { label: 'Liquidado', largura: 130, num: true, valor: r => fmtR$(r.liquidado) },
+            { label: 'Pago', largura: 130, num: true, valor: r => fmtR$(r.pago) },
+            { label: 'Gap (liq. - pago)', largura: 140, num: true, valor: r => fmtR$(r.gap) },
+            { label: 'vs. 2025 (mesmo período)', largura: 150, num: true, valor: r => r.razao_vs_fechamento_2025 == null ? 'base pequena' : Math.round(r.razao_vs_fechamento_2025) + '%' },
+        ],
+        linhas,
+        nomeArquivo: 'execucao-orcamentaria-executivo-es.png',
+    });
+});
+
+document.getElementById('prazoExportBtn').addEventListener('click', function () {
+    const linhas = window.prazoVisiveisAtual || [];
+    exportarTabelaComoImagem({
+        titulo: 'Prazo de Pagamento a Fornecedores do Poder Executivo do Espírito Santo',
+        subtitulo: 'Dias entre liquidação (NL) e ordem bancária (OB), exercício de 2026',
+        colunas: [
+            { label: 'Unidade Gestora', largura: 320, valor: r => r.unidade_gestora },
+            { label: 'Pagamentos', largura: 110, num: true, valor: r => r.n_pagamentos.toLocaleString('pt-BR') },
+            { label: 'Mediana (dias)', largura: 120, num: true, valor: r => fmtDias(r.dias_p50) },
+            { label: '3 em cada 4', largura: 110, num: true, valor: r => fmtDias(r.dias_p75) },
+            { label: '9 em cada 10', largura: 120, num: true, valor: r => fmtDias(r.dias_p90) },
+        ],
+        linhas,
+        nomeArquivo: 'prazo-pagamento-executivo-es.png',
+    });
 });
 </script>
 </body>
