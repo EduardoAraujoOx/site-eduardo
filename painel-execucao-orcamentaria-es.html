@@ -826,7 +826,7 @@ document.getElementById('prazoMensalExportBtn').addEventListener('click', functi
     const dados = window.prazoMensalAtual;
     if (!dados) return;
     exportarTabelaComoImagem({
-        titulo: `Prazo de Pagamento Mês a Mês — ${dados.unidade_gestora}`,
+        titulo: `Prazo de Pagamento Mês a Mês: ${dados.unidade_gestora}`,
         subtitulo: 'Mediana de dias entre liquidação (NL) e ordem bancária (OB), 2025 vs. 2026',
         colunas: [
             { label: 'Mês', largura: 70, valor: m => MESES_ABREV[m.mes - 1] },
