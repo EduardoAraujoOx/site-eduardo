@@ -248,6 +248,55 @@ def build_prazos_executivo():
     return sorted(prazos, key=lambda x: -x["dias_p90"])
 
 
+MIN_PAGAMENTOS_MES = 10  # abaixo disso a mediana do mes e' ruido, nao dado
+
+
+def build_prazo_mensal_por_ug():
+    """Mediana de prazo (NL->OB), mes a mes, por UG, comparando o mesmo mes
+    do calendario em 2025 e 2026 -- pensado para responder "como esta
+    evoluindo o prazo desta UG", em vez de um numero unico por ano inteiro
+    (build_prazos_executivo) ou tres percentis sem eixo temporal. Usa a
+    mesma lista de UGs confiaveis de build_prazos_executivo (pelo menos 30
+    pagamentos no ano em 2026), para nao poluir o seletor com UGs residuais.
+    Dentro dela, um mes especifico so' entra com numero se tiver pelo menos
+    MIN_PAGAMENTOS_MES pagamentos naquele mes-ano; abaixo disso o valor fica
+    None (mes com dado insuficiente), nunca um numero fabricado a partir de
+    3 ou 4 pagamentos isolados."""
+    d = json.load(open(DATA_DIR / "ordem-cronologica-es.json"))
+    ugs_confiaveis = {r["codigo_ug"] for r in d["por_ug"] if r["ano"] == 2026 and r["n_pagamentos"] >= 30}
+    nomes = {r["codigo_ug"]: r["unidade_gestora"] for r in d["por_ug"]}
+    por_chave = {(r["codigo_ug"], r["ano"], r["mes"]): r for r in d["por_ug_mes"]}
+
+    resultado = []
+    for ug in sorted(ugs_confiaveis):
+        meses = []
+        for mes in range(1, 13):
+            r25 = por_chave.get((ug, 2025, mes))
+            r26 = por_chave.get((ug, 2026, mes))
+            v25 = r25["dias_p50"] if r25 and r25["n_pagamentos"] >= MIN_PAGAMENTOS_MES else None
+            v26 = r26["dias_p50"] if r26 and r26["n_pagamentos"] >= MIN_PAGAMENTOS_MES else None
+            meses.append(
+                {
+                    "mes": mes,
+                    "n_2025": r25["n_pagamentos"] if r25 else 0,
+                    "dias_p50_2025": v25,
+                    "n_2026": r26["n_pagamentos"] if r26 else 0,
+                    "dias_p50_2026": v26,
+                    "dias_p75_2026": r26["dias_p75"] if (r26 and v26 is not None) else None,
+                    "dias_p90_2026": r26["dias_p90"] if (r26 and v26 is not None) else None,
+                    "delta": round(v26 - v25, 1) if (v25 is not None and v26 is not None) else None,
+                }
+            )
+        resultado.append(
+            {
+                "codigo_ug": ug,
+                "unidade_gestora": nomes.get(ug, ""),
+                "meses": meses,
+            }
+        )
+    return sorted(resultado, key=lambda x: x["unidade_gestora"])
+
+
 PISO_ARRECADACAO_FONTE = 10_000_000  # abaixo disso a fonte fica de fora da tabela por fonte
 
 
@@ -466,6 +515,7 @@ def main():
         "serie_saude_por_dia_do_ano": serie_saude,
         "ranking_executivo": build_ranking_executivo(),
         "prazos_executivo": build_prazos_executivo(),
+        "prazo_mensal_por_ug": build_prazo_mensal_por_ug(),
         "receita_executivo": build_receita_executivo(),
         "espaco_fiscal_por_fonte": build_espaco_fiscal_por_fonte(),
     }

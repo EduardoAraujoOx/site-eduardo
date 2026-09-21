@@ -18,6 +18,19 @@ collect-orcamentos-execucoes-es.py), nao isoladamente.
 2024 tem so ~750 linhas nesse dataset (vs. ~130-190 mil em 2025 e 2026),
 sinal de que a publicacao so passou a ser sistematica a partir de 2025;
 por isso a comparacao interanual usa 2025 e 2026.
+
+Alem do agregado anual por UG (por_ug), tambem agrega por (UG, ano, mes)
+em por_ug_mes -- ano e mes da DataEmissaoNL (nao da OB, nem o "ano" do
+recurso baixado), para manter a mesma leitura de censura a direita ja
+usada no resto do painel (um NL de um mes recente que ainda nao virou OB
+fica de fora daquele mes, entao meses recentes tendem a subestimar o
+prazo, nao a superestimar). Usar o ano real da NL, e nao o "ano" do
+recurso da API, importa aqui: o recurso de um exercicio inclui OBs de
+janeiro pagando NLs de dezembro do ano anterior (NL sempre antecede OB),
+entao rotular pelo ano do recurso classificaria esses casos como
+dezembro do ano seguinte, um mes que ainda nem tinha acontecido. Isso
+permite comparar UG a UG, mes a mes, 2025 contra 2026, em vez de só um
+numero por ano inteiro.
 """
 
 import json
@@ -108,10 +121,13 @@ def collect_year(ano, resource_id):
 
 def main():
     dias_por_ug = defaultdict(list)  # (ano, ug_code) -> [dias, ...]
+    dias_por_ug_mes = defaultdict(list)  # (ano, mes, ug_code) -> [dias, ...]
     dias_geral = defaultdict(list)  # ano -> [dias, ...]
     ug_names = {}
     sem_data_ob = defaultdict(int)  # ano -> contagem (censura a direita)
     valor_por_ug = defaultdict(float)
+    hoje = datetime.now()
+    datas_futuras_descartadas = 0
 
     for ano, rid in sorted(RESOURCES.items()):
         print(f"Coletando {ano} (resource {rid})...", flush=True)
@@ -128,12 +144,28 @@ def main():
                 continue
             if nl is None:
                 continue
+            if nl > hoje or ob > hoje:
+                # DataEmissaoNL/OB no futuro so' pode ser erro de digitacao na
+                # base de origem (ex.: ano trocado): descarta, senao um unico
+                # registro corrompido pode virar um mes inteiro de 2026 que
+                # ainda nem aconteceu, com um "prazo" de centenas de dias.
+                datas_futuras_descartadas += 1
+                continue
             dias = (ob - nl).days
             if dias < 0:
                 continue  # descarta inconsistencias de data
             dias_por_ug[(ano, ug)].append(dias)
+            # Chave pelo ano/mes REAIS da NL, nao pelo "ano" do recurso baixado:
+            # o recurso de um exercicio inclui OBs de janeiro pagando NLs de
+            # dezembro do ano anterior (normal, NL sempre antecede OB), entao
+            # usar o "ano" do recurso aqui rotularia esses dezembros como se
+            # fossem do ano seguinte (ex.: dezembro/2025 aparecendo como
+            # dezembro/2026, que ainda nem tinha acontecido).
+            dias_por_ug_mes[(nl.year, nl.month, ug)].append(dias)
             dias_geral[ano].append(dias)
             valor_por_ug[(ano, ug)] += to_float(r["ValorOB"])
+
+    print(f"Descartados por data no futuro (NL ou OB pos-hoje): {datas_futuras_descartadas}")
 
     por_ug = []
     for (ano, ug), dias in dias_por_ug.items():
@@ -149,6 +181,22 @@ def main():
                 "dias_p75": round(percentile(dias, 0.75), 1),
                 "dias_p90": round(percentile(dias, 0.9), 1),
                 "dias_medio": round(sum(dias) / len(dias), 1),
+            }
+        )
+
+    por_ug_mes = []
+    for (ano, mes, ug), dias in dias_por_ug_mes.items():
+        dias.sort()
+        por_ug_mes.append(
+            {
+                "ano": ano,
+                "mes": mes,
+                "codigo_ug": ug,
+                "unidade_gestora": ug_names.get(ug, ""),
+                "n_pagamentos": len(dias),
+                "dias_p50": round(percentile(dias, 0.5), 1),
+                "dias_p75": round(percentile(dias, 0.75), 1),
+                "dias_p90": round(percentile(dias, 0.9), 1),
             }
         )
 
@@ -176,14 +224,23 @@ def main():
             "censura a direita: linhas sem DataEmissaoOB (ainda nao pagas) sao "
             "contadas em 'sem_data_ob_censurado' e excluidas do calculo de dias. "
             "2024 tem cobertura muito baixa (~750 linhas) e foi excluido da "
-            "comparacao interanual; usar 2025 vs 2026."
+            "comparacao interanual; usar 2025 vs 2026. Em por_ug_mes, ano e "
+            "mes sao os da DataEmissaoNL (nao da OB, nem o 'ano' do recurso "
+            "da API), pela mesma razao de censura a direita: um NL de um mes "
+            "recente sem OB ainda fica de fora daquele mes. Linhas com "
+            "DataEmissaoNL ou DataEmissaoOB no futuro "
+            "(impossivel, so' pode ser erro de digitacao na base de origem, "
+            "como um ano trocado) sao descartadas -- contagem em "
+            "'datas_futuras_descartadas'."
         ),
+        "datas_futuras_descartadas": datas_futuras_descartadas,
         "geral_por_ano": sorted(geral, key=lambda x: x["ano"]),
         "por_ug": sorted(por_ug, key=lambda x: (x["ano"], -x["dias_p90"])),
+        "por_ug_mes": sorted(por_ug_mes, key=lambda x: (x["codigo_ug"], x["ano"], x["mes"])),
     }
 
     OUTPUT.write_text(json.dumps(output, ensure_ascii=False, indent=2))
-    print(f"Salvo em {OUTPUT} ({len(por_ug)} combinacoes ano/UG)")
+    print(f"Salvo em {OUTPUT} ({len(por_ug)} combinacoes ano/UG, {len(por_ug_mes)} combinacoes ano/mes/UG)")
 
 
 if __name__ == "__main__":
