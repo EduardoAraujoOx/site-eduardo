@@ -251,6 +251,19 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
 
 <section class="panel" aria-labelledby="espacofiscal-h">
     <h3 id="espacofiscal-h">Espaço fiscal por Fonte: a despesa já compromete quanto da receita prevista?</h3>
+    <div class="stat-hero-wrap" style="margin-bottom:1.2rem">
+        <div>
+            <div class="stat-hero-label">No agregado do Executivo, até <span id="efMesTexto">o mês mais recente disponível</span> de 2026</div>
+            <div class="stat-hero-value" id="efPctTotal">—</div>
+            <p class="stat-hero-note">da previsão atualizada de receita do ano já foi comprometido em despesa liquidada, somando todas as Fontes. Olhado fonte por fonte, isso está distribuído de forma bem desigual, é o que a tabela abaixo mostra.</p>
+        </div>
+        <div class="stat-side">
+            <div class="stat-side-row"><span>Receita arrecadada</span><b id="efReceitaArrecadada">—</b></div>
+            <div class="stat-side-row"><span>Receita prevista (atualizada)</span><b id="efReceitaPrevisao">—</b></div>
+            <div class="stat-side-row"><span>Despesa empenhada</span><b id="efDespesaEmpenhada">—</b></div>
+            <div class="stat-side-row"><span>Despesa liquidada</span><b id="efDespesaLiquidada">—</b></div>
+        </div>
+    </div>
     <p class="panel-sub">Cruza as duas tabelas anteriores pelo código da Fonte, algo que este painel não fazia até agora. "% da previsão já liquidado" divide a despesa liquidada pela previsão atualizada de receita da <b>mesma Fonte</b>, ambas no mesmo corte do ano: é uma medida de espaço <b>orçamentário</b>, não de caixa disponível (que o painel não tem). Por lei, despesa vinculada a uma Fonte não pode superar a receita prevista dela, então esse número nunca deveria passar de 100% no fechamento do ano; passar de 100% já no meio do ano, como neste corte, é sinal concreto de aperto naquela Fonte especificamente. Nenhum número aqui é projetado: são valores já publicados (previsão atualizada oficial e despesa liquidada até a mesma data). O cruzamento usa o código reduzido da Fonte (o mesmo nas duas bases), não o detalhamento mais fino dentro dela (que tem numeração própria em cada base e não bate por nome com confiabilidade); conferido em valor, isso cobre 100% da despesa liquidada e 99,94% da receita arrecadada do Executivo, o resíduo sem par é irrelevante. O custo é agregar sub-destinações diferentes de uma mesma Fonte: a maior Fonte do painel (Recursos Não Vinculados de Impostos) mistura, por exemplo, receita geral de impostos com o pagamento de benefícios previdenciários do plano financeiro, que por desenho é coberto pelo tesouro geral, então o percentual dela mistura duas naturezas fiscais diferentes, não é só um número "mais grosso". "⚠ sem previsão registrada" marca quando há despesa liquidada relevante numa Fonte sem nenhuma previsão de receita correspondente nesta base, um problema de dado a parte, não uma fonte sem risco.</p>
     <div class="table-tools">
         <input type="text" class="search-input" id="espacoFiscalSearch" placeholder="Buscar Fonte…" autocomplete="off">
@@ -427,6 +440,12 @@ function render(d) {
     if (rec) renderReceitaTable(rec.por_fonte);
     const ef = d.espaco_fiscal_por_fonte;
     if (ef) {
+        document.getElementById('efMesTexto').textContent = MESES[ef.corte_mes];
+        document.getElementById('efPctTotal').textContent = fmtPct(ef.total.pct_previsao_ja_liquidado);
+        document.getElementById('efReceitaArrecadada').textContent = fmtR$M(ef.total.receita_arrecadada);
+        document.getElementById('efReceitaPrevisao').textContent = fmtR$M(ef.total.receita_previsao_atualizada);
+        document.getElementById('efDespesaEmpenhada').textContent = fmtR$M(ef.total.despesa_empenhada);
+        document.getElementById('efDespesaLiquidada').textContent = fmtR$M(ef.total.despesa_liquidada);
         renderEspacoFiscalTable(ef.por_fonte);
         document.getElementById('espacoFiscalCobertura').textContent =
             `${ef.cobertura.fontes_casadas} Fontes cruzadas com sucesso entre as duas bases. ` +
