@@ -401,8 +401,17 @@ def build_espaco_fiscal_por_fonte():
                 "nome_fonte": nome,
                 "receita_arrecadada_2026": round(arrecadado, 2),
                 "receita_previsao_atualizada_2026": round(previsao, 2),
+                # Falta receber ate' dezembro, assumindo que a previsao
+                # atualizada se mantem (e' o mesmo pressuposto ja embutido em
+                # comparar liquidado contra ela) -- residuo, nao projecao.
+                "receita_falta_receber": round(previsao - arrecadado, 2),
                 "despesa_empenhada_2026": round(empenhado, 2),
                 "despesa_liquidada_2026": round(liquidado, 2),
+                # Espaco que ainda cabe gastar dentro da propria previsao de
+                # receita da fonte (o teto legal para despesa vinculada);
+                # negativo = ja gastou mais do que a fonte deve arrecadar
+                # no ano inteiro.
+                "espaco_restante_para_gastar": round(previsao - liquidado, 2),
                 "pct_previsao_ja_liquidado": round(liquidado / previsao * 100, 1) if previsao else None,
                 "sem_previsao_com_despesa": sem_previsao_com_despesa,
             }
@@ -431,8 +440,10 @@ def build_espaco_fiscal_por_fonte():
         "total": {
             "receita_arrecadada": round(total_receita_arrecadada, 2),
             "receita_previsao_atualizada": round(total_receita_previsao, 2),
+            "receita_falta_receber": round(total_receita_previsao - total_receita_arrecadada, 2),
             "despesa_liquidada": round(total_despesa_liquidada, 2),
             "despesa_empenhada": round(total_despesa_empenhada, 2),
+            "espaco_restante_para_gastar": round(total_receita_previsao - total_despesa_liquidada, 2),
             "pct_previsao_ja_liquidado": round(total_despesa_liquidada / total_receita_previsao * 100, 1)
             if total_receita_previsao
             else None,
