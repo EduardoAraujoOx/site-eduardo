@@ -193,16 +193,6 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
         <div class="kpi-value" id="kpiPrazoP50">—</div>
         <div class="kpi-foot">9 em cada 10 pagamentos saem em até <span id="kpiPrazoP90">—</span></div>
     </div>
-    <div class="kpi-card">
-        <div class="kpi-label">Arrecadado até <span id="kpiReceitaMes">—</span> de 2026</div>
-        <div class="kpi-value" id="kpiReceitaArrecadado">—</div>
-        <div class="kpi-foot" id="kpiReceitaFoot">—</div>
-    </div>
-    <div class="kpi-card">
-        <div class="kpi-label">Da previsão atualizada já arrecadado</div>
-        <div class="kpi-value" id="kpiReceitaPct">—</div>
-        <div class="kpi-foot" id="kpiReceitaPctFoot">—</div>
-    </div>
 </div>
 
 <section class="panel" aria-labelledby="chart-h">
@@ -227,63 +217,6 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
 <div class="callout">
     <b>Como ler este painel:</b> o gap liquidado-menos-pago mede um <b>estoque</b>: quanto de despesa já reconhecida ainda não foi paga. O prazo de pagamento (NL→OB) mede um <b>fluxo</b>: quão rápido andam os pagamentos que efetivamente saem. No Fundo Estadual de Saúde esse estoque oscila muito de ano para ano (variou de cerca de R$ 8 milhões a R$ 154 milhões no mesmo dia do calendário, entre 2023 e 2025), então um único ano isolado não define tendência; o gráfico abaixo mostra essa variação ano a ano. O prazo dos pagamentos que de fato se realizam, por outro lado, continua rápido e estável. A base de prazos também tem um limite: ela não enxerga quem ainda não chegou a ser pago, então tende a subestimar o problema nos meses mais recentes. Esse mesmo padrão (estoque cresce, prazo realizado se mantém) se repete na maioria das Unidades Gestoras marcadas como "recorde desde 2023" na tabela abaixo: a fila aumenta, mas quem já é pago continua sendo pago rápido. A exceção é o Hospital Doutor Roberto Arnizaut Silvares, onde as duas coisas pioram juntas (estoque em recorde e prazo de pagamento subindo de 19 para 23 dias no p90 entre 2025 e 2026), o caso com o sinal mais completo do painel.
 </div>
-
-<section class="panel" aria-labelledby="receita-h">
-    <h3 id="receita-h">Arrecadação por Fonte: a receita explica o represamento de pagamentos?</h3>
-    <p class="panel-sub">Poder Executivo, acumulado até <span id="receitaMesTexto">o mês mais recente disponível</span> de cada ano (dado declaratório do TCE-ES, com mais defasagem de publicação que o restante do painel). "% da previsão atualizada" compara o arrecadado com a previsão orçamentária vigente naquele ponto do ano; "vs. mesmo período de 2025" compara com o mesmo corte do ano anterior, para não confundir sazonalidade (meses em que uma fonte arrecada mais ou menos por natureza) com tendência real. "▼ mínimo desde 2023" marca quando 2026 também fica abaixo de 2023 e 2024 no mesmo corte, não só de 2025 isoladamente, o mesmo cuidado contra efeito de base já aplicado ao estoque represado. Só entram fontes com pelo menos R$ 10 milhões arrecadados em 2026.</p>
-    <div class="table-tools">
-        <input type="text" class="search-input" id="receitaSearch" placeholder="Buscar Fonte…" autocomplete="off">
-        <button type="button" class="export-btn" id="receitaExportBtn">Exportar como imagem</button>
-    </div>
-    <div class="table-wrap">
-        <table class="data" id="receitaTable" aria-labelledby="receita-h">
-            <thead><tr>
-                <th scope="col" data-key="nome_fonte">Fonte</th>
-                <th scope="col" class="num" data-key="arrecadado_2026">Arrecadado (R$)</th>
-                <th scope="col" class="num" data-key="pct_previsao_realizada">% da previsão atualizada</th>
-                <th scope="col" class="num" data-key="razao_vs_2025">vs. mesmo período de 2025</th>
-            </tr></thead>
-            <tbody id="receitaBody"><tr><td colspan="4">Carregando…</td></tr></tbody>
-        </table>
-    </div>
-    <div class="table-more" id="receitaMore" style="display:none">Mostrar mais Fontes</div>
-</section>
-
-<section class="panel" aria-labelledby="espacofiscal-h">
-    <h3 id="espacofiscal-h">Espaço fiscal por Fonte: o que já entrou e saiu, e o que ainda cabe até dezembro</h3>
-    <div class="stat-hero-wrap" style="margin-bottom:1.2rem">
-        <div>
-            <div class="stat-hero-label">No agregado do Executivo, até <span id="efMesTexto">o mês mais recente disponível</span> de 2026</div>
-            <div class="stat-hero-value" id="efEspacoRestante">—</div>
-            <p class="stat-hero-note">é o quanto ainda cabe gastar este ano sem superar a própria previsão de receita, somando todas as Fontes (recebido até agora: <b id="efReceitaArrecadada">—</b> de uma previsão de <b id="efReceitaPrevisao">—</b> · gasto até agora: <b id="efDespesaLiquidada">—</b>). Olhado Fonte por Fonte, essa folga está distribuída de forma bem desigual, é o que a tabela abaixo mostra.</p>
-        </div>
-        <div class="stat-side">
-            <div class="stat-side-row"><span>Recebido até o corte</span><b id="efReceitaArrecadada2">—</b></div>
-            <div class="stat-side-row"><span>Falta receber até dezembro</span><b id="efReceitaFaltaReceber">—</b></div>
-            <div class="stat-side-row"><span>Gasto até o corte (liquidado)</span><b id="efDespesaLiquidada2">—</b></div>
-            <div class="stat-side-row"><span>Já reservado (empenhado)</span><b id="efDespesaEmpenhada">—</b></div>
-        </div>
-    </div>
-    <p class="panel-sub">Cruza as duas tabelas anteriores pelo código da Fonte, algo que este painel não fazia até agora, e mostra o resultado como saldo, não como razão: quanto já <b>entrou</b> de receita e quanto ainda <b>falta entrar</b> até dezembro (supondo que a previsão atualizada se mantenha), quanto já <b>saiu</b> de despesa e quanto ainda <b>cabe gastar</b> dentro do que a própria Fonte deve arrecadar no ano. "Espaço que resta" negativo significa que a despesa liquidada já superou a previsão de receita inteira daquela Fonte, isso é orçamentário, não caixa disponível (que o painel não tem), mas por lei despesa vinculada a uma Fonte não pode superar a receita prevista dela, então um espaço negativo no meio do ano já é sinal concreto de aperto. Nenhum número aqui é projetado: são valores já publicados, e "falta receber"/"espaço que resta" são só a diferença entre eles, não uma estimativa nova. O cruzamento usa o código reduzido da Fonte (o mesmo nas duas bases), não o detalhamento mais fino dentro dela; conferido em valor, isso cobre 100% da despesa liquidada e 99,94% da receita arrecadada do Executivo, o resíduo sem par é irrelevante. O custo é agregar sub-destinações diferentes de uma mesma Fonte: a maior Fonte do painel (Recursos Não Vinculados de Impostos) mistura, por exemplo, receita geral de impostos com o pagamento de benefícios previdenciários do plano financeiro, que por desenho é coberto pelo tesouro geral, então o saldo dela mistura duas naturezas fiscais diferentes, não é só um número "mais grosso". "⚠ sem previsão registrada" marca quando há despesa liquidada relevante numa Fonte sem nenhuma previsão de receita correspondente nesta base, um problema de dado a parte, não uma fonte sem risco.</p>
-    <div class="table-tools">
-        <input type="text" class="search-input" id="espacoFiscalSearch" placeholder="Buscar Fonte…" autocomplete="off">
-        <button type="button" class="export-btn" id="espacoFiscalExportBtn">Exportar como imagem</button>
-    </div>
-    <div class="table-wrap">
-        <table class="data" id="espacoFiscalTable" aria-labelledby="espacofiscal-h">
-            <thead><tr>
-                <th scope="col" data-key="nome_fonte">Fonte</th>
-                <th scope="col" class="num" data-key="receita_arrecadada_2026">Recebido (R$)</th>
-                <th scope="col" class="num" data-key="receita_falta_receber">Falta receber até dez (R$)</th>
-                <th scope="col" class="num" data-key="despesa_liquidada_2026">Gasto (R$)</th>
-                <th scope="col" class="num" data-key="espaco_restante_para_gastar">Espaço que resta (R$)</th>
-            </tr></thead>
-            <tbody id="espacoFiscalBody"><tr><td colspan="5">Carregando…</td></tr></tbody>
-        </table>
-    </div>
-    <div class="table-more" id="espacoFiscalMore" style="display:none">Mostrar mais Fontes</div>
-    <p class="panel-sub" id="espacoFiscalCobertura" style="margin-top:0.6rem;margin-bottom:0"></p>
-</section>
 
 <section class="panel" aria-labelledby="rank-h">
     <h3 id="rank-h">Executivo por Unidade Gestora: estoque, histórico e espaço orçamentário</h3>
@@ -339,8 +272,7 @@ footer{max-width:var(--max);margin:0 auto;padding:1.5rem 1.25rem 3rem;font-size:
         <p style="margin-bottom:0.3rem"><b>Série diária por Unidade Gestora:</b> <code>Despesas-&lt;ano&gt;.csv</code>, microdado de eventos (empenho/liquidação/pagamento), agregado por dia para cada UG do Executivo. Usada para comparar o gap acumulado no mesmo dia do calendário entre anos, em vez de comparar um exercício em curso com o fechamento de um exercício já encerrado.</p>
         <p style="margin-bottom:0.6rem"><b>Prazo de pagamento:</b> <code>Contratos - Ordem Cronológica de Pagamentos</code>, que pareia a data de emissão da nota de liquidação (NL) e da ordem bancária (OB) do mesmo documento.</p>
         <p style="margin-bottom:0.6rem">Poder classificado pelo número de dígitos do código de Unidade Gestora (5 = Legislativo/TCE/Judiciário/Ministério Público/Defensoria; 6 = Executivo).</p>
-        <p style="margin-bottom:0.6rem"><b>Arrecadação por Fonte:</b> pacote <code>receitas-e-despesas-estaduais</code>, mantido pelo Tribunal de Contas do Estado (TCE-ES) a partir das prestações de contas mensais declaradas pelo Executivo (CidadES, Anexo IV da IN 68/2020), não o microdado bruto de Receitas do SIGEFES. Optou-se por essa base porque ela já vem consolidada por Unidade Gestora, classificação da receita e Fonte, com os campos de previsão e arrecadação nomeados sem ambiguidade; o microdado bruto usa fases de lançamento (arrecadação bruta/líquida/dedução, recolhimento) sem dicionário de dados atualizado que as explique, o mesmo tipo de risco de interpretação já enfrentado e corrigido do lado da despesa. "Previsão atualizada" é um valor de estoque (a previsão vigente, atualizada por créditos ao longo do ano) e nunca é somada entre meses; "arrecadado" é fluxo e soma mês a mês até o corte. Como essa base é declaratória, chega com mais defasagem que o restante do painel: em setembro de 2026, o último mês disponível é julho. A UG do TCE-ES usa um código próprio (letra + dígitos), diferente do código do SIGEFES, então a receita não é cruzável com a despesa por Unidade Gestora individual, só nos totais do Executivo. Poder classificado pelo 4º caractere desse código (E = Executivo).</p>
-        <p style="margin-bottom:0.3rem"><b>O que este painel ainda não mostra:</b> disponibilidade de caixa do Tesouro, por Fonte e no total. Represamento de pagamento pode ter causas distintas, falta de receita, falta de caixa liberado numa fonte específica, ou só ritmo lento de pagamento apesar de caixa disponível; a arrecadação por Fonte ajuda a descartar a primeira causa (a receita do Executivo tem crescido acima do mesmo período dos três anos anteriores), mas não confirma nem descarta a segunda, que exigiria o dado de disponibilidade de caixa em si.</p>
+        <p style="margin-bottom:0.3rem"><b>O que este painel ainda não mostra:</b> receita por Fonte e disponibilidade de caixa do Tesouro. Uma tentativa de cruzar despesa e receita por Fonte, usando o pacote <code>receitas-e-despesas-estaduais</code> do TCE-ES, foi feita e depois removida deste painel: a base é declaratória e chega defasada demais para o objetivo (em setembro de 2026, o último mês disponível era julho), e agregar pela Fonte reduzida mistura, dentro da mesma Fonte, receitas e despesas de naturezas distintas, o que tornava difícil tirar qualquer conclusão firme do cruzamento. Represamento de pagamento pode ter causas distintas, falta de receita, falta de caixa liberado numa fonte específica, ou só ritmo lento de pagamento apesar de caixa disponível; sem um dado de receita e de caixa confiável e tempestivo, este painel não consegue distinguir entre essas causas, só mostrar o lado da obrigação (liquidado/empenhado não pago) e o prazo de quem já foi pago.</p>
         <p style="margin-bottom:0.6rem"><b>Por que a disponibilidade de caixa importa mais neste ano específico:</b> o art. 42 da LRF veda, nos últimos dois quadrimestres do mandato, contrair obrigação cujas parcelas a pagar no exercício seguinte não tenham disponibilidade de caixa suficiente, considerados os encargos já compromissados (art. 42, parágrafo único). 2026 é ano eleitoral no ES, com o mandato atual se encerrando em 31/12/2026; os últimos dois quadrimestres (mai-dez/2026) são, portanto, agora. Isso não significa que os números deste painel testem esse artigo: testam apenas o lado da obrigação (liquidado/empenhado não pago), não o lado da disponibilidade de caixa, que seguimos sem ter. Uma tentativa de usar o empenhado-menos-pago como proxy mais próxima do texto do parágrafo único esbarrou num problema real: a maior parte desse saldo em UGs como o Fundo Financeiro ou a Educação é empenho global do início do ano ainda não liquidado (contrato anual reservado, não dívida vencida), não risco de heranças de fim de mandato; misturar os dois superestimaria o sinal. Isolar apenas os empenhos contraídos a partir de maio de 2026 exigiria outra rodada de tratamento sobre o microdado de eventos, ainda não feita.</p>
         <p>Código de coleta e reconciliação em <code>data/collect-*.py</code> e <code>data/build-painel-execucao-es.py</code> no repositório deste site. Dados gerados em <span id="metaGeradoEm">—</span>.</p>
     </div>
@@ -358,7 +290,6 @@ const fmtR$M = v => v == null ? '—' : 'R$ ' + (Number(v)/1e6).toLocaleString('
 const fmtPct = v => v == null ? '—' : Number(v).toLocaleString('pt-BR', {maximumFractionDigits:1}) + '%';
 const fmtDias = v => v == null ? '—' : Number(v).toLocaleString('pt-BR', {maximumFractionDigits:0}) + ' dias';
 
-const MESES = ['', 'janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 let PAINEL = null;
 
 // Compara o gap atual (2026, ate' 18/set) com o mesmo dia do calendario nos
@@ -415,46 +346,12 @@ function render(d) {
     document.getElementById('kpiPrazoP50').textContent = fmtDias(k.executivo.prazo_p50_2026);
     document.getElementById('kpiPrazoP90').textContent = fmtDias(k.executivo.prazo_p90_2026);
 
-    // ── KPIs de Receita ──
-    const rec = d.receita_executivo;
-    if (rec) {
-        const arr2026 = rec.total_arrecadado_mesmo_corte_por_ano['2026'];
-        const arr2025 = rec.total_arrecadado_mesmo_corte_por_ano['2025'];
-        document.getElementById('kpiReceitaMes').textContent = MESES[rec.corte_mes];
-        document.getElementById('receitaMesTexto').textContent = MESES[rec.corte_mes];
-        document.getElementById('kpiReceitaArrecadado').textContent = fmtR$M(arr2026);
-        const razaoReceita = arr2025 ? (arr2026/arr2025*100 - 100) : null;
-        document.getElementById('kpiReceitaFoot').textContent = razaoReceita == null ? '—' :
-            `${razaoReceita >= 0 ? '+' : ''}${razaoReceita.toLocaleString('pt-BR',{maximumFractionDigits:1})}% vs. mesmo período de 2025`;
-        document.getElementById('kpiReceitaPct').textContent = rec.pct_previsao_realizada == null ? '—' : fmtPct(rec.pct_previsao_realizada);
-        const ritmoEsperado = rec.corte_mes / 12 * 100;
-        document.getElementById('kpiReceitaPctFoot').textContent =
-            `ritmo esperado a esta altura do ano: ${fmtPct(ritmoEsperado)}`;
-    }
-
     document.getElementById('metaGeradoEm').textContent = new Date(d.gerado_em).toLocaleString('pt-BR', {dateStyle:'long', timeStyle:'short'});
 
     renderChart(d.serie_saude_por_dia_do_ano);
     renderChartTable(k.saude_fes.comparativo_mesmo_corte);
     renderRankTable(d.ranking_executivo);
     renderPrazoTable(d.prazos_executivo);
-    if (rec) renderReceitaTable(rec.por_fonte);
-    const ef = d.espaco_fiscal_por_fonte;
-    if (ef) {
-        document.getElementById('efMesTexto').textContent = MESES[ef.corte_mes];
-        document.getElementById('efEspacoRestante').textContent = fmtR$M(ef.total.espaco_restante_para_gastar);
-        document.getElementById('efReceitaArrecadada').textContent = fmtR$M(ef.total.receita_arrecadada);
-        document.getElementById('efReceitaArrecadada2').textContent = fmtR$M(ef.total.receita_arrecadada);
-        document.getElementById('efReceitaPrevisao').textContent = fmtR$M(ef.total.receita_previsao_atualizada);
-        document.getElementById('efReceitaFaltaReceber').textContent = fmtR$M(ef.total.receita_falta_receber);
-        document.getElementById('efDespesaEmpenhada').textContent = fmtR$M(ef.total.despesa_empenhada);
-        document.getElementById('efDespesaLiquidada').textContent = fmtR$M(ef.total.despesa_liquidada);
-        document.getElementById('efDespesaLiquidada2').textContent = fmtR$M(ef.total.despesa_liquidada);
-        renderEspacoFiscalTable(ef.por_fonte);
-        document.getElementById('espacoFiscalCobertura').textContent =
-            `${ef.cobertura.fontes_casadas} Fontes cruzadas com sucesso entre as duas bases. ` +
-            `${ef.cobertura.fontes_receita_sem_correspondencia} Fontes de receita e ${ef.cobertura.fontes_despesa_sem_correspondencia} de despesa não encontraram código correspondente do outro lado e ficaram de fora.`;
-    }
 }
 
 // ══════════════════ GRÁFICO DE LINHAS ══════════════════
@@ -661,107 +558,6 @@ document.querySelectorAll('#prazoTable thead th').forEach(th => {
     th.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); ativa(); } });
 });
 
-// ══════════════════ TABELA: ARRECADAÇÃO POR FONTE ══════════════════
-let receitaSort = {key:'arrecadado_2026', dir:-1};
-let receitaShown = 15;
-function fmtRazaoReceita(r) {
-    if (r.razao_vs_2025 == null) return '<span style="color:var(--ink-muted)">(base pequena)</span>';
-    const pct = Math.round(r.razao_vs_2025);
-    const hist = r.arrecadado_mesmo_corte_por_ano || {};
-    const serieHist = Object.entries(hist).map(([ano, val]) => `${ano}: ${fmtR$(val)}`).join(' · ');
-    if (r.eh_minimo_historico) {
-        return `<span class="badge warn" title="Mínimo desde 2023: ${serieHist}">▼ ${pct}%</span>`;
-    }
-    return `<span class="badge neutral" title="${serieHist}">${pct}%</span>`;
-}
-function renderReceitaTable(rows) {
-    const busca = (document.getElementById('receitaSearch').value || '').toLowerCase();
-    let filtradas = rows.filter(r => r.nome_fonte.toLowerCase().includes(busca));
-    filtradas.sort((a,b) => {
-        const va = a[receitaSort.key], vb = b[receitaSort.key];
-        if (typeof va === 'string') return va.localeCompare(vb) * receitaSort.dir;
-        return ((va ?? -Infinity) - (vb ?? -Infinity)) * receitaSort.dir;
-    });
-    const visiveis = filtradas.slice(0, receitaShown);
-    window.receitaVisiveisAtual = visiveis;
-    document.getElementById('receitaBody').innerHTML = visiveis.map(r => `
-        <tr>
-            <td class="ug-nome">${r.nome_fonte}</td>
-            <td class="num">${fmtR$(r.arrecadado_2026)}</td>
-            <td class="num">${fmtPct(r.pct_previsao_realizada)}</td>
-            <td class="num">${fmtRazaoReceita(r)}</td>
-        </tr>
-    `).join('');
-    document.getElementById('receitaMore').style.display = filtradas.length > receitaShown ? 'block' : 'none';
-}
-document.getElementById('receitaSearch').addEventListener('input', () => { receitaShown = 15; renderReceitaTable(PAINEL.receita_executivo.por_fonte); });
-document.getElementById('receitaMore').addEventListener('click', () => { receitaShown += 30; renderReceitaTable(PAINEL.receita_executivo.por_fonte); });
-document.querySelectorAll('#receitaTable thead th').forEach(th => {
-    th.setAttribute('tabindex', '0');
-    const ativa = () => {
-        const key = th.dataset.key;
-        receitaSort = (receitaSort.key === key) ? {key, dir:-receitaSort.dir} : {key, dir: key==='nome_fonte' ? 1 : -1};
-        renderReceitaTable(PAINEL.receita_executivo.por_fonte);
-    };
-    th.addEventListener('click', ativa);
-    th.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); ativa(); } });
-});
-
-// ══════════════════ TABELA: ESPAÇO FISCAL POR FONTE ══════════════════
-let espacoFiscalSort = {key:'espaco_restante_para_gastar', dir:1};
-let espacoFiscalShown = 15;
-function fmtEspacoRestante(r) {
-    const detalhe = `Despesa empenhada: ${fmtR$(r.despesa_empenhada_2026)} · Previsão atualizada de receita: ${fmtR$(r.receita_previsao_atualizada_2026)} · % da previsão já liquidado: ${fmtPct(r.pct_previsao_ja_liquidado)}`;
-    if (r.sem_previsao_com_despesa) {
-        return `<span class="badge warn" title="Há despesa liquidada nesta Fonte, mas nenhuma previsão de receita registrada para ela nesta base. ${detalhe}">⚠ sem previsão registrada</span>`;
-    }
-    if (r.espaco_restante_para_gastar == null) return '<span style="color:var(--ink-muted)">—</span>';
-    if (r.espaco_restante_para_gastar <= 0) {
-        return `<span class="badge warn" title="${detalhe}">▲ ${fmtR$(r.espaco_restante_para_gastar)}</span>`;
-    }
-    return `<span title="${detalhe}">${fmtR$(r.espaco_restante_para_gastar)}</span>`;
-}
-function renderEspacoFiscalTable(rows) {
-    const busca = (document.getElementById('espacoFiscalSearch').value || '').toLowerCase();
-    let filtradas = rows.filter(r => r.nome_fonte.toLowerCase().includes(busca));
-    filtradas.sort((a,b) => {
-        // "Sem previsão registrada" é um alerta, não um vazio: ao ordenar
-        // pela coluna de espaço restante, sempre fica no topo, em vez de
-        // se misturar aos valores normais (fonte sem despesa relevante).
-        if (espacoFiscalSort.key === 'espaco_restante_para_gastar') {
-            if (a.sem_previsao_com_despesa && !b.sem_previsao_com_despesa) return -1;
-            if (b.sem_previsao_com_despesa && !a.sem_previsao_com_despesa) return 1;
-        }
-        const va = a[espacoFiscalSort.key], vb = b[espacoFiscalSort.key];
-        if (typeof va === 'string') return va.localeCompare(vb) * espacoFiscalSort.dir;
-        return ((va ?? Infinity) - (vb ?? Infinity)) * espacoFiscalSort.dir;
-    });
-    const visiveis = filtradas.slice(0, espacoFiscalShown);
-    window.espacoFiscalVisiveisAtual = visiveis;
-    document.getElementById('espacoFiscalBody').innerHTML = visiveis.map(r => `
-        <tr>
-            <td class="ug-nome">${r.nome_fonte}</td>
-            <td class="num">${fmtR$(r.receita_arrecadada_2026)}</td>
-            <td class="num">${fmtR$(r.receita_falta_receber)}</td>
-            <td class="num">${fmtR$(r.despesa_liquidada_2026)}</td>
-            <td class="num">${fmtEspacoRestante(r)}</td>
-        </tr>
-    `).join('');
-    document.getElementById('espacoFiscalMore').style.display = filtradas.length > espacoFiscalShown ? 'block' : 'none';
-}
-document.getElementById('espacoFiscalSearch').addEventListener('input', () => { espacoFiscalShown = 15; renderEspacoFiscalTable(PAINEL.espaco_fiscal_por_fonte.por_fonte); });
-document.getElementById('espacoFiscalMore').addEventListener('click', () => { espacoFiscalShown += 30; renderEspacoFiscalTable(PAINEL.espaco_fiscal_por_fonte.por_fonte); });
-document.querySelectorAll('#espacoFiscalTable thead th').forEach(th => {
-    th.setAttribute('tabindex', '0');
-    const ativa = () => {
-        const key = th.dataset.key;
-        espacoFiscalSort = (espacoFiscalSort.key === key) ? {key, dir:-espacoFiscalSort.dir} : {key, dir: key==='nome_fonte' ? 1 : -1};
-        renderEspacoFiscalTable(PAINEL.espaco_fiscal_por_fonte.por_fonte);
-    };
-    th.addEventListener('click', ativa);
-    th.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); ativa(); } });
-});
-
 // ══════════════════ EXPORTAR TABELA COMO IMAGEM ══════════════════
 // Gera um cartão neutro (sem nome de site ou de autor) citando apenas a
 // fonte oficial dos dados, em formato de referência ABNT, para
@@ -949,46 +745,6 @@ document.getElementById('prazoExportBtn').addEventListener('click', function () 
     });
 });
 
-document.getElementById('receitaExportBtn').addEventListener('click', function () {
-    const linhas = window.receitaVisiveisAtual || [];
-    const mes = PAINEL && PAINEL.receita_executivo ? MESES[PAINEL.receita_executivo.corte_mes] : '';
-    exportarTabelaComoImagem({
-        titulo: 'Arrecadação por Fonte do Poder Executivo do Espírito Santo',
-        subtitulo: `Acumulado até ${mes} de cada ano (dado declaratório do TCE-ES)`,
-        colunas: [
-            { label: 'Fonte', largura: 320, valor: r => r.nome_fonte },
-            { label: 'Arrecadado (R$)', largura: 150, num: true, valor: r => fmtR$(r.arrecadado_2026) },
-            { label: '% da previsão', largura: 110, num: true, valor: r => fmtPct(r.pct_previsao_realizada) },
-            { label: 'vs. 2025', largura: 130, num: true, valor: r => r.razao_vs_2025 == null ? 'base pequena' : Math.round(r.razao_vs_2025) + '%' + (r.eh_minimo_historico ? ' (mín. 2023-26)' : '') },
-        ],
-        linhas,
-        nomeArquivo: 'arrecadacao-por-fonte-executivo-es.png',
-        fonteCitacao: 'Fonte: ESPÍRITO SANTO (Estado). Tribunal de Contas. Portal de Dados Abertos do Espírito ' +
-            'Santo: receitas e despesas estaduais (CidadES). Vitória: TCE-ES, ' + new Date().getFullYear() + '.',
-    });
-});
-
-document.getElementById('espacoFiscalExportBtn').addEventListener('click', function () {
-    const linhas = window.espacoFiscalVisiveisAtual || [];
-    const mes = PAINEL && PAINEL.espaco_fiscal_por_fonte ? MESES[PAINEL.espaco_fiscal_por_fonte.corte_mes] : '';
-    exportarTabelaComoImagem({
-        titulo: 'Espaço Fiscal por Fonte do Poder Executivo do Espírito Santo',
-        subtitulo: `Receita e despesa acumuladas até ${mes} de 2026, cruzadas pela mesma Fonte`,
-        colunas: [
-            { label: 'Fonte', largura: 260, valor: r => r.nome_fonte },
-            { label: 'Recebido (R$)', largura: 140, num: true, valor: r => fmtR$(r.receita_arrecadada_2026) },
-            { label: 'Falta receber até dez (R$)', largura: 160, num: true, valor: r => fmtR$(r.receita_falta_receber) },
-            { label: 'Gasto (R$)', largura: 140, num: true, valor: r => fmtR$(r.despesa_liquidada_2026) },
-            { label: 'Espaço que resta (R$)', largura: 160, num: true, valor: r => r.sem_previsao_com_despesa ? 'sem previsão registrada' : fmtR$(r.espaco_restante_para_gastar) },
-        ],
-        linhas,
-        nomeArquivo: 'espaco-fiscal-por-fonte-executivo-es.png',
-        fonteCitacao: 'Fontes: ESPÍRITO SANTO (Estado). Secretaria de Estado da Fazenda. Portal de Dados Abertos ' +
-            'do Espírito Santo: execução orçamentária e financeira (SIGEFES). Vitória: SEFAZ-ES, ' + new Date().getFullYear() + '. ' +
-            'ESPÍRITO SANTO (Estado). Tribunal de Contas. Portal de Dados Abertos do Espírito Santo: receitas e ' +
-            'despesas estaduais (CidadES). Vitória: TCE-ES, ' + new Date().getFullYear() + '.',
-    });
-});
 
 </script>
 </body>
