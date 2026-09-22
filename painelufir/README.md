@@ -31,6 +31,7 @@ repositório, replique manualmente aqui (ou peça para o Claude replicar):
 - `data/painel-estados.json`
 - `data/painel-municipios/` (pasta inteira: `index.json` + um arquivo por UF)
 - `data/malha-municipios.json` (malha do mapa municipal)
+- `data/memoria-calculo/` (pasta inteira: `nacional.json` + um arquivo por UF)
 - `images/brasao-es.png`, `images/brasao-es-branco.png`
 
 Diferenças propositais em relação ao arquivo original, e apenas estas três:
