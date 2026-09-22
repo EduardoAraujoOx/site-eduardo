@@ -162,6 +162,12 @@ main{max-width:var(--max);margin:0 auto;padding:1.75rem 1.25rem 4rem}
 .panel h3{font-size:1.02rem;font-weight:700;margin-bottom:0.15rem}
 .panel .panel-sub{color:var(--ink-muted);font-size:0.82rem;margin-bottom:0.9rem}
 .panel-grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:1.2rem}
+/* Sem isto, um filho de grade não encolhe abaixo do conteúdo: a tabela
+   larga empurraria a própria página em vez de rolar dentro do quadro. */
+.panel-grid2>*{min-width:0}
+/* Os dois quadros de ranking municipal têm a mesma tabela, então dividem a
+   largura em partes iguais em vez da proporção padrão. */
+.panel-grid2.igual{grid-template-columns:1fr 1fr}
 @media (max-width:860px){.panel-grid2{grid-template-columns:1fr}}
 
 /* ── faixa de indicadores da ficha ──
@@ -271,9 +277,32 @@ main{max-width:var(--max);margin:0 auto;padding:1.75rem 1.25rem 4rem}
 .search-input:focus{outline:2px solid var(--teal);outline-offset:-1px}
 .select-uf{border:1px solid var(--border-strong);border-radius:6px;padding:0.5rem 0.75rem;font-size:0.85rem;background:#fff}
 .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px}
+.rank-inline{display:none;color:var(--ink-muted);font-variant-numeric:tabular-nums;margin-right:0.4rem}
+/* Num celular a tabela larga rola dentro do quadro, e a variação, que é a
+   resposta que a pessoa foi buscar, sairia de vista junto com o resto. Presa
+   à borda direita, ela acompanha a rolagem das colunas de valor. */
+@media (max-width:700px){
+    table.data.pin-var thead th:last-child,table.data.pin-var tbody td:last-child{position:sticky;right:0;z-index:2;box-shadow:-7px 0 8px -7px rgba(15,36,64,0.22)}
+    table.data.pin-var thead th:last-child{background:var(--paper-alt)}
+    table.data.pin-var tbody td:last-child{background:#fff}
+    table.data.pin-var tbody tr:hover td:last-child{background:var(--paper-alt)}
+    /* E, pela esquerda, o nome do ente, para a linha não perder a identificação
+       enquanto as colunas de valor passam. */
+    table.data.pin-name thead th:first-child,table.data.pin-name tbody td:first-child{position:sticky;left:0;z-index:2;box-shadow:7px 0 8px -7px rgba(15,36,64,0.22)}
+    table.data.pin-name thead th:first-child{background:var(--paper-alt)}
+    table.data.pin-name tbody td:first-child{background:#fff}
+    /* No ranking dos estados a coluna da posição sai e o número passa a
+       acompanhar o nome, para não haver duas colunas presas e um vão entre
+       elas quando a largura da primeira não bate com a medida do CSS. */
+    #rankEstadosTable .col-rank{display:none}
+    #rankEstadosTable thead th:nth-child(2),#rankEstadosTable tbody td:nth-child(2){position:sticky;left:0;z-index:2;box-shadow:7px 0 8px -7px rgba(15,36,64,0.22)}
+    #rankEstadosTable thead th:nth-child(2){background:var(--paper-alt)}
+    #rankEstadosTable tbody td:nth-child(2){background:#fff}
+    .rank-inline{display:inline}
+}
 table.data{width:100%;border-collapse:collapse;font-size:0.83rem}
 table.data thead th{background:var(--paper-alt);text-align:left;padding:0.55rem 0.7rem;font-size:0.7rem;letter-spacing:0.03em;text-transform:uppercase;color:var(--ink-muted);border-bottom:1px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none}
-table.data thead th:hover{color:var(--teal-dark)}
+table.data thead th:hover{color:var(--navy-mid)}
 /* Algarismos de largura fixa só onde os números alinham na vertical. */
 table.data thead th.num,table.data td.num{text-align:right}
 table.data td.num{font-variant-numeric:tabular-nums}
@@ -390,6 +419,19 @@ footer.site-foot a:hover{text-decoration:underline}
     table.data{font-size:0.8rem}
     table.data td,table.data thead th{padding:0.5rem 0.55rem}
 }
+
+/* Afordância de explicação: o sobrevoo entrega a definição curta e o clique
+   leva ao trecho correspondente da Metodologia. Serve nos cabeçalhos de
+   tabela, onde não cabe uma frase. */
+.info-wrap{position:relative;display:inline-block}
+.info-dot{display:inline-flex;align-items:center;justify-content:center;width:1.15em;height:1.15em;margin-left:0.35em;padding:0;border:1px solid var(--axis);border-radius:50%;background:#fff;color:var(--navy-mid);font:700 0.78em/1 var(--sans);font-style:normal;text-transform:none;letter-spacing:0;cursor:pointer;vertical-align:middle}
+.info-dot:hover,.info-dot:focus-visible{background:var(--navy-mid);border-color:var(--navy-mid);color:#fff;outline:none}
+.info-pop{position:absolute;z-index:60;top:calc(100% + 0.45rem);right:0;width:min(23rem,74vw);padding:0.65rem 0.75rem;background:#fff;border:1px solid var(--axis);border-radius:8px;box-shadow:0 8px 24px rgba(15,36,64,0.16);color:var(--ink);font:400 0.78rem/1.5 var(--sans);text-align:left;text-transform:none;letter-spacing:0;white-space:normal;opacity:0;visibility:hidden;transition:opacity .12s ease}
+.info-pop b{color:var(--navy)}
+.info-pop em{display:block;margin-top:0.35rem;font-style:normal;font-weight:600;color:var(--navy-mid)}
+.info-wrap:hover .info-pop,.info-dot:focus-visible + .info-pop{opacity:1;visibility:visible}
+@keyframes realce-ancora{from{background:#dfe8f4}to{background:transparent}}
+.realce-ancora{animation:realce-ancora 2.6s ease-out;border-radius:6px}
 </style>
 </head>
 <body>
@@ -468,7 +510,7 @@ footer.site-foot a:hover{text-decoration:underline}
                 <button type="button" data-viz="tabela">Tabela</button>
             </div>
         </div>
-        <p class="panel-sub">Estado e municípios, contra o cenário sem a reforma. Clique num estado para ver a ficha completa.</p>
+        <p class="panel-sub">Receita do governo estadual, já descontada a cota-parte dos municípios, contra o cenário sem a reforma. Clique num estado para ver a ficha completa.</p>
         <div class="mapa-layout" id="mapaLayout">
             <div>
                 <div class="map-wrapper" id="mapWrapper" style="min-height:420px">
@@ -517,15 +559,16 @@ footer.site-foot a:hover{text-decoration:underline}
             <input type="text" class="search-input" id="ufMuniSearch" placeholder="Buscar município neste estado…">
         </div>
         <div class="table-wrap">
-            <table class="data" id="ufMuniTable">
+            <table class="data pin-var pin-name" id="ufMuniTable">
                 <thead><tr>
                     <th data-key="nome">Município</th>
                     <th data-key="pop_media" class="num">População</th>
                     <th data-key="pre_2025" class="num">Referência 2025</th>
+                    <th data-key="contra_2033" class="num">Contrafactual 2033<span class="info-wrap" data-info="contrafactual"></span></th>
                     <th data-key="pos_2033" class="num">Projeção 2033</th>
                     <th data-key="variacao_2033" class="num">Variação</th>
                 </tr></thead>
-                <tbody id="ufMuniBody"><tr><td colspan="5" class="table-empty">Carregando…</td></tr></tbody>
+                <tbody id="ufMuniBody"><tr><td colspan="6" class="table-empty">Carregando…</td></tr></tbody>
             </table>
             <div class="table-more" id="ufMuniMore" style="display:none">Mostrar mais municípios</div>
         </div>
@@ -585,17 +628,18 @@ footer.site-foot a:hover{text-decoration:underline}
 
     <div class="panel">
         <h3>Estados</h3>
-        <p class="panel-sub">As 27 unidades da federação, do maior ganho à maior perda. Considera o estado e seus municípios somados.</p>
+        <p class="panel-sub">As 27 unidades da federação, do maior ganho à maior perda. Receita do próprio governo estadual, já descontada a cota-parte que pertence aos municípios. A variação compara a projeção de 2033 com o contrafactual do mesmo ano, não com 2025.</p>
         <div class="table-wrap">
-            <table class="data" id="rankEstadosTable">
+            <table class="data pin-var" id="rankEstadosTable">
                 <thead><tr>
-                    <th class="num" style="width:3rem">#</th>
+                    <th class="num col-rank" style="width:3rem">#</th>
                     <th>Estado</th>
                     <th class="num">Referência 2025</th>
+                    <th class="num">Contrafactual 2033<span class="info-wrap" data-info="contrafactual"></span></th>
                     <th class="num">Projeção 2033</th>
                     <th class="num">Variação</th>
                 </tr></thead>
-                <tbody id="rankEstadosBody"><tr><td colspan="5" class="table-empty">Carregando…</td></tr></tbody>
+                <tbody id="rankEstadosBody"><tr><td colspan="6" class="table-empty">Carregando…</td></tr></tbody>
             </table>
         </div>
     </div>
@@ -604,21 +648,21 @@ footer.site-foot a:hover{text-decoration:underline}
         <h3 style="font-size:1.05rem;font-weight:700">Municípios</h3>
         <p class="sub" style="font-size:0.85rem">Os 20 que mais ganham e os 20 que mais perdem, entre os elegíveis: cobertura de ao menos 5 dos 7 anos, população média de 10 mil habitantes ou mais e sem ressalva de qualidade.</p>
     </div>
-    <div class="panel-grid2">
+    <div class="panel-grid2 igual">
         <div class="panel accent">
             <h3 style="color:var(--pos)">Maiores ganhos</h3>
-            <p class="panel-sub">Variação da receita projetada em 2033 contra o contrafactual sem a reforma.</p>
+            <p class="panel-sub">Receita própria do município. A variação compara a projeção de 2033 com o contrafactual do mesmo ano.</p>
             <div class="table-wrap">
-                <table class="data"><thead><tr><th>Município</th><th class="num">Variação</th></tr></thead>
-                <tbody id="rankGanhosBody"><tr><td colspan="2" class="table-empty">Carregando…</td></tr></tbody></table>
+                <table class="data pin-var pin-name"><thead><tr><th>Município</th><th class="num">Contrafactual 2033<span class="info-wrap" data-info="contrafactual"></span></th><th class="num">Projeção 2033</th><th class="num">Variação</th></tr></thead>
+                <tbody id="rankGanhosBody"><tr><td colspan="4" class="table-empty">Carregando…</td></tr></tbody></table>
             </div>
         </div>
         <div class="panel accent">
             <h3 style="color:var(--neg)">Maiores perdas</h3>
-            <p class="panel-sub">Variação da receita projetada em 2033 contra o contrafactual sem a reforma.</p>
+            <p class="panel-sub">Receita própria do município. A variação compara a projeção de 2033 com o contrafactual do mesmo ano.</p>
             <div class="table-wrap">
-                <table class="data"><thead><tr><th>Município</th><th class="num">Variação</th></tr></thead>
-                <tbody id="rankPerdasBody"><tr><td colspan="2" class="table-empty">Carregando…</td></tr></tbody></table>
+                <table class="data pin-var pin-name"><thead><tr><th>Município</th><th class="num">Contrafactual 2033<span class="info-wrap" data-info="contrafactual"></span></th><th class="num">Projeção 2033</th><th class="num">Variação</th></tr></thead>
+                <tbody id="rankPerdasBody"><tr><td colspan="4" class="table-empty">Carregando…</td></tr></tbody></table>
             </div>
         </div>
     </div>
@@ -649,7 +693,14 @@ footer.site-foot a:hover{text-decoration:underline}
         <p>O ADCT (art. 132) reserva uma fração do IBS bruto (5%) para um fundo que repassa aos entes cuja receita, pelo critério de destino, ficar abaixo de um nível de nivelamento em relação à sua receita de referência. É um mecanismo temporário: o repasse tende a diminuir ao longo da transição, à medida que os entes se adaptam ao novo critério.</p>
 
         <h3>Projeção 2029–2033</h3>
-        <p>Há dois cronogramas distintos, e é fácil confundi-los. O ADCT (art. 128) reduz a alíquota do ICMS e do ISS a cada ano, de 2029 a 2032, e os extingue por completo em 2033; a partir desse ano, todo o "bolo" já é IBS. Dentro do IBS, um segundo cronograma, separado (ADCT art. 131, §1º), pondera o critério histórico e o de destino: a fração histórica é de 80% em 2029–2032 e sobe para 90% em 2033, só caindo a partir de 2034, à razão de um quarenta e cinco avos por ano, até chegar a 100% destino em 2078, não em 2033. A projeção da receita de referência nacional segue as medianas do Boletim Focus (BCB) para o crescimento real do PIB, mantendo constante a razão observada entre o "bolo" tributário e o PIB. O contrafactual usado para calcular a variação percentual de cada ente é a mesma receita de referência nacional projetada, aplicada à participação neutra do ente em 2025, não um valor fixo de 2025.</p>
+        <p>Há dois cronogramas distintos, e é fácil confundi-los. O ADCT (art. 128) reduz a alíquota do ICMS e do ISS a cada ano, de 2029 a 2032, e os extingue por completo em 2033; a partir desse ano, todo o "bolo" já é IBS. Dentro do IBS, um segundo cronograma, separado (ADCT art. 131, §1º), pondera o critério histórico e o de destino: a fração histórica é de 80% em 2029–2032 e sobe para 90% em 2033, só caindo a partir de 2034, à razão de um quarenta e cinco avos por ano, até chegar a 100% destino em 2078, não em 2033. A projeção da receita de referência nacional segue as medianas do Boletim Focus (BCB) para o crescimento real do PIB, mantendo constante a razão observada entre o "bolo" tributário e o PIB.</p>
+
+        <h3 id="met-contrafactual">O contrafactual, e por que a variação não é 2033 contra 2025</h3>
+        <p>Comparar a receita projetada para 2033 com a de 2025 mediria sobretudo o crescimento da economia no intervalo, não o efeito da reforma. O painel compara, por isso, dois cenários do mesmo ano. O contrafactual de um ente em 2033 é a receita nacional de referência projetada para aquele ano repartida pela participação que o ente tinha em 2025, isto é, quanto ele arrecadaria se as regras antigas continuassem valendo e sua fatia do bolo permanecesse a de hoje. A projeção, ao lado, é quanto o ente arrecada sob as regras novas, com o cronograma do ADCT já aplicado. A variação exibida é a diferença entre as duas, e mede apenas a reforma.</p>
+        <p>Um exemplo torna a distinção concreta. Um estado cuja receita cresce em termos reais entre 2025 e 2033 pode, ainda assim, aparecer com variação negativa no painel: ele cresce menos do que cresceria se nada tivesse mudado. O sinal responde à pergunta do gestor, que é o efeito da mudança de regra sobre o próprio ente, e não à pergunta sobre o tamanho da economia.</p>
+
+        <h3 id="met-base-estadual">O que entra na receita de cada esfera</h3>
+        <p>Os números atribuídos a um governo estadual são os da receita que fica com ele: ICMS bruto menos deduções e menos a cota-parte de 25% que a Constituição destina aos municípios, mais ISS quando existe, mais FECOP. Os números atribuídos a um município são os da receita própria dele: ISS mais a cota-parte de ICMS recebida. As duas esferas nunca são somadas na mesma linha, porque a cota-parte seria contada duas vezes. Onde o painel apresenta o território inteiro, estado e municípios somados, isso é dito de forma explícita, e o Distrito Federal é o único ente em que as duas leituras coincidem, por não ter esfera municipal própria.</p>
 
         <h3>Ressalvas de qualidade dos dados municipais</h3>
         <p>Municípios sinalizados como <span class="badge warn">estimativa aproximada</span> não têm registro individualizado de ISS e cota-parte de ICMS para 2025 no SICONFI; a participação neutra do ente é aproximada pela própria média de sete anos. Municípios sinalizados como <span class="badge err">dado a conferir</span> têm um valor declarado para 2025 que diverge de forma incompatível (mais de 5 vezes) do que a série histórica do próprio ente implicaria: provável falha de preenchimento na fonte primária, não uma mudança real de receita. Nos dois casos, o valor é exibido, mas não entra nos rankings nacionais de maiores ganhos e perdas.</p>
@@ -747,6 +798,28 @@ function fmtRs2(v){ return v==null ? '—' : v.toLocaleString('pt-BR',{minimumFr
 function fmtPctPlain(v, dec){ return v==null ? '—' : v.toLocaleString('pt-BR',{maximumFractionDigits:dec==null?4:dec})+'%'; }
 function norm(s){ return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase(); }
 
+// Termos que o painel usa como se fossem conhecidos, mas não são. O sobrevoo
+// entrega a definição onde a dúvida aparece, e o clique leva ao trecho
+// correspondente da Metodologia, para quem quiser o detalhe.
+const EXPLICACOES = {
+    contrafactual: {
+        titulo: 'Contrafactual',
+        texto: 'Quanto o ente arrecadaria em 2033 <b>se a reforma não existisse</b>: a mesma receita nacional projetada para aquele ano, repartida pela participação que o ente tinha em 2025. Não é a receita de 2025 congelada, e é por isso que a variação compara projeção e contrafactual no mesmo ano, e não 2033 contra 2025.',
+        ancora: 'met-contrafactual',
+    },
+};
+function montarInfos(raiz){
+    (raiz || document).querySelectorAll('.info-wrap[data-info]').forEach(el => {
+        if (el.dataset.pronto) return;
+        const e = EXPLICACOES[el.dataset.info];
+        if (!e) return;
+        el.innerHTML =
+            `<button type="button" class="info-dot" data-goto-metodologia="${e.ancora}" aria-label="O que é o ${e.titulo.toLowerCase()}">i</button>` +
+            `<span class="info-pop" role="tooltip"><b>${e.titulo}.</b> ${e.texto}<em>Clique para abrir a Metodologia.</em></span>`;
+        el.dataset.pronto = '1';
+    });
+}
+
 // ── estado global ──
 let RESULTADOS = null;      // resultados-consolidados-ibs.json
 let NACIONAL = null;        // ibs-projecao-nacional.json
@@ -818,16 +891,21 @@ async function loadCore(){
 // também assume quando a malha do IBGE não carrega.
 function renderMapaTabela(){
     const linhas = UFS.map(uf => {
-        const r = RESULTADOS.por_uf[uf];
+        const r = RESULTADOS.por_uf_estado[uf];
         if (!r) return '';
         const v = r.variacao_por_ano['2033'];
-        return `<tr data-uf="${uf}"><td>${NOMES_UF[uf]}</td><td class="num">${fmtMoney(r.pre_2025)}</td><td class="num">${fmtMoney(r.pos_por_ano['2033'])}</td><td class="num ${clsPct(v)}">${fmtPct(v)}</td></tr>`;
+        // A última coluna preserva a leitura territorial: o mesmo estado somado
+        // aos seus municípios, que é outro recorte e não o do restante da linha.
+        const ag = RESULTADOS.por_uf[uf];
+        const va = ag ? ag.variacao_por_ano['2033'] : null;
+        return `<tr data-uf="${uf}"><td>${NOMES_UF[uf]}</td><td class="num">${fmtMoney(r.pre_2025)}</td><td class="num">${fmtMoney(r.contrafactual_por_ano['2033'])}</td><td class="num">${fmtMoney(r.pos_por_ano['2033'])}</td><td class="num ${clsPct(v)}">${fmtPct(v)}</td><td class="num ${clsPct(va)}">${fmtPct(va)}</td></tr>`;
     }).join('');
     const el = document.getElementById('mapTabela');
-    el.innerHTML = `<table class="data"><thead><tr><th>Estado</th><th class="num">Referência 2025</th><th class="num">Projeção 2033</th><th class="num">Variação</th></tr></thead><tbody>${linhas}</tbody></table>`;
+    el.innerHTML = `<table class="data pin-var pin-name"><thead><tr><th>Estado</th><th class="num">Referência 2025</th><th class="num">Contrafactual 2033<span class="info-wrap" data-info="contrafactual"></span></th><th class="num">Projeção 2033</th><th class="num">Variação</th><th class="num">Variação com municípios</th></tr></thead><tbody>${linhas}</tbody></table>`;
     el.querySelectorAll('tr[data-uf]').forEach(tr => {
         tr.onclick = () => { selectedUf = tr.dataset.uf; showView('estados'); };
     });
+    montarInfos(el);
 }
 
 // Lista ordenada ao lado do mapa: mesma escala de cor da mancha geográfica,
@@ -837,8 +915,8 @@ function renderMapRail(dominio){
     const el = document.getElementById('mapRail');
     if (!el) return;
     const ordenadas = UFS
-        .filter(uf => RESULTADOS.por_uf[uf])
-        .map(uf => ({ uf, v: RESULTADOS.por_uf[uf].variacao_por_ano['2033'] }))
+        .filter(uf => RESULTADOS.por_uf_estado[uf])
+        .map(uf => ({ uf, v: RESULTADOS.por_uf_estado[uf].variacao_por_ano['2033'] }))
         .sort((a, b) => b.v - a.v);
     el.innerHTML = ordenadas.map((e, i) => {
         // O comprimento carrega a magnitude e a cor carrega só a direção. Usar
@@ -875,14 +953,14 @@ function renderContextoNacional(){
     const h2025 = hist[hist.length-1];
     const proj = NACIONAL.projecao;
     const p2033 = proj[proj.length-1];
-    const variacoes = Object.values(RESULTADOS.por_uf).map(v => v.variacao_por_ano['2033']);
+    const variacoes = Object.values(RESULTADOS.por_uf_estado).map(v => v.variacao_por_ano['2033']);
     const nGanha = variacoes.filter(v => v > 0.0005).length;
     const nPerde = variacoes.filter(v => v < -0.0005).length;
     const destPct = p2033.ibs_destino_liquido/p2033.ibs_bruto*100;
     document.getElementById('contextoNacional').innerHTML = `
         <span>Bolo tributário 2025: <b>${fmtMoney(h2025.bolo_nominal)}</b></span>
         <span>Projetado 2033: <b>${fmtMoney(p2033.icms_iss_residual + p2033.ibs_bruto)}</b></span>
-        <span><b>${nGanha}</b> de 27 UFs ganham receita, <b class="neg">${nPerde}</b> perdem</span>
+        <span><b>${nGanha}</b> de 27 governos estaduais ganham receita, <b class="neg">${nPerde}</b> perdem</span>
         <span>IBS já por destino em 2033: <b>${destPct.toLocaleString('pt-BR',{maximumFractionDigits:0})}%</b> (pleno só em 2078)</span>
     `;
 }
@@ -896,7 +974,7 @@ function renderMap(){
     const svg = d3.select(svgEl);
 
     const varByUf = {};
-    Object.entries(RESULTADOS.por_uf).forEach(([uf,v]) => { varByUf[uf] = v.variacao_por_ano['2033']; });
+    Object.entries(RESULTADOS.por_uf_estado).forEach(([uf,v]) => { varByUf[uf] = v.variacao_por_ano['2033']; });
 
     let W = wrapper.clientWidth || 680, H = Math.round(W*0.72);
     svg.attr('width', W).attr('height', H).attr('viewBox', `0 0 ${W} ${H}`);
@@ -948,14 +1026,17 @@ function renderMap(){
     function showTooltip(uf, v, event){
         // O cartão responde de uma vez quem é o ente, quanto varia, de quanto
         // para quanto, e o que acontece se clicar.
-        const r = RESULTADOS.por_uf[uf] || {};
+        const r = RESULTADOS.por_uf_estado[uf] || {};
+        const ag = RESULTADOS.por_uf[uf];
         const linha = (rot, val) => `<div class="map-tooltip-row"><span>${rot}</span><b>${val}</b></div>`;
         tooltip.innerHTML =
             `<div class="map-tooltip-name">${NOMES_UF[uf]||uf}</div>` +
             `<div class="map-tooltip-value ${clsPct(v)}">${fmtPct(v)}</div>` +
             `<div class="map-tooltip-sub">em 2033, contra o cenário sem a reforma</div>` +
             (r.pre_2025 != null ? linha('Referência 2025', fmtMoney(r.pre_2025)) : '') +
+            (r.contrafactual_por_ano ? linha('Contrafactual 2033', fmtMoney(r.contrafactual_por_ano['2033'])) : '') +
             (r.pos_por_ano ? linha('Projeção 2033', fmtMoney(r.pos_por_ano['2033'])) : '') +
+            (ag ? linha('Com municípios', fmtPct(ag.variacao_por_ano['2033'])) : '') +
             `<div class="map-tooltip-hint">Clique para ver a ficha completa →</div>`;
         tooltip.classList.add('visible');
         positionTooltip(event);
@@ -1066,7 +1147,10 @@ document.addEventListener('click', e => { if (!e.target.closest('.hero-search-wr
 function fraseResumo(nome, contra2033, pos2033, varPct){
     const dir = varPct >= 0 ? 'a mais' : 'a menos';
     const cls = varPct >= 0 ? 'pos' : 'neg';
-    return `Sem a reforma, ${nome} arrecadaria ${fmtMoney(contra2033)} em 2033. Com a reforma, a projeção é de ${fmtMoney(pos2033)}: <b class="${cls}">${fmtPct(varPct)}</b> ${dir}.`;
+    // O sinal já está na palavra ("a menos"), então repeti-lo no número
+    // produzia a leitura dupla "−7,7% a menos".
+    const mag = fmtPct(varPct == null ? null : Math.abs(varPct)).replace('+','');
+    return `Sem a reforma, ${nome} arrecadaria ${fmtMoney(contra2033)} em 2033. Com a reforma, a projeção é de ${fmtMoney(pos2033)}: <b class="${cls}">${mag}</b> ${dir}.`;
 }
 
 // Faixa de indicadores no topo da ficha: um número-herói (a variação, que é
@@ -1347,7 +1431,21 @@ function renderFicha(idPrefix, nome, ctx){
     });
 }
 document.addEventListener('click', e => {
-    if (e.target.closest('[data-goto-metodologia]')) { e.preventDefault(); showView('metodologia'); }
+    const alvoMet = e.target.closest('[data-goto-metodologia]');
+    if (alvoMet) {
+        e.preventDefault();
+        showView('metodologia');
+        const ancora = alvoMet.dataset.gotoMetodologia;
+        const destino = ancora && document.getElementById(ancora);
+        // Depois do quadro seguinte: showView leva a página ao topo, e só
+        // então a seção está posicionada para receber o rolamento.
+        if (destino) requestAnimationFrame(() => {
+            destino.scrollIntoView({behavior:'smooth', block:'center'});
+            destino.classList.remove('realce-ancora');
+            void destino.offsetWidth;
+            destino.classList.add('realce-ancora');
+        });
+    }
 });
 
 // ── ESTADOS ──
@@ -1415,18 +1513,19 @@ function renderUfView(){
     ` : '<p style="color:var(--ink-muted);font-size:0.85rem">Não disponível para ' + NOMES_UF[selectedUf] + ' (Distrito Federal não tem esfera municipal própria).</p>';
 
     renderUfMuniTable();
+    montarInfos(document.getElementById('view-estados'));
 }
 
 function ufEntries(){
     const munis = ufMuniCache[selectedUf];
     if (!munis) return [];
-    return Object.entries(munis).map(([cod,m]) => ({ cod, nome:m.nome, pop_media:m.pop_media, pre_2025:m.pre_2025, pos_2033:m.pos_por_ano['2033'], variacao_2033:m.variacao_por_ano['2033'], flag: m.neutro_aproximado||m.neutro_suspeito }));
+    return Object.entries(munis).map(([cod,m]) => ({ cod, nome:m.nome, pop_media:m.pop_media, pre_2025:m.pre_2025, contra_2033:m.contrafactual_por_ano['2033'], pos_2033:m.pos_por_ano['2033'], variacao_2033:m.variacao_por_ano['2033'], flag: m.neutro_aproximado||m.neutro_suspeito }));
 }
 function renderUfMuniTable(){
     const body = document.getElementById('ufMuniBody');
     const more = document.getElementById('ufMuniMore');
     if (!ufMuniCache[selectedUf]) {
-        body.innerHTML = '<tr><td colspan="5" class="table-empty">Carregando municípios…</td></tr>';
+        body.innerHTML = '<tr><td colspan="6" class="table-empty">Carregando municípios…</td></tr>';
         more.style.display = 'none';
         ensureUfMunicipios(selectedUf).then(() => { if (document.getElementById('view-estados').classList.contains('active')) renderUfMuniTable(); });
         return;
@@ -1440,7 +1539,7 @@ function renderUfMuniTable(){
     }
     if (!rows.length) {
         const msg = selectedUf === 'DF' ? 'Distrito Federal não tem esfera municipal própria.' : 'Nenhum município encontrado.';
-        body.innerHTML = '<tr><td colspan="5" class="table-empty">' + msg + '</td></tr>'; more.style.display='none'; return;
+        body.innerHTML = '<tr><td colspan="6" class="table-empty">' + msg + '</td></tr>'; more.style.display='none'; return;
     }
     const shown = rows.slice(0, ufMuniShown);
     body.innerHTML = shown.map(r => `
@@ -1448,6 +1547,7 @@ function renderUfMuniTable(){
             <td>${r.nome}${r.flag?' <span class="badge warn" title="Ver ressalva de qualidade">i</span>':''}</td>
             <td class="num">${fmtNum(r.pop_media)}</td>
             <td class="num">${fmtMoney(r.pre_2025)}</td>
+            <td class="num" style="color:var(--ink-muted)">${fmtMoney(r.contra_2033)}</td>
             <td class="num">${fmtMoney(r.pos_2033)}</td>
             <td class="num ${clsPct(r.variacao_2033)}">${fmtPct(r.variacao_2033)}</td>
         </tr>`).join('');
@@ -1457,7 +1557,8 @@ function renderUfMuniTable(){
 document.getElementById('ufMuniSearch').addEventListener('input', () => { ufMuniShown = 50; renderUfMuniTable(); });
 document.getElementById('ufMuniMore').addEventListener('click', () => { ufMuniShown += 100; renderUfMuniTable(); });
 document.getElementById('ufMuniTable').querySelectorAll('thead th').forEach(th => {
-    th.addEventListener('click', () => {
+    th.addEventListener('click', ev => {
+        if (ev.target.closest('.info-wrap')) return;
         const key = th.dataset.key;
         ufMuniSort = (ufMuniSort.key === key) ? {key, dir:-ufMuniSort.dir} : {key, dir: key==='nome' ? 1 : -1};
         renderUfMuniTable();
@@ -1706,16 +1807,20 @@ async function openMunicipio(cod){
 function renderRankings(){
     // Estados: as 27 UFs cabem inteiras, então mostrar o ranking completo em
     // vez de recortar um topo, que esconderia metade da federação.
+    // A base é a receita do próprio governo estadual, já descontada a
+    // cota-parte dos municípios, a mesma da ficha do ente. Somar o estado aos
+    // seus municípios responde outra pergunta, e misturava as duas leituras.
     const ufsOrdenadas = UFS
-        .filter(uf => RESULTADOS.por_uf[uf])
-        .map(uf => ({ uf, r: RESULTADOS.por_uf[uf], v: RESULTADOS.por_uf[uf].variacao_por_ano['2033'] }))
+        .filter(uf => RESULTADOS.por_uf_estado[uf])
+        .map(uf => ({ uf, r: RESULTADOS.por_uf_estado[uf], v: RESULTADOS.por_uf_estado[uf].variacao_por_ano['2033'] }))
         .sort((a, b) => b.v - a.v);
     const eBody = document.getElementById('rankEstadosBody');
     eBody.innerHTML = ufsOrdenadas.map((e, i) => `
         <tr data-uf="${e.uf}">
-            <td class="num" style="color:var(--ink-muted);font-variant-numeric:tabular-nums">${i+1}</td>
-            <td>${NOMES_UF[e.uf]}</td>
+            <td class="num col-rank" style="color:var(--ink-muted);font-variant-numeric:tabular-nums">${i+1}</td>
+            <td><span class="rank-inline">${i+1}º</span>${NOMES_UF[e.uf]}</td>
             <td class="num">${fmtMoney(e.r.pre_2025)}</td>
+            <td class="num" style="color:var(--ink-muted)">${fmtMoney(e.r.contrafactual_por_ano['2033'])}</td>
             <td class="num">${fmtMoney(e.r.pos_por_ano['2033'])}</td>
             <td class="num ${clsPct(e.v)}">${fmtPct(e.v)}</td>
         </tr>`).join('');
@@ -1727,6 +1832,8 @@ function renderRankings(){
     const rowsHtml = (list, cls) => list.map(m => `
         <tr data-cod="${m.cod}">
             <td>${m.nome} <span class="uf-tag" style="color:var(--ink-muted);font-family:var(--mono);font-size:0.75rem">${m.uf}</span></td>
+            <td class="num" style="color:var(--ink-muted)">${fmtMoney(m.contrafactual_2033)}</td>
+            <td class="num">${fmtMoney(m.pos_2033)}</td>
             <td class="num ${cls}">${fmtPct(m.variacao_2033)}</td>
         </tr>`).join('');
     const gBody = document.getElementById('rankGanhosBody');
@@ -1734,6 +1841,7 @@ function renderRankings(){
     gBody.innerHTML = rowsHtml(d.maiores_ganhos, 'pos');
     pBody.innerHTML = rowsHtml(d.maiores_perdas, 'neg');
     [gBody, pBody].forEach(tb => tb.querySelectorAll('tr').forEach(tr => tr.addEventListener('click', () => { showView('municipios'); openMunicipio(tr.dataset.cod); })));
+    montarInfos(document.getElementById('view-rankings'));
 }
 
 loadCore();
