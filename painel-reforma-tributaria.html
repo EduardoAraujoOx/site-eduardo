@@ -469,10 +469,13 @@ footer.site-foot a:hover{text-decoration:underline}
    segundo número, menor e mais discreto que o principal, porque é apoio,
    não a resposta. Só existe para o governo estadual. */
 /* ── Simulação de alíquota própria ── */
-.sim-controle label{display:block;font-size:0.78rem;font-weight:600;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:0.5rem}
+.sim-controle{background:var(--paper-alt);border-left:3px solid var(--wine);border-radius:var(--radius);padding:1rem 1.2rem;margin-bottom:1.2rem}
+.sim-controle label{display:block;font-size:0.78rem;font-weight:600;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:0.6rem}
 .sim-slider-row{display:flex;align-items:center;gap:0.9rem}
-.sim-slider-row input[type=range]{flex:1;accent-color:var(--navy-mid);height:1.4rem}
-.sim-slider-valor{flex-shrink:0;min-width:11rem;font:600 0.86rem var(--sans);color:var(--navy);text-align:right}
+.sim-slider-row input[type=range]{flex:1;accent-color:var(--wine);height:1.6rem}
+.sim-slider-valor{flex-shrink:0;min-width:12rem;font:700 0.94rem var(--sans);color:var(--navy);text-align:right}
+.sim-reset{flex-shrink:0;border:none;background:none;color:var(--navy-mid);font-size:0.78rem;font-weight:600;text-decoration:underline;text-underline-offset:2px;cursor:pointer;padding:0.2rem 0}
+.sim-reset:disabled{color:var(--ink-muted);text-decoration:none;cursor:default}
 .sim-resultado{margin-top:1rem}
 .sim-linha{display:flex;flex-wrap:wrap;align-items:baseline;gap:0.5rem;padding:0.6rem 0;border-bottom:1px solid var(--border);font-size:0.92rem}
 .sim-linha:last-of-type{border-bottom:none}
@@ -485,9 +488,14 @@ footer.site-foot a:hover{text-decoration:underline}
 .sim-linha-diff{font-size:0.82rem;color:var(--ink-muted)}
 .sim-linha-repasse{flex-basis:100%;font-size:0.78rem;color:var(--ink-muted);font-style:italic}
 .sim-nota{margin-top:0.7rem;font-size:0.78rem;color:var(--ink-muted);line-height:1.55}
+.sim-longo{margin-top:1.3rem;border-top:1px solid var(--border);padding-top:1rem}
+.sim-longo-toggle{border:1px solid var(--border);background:#fff;color:var(--navy-mid);font-size:0.82rem;font-weight:600;padding:0.5rem 0.9rem;border-radius:var(--radius);cursor:pointer}
+.sim-longo-toggle:hover{background:var(--paper-alt)}
+.sim-longo-corpo{margin-top:1rem}
 @media (max-width:520px){
     .sim-slider-row{flex-wrap:wrap}
     .sim-slider-valor{min-width:0;width:100%;text-align:left}
+    .sim-reset{width:100%;text-align:left}
     .sim-linha-ano{width:100%}
 }
 
@@ -771,7 +779,7 @@ footer.site-foot a:hover{text-decoration:underline}
 <section class="view" id="view-simulacoes">
     <div class="view-head">
         <h2>Simulações</h2>
-        <p class="sub">Um cockpit para explorar hipóteses, separado dos dados que o resto do painel relata. Os números aqui são cenários que você escolhe, não a projeção oficial do painel.</p>
+        <p class="sub">Simulações de receita própria de destino, à parte dos dados que o resto do painel relata. Os valores aqui são hipóteses que você ajusta, não a projeção oficial do painel.</p>
     </div>
 
     <div class="panel">
@@ -787,7 +795,7 @@ footer.site-foot a:hover{text-decoration:underline}
 
     <div class="panel accent">
         <h3>Receita própria de destino, acima ou abaixo da referência</h3>
-        <p class="panel-sub">Cada ente vota sua própria alíquota do IBS por lei específica; a alíquota de referência só vale por padrão, na ausência dessa lei. O mesmo desvio também pode vir de uma base mais ampla ou mais estreita do que a referência supõe, por exemplo, fiscalização e sonegação local: o modelo não distingue as duas causas, só o efeito líquido sobre a receita própria de destino. Ajuste abaixo para ver o efeito em <b id="simEnteLabel"></b>, mantendo tudo mais constante.</p>
+        <p class="panel-sub">A referência é a própria projeção deste painel para <b id="simEnteLabel"></b>, a mesma que aparece na ficha do ente: o Comitê Gestor fixa uma alíquota de referência por padrão, mas cada ente pode votar uma alíquota própria, maior ou menor, por lei específica. O mesmo desvio de receita também pode vir de uma base mais ampla ou mais estreita do que a referência supõe, por exemplo, fiscalização e combate à sonegação locais: o modelo não distingue as duas causas, só o efeito líquido sobre a receita própria de destino, e por isso o ajuste abaixo cobre as duas hipóteses de uma vez. Tudo o mais permanece constante.</p>
         <div id="simuSimAliquota"></div>
     </div>
 </section>
@@ -1547,13 +1555,34 @@ function simResultadoHtml(rotulo, base, simulado, repasseNota){
     </div>`;
 }
 
-// Um gráfico de barras por ano, não de linha: são cinco pontos discretos
-// (2029-2033), cada um uma escolha de cenário, não uma série contínua -- uma
-// linha sugeriria uma trajetória entre os pontos que não existe. Vinho para o
-// cenário simulado porque é a cor de destaque já usada no resto da página
-// para o que a pessoa está escolhendo agora, e porque se distingue bem do
-// laranja e do cinza sob daltonismo (validado com validate_palette.js).
+// Linha, não barra: 2029-2033 é uma trajetória de transição real (o
+// cronograma do ADCT art. 130, não escolhas independentes ano a ano), e o
+// que a pessoa quer enxergar é a distância entre duas curvas -- a mesma
+// leitura do gráfico "Projeção com a reforma" x "Cenário sem a reforma" já
+// usado na ficha do ente. A linha simulada começa exatamente sobre essa
+// mesma projeção de referência (delta=0) e se desloca com o ajuste; a área
+// entre as duas curvas torna o efeito visível sem precisar ler números.
+// Vinho para o cenário simulado pelo mesmo motivo de lá: é a cor de destaque
+// do que a pessoa está escolhendo agora, e se distingue bem do cinza sob
+// daltonismo (validado com validate_palette.js).
 const simChartRefs = {};
+
+// Série ano a ano de 2029 a 2077 a partir dos dados de longo prazo
+// (idênticos aos da projeção principal em 2029-2033, conferido por
+// reconciliação). O repasse do Seguro-Receita não pode ser recalculado sob o
+// delta neste horizonte -- só existe publicado como valor agregado por UF a
+// cada ano, sem o numerador/denominador por ente que a fórmula de
+// nivelamento exige -- então fica travado no valor daquele ano em ambos os
+// cenários; só o termo de destino responde ao delta.
+function pontosLongoPrazo(uf, coefNeutro, coefCPT, coefPleno, delta){
+    return LP_NAC.projecao.map(nacAno => {
+        const repasseUf = ((LP_SEGURO.anos[String(nacAno.ano)] || {}).repasse_por_uf || {})[uf];
+        const repasseEstado = (repasseUf && repasseUf.estado) || 0;
+        const termoRepasse = (1 - nacAno.ca) * repasseEstado;
+        const r = cenarioAliquota(nacAno, nacAno.ca, coefCPT, coefPleno, coefNeutro, termoRepasse, delta);
+        return { ano: nacAno.ano, total: r.total, contra: r.contra, variacao: r.variacao };
+    });
+}
 
 async function montarSimAliquota(idPrefix, ctx){
     const alvo = document.getElementById(idPrefix + 'SimAliquota');
@@ -1583,17 +1612,10 @@ async function montarSimAliquota(idPrefix, ctx){
     });
     const base2033 = porAno[porAno.length - 1].base;
 
-    let lpDados = null;
+    let lpBase = null;
     if (ctx.esfera === 'estado') {
         await ensureLongoPrazo();
-        if (LP_NAC && LP_SEGURO) {
-            const nacLongo = LP_NAC.projecao.find(r => r.ano === ANO_LONGO);
-            const repasseLongoBase = ((LP_SEGURO.anos[String(ANO_LONGO)] || {}).repasse_por_uf || {})[ctx.uf];
-            const repasseLongoEstado = (repasseLongoBase && repasseLongoBase.estado) || 0;
-            const caLongo = nacLongo.ca;
-            const termoRepasseLongoBase = (1 - caLongo) * repasseLongoEstado;
-            lpDados = { nacLongo, caLongo, termoRepasseLongoBase };
-        }
+        if (LP_NAC && LP_SEGURO) lpBase = pontosLongoPrazo(ctx.uf, coefNeutro, coefCPT, coefPleno, 0);
     }
 
     function render(deltaPct){
@@ -1619,26 +1641,29 @@ async function montarSimAliquota(idPrefix, ctx){
             repasseNota2033 = `Continua recebendo Seguro-Receita de ${fmtMoney(repasse2033Sim)}; o ganho é quase todo absorvido pela redução do repasse.`;
         }
 
-        let linhaLongo = '';
-        if (lpDados) {
-            // O repasse de longo prazo só existe agregado por UF (sem
-            // separar numerador/denom por ente), então fica travado no
-            // valor de hoje sob o cenário -- só o termo de destino responde,
-            // que já é quase toda a receita neste horizonte (98% em 2077).
-            const baseLongo = cenarioAliquota(lpDados.nacLongo, lpDados.caLongo, coefCPT, coefPleno, coefNeutro, lpDados.termoRepasseLongoBase, 0);
-            const simLongo = cenarioAliquota(lpDados.nacLongo, lpDados.caLongo, coefCPT, coefPleno, coefNeutro, lpDados.termoRepasseLongoBase, delta);
-            linhaLongo = simResultadoHtml(ANO_LONGO + ' (longo prazo)', baseLongo, simLongo);
+        let lpSim = null, linhaLongo = '';
+        if (lpBase) {
+            lpSim = pontosLongoPrazo(ctx.uf, coefNeutro, coefCPT, coefPleno, delta);
+            linhaLongo = simResultadoHtml(ANO_LONGO + ' (longo prazo)', lpBase[lpBase.length - 1], lpSim[lpSim.length - 1]);
         }
 
         document.getElementById(idPrefix + 'SimResultado').innerHTML = `
             ${simResultadoHtml('2033', base2033, sim2033, repasseNota2033)}
             ${linhaLongo}
-            <p class="sim-nota">Cenário estático: mantém o consumo constante, sem modelar resposta de preço nem deslocamento de consumo para entes vizinhos. Só o termo de destino responde; o histórico vem de dados já realizados (2019–2025).${lpDados ? ' Em ' + ANO_LONGO + ', o repasse do Seguro-Receita fica travado no valor de hoje: só existe publicado agregado por UF nesse horizonte, não por ente.' : ''}</p>`;
+            <p class="sim-nota">Cenário estático: mantém o consumo constante, sem modelar resposta de preço nem deslocamento de consumo para entes vizinhos. Só o termo de destino responde; o histórico vem de dados já realizados (2019–2025).${lpBase ? ' Em 2077, o repasse do Seguro-Receita fica travado no valor daquele ano: só existe publicado agregado por UF nesse horizonte, não por ente.' : ''}</p>`;
+
+        const resetBtn = document.getElementById(idPrefix + 'SimReset');
+        if (resetBtn) resetBtn.disabled = delta === 0;
 
         const chart = simChartRefs[idPrefix];
         if (chart) {
-            chart.data.datasets[2].data = simPorAno.map(e => e.sim.total);
+            chart.data.datasets[0].data = simPorAno.map(e => e.sim.total);
             chart.update();
+        }
+        const chartLongo = simChartRefs[idPrefix + 'Longo'];
+        if (chartLongo && lpSim) {
+            chartLongo.data.datasets[0].data = lpSim.map(p => p.total);
+            chartLongo.update();
         }
     }
 
@@ -1648,21 +1673,37 @@ async function montarSimAliquota(idPrefix, ctx){
             <div class="sim-slider-row">
                 <input type="range" id="${idPrefix}SimSlider" min="-30" max="30" step="1" value="0">
                 <span class="sim-slider-valor" id="${idPrefix}SimValor">referência (sem alteração)</span>
+                <button type="button" class="sim-reset" id="${idPrefix}SimReset" disabled>Voltar à referência</button>
             </div>
         </div>
         <div class="chart-box" id="${idPrefix}SimChartBox"><canvas id="${idPrefix}SimChart"></canvas></div>
-        <div class="sim-resultado" id="${idPrefix}SimResultado"></div>`;
+        <div class="sim-resultado" id="${idPrefix}SimResultado"></div>
+        ${lpBase ? `
+        <div class="sim-longo">
+            <button type="button" class="sim-longo-toggle" id="${idPrefix}SimLongoToggle" aria-expanded="false">Ver trajetória completa até 2077 →</button>
+            <div class="sim-longo-corpo" id="${idPrefix}SimLongoCorpo" style="display:none">
+                <div class="chart-box" id="${idPrefix}SimLongoChartBox"><canvas id="${idPrefix}SimLongoChart"></canvas></div>
+            </div>
+        </div>` : ''}`;
+
+    // Marcas: linha de 2px, ponto de 8px com anel de 2px na cor da
+    // superfície (mesma especificação do gráfico-herói da ficha).
+    const linhaMark = { borderWidth: 2, spanGaps: false, tension: 0.1,
+        pointRadius: 4, pointHoverRadius: 6, pointBorderWidth: 2,
+        pointBorderColor: CORES.superficie, hitRadius: 14 };
 
     if (simChartRefs[idPrefix]) simChartRefs[idPrefix].destroy();
     simChartRefs[idPrefix] = new Chart(document.getElementById(idPrefix + 'SimChart'), {
-        type: 'bar',
+        type: 'line',
         data: {
             labels: porAno.map(e => String(e.ano)),
             datasets: [
-                { label: 'Sem a reforma', data: porAno.map(e => e.base.contra), backgroundColor: CORES.contrafactual },
-                { label: 'Referência (sem simulação)', data: porAno.map(e => e.base.total), backgroundColor: CORES.projetado },
-                { label: 'Cenário simulado', data: porAno.map(e => e.base.total), backgroundColor: CORES.vinho },
-            ].map(d => Object.assign(d, { borderRadius: 4, borderSkipped: false, maxBarThickness: 22 })),
+                Object.assign({ label: 'Cenário simulado', data: porAno.map(e => e.base.total),
+                    borderColor: CORES.vinho, backgroundColor: 'rgba(140,58,68,0.10)', pointBackgroundColor: CORES.vinho, fill: '+1' }, linhaMark),
+                Object.assign({ label: 'Sem a reforma', data: porAno.map(e => e.base.contra),
+                    borderColor: CORES.contrafactual, backgroundColor: CORES.contrafactual, pointBackgroundColor: CORES.contrafactual,
+                    borderDash: [5, 4], fill: false }, linhaMark),
+            ],
         },
         options: {
             responsive: true, maintainAspectRatio: false,
@@ -1673,20 +1714,72 @@ async function montarSimAliquota(idPrefix, ctx){
                      ticks: { color: CORES.tintaFraca, font: { size: 11 }, padding: 8, callback: v => fmtMoney(v) } },
             },
             plugins: {
-                legend: { position: 'bottom', labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: 'rectRounded', color: CORES.tinta, font: { size: 11 }, padding: 14 } },
-                tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmtMoney(c.parsed.y) } },
+                legend: { position: 'bottom', labels: { boxWidth: 26, boxHeight: 2, usePointStyle: false, color: CORES.tinta, font: { size: 11 }, padding: 14 } },
+                tooltip: { callbacks: { label: c => c.parsed.y == null ? null : c.dataset.label + ': ' + fmtMoney(c.parsed.y) } },
             },
         },
     });
 
+    if (simChartRefs[idPrefix + 'Longo']) { simChartRefs[idPrefix + 'Longo'].destroy(); delete simChartRefs[idPrefix + 'Longo']; }
+    if (lpBase) {
+        const toggle = document.getElementById(idPrefix + 'SimLongoToggle');
+        const corpo = document.getElementById(idPrefix + 'SimLongoCorpo');
+        toggle.addEventListener('click', () => {
+            const abrindo = corpo.style.display === 'none';
+            corpo.style.display = abrindo ? '' : 'none';
+            toggle.setAttribute('aria-expanded', String(abrindo));
+            toggle.textContent = abrindo ? '← Recolher trajetória de longo prazo' : 'Ver trajetória completa até 2077 →';
+            if (abrindo && !simChartRefs[idPrefix + 'Longo']) {
+                const deltaAtual = Number(document.getElementById(idPrefix + 'SimSlider').value) / 100;
+                const lpSimAtual = pontosLongoPrazo(ctx.uf, coefNeutro, coefCPT, coefPleno, deltaAtual);
+                // Sem marcador em cada ponto: 49 anos de marcas competiria
+                // com a própria linha. O crosshair (interaction: index) faz
+                // o trabalho de leitura ano a ano.
+                const linhaLonga = { borderWidth: 2, spanGaps: false, tension: 0.1,
+                    pointRadius: 0, pointHoverRadius: 4, pointHoverBorderWidth: 2,
+                    pointHoverBorderColor: CORES.superficie, hitRadius: 6 };
+                simChartRefs[idPrefix + 'Longo'] = new Chart(document.getElementById(idPrefix + 'SimLongoChart'), {
+                    type: 'line',
+                    data: {
+                        labels: lpBase.map(p => String(p.ano)),
+                        datasets: [
+                            Object.assign({ label: 'Cenário simulado', data: lpSimAtual.map(p => p.total),
+                                borderColor: CORES.vinho, backgroundColor: 'rgba(140,58,68,0.10)', pointBackgroundColor: CORES.vinho, fill: '+1' }, linhaLonga),
+                            Object.assign({ label: 'Sem a reforma', data: lpBase.map(p => p.contra),
+                                borderColor: CORES.contrafactual, backgroundColor: CORES.contrafactual, pointBackgroundColor: CORES.contrafactual,
+                                borderDash: [5, 4], fill: false }, linhaLonga),
+                        ],
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        scales: {
+                            x: { grid: { display: false }, border: { color: CORES.eixo },
+                                 ticks: { color: CORES.tintaFraca, font: { size: 11 }, autoSkip: true, maxTicksLimit: 10 } },
+                            y: { grid: { color: CORES.grade, drawTicks: false }, border: { display: false },
+                                 ticks: { color: CORES.tintaFraca, font: { size: 11 }, padding: 8, callback: v => fmtMoney(v) } },
+                        },
+                        plugins: {
+                            legend: { position: 'bottom', labels: { boxWidth: 26, boxHeight: 2, usePointStyle: false, color: CORES.tinta, font: { size: 11 }, padding: 14 } },
+                            tooltip: { callbacks: { label: c => c.parsed.y == null ? null : c.dataset.label + ': ' + fmtMoney(c.parsed.y) } },
+                        },
+                    },
+                });
+            }
+        });
+    }
+
     const slider = document.getElementById(idPrefix + 'SimSlider');
     const valorEl = document.getElementById(idPrefix + 'SimValor');
-    slider.addEventListener('input', () => {
-        const v = Number(slider.value);
+    const resetBtn = document.getElementById(idPrefix + 'SimReset');
+    const atualizar = v => {
+        slider.value = v;
         valorEl.textContent = v === 0 ? 'referência (sem alteração)' : Math.abs(v) + '% ' + (v > 0 ? 'acima' : 'abaixo') + ' da referência';
         render(v);
-    });
-    render(0);
+    };
+    slider.addEventListener('input', () => atualizar(Number(slider.value)));
+    resetBtn.addEventListener('click', () => atualizar(0));
+    atualizar(0);
 }
 
 // ── aba Simulações: seletor de ente próprio, independente do da Memória de
