@@ -546,6 +546,10 @@ footer.site-foot a:hover{text-decoration:underline}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h2M12 10h2M16 10h.01M8 14h2M12 14h2M16 14v4M8 18h6"/></svg>
             Coeficientes
         </button>
+        <button class="tab-btn" data-view="simulacoes">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21v-7M4 10V3M12 21v-11M12 6V3M20 21v-5M20 12V3M1 14h6M9 6h6M17 16h6"/></svg>
+            Simulações
+        </button>
         <button class="tab-btn" data-view="metodologia">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
             Metodologia
@@ -763,6 +767,31 @@ footer.site-foot a:hover{text-decoration:underline}
     <div id="memoConteudo"></div>
 </section>
 
+<!-- ============ SIMULAÇÕES ============ -->
+<section class="view" id="view-simulacoes">
+    <div class="view-head">
+        <h2>Simulações</h2>
+        <p class="sub">Um cockpit para explorar hipóteses, separado dos dados que o resto do painel relata. Os números aqui são cenários que você escolhe, não a projeção oficial do painel.</p>
+    </div>
+
+    <div class="panel">
+        <div class="memo-seletor">
+            <div class="comp-toggle" id="simEsferaToggle">
+                <button type="button" data-esfera="estado" class="active">Governo estadual</button>
+                <button type="button" data-esfera="municipio">Município</button>
+            </div>
+            <select class="select-uf" id="simUfSelect" aria-label="Selecionar unidade da federação"></select>
+            <span id="simMuniWrap" style="display:none"><select class="select-uf" id="simMuniSelect" aria-label="Selecionar município"></select></span>
+        </div>
+    </div>
+
+    <div class="panel accent">
+        <h3>Receita própria de destino, acima ou abaixo da referência</h3>
+        <p class="panel-sub">Cada ente vota sua própria alíquota do IBS por lei específica; a alíquota de referência só vale por padrão, na ausência dessa lei. O mesmo desvio também pode vir de uma base mais ampla ou mais estreita do que a referência supõe, por exemplo, fiscalização e sonegação local: o modelo não distingue as duas causas, só o efeito líquido sobre a receita própria de destino. Ajuste abaixo para ver o efeito em <b id="simEnteLabel"></b>, mantendo tudo mais constante.</p>
+        <div id="simuSimAliquota"></div>
+    </div>
+</section>
+
 <!-- ============ METODOLOGIA ============ -->
 <section class="view" id="view-metodologia">
     <div class="view-head">
@@ -795,8 +824,9 @@ footer.site-foot a:hover{text-decoration:underline}
         <p>Um exemplo torna a distinção concreta. Um estado cuja receita cresce em termos reais entre 2025 e 2033 pode, ainda assim, aparecer com variação negativa no painel: ele cresce menos do que cresceria se nada tivesse mudado. O sinal responde à pergunta do gestor, que é o efeito da mudança de regra sobre o próprio ente, e não à pergunta sobre o tamanho da economia.</p>
 
         <h3 id="met-aliquota">O que pode, e o que não pode, fechar esse gap</h3>
-        <p>Duas explicações circulam sobre como um ente reduziria uma variação negativa, e valem respostas diferentes. A primeira, ampliação de base tributária, não opera dentro do horizonte que este painel projeta (2029–2033), e isso não é uma limitação do modelo: é o próprio desenho legal. O ADCT (art. 130) manda fixar a alíquota de referência "de forma a assegurar" que a receita reproduza a razão histórica entre a receita de referência e o PIB, e a LC 214/2025 (arts. 361 a 365) detalha essa regra como a média da razão bolo/PIB de 2024 a 2026, fixa para os cinco anos da transição. Se a base ficar mais ampla, a alíquota de referência recalculada compensa exatamente essa ampliação, para manter a mesma proporção histórica. Uma base mais ampla é um argumento real a favor da eficiência do tributo, mas atua sobre o nível de alíquota necessário para arrecadar o mesmo, não sobre a distância entre critério histórico e critério destino que este painel mede.</p>
-        <p>A segunda, alíquota própria acima ou abaixo da referência, é uma alavanca real que o painel simula na ficha de cada ente. Cada ente vota sua própria alíquota do IBS por lei específica; a alíquota de referência só vale por padrão, na ausência dessa lei. Diferente de um choque de PIB, que multiplica igualmente "com a reforma" e "sem a reforma" e por isso se cancela, uma alíquota própria move só o termo de destino da fórmula, sem afetar o contrafactual, que está ancorado em 2025. O efeito é pequeno em 2033, porque o critério de destino ainda pesa só 10% do IBS bruto nesse ano (91% do IBS ainda vem do critério histórico, que não responde a nenhuma decisão de alíquota tomada agora); cresce muito depois, à medida que o peso do destino sobe no cronograma do ADCT, até 98% em 2077. Para um ente que já recebe Seguro-Receita, o efeito é ainda menor no curto prazo: como o fundo completa a receita do ente até um nível comum, um aumento de alíquota reduz o repasse quase na mesma proporção em que aumenta a receita própria, e o ganho líquido só aparece de verdade depois que a alíquota sobe o bastante para dispensar o repasse por completo. A simulação mostra esse efeito explicitamente, junto com o número.</p>
+        <p>Duas explicações circulam sobre como um ente reduziria uma variação negativa, e a resposta depende de uma distinção que vale a pena separar com cuidado: se a mudança é nacional e uniforme, ou local e específica de um ente.</p>
+        <p>Uma ampliação de base <b>nacional e uniforme</b>, o país inteiro sonegando um pouco menos de forma parecida, por exemplo, não move esse gap, pelo mesmo motivo que um choque de PIB não move: ela infla o bolo projetado por igual para todo mundo, entra tanto no "com a reforma" quanto no contrafactual de cada ente, e cancela na razão. A alíquota de referência em si é calibrada uma única vez, pelo ADCT (art. 130) e pela LC 214/2025 (arts. 361 a 365), para reproduzir a razão histórica entre a receita de referência e o PIB de 2024 a 2026, fixa para os cinco anos da transição; essa calibração trava apenas a base já observada até 2026, não recalcula ano a ano o que acontece depois. Existe um teto de segurança para uma ampliação nacional grande demais (ADCT art. 130, §§4º-5º), mas ele só atua a partir de 2035, fora do horizonte deste painel.</p>
+        <p>Uma ampliação de base <b>local</b>, um ente específico fiscalizando melhor ou reduzindo a sonegação só na sua própria jurisdição, é outra história, e mecanicamente é a mesma conta que votar uma alíquota própria acima da referência: as duas aumentam só a receita de destino daquele ente, sem mexer no contrafactual, que está ancorado em 2025. O modelo não distingue as duas causas, só o efeito líquido sobre a receita, e por isso a aba Simulações trata as duas juntas, sob o nome "receita própria de destino, acima ou abaixo da referência". Diferente de um choque de PIB, esse efeito não se cancela. Ele é pequeno em 2033, porque o critério de destino ainda pesa só 10% do IBS bruto nesse ano (91% ainda vem do critério histórico, que não responde a nenhuma decisão tomada agora); cresce muito depois, à medida que o peso do destino sobe no cronograma do ADCT, até 98% em 2077. Para um ente que já recebe Seguro-Receita, o efeito é ainda menor no curto prazo: como o fundo completa a receita do ente até um nível comum, a receita a mais reduz o repasse quase na mesma proporção, e o ganho líquido só aparece de verdade depois que o desvio é grande o bastante para dispensar o repasse por completo. A simulação mostra esse efeito explicitamente, junto com o número.</p>
 
         <h3 id="met-memoria">Memória de cálculo por ente</h3>
         <p>Os coeficientes descritos acima não ficam só como resultado. A aba Coeficientes refaz, para o ente que a pessoa escolher, a derivação completa dos três componentes: a receita de referência ano a ano até o φ<sup>CPT</sup>, o consumo estimado até o φ<sup>dest</sup>, e a razão de nivelamento ano a ano até o repasse do Seguro-Receita. Os valores aparecem sem abreviação e com o denominador explícito, de modo que a conta possa ser repetida numa planilha e conferida contra o que o painel publica.</p>
@@ -961,12 +991,13 @@ function showView(name){
     // antes de os dados existirem; nesse caso quem desenha é o loadCore.
     if (name === 'municipios' && MUNI_INDEX) renderMuniMapa();
     if (name === 'coeficientes' && ESTADOS) renderMemoria();
+    if (name === 'simulacoes' && ESTADOS) renderSimulacoes();
     window.scrollTo({top:0});
     history.replaceState(null, '', '#' + name);
 }
 tabs.forEach(t => t.addEventListener('click', () => showView(t.dataset.view)));
 const initialHash = location.hash.replace('#','');
-if (['visao-geral','estados','municipios','rankings','coeficientes','metodologia','sobre'].includes(initialHash)) {
+if (['visao-geral','estados','municipios','rankings','coeficientes','simulacoes','metodologia','sobre'].includes(initialHash)) {
     showView(initialHash);
 }
 
@@ -1402,11 +1433,7 @@ function fichaSectionsHtml(idPrefix){
                 <div id="${idPrefix}Historico"></div>
             </div>
         </div>
-        <div class="panel accent">
-            <h3>Simulação: alíquota própria diferente da referência</h3>
-            <p class="panel-sub">Cada ente vota sua própria alíquota do IBS por lei específica; a alíquota de referência só vale por padrão, na ausência dessa lei. Ajuste abaixo para ver o efeito, mantendo tudo mais constante.</p>
-            <div id="${idPrefix}SimAliquota"></div>
-        </div>
+        <button type="button" class="memo-link" data-abrir-simulacao="${idPrefix}">Simular receita própria deste ente →</button>
         <p style="font-size:0.78rem;color:var(--ink-muted);margin-top:-0.4rem">Estimativa própria (não oficial), a partir de dados do SICONFI/STN, IBGE e Censo/POF. Veja como em <a href="#metodologia" data-goto-metodologia style="color:var(--teal-dark);font-weight:600">Metodologia</a>.</p>
     `;
 }
@@ -1567,7 +1594,7 @@ async function montarSimAliquota(idPrefix, ctx){
         if (repasse2033Base > 1 && Math.abs(repasse2033Sim - repasse2033Base) > 1) {
             repasseNota2033 = `O Seguro-Receita absorve parte do ganho: repasse cai de ${fmtMoney(repasse2033Base)} para ${fmtMoney(repasse2033Sim)}.`;
         } else if (repasse2033Base > 1 && delta !== 0) {
-            repasseNota2033 = `Continua recebendo Seguro-Receita de ${fmtMoney(repasse2033Sim)}; o ganho da alíquota é quase todo absorvido pela redução do repasse.`;
+            repasseNota2033 = `Continua recebendo Seguro-Receita de ${fmtMoney(repasse2033Sim)}; o ganho é quase todo absorvido pela redução do repasse.`;
         }
 
         let linhaLongo = '';
@@ -1589,7 +1616,7 @@ async function montarSimAliquota(idPrefix, ctx){
 
     alvo.innerHTML = `
         <div class="sim-controle">
-            <label for="${idPrefix}SimSlider">Alíquota própria, em relação à referência</label>
+            <label for="${idPrefix}SimSlider">Receita própria de destino, em relação à referência</label>
             <div class="sim-slider-row">
                 <input type="range" id="${idPrefix}SimSlider" min="-30" max="30" step="1" value="0">
                 <span class="sim-slider-valor" id="${idPrefix}SimValor">referência (sem alteração)</span>
@@ -1607,6 +1634,54 @@ async function montarSimAliquota(idPrefix, ctx){
     render(0);
 }
 
+// ── aba Simulações: seletor de ente próprio, independente do da Memória de
+// cálculo, para a pessoa poder ter as duas abas abertas em fichas diferentes ──
+const SIM_ENTE = { esfera: 'estado', uf: DEFAULT_UF, cod: null };
+
+function abrirSimulacao(esfera, uf, cod){
+    SIM_ENTE.esfera = esfera; SIM_ENTE.uf = uf; SIM_ENTE.cod = cod || null;
+    showView('simulacoes');
+}
+
+function renderSimulacoes(){
+    if (!ESTADOS) return;
+    const selUf = document.getElementById('simUfSelect');
+    if (!selUf.options.length) selUf.innerHTML = UFS.map(u => `<option value="${u}">${NOMES_UF[u]}</option>`).join('');
+    selUf.value = SIM_ENTE.uf;
+    document.querySelectorAll('#simEsferaToggle button').forEach(b => b.classList.toggle('active', b.dataset.esfera === SIM_ENTE.esfera));
+    document.getElementById('simMuniWrap').style.display = SIM_ENTE.esfera === 'municipio' ? '' : 'none';
+
+    if (SIM_ENTE.esfera === 'estado') {
+        document.getElementById('simEnteLabel').textContent = NOMES_UF[SIM_ENTE.uf];
+        montarSimAliquota('simu', buildEstadoCtx(SIM_ENTE.uf));
+        return;
+    }
+    ensureUfMunicipios(SIM_ENTE.uf).then(munis => {
+        if (!document.getElementById('view-simulacoes').classList.contains('active')) return;
+        const sel = document.getElementById('simMuniSelect');
+        const lista = Object.entries(munis).sort((a,b) => a[1].nome.localeCompare(b[1].nome,'pt-BR'));
+        if (!lista.length) {
+            document.getElementById('simEnteLabel').textContent = '';
+            document.getElementById('simuSimAliquota').innerHTML = '<p class="table-empty">O Distrito Federal não tem esfera municipal própria; use Governo estadual.</p>';
+            return;
+        }
+        sel.innerHTML = lista.map(([c,m]) => `<option value="${c}">${m.nome}</option>`).join('');
+        if (!SIM_ENTE.cod || !munis[SIM_ENTE.cod]) SIM_ENTE.cod = lista[0][0];
+        sel.value = SIM_ENTE.cod;
+        document.getElementById('simEnteLabel').textContent = munis[SIM_ENTE.cod].nome + ' (' + SIM_ENTE.uf + ')';
+        montarSimAliquota('simu', buildMunicipioCtx(munis[SIM_ENTE.cod], SIM_ENTE.cod));
+    });
+}
+document.querySelectorAll('#simEsferaToggle button').forEach(b => {
+    b.onclick = () => { SIM_ENTE.esfera = b.dataset.esfera; renderSimulacoes(); };
+});
+document.getElementById('simUfSelect').addEventListener('change', e => {
+    SIM_ENTE.uf = e.target.value; SIM_ENTE.cod = null; renderSimulacoes();
+});
+document.getElementById('simMuniSelect').addEventListener('change', e => {
+    SIM_ENTE.cod = e.target.value; renderSimulacoes();
+});
+
 function renderFicha(idPrefix, nome, ctx){
     fichaChartRefs[idPrefix] = fichaChartRefs[idPrefix] || {};
     const refs = fichaChartRefs[idPrefix];
@@ -1616,7 +1691,6 @@ function renderFicha(idPrefix, nome, ctx){
     document.getElementById(idPrefix+'CoefTiles').innerHTML = coefTilesHtml(ctx.neutro, ctx.cpt, ctx.pleno);
     document.getElementById(idPrefix+'Seguro').innerHTML = seguroCardHtml(ctx.repasse, ctx.posByYear);
     document.getElementById(idPrefix+'Historico').innerHTML = historicoTableHtml(ctx.historico, ctx.fieldKey);
-    montarSimAliquota(idPrefix, ctx);
 
     const labels = [...HIST_ANOS.map(String), ...ANOS.map(String)];
     const histData = labels.map(l => { const y=Number(l); return (y<=2025 && ctx.historico && ctx.historico[l]) ? ctx.historico[l][ctx.fieldKey] : null; });
@@ -1682,6 +1756,12 @@ document.addEventListener('click', e => {
     if (botaoMemo) {
         if (botaoMemo.dataset.abrirMemoria === 'uf') abrirMemoria('estado', selectedUf);
         else if (muniAberto) abrirMemoria('municipio', muniAberto.uf, muniAberto.cod);
+        return;
+    }
+    const botaoSim = e.target.closest('[data-abrir-simulacao]');
+    if (botaoSim) {
+        if (botaoSim.dataset.abrirSimulacao === 'uf') abrirSimulacao('estado', selectedUf);
+        else if (muniAberto) abrirSimulacao('municipio', muniAberto.uf, muniAberto.cod);
         return;
     }
     if (e.target.closest('[data-abrir-memoria-destino]')) {
