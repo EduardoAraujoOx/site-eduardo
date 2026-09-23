@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>A Máquina da Moeda | Economia Monetária</title>
+  <meta name="description" content="Jogo de sala sobre operações de mercado aberto, reservas bancárias, crédito, depósitos e multiplicação monetária.">
+  <meta name="author" content="Eduardo Reis Araújo">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/ensino/maquina-da-moeda.html">
+  <link rel="stylesheet" href="/css/maquina-moeda.css?v=1">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">M</div>
+        <div class="brand-text">
+          <div class="brand-title">A Máquina da Moeda</div>
+          <div class="brand-sub">Economia Monetária · Mishkin, Capítulo 15</div>
+        </div>
+      </div>
+      <div class="top-actions">
+        <a class="top-link" href="/ensino/em-cap15-oferta-de-moeda.html">Voltar ao capítulo</a>
+        <button class="ghost-btn" id="projectorBtn" type="button">Modo projetor</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Jogo de sala · criação de moeda</div>
+      <h1>A Máquina da Moeda</h1>
+      <p class="hero-lead">O professor opera como Banco Central. Um aluno representa o dealer, dois representam bancos comerciais e os demais formam a sequência de consumidores. A cada jogada, a turma acompanha o que acontece com reservas, depósitos, crédito, base monetária e meios de pagamento.</p>
+    </div>
+    <div class="hero-card">
+      <div class="hero-card-title">A distinção que o jogo precisa deixar clara</div>
+      <p><strong>A operação de mercado aberto aumenta a base monetária.</strong> Depois disso, empréstimos e depósitos sucessivos podem ampliar os meios de pagamento sem criar nova base monetária a cada rodada. É justamente essa diferença que o placar acompanha.</p>
+    </div>
+  </section>
+
+  <main class="app-shell">
+    <div class="layout">
+      <aside class="panel control-panel">
+        <div class="panel-head">
+          <h2>Configuração da experiência</h2>
+          <p>Comece pelo caso do livro texto. Depois altere o comportamento dos bancos e do público.</p>
+        </div>
+        <div class="control-body">
+          <div class="presets">
+            <button class="preset active" data-preset="textbook">Livro texto</button>
+            <button class="preset" data-preset="cautious">Bancos cautelosos</button>
+            <button class="preset" data-preset="cash">Mais papel-moeda</button>
+            <button class="preset" data-preset="crisis">Crise</button>
+          </div>
+
+          <div class="field">
+            <div class="field-row"><label for="omo">Compra do BC</label><span class="value-chip" id="omoValue">R$ 1.000</span></div>
+            <input id="omo" type="range" min="100" max="5000" step="100" value="1000">
+            <div class="mini-note">Valor do título comprado pelo Banco Central do dealer.</div>
+          </div>
+
+          <div class="field">
+            <div class="field-row"><label for="reserve">Compulsório</label><span class="value-chip" id="reserveValue">10%</span></div>
+            <input id="reserve" type="range" min="0" max="50" step="5" value="10">
+          </div>
+
+          <div class="field">
+            <div class="field-row"><label for="lend">Parcela emprestada do valor disponível</label><span class="value-chip" id="lendValue">100%</span></div>
+            <input id="lend" type="range" min="0" max="100" step="5" value="100">
+            <div class="mini-note">A parcela não emprestada funciona como reserva excedente no jogo.</div>
+          </div>
+
+          <div class="field">
+            <div class="field-row"><label for="cash">Parcela do empréstimo mantida em espécie</label><span class="value-chip" id="cashValue">0%</span></div>
+            <input id="cash" type="range" min="0" max="50" step="5" value="0">
+          </div>
+
+          <div class="field">
+            <div class="field-row"><label for="rounds">Rodadas bancárias</label><span class="value-chip" id="roundsValue">7</span></div>
+            <input id="rounds" type="range" min="3" max="12" step="1" value="7">
+          </div>
+
+          <div class="field">
+            <div class="field-row"><label for="consumers">Consumidores em sala</label></div>
+            <input id="consumers" type="number" min="4" max="40" value="10">
+          </div>
+
+          <div class="role-strip">
+            <strong>Papéis</strong>
+            <span>Professor: Banco Central</span>
+            <span>1 aluno: dealer, começa com um título público</span>
+            <span>2 alunos: Banco A e Banco B</span>
+            <span id="consumerRoles">10 alunos: Consumidores 1 a 10</span>
+          </div>
+
+          <button class="primary-btn" id="restartBtn" type="button">Reiniciar com estes parâmetros</button>
+          <button class="secondary-btn" id="printBtn" type="button">Imprimir roteiro e resultados</button>
+        </div>
+      </aside>
+
+      <section class="game-area">
+        <div class="score-grid">
+          <div class="score-card"><div class="score-label">Base monetária ΔB</div><div class="score-value" id="scoreBase">R$ 0</div><div class="score-sub">Reservas + papel-moeda</div></div>
+          <div class="score-card"><div class="score-label">Depósitos criados</div><div class="score-value" id="scoreDeposits">R$ 0</div><div class="score-sub">Saldo agregado no jogo</div></div>
+          <div class="score-card"><div class="score-label">Papel-moeda</div><div class="score-value" id="scoreCash">R$ 0</div><div class="score-sub">Fora dos bancos</div></div>
+          <div class="score-card"><div class="score-label">Meios de pagamento ΔM</div><div class="score-value" id="scoreMoney">R$ 0</div><div class="score-sub">Depósitos + espécie</div></div>
+          <div class="score-card"><div class="score-label">Multiplicador realizado</div><div class="score-value" id="scoreMultiplier">0,00×</div><div class="score-sub">ΔM ÷ ΔB</div></div>
+        </div>
+
+        <section class="panel stage">
+          <div class="stage-top">
+            <div>
+              <div class="round-kicker" id="stepKicker">Antes de começar</div>
+              <h2 class="stage-title" id="stepTitle">Distribua os papéis pela sala</h2>
+            </div>
+            <div class="stage-status" id="stepStatus">Jogada 0 de 15</div>
+          </div>
+          <div class="stage-body">
+            <div class="actors" id="actors"></div>
+
+            <div class="action-card">
+              <div class="action-label" id="actionLabel">Preparação</div>
+              <div class="action-text" id="actionText">O dealer recebe um cartão que representa um título público. Os bancos e consumidores começam sem novos saldos decorrentes desta experiência.</div>
+              <div class="action-explain" id="actionExplain">Peça aos alunos que acompanhem dois números durante todo o jogo: a base monetária e os meios de pagamento. Eles não se comportam da mesma forma.</div>
+              <div class="flow" id="flow"></div>
+              <div class="delta-row" id="deltas"></div>
+              <div class="teacher-prompt" id="teacherPrompt"><strong>Pergunta para a turma:</strong> de onde virá o primeiro real novo de base monetária?</div>
+            </div>
+
+            <div class="nav-row">
+              <button class="nav-btn" id="prevBtn" type="button" disabled>Jogada anterior</button>
+              <button class="nav-btn next" id="nextBtn" type="button">Iniciar operação de mercado aberto</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel ledger">
+          <div class="ledger-head"><h3>Livro razão da experiência</h3><span>Os valores são acumulados após cada jogada</span></div>
+          <div class="ledger-scroll">
+            <table>
+              <thead><tr><th>#</th><th>Evento</th><th>ΔB</th><th>Depósitos</th><th>Espécie</th><th>ΔM</th><th>Crédito</th><th>m realizado</th></tr></thead>
+              <tbody id="ledgerBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </div>
+
+    <section class="panel debrief">
+      <div>
+        <h2>Fechamento da discussão</h2>
+        <p>O jogo usa a lógica do multiplicador simples para tornar os balanços visíveis. O ponto essencial é separar o choque inicial de base monetária da expansão subsequente de depósitos e crédito. Na contabilidade bancária moderna, o empréstimo cria um depósito no momento da concessão; as reservas são necessárias para a liquidação dos pagamentos entre bancos e para atender às exigências do sistema.</p>
+        <div class="question-list">
+          <div class="question">1. Em qual jogada a base monetária aumentou?</div>
+          <div class="question">2. Por que os meios de pagamento continuaram crescendo depois que a base ficou constante?</div>
+          <div class="question">3. O que acontece quando os bancos decidem emprestar menos?</div>
+          <div class="question">4. O que muda quando o público prefere manter parte do dinheiro em espécie?</div>
+          <div class="question">5. Por que o Banco Central controla a base com mais precisão do que a oferta de moeda?</div>
+        </div>
+      </div>
+      <div class="formula-box">
+        <div class="label">Caso simplificado do livro texto</div>
+        <div class="formula">m = 1 / r</div>
+        <p>Quando os bancos emprestam todo o valor disponível, não há reservas excedentes e o público redeposita integralmente os recursos, o multiplicador de depósitos converge para o inverso da taxa de compulsório.</p>
+        <div class="result-line"><span>Limite teórico de depósitos</span><strong id="theoreticalDeposits">R$ 10.000</strong></div>
+        <div class="result-line"><span>Resultado do jogo em ΔM</span><strong id="finalMoney">R$ 0</strong></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">Prof. Eduardo Araújo · Fucape Business School · Economia Monetária</footer>
+
+  <script src="/js/maquina-moeda.js?v=1"></script>
+</body>
+</html>
