@@ -1915,7 +1915,12 @@ function memoHistoricoHtml(ctx){
     const media = validos.length ? validos.reduce((x,y)=>x+y, 0) / anos.length : null;
     const coef = media != null ? media / totalBr * 100 : null;
     const ref2025 = ctx.historico['2025'] ? ctx.historico['2025'][ctx.campoTotal] : null;
-    const neutro = ref2025 != null ? ref2025 / totalBr * 100 : null;
+    // Quando 2025 falta no SICONFI (município novo, ausente da DCA daquele ano),
+    // a rotina usa o próprio φCPT no lugar da participação neutra, em vez de
+    // deixar o contrafactual desse ente sem base nenhuma. É a mesma regra por
+    // trás do selo "estimativa aproximada" que aparece nas demais abas.
+    const neutroAproximado = ref2025 == null && coef != null;
+    const neutro = ref2025 != null ? ref2025 / totalBr * 100 : (neutroAproximado ? coef : null);
 
     const colunas = ctx.colunas;
     const cab = colunas.map(c => `<th class="num">${c.rotulo}</th>`).join('');
@@ -1951,7 +1956,9 @@ function memoHistoricoHtml(ctx){
             <div class="formula">${fmtExato(media)} ${op('÷')} ${fmtExato(totalBr)} ${op('=')} <span class="res">${fmtPctPlain(coef, 6)}</span>
                 ${confere(coef, ctx.coefPublicado)}</div>`)}
 
-        ${passoHtml(4, 'Participação neutra, para comparação', `
+        ${passoHtml(4, 'Participação neutra, para comparação', neutroAproximado ? `
+            <p>A participação neutra usa só o ano de 2025, em vez da média de sete anos, e é a fatia com que o painel monta o contrafactual de cada ano. Este ente não tem registro individualizado de 2025 no SICONFI, então a rotina usa em seu lugar o próprio φ<sup>CPT</sup> do passo 3, calculado com os anos disponíveis.</p>
+            <div class="formula">${fmtPctPlain(neutro, 6)} <span class="formula-nota">Igual ao φ<sup>CPT</sup> acima, por construção: é a aproximação que o painel adota quando falta 2025, não um segundo cálculo.</span></div>` : `
             <p>A participação neutra não é o φ<sup>CPT</sup>: usa só o ano de 2025, em vez da média de sete anos, e é a fatia com que o painel monta o contrafactual de cada ano.</p>
             <div class="formula">${fmtExato(ref2025)} ${op('÷')} ${fmtExato(totalBr)} ${op('=')} <span class="res">${fmtPctPlain(neutro, 6)}</span></div>`)}
     </div>`;
