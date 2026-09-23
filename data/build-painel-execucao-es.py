@@ -78,6 +78,17 @@ def build_kpis(serie_saude):
     exec_pago = sum(r["pago"] for r in exec_ugs)
     exec_gap = exec_liq - exec_pago
 
+    # Gap do Executivo inteiro no MESMO corte de calendario em 2025, somando a
+    # serie diaria por UG (execucao-executivo-es.json), nao a fotografia de
+    # fechamento de 31/dez de orcamentos-execucoes-es.json -- senao compararia
+    # o gap em curso de 2026 (hoje) com o fechamento de um exercicio ja
+    # encerrado, o mesmo erro de "ano em curso vs. ano fechado" ja corrigido
+    # em build_gap_mesmo_corte_por_ug() para a tabela por UG.
+    gap_corte_por_ug = build_gap_mesmo_corte_por_ug()
+    exec_gap_corte_2025 = (
+        sum(v[2025] for v in gap_corte_por_ug.values() if 2025 in v) if gap_corte_por_ug else None
+    )
+
     fes = next(r for r in ano_atual if r["codigo_ug"] == FES_CODIGO_UG)
     fes_2024 = next(r for r in orc["por_ano"]["2024"]["registros"] if r["codigo_ug"] == FES_CODIGO_UG)
     fes_2025 = next(r for r in orc["por_ano"]["2025"]["registros"] if r["codigo_ug"] == FES_CODIGO_UG)
@@ -103,6 +114,7 @@ def build_kpis(serie_saude):
             "liquidado": round(exec_liq, 2),
             "pago": round(exec_pago, 2),
             "gap": round(exec_gap, 2),
+            "gap_mesmo_corte_2025": round(exec_gap_corte_2025, 2) if exec_gap_corte_2025 is not None else None,
             "prazo_p50_2025": geral_prazo[2025]["dias_p50"],
             "prazo_p50_2026": geral_prazo[2026]["dias_p50"],
             "prazo_p90_2025": geral_prazo[2025]["dias_p90"],

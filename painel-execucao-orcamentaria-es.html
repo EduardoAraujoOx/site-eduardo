@@ -362,7 +362,12 @@ function render(d) {
     document.getElementById('kpiLiquidado').textContent = fmtR$M(k.executivo.liquidado);
     document.getElementById('kpiPago').textContent = fmtR$M(k.executivo.pago);
     document.getElementById('kpiGap').textContent = fmtR$M(k.executivo.gap);
-    document.getElementById('kpiGapFoot').textContent = `${(k.executivo.gap/k.executivo.liquidado*100).toLocaleString('pt-BR',{maximumFractionDigits:1})}% do liquidado no ano`;
+    const pctLiquidadoGap = (k.executivo.gap/k.executivo.liquidado*100).toLocaleString('pt-BR',{maximumFractionDigits:1});
+    const gapCorte2025 = k.executivo.gap_mesmo_corte_2025;
+    const razaoGap = gapCorte2025 ? (k.executivo.gap/gapCorte2025*100 - 100) : null;
+    const razaoGapTexto = razaoGap == null ? 'sem comparação' :
+        `${razaoGap >= 0 ? '+' : ''}${razaoGap.toLocaleString('pt-BR',{maximumFractionDigits:1})}% vs. mesmo período de 2025`;
+    document.getElementById('kpiGapFoot').textContent = `${pctLiquidadoGap}% do liquidado no ano · ${razaoGapTexto}`;
     document.getElementById('kpiPrazoP50').textContent = fmtDias(k.executivo.prazo_p50_2026);
     document.getElementById('kpiPrazoP90').textContent = fmtDias(k.executivo.prazo_p90_2026);
 
