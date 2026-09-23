@@ -905,7 +905,7 @@ const CORES = {
     realizado:'#0080a3', projetado:'#eb6834', contrafactual:'#6b6b6b',
     divNeg:'#a02525', divMid:'#f0efec', divPos:'#1c5cab',
     superficie:'#ffffff', grade:'#e9edf0', eixo:'#c8d0d6',
-    tinta:'#141414', tintaFraca:'#6b6b6b',
+    tinta:'#141414', tintaFraca:'#6b6b6b', vinho:'#8c3a44',
 };
 
 // O sinal sai do valor já arredondado: sem isso, uma variação de -0,004%
@@ -1547,25 +1547,41 @@ function simResultadoHtml(rotulo, base, simulado, repasseNota){
     </div>`;
 }
 
+// Um gráfico de barras por ano, não de linha: são cinco pontos discretos
+// (2029-2033), cada um uma escolha de cenário, não uma série contínua -- uma
+// linha sugeriria uma trajetória entre os pontos que não existe. Vinho para o
+// cenário simulado porque é a cor de destaque já usada no resto da página
+// para o que a pessoa está escolhendo agora, e porque se distingue bem do
+// laranja e do cinza sob daltonismo (validado com validate_palette.js).
+const simChartRefs = {};
+
 async function montarSimAliquota(idPrefix, ctx){
     const alvo = document.getElementById(idPrefix + 'SimAliquota');
     if (!alvo) return;
     alvo.innerHTML = '<p class="table-empty">Carregando…</p>';
 
-    const nac2033 = NACIONAL.projecao.find(r => r.ano === 2033);
     const coefNeutro = ctx.neutro / 100, coefCPT = ctx.cpt / 100, coefPleno = ctx.pleno / 100;
-    const ca2033 = nac2033.ca;
-    const repasse2033Base = (ctx.repasse && ctx.repasse['2033']) || 0;
-    const termoRepasse2033Base = (1 - ca2033) * repasse2033Base;
-    const base2033 = cenarioAliquota(nac2033, ca2033, coefCPT, coefPleno, coefNeutro, termoRepasse2033Base, 0);
 
-    // numerador/denom_capado do próprio ente, para recalcular o repasse sob
-    // o cenário: já vêm publicados na memória de cálculo, então não é
-    // preciso reprojetar o nivelamento nacional inteiro para este uso.
+    // numerador/denom_capado do próprio ente, ano a ano: já vêm publicados na
+    // memória de cálculo, então não é preciso reprojetar o nivelamento
+    // nacional inteiro para este uso.
     const memo = await ensureMemoUf(ctx.uf);
-    const seg2033 = memo && (ctx.esfera === 'estado'
-        ? memo.seguro_estado['2033']
-        : (memo.seguro_municipios[ctx.cod] || {})['2033']);
+    const seguroPorAno = memo && (ctx.esfera === 'estado'
+        ? memo.seguro_estado
+        : (memo.seguro_municipios[ctx.cod] || {}));
+
+    // Uma entrada por ano de 2029 a 2033, com tudo que não depende do delta
+    // já calculado uma vez: o cenário de referência (delta=0) e o
+    // contrafactual, que é o mesmo em qualquer cenário porque está ancorado
+    // em 2025.
+    const porAno = ANOS.map(a => {
+        const nacAno = NACIONAL.projecao.find(r => r.ano === a);
+        const seg = seguroPorAno && seguroPorAno[String(a)];
+        const repasseBase = (ctx.repasse && ctx.repasse[String(a)]) || 0;
+        const termoRepasseBase = (1 - nacAno.ca) * repasseBase;
+        return { ano: a, nacAno, seg, repasseBase, base: cenarioAliquota(nacAno, nacAno.ca, coefCPT, coefPleno, coefNeutro, termoRepasseBase, 0) };
+    });
+    const base2033 = porAno[porAno.length - 1].base;
 
     let lpDados = null;
     if (ctx.esfera === 'estado') {
@@ -1582,9 +1598,15 @@ async function montarSimAliquota(idPrefix, ctx){
 
     function render(deltaPct){
         const delta = deltaPct / 100;
-        const repasse2033Sim = seg2033 ? repasseSimulado(seg2033.num, seg2033.den, seg2033.rep, delta) : repasse2033Base;
-        const termoRepasse2033Sim = (1 - ca2033) * repasse2033Sim;
-        const sim2033 = cenarioAliquota(nac2033, ca2033, coefCPT, coefPleno, coefNeutro, termoRepasse2033Sim, delta);
+        const simPorAno = porAno.map(e => {
+            const repasseSim = e.seg ? repasseSimulado(e.seg.num, e.seg.den, e.seg.rep, delta) : e.repasseBase;
+            const termoRepasseSim = (1 - e.nacAno.ca) * repasseSim;
+            return { ano: e.ano, repasseBase: e.repasseBase, repasseSim, sim: cenarioAliquota(e.nacAno, e.nacAno.ca, coefCPT, coefPleno, coefNeutro, termoRepasseSim, delta) };
+        });
+        const sim2033 = simPorAno[simPorAno.length - 1].sim;
+        const repasse2033Base = porAno[porAno.length - 1].repasseBase;
+        const repasse2033Sim = simPorAno[simPorAno.length - 1].repasseSim;
+
         // Quando o ente já recebe Seguro-Receita, a receita própria a mais
         // reduz o repasse quase na mesma proporção, porque o fundo só
         // completa o ente até um nível comum: o ganho líquido de quem está
@@ -1612,6 +1634,12 @@ async function montarSimAliquota(idPrefix, ctx){
             ${simResultadoHtml('2033', base2033, sim2033, repasseNota2033)}
             ${linhaLongo}
             <p class="sim-nota">Cenário estático: mantém o consumo constante, sem modelar resposta de preço nem deslocamento de consumo para entes vizinhos. Só o termo de destino responde; o histórico vem de dados já realizados (2019–2025).${lpDados ? ' Em ' + ANO_LONGO + ', o repasse do Seguro-Receita fica travado no valor de hoje: só existe publicado agregado por UF nesse horizonte, não por ente.' : ''}</p>`;
+
+        const chart = simChartRefs[idPrefix];
+        if (chart) {
+            chart.data.datasets[2].data = simPorAno.map(e => e.sim.total);
+            chart.update();
+        }
     }
 
     alvo.innerHTML = `
@@ -1622,7 +1650,34 @@ async function montarSimAliquota(idPrefix, ctx){
                 <span class="sim-slider-valor" id="${idPrefix}SimValor">referência (sem alteração)</span>
             </div>
         </div>
+        <div class="chart-box" id="${idPrefix}SimChartBox"><canvas id="${idPrefix}SimChart"></canvas></div>
         <div class="sim-resultado" id="${idPrefix}SimResultado"></div>`;
+
+    if (simChartRefs[idPrefix]) simChartRefs[idPrefix].destroy();
+    simChartRefs[idPrefix] = new Chart(document.getElementById(idPrefix + 'SimChart'), {
+        type: 'bar',
+        data: {
+            labels: porAno.map(e => String(e.ano)),
+            datasets: [
+                { label: 'Sem a reforma', data: porAno.map(e => e.base.contra), backgroundColor: CORES.contrafactual },
+                { label: 'Referência (sem simulação)', data: porAno.map(e => e.base.total), backgroundColor: CORES.projetado },
+                { label: 'Cenário simulado', data: porAno.map(e => e.base.total), backgroundColor: CORES.vinho },
+            ].map(d => Object.assign(d, { borderRadius: 4, borderSkipped: false, maxBarThickness: 22 })),
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            scales: {
+                x: { grid: { display: false }, border: { color: CORES.eixo }, ticks: { color: CORES.tintaFraca, font: { size: 11 } } },
+                y: { grid: { color: CORES.grade, drawTicks: false }, border: { display: false },
+                     ticks: { color: CORES.tintaFraca, font: { size: 11 }, padding: 8, callback: v => fmtMoney(v) } },
+            },
+            plugins: {
+                legend: { position: 'bottom', labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: 'rectRounded', color: CORES.tinta, font: { size: 11 }, padding: 14 } },
+                tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmtMoney(c.parsed.y) } },
+            },
+        },
+    });
 
     const slider = document.getElementById(idPrefix + 'SimSlider');
     const valorEl = document.getElementById(idPrefix + 'SimValor');
