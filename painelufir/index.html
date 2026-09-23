@@ -488,8 +488,6 @@ footer.site-foot a:hover{text-decoration:underline}
 .sim-linha-diff{font-size:0.82rem;color:var(--ink-muted)}
 .sim-linha-repasse{flex-basis:100%;font-size:0.78rem;color:var(--ink-muted);font-style:italic}
 .sim-nota{margin-top:0.7rem;font-size:0.78rem;color:var(--ink-muted);line-height:1.55}
-.sim-efeito-label{font-size:0.78rem;font-weight:600;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.03em;margin:1.3rem 0 0.5rem}
-.chart-box-mini{height:140px}
 .sim-longo{margin-top:1.3rem;border-top:1px solid var(--border);padding-top:1rem}
 .sim-longo-toggle{border:1px solid var(--border);background:#fff;color:var(--navy-mid);font-size:0.82rem;font-weight:600;padding:0.5rem 0.9rem;border-radius:var(--radius);cursor:pointer}
 .sim-longo-toggle:hover{background:var(--paper-alt)}
@@ -1662,16 +1660,6 @@ async function montarSimAliquota(idPrefix, ctx){
             chart.data.datasets[0].data = simPorAno.map(e => e.sim.total);
             chart.update();
         }
-        // O efeito (sim - referência) tem magnitude muito menor que o total
-        // da receita, então no gráfico principal um ajuste pequeno é
-        // praticamente invisível -- a escala é dominada pelas curvas
-        // inteiras. Este gráfico isola só a diferença, na sua própria
-        // escala, para que qualquer ajuste, por menor que seja, apareça.
-        const chartEfeito = simChartRefs[idPrefix + 'Efeito'];
-        if (chartEfeito) {
-            chartEfeito.data.datasets[0].data = simPorAno.map((e, i) => e.sim.total - porAno[i].base.total);
-            chartEfeito.update();
-        }
         const chartLongo = simChartRefs[idPrefix + 'Longo'];
         if (chartLongo && lpSim) {
             chartLongo.data.datasets[0].data = lpSim.map(p => p.total);
@@ -1689,8 +1677,6 @@ async function montarSimAliquota(idPrefix, ctx){
             </div>
         </div>
         <div class="chart-box" id="${idPrefix}SimChartBox"><canvas id="${idPrefix}SimChart"></canvas></div>
-        <p class="sim-efeito-label">Efeito do ajuste na receita de destino, por ano</p>
-        <div class="chart-box chart-box-mini" id="${idPrefix}SimEfeitoBox"><canvas id="${idPrefix}SimEfeitoChart"></canvas></div>
         <div class="sim-resultado" id="${idPrefix}SimResultado"></div>
         ${lpBase ? `
         <div class="sim-longo">
@@ -1712,8 +1698,16 @@ async function montarSimAliquota(idPrefix, ctx){
         data: {
             labels: porAno.map(e => String(e.ano)),
             datasets: [
+                // Nasce sobreposta à Referência (delta=0) e se separa dela
+                // conforme o ajuste -- é a série que o controle abaixo move.
                 Object.assign({ label: 'Cenário simulado', data: porAno.map(e => e.base.total),
                     borderColor: CORES.vinho, backgroundColor: 'rgba(140,58,68,0.10)', pointBackgroundColor: CORES.vinho, fill: '+1' }, linhaMark),
+                // Fixa: a projeção padrão deste painel (delta=0), a mesma
+                // que aparece no gráfico-herói da ficha do ente, e por isso
+                // na mesma cor laranja. A área entre ela e o Cenário
+                // simulado é o efeito do ajuste.
+                Object.assign({ label: 'Referência', data: porAno.map(e => e.base.total),
+                    borderColor: CORES.projetado, backgroundColor: CORES.projetado, pointBackgroundColor: CORES.projetado, fill: false }, linhaMark),
                 Object.assign({ label: 'Sem a reforma', data: porAno.map(e => e.base.contra),
                     borderColor: CORES.contrafactual, backgroundColor: CORES.contrafactual, pointBackgroundColor: CORES.contrafactual,
                     borderDash: [5, 4], fill: false }, linhaMark),
@@ -1730,36 +1724,6 @@ async function montarSimAliquota(idPrefix, ctx){
             plugins: {
                 legend: { position: 'bottom', labels: { boxWidth: 26, boxHeight: 2, usePointStyle: false, color: CORES.tinta, font: { size: 11 }, padding: 14 } },
                 tooltip: { callbacks: { label: c => c.parsed.y == null ? null : c.dataset.label + ': ' + fmtMoney(c.parsed.y) } },
-            },
-        },
-    });
-
-    // Barra divergente, escala própria: o eixo se ajusta à magnitude do
-    // efeito em si, nunca à receita inteira, então um ajuste de 1% continua
-    // visível. Sem legenda -- uma só série, e o rótulo acima do gráfico já
-    // diz o que é.
-    if (simChartRefs[idPrefix + 'Efeito']) simChartRefs[idPrefix + 'Efeito'].destroy();
-    simChartRefs[idPrefix + 'Efeito'] = new Chart(document.getElementById(idPrefix + 'SimEfeitoChart'), {
-        type: 'bar',
-        data: {
-            labels: porAno.map(e => String(e.ano)),
-            datasets: [
-                Object.assign({ label: 'Efeito', data: porAno.map(() => 0),
-                    backgroundColor: c => (c.raw ?? 0) >= 0 ? CORES.divPos : CORES.divNeg },
-                    { borderRadius: 4, borderSkipped: false, maxBarThickness: 22 }),
-            ],
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            interaction: { mode: 'index', intersect: false },
-            scales: {
-                x: { grid: { display: false }, border: { color: CORES.eixo }, ticks: { color: CORES.tintaFraca, font: { size: 11 } } },
-                y: { grid: { color: CORES.grade, drawTicks: false }, border: { display: false }, grace: '15%',
-                     ticks: { color: CORES.tintaFraca, font: { size: 10 }, padding: 6, maxTicksLimit: 4, callback: v => fmtMoney(v) } },
-            },
-            plugins: {
-                legend: { display: false },
-                tooltip: { callbacks: { label: c => (c.parsed.y >= 0 ? '+' : '') + fmtMoney(c.parsed.y) } },
             },
         },
     });
@@ -1789,6 +1753,8 @@ async function montarSimAliquota(idPrefix, ctx){
                         datasets: [
                             Object.assign({ label: 'Cenário simulado', data: lpSimAtual.map(p => p.total),
                                 borderColor: CORES.vinho, backgroundColor: 'rgba(140,58,68,0.10)', pointBackgroundColor: CORES.vinho, fill: '+1' }, linhaLonga),
+                            Object.assign({ label: 'Referência', data: lpBase.map(p => p.total),
+                                borderColor: CORES.projetado, backgroundColor: CORES.projetado, pointBackgroundColor: CORES.projetado, fill: false }, linhaLonga),
                             Object.assign({ label: 'Sem a reforma', data: lpBase.map(p => p.contra),
                                 borderColor: CORES.contrafactual, backgroundColor: CORES.contrafactual, pointBackgroundColor: CORES.contrafactual,
                                 borderDash: [5, 4], fill: false }, linhaLonga),
