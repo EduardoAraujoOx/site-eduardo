@@ -465,6 +465,13 @@ footer.site-foot a:hover{text-decoration:underline}
     .passo-n{width:1.4rem;height:1.4rem;font-size:0.7rem}
     .formula{font-size:0.75rem}
 }
+/* Faixa entre o menor e o maior método de estimar o consumo (φdest): um
+   segundo número, menor e mais discreto que o principal, porque é apoio,
+   não a resposta. Só existe para o governo estadual. */
+.stat-hero-faixa{display:block;width:100%;margin-top:0.3rem;padding:0;border:none;background:none;font:inherit;font-size:0.76rem;color:var(--ink-muted);text-align:left;cursor:pointer}
+.stat-hero-faixa:hover{color:var(--navy-mid);text-decoration:underline}
+.stat-hero-faixa b{color:var(--ink);font-weight:600}
+.stat-hero-faixa:hover b{color:var(--navy-mid)}
 @keyframes realce-ancora{from{background:#dfe8f4}to{background:transparent}}
 .realce-ancora{animation:realce-ancora 2.6s ease-out;border-radius:6px}
 </style>
@@ -892,6 +899,7 @@ function montarInfos(raiz){
 let RESULTADOS = null;      // resultados-consolidados-ibs.json
 let NACIONAL = null;        // ibs-projecao-nacional.json
 let ESTADOS = null;         // painel-estados.json .estados
+let FAIXA_DEST = null;      // faixa-phi-dest-estados.json (só governo estadual)
 let MUNI_INDEX = null;      // painel-municipios/index.json .municipios (cod -> {nome,uf})
 const ufMuniCache = {};     // uf -> {cod: registro completo}
 const ufMuniPromises = {};
@@ -937,16 +945,18 @@ if (['visao-geral','estados','municipios','rankings','coeficientes','metodologia
 
 // ── carregamento dos dados principais (leves; municípios completos são por UF, sob demanda) ──
 async function loadCore(){
-    const [r1, r2, r3, r4] = await Promise.all([
+    const [r1, r2, r3, r4, r5] = await Promise.all([
         fetch('/data/resultados-consolidados-ibs.json').then(r=>r.json()),
         fetch('/data/ibs-projecao-nacional.json').then(r=>r.json()),
         fetch('/data/painel-estados.json').then(r=>r.json()),
         fetch('/data/painel-municipios/index.json').then(r=>r.json()),
+        fetch('/data/faixa-phi-dest-estados.json').then(r=>r.ok ? r.json() : null).catch(()=>null),
     ]);
     RESULTADOS = r1;
     NACIONAL = r2;
     ESTADOS = r3.estados;
     MUNI_INDEX = r4.municipios;
+    FAIXA_DEST = r5;
     renderContextoNacional();
     renderMapaTabela();
     renderMap();
@@ -1227,6 +1237,14 @@ function fraseResumo(nome, contra2033, pos2033, varPct){
 // Faixa de indicadores no topo da ficha: um número-herói (a variação, que é
 // a pergunta que o gestor traz) e três medidas de apoio. O sinal + ou −
 // acompanha sempre o número, para que a leitura não dependa da cor.
+// Só o governo estadual tem faixa (ver docstring de build-faixa-phi-dest.py);
+// municípios chegam aqui sem ctx.faixaDest e a função devolve vazio.
+function faixaDestHtml(faixa){
+    if (!faixa) return '';
+    const min = faixa.min_2033, max = faixa.max_2033;
+    return `<button type="button" class="stat-hero-faixa" data-abrir-memoria-destino="1">Entre <b>${fmtPct(min.variacao/100)}</b> e <b>${fmtPct(max.variacao/100)}</b> em 2033, conforme o método de estimar o consumo do estado →</button>`;
+}
+
 function statBandHtml(ctx){
     const v = ctx.varByYear['2033'];
     const cls = v == null ? '' : (v >= 0 ? 'pos' : 'neg');
@@ -1239,6 +1257,7 @@ function statBandHtml(ctx){
             <div class="stat-label">Variação em 2033</div>
             <div class="stat-hero-value ${cls}">${fmtPct(v)}</div>
             <div class="stat-hero-note">${rumo}</div>
+            ${faixaDestHtml(ctx.faixaDest)}
         </div>
         <div class="stat-tiles">
             <div class="stat-tile">
@@ -1488,6 +1507,10 @@ document.addEventListener('click', e => {
         else if (muniAberto) abrirMemoria('municipio', muniAberto.uf, muniAberto.cod);
         return;
     }
+    if (e.target.closest('[data-abrir-memoria-destino]')) {
+        abrirMemoria('estado', selectedUf, null, 'destino');
+        return;
+    }
     const alvoMet = e.target.closest('[data-goto-metodologia]');
     if (alvoMet) {
         e.preventDefault();
@@ -1527,6 +1550,7 @@ function buildEstadoCtx(uf){
         cpt: edata.coef_cpt_estado_pct,
         pleno: edata.coef_pleno_estado_pct,
         repasse: edata.repasse_seguro_receita_por_ano.estado,
+        faixaDest: FAIXA_DEST && FAIXA_DEST.por_uf[uf],
     };
 }
 
@@ -1965,7 +1989,26 @@ function memoHistoricoHtml(ctx){
 }
 
 // ── seção 2: coeficiente de destino ──
-function memoDestinoEstadoHtml(refs){
+function faixaDestPassoHtml(faixa){
+    if (!faixa) return '';
+    const linhas = Object.entries(faixa.metodos).map(([chave, m]) => {
+        const meta = FAIXA_DEST.metodos[chave];
+        const publicado = chave === FAIXA_DEST.metodo_publicado;
+        return `<tr${publicado ? ' style="font-weight:700"' : ''}>
+            <td>${meta.rotulo}${publicado ? ' <span class="badge ok">publicado</span>' : ''}</td>
+            <td class="num">${fmtPctPlain(m.coef_pleno_estado_pct, 6)}</td>
+            <td class="num ${clsPct(m.variacao_por_ano['2033']/100)}">${fmtPct(m.variacao_por_ano['2033']/100)}</td>
+        </tr>`;
+    }).join('');
+    return passoHtml(4, 'E se o método de estimar o consumo fosse outro?', `
+        <p>Os quatro métodos abaixo estimam a mesma coisa, a massa de consumo do estado, por caminhos diferentes. O painel publica o primeiro; os outros três, incluindo a tabela de Gobetti e Monteiro (2023), servem de comparação. Trocar o método muda também o repasse do Seguro-Receita de todos os entes, porque desloca a régua de nivelamento nacional; por isso a variação abaixo já vem recalculada com esse efeito, não é só o coeficiente sozinho.</p>
+        <div class="table-wrap" style="margin-top:0.6rem">
+            <table class="data" style="font-size:0.78rem"><thead><tr><th>Método</th><th class="num">Coeficiente do estado</th><th class="num">Variação em 2033</th></tr></thead><tbody>${linhas}</tbody></table>
+        </div>
+        <p style="margin-top:0.5rem">Amplitude entre o menor e o maior método: <b>${fmtNum2(faixa.amplitude_2033_pp, 2)} pontos percentuais</b> em 2033. Essa amplitude tende a crescer depois de 2033, à medida que o peso do critério de destino sobe no cronograma do ADCT.</p>`);
+}
+
+function memoDestinoEstadoHtml(refs, faixa){
     const somaBr = MEMO_NAC.soma_produto_pof_censo_br;
     const fracE = MEMO_NAC.frac_estado_pct;
     const phiUf = refs.produto_uf / somaBr * 100;
@@ -1988,6 +2031,8 @@ function memoDestinoEstadoHtml(refs){
             <div class="formula">${fmtPctPlain(phiUf, 6)} ${op('×')} ${fmtNum2(fracE, 2)}% ${op('=')} <span class="res">${fmtPctPlain(coefEstado, 6)}</span>
                 <span class="formula-nota">Coeficiente de destino do governo estadual, já líquido da cota-parte dos municípios.</span>${confere(coefEstado, refs.coef_estado_pct)}</div>
             <p>Os ${fmtNum2(MEMO_NAC.frac_muni_pct, 2)}% restantes, equivalentes a ${fmtPctPlain(refs.coef_municipios_pct, 6)} do IBS nacional, vão ao conjunto dos municípios desta UF: ${fmtPctPlain(refs.cota_parte_municipios_pct, 6)} como cota-parte e ${fmtPctPlain(refs.propria_municipios_pct, 6)} como destino próprio.</p>`)}
+
+        ${faixaDestPassoHtml(faixa)}
 
         <div class="memo-ressalva">
             <p><b>O que esta estimativa não é.</b> A POF mede despesa familiar por unidade da federação, não por município, e é de 2017–2018. O painel a combina com a contagem de domicílios de 2022 para atualizar a escala, mas a estrutura de consumo permanece a da pesquisa original. O número não é o cálculo oficial do Comitê Gestor do IBS.</p>
@@ -2080,9 +2125,9 @@ function memoSeguroHtml(serie, mediaReferencia, nomeEsfera){
 }
 
 // ── orquestração ──
-function abrirMemoria(esfera, uf, cod){
+function abrirMemoria(esfera, uf, cod, secao){
     MEMO.esfera = esfera; MEMO.uf = uf; MEMO.cod = cod || null;
-    MEMO.secao = 'historico';
+    MEMO.secao = secao || 'historico';
     showView('coeficientes');
 }
 
@@ -2147,7 +2192,7 @@ function renderMemoria(){
             };
             corpo = memoHistoricoHtml(ctx);
         } else if (MEMO.secao === 'destino') {
-            corpo = ehEstado ? memoDestinoEstadoHtml(memo.refs) : memoDestinoMuniHtml(memo.refs, m, MEMO.cod);
+            corpo = ehEstado ? memoDestinoEstadoHtml(memo.refs, FAIXA_DEST && FAIXA_DEST.por_uf[MEMO.uf]) : memoDestinoMuniHtml(memo.refs, m, MEMO.cod);
         } else {
             const serie = ehEstado ? memo.seguro_estado : (memo.seguro_municipios[MEMO.cod] || null);
             const mediaRef = ehEstado
