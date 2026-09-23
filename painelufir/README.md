@@ -33,6 +33,7 @@ repositório, replique manualmente aqui (ou peça para o Claude replicar):
 - `data/malha-municipios.json` (malha do mapa municipal)
 - `data/memoria-calculo/` (pasta inteira: `nacional.json` + um arquivo por UF)
 - `data/faixa-phi-dest-estados.json` (faixa entre os quatro métodos de coeficiente de destino)
+- `data/ibs-projecao-longo-prazo.json` e `data/seguro-receita-repasses-longo-prazo.json` (horizonte 2077, usados na simulação de alíquota própria)
 - `images/brasao-es.png`, `images/brasao-es-branco.png`
 
 Diferenças propositais em relação ao arquivo original, e apenas estas três:

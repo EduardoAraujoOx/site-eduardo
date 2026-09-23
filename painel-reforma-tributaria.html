@@ -468,6 +468,29 @@ footer.site-foot a:hover{text-decoration:underline}
 /* Faixa entre o menor e o maior método de estimar o consumo (φdest): um
    segundo número, menor e mais discreto que o principal, porque é apoio,
    não a resposta. Só existe para o governo estadual. */
+/* ── Simulação de alíquota própria ── */
+.sim-controle label{display:block;font-size:0.78rem;font-weight:600;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:0.5rem}
+.sim-slider-row{display:flex;align-items:center;gap:0.9rem}
+.sim-slider-row input[type=range]{flex:1;accent-color:var(--navy-mid);height:1.4rem}
+.sim-slider-valor{flex-shrink:0;min-width:11rem;font:600 0.86rem var(--sans);color:var(--navy);text-align:right}
+.sim-resultado{margin-top:1rem}
+.sim-linha{display:flex;flex-wrap:wrap;align-items:baseline;gap:0.5rem;padding:0.6rem 0;border-bottom:1px solid var(--border);font-size:0.92rem}
+.sim-linha:last-of-type{border-bottom:none}
+.sim-linha-ano{width:7.5rem;flex-shrink:0;font-weight:700;color:var(--navy)}
+.sim-linha-de{color:var(--ink-muted);font-variant-numeric:tabular-nums}
+.sim-linha-seta{color:var(--ink-muted)}
+.sim-linha-para{font-weight:700;font-variant-numeric:tabular-nums}
+.sim-linha-para.pos,.sim-linha-diff.pos{color:var(--pos)}
+.sim-linha-para.neg,.sim-linha-diff.neg{color:var(--neg)}
+.sim-linha-diff{font-size:0.82rem;color:var(--ink-muted)}
+.sim-linha-repasse{flex-basis:100%;font-size:0.78rem;color:var(--ink-muted);font-style:italic}
+.sim-nota{margin-top:0.7rem;font-size:0.78rem;color:var(--ink-muted);line-height:1.55}
+@media (max-width:520px){
+    .sim-slider-row{flex-wrap:wrap}
+    .sim-slider-valor{min-width:0;width:100%;text-align:left}
+    .sim-linha-ano{width:100%}
+}
+
 .stat-hero-faixa{display:block;width:100%;margin-top:0.3rem;padding:0;border:none;background:none;font:inherit;font-size:0.76rem;color:var(--ink-muted);text-align:left;cursor:pointer}
 .stat-hero-faixa:hover{color:var(--navy-mid);text-decoration:underline}
 .stat-hero-faixa b{color:var(--ink);font-weight:600}
@@ -770,6 +793,10 @@ footer.site-foot a:hover{text-decoration:underline}
         <h3 id="met-contrafactual">O contrafactual, e por que a variação não é 2033 contra 2025</h3>
         <p>Comparar a receita projetada para 2033 com a de 2025 mediria sobretudo o crescimento da economia no intervalo, não o efeito da reforma. O painel compara, por isso, dois cenários do mesmo ano. O contrafactual de um ente em 2033 é a receita nacional de referência projetada para aquele ano repartida pela participação que o ente tinha em 2025, isto é, quanto ele arrecadaria se as regras antigas continuassem valendo e sua fatia do bolo permanecesse a de hoje. A projeção, ao lado, é quanto o ente arrecada sob as regras novas, com o cronograma do ADCT já aplicado. A variação exibida é a diferença entre as duas, e mede apenas a reforma.</p>
         <p>Um exemplo torna a distinção concreta. Um estado cuja receita cresce em termos reais entre 2025 e 2033 pode, ainda assim, aparecer com variação negativa no painel: ele cresce menos do que cresceria se nada tivesse mudado. O sinal responde à pergunta do gestor, que é o efeito da mudança de regra sobre o próprio ente, e não à pergunta sobre o tamanho da economia.</p>
+
+        <h3 id="met-aliquota">O que pode, e o que não pode, fechar esse gap</h3>
+        <p>Duas explicações circulam sobre como um ente reduziria uma variação negativa, e valem respostas diferentes. A primeira, ampliação de base tributária, não opera dentro do horizonte que este painel projeta (2029–2033), e isso não é uma limitação do modelo: é o próprio desenho legal. O ADCT (art. 130) manda fixar a alíquota de referência "de forma a assegurar" que a receita reproduza a razão histórica entre a receita de referência e o PIB, e a LC 214/2025 (arts. 361 a 365) detalha essa regra como a média da razão bolo/PIB de 2024 a 2026, fixa para os cinco anos da transição. Se a base ficar mais ampla, a alíquota de referência recalculada compensa exatamente essa ampliação, para manter a mesma proporção histórica. Uma base mais ampla é um argumento real a favor da eficiência do tributo, mas atua sobre o nível de alíquota necessário para arrecadar o mesmo, não sobre a distância entre critério histórico e critério destino que este painel mede.</p>
+        <p>A segunda, alíquota própria acima ou abaixo da referência, é uma alavanca real que o painel simula na ficha de cada ente. Cada ente vota sua própria alíquota do IBS por lei específica; a alíquota de referência só vale por padrão, na ausência dessa lei. Diferente de um choque de PIB, que multiplica igualmente "com a reforma" e "sem a reforma" e por isso se cancela, uma alíquota própria move só o termo de destino da fórmula, sem afetar o contrafactual, que está ancorado em 2025. O efeito é pequeno em 2033, porque o critério de destino ainda pesa só 10% do IBS bruto nesse ano (91% do IBS ainda vem do critério histórico, que não responde a nenhuma decisão de alíquota tomada agora); cresce muito depois, à medida que o peso do destino sobe no cronograma do ADCT, até 98% em 2077. Para um ente que já recebe Seguro-Receita, o efeito é ainda menor no curto prazo: como o fundo completa a receita do ente até um nível comum, um aumento de alíquota reduz o repasse quase na mesma proporção em que aumenta a receita própria, e o ganho líquido só aparece de verdade depois que a alíquota sobe o bastante para dispensar o repasse por completo. A simulação mostra esse efeito explicitamente, junto com o número.</p>
 
         <h3 id="met-memoria">Memória de cálculo por ente</h3>
         <p>Os coeficientes descritos acima não ficam só como resultado. A aba Coeficientes refaz, para o ente que a pessoa escolher, a derivação completa dos três componentes: a receita de referência ano a ano até o φ<sup>CPT</sup>, o consumo estimado até o φ<sup>dest</sup>, e a razão de nivelamento ano a ano até o repasse do Seguro-Receita. Os valores aparecem sem abreviação e com o denominador explícito, de modo que a conta possa ser repetida numa planilha e conferida contra o que o painel publica.</p>
@@ -1375,6 +1402,11 @@ function fichaSectionsHtml(idPrefix){
                 <div id="${idPrefix}Historico"></div>
             </div>
         </div>
+        <div class="panel accent">
+            <h3>Simulação: alíquota própria diferente da referência</h3>
+            <p class="panel-sub">Cada ente vota sua própria alíquota do IBS por lei específica; a alíquota de referência só vale por padrão, na ausência dessa lei. Ajuste abaixo para ver o efeito, mantendo tudo mais constante.</p>
+            <div id="${idPrefix}SimAliquota"></div>
+        </div>
         <p style="font-size:0.78rem;color:var(--ink-muted);margin-top:-0.4rem">Estimativa própria (não oficial), a partir de dados do SICONFI/STN, IBGE e Censo/POF. Veja como em <a href="#metodologia" data-goto-metodologia style="color:var(--teal-dark);font-weight:600">Metodologia</a>.</p>
     `;
 }
@@ -1431,6 +1463,150 @@ function composicaoTabelaHtml(componentesPorAno, asPercent){
 }
 
 const fichaChartRefs = {};
+// ── SIMULAÇÃO: ALÍQUOTA PRÓPRIA ──
+// O ente vota sua própria alíquota do IBS por lei específica; a alíquota de
+// referência só vale por padrão. Isso só move o termo de destino da fórmula
+// (o histórico vem de dados 2019-2025 já realizados, e o contrafactual está
+// ancorado em 2025), então, ao contrário de um choque de PIB, não se cancela.
+const ANO_LONGO = 2077;
+let LP_NAC = null, LP_SEGURO = null, lpPromise = null;
+function ensureLongoPrazo(){
+    if (LP_NAC && LP_SEGURO) return Promise.resolve();
+    if (lpPromise) return lpPromise;
+    lpPromise = Promise.all([
+        fetch('/data/ibs-projecao-longo-prazo.json').then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch('/data/seguro-receita-repasses-longo-prazo.json').then(r => r.ok ? r.json() : null).catch(() => null),
+    ]).then(([a, b]) => { LP_NAC = a; LP_SEGURO = b; });
+    return lpPromise;
+}
+
+// Recalcula total/contrafactual/variação de um ano, dado um delta de
+// alíquota própria (fração, ex.: 0,15 = 15% acima da referência) que só
+// multiplica o termo de destino.
+function cenarioAliquota(nacAno, ca, coefCPT, coefPleno, coefNeutro, repasseTermo, delta){
+    const termoHist = (1 - ca) * nacAno.ibs_historico * coefCPT;
+    const termoDest = nacAno.ibs_destino_liquido * coefPleno * (1 + delta);
+    const total = termoHist + termoDest + repasseTermo;
+    const contra = (nacAno.icms_iss_residual + nacAno.ibs_bruto) * coefNeutro;
+    return { total, contra, variacao: contra ? (total - contra) / contra : null };
+}
+
+// O repasse do Seguro-Receita responde ao mesmo delta, porque o numerador
+// dele (IBS por destino recebido, art. 117, I) é a mesma receita que a
+// alíquota própria altera. Sem o nível nacional do ano publicado por ente,
+// só é possível recalcular com exatidão quando o ente já recebe repasse
+// hoje (o nível se recupera de num/den/repasse já publicados); quando não
+// recebe, um aumento mantém zero (nunca cria elegibilidade nesta conta) e
+// uma queda é tratada como sem efeito, limitação registrada na nota da UI.
+function repasseSimulado(numBase, denCapado, repasseBase, delta){
+    if (denCapado == null || numBase == null) return repasseBase || 0;
+    if (repasseBase > 1) {
+        const nivel = (numBase + repasseBase) / denCapado;
+        return Math.max(0, nivel * denCapado - numBase * (1 + delta));
+    }
+    return 0;
+}
+
+function simResultadoHtml(rotulo, base, simulado, repasseNota){
+    const diff = simulado.variacao - base.variacao;
+    const cls = diff >= 0 ? 'pos' : 'neg';
+    return `<div class="sim-linha">
+        <span class="sim-linha-ano">${rotulo}</span>
+        <span class="sim-linha-de">${fmtPct(base.variacao)}</span>
+        <span class="sim-linha-seta">→</span>
+        <span class="sim-linha-para ${cls}">${fmtPct(simulado.variacao)}</span>
+        <span class="sim-linha-diff ${cls}">(${diff >= 0 ? '+' : '−'}${Math.abs(diff * 100).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})} p.p.)</span>
+        ${repasseNota ? `<span class="sim-linha-repasse">${repasseNota}</span>` : ''}
+    </div>`;
+}
+
+async function montarSimAliquota(idPrefix, ctx){
+    const alvo = document.getElementById(idPrefix + 'SimAliquota');
+    if (!alvo) return;
+    alvo.innerHTML = '<p class="table-empty">Carregando…</p>';
+
+    const nac2033 = NACIONAL.projecao.find(r => r.ano === 2033);
+    const coefNeutro = ctx.neutro / 100, coefCPT = ctx.cpt / 100, coefPleno = ctx.pleno / 100;
+    const ca2033 = nac2033.ca;
+    const repasse2033Base = (ctx.repasse && ctx.repasse['2033']) || 0;
+    const termoRepasse2033Base = (1 - ca2033) * repasse2033Base;
+    const base2033 = cenarioAliquota(nac2033, ca2033, coefCPT, coefPleno, coefNeutro, termoRepasse2033Base, 0);
+
+    // numerador/denom_capado do próprio ente, para recalcular o repasse sob
+    // o cenário: já vêm publicados na memória de cálculo, então não é
+    // preciso reprojetar o nivelamento nacional inteiro para este uso.
+    const memo = await ensureMemoUf(ctx.uf);
+    const seg2033 = memo && (ctx.esfera === 'estado'
+        ? memo.seguro_estado['2033']
+        : (memo.seguro_municipios[ctx.cod] || {})['2033']);
+
+    let lpDados = null;
+    if (ctx.esfera === 'estado') {
+        await ensureLongoPrazo();
+        if (LP_NAC && LP_SEGURO) {
+            const nacLongo = LP_NAC.projecao.find(r => r.ano === ANO_LONGO);
+            const repasseLongoBase = ((LP_SEGURO.anos[String(ANO_LONGO)] || {}).repasse_por_uf || {})[ctx.uf];
+            const repasseLongoEstado = (repasseLongoBase && repasseLongoBase.estado) || 0;
+            const caLongo = nacLongo.ca;
+            const termoRepasseLongoBase = (1 - caLongo) * repasseLongoEstado;
+            lpDados = { nacLongo, caLongo, termoRepasseLongoBase };
+        }
+    }
+
+    function render(deltaPct){
+        const delta = deltaPct / 100;
+        const repasse2033Sim = seg2033 ? repasseSimulado(seg2033.num, seg2033.den, seg2033.rep, delta) : repasse2033Base;
+        const termoRepasse2033Sim = (1 - ca2033) * repasse2033Sim;
+        const sim2033 = cenarioAliquota(nac2033, ca2033, coefCPT, coefPleno, coefNeutro, termoRepasse2033Sim, delta);
+        // Quando o ente já recebe Seguro-Receita, a receita própria a mais
+        // reduz o repasse quase na mesma proporção, porque o fundo só
+        // completa o ente até um nível comum: o ganho líquido de quem está
+        // nessa faixa é pequeno até a alíquota subir o bastante para dispensar
+        // o repasse por completo. Sem esta nota, o número pareceria não reagir.
+        let repasseNota2033 = '';
+        if (repasse2033Base > 1 && Math.abs(repasse2033Sim - repasse2033Base) > 1) {
+            repasseNota2033 = `O Seguro-Receita absorve parte do ganho: repasse cai de ${fmtMoney(repasse2033Base)} para ${fmtMoney(repasse2033Sim)}.`;
+        } else if (repasse2033Base > 1 && delta !== 0) {
+            repasseNota2033 = `Continua recebendo Seguro-Receita de ${fmtMoney(repasse2033Sim)}; o ganho da alíquota é quase todo absorvido pela redução do repasse.`;
+        }
+
+        let linhaLongo = '';
+        if (lpDados) {
+            // O repasse de longo prazo só existe agregado por UF (sem
+            // separar numerador/denom por ente), então fica travado no
+            // valor de hoje sob o cenário -- só o termo de destino responde,
+            // que já é quase toda a receita neste horizonte (98% em 2077).
+            const baseLongo = cenarioAliquota(lpDados.nacLongo, lpDados.caLongo, coefCPT, coefPleno, coefNeutro, lpDados.termoRepasseLongoBase, 0);
+            const simLongo = cenarioAliquota(lpDados.nacLongo, lpDados.caLongo, coefCPT, coefPleno, coefNeutro, lpDados.termoRepasseLongoBase, delta);
+            linhaLongo = simResultadoHtml(ANO_LONGO + ' (longo prazo)', baseLongo, simLongo);
+        }
+
+        document.getElementById(idPrefix + 'SimResultado').innerHTML = `
+            ${simResultadoHtml('2033', base2033, sim2033, repasseNota2033)}
+            ${linhaLongo}
+            <p class="sim-nota">Cenário estático: mantém o consumo constante, sem modelar resposta de preço nem deslocamento de consumo para entes vizinhos. Só o termo de destino responde; o histórico vem de dados já realizados (2019–2025).${lpDados ? ' Em ' + ANO_LONGO + ', o repasse do Seguro-Receita fica travado no valor de hoje: só existe publicado agregado por UF nesse horizonte, não por ente.' : ''}</p>`;
+    }
+
+    alvo.innerHTML = `
+        <div class="sim-controle">
+            <label for="${idPrefix}SimSlider">Alíquota própria, em relação à referência</label>
+            <div class="sim-slider-row">
+                <input type="range" id="${idPrefix}SimSlider" min="-30" max="30" step="1" value="0">
+                <span class="sim-slider-valor" id="${idPrefix}SimValor">referência (sem alteração)</span>
+            </div>
+        </div>
+        <div class="sim-resultado" id="${idPrefix}SimResultado"></div>`;
+
+    const slider = document.getElementById(idPrefix + 'SimSlider');
+    const valorEl = document.getElementById(idPrefix + 'SimValor');
+    slider.addEventListener('input', () => {
+        const v = Number(slider.value);
+        valorEl.textContent = v === 0 ? 'referência (sem alteração)' : Math.abs(v) + '% ' + (v > 0 ? 'acima' : 'abaixo') + ' da referência';
+        render(v);
+    });
+    render(0);
+}
+
 function renderFicha(idPrefix, nome, ctx){
     fichaChartRefs[idPrefix] = fichaChartRefs[idPrefix] || {};
     const refs = fichaChartRefs[idPrefix];
@@ -1440,6 +1616,7 @@ function renderFicha(idPrefix, nome, ctx){
     document.getElementById(idPrefix+'CoefTiles').innerHTML = coefTilesHtml(ctx.neutro, ctx.cpt, ctx.pleno);
     document.getElementById(idPrefix+'Seguro').innerHTML = seguroCardHtml(ctx.repasse, ctx.posByYear);
     document.getElementById(idPrefix+'Historico').innerHTML = historicoTableHtml(ctx.historico, ctx.fieldKey);
+    montarSimAliquota(idPrefix, ctx);
 
     const labels = [...HIST_ANOS.map(String), ...ANOS.map(String)];
     const histData = labels.map(l => { const y=Number(l); return (y<=2025 && ctx.historico && ctx.historico[l]) ? ctx.historico[l][ctx.fieldKey] : null; });
@@ -1551,6 +1728,7 @@ function buildEstadoCtx(uf){
         pleno: edata.coef_pleno_estado_pct,
         repasse: edata.repasse_seguro_receita_por_ano.estado,
         faixaDest: FAIXA_DEST && FAIXA_DEST.por_uf[uf],
+        uf, cod: null, esfera: 'estado',
     };
 }
 
@@ -1832,7 +2010,7 @@ muniInput.addEventListener('input', () => {
 });
 document.addEventListener('click', e => { if (!e.target.closest('.muni-search-wrap')) muniResults.classList.remove('show'); });
 
-function buildMunicipioCtx(m){
+function buildMunicipioCtx(m, cod){
     return {
         pre2025: m.pre_2025,
         posByYear: m.pos_por_ano,
@@ -1845,6 +2023,7 @@ function buildMunicipioCtx(m){
         cpt: m.coef_cpt_pct,
         pleno: m.coef_pleno_pct,
         repasse: m.repasse_seguro_receita_por_ano,
+        uf: m.uf, cod, esfera: 'municipio',
     };
 }
 
@@ -1881,7 +2060,7 @@ async function openMunicipio(cod){
         </div>
     `;
     wrap.querySelector('[data-back-uf]').addEventListener('click', e => { e.preventDefault(); selectedUf = m.uf; showView('estados'); });
-    renderFicha('muni', m.nome, buildMunicipioCtx(m));
+    renderFicha('muni', m.nome, buildMunicipioCtx(m, cod));
     wrap.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
