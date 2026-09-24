@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A alíquota de referência do IBS/CBS: por que estimar, como obter, o que já sabemos | Eduardo Reis Araújo</title>
+    <meta name="description" content="Por que a alíquota de referência e a base tributável do IBS/CBS importam, como estimá-las a partir de dados públicos (Contas Nacionais, POF, Censo), e uma primeira estimativa própria, comparada com a literatura.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/aliquota-base-referencia-ibs.html">
+
+    <meta property="og:title" content="A alíquota de referência do IBS/CBS: por que estimar, como obter, o que já sabemos">
+    <meta property="og:description" content="Uma estimativa própria, a partir de dados públicos, da alíquota de referência combinada do IBS/CBS e da base tributável que a sustenta.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/aliquota-base-referencia-ibs.html">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+    <link rel="stylesheet" href="/css/notas.css?v=4">
+    <link rel="stylesheet" href="/css/search.css">
+
+    <style>
+        .study-hero { max-width: 980px; margin: 0 auto; padding: 3rem 2rem 1.5rem; }
+        .study-hero-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+        .study-hero-tag { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); padding: 0.25rem 0.6rem; border-radius: 4px; }
+        .study-hero-topic { font-family: var(--sans); font-size: 0.73rem; color: var(--text-secondary); background: var(--border-light); padding: 0.2rem 0.55rem; border-radius: 4px; }
+        .study-hero-date { font-family: var(--sans); font-size: 0.73rem; color: var(--text-muted); margin-left: auto; }
+        .study-hero h1 { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 0.8rem; }
+        .study-hero .lead { font-family: var(--serif); font-size: 1rem; line-height: 1.72; color: var(--text-secondary); max-width: 760px; }
+        .study-hero .study-meta { font-family: var(--sans); font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem; }
+
+        .study-content { max-width: 980px; margin: 0 auto; padding: 0 2rem 5rem; }
+
+        :root { --pos: #1e8449; --pos-bg: #f0faf4; --warn: #9a6b1e; --warn-bg: #fdf6ea; }
+
+        .resposta-box { border: 2px solid var(--pos); background: var(--pos-bg); border-radius: 10px; padding: 1.5rem 1.75rem; margin: 0.5rem 0 2rem; }
+        .resposta-label { font-family: var(--mono); font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.09em; color: var(--pos); margin-bottom: 0.6rem; }
+        .resposta-numero { font-family: var(--display); font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 700; color: var(--text); line-height: 1.15; margin-bottom: 0.4rem; }
+        .resposta-sub { font-family: var(--sans); font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+
+        .piso-note { display: flex; gap: 0.6rem; align-items: flex-start; background: var(--warn-bg); border-left: 3px solid var(--warn); border-radius: 0 6px 6px 0; padding: 0.85rem 1.1rem; margin: 0 0 2rem; font-family: var(--serif); font-size: 0.85rem; line-height: 1.65; color: var(--text); }
+
+        h2.section-h { font-family: var(--display); font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 0.9rem; letter-spacing: -0.01em; }
+        h2.section-h:first-of-type { margin-top: 1.5rem; }
+        .prose p { font-family: var(--serif); font-size: 0.92rem; line-height: 1.75; color: var(--text); margin-bottom: 1rem; }
+        .prose p:last-child { margin-bottom: 0; }
+
+        .methodology { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 2rem; background: var(--surface); }
+        .methodology summary { padding: 0.9rem 1.25rem; cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; list-style: none; display: flex; align-items: center; gap: 0.5rem; }
+        .methodology summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; }
+        .methodology[open] summary::before { transform: rotate(90deg); }
+        .methodology-body { padding: 0 1.5rem 1.5rem; }
+        .meto-section-title { font-family: var(--sans); font-weight: 700; font-size: 0.86rem; margin: 1.1rem 0 0.4rem; }
+        .meto-section-title:first-child { margin-top: 0; }
+        .meto-note { font-family: var(--serif); font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; margin-top: 0.5rem; }
+        .meto-note:first-child { margin-top: 0; }
+        .meto-list { font-family: var(--serif); font-size: 0.88rem; color: var(--text-secondary); line-height: 1.75; margin: 0.5rem 0 0; padding-left: 1.3rem; }
+        .meto-list li { margin-bottom: 0.4rem; }
+
+        .lei-box { border-left: 3px solid var(--accent); background: var(--bg); border-radius: 0 6px 6px 0; padding: 1rem 1.25rem; margin: 0.75rem 0 1.25rem; }
+        .lei-box p { font-family: var(--serif); font-size: 0.81rem; line-height: 1.75; color: var(--text); margin: 0; }
+        .lei-box .lei-artigo { font-weight: 700; }
+        .lei-box + .lei-box { margin-top: -0.75rem; }
+
+        .section-label { display: block; font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 0.5rem; }
+
+        .table-wrap { overflow-x: auto; margin-bottom: 1.5rem; }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
+        .data-table th { background: var(--bg); border: 1px solid var(--border); padding: 0.42rem 0.6rem; text-align: center; font-family: var(--sans); font-weight: 600; font-size: 0.76rem; white-space: nowrap; color: var(--text); }
+        .data-table th.th-left { text-align: left; }
+        .data-table td { border: 1px solid var(--border); padding: 0.36rem 0.6rem; text-align: right; font-family: var(--mono); font-size: 0.78rem; white-space: nowrap; color: var(--text); }
+        .data-table td.td-left { text-align: left; font-family: var(--sans); font-weight: 600; }
+        .data-table tr.row-resposta { background: var(--pos-bg); }
+        .data-table tr.row-resposta td { color: var(--text); font-weight: 600; }
+        .data-table tr:hover:not(.row-resposta) { background: var(--accent-bg); }
+
+        .chart-panel { background: var(--border-light); border-radius: 8px; padding: 1.25rem 1.25rem 1.5rem; margin: 0 0 1.5rem; }
+        .chart-panel-title { font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin: 0 0 1rem; }
+        .chart-legend-note { font-family: var(--sans); font-size: 0.75rem; color: var(--text-muted); margin: 0.75rem 0 0; display: flex; gap: 1.25rem; flex-wrap: wrap; }
+        .legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 0.35rem; vertical-align: middle; }
+
+        .callout { background: var(--accent-bg); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 0.9rem 1.1rem; font-family: var(--serif); font-size: 0.87rem; color: var(--text); margin: 1rem 0; line-height: 1.65; }
+        .callout strong { font-weight: 700; }
+
+        .compare-table td.td-fonte { font-family: var(--sans); font-size: 0.74rem; color: var(--text-muted); text-align: left; white-space: normal; }
+
+        .limitacoes-list { font-family: var(--serif); font-size: 0.9rem; line-height: 1.75; color: var(--text); margin: 0.5rem 0 0; padding-left: 1.4rem; }
+        .limitacoes-list li { margin-bottom: 0.9rem; }
+        .limitacoes-list li:last-child { margin-bottom: 0; }
+
+        .footnotes { margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+        .footnotes p { font-family: var(--serif); font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.4rem; }
+        .footnotes a { color: var(--accent); text-decoration: none; }
+        .footnotes a:hover { text-decoration: underline; }
+        .footnotes code { word-break: break-all; }
+
+        @media (max-width: 640px) {
+            .study-hero { padding: 2rem 1.25rem 1rem; }
+            .study-content { padding: 0 1.25rem 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <div class="header-right-group">
+                <nav class="header-nav">
+                    <a href="/#publicacoes">Publicações</a>
+                    <a href="/ensino/">Ensino</a>
+                    <a href="/estudos/" class="active">Estudos</a>
+                    <a href="/#contato">Contato</a>
+                </nav>
+                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="study-hero">
+        <div class="study-hero-meta">
+            <span class="study-hero-tag">Estudo 16</span>
+            <span class="study-hero-topic">Reforma Tributária</span>
+            <span class="study-hero-topic">IBS/CBS</span>
+            <span class="study-hero-topic">Alíquota de Referência</span>
+            <span class="study-hero-date">Setembro de 2026</span>
+        </div>
+        <h1>A alíquota de referência do IBS/CBS: por que estimar, como obter, e o que já sabemos</h1>
+        <p class="lead">
+            O <a href="/painel-reforma-tributaria.html">Painel da Reforma Tributária</a> projeta receita
+            sem nunca precisar calcular uma alíquota em percentual &mdash; ele trabalha inteiramente em
+            reais. Mas a pergunta "a que alíquota isso equivale?" é legítima e recorrente, e a resposta
+            exige uma peça de dado que o painel não tem: uma estimativa independente da base de consumo
+            tributável, em reais, não apenas a participação relativa de cada ente nela. Este estudo
+            explica por que essa alíquota importa, como estimá-la a partir de dados públicos seguindo a
+            metodologia original de Orair e Gobetti (2019, IPEA), constrói uma primeira estimativa
+            própria, e compara o resultado com a literatura.
+        </p>
+        <p class="study-meta">
+            Dados: IBGE, Contas Nacionais Trimestrais (SIDRA, tabela 1846) &bull;
+            <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> (receita de referência
+            projetada) &bull; <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a> (POF &times;
+            Censo) &bull; Orair, R. O.; Gobetti, S. W. (Ipea, 2019); Gobetti, S. W.; Orair, R. O.;
+            Monteiro, P. K. (Ipea, Carta de Conjuntura 59, nota 17, 2023)
+        </p>
+    </div>
+
+    <div class="study-content">
+
+        <h2 class="section-h">Por que estimar a alíquota de referência e a base tributável</h2>
+        <div class="prose">
+            <p>
+                O modelo de projeção deste painel reparte uma receita nacional já projetada (o "bolo") entre
+                estados e municípios por participação relativa &mdash; nunca precisa saber a que percentual
+                de alíquota isso corresponde, porque, como será demonstrado adiante, essa alíquota se cancela
+                do cálculo das participações. Mas duas perguntas legítimas ficam sem resposta só com isso: que
+                percentual as pessoas e as empresas efetivamente pagarão, e o quanto esse percentual está perto
+                do teto de 26,5% que a própria lei usa como gatilho de revisão (ver <a
+                href="/painel-reforma-tributaria.html#view-metodologia">Metodologia do painel</a>, seção sobre
+                o teto de segurança). Sem uma estimativa da alíquota, essas duas perguntas, que aparecem com
+                frequência no debate público, ficam sem resposta neste site.
+            </p>
+            <p>
+                Há ainda um terceiro motivo, mais técnico: a aba <a
+                href="/painel-reforma-tributaria.html#view-simulacoes">Simulações</a> do painel deixa a pessoa
+                ajustar a "receita própria de destino, acima ou abaixo da referência" &mdash; um desvio
+                percentual sobre a receita, não sobre uma alíquota. Entender a que nível de alíquota esse
+                desvio equivale, e o quanto de folga existe até o teto legal, é exatamente o tipo de contexto
+                que esta estimativa fornece.
+            </p>
+        </div>
+
+        <h2 class="section-h">Fundamentação legal</h2>
+        <div class="prose">
+            <p>
+                A Emenda Constitucional 132/2023 criou o IBS e a CBS sob o princípio da neutralidade: os novos
+                tributos devem repor, em proporção do PIB, a arrecadação dos tributos que substituem (ICMS,
+                ISS, PIS/Cofins e parte do IPI). A Lei Complementar 214/2025, com as alterações da Lei
+                Complementar 227/2026, detalha como isso se traduz em alíquotas.
+            </p>
+        </div>
+        <div class="lei-box">
+            <p><span class="lei-artigo">LC 214/2025, art. 361, §1º</span> &mdash; "A alíquota de referência do
+            IBS estadual para 2029 será fixada de forma que haja equivalência entre: I &mdash; a razão entre a
+            soma dos valores de que tratam os incisos I e III do caput deste artigo e o PIB em 2027; e II
+            &mdash; a média da razão entre a receita de referência dos Estados e o PIB nos anos de 2024 a
+            2026."</p>
+        </div>
+        <div class="prose">
+            <p>
+                O art. 361 fixa, separada e independentemente, uma alíquota de referência estadual e uma
+                municipal &mdash; não uma derivada da outra &mdash; e o mesmo mecanismo, com período de
+                referência próprio (2012-2021), vale para a CBS federal. Cada ente pode votar sua própria
+                alíquota, maior ou menor que a de referência, por lei específica; a alíquota de referência só
+                vale por padrão, na ausência dessa lei.
+            </p>
+            <p>
+                A legislação também prevê um mecanismo de revisão: uma primeira avaliação quinquenal, com
+                dados de 2026 a 2030, recalculará as alíquotas de referência aplicáveis a partir de 2033; se a
+                soma das alíquotas do IBS e da CBS estimadas para esse recálculo superar 26,5%, o Poder
+                Executivo deve propor ao Congresso medidas para reduzi-la a esse patamar ou menos &mdash; sem
+                que a lei determine uma redução automática. <em>Este estudo não verificou de forma
+                independente o dispositivo legal exato desse mecanismo de revisão; a descrição acima segue a
+                nota técnica do COMSEFAZ (2026) citada nas fontes ao final.</em>
+            </p>
+        </div>
+
+        <h2 class="section-h">Como obter a estimativa</h2>
+        <details class="methodology" open>
+            <summary>Metodologia: duas peças, de duas fontes diferentes</summary>
+            <div class="methodology-body">
+                <p class="meto-section-title">A orientação original: Orair e Gobetti (2019, Ipea)</p>
+                <p class="meto-note">
+                    O modelo que este painel já usa para ratear receita entre estados e municípios (o
+                    coeficiente de destino, φdest) tem origem no mesmo estudo que fundamenta a estimativa de
+                    alíquota: Orair e Gobetti (2019), publicado pelo Ipea, atualizado por Gobetti, Orair e
+                    Monteiro (2023, Carta de Conjuntura 59, nota 17). Os próprios autores são explícitos sobre
+                    uma distinção que este estudo segue à risca:
+                </p>
+                <div class="lei-box">
+                    <p>"[N]ão importa estimar com precisão a base agregada do IBS, até porque nesse caso há
+                    outras fontes mais adequadas a essa finalidade, como as tabelas de recursos e usos (TRUs)
+                    das Contas Nacionais do IBGE. De fato, quando confrontamos os dados da POF com os das
+                    Contas Nacionais, verificamos que a magnitude do consumo das famílias apurado pela primeira
+                    é cerca de 10% menor do que pela segunda. Portanto, o procedimento que nos parece mais
+                    adequado é utilizar a base de consumo estimada pelas Contas Nacionais [&hellip;] e
+                    fracionar essa base pela proxy de participação relativa obtida pelo cruzamento dos dados da
+                    POF com o censo." &mdash; Gobetti, Orair e Monteiro (2023, p. 7)</p>
+                </div>
+                <p class="meto-note">
+                    Ou seja: a <strong>participação relativa</strong> de cada ente (quanto ele representa do
+                    consumo nacional) vem do cruzamento POF&times;Censo &mdash; já calculado por este painel
+                    (<a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a>). Mas o <strong>nível
+                    agregado</strong> da base, em reais, deve vir de uma fonte separada e mais confiável: as
+                    Contas Nacionais do IBGE. Este estudo segue exatamente essa divisão de trabalho.
+                </p>
+
+                <p class="meto-section-title">A peça que faltava: Contas Nacionais</p>
+                <p class="meto-note">
+                    A base de consumo das famílias em reais foi obtida diretamente da API pública do IBGE
+                    (SIDRA, tabela 1846, "Contas Nacionais Trimestrais", variável "Valores a preços
+                    correntes"), somando os quatro trimestres de 2025: <strong>R$ 8.081.333 milhões</strong> de
+                    despesa de consumo das famílias, sobre um PIB de <strong>R$ 12.738.566 milhões</strong>
+                    &mdash; uma razão consumo/PIB de 63,44%. O PIB de 2025 apurado dessa forma bate, a menos de
+                    R$ 400 mil num total de R$ 12,7 trilhões, com o mesmo valor já usado pelo resto deste
+                    painel (<a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a>), uma checagem
+                    cruzada útil entre duas consultas independentes à mesma fonte primária.
+                </p>
+                <p class="meto-note">
+                    A receita de referência agregada (o "bolo": ICMS + ISS históricos, projetados mantendo
+                    constante a razão em relação ao PIB, conforme o art. 361) já está calculada pelo <a
+                    href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> deste painel, e é reutilizada
+                    aqui sem recálculo.
+                </p>
+
+                <p class="meto-section-title">A conta</p>
+                <div class="lei-box" style="border-left-color:var(--text-muted)">
+                    <p style="font-family:var(--mono)">alíquota bruta simplificada = receita de referência (bolo) &divide; consumo das famílias estimado</p>
+                </div>
+                <p class="meto-note">
+                    O consumo das famílias em cada ano de 2029 a 2033 é projetado mantendo constante a razão
+                    consumo/PIB observada em 2025 (63,44%) &mdash; a mesma lógica de neutralidade que a
+                    legislação já aplica à razão bolo/PIB (fixa em 7,9944% durante toda a transição, art. 361 e
+                    seguintes). Como as duas razões são independentemente constantes, a alíquota bruta
+                    simplificada resulta constante ao longo de toda a transição: não é uma hipótese adicional,
+                    é uma consequência direta de manter as duas premissas de neutralidade já embutidas na lei.
+                </p>
+
+                <p class="meto-section-title">Hipóteses explícitas</p>
+                <ul class="meto-list">
+                    <li>A razão consumo das famílias / PIB observada em 2025 permanece constante até 2033. Não
+                    há, até onde este estudo apurou, uma projeção oficial das Contas Nacionais para esses anos;
+                    esta é a extrapolação mais simples e mais transparente disponível, não uma previsão do
+                    IBGE.</li>
+                    <li>O denominador usado é o consumo das famílias <strong>bruto</strong>, sem excluir itens
+                    não monetários (como aluguel imputado) nem tributos já embutidos no preço, e sem aplicar
+                    nenhum desconto por regimes diferenciados ou específicos (saúde, educação, cesta básica
+                    etc.). Isso faz da alíquota bruta simplificada um <strong>piso</strong>, não uma previsão da
+                    alíquota que de fato entrará em vigor &mdash; ver a seção de limitações.</li>
+                    <li>As compras governamentais, que também compõem a base do IBS/CBS por imunidade
+                    recíproca, não entram nesta estimativa. Isso reduz ainda mais o denominador em relação ao
+                    que a lei considera, então reforça o caráter de piso do resultado.</li>
+                </ul>
+            </div>
+        </details>
+
+        <h2 class="section-h">Resultados</h2>
+        <div class="resposta-box">
+            <div class="resposta-label">A alíquota bruta simplificada</div>
+            <div class="resposta-numero" id="resposta-numero">Calculando...</div>
+            <div class="resposta-sub" id="resposta-sub"></div>
+        </div>
+        <div class="piso-note">
+            <span>⚠</span>
+            <span>Esta é uma estimativa <strong>não ajustada</strong>: o denominador é o consumo bruto das
+            famílias, sem os descontos que a legislação prevê para regimes diferenciados e específicos. A
+            alíquota que de fato entrará em vigor é necessariamente <strong>maior</strong> que este número
+            &mdash; ver a comparação com a literatura mais abaixo.</span>
+        </div>
+
+        <span class="section-label">Trajetória 2029&ndash;2033</span>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="th-left">Ano</th>
+                        <th>Receita de referência &ndash; bolo (R$ bi)</th>
+                        <th>Bolo / PIB</th>
+                        <th>Consumo das famílias estimado (R$ bi)</th>
+                        <th>Consumo / PIB</th>
+                        <th>Alíquota bruta simplificada</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-resultados">
+                    <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="chart-panel">
+            <p class="chart-panel-title">Bolo (receita de referência) vs. consumo das famílias estimado, 2029&ndash;2033 (R$ bi)</p>
+            <canvas id="chart-bolo-consumo" style="max-height:300px"></canvas>
+            <div class="chart-legend-note">
+                <span><span class="legend-dot" style="background:#1A3A5C"></span>Receita de referência (bolo)</span>
+                <span><span class="legend-dot" style="background:#9d5c6b"></span>Consumo das famílias estimado</span>
+            </div>
+        </div>
+
+        <h2 class="section-h">Comparação com a literatura</h2>
+        <div class="prose">
+            <p>
+                A própria nota técnica do Ipea de 2023 já trazia uma primeira faixa de valores, publicada e
+                citável diretamente: "estima-se que as alíquotas de referência se situem em torno de 2% para o
+                IBS-M e 14% para o IBS-E [&hellip;] a alíquota de referência federal seria de 9%" (Gobetti,
+                Orair e Monteiro, 2023, nota de rodapé 1), o que dá uma soma aproximada de 25%, na mesma ordem
+                de grandeza da alíquota bruta simplificada deste estudo (12,6%) somada aos ajustes que a
+                literatura mais recente aplica.
+            </p>
+            <p>
+                Uma nota técnica mais recente e substancialmente mais detalhada, produzida para o Comitê
+                Nacional de Secretários de Fazenda (COMSEFAZ) em 2026 a partir da mesma linhagem metodológica,
+                chega a uma alíquota combinada estimada de <strong>28,4%</strong> sobre o consumo das famílias,
+                depois de excluir do consumo bruto os itens não monetários e os tributos embutidos no preço
+                (reduzindo a base de cerca de R$ 8 trilhões para pouco mais de R$ 6 trilhões) e aplicar uma
+                tabela de ponderações categoria a categoria da POF para os regimes diferenciados e específicos
+                (reduzindo a base efetiva para cerca de R$ 5,17 trilhões, uma queda adicional de 23%). O
+                exercício deste estudo não reproduz essa tabela de ponderações de forma independente &mdash;
+                fazer isso exigiria mapear, uma a uma, as alíquotas reduzidas e os regimes especiais previstos
+                na LC 214/2025 para cada categoria de despesa, o que fica como extensão natural deste trabalho.
+            </p>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table compare-table">
+                <thead>
+                    <tr>
+                        <th class="th-left">Fonte</th>
+                        <th>Alíquota estimada</th>
+                        <th class="th-left">O que desconta do consumo bruto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="td-left">Este estudo (alíquota bruta simplificada)</td>
+                        <td>12,60%</td>
+                        <td class="td-fonte">Nada &mdash; consumo das famílias bruto, sem regimes diferenciados nem compras governamentais.</td>
+                    </tr>
+                    <tr>
+                        <td class="td-left">Gobetti, Orair e Monteiro (Ipea, 2023) &mdash; soma IBS-E + IBS-M + CBS</td>
+                        <td>&asymp; 25%</td>
+                        <td class="td-fonte">Estimativa preliminar, sem detalhamento categoria a categoria; nota de rodapé, não resultado central do estudo.</td>
+                    </tr>
+                    <tr>
+                        <td class="td-left">Nota técnica COMSEFAZ (2026), cenário central</td>
+                        <td>28,4%</td>
+                        <td class="td-fonte">Itens não monetários e tributos embutidos (consumo cai a ~R$ 6,9 tri); regimes diferenciados e específicos por categoria da POF (base efetiva final ~R$ 5,17 tri).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="section-h">Implicações para o modelo do painel</h2>
+        <div class="callout">
+            <strong>A alíquota-padrão se cancela nas participações relativas.</strong> Como a alíquota de
+            referência incide uniformemente sobre a base considerada, uma mudança no seu valor nominal produz
+            uma variação proporcional tanto na receita de cada ente quanto na receita total &mdash; por isso
+            ela se cancela no cálculo das participações relativas e não afeta, por si só, os resultados
+            distributivos deste painel. Essa não é uma conclusão exclusiva deste estudo: a nota técnica do
+            COMSEFAZ (2026) chega à mesma conclusão de forma independente, com a mesma demonstração algébrica.
+            Uma consequência direta: uma alíquota de referência calculada estado a estado, ou município a
+            município, do jeito mais direto, sairia numericamente idêntica para todo ente dentro do mesmo nível
+            de governo &mdash; a diferenciação real que a literatura encontra é entre <strong>níveis</strong>
+            de governo (estadual, municipal, federal), não entre entes do mesmo nível, porque as compras
+            governamentais se repartem de forma muito desigual entre esses três níveis. Este painel ainda não
+            modela essa distinção entre consumo privado e compras governamentais como bases separadas.
+        </div>
+
+        <h2 class="section-h">Limitações e simplificações</h2>
+        <ol class="limitacoes-list">
+            <li><strong>Consumo bruto, não líquido.</strong> O denominador não exclui itens não monetários
+            (aluguel imputado) nem tributos embutidos no preço &mdash; a literatura mostra que essa exclusão
+            sozinha reduz a base em cerca de 15%, o que já elevaria a alíquota bruta simplificada de 12,6%
+            para algo próximo de 14-15%.</li>
+            <li><strong>Sem regimes diferenciados e específicos.</strong> Saúde, educação, cesta básica e
+            outras categorias com alíquota reduzida ou zerada não são descontadas aqui; replicar esse ajuste
+            exigiria uma tabela de ponderações por categoria da POF construída e documentada de forma
+            independente, o que este estudo não fez.</li>
+            <li><strong>Compras governamentais fora do escopo.</strong> A imunidade recíproca faz as compras
+            das três esferas de governo comporem parte da base do IBS/CBS, com uma alíquota efetiva menor que
+            a do consumo privado; este estudo não estima essa parcela.</li>
+            <li><strong>Razão consumo/PIB projetada, não observada.</strong> A trajetória 2029-2033 assume que
+            a razão de 2025 se mantém constante; não há, até onde este estudo apurou, uma projeção oficial das
+            Contas Nacionais para confirmar ou refutar essa hipótese.</li>
+            <li><strong>Alíquota por ente não é o objetivo certo.</strong> Como a alíquota-padrão se cancela
+            nas participações relativas, uma alíquota calculada ente a ente devolveria o mesmo número para
+            todos dentro do mesmo nível de governo &mdash; por isso este estudo apresenta só a trajetória
+            nacional, e não tentou estender o cálculo a estados ou municípios individualmente.</li>
+        </ol>
+
+        <div class="footnotes">
+            <p><strong>Fontes e notas metodológicas:</strong></p>
+            <p>1. Base legal: EC 132/2023; LC 214/2025 arts. 349 a 370 (alíquotas de referência), especialmente art. 361, §1º; LC 227/2026.</p>
+            <p>2. Consumo das famílias e PIB, 2025: IBGE, Contas Nacionais Trimestrais, SIDRA tabela 1846, variável 585 ("Valores a preços correntes"), categorias 93404 ("Despesa de consumo das famílias") e 90707 ("PIB a preços de mercado"), soma dos quatro trimestres de 2025. Consulta: <code>https://apisidra.ibge.gov.br/values/t/1846/n1/all/v/585/p/202501-202504/c11255/93404,90707/f/n</code>.</p>
+            <p>3. Receita de referência (bolo) e PIB projetados 2029-2033: <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> desta página (SICONFI/STN, Banco Central).</p>
+            <p>4. Metodologia de referência: ORAIR, R. O.; GOBETTI, S. W. <em>Reforma tributária e federalismo fiscal: uma análise das propostas de criação de um novo imposto sobre o valor adicionado para o Brasil.</em> Rio de Janeiro: Ipea, 2019. (Texto para Discussão, n. 2530).</p>
+            <p>5. GOBETTI, S. W.; ORAIR, R. O.; MONTEIRO, P. K. <em>Impactos redistributivos (na Federação) da reforma tributária.</em> Carta de Conjuntura, n. 59, nota de conjuntura 17, 2º trimestre de 2023. Ipea, 31 maio 2023.</p>
+            <p>6. Coeficiente de destino (φdest) por POF &times; Censo: <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a> desta página.</p>
+            <p>7. Comparação: nota técnica "Reforma tributária: estimativas de receita sob o novo modelo de IBS para os estados", elaborada para o Comitê Nacional de Secretários de Fazenda (COMSEFAZ), agosto de 2026 &mdash; citada aqui apenas pelos números agregados que o próprio documento apresenta como estimativas preliminares e não oficiais; os dados de base e a tabela de ponderações por categoria não foram reproduzidos de forma independente neste estudo.</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+
+    <script src="/js/search.js"></script>
+    <script>
+    const fmtNum = (v, d=1) => v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
+    const fmtPct = (v, d=2) => v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }) + '%';
+
+    async function init() {
+        try {
+            const res = await fetch('/data/aliquota-base-referencia.json?t=' + Date.now());
+            const data = await res.json();
+            buildResposta(data);
+            buildResultadosTable(data);
+            buildChart(data);
+        } catch (e) {
+            console.error(e);
+            document.getElementById('resposta-numero').textContent = 'Erro ao carregar dados.';
+        }
+    }
+
+    function buildResposta(data) {
+        const a = data.anos[0];
+        document.getElementById('resposta-numero').textContent = fmtPct(a.aliquota_bruta_simplificada_pct);
+        document.getElementById('resposta-sub').innerHTML =
+            `Constante em ${fmtPct(a.aliquota_bruta_simplificada_pct)} ao longo de toda a transição (2029&ndash;2033), porque a razão bolo/PIB (${fmtPct(a.bolo_pct_pib)}) e a razão consumo/PIB (${fmtPct(a.consumo_pct_pib)}, ano-base 2025) são independentemente mantidas constantes por hipótese &mdash; a mesma lógica de neutralidade que a própria legislação aplica à razão bolo/PIB.`;
+    }
+
+    function buildResultadosTable(data) {
+        document.getElementById('tbody-resultados').innerHTML = data.anos.map(a => `<tr class="row-resposta">
+            <td class="td-left">${a.ano}</td>
+            <td>${fmtNum(a.bolo / 1e9, 1)}</td>
+            <td>${fmtPct(a.bolo_pct_pib)}</td>
+            <td>${fmtNum(a.consumo_familias_estimado / 1e9, 1)}</td>
+            <td>${fmtPct(a.consumo_pct_pib)}</td>
+            <td>${fmtPct(a.aliquota_bruta_simplificada_pct)}</td>
+        </tr>`).join('');
+    }
+
+    function buildChart(data) {
+        const el = document.getElementById('chart-bolo-consumo');
+        if (!el || typeof Chart === 'undefined') return;
+        const anos = data.anos.map(a => a.ano);
+        new Chart(el, {
+            type: 'bar',
+            data: {
+                labels: anos,
+                datasets: [
+                    { label: 'Receita de referência (bolo)', data: data.anos.map(a => a.bolo / 1e9), backgroundColor: '#1A3A5C', borderRadius: 4, maxBarThickness: 26 },
+                    { label: 'Consumo das famílias estimado', data: data.anos.map(a => a.consumo_familias_estimado / 1e9), backgroundColor: '#9d5c6b', borderRadius: 4, maxBarThickness: 26 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: true, aspectRatio: 2.4,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: R$ ${fmtNum(ctx.raw,1)} bi` } }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+                    y: { grid: { color: 'rgba(128,128,128,0.15)' }, ticks: { font: { size: 10 }, callback: v => fmtNum(v,0) }, title: { display: true, text: 'R$ bi', font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    init();
+    </script>
+</body>
+</html>
