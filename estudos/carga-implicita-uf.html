@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A carga tributária implícita sobre o consumo, por estado | Eduardo Reis Araújo</title>
+    <meta name="description" content="Não é a alíquota de referência, que é um único número nacional -- é a razão entre a receita total projetada de cada estado e sua base de consumo, que varia de 10% a 29% durante a transição do IBS por causa da mistura entre critério histórico e critério de destino.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/carga-implicita-uf.html">
+
+    <meta property="og:title" content="A carga tributária implícita sobre o consumo, por estado">
+    <meta property="og:description" content="De 10% no Distrito Federal a 29% no Amazonas: por que a razão entre receita e consumo varia tanto entre estados durante a transição do IBS.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/carga-implicita-uf.html">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+    <link rel="stylesheet" href="/css/notas.css?v=4">
+    <link rel="stylesheet" href="/css/search.css">
+
+    <style>
+        .study-hero { max-width: 980px; margin: 0 auto; padding: 3rem 2rem 1.5rem; }
+        .study-hero-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+        .study-hero-tag { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); padding: 0.25rem 0.6rem; border-radius: 4px; }
+        .study-hero-topic { font-family: var(--sans); font-size: 0.73rem; color: var(--text-secondary); background: var(--border-light); padding: 0.2rem 0.55rem; border-radius: 4px; }
+        .study-hero-date { font-family: var(--sans); font-size: 0.73rem; color: var(--text-muted); margin-left: auto; }
+        .study-hero h1 { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 0.8rem; }
+        .study-hero .lead { font-family: var(--serif); font-size: 1rem; line-height: 1.72; color: var(--text-secondary); max-width: 760px; }
+        .study-hero .study-meta { font-family: var(--sans); font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem; }
+
+        .study-content { max-width: 980px; margin: 0 auto; padding: 0 2rem 5rem; }
+
+        :root { --pos: #1e8449; --pos-bg: #f0faf4; --warn: #9a6b1e; --warn-bg: #fdf6ea; }
+
+        .resposta-box { border: 2px solid var(--pos); background: var(--pos-bg); border-radius: 10px; padding: 1.5rem 1.75rem; margin: 0.5rem 0 2rem; }
+        .resposta-label { font-family: var(--mono); font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.09em; color: var(--pos); margin-bottom: 0.6rem; }
+        .resposta-numero { font-family: var(--display); font-size: clamp(1.4rem, 3.2vw, 1.9rem); font-weight: 700; color: var(--text); line-height: 1.2; margin-bottom: 0.4rem; }
+        .resposta-sub { font-family: var(--sans); font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+
+        .piso-note { display: flex; gap: 0.6rem; align-items: flex-start; background: var(--warn-bg); border-left: 3px solid var(--warn); border-radius: 0 6px 6px 0; padding: 0.85rem 1.1rem; margin: 0 0 2rem; font-family: var(--serif); font-size: 0.85rem; line-height: 1.65; color: var(--text); }
+
+        h2.section-h { font-family: var(--display); font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 0.9rem; letter-spacing: -0.01em; }
+        h2.section-h:first-of-type { margin-top: 1.5rem; }
+        .prose p { font-family: var(--serif); font-size: 0.92rem; line-height: 1.75; color: var(--text); margin-bottom: 1rem; }
+        .prose p:last-child { margin-bottom: 0; }
+
+        .methodology { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 2rem; background: var(--surface); }
+        .methodology summary { padding: 0.9rem 1.25rem; cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; list-style: none; display: flex; align-items: center; gap: 0.5rem; }
+        .methodology summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; }
+        .methodology[open] summary::before { transform: rotate(90deg); }
+        .methodology-body { padding: 0 1.5rem 1.5rem; }
+        .meto-section-title { font-family: var(--sans); font-weight: 700; font-size: 0.86rem; margin: 1.1rem 0 0.4rem; }
+        .meto-section-title:first-child { margin-top: 0; }
+        .meto-note { font-family: var(--serif); font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; margin-top: 0.5rem; }
+        .meto-note:first-child { margin-top: 0; }
+        .meto-list { font-family: var(--serif); font-size: 0.88rem; color: var(--text-secondary); line-height: 1.75; margin: 0.5rem 0 0; padding-left: 1.3rem; }
+        .meto-list li { margin-bottom: 0.4rem; }
+
+        .lei-box { border-left: 3px solid var(--accent); background: var(--bg); border-radius: 0 6px 6px 0; padding: 1rem 1.25rem; margin: 0.75rem 0 1.25rem; }
+        .lei-box p { font-family: var(--serif); font-size: 0.81rem; line-height: 1.75; color: var(--text); margin: 0; }
+        .lei-box.mono p { font-family: var(--mono); }
+
+        .section-label { display: block; font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 0.5rem; }
+
+        .table-wrap { overflow-x: auto; margin-bottom: 1.5rem; }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
+        .data-table th { background: var(--bg); border: 1px solid var(--border); padding: 0.42rem 0.6rem; text-align: center; font-family: var(--sans); font-weight: 600; font-size: 0.76rem; white-space: nowrap; color: var(--text); cursor: pointer; }
+        .data-table th.th-left { text-align: left; }
+        .data-table td { border: 1px solid var(--border); padding: 0.36rem 0.6rem; text-align: right; font-family: var(--mono); font-size: 0.78rem; white-space: nowrap; color: var(--text); }
+        .data-table td.td-left { text-align: left; font-family: var(--sans); font-weight: 600; }
+        .data-table tr:hover { background: var(--accent-bg); }
+        .data-table tr.row-extreme-low td { background: var(--pos-bg); }
+        .data-table tr.row-extreme-high td { background: var(--warn-bg); }
+
+        .chart-panel { background: var(--border-light); border-radius: 8px; padding: 1.25rem 1.25rem 1.5rem; margin: 0 0 1.5rem; }
+        .chart-panel-title { font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin: 0 0 1rem; }
+
+        .callout { background: var(--accent-bg); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 0.9rem 1.1rem; font-family: var(--serif); font-size: 0.87rem; color: var(--text); margin: 1rem 0; line-height: 1.65; }
+        .callout strong { font-weight: 700; }
+
+        .limitacoes-list { font-family: var(--serif); font-size: 0.9rem; line-height: 1.75; color: var(--text); margin: 0.5rem 0 0; padding-left: 1.4rem; }
+        .limitacoes-list li { margin-bottom: 0.9rem; }
+        .limitacoes-list li:last-child { margin-bottom: 0; }
+
+        .footnotes { margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+        .footnotes p { font-family: var(--serif); font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.4rem; }
+        .footnotes a { color: var(--accent); text-decoration: none; }
+        .footnotes a:hover { text-decoration: underline; }
+
+        @media (max-width: 640px) {
+            .study-hero { padding: 2rem 1.25rem 1rem; }
+            .study-content { padding: 0 1.25rem 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <div class="header-right-group">
+                <nav class="header-nav">
+                    <a href="/#publicacoes">Publicações</a>
+                    <a href="/ensino/">Ensino</a>
+                    <a href="/estudos/" class="active">Estudos</a>
+                    <a href="/#contato">Contato</a>
+                </nav>
+                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="study-hero">
+        <div class="study-hero-meta">
+            <span class="study-hero-tag">Estudo 17</span>
+            <span class="study-hero-topic">Reforma Tributária</span>
+            <span class="study-hero-topic">IBS/CBS</span>
+            <span class="study-hero-topic">Base Tributável por UF</span>
+            <span class="study-hero-date">Setembro de 2026</span>
+        </div>
+        <h1>A carga tributária implícita sobre o consumo, por estado</h1>
+        <p class="lead">
+            O <a href="/estudos/aliquota-base-referencia-ibs.html">Estudo 16</a> mostrou que uma alíquota de
+            referência calculada estado a estado, do jeito mais direto, sai idêntica para todos: a alíquota se
+            cancela nas participações relativas, porque tanto a base quanto a receita de destino de cada
+            estado são a mesma fração de um total nacional. Mas há uma pergunta diferente e mais interessante:
+            e se, em vez de isolar só a fatia de destino, olharmos a <strong>receita total</strong> que cada
+            estado recebe durante a transição &mdash; que ainda mistura, em 2033, 91% de critério histórico
+            com 9% de destino &mdash; contra sua base de consumo? Essa razão não cancela. Ela varia de 10% no
+            Distrito Federal a 29% no Amazonas, e a variação conta uma história real sobre o Brasil: a
+            diferença entre tributar onde se produz e tributar onde se consome.
+        </p>
+        <p class="study-meta">
+            Dados: <a href="/estudos/aliquota-base-referencia-ibs.html">Estudo 16</a> (base de consumo,
+            Contas Nacionais/IBGE) &bull; <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> e
+            <a href="/estudos/reforma-tributaria-coeficiente.html">Estudo 10</a> (receita projetada por
+            estado, já publicada no <a href="/painel-reforma-tributaria.html">painel</a>)
+        </p>
+    </div>
+
+    <div class="study-content">
+
+        <h2 class="section-h">Por que isso não é a alíquota de referência</h2>
+        <div class="prose">
+            <p>
+                A LC 214/2025, art. 361, fixa a alíquota de referência do IBS estadual como um único número
+                nacional, calibrado para preservar, em proporção ao PIB, a mesma arrecadação que o ICMS já
+                gera. Não existem 27 alíquotas de referência estaduais diferentes; existe uma, aplicada sobre
+                a base de cada estado, e o Estudo 16 mostrou que, se essa base for medida do mesmo jeito que a
+                receita de destino já é repartida (pela participação φ<sup>dest</sup> de cada estado), a razão
+                receita/base sai idêntica para todos &mdash; a alíquota se cancela por construção, não porque
+                os estados sejam parecidos.
+            </p>
+            <p>
+                O que este estudo calcula é outra grandeza, que vale a pena nomear com cuidado para não
+                confundir com a primeira: a <strong>carga tributária implícita sobre o consumo</strong> de
+                cada estado, durante a transição. A diferença é que a receita <em>total</em> de um estado
+                nesses anos não vem só da fatia de destino &mdash; vem também da fatia histórica (o critério
+                que reparte o IBS pela participação de cada estado na arrecadação passada de ICMS e ISS, art.
+                131 da LC 227/2026), que reflete onde a produção acontece, não onde o consumo acontece. Dividir
+                essa receita total, que mistura as duas lógicas, pela base de consumo (só uma delas) produz um
+                número que varia de verdade, e a variação é economicamente interpretável.
+            </p>
+        </div>
+
+        <h2 class="section-h">Resultado</h2>
+        <div class="resposta-box">
+            <div class="resposta-label">Faixa da carga implícita em 2033</div>
+            <div class="resposta-numero" id="resposta-numero">Calculando...</div>
+            <div class="resposta-sub" id="resposta-sub"></div>
+        </div>
+        <div class="piso-note">
+            <span>⚠</span>
+            <span>Isto não é uma previsão de quanto cada estado vai <em>cobrar</em> &mdash; é a razão entre a
+            receita que o modelo de transição já atribui a cada estado (publicada no painel) e uma estimativa
+            independente de sua base de consumo. A variação reflete a mistura histórico/destino da fórmula de
+            transição, não uma decisão de política de nenhum estado.</span>
+        </div>
+
+        <span class="section-label">Os 27 estados, ordenados pela carga implícita em 2033</span>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="th-left">Estado</th>
+                        <th>Base de consumo (R$ bi)</th>
+                        <th>Receita total 2033 (R$ bi)</th>
+                        <th>Carga implícita 2033</th>
+                        <th>Participação histórica (φ<sup>CPT</sup>)</th>
+                        <th>Participação de destino (φ<sup>dest</sup>)</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-ufs">
+                    <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="chart-panel">
+            <p class="chart-panel-title">Carga tributária implícita sobre o consumo, por estado, 2033</p>
+            <canvas id="chart-carga" style="max-height:520px"></canvas>
+        </div>
+
+        <h2 class="section-h">Por que varia: o mecanismo</h2>
+        <div class="prose">
+            <p>
+                Os dois extremos ilustram o mecanismo com clareza. O Amazonas concentra parte relevante da
+                indústria de transformação do país, sob o regime da Zona Franca de Manaus, e essa produção é
+                tributada hoje pelo ICMS na origem &mdash; mesmo quando o que é fabricado em Manaus é vendido e
+                consumido em outros estados. Por isso, a participação histórica do Amazonas (φ<sup>CPT</sup>,
+                baseada na arrecadação passada) é quase o dobro de sua participação de destino
+                (φ<sup>dest</sup>, baseada no consumo das famílias): a produção supera, de longe, o consumo
+                local. O Distrito Federal está no polo oposto: consome muito (renda per capita alta, sede do
+                governo federal), mas produz pouco, então sua participação de destino supera a histórica. Como
+                a receita de 2033 ainda pesa majoritariamente o critério histórico, o Amazonas recebe hoje, em
+                relação ao que consome, uma receita proporcionalmente maior; o Distrito Federal, menor.
+            </p>
+            <p>
+                Esse é exatamente o mecanismo que justifica a mudança de origem para destino na reforma
+                tributária: à medida que o peso do critério de destino sobe no cronograma do ADCT (de 9% em
+                2033 para 98% em 2077), essa diferença entre carga implícita e consumo tende a se estreitar
+                para todos os estados, convergindo para o mesmo patamar nacional que o Estudo 16 estimou. Este
+                estudo não recalculou esse horizonte de longo prazo &mdash; replicar a mesma lógica para 2077,
+                usando os mesmos dados de longo prazo que a aba Simulações do painel já usa, é uma extensão
+                natural, não feita aqui.
+            </p>
+        </div>
+
+        <h2 class="section-h">Metodologia</h2>
+        <details class="methodology">
+            <summary>Como a base e a carga por estado foram calculadas</summary>
+            <div class="methodology-body">
+                <p class="meto-section-title">Base de consumo por estado</p>
+                <div class="lei-box mono">
+                    <p>base<sub>UF</sub> = φ<sup>dest</sup><sub>UF</sub> &times; consumo das famílias (Contas Nacionais, 2025)</p>
+                </div>
+                <p class="meto-note">
+                    φ<sup>dest</sup><sub>UF</sub> é a participação de destino do estado já publicada pelo
+                    painel (<code>coef_pleno_estado_pct</code>), a mesma que reparte a fatia de destino do IBS
+                    entre os entes: o cruzamento POF &times; Censo (<a
+                    href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a>) com o fator estadual/municipal
+                    do art. 361 da LC 214/2025 já aplicado. O nível agregado é o mesmo do <a
+                    href="/estudos/aliquota-base-referencia-ibs.html">Estudo 16</a>: R$ 8.081.333 milhões,
+                    Contas Nacionais do IBGE (SIDRA, tabela 1846), 2025.
+                </p>
+                <p class="meto-section-title">Carga implícita por ano</p>
+                <div class="lei-box mono">
+                    <p>carga<sub>UF,ano</sub> = (origem + cpt + destino + seguro)<sub>UF,ano</sub> &divide; base<sub>UF</sub></p>
+                </div>
+                <p class="meto-note">
+                    O numerador é a receita total do estado já projetada pelo painel para cada ano de
+                    2029 a 2033, com os quatro componentes da fórmula de transição (a parcela ainda regida
+                    pelo critério neutro/histórico do ICMS-ISS remanescente, a parcela do IBS repartida pelo
+                    critério histórico, a parcela repartida pelo critério de destino, e o repasse do
+                    Seguro-Receita, quando existe). O denominador é fixo no tempo, a mesma base de 2025
+                    projetada com a hipótese, explicada no Estudo 16, de que a razão consumo/PIB permanece
+                    constante.
+                </p>
+                <p class="meto-section-title">Hipóteses explícitas</p>
+                <ul class="meto-list">
+                    <li>A base de consumo por estado usa a mesma participação (φ<sup>dest</sup>) que já reparte
+                    a receita de destino no painel &mdash; não é uma segunda estimativa independente da
+                    distribuição espacial do consumo, só do seu nível agregado (que vem das Contas Nacionais,
+                    não da própria POF).</li>
+                    <li>A base é mantida constante em proporção ao consumo nacional projetado ao longo da
+                    transição (mesma hipótese do Estudo 16).</li>
+                    <li>Segue valendo a ressalva do Estudo 16: o consumo usado é bruto, sem descontar itens não
+                    monetários, tributos embutidos no preço, nem regimes diferenciados e específicos. Isso não
+                    muda a comparação <em>entre</em> estados (o desconto afetaria todos proporcionalmente, se
+                    fosse uniforme), mas significa que o nível absoluto de cada carga implícita também é um
+                    piso, não um valor final.</li>
+                </ul>
+            </div>
+        </details>
+
+        <h2 class="section-h">Implicações para o modelo do painel</h2>
+        <div class="callout">
+            <strong>Uma base independente, não uma segunda alíquota por ente.</strong> Este estudo não separa
+            "alíquota própria" de "ampliação de base" como duas variáveis diferentes no simulador do painel
+            &mdash; mecanicamente, no modelo de receita, elas continuam sendo a mesma operação (ver <a
+            href="/painel-reforma-tributaria.html#view-metodologia">Metodologia do painel</a>). O que muda é
+            que agora existe uma base de consumo em reais, por estado, construída de forma independente da
+            receita, que pode ser mostrada ao lado da simulação como referência &mdash; por exemplo, "esse
+            ajuste de receita equivaleria a uma carga implícita de tantos por cento sobre a base de consumo
+            estimada do estado", sem alterar nenhuma fórmula de receita já publicada. Essa é uma extensão
+            natural para uma futura versão da aba Simulações, mas não foi implementada ali; este estudo é
+            deliberadamente autocontido, para poder ser conferido antes de qualquer mudança no painel ao vivo.
+        </div>
+
+        <h2 class="section-h">Limitações e simplificações</h2>
+        <ol class="limitacoes-list">
+            <li><strong>Não é a alíquota de referência legal.</strong> É uma razão receita/consumo derivada,
+            útil para comparar estados entre si, não uma antecipação de nenhuma alíquota oficial.</li>
+            <li><strong>Herda as limitações do Estudo 16.</strong> A base é um piso (consumo bruto, sem
+            regimes diferenciados nem compras governamentais).</li>
+            <li><strong>Só estados, só 2029-2033.</strong> Estender a municípios exigiria uma base de consumo
+            municipal independente da própria distribuição de receita, que ainda não existe; estender a 2077
+            é possível com os mesmos dados de longo prazo já usados na aba Simulações do painel, mas não foi
+            feito aqui.</li>
+            <li><strong>A base usa a mesma φ<sup>dest</sup> da receita.</strong> Isso é suficiente para o que
+            este estudo mede (a mistura histórico/destino gera variação real, mesmo com essa base), mas uma
+            base de consumo genuinamente independente da distribuição de receita exigiria uma fonte adicional,
+            não usada aqui.</li>
+        </ol>
+
+        <div class="footnotes">
+            <p><strong>Fontes e notas metodológicas:</strong></p>
+            <p>1. Receita total projetada por estado, 2029-2033: <code>data/painel-estados.json</code>, já publicado no <a href="/painel-reforma-tributaria.html">painel</a> e detalhado nos Estudos 06, 10 e 11 desta página.</p>
+            <p>2. Base de consumo por estado: participação de destino (φ<sup>dest</sup>) já publicada, aplicada ao consumo das famílias das Contas Nacionais do IBGE (SIDRA, tabela 1846, 2025) &mdash; mesma fonte do <a href="/estudos/aliquota-base-referencia-ibs.html">Estudo 16</a>.</p>
+            <p>3. Base legal: LC 214/2025, art. 361 (alíquota de referência, único número nacional); LC 227/2026, arts. 114 a 116 (receita média de referência e critério histórico de transição).</p>
+            <p>4. Coeficiente de destino (φ<sup>dest</sup>) por POF &times; Censo: <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a> desta página.</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+
+    <script src="/js/search.js"></script>
+    <script>
+    const fmtNum = (v, d=1) => v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
+    const fmtPct = (v, d=1) => v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }) + '%';
+
+    let DATA = null;
+
+    async function init() {
+        try {
+            const res = await fetch('/data/carga-implicita-uf.json?t=' + Date.now());
+            DATA = await res.json();
+            buildResposta();
+            buildTable();
+            buildChart();
+        } catch (e) {
+            console.error(e);
+            document.getElementById('resposta-numero').textContent = 'Erro ao carregar dados.';
+        }
+    }
+
+    function buildResposta() {
+        const ufs = DATA.ufs;
+        const menor = ufs[0], maior = ufs[ufs.length - 1];
+        const c2033 = uf => uf.por_ano.find(a => a.ano === 2033).carga_implicita_pct;
+        document.getElementById('resposta-numero').textContent =
+            `${fmtPct(c2033(menor))} (${menor.uf}) a ${fmtPct(c2033(maior))} (${maior.uf})`;
+        document.getElementById('resposta-sub').innerHTML =
+            `Entre os 27 estados, em 2033. A mediana fica perto de ${fmtPct(c2033(ufs[Math.floor(ufs.length/2)]))}. Quanto mais um estado produz em relação ao que consome, maior a carga implícita nesse cenário de transição.`;
+    }
+
+    function buildTable() {
+        const rows = DATA.ufs.map((uf, i) => {
+            const c2033 = uf.por_ano.find(a => a.ano === 2033);
+            const cls = i < 3 ? 'row-extreme-low' : (i >= DATA.ufs.length - 3 ? 'row-extreme-high' : '');
+            return `<tr class="${cls}">
+                <td class="td-left">${uf.nome} (${uf.uf})</td>
+                <td>${fmtNum(uf.base_consumo_rs / 1e9)}</td>
+                <td>${fmtNum(c2033.receita_total / 1e9)}</td>
+                <td>${fmtPct(c2033.carga_implicita_pct, 2)}</td>
+                <td>${fmtPct(uf.coef_cpt_estado_pct, 3)}</td>
+                <td>${fmtPct(uf.coef_pleno_estado_pct, 3)}</td>
+            </tr>`;
+        }).join('');
+        document.getElementById('tbody-ufs').innerHTML = rows;
+    }
+
+    function buildChart() {
+        const el = document.getElementById('chart-carga');
+        if (!el || typeof Chart === 'undefined') return;
+        const ufs = DATA.ufs;
+        const c2033 = uf => uf.por_ano.find(a => a.ano === 2033).carga_implicita_pct;
+        new Chart(el, {
+            type: 'bar',
+            data: {
+                labels: ufs.map(u => u.uf),
+                datasets: [{
+                    label: 'Carga implícita 2033',
+                    data: ufs.map(c2033),
+                    backgroundColor: ufs.map((u, i) => i < 3 ? '#1e8449' : (i >= ufs.length - 3 ? '#9a6b1e' : '#1A3A5C')),
+                    borderRadius: 4, maxBarThickness: 24
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true, maintainAspectRatio: true, aspectRatio: 0.9,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: ctx => `${fmtPct(ctx.raw, 2)}` } }
+                },
+                scales: {
+                    x: { grid: { color: 'rgba(128,128,128,0.15)' }, ticks: { font: { size: 10 }, callback: v => v + '%' }, title: { display: true, text: 'Carga implícita (%)', font: { size: 10 } } },
+                    y: { grid: { display: false }, ticks: { font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    init();
+    </script>
+</body>
+</html>
