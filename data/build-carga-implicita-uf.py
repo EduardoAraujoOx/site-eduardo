@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 """
-Estudo: a carga tributária implícita sobre o consumo, por estado.
+Gera os dados por estado da seção "E por estado? A carga tributária
+implícita sobre o consumo" do Estudo 16 (estudos/aliquota-base-referencia-ibs.html).
 
-Não confundir com a alíquota de referência (Estudo 16): aquela é um único
-número nacional, fixado por lei (LC 214/2025 art. 361) para preservar a
-arrecadação em proporção ao PIB. O que este estudo calcula é outra coisa --
+Não confundir com a alíquota de referência: aquela é um único número
+nacional, fixado por lei (LC 214/2025 art. 361) para preservar a
+arrecadação em proporção ao PIB. O que este script calcula é outra coisa,
 a razão entre a receita total projetada de cada estado, no cenário de
 transição já publicado pelo painel, e uma estimativa independente de sua
 base de consumo em reais. Como a receita de transição ainda mistura, em
 2033, 91% de critério histórico (baseado em ICMS/ISS arrecadados na
 origem) com só 9% de critério de destino (baseado em consumo), essa razão
-varia de verdade entre estados -- ao contrário da razão calculada só sobre
+varia de verdade entre estados, ao contrário da razão calculada só sobre
 a fatia de destino, que cancela por construção (toda ela é proporcional a
 φdest).
 
@@ -21,7 +22,8 @@ Fontes:
   aplicado o fator estadual/municipal, LC 214/2025 art. 361):
   data/painel-estados.json (coef_pleno_estado_pct)
 - Nível agregado da base de consumo das famílias, 2025: Contas Nacionais
-  do IBGE (SIDRA, tabela 1846) -- mesmo número do Estudo 16.
+  do IBGE (SIDRA, tabela 1846), mesmo número usado na seção nacional do
+  Estudo 16.
 """
 import json
 
@@ -54,7 +56,7 @@ ufs.sort(key=lambda r: r['por_ano'][-1]['carga_implicita_pct'])
 
 saida = {
     '_meta': {
-        'descricao': 'Carga tributária implícita sobre o consumo por estado: receita total projetada (origem + cpt + destino + seguro, já publicada pelo painel) dividida por uma estimativa independente da base de consumo do estado (participação de destino do estado aplicada ao consumo das famílias das Contas Nacionais, mesma âncora nacional do Estudo 16). Não é a alíquota de referência -- essa é um único número nacional definido por lei. A variação entre estados reflete a mistura, ainda predominante em 2033, entre critério histórico (origem, ICMS/ISS) e critério de destino (consumo) na fórmula de transição.',
+        'descricao': 'Carga tributária implícita sobre o consumo por estado: receita total projetada (origem + cpt + destino + seguro, já publicada pelo painel) dividida por uma estimativa independente da base de consumo do estado (participação de destino do estado aplicada ao consumo das famílias das Contas Nacionais, mesma âncora nacional do Estudo 16). Não é a alíquota de referência, essa é um único número nacional definido por lei. A variação entre estados reflete a mistura, ainda predominante em 2033, entre critério histórico (origem, ICMS/ISS) e critério de destino (consumo) na fórmula de transição.',
         'fonte_receita': 'data/painel-estados.json (componentes_por_ano.estado)',
         'fonte_base': 'IBGE, Contas Nacionais Trimestrais, SIDRA tabela 1846, mesma consulta do Estudo 16',
         'consumo_familias_2025_rs': CONSUMO_FAMILIAS_2025_RS,
