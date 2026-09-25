@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A alíquota de referência do IBS/CBS: por que estimar, como obter, e como ela varia entre estados | Eduardo Reis Araújo</title>
-    <meta name="description" content="O IBS e a CBS tributam o consumo no destino, uma base diferente da que ICMS e ISS tributavam na origem. Este estudo reconstrói essa base a partir de dados públicos do IBGE, deriva a alíquota de referência nacional e estadual, e mostra por que uma carga implícita sobre o consumo varia de 10% a 29% entre estados durante a transição.">
+    <meta name="description" content="O IBS e a CBS tributam o consumo no destino, uma base diferente da que ICMS e ISS tributavam na origem. Este estudo reconstrói essa base a partir de dados públicos do IBGE, deriva a alíquota de referência nacional, estadual e municipal, e mostra por que uma alíquota implícita varia de 10% a 29% entre estados durante a transição.">
     <meta name="author" content="Eduardo Reis Araujo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/aliquota-base-referencia-ibs.html">
 
     <meta property="og:title" content="A alíquota de referência do IBS/CBS: por que estimar, como obter, e como ela varia entre estados">
-    <meta property="og:description" content="Uma reconstrução própria, a partir de dados públicos do IBGE, da base tributável e da alíquota de referência do IBS/CBS, em nível nacional e por estado.">
+    <meta property="og:description" content="Uma reconstrução própria, a partir de dados públicos do IBGE, da base tributável e da alíquota de referência do IBS/CBS, em nível nacional, por esfera e por estado.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/aliquota-base-referencia-ibs.html">
     <meta property="og:locale" content="pt_BR">
@@ -143,13 +143,13 @@
             reponha, em proporção ao PIB, a arrecadação antiga, não pode simplesmente herdar a alíquota histórica
             de cada ente: precisa ser recalculada sobre uma base reconstruída do zero, o consumo das famílias em
             reais, não a produção ou a circulação de mercadorias. Este estudo deriva essa base e essa alíquota a
-            partir de dados públicos do IBGE, primeiro em nível nacional, depois estado a estado, e compara o
-            resultado com a literatura especializada.
+            partir de dados públicos do IBGE, primeiro em nível nacional, depois separada entre a fatia estadual
+            e a municipal, depois estado a estado, e compara o resultado com a literatura especializada.
         </p>
         <p class="study-meta">
             Dados: IBGE, Contas Nacionais Trimestrais (SIDRA, tabela 1846); Pesquisa de Orçamentos Familiares e
-            Censo Demográfico (IBGE); receita de referência e coeficientes de transição já publicados no
-            <a href="/painel-reforma-tributaria.html">Painel da Reforma Tributária</a>.
+            Censo Demográfico (IBGE); receita de referência, ICMS, ISS, FECOP e coeficientes de transição já
+            publicados no <a href="/painel-reforma-tributaria.html">Painel da Reforma Tributária</a>.
         </p>
     </div>
 
@@ -259,8 +259,8 @@
 
         <p class="meto-section-title">Passo 2. A receita de referência nacional, o "bolo"</p>
         <p class="meto-note">
-            A receita de referência agregada (ICMS e ISS históricos, projetados mantendo constante a razão em
-            relação ao PIB, conforme o art. 361) já está calculada e publicada no restante deste site, e é
+            A receita de referência agregada (ICMS, ISS e FECOP históricos, projetados mantendo constante a razão
+            em relação ao PIB, conforme o art. 361) já está calculada e publicada no restante deste site, e é
             reutilizada aqui sem recálculo (fonte 3 ao final).
         </p>
 
@@ -278,7 +278,7 @@
         </p>
 
         <div class="resposta-box">
-            <div class="resposta-label">Resultado do passo 3, nível nacional</div>
+            <div class="resposta-label">Resultado do passo 3, nível nacional (IBS estadual + IBS municipal)</div>
             <div class="resposta-numero" id="resposta-numero-nacional">Calculando...</div>
             <div class="resposta-sub" id="resposta-sub-nacional"></div>
         </div>
@@ -333,18 +333,66 @@
             reforça o caráter de piso do resultado.</li>
         </ul>
 
+        <h2 class="section-h">A alíquota de referência estadual e a municipal, separadas</h2>
+        <div class="prose">
+            <p>
+                O art. 361 não fixa uma alíquota de referência combinada: fixa uma para o IBS estadual e outra,
+                separada e independente, para o IBS municipal. O passo 3 derivou o número combinado porque é
+                assim que a receita de referência já está agregada no restante deste site (ICMS, ISS e FECOP
+                somados). Esta seção divide esse número nas duas fatias que a lei de fato distingue, usando a
+                participação de cada esfera na mesma receita de referência e no mesmo período de calibração legal,
+                2024 a 2026.
+            </p>
+        </div>
+        <div class="lei-box mono">
+            <p>participação da esfera = (ICMS + FECOP, para a esfera estadual; ISS, para a municipal) / (ICMS + ISS + FECOP), média 2024&ndash;2026</p>
+            <p style="margin-top:0.6rem">alíquota de referência bruta simplificada da esfera = alíquota combinada (passo 3) &times; participação da esfera</p>
+        </div>
+        <p class="meto-note">
+            O FECOP entra do lado estadual porque é um fundo estadual, vinculado ao ICMS, que a reforma trata como
+            parte da receita substituída pelo IBS nos estados que o cobram. 2024 e 2025 usam o dado fechado (DCA)
+            já publicado no restante deste site; 2026 ainda não fechou, e usa a mesma estimativa preliminar (RREO
+            de doze meses) que o resto deste estudo já usa para o bolo combinado, com o FECOP de 2026 aproximado
+            pelo valor de 2025, a mesma regra de "carregar o último dado fechado" aplicada ao restante da receita
+            de referência.
+        </p>
+        <span class="section-label">Participação média 2024&ndash;2033 e alíquota resultante</span>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="th-left">Esfera</th>
+                        <th>Participação na receita de referência</th>
+                        <th>Alíquota de referência bruta simplificada</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-esferas">
+                    <tr><td colspan="3" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="prose">
+            <p>
+                Como a participação é mantida constante pela mesma lógica de neutralidade do passo 3, as duas
+                alíquotas resultantes também ficam constantes ao longo de toda a transição, 2029 a 2033. Essa
+                separação importa para a seção seguinte: a base de consumo de cada estado, derivada mais abaixo,
+                já é líquida da cota-parte municipal, então a alíquota comparável a ela é a fatia estadual aqui
+                derivada, não a combinada do passo 3.
+            </p>
+        </div>
+
         <h2 class="section-h">Da alíquota nacional à base e à receita de cada estado</h2>
         <div class="prose">
             <p>
-                Com a alíquota de referência nacional derivada, o passo seguinte é aplicá-la a cada estado. Isso
+                Com a alíquota de referência estadual derivada, o passo seguinte é aplicá-la a cada estado. Isso
                 exige duas peças adicionais: quanto do consumo nacional cada estado representa, e como a
                 legislação pondera essa participação ano a ano durante a transição.
             </p>
         </div>
 
-        <p class="meto-section-title">Passo 4. A base de consumo de cada estado</p>
+        <p class="meto-section-title">Passo 4. A base tributável de cada estado</p>
         <div class="lei-box mono">
-            <p>base do estado (R$) = participação de destino do estado &times; base nacional de consumo (passo 1)</p>
+            <p>base tributável do estado (R$) = participação de destino do estado &times; base nacional de consumo (passo 1)</p>
         </div>
         <p class="meto-note">
             A participação de destino de cada estado não vem do nível agregado, vem de outra fonte: o cruzamento
@@ -352,66 +400,71 @@
             faixa de renda, apurado pela POF, já líquido do fator de partilha entre governo estadual e municípios
             que a LC 214/2025 estabelece (fonte 4 ao final). É essa mesma participação que já reparte a receita
             de destino do IBS entre os entes no restante deste site; aqui ela é reaproveitada para converter o
-            nível agregado nacional numa base em reais por estado.
+            nível agregado nacional numa base tributável em reais por estado, já líquida da fatia municipal.
         </p>
 
         <p class="meto-section-title">Passo 5. A receita de destino projetada do estado</p>
         <div class="lei-box mono">
-            <p>receita de destino projetada do estado, no ano = alíquota de referência (passo 3) &times; peso do critério de destino no ano &times; base do estado (passo 4)</p>
+            <p>receita de destino projetada do estado, no ano = alíquota de referência estadual (seção anterior) &times; peso do critério de destino no ano &times; base tributável do estado (passo 4)</p>
         </div>
         <p class="meto-note">
-            Essa conta bate de forma exata, por construção: a base do estado foi obtida multiplicando a mesma
-            participação de destino que também reparte a receita de destino, então desfazer a conta, dividindo a
-            receita de destino pela alíquota e pelo peso do ano, devolve exatamente a base do passo 4. Isso não é
-            uma falha do exercício, é o esperado, e serve como uma verificação de consistência interna: confirma
-            que a alíquota nacional e a base estadual, construídas aqui a partir de fontes diferentes, encaixam
-            sem sobra nem falta. Mas essa consistência vale só para a fatia de destino da receita, que hoje ainda
-            é pequena. A receita total que um estado efetivamente recebe durante a transição inclui uma segunda
-            fatia, que segue outra lógica e não se reduz a essa fórmula: é o assunto da próxima seção.
+            A alíquota usada aqui é a fatia <strong>estadual</strong> derivada na seção anterior, não a combinada
+            do passo 3: como a base tributável do estado já é líquida da cota-parte municipal, misturar as duas
+            inflaria a conta. Essa conta bate de forma exata, por construção: a base do estado foi obtida
+            multiplicando a mesma participação de destino que também reparte a receita de destino, então desfazer
+            a conta, dividindo a receita de destino pela alíquota estadual e pelo peso do ano, devolve exatamente
+            a base do passo 4. Isso não é uma falha do exercício, é o esperado, e serve como uma verificação de
+            consistência interna: confirma que a alíquota estadual e a base tributável, construídas aqui a partir
+            de fontes diferentes, encaixam sem sobra nem falta. Mas essa consistência vale só para a fatia de
+            destino da receita, que hoje ainda é pequena. A receita total que um estado efetivamente recebe
+            durante a transição inclui uma segunda fatia, que segue outra lógica e não se reduz a essa fórmula: é
+            o assunto da próxima seção.
         </p>
 
-        <h2 class="section-h">A receita total do estado: por que a carga implícita não é tautológica</h2>
+        <h2 class="section-h">A alíquota de referência implícita de cada estado</h2>
         <div class="prose">
             <p>
                 A legislação faz o IBS estadual conviver, por vários anos, com dois critérios de partilha ao
                 mesmo tempo: o de destino, derivado no passo 4 e no passo 5, e um histórico, que reparte outra
-                fatia da receita pela participação de cada estado na arrecadação passada de ICMS e ISS, não pelo
+                fatia da receita pela participação de cada estado na arrecadação passada de ICMS, não pelo
                 consumo atual. O peso do critério histórico começa em 80% em 2029 e ainda é de 91% em 2033,
                 caindo de forma gradual só depois disso. A receita total de um estado, portanto, não é só o
                 resultado do passo 5: é a soma dessa fatia de destino com a fatia histórica, que não depende da
-                base de consumo de jeito nenhum.
+                base tributável de jeito nenhum.
             </p>
             <p>
-                Dividir essa receita total, que mistura as duas lógicas, pela base de consumo do estado (que
+                Dividir essa receita total, que mistura as duas lógicas, pela base tributável do estado (que
                 reflete só a lógica de destino) produz uma razão que varia de verdade entre estados, ao contrário
-                da conta tautológica do passo 5. Chamamos essa razão de <strong>carga tributária implícita sobre
-                o consumo</strong>, para não confundir com a alíquota de referência, que é um único número
-                nacional.
+                da conta tautológica do passo 5. Chamamos essa razão de <strong>alíquota de referência
+                implícita</strong> do estado, para deixar claro o que ela mede, uma alíquota, aplicada sobre uma
+                base tributável, mas sem confundi-la com a alíquota de referência legal, que é um único número
+                nacional (a fatia estadual derivada na seção "A alíquota de referência estadual e a municipal,
+                separadas"), não 27 números diferentes.
             </p>
         </div>
 
         <div class="resposta-box">
-            <div class="resposta-label">Faixa da carga implícita em 2033, entre os 27 estados</div>
+            <div class="resposta-label">Faixa da alíquota de referência implícita em 2033, entre os 27 estados</div>
             <div class="resposta-numero" id="resposta-numero-uf">Calculando...</div>
             <div class="resposta-sub" id="resposta-sub-uf"></div>
         </div>
         <div class="piso-note">
             <span>⚠</span>
             <span>Isto não é uma previsão de quanto cada estado vai <em>cobrar</em>: é a razão entre a receita
-            que o modelo de transição já atribui a cada estado e a base de consumo derivada no passo 4. A
+            que o modelo de transição já atribui a cada estado e a base tributável derivada no passo 4. A
             variação reflete a mistura histórico/destino da fórmula de transição, não uma decisão de política de
             nenhum estado.</span>
         </div>
 
-        <span class="section-label">Os 27 estados, ordenados pela carga implícita em 2033</span>
+        <span class="section-label">Os 27 estados, ordenados pela alíquota de referência implícita em 2033</span>
         <div class="table-wrap">
             <table class="data-table">
                 <thead>
                     <tr>
                         <th class="th-left">Estado</th>
-                        <th>Base de consumo (R$ bi)</th>
+                        <th>Base tributável (R$ bi)</th>
                         <th>Receita total 2033 (R$ bi)</th>
-                        <th>Carga implícita 2033</th>
+                        <th>Alíquota implícita 2033</th>
                         <th>Participação histórica (φ<sup>CPT</sup>)</th>
                         <th>Participação de destino (φ<sup>dest</sup>)</th>
                     </tr>
@@ -423,7 +476,7 @@
         </div>
 
         <div class="chart-panel">
-            <p class="chart-panel-title">Carga tributária implícita sobre o consumo, por estado, 2033</p>
+            <p class="chart-panel-title">Alíquota de referência implícita, por estado, 2033</p>
             <canvas id="chart-carga" style="max-height:520px"></canvas>
         </div>
 
@@ -441,10 +494,10 @@
             </p>
             <p>
                 Esse é exatamente o mecanismo que justifica a mudança de origem para destino na reforma: à medida
-                que o peso do critério de destino sobe ao longo da transição, essa diferença entre carga implícita
-                e consumo tende a se estreitar para todos os estados, convergindo para o mesmo patamar nacional
-                derivado no passo 3. Este estudo não recalculou esse horizonte de longo prazo; replicar a mesma
-                lógica para décadas à frente é uma extensão natural, não feita aqui.
+                que o peso do critério de destino sobe ao longo da transição, essa diferença entre a alíquota
+                implícita e o consumo tende a se estreitar para todos os estados, convergindo para o mesmo patamar
+                estadual derivado acima. Este estudo não recalculou esse horizonte de longo prazo; replicar a
+                mesma lógica para décadas à frente é uma extensão natural, não feita aqui.
             </p>
         </div>
 
@@ -459,25 +512,26 @@
             </p>
         </div>
         <div class="lei-box mono">
-            <p>base implícita do estado, no ano = receita de destino efetivamente arrecadada pelo estado, no ano / (alíquota efetivamente legislada no ano &times; peso do critério de destino no ano)</p>
+            <p>base implícita do estado, no ano = receita de destino efetivamente arrecadada pelo estado, no ano / (alíquota estadual efetivamente legislada no ano &times; peso do critério de destino no ano)</p>
         </div>
         <div class="prose">
             <p>
                 A partir de 2029, o IBS passa a ser cobrado com uma alíquota legislada de verdade, que
-                provavelmente será bem diferente dos 12,60% brutos e não ajustados derivados no passo 3, por
-                causa dos descontos e regimes diferenciados (ver a comparação com a literatura, a seguir), e com
-                uma receita de destino realmente apurada por estado, publicada pelo Comitê Gestor do IBS. Nesse
-                momento, a fórmula acima deixa de devolver uma tautologia e passa a devolver uma base implícita
-                real, que pode ser comparada com a base projetada no passo 4 deste estudo.
+                provavelmente será bem diferente dos 10,73% brutos e não ajustados derivados para a fatia
+                estadual, por causa dos descontos e regimes diferenciados (ver a comparação com a literatura, a
+                seguir), e com uma receita de destino realmente apurada por estado, publicada pelo Comitê Gestor
+                do IBS. Nesse momento, a fórmula acima deixa de devolver uma tautologia e passa a devolver uma
+                base implícita real, que pode ser comparada com a base tributável projetada no passo 4 deste
+                estudo.
             </p>
         </div>
         <div class="callout">
             <strong>Como interpretar a comparação.</strong> Se a base implícita real vier maior que a base
             projetada aqui, a estimativa deste estudo foi conservadora, o consumo tributável do estado acabou
             sendo maior do que assumimos. Se vier menor, foi otimista. Essa comparação exige dois dados que ainda
-            não existem hoje, a alíquota efetivamente legislada ano a ano e a receita de destino real por estado,
-            e por isso não é feita neste estudo: fica registrada como metodologia de validação futura, não como
-            resultado.
+            não existem hoje, a alíquota estadual efetivamente legislada ano a ano e a receita de destino real por
+            estado, e por isso não é feita neste estudo: fica registrada como metodologia de validação futura, não
+            como resultado.
         </div>
 
         <h2 class="section-h">Comparação com a literatura</h2>
@@ -489,7 +543,11 @@
                 referência se situem em torno de 2% para o IBS municipal e 14% para o IBS estadual [...] a
                 alíquota de referência federal seria de 9%", o que soma aproximadamente 25%, na mesma ordem de
                 grandeza da alíquota bruta simplificada deste estudo somada aos ajustes que a literatura mais
-                recente aplica.
+                recente aplica. É uma comparação, aliás, que a divisão por esfera deste estudo permite fazer par a
+                par: a fatia estadual bruta e não ajustada derivada aqui, 10,73%, já está na mesma ordem de
+                grandeza dos 14% que a literatura estima para o IBS-E depois de seus ajustes; a fatia municipal,
+                1,87% aqui contra 2% na literatura, fica ainda mais próxima, apesar de este estudo não descontar
+                regimes diferenciados nem itens não monetários.
             </p>
             <p>
                 Uma nota técnica mais recente e substancialmente mais detalhada, produzida para o Comitê
@@ -515,9 +573,19 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="td-left">Este estudo (alíquota bruta simplificada)</td>
+                        <td class="td-left">Este estudo, combinada (alíquota bruta simplificada)</td>
                         <td>12,60%</td>
                         <td class="td-fonte">Nada: consumo das famílias bruto, sem regimes diferenciados nem compras governamentais.</td>
+                    </tr>
+                    <tr>
+                        <td class="td-left">Este estudo, fatia estadual (IBS-E bruto)</td>
+                        <td>10,73%</td>
+                        <td class="td-fonte">Idem, dividida pela participação média do ICMS+FECOP na receita de referência, 2024-2026.</td>
+                    </tr>
+                    <tr>
+                        <td class="td-left">Este estudo, fatia municipal (IBS-M bruto)</td>
+                        <td>1,87%</td>
+                        <td class="td-fonte">Idem, dividida pela participação média do ISS na receita de referência, 2024-2026.</td>
                     </tr>
                     <tr>
                         <td class="td-left">Gobetti, Orair e Monteiro (Ipea, 2023), soma IBS-E + IBS-M + CBS</td>
@@ -535,17 +603,17 @@
 
         <h2 class="section-h">Implicações para o modelo do painel</h2>
         <div class="callout">
-            <strong>A alíquota-padrão se cancela nas participações relativas; a base estadual em reais é o que
-            faltava.</strong> Como a alíquota de referência incide uniformemente sobre a base considerada, uma
-            mudança no seu valor nominal produz uma variação proporcional tanto na receita de cada ente quanto na
-            receita total, por isso ela se cancela no cálculo das participações relativas e não afeta, por si
+            <strong>A alíquota-padrão se cancela nas participações relativas; a base tributável estadual em reais
+            é o que faltava.</strong> Como a alíquota de referência incide uniformemente sobre a base considerada,
+            uma mudança no seu valor nominal produz uma variação proporcional tanto na receita de cada ente quanto
+            na receita total, por isso ela se cancela no cálculo das participações relativas e não afeta, por si
             só, os resultados distributivos do Painel da Reforma Tributária. A nota técnica do COMSEFAZ (2026)
-            chega à mesma conclusão de forma independente. O que este estudo acrescenta é uma base de consumo em
-            reais, por estado, construída de forma independente da receita (passo 4): uma futura versão do
-            simulador de cenários do painel poderia usá-la como referência, por exemplo, mostrando a que carga
-            implícita um ajuste de receita equivaleria, sem alterar nenhuma fórmula de receita já publicada. Essa
-            extensão não foi implementada; este estudo é deliberadamente autocontido, para poder ser conferido
-            antes de qualquer mudança no painel ao vivo.
+            chega à mesma conclusão de forma independente. O que este estudo acrescenta é uma base tributável em
+            reais, por estado, construída de forma independente da receita (passo 4), e a própria alíquota
+            estadual separada da municipal: uma futura versão do simulador de cenários do painel poderia usá-las
+            como referência, por exemplo, mostrando a que alíquota implícita um ajuste de receita equivaleria, sem
+            alterar nenhuma fórmula de receita já publicada. Essa extensão não foi implementada; este estudo é
+            deliberadamente autocontido, para poder ser conferido antes de qualquer mudança no painel ao vivo.
         </div>
 
         <h2 class="section-h">Limitações e simplificações</h2>
@@ -564,18 +632,22 @@
             <li><strong>Razão consumo/PIB projetada, não observada.</strong> A trajetória 2029&ndash;2033 assume
             que a razão de 2025 se mantém constante; não há, até onde este estudo apurou, uma projeção oficial
             das Contas Nacionais para confirmar ou refutar essa hipótese.</li>
-            <li><strong>A base estadual usa a mesma participação de destino que já reparte a receita.</strong>
-            Isso é suficiente para o que este estudo mede (a mistura histórico/destino já gera variação real
-            mesmo com essa base), mas uma base de consumo genuinamente independente da distribuição de receita
-            exigiria uma fonte adicional, não usada aqui.</li>
-            <li><strong>Só estados, só 2029&ndash;2033.</strong> Estender a municípios exigiria uma base de
-            consumo municipal independente da própria distribuição de receita, que ainda não existe; estender o
-            cálculo às décadas seguintes da transição é possível com os mesmos dados de longo prazo já usados no
-            painel, mas não foi feito aqui.</li>
+            <li><strong>A divisão estadual/municipal usa uma participação média constante.</strong> A fatia de
+            2026 usada nessa média ainda é uma estimativa preliminar (RREO), não o dado fechado (DCA); e a
+            participação observada em 2024-2026 é mantida constante até 2033, sem projeção própria de como ICMS e
+            ISS cresceriam de forma diferente um do outro.</li>
+            <li><strong>A base tributável estadual usa a mesma participação de destino que já reparte a
+            receita.</strong> Isso é suficiente para o que este estudo mede (a mistura histórico/destino já gera
+            variação real mesmo com essa base), mas uma base de consumo genuinamente independente da distribuição
+            de receita exigiria uma fonte adicional, não usada aqui.</li>
+            <li><strong>Só estados, só 2029&ndash;2033.</strong> Estender a municípios exigiria uma base
+            tributável municipal independente da própria distribuição de receita, que ainda não existe; estender
+            o cálculo às décadas seguintes da transição é possível com os mesmos dados de longo prazo já usados
+            no painel, mas não foi feito aqui.</li>
             <li><strong>A validação por dados reais é uma metodologia, não um resultado.</strong> A fórmula da
-            seção anterior precisa de dois dados que ainda não existem, a alíquota efetivamente legislada ano a
-            ano e a receita de destino real por estado; fica registrada como plano de verificação para quando o
-            Comitê Gestor do IBS publicar esses números, não como uma conclusão deste estudo.</li>
+            seção anterior precisa de dois dados que ainda não existem, a alíquota estadual efetivamente
+            legislada ano a ano e a receita de destino real por estado; fica registrada como plano de verificação
+            para quando o Comitê Gestor do IBS publicar esses números, não como uma conclusão deste estudo.</li>
         </ol>
 
         <div class="footnotes">
@@ -590,9 +662,10 @@
             variável 585 ("Valores a preços correntes"), categorias 93404 ("Despesa de consumo das famílias") e
             90707 ("PIB a preços de mercado"), soma dos quatro trimestres de 2025. Consulta:
             <code>https://apisidra.ibge.gov.br/values/t/1846/n1/all/v/585/p/202501-202504/c11255/93404,90707/f/n</code>.</p>
-            <p>3. Receita de referência (bolo), PIB e receita por estado projetados 2029&ndash;2033: dados já
-            publicados e detalhados no <a href="/painel-reforma-tributaria.html">Painel da Reforma Tributária</a>
-            (SICONFI/STN, Banco Central).</p>
+            <p>3. Receita de referência (bolo), ICMS, ISS, FECOP, PIB e receita por estado projetados
+            2029&ndash;2033: dados já publicados e detalhados no <a href="/painel-reforma-tributaria.html">Painel
+            da Reforma Tributária</a> (SICONFI/STN, DCA Anexo I-C; Banco Central); ICMS e ISS preliminares de
+            2026, RREO últimos doze meses.</p>
             <p>4. Participação relativa de cada estado no consumo nacional (POF &times; Censo): metodologia
             original de ORAIR, R. O.; GOBETTI, S. W. <em>Reforma tributária e federalismo fiscal: uma análise
             das propostas de criação de um novo imposto sobre o valor adicionado para o Brasil.</em> Rio de
@@ -621,15 +694,18 @@
 
     async function init() {
         try {
-            const [resNac, resUf] = await Promise.all([
+            const [resNac, resUf, resEsferas] = await Promise.all([
                 fetch('/data/aliquota-base-referencia.json?t=' + Date.now()),
-                fetch('/data/carga-implicita-uf.json?t=' + Date.now())
+                fetch('/data/carga-implicita-uf.json?t=' + Date.now()),
+                fetch('/data/aliquota-referencia-esferas.json?t=' + Date.now())
             ]);
             const dataNac = await resNac.json();
             UF_DATA = await resUf.json();
+            const dataEsferas = await resEsferas.json();
             buildRespostaNacional(dataNac);
             buildResultadosTable(dataNac);
             buildChartNacional(dataNac);
+            buildEsferasTable(dataEsferas);
             buildRespostaUf();
             buildTableUf();
             buildChartUf();
@@ -686,6 +762,19 @@
         });
     }
 
+    function buildEsferasTable(data) {
+        const a2029 = data.anos[0];
+        const rows = [
+            { nome: 'Estadual (IBS-E, ICMS + FECOP)', share: data._meta.share_estadual_medio_pct, aliquota: a2029.aliquota_estadual_bruta_pct },
+            { nome: 'Municipal (IBS-M, ISS)', share: data._meta.share_municipal_medio_pct, aliquota: a2029.aliquota_municipal_bruta_pct }
+        ];
+        document.getElementById('tbody-esferas').innerHTML = rows.map(r => `<tr class="row-resposta">
+            <td class="td-left">${r.nome}</td>
+            <td>${fmtPct(r.share)}</td>
+            <td>${fmtPct(r.aliquota)}</td>
+        </tr>`).join('');
+    }
+
     function buildRespostaUf() {
         const ufs = UF_DATA.ufs;
         const menor = ufs[0], maior = ufs[ufs.length - 1];
@@ -693,7 +782,7 @@
         document.getElementById('resposta-numero-uf').textContent =
             `${fmtPct(c2033(menor), 1)} (${menor.uf}) a ${fmtPct(c2033(maior), 1)} (${maior.uf})`;
         document.getElementById('resposta-sub-uf').innerHTML =
-            `Em 2033, a mediana fica perto de ${fmtPct(c2033(ufs[Math.floor(ufs.length/2)]), 1)}. Quanto mais um estado produz em relação ao que consome, maior a carga implícita nesse cenário de transição.`;
+            `Em 2033, a mediana fica perto de ${fmtPct(c2033(ufs[Math.floor(ufs.length/2)]), 1)}. Quanto mais um estado produz em relação ao que consome, maior a alíquota de referência implícita nesse cenário de transição.`;
     }
 
     function buildTableUf() {
@@ -722,7 +811,7 @@
             data: {
                 labels: ufs.map(u => u.uf),
                 datasets: [{
-                    label: 'Carga implícita 2033',
+                    label: 'Alíquota de referência implícita 2033',
                     data: ufs.map(c2033),
                     backgroundColor: ufs.map((u, i) => i < 3 ? '#1e8449' : (i >= ufs.length - 3 ? '#9a6b1e' : '#1A3A5C')),
                     borderRadius: 4, maxBarThickness: 24
@@ -736,7 +825,7 @@
                     tooltip: { callbacks: { label: ctx => `${fmtPct(ctx.raw, 2)}` } }
                 },
                 scales: {
-                    x: { grid: { color: 'rgba(128,128,128,0.15)' }, ticks: { font: { size: 10 }, callback: v => v + '%' }, title: { display: true, text: 'Carga implícita (%)', font: { size: 10 } } },
+                    x: { grid: { color: 'rgba(128,128,128,0.15)' }, ticks: { font: { size: 10 }, callback: v => v + '%' }, title: { display: true, text: 'Alíquota de referência implícita (%)', font: { size: 10 } } },
                     y: { grid: { display: false }, ticks: { font: { size: 10 } } }
                 }
             }
