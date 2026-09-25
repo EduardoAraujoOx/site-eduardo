@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A alíquota de referência do IBS/CBS: por que estimar, como obter, e como ela varia entre estados | Eduardo Reis Araújo</title>
-    <meta name="description" content="O IBS e a CBS tributam o consumo no destino, uma base diferente da que ICMS e ISS tributavam na origem. Este estudo reconstrói essa base a partir de dados públicos do IBGE, estima a alíquota de referência nacional e mostra por que uma carga implícita sobre o consumo varia de 10% a 29% entre estados durante a transição.">
+    <meta name="description" content="O IBS e a CBS tributam o consumo no destino, uma base diferente da que ICMS e ISS tributavam na origem. Este estudo reconstrói essa base a partir de dados públicos do IBGE, deriva a alíquota de referência nacional e estadual, e mostra por que uma carga implícita sobre o consumo varia de 10% a 29% entre estados durante a transição.">
     <meta name="author" content="Eduardo Reis Araujo">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/aliquota-base-referencia-ibs.html">
@@ -51,16 +51,11 @@
         .prose p { font-family: var(--serif); font-size: 0.92rem; line-height: 1.75; color: var(--text); margin-bottom: 1rem; }
         .prose p:last-child { margin-bottom: 0; }
 
-        .methodology { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 2rem; background: var(--surface); }
-        .methodology summary { padding: 0.9rem 1.25rem; cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; list-style: none; display: flex; align-items: center; gap: 0.5rem; }
-        .methodology summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; }
-        .methodology[open] summary::before { transform: rotate(90deg); }
-        .methodology-body { padding: 0 1.5rem 1.5rem; }
-        .meto-section-title { font-family: var(--sans); font-weight: 700; font-size: 0.86rem; margin: 1.1rem 0 0.4rem; }
+        .meto-section-title { font-family: var(--sans); font-weight: 700; font-size: 0.86rem; margin: 1.6rem 0 0.4rem; }
         .meto-section-title:first-child { margin-top: 0; }
-        .meto-note { font-family: var(--serif); font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; margin-top: 0.5rem; }
+        .meto-note { font-family: var(--serif); font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; margin: 0.5rem 0 1rem; }
         .meto-note:first-child { margin-top: 0; }
-        .meto-list { font-family: var(--serif); font-size: 0.88rem; color: var(--text-secondary); line-height: 1.75; margin: 0.5rem 0 0; padding-left: 1.3rem; }
+        .meto-list { font-family: var(--serif); font-size: 0.88rem; color: var(--text-secondary); line-height: 1.75; margin: 0.5rem 0 1.5rem; padding-left: 1.3rem; }
         .meto-list li { margin-bottom: 0.4rem; }
 
         .lei-box { border-left: 3px solid var(--accent); background: var(--bg); border-radius: 0 6px 6px 0; padding: 1rem 1.25rem; margin: 0.75rem 0 1.25rem; }
@@ -147,9 +142,9 @@
             significa que a alíquota de referência, o número que a lei usa para garantir que a arrecadação nova
             reponha, em proporção ao PIB, a arrecadação antiga, não pode simplesmente herdar a alíquota histórica
             de cada ente: precisa ser recalculada sobre uma base reconstruída do zero, o consumo das famílias em
-            reais, não a produção ou a circulação de mercadorias. Este estudo faz essa reconstrução a partir de
-            dados públicos do IBGE, primeiro em nível nacional, depois estado a estado, e compara o resultado com
-            a literatura especializada.
+            reais, não a produção ou a circulação de mercadorias. Este estudo deriva essa base e essa alíquota a
+            partir de dados públicos do IBGE, primeiro em nível nacional, depois estado a estado, e compara o
+            resultado com a literatura especializada.
         </p>
         <p class="study-meta">
             Dados: IBGE, Contas Nacionais Trimestrais (SIDRA, tabela 1846); Pesquisa de Orçamentos Familiares e
@@ -238,83 +233,52 @@
             </p>
         </div>
 
-        <h2 class="section-h">Como a estimativa foi construída</h2>
-        <details class="methodology" open>
-            <summary>Metodologia: duas peças, de duas fontes diferentes</summary>
-            <div class="methodology-body">
-                <p class="meto-section-title">O nível agregado: Contas Nacionais, não pesquisa domiciliar</p>
-                <p class="meto-note">
-                    A base de consumo das famílias em reais foi obtida diretamente da API pública do IBGE (SIDRA,
-                    tabela 1846, "Contas Nacionais Trimestrais", variável "Valores a preços correntes"), somando
-                    os quatro trimestres de 2025: <strong>R$ 8.081.333 milhões</strong> de despesa de consumo das
-                    famílias, sobre um PIB de <strong>R$ 12.738.566 milhões</strong>, uma razão consumo/PIB de
-                    63,44%. O PIB de 2025 apurado dessa forma bate, a menos de R$ 400 mil num total de R$ 12,7
-                    trilhões, com o valor já usado no cálculo da receita de referência (ver fontes ao final), uma
-                    checagem cruzada útil entre duas consultas independentes à mesma fonte primária. A escolha das
-                    Contas Nacionais, e não da Pesquisa de Orçamentos Familiares, segue uma comparação já
-                    documentada na literatura especializada: o consumo declarado em pesquisas domiciliares fica
-                    cerca de 10% abaixo do valor medido pelas Contas Nacionais, porque famílias tendem a subdeclarar
-                    gastos em levantamentos amostrais (ver fontes ao final).
-                </p>
-                <p class="meto-section-title">A participação de cada lugar: Censo e pesquisa domiciliar cruzados</p>
-                <p class="meto-note">
-                    O nível agregado nacional não diz nada sobre como o consumo se distribui entre estados. Essa
-                    distribuição vem de outra fonte, já usada no restante deste site para repartir a receita de
-                    destino do IBS: o cruzamento entre a renda domiciliar por município, apurada pelo Censo
-                    Demográfico, e o perfil de consumo por faixa de renda, apurado pela Pesquisa de Orçamentos
-                    Familiares. O resultado é uma participação relativa de cada estado no consumo nacional das
-                    famílias, já líquida do fator de partilha entre governo estadual e municípios que a LC
-                    214/2025 estabelece. É essa participação que, multiplicada pelo nível agregado das Contas
-                    Nacionais, dá a base de consumo de cada estado em reais.
-                </p>
-                <p class="meto-section-title">A receita de referência</p>
-                <p class="meto-note">
-                    A receita de referência agregada (o "bolo": ICMS e ISS históricos, projetados mantendo
-                    constante a razão em relação ao PIB) e a receita projetada de cada estado ano a ano, com os
-                    critérios de transição já em vigor, são as mesmas já publicadas e detalhadas neste site, e são
-                    reutilizadas aqui sem recálculo.
-                </p>
-                <p class="meto-section-title">As duas contas</p>
-                <div class="lei-box" style="border-left-color:var(--text-muted)">
-                    <p style="font-family:var(--mono)">alíquota bruta simplificada (nacional) = receita de referência (bolo) / consumo das famílias estimado</p>
-                    <p style="font-family:var(--mono);margin-top:0.6rem">carga tributária implícita (por estado, por ano) = receita total do estado no ano / base de consumo estimada do estado</p>
-                </div>
-                <p class="meto-note">
-                    A primeira conta usa a mesma base, em nível nacional, nos dois lados: a alíquota que sai dela
-                    é a alíquota de referência simplificada do país inteiro. A segunda conta usa a receita total
-                    que cada estado efetivamente recebe durante a transição, que mistura dois critérios de
-                    partilha diferentes (explicado na seção sobre a variação por estado, mais abaixo), contra a
-                    base de consumo do próprio estado. O consumo das famílias em cada ano de 2029 a 2033 é
-                    projetado mantendo constante a razão consumo/PIB observada em 2025, a mesma lógica de
-                    neutralidade que a legislação já aplica à razão bolo/PIB. Como as duas razões são
-                    independentemente constantes, a alíquota bruta simplificada nacional resulta constante ao
-                    longo de toda a transição: não é uma hipótese adicional, é consequência direta de manter as
-                    duas premissas de neutralidade já embutidas na lei.
-                </p>
-                <p class="meto-section-title">Hipóteses explícitas</p>
-                <ul class="meto-list">
-                    <li>A razão consumo das famílias / PIB observada em 2025 permanece constante até 2033. Não
-                    há, até onde este estudo apurou, uma projeção oficial das Contas Nacionais para esses anos;
-                    esta é a extrapolação mais simples e mais transparente disponível, não uma previsão do
-                    IBGE.</li>
-                    <li>O denominador usado é o consumo das famílias <strong>bruto</strong>, sem excluir itens
-                    não monetários (como aluguel imputado) nem tributos já embutidos no preço, e sem aplicar
-                    nenhum desconto por regimes diferenciados ou específicos (saúde, educação, cesta básica
-                    etc.). Isso faz da alíquota bruta simplificada um <strong>piso</strong>, não uma previsão da
-                    alíquota que de fato entrará em vigor, ver a seção de limitações.</li>
-                    <li>As compras governamentais, que também compõem a base do IBS/CBS por imunidade
-                    recíproca, não entram nesta estimativa, o que reduz ainda mais o denominador em relação ao
-                    que a lei considera e reforça o caráter de piso do resultado.</li>
-                    <li>A base de consumo por estado usa a mesma participação relativa que já reparte a receita
-                    de destino no restante deste site, não é uma segunda estimativa independente da distribuição
-                    espacial do consumo, só do seu nível agregado.</li>
-                </ul>
-            </div>
-        </details>
+        <h2 class="section-h">Derivação: da base nacional à alíquota de referência</h2>
+        <div class="prose">
+            <p>
+                Esta seção deriva, passo a passo, a partir de dados públicos, a peça que faltava para responder à
+                pergunta da seção anterior: a que alíquota efetiva a receita de referência já projetada equivale.
+                Nenhum número aqui é emprestado de terceiro: os dois insumos, a base de consumo e a receita de
+                referência, vêm de fonte primária, e a conta entre eles é feita neste próprio estudo.
+            </p>
+        </div>
 
-        <h2 class="section-h">Resultado nacional</h2>
+        <p class="meto-section-title">Passo 1. A base nacional de consumo, pelas Contas Nacionais</p>
+        <p class="meto-note">
+            A base de consumo das famílias em reais foi obtida diretamente da API pública do IBGE (SIDRA, tabela
+            1846, "Contas Nacionais Trimestrais", variável "Valores a preços correntes"), somando os quatro
+            trimestres de 2025: <strong>R$ 8.081.333 milhões</strong> de despesa de consumo das famílias, sobre um
+            PIB de <strong>R$ 12.738.566 milhões</strong>, uma razão consumo/PIB de 63,44%. O PIB de 2025 apurado
+            dessa forma bate, a menos de R$ 400 mil num total de R$ 12,7 trilhões, com o valor já usado no cálculo
+            da receita de referência (fonte 3 ao final), uma checagem cruzada entre duas consultas independentes
+            à mesma fonte primária. A escolha das Contas Nacionais, e não da Pesquisa de Orçamentos Familiares
+            (POF), segue uma comparação já documentada na literatura especializada: o consumo declarado em
+            pesquisas domiciliares fica cerca de 10% abaixo do valor medido pelas Contas Nacionais, porque
+            famílias tendem a subdeclarar gastos em levantamentos amostrais (fonte 4 ao final).
+        </p>
+
+        <p class="meto-section-title">Passo 2. A receita de referência nacional, o "bolo"</p>
+        <p class="meto-note">
+            A receita de referência agregada (ICMS e ISS históricos, projetados mantendo constante a razão em
+            relação ao PIB, conforme o art. 361) já está calculada e publicada no restante deste site, e é
+            reutilizada aqui sem recálculo (fonte 3 ao final).
+        </p>
+
+        <p class="meto-section-title">Passo 3. A alíquota de referência bruta simplificada</p>
+        <div class="lei-box mono">
+            <p>alíquota de referência bruta simplificada = receita de referência (bolo) / consumo das famílias estimado</p>
+        </div>
+        <p class="meto-note">
+            O consumo das famílias em cada ano de 2029 a 2033 é projetado mantendo constante a razão consumo/PIB
+            observada em 2025 (63,44%), a mesma lógica de neutralidade que a legislação já aplica à razão
+            bolo/PIB (fixa em 7,9944% durante toda a transição). Como as duas razões são independentemente
+            constantes, a alíquota bruta simplificada resulta constante ao longo de toda a transição: não é uma
+            hipótese adicional, é consequência direta de manter as duas premissas de neutralidade já embutidas na
+            lei.
+        </p>
+
         <div class="resposta-box">
-            <div class="resposta-label">A alíquota bruta simplificada, nível nacional</div>
+            <div class="resposta-label">Resultado do passo 3, nível nacional</div>
             <div class="resposta-numero" id="resposta-numero-nacional">Calculando...</div>
             <div class="resposta-sub" id="resposta-sub-nacional"></div>
         </div>
@@ -354,27 +318,75 @@
             </div>
         </div>
 
-        <h2 class="section-h">E por estado? A carga tributária implícita sobre o consumo</h2>
+        <p class="meto-section-title">Hipóteses explícitas desta derivação</p>
+        <ul class="meto-list">
+            <li>A razão consumo das famílias / PIB observada em 2025 permanece constante até 2033. Não há, até
+            onde este estudo apurou, uma projeção oficial das Contas Nacionais para esses anos; esta é a
+            extrapolação mais simples e mais transparente disponível, não uma previsão do IBGE.</li>
+            <li>O denominador usado é o consumo das famílias <strong>bruto</strong>, sem excluir itens não
+            monetários (como aluguel imputado) nem tributos já embutidos no preço, e sem aplicar nenhum desconto
+            por regimes diferenciados ou específicos (saúde, educação, cesta básica etc.). Isso faz da alíquota
+            bruta simplificada um <strong>piso</strong>, não uma previsão da alíquota que de fato entrará em
+            vigor, ver a seção de limitações.</li>
+            <li>As compras governamentais, que também compõem a base do IBS/CBS por imunidade recíproca, não
+            entram nesta estimativa, o que reduz ainda mais o denominador em relação ao que a lei considera e
+            reforça o caráter de piso do resultado.</li>
+        </ul>
+
+        <h2 class="section-h">Da alíquota nacional à base e à receita de cada estado</h2>
         <div class="prose">
             <p>
-                A alíquota de referência é um único número nacional, não 27 números estaduais diferentes: o art.
-                361 fixa uma alíquota que vale para todo o país, aplicada sobre a base de cada estado. Se essa
-                base for medida do mesmo jeito que a receita de destino já é repartida, cada estado recebendo a
-                mesma fração do bolo que representa na base de consumo, a razão entre receita e base sai
-                idêntica para todos: ela se cancela por construção, não porque os estados sejam parecidos entre
-                si. Esse resultado é correto, mas não é a pergunta mais interessante.
+                Com a alíquota de referência nacional derivada, o passo seguinte é aplicá-la a cada estado. Isso
+                exige duas peças adicionais: quanto do consumo nacional cada estado representa, e como a
+                legislação pondera essa participação ano a ano durante a transição.
+            </p>
+        </div>
+
+        <p class="meto-section-title">Passo 4. A base de consumo de cada estado</p>
+        <div class="lei-box mono">
+            <p>base do estado (R$) = participação de destino do estado &times; base nacional de consumo (passo 1)</p>
+        </div>
+        <p class="meto-note">
+            A participação de destino de cada estado não vem do nível agregado, vem de outra fonte: o cruzamento
+            entre a renda domiciliar por município, apurada pelo Censo Demográfico, e o perfil de consumo por
+            faixa de renda, apurado pela POF, já líquido do fator de partilha entre governo estadual e municípios
+            que a LC 214/2025 estabelece (fonte 4 ao final). É essa mesma participação que já reparte a receita
+            de destino do IBS entre os entes no restante deste site; aqui ela é reaproveitada para converter o
+            nível agregado nacional numa base em reais por estado.
+        </p>
+
+        <p class="meto-section-title">Passo 5. A receita de destino projetada do estado</p>
+        <div class="lei-box mono">
+            <p>receita de destino projetada do estado, no ano = alíquota de referência (passo 3) &times; peso do critério de destino no ano &times; base do estado (passo 4)</p>
+        </div>
+        <p class="meto-note">
+            Essa conta bate de forma exata, por construção: a base do estado foi obtida multiplicando a mesma
+            participação de destino que também reparte a receita de destino, então desfazer a conta, dividindo a
+            receita de destino pela alíquota e pelo peso do ano, devolve exatamente a base do passo 4. Isso não é
+            uma falha do exercício, é o esperado, e serve como uma verificação de consistência interna: confirma
+            que a alíquota nacional e a base estadual, construídas aqui a partir de fontes diferentes, encaixam
+            sem sobra nem falta. Mas essa consistência vale só para a fatia de destino da receita, que hoje ainda
+            é pequena. A receita total que um estado efetivamente recebe durante a transição inclui uma segunda
+            fatia, que segue outra lógica e não se reduz a essa fórmula: é o assunto da próxima seção.
+        </p>
+
+        <h2 class="section-h">A receita total do estado: por que a carga implícita não é tautológica</h2>
+        <div class="prose">
+            <p>
+                A legislação faz o IBS estadual conviver, por vários anos, com dois critérios de partilha ao
+                mesmo tempo: o de destino, derivado no passo 4 e no passo 5, e um histórico, que reparte outra
+                fatia da receita pela participação de cada estado na arrecadação passada de ICMS e ISS, não pelo
+                consumo atual. O peso do critério histórico começa em 80% em 2029 e ainda é de 91% em 2033,
+                caindo de forma gradual só depois disso. A receita total de um estado, portanto, não é só o
+                resultado do passo 5: é a soma dessa fatia de destino com a fatia histórica, que não depende da
+                base de consumo de jeito nenhum.
             </p>
             <p>
-                Durante a transição, a receita que cada estado efetivamente recebe não vem só da fatia de
-                destino. A legislação faz o IBS estadual conviver, por vários anos, com dois critérios de
-                partilha ao mesmo tempo: um histórico, que reparte a receita pela participação de cada estado na
-                arrecadação passada de ICMS e ISS, e um de destino, que reparte pela participação de cada estado
-                no consumo. O peso do critério histórico começa em 80% em 2029 e ainda é de 91% em 2033, caindo
-                de forma gradual só depois disso, até desaparecer por completo décadas à frente. Dividir a
-                receita total de um estado, que mistura as duas lógicas, pela sua base de consumo (que reflete só
-                uma delas) produz uma razão que varia de verdade entre estados, e a variação é economicamente
-                interpretável. Vale nomear essa razão com cuidado para não confundir com a alíquota de
-                referência: chamamos de <strong>carga tributária implícita sobre o consumo</strong>.
+                Dividir essa receita total, que mistura as duas lógicas, pela base de consumo do estado (que
+                reflete só a lógica de destino) produz uma razão que varia de verdade entre estados, ao contrário
+                da conta tautológica do passo 5. Chamamos essa razão de <strong>carga tributária implícita sobre
+                o consumo</strong>, para não confundir com a alíquota de referência, que é um único número
+                nacional.
             </p>
         </div>
 
@@ -386,9 +398,9 @@
         <div class="piso-note">
             <span>⚠</span>
             <span>Isto não é uma previsão de quanto cada estado vai <em>cobrar</em>: é a razão entre a receita
-            que o modelo de transição já atribui a cada estado e uma estimativa independente de sua base de
-            consumo. A variação reflete a mistura histórico/destino da fórmula de transição, não uma decisão de
-            política de nenhum estado.</span>
+            que o modelo de transição já atribui a cada estado e a base de consumo derivada no passo 4. A
+            variação reflete a mistura histórico/destino da fórmula de transição, não uma decisão de política de
+            nenhum estado.</span>
         </div>
 
         <span class="section-label">Os 27 estados, ordenados pela carga implícita em 2033</span>
@@ -420,21 +432,52 @@
                 Os dois extremos ilustram o mecanismo com clareza. O Amazonas concentra parte relevante da
                 indústria de transformação do país, sob o regime da Zona Franca de Manaus, e essa produção é
                 tributada hoje pelo ICMS na origem, mesmo quando o que é fabricado em Manaus é vendido e
-                consumido em outros estados. Por isso, a participação histórica do Amazonas (baseada na
-                arrecadação passada) é quase o dobro de sua participação de destino (baseada no consumo das
-                famílias): a produção supera, de longe, o consumo local. O Distrito Federal está no polo oposto:
-                consome muito, renda per capita alta, sede do governo federal, mas produz pouco, então sua
-                participação de destino supera a histórica. Como a receita de 2033 ainda pesa majoritariamente o
-                critério histórico, o Amazonas recebe hoje, em relação ao que consome, uma receita
-                proporcionalmente maior; o Distrito Federal, menor.
+                consumido em outros estados. Por isso, a participação histórica do Amazonas é quase o dobro de
+                sua participação de destino: a produção supera, de longe, o consumo local. O Distrito Federal está
+                no polo oposto: consome muito, renda per capita alta, sede do governo federal, mas produz pouco,
+                então sua participação de destino supera a histórica. Como a receita de 2033 ainda pesa
+                majoritariamente o critério histórico, o Amazonas recebe hoje, em relação ao que consome, uma
+                receita proporcionalmente maior; o Distrito Federal, menor.
             </p>
             <p>
-                Esse é exatamente o mecanismo que justifica a mudança de origem para destino na reforma: à
-                medida que o peso do critério de destino sobe ao longo da transição, essa diferença entre carga
-                implícita e consumo tende a se estreitar para todos os estados, convergindo para o mesmo patamar
-                nacional estimado acima. Este estudo não recalculou esse horizonte de longo prazo; replicar a
-                mesma lógica para décadas à frente é uma extensão natural, não feita aqui.
+                Esse é exatamente o mecanismo que justifica a mudança de origem para destino na reforma: à medida
+                que o peso do critério de destino sobe ao longo da transição, essa diferença entre carga implícita
+                e consumo tende a se estreitar para todos os estados, convergindo para o mesmo patamar nacional
+                derivado no passo 3. Este estudo não recalculou esse horizonte de longo prazo; replicar a mesma
+                lógica para décadas à frente é uma extensão natural, não feita aqui.
             </p>
+        </div>
+
+        <h2 class="section-h">Como validar esta estimativa quando o IBS começar a ser cobrado</h2>
+        <div class="prose">
+            <p>
+                O passo 5 mostrou que desfazer a conta de destino hoje, dividindo a receita projetada pela
+                alíquota e pelo peso do ano, não ensina nada novo: devolve exatamente a base que já havíamos
+                assumido, porque foi dela que a receita projetada saiu. Essa mesma conta deixa de ser tautológica
+                assim que dados reais existirem, e vale registrar aqui a fórmula, como um plano de verificação
+                para quando isso acontecer.
+            </p>
+        </div>
+        <div class="lei-box mono">
+            <p>base implícita do estado, no ano = receita de destino efetivamente arrecadada pelo estado, no ano / (alíquota efetivamente legislada no ano &times; peso do critério de destino no ano)</p>
+        </div>
+        <div class="prose">
+            <p>
+                A partir de 2029, o IBS passa a ser cobrado com uma alíquota legislada de verdade, que
+                provavelmente será bem diferente dos 12,60% brutos e não ajustados derivados no passo 3, por
+                causa dos descontos e regimes diferenciados (ver a comparação com a literatura, a seguir), e com
+                uma receita de destino realmente apurada por estado, publicada pelo Comitê Gestor do IBS. Nesse
+                momento, a fórmula acima deixa de devolver uma tautologia e passa a devolver uma base implícita
+                real, que pode ser comparada com a base projetada no passo 4 deste estudo.
+            </p>
+        </div>
+        <div class="callout">
+            <strong>Como interpretar a comparação.</strong> Se a base implícita real vier maior que a base
+            projetada aqui, a estimativa deste estudo foi conservadora, o consumo tributável do estado acabou
+            sendo maior do que assumimos. Se vier menor, foi otimista. Essa comparação exige dois dados que ainda
+            não existem hoje, a alíquota efetivamente legislada ano a ano e a receita de destino real por estado,
+            e por isso não é feita neste estudo: fica registrada como metodologia de validação futura, não como
+            resultado.
         </div>
 
         <h2 class="section-h">Comparação com a literatura</h2>
@@ -498,11 +541,11 @@
             receita total, por isso ela se cancela no cálculo das participações relativas e não afeta, por si
             só, os resultados distributivos do Painel da Reforma Tributária. A nota técnica do COMSEFAZ (2026)
             chega à mesma conclusão de forma independente. O que este estudo acrescenta é uma base de consumo em
-            reais, por estado, construída de forma independente da receita: uma futura versão do simulador de
-            cenários do painel poderia usá-la como referência, por exemplo, mostrando a que carga implícita um
-            ajuste de receita equivaleria, sem alterar nenhuma fórmula de receita já publicada. Essa extensão não
-            foi implementada; este estudo é deliberadamente autocontido, para poder ser conferido antes de
-            qualquer mudança no painel ao vivo.
+            reais, por estado, construída de forma independente da receita (passo 4): uma futura versão do
+            simulador de cenários do painel poderia usá-la como referência, por exemplo, mostrando a que carga
+            implícita um ajuste de receita equivaleria, sem alterar nenhuma fórmula de receita já publicada. Essa
+            extensão não foi implementada; este estudo é deliberadamente autocontido, para poder ser conferido
+            antes de qualquer mudança no painel ao vivo.
         </div>
 
         <h2 class="section-h">Limitações e simplificações</h2>
@@ -529,6 +572,10 @@
             consumo municipal independente da própria distribuição de receita, que ainda não existe; estender o
             cálculo às décadas seguintes da transição é possível com os mesmos dados de longo prazo já usados no
             painel, mas não foi feito aqui.</li>
+            <li><strong>A validação por dados reais é uma metodologia, não um resultado.</strong> A fórmula da
+            seção anterior precisa de dois dados que ainda não existem, a alíquota efetivamente legislada ano a
+            ano e a receita de destino real por estado; fica registrada como plano de verificação para quando o
+            Comitê Gestor do IBS publicar esses números, não como uma conclusão deste estudo.</li>
         </ol>
 
         <div class="footnotes">
