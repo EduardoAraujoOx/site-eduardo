@@ -8,7 +8,7 @@ combinada do IBS/CBS, seguindo a orientação metodológica de Orair e Gobetti
 de Conjuntura 59, nota 17): a base agregada deve vir das Contas Nacionais do
 IBGE (não da POF, que os próprios autores apontam subestimar o consumo das
 famílias em cerca de 10% frente às Contas Nacionais), e só a distribuição
-relativa entre entes deve vir do cruzamento POF x Censo -- que este painel
+relativa entre entes deve vir do cruzamento POF x Censo, que este painel
 já calcula (data/phi-dest-pof-censo.json).
 
 Fontes primárias:
@@ -45,7 +45,7 @@ for r in NACIONAL['projecao']:
     pib = r['pib_real']
     bolo_pct_pib = bolo / pib
     # Hipótese explícita: a razão consumo das famílias / PIB de 2025
-    # permanece constante ao longo da transição -- a mesma lógica de
+    # permanece constante ao longo da transição, a mesma lógica de
     # neutralidade (razão bolo/PIB fixa) já usada pelo resto do painel para
     # projetar o "bolo" (LC 214/2025 arts. 361-365). Não há projeção própria
     # de Contas Nacionais para 2029-2033; esta é a extrapolação mais simples
@@ -64,7 +64,7 @@ for r in NACIONAL['projecao']:
 
 saida = {
     '_meta': {
-        'descricao': 'Estimativa própria e simplificada da alíquota de referência combinada do IBS/CBS, a partir da razão entre a receita de referência já projetada pelo painel (bolo) e uma projeção do consumo das famílias (Contas Nacionais/IBGE, ano-base 2025, mantido constante como proporção do PIB). Não desconta itens não monetários, tributos embutidos no preço, nem regimes diferenciados e específicos -- por isso é um piso, não a alíquota que de fato entrará em vigor. Ver estudo para a comparação com estimativas de terceiros que fazem esses ajustes.',
+        'descricao': 'Estimativa própria e simplificada da alíquota de referência combinada do IBS/CBS, a partir da razão entre a receita de referência já projetada pelo painel (bolo) e uma projeção do consumo das famílias (Contas Nacionais/IBGE, ano-base 2025, mantido constante como proporção do PIB). Não desconta itens não monetários, tributos embutidos no preço, nem regimes diferenciados e específicos, por isso é um piso, não a alíquota que de fato entrará em vigor. Ver estudo para a comparação com estimativas de terceiros que fazem esses ajustes.',
         'fonte_bolo_pib': 'data/ibs-projecao-nacional.json (SICONFI/STN, Banco Central)',
         'fonte_consumo_familias': 'IBGE, Contas Nacionais Trimestrais, SIDRA tabela 1846, variável 585, categorias 93404 e 90707, soma dos 4 trimestres de 2025',
         'consumo_familias_2025_rs': CONSUMO_FAMILIAS_2025_MI * 1e6,
