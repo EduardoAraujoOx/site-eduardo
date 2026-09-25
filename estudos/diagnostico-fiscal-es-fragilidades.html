@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Diagnóstico Fiscal, Estado do Espírito Santo</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&display=swap');
+
+:root {
+  --navy: #0f2240;
+  --navy-mid: #1a3a6b;
+  --gold: #b8922a;
+  --gold-dark: #8a6d1f;
+  --ink: #1c1c1c;
+  --muted: #565550;
+  --border: #d9d4c8;
+  --surface: #ffffff;
+  --panel: #f7f5ef;
+  --good: #1d6640;
+  --good-bg: #eef7f1;
+  --warn: #7a4f00;
+  --warn-bg: #fbf3e2;
+  --bad: #8b1a1a;
+  --bad-bg: #fbeded;
+  --series-blue: #1c5cab;
+  --series-gold: #b8922a;
+}
+
+* , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { color-scheme: light; }
+
+body {
+  font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  background: #e9e6dd;
+  color: var(--ink);
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+
+.chart text, .kpi .val, .num, .data-table td.num, .data-table th.num { font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; }
+
+/* toolbar (não imprime) */
+.toolbar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--navy); color: white;
+  padding: 9px 22px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12.5px;
+}
+.toolbar span { color: rgba(255,255,255,.7); }
+.toolbar button {
+  background: var(--gold); color: var(--navy); border: none;
+  font-weight: 700; font-size: 12.5px; letter-spacing: .3px;
+  padding: 8px 16px; cursor: pointer;
+  font-family: 'Source Serif 4', serif;
+}
+.toolbar button:hover { background: #cba53a; }
+
+/* páginas: retrato A4, layout denso */
+.screen {
+  background: var(--surface);
+  max-width: 900px;
+  margin: 22px auto;
+  padding: 34px 46px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.12);
+}
+
+/* CAPA */
+.cover {
+  background: var(--surface); color: var(--ink);
+  padding: 64px 60px 46px;
+  position: relative; overflow: hidden;
+  min-height: 1000px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  border-top: 10px solid var(--navy);
+}
+.cover-label { font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 24px; position: relative; }
+.cover-bar { height: 3px; width: 150px; background: linear-gradient(90deg, var(--gold), var(--gold-dark), transparent); margin-bottom: 30px; position: relative; }
+.cover h1 { font-family: 'Playfair Display', serif; font-size: 41px; font-weight: 700; line-height: 1.15; max-width: 680px; margin-bottom: 18px; position: relative; color: var(--navy); }
+.cover-sub { font-size: 16px; font-weight: 300; color: var(--muted); max-width: 580px; line-height: 1.6; position: relative; }
+.cover-toc { position: relative; border-top: 1px solid var(--border); padding-top: 22px; }
+.cover-toc-title { font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 14px; }
+.cover-toc-list { list-style: none; columns: 2; column-gap: 40px; }
+.cover-toc-list li { display: flex; align-items: baseline; gap: 11px; font-size: 12px; color: var(--ink); padding: 6px 0; border-bottom: 1px solid var(--border); break-inside: avoid; line-height: 1.35; }
+.cover-toc-list li span { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 12.5px; color: var(--gold-dark); width: 18px; flex: none; }
+.cover-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; border-top: 1px solid var(--border); padding-top: 22px; position: relative; }
+.cover-meta label { display: block; font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 5px; }
+.cover-meta span { font-size: 12.5px; color: var(--ink); line-height: 1.5; }
+
+/* cabeçalho de página: número + título oficial do indicador */
+.pagehead { display: flex; align-items: baseline; gap: 10px; border-bottom: 2px solid var(--navy); padding-bottom: 9px; margin-bottom: 4px; }
+.pagehead .no { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--gold-dark); }
+.datatag { font-size: 9px; color: var(--muted); margin: 0 0 8px; letter-spacing: .1px; }
+#tbl-receita td:nth-child(5), #tbl-receita th:nth-child(5) { color: var(--muted); font-style: italic; font-weight: 400; }
+h2 { font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 700; color: var(--navy); line-height: 1.2; }
+.lede { font-size: 12.5px; color: var(--muted); font-style: italic; margin: 6px 0 12px; max-width: 760px; }
+.subhead { font-size: 12.5px; color: var(--muted); margin-bottom: 10px; max-width: 760px; }
+
+/* caixa de definição, explicação acessível do termo técnico */
+.def {
+  font-size: 12px; color: var(--ink); line-height: 1.58;
+  background: #fbfaf6; border: 1px solid var(--border); border-left: 3px solid var(--navy-mid);
+  padding: 9px 14px; margin-bottom: 12px;
+}
+.def b { color: var(--navy); font-weight: 600; }
+
+/* tabela de dados */
+.data-table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 10px 0; }
+.data-table th { text-align: left; font-size: 9.5px; text-transform: uppercase; letter-spacing: .3px; color: var(--muted); border-bottom: 1.5px solid var(--navy); padding: 5px 7px; font-weight: 600; }
+.data-table th.num { text-align: right; }
+.data-table td { padding: 5px 7px; border-bottom: 1px solid var(--border); }
+.data-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.data-table tr.total td { font-weight: 700; border-top: 1.5px solid var(--navy); }
+.data-table tr.section td { font-weight: 700; background: var(--panel); color: var(--navy); }
+.tbl-note { font-size: 10.5px; color: var(--muted); margin: 2px 0 10px; }
+
+/* CAPAG: painel por indicador, padrão limpo institucional */
+.capag-grid { display: flex; flex-direction: column; gap: 12px; margin: 12px 0; }
+.capag-card { border: 1px solid var(--border); }
+.capag-card-head { display: flex; align-items: center; gap: 14px; background: var(--panel); padding: 10px 16px; border-bottom: 1px solid var(--border); }
+.capag-idx { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 21px; color: var(--gold-dark); width: 20px; flex: none; }
+.capag-name { font-weight: 600; color: var(--navy); font-size: 13.5px; }
+.capag-formula { font-size: 10.5px; color: var(--muted); margin-top: 2px; }
+.capag-score { margin-left: auto; display: flex; align-items: center; gap: 10px; flex: none; text-align: right; }
+.capag-ratio { font-family: -apple-system, 'Segoe UI', sans-serif; font-size: 17px; font-weight: 700; color: var(--navy); white-space: nowrap; }
+.capag-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.capag-table th { text-align: right; font-size: 9px; text-transform: uppercase; letter-spacing: .3px; color: var(--muted); padding: 6px 16px; font-weight: 600; }
+.capag-table th:first-child, .capag-table td:first-child { text-align: left; padding-left: 16px; }
+.capag-table td { padding: 5px 16px; text-align: right; font-variant-numeric: tabular-nums; border-top: 1px solid var(--border); }
+
+/* destaque de texto */
+.highlight {
+  border-left: 3px solid var(--gold);
+  background: var(--panel);
+  padding: 11px 16px;
+  font-size: 12.5px;
+  line-height: 1.58;
+  margin: 12px 0 6px;
+}
+.note { font-size: 11px; color: var(--muted); margin-top: 7px; line-height: 1.5; }
+.src {
+  font-size: 10.5px; color: var(--muted);
+  border-top: 1px solid var(--border); padding-top: 7px; margin-top: 12px;
+}
+.src b { color: var(--ink); font-weight: 600; }
+.src a { color: var(--navy-mid); }
+
+/* painel de risco */
+.risk-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+.risk-table td { padding: 11px 4px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.risk-table.compact td { padding: 6px 4px; }
+.risk-table.compact .risk-pillar { font-size: 11.5px; }
+.risk-table.compact .risk-desc { font-size: 11px; line-height: 1.4; }
+.risk-table tr:last-child td { border-bottom: none; }
+.risk-pillar { font-weight: 600; color: var(--navy); font-size: 13px; width: 20%; }
+.risk-pillar small { display: block; font-weight: 400; color: var(--muted); font-size: 10.5px; margin-top: 2px; }
+.risk-status { width: 13%; }
+.risk-status .ra-mini { font-size: 8.3px; color: var(--muted); line-height: 1.25; margin-top: 3px; }
+.risk-horizon { width: 12%; font-size: 10.5px; color: var(--muted); }
+.risk-desc b.vuln { color: var(--navy); }
+.pill {
+  display: inline-block; font-size: 9.5px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase;
+  padding: 4px 10px; white-space: nowrap;
+}
+.pill.good { background: var(--good-bg); color: var(--good); }
+.pill.warn { background: var(--warn-bg); color: var(--warn); }
+.pill.bad  { background: var(--bad-bg);  color: var(--bad); }
+.risk-desc { font-size: 12.5px; color: var(--ink); line-height: 1.5; }
+
+/* kpi */
+.kpi-grid { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0 6px; }
+.kpi-grid .kpi { flex: 1 1 30%; }
+.kpi-grid.cols-4 .kpi { flex: 1 1 21%; }
+.kpi-grid.cols-3 .kpi { flex: 1 1 30%; }
+.kpi { background: var(--panel); border: 1px solid var(--border); padding: 10px 13px; }
+.kpi .lbl { font-size: 9.5px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; line-height: 1.3; }
+.kpi .val { font-size: 19px; font-weight: 700; color: var(--navy); line-height: 1; margin-bottom: 4px; }
+.kpi .sub { font-size: 10.5px; color: var(--muted); line-height: 1.35; font-family: 'Source Serif 4', serif; }
+.kpi.good .val { color: var(--good); }
+.kpi.warn .val { color: var(--warn); }
+.kpi.bad .val { color: var(--bad); }
+
+/* charts */
+.chart-wrap { margin: 6px 0 2px; }
+.chart-wrap svg { width: 100%; height: auto; display: block; }
+.chart-title { font-size: 10.5px; font-weight: 600; color: var(--navy); text-transform: uppercase; letter-spacing: .4px; margin: 6px 0 4px; }
+.legend { display: flex; gap: 18px; font-size: 11px; color: var(--muted); margin-top: 3px; }
+.legend .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+
+/* decomposição em barra segmentada (bridge visual) */
+.bridge { margin: 10px 0 4px; }
+.bridge-bar { display: flex; width: 100%; height: 34px; border: 1px solid var(--border); overflow: hidden; }
+.bridge-seg { display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; white-space: nowrap; overflow: hidden; font-family: -apple-system, 'Segoe UI', sans-serif; }
+.bridge-labels { display: flex; width: 100%; margin-top: 4px; }
+.bridge-labels span { font-size: 9.5px; color: var(--muted); text-align: center; }
+.dclbridge { display: flex; align-items: stretch; margin: 10px 0 6px; }
+.dclbridge-step { flex: 1; border: 1px solid var(--border); background: #f7f5f0; padding: 6px 6px; text-align: center; }
+.dclbridge-step .lbl { font-size: 8.5px; text-transform: uppercase; letter-spacing: .3px; color: var(--muted); line-height: 1.25; }
+.dclbridge-step .val { font-size: 13px; font-weight: 700; font-family: -apple-system, 'Segoe UI', sans-serif; margin-top: 2px; }
+.dclbridge-step .sub { font-size: 8.5px; color: var(--muted); margin-top: 2px; line-height: 1.25; }
+.dclbridge-step.neg .val { color: var(--bad); }
+.dclbridge-step.final { background: var(--navy); }
+.dclbridge-step.final .lbl, .dclbridge-step.final .val, .dclbridge-step.final .sub { color: white; }
+.dclbridge-step.analytic { background: #fff; border-style: dashed; }
+.dclbridge-arrow { flex: 0 0 18px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--muted); }
+
+.pagebreak { display: none; }
+
+.two-col { display: flex; gap: 22px; }
+.two-col > div { flex: 1 1 0; min-width: 0; }
+
+.stat-tiles { margin: 10px 0; font-size: 0; }
+.stat-tiles .stat-tile { display: inline-block; width: calc(50% - 5px); vertical-align: top; font-size: 11px; }
+.stat-tiles .stat-tile:first-child { margin-right: 10px; }
+.stat-tile { border: 1px solid var(--border); padding: 10px 14px; }
+.stat-tile .name { font-size: 11px; font-weight: 600; color: var(--navy); margin-bottom: 5px; }
+.stat-tile .big { font-size: 18px; font-weight: 700; color: var(--bad); font-family: -apple-system, sans-serif; }
+.stat-tile .delta { font-size: 10.5px; color: var(--muted); margin-top: 3px; }
+
+.callout { background: var(--navy); color: white; padding: 12px 16px; font-size: 12px; line-height: 1.55; margin: 10px 0; }
+.callout b { color: var(--gold); }
+.lawbox { border: 1px solid var(--navy-mid); background: #f4f6fa; padding: 9px 14px; font-size: 11.5px; line-height: 1.55; margin: 10px 0; }
+.lawbox .lawtag { font-size: 9.5px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--navy-mid); display: block; margin-bottom: 3px; }
+
+/* síntese executiva: respostas diretas */
+.answer-grid { display: flex; flex-direction: column; gap: 9px; margin: 10px 0; }
+.answer { border: 1px solid var(--border); border-left: 3px solid var(--navy); padding: 9px 14px; background: var(--panel); }
+.answer .q { font-size: 11px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: .3px; margin-bottom: 3px; }
+.answer .a { font-size: 12.5px; color: var(--ink); line-height: 1.5; }
+
+/* referências */
+.refs ol { list-style: decimal; padding-left: 18px; margin: 4px 0; }
+.refs li { font-size: 10.5px; line-height: 1.3; margin-bottom: 2.5px; color: var(--ink); }
+.refs a { color: var(--navy-mid); text-decoration: underline; word-break: break-word; }
+
+footer.doc-footer {
+  max-width: 900px; margin: 0 auto 50px; text-align: center; color: var(--muted); font-size: 11px; padding: 0 46px;
+}
+
+@media print {
+  body { background: white; }
+  .toolbar { display: none; }
+  .screen { box-shadow: none; margin: 0; max-width: none; padding: 12mm 14mm 10mm; }
+  .screen.cover { height: 297mm; padding: 16mm 16mm 12mm; }
+  .pagebreak { display: block; page-break-after: always; break-after: page; height: 0; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  footer.doc-footer { display: none; }
+  @page { size: A4 portrait; margin: 0; }
+  .def { padding: 7px 14px; margin-bottom: 8px; line-height: 1.42; }
+  .highlight { padding: 8px 16px; margin: 8px 0 5px; line-height: 1.42; }
+  .callout { padding: 9px 16px; margin: 7px 0; line-height: 1.4; }
+  .lawbox { padding: 7px 14px; margin: 7px 0; line-height: 1.4; }
+  .note { margin-top: 5px; line-height: 1.35; }
+  .data-table { margin: 6px 0; }
+  .data-table th, .data-table td { padding: 3.5px 7px; }
+  .tbl-note { margin: 2px 0 6px; line-height: 1.35; }
+  .src { padding-top: 5px; margin-top: 8px; line-height: 1.35; }
+  .subhead { margin-bottom: 6px; }
+  .pagehead { margin-bottom: 2px; padding-bottom: 6px; }
+  .answer { padding: 7px 14px; }
+  .datatag { margin: 0 0 5px; line-height: 1.2; }
+}
+
+@media (max-width: 720px) {
+  .screen { padding: 26px 20px; }
+  .cover { padding: 44px 22px; }
+  .cover h1 { font-size: 26px; }
+  .cover-meta { grid-template-columns: 1fr; }
+  .kpi-grid .kpi, .kpi-grid.cols-4 .kpi, .kpi-grid.cols-3 .kpi { flex: 1 1 45%; }
+  .two-col { flex-direction: column; }
+  .stat-tiles .stat-tile { width: 100%; margin-right: 0; margin-bottom: 10px; }
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span>Diagnóstico fiscal, Espírito Santo · uso interno, não listado no site</span>
+  <button onclick="window.print()">Baixar / imprimir PDF</button>
+</div>
+
+<!-- CAPA -->
+<div class="screen cover">
+  <div>
+    <div class="cover-label">Diagnóstico técnico</div>
+    <div class="cover-bar"></div>
+    <h1>Situação Fiscal do Estado do Espírito Santo</h1>
+    <p class="cover-sub">Leitura organizada em torno das perguntas centrais de finanças públicas (geração de resultado versus uso de reservas, liquidez, solvência, qualidade da receita, rigidez da despesa, previdência e riscos), com indicadores oficiais, série histórica 2019 a 2025 e a execução parcial disponível de 2026.</p>
+  </div>
+  <div class="cover-toc">
+    <div class="cover-toc-title">Sumário</div>
+    <ol class="cover-toc-list">
+      <li><span>01</span>Síntese Executiva</li>
+      <li><span>02</span>Fechamento de 2025 e Execução Parcial de 2026</li>
+      <li><span>03</span>Resultado Orçamentário, Primário e Superávit Financeiro</li>
+      <li><span>04</span>Disponibilidade de Caixa e Restos a Pagar</li>
+      <li><span>05</span>Resultado de Caixa do Tesouro Estadual</li>
+      <li><span>06</span>Capacidade de Pagamento (CAPAG)</li>
+      <li><span>07</span>Dívida Consolidada Líquida</li>
+      <li><span>08</span>Composição da Receita por Categoria Econômica</li>
+      <li><span>09</span>Despesa por Categoria Econômica</li>
+      <li><span>10</span>Despesa por Função</li>
+      <li><span>11</span>Despesa com Pessoal (LRF)</li>
+      <li><span>12</span>Aplicação Mínima em Educação e Saúde</li>
+      <li><span>13</span>Passivo Atuarial do Regime Próprio de Previdência</li>
+      <li><span>14</span>Painel de Risco Fiscal</li>
+      <li><span>15</span>Metodologia e Referências</li>
+    </ol>
+  </div>
+  <div class="cover-meta">
+    <div><label>Período coberto</label><span>2019 a 2025 fechados. Execução parcial de 2026 até abril</span></div>
+    <div><label>Fontes primárias</label><span>SICONFI/Tesouro Nacional, SEFAZ-ES (RTE e Demonstrativo de Caixa), TCE-ES, IPAJM, IBGE</span></div>
+    <div><label>Elaborado em</label><span>Julho de 2026</span></div>
+  </div>
+</div>
+<div class="pagebreak"></div>
+
+<!-- TELA 01: SINTESE EXECUTIVA -->
+<div class="screen">
+  <div class="pagehead"><span class="no">01</span><h2>Síntese Executiva</h2></div>
+  <p class="subhead">Respostas diretas às perguntas que motivaram este diagnóstico, com o detalhamento e as fontes de cada uma nas páginas indicadas. O painel de risco completo está na página 14.</p>
+  <div class="answer-grid">
+    <div class="answer">
+      <div class="q">O Estado está gerando resultado próprio ou vivendo de reservas acumuladas?</div>
+      <div class="a">O resultado primário sem RPPS foi negativo em 2023 e 2025, mas cumpriu a própria meta da LDO (também negativa) nos três últimos anos fechados, de forma compatível com créditos adicionais abertos com base em superávit financeiro de exercícios anteriores. É conformidade formal com a meta, não geração de resultado próprio; este diagnóstico não concilia o consumo financeiro efetivo dessas reservas (páginas 3 e 14).</div>
+    </div>
+    <div class="answer">
+      <div class="q">A dívida líquida negativa significa caixa disponível para uso imediato?</div>
+      <div class="a">Não integralmente. A DCL oficial é negativa desde 2021, mas parte relevante das deduções em 2026 é um recebível extraordinário do acordo de Fundão (R$12,56 bilhões, não caixa nem aplicação financeira). Uma medida analítica ajustada, sem esse recebível, ainda é negativa, mas com folga bem menor (página 7).</div>
+    </div>
+    <div class="answer">
+      <div class="q">A liquidez de caixa está piorando?</div>
+      <div class="a">Sim, em termos reais: a cobertura da disponibilidade de caixa livre sobre os restos a pagar não processados caiu de 7,1 vezes (2019) para 2,0 vezes (2024), com recuperação parcial para 2,3 vezes em 2025. Tendência real, não artefato de metodologia (página 4).</div>
+    </div>
+    <div class="answer">
+      <div class="q">A solvência e a capacidade de pagamento do Estado estão em risco?</div>
+      <div class="a">Não neste diagnóstico. CAPAG A+ oficial (ano-base 2024), cálculo indicativo mantém nota A nos três indicadores em 2025, dívida líquida negativa, garantias concedidas cobertas por contragarantias. Nenhum sinal de restrição de crédito (páginas 6 e 7).</div>
+    </div>
+    <div class="answer">
+      <div class="q">A receita e a despesa são estáveis e recorrentes?</div>
+      <div class="a">A receita cresceu 36% em termos reais entre 2019 e 2025, mas rendimentos financeiros, indenizações do acordo de Fundão e operações de crédito pontuais cresceram mais rápido que a receita tributária própria. Do lado da despesa, custeio cresceu quase o dobro da receita em termos reais (páginas 8 e 9).</div>
+    </div>
+    <div class="answer">
+      <div class="q">Qual é o principal risco de longo prazo?</div>
+      <div class="a">O passivo atuarial do RPPS, cerca de R$59 bilhões (quase o dobro da RCL anual), com aportes do Tesouro crescendo todo ano desde 2022. É o único item deste diagnóstico com alerta formal de fonte externa, o TCE-ES (página 13).</div>
+    </div>
+  </div>
+  <p class="note">O TCE-ES emitiu parecer prévio recomendando a aprovação, sem ressalvas, das contas de governo de 2024 (o julgamento definitivo cabe à Assembleia Legislativa), pela primeira vez em conformidade total do Balanço Geral do Estado na história recente da Corte, com os três limites constitucionais (pessoal, saúde e educação) cumpridos. Parecer prévio sobre as contas de 2025: não localizado até o fechamento desta versão.</p>
+  <p class="src"><b>Fonte:</b> síntese elaborada a partir dos indicadores e fontes detalhados em cada página deste diagnóstico; ver painel de risco completo na página 14 e metodologia na página 15.</p>
+</div>
+<div class="pagebreak"></div>
+
+<!-- TELA 02: FECHAMENTO 2025 E EXECUCAO PARCIAL 2026 -->
+<div class="screen">
+  <div class="pagehead"><span class="no">02</span><h2>Fechamento de 2025 e Execução Parcial de 2026</h2></div>
+  <p class="datatag">Dado mais recente: RGF 1º quadrimestre de 2026 (posição 30/04, publicado 02/06/2026); RREO bimestre 2/2026; Audiência Pública de 13/07/2026, execução parcial (ver p. 15).</p>
+  <p class="subhead">Painel de orientação: o último exercício fechado (2025) ao lado dos últimos dados disponíveis do exercício em curso (2026, até abril), apresentados pela SEFAZ-ES à Assembleia Legislativa em 13 de julho de 2026. O detalhamento de cada indicador está nas páginas seguintes.</p>
+  <div class="chart-title">2025 (exercício fechado)</div>
+  <div class="kpi-grid cols-4">
+    <div class="kpi warn"><div class="lbl">Resultado primário sem RPPS</div><div class="val">menos R$440 mi</div><div class="sub">Meta cumprida (p. 3)</div></div>
+    <div class="kpi good"><div class="lbl">Dívida consolidada líquida</div><div class="val">menos 52,4%</div><div class="sub">Da RCL, dado oficial (p. 7)</div></div>
+    <div class="kpi warn"><div class="lbl">Cobertura do caixa livre</div><div class="val">2,3x</div><div class="sub">Sobre restos a pagar (p. 4)</div></div>
+    <div class="kpi good"><div class="lbl">CAPAG, classificação oficial vigente</div><div class="val">Nota A+</div><div class="sub">Ano-base 2024; não é um resultado do exercício de 2025 (p. 6)</div></div>
+  </div>
+  <div class="chart-title" style="margin-top:14px;">2026 (execução parcial, janeiro a abril), comparado ao mesmo período de 2025</div>
+  <div class="kpi-grid cols-4">
+    <div class="kpi good"><div class="lbl">Receita total</div><div class="val">R$ 11,2 bi</div><div class="sub">+23,5% sobre R$9,10 bi em jan-abr/2025</div></div>
+    <div class="kpi"><div class="lbl">Despesa com pessoal (DTP)</div><div class="val">34,53%</div><div class="sub">Da RCL ajustada; 36,20% em jan-abr/2025 (limite 49%)</div></div>
+    <div class="kpi"><div class="lbl">Dívida consolidada líquida</div><div class="val">menos 54,72%</div><div class="sub">Da RCL; menos 10,63% em jan-abr/2025, salto explicado pela composição na p. 7, não por melhora de caixa</div></div>
+    <div class="kpi"><div class="lbl">Investimentos (estágio: empenhado)</div><div class="val">R$ 2,25 bi</div><div class="sub">+15,7% sobre R$1,95 bi empenhados em jan-abr/2025</div></div>
+  </div>
+  <table class="data-table" style="margin-top:10px; font-size:11px;">
+    <thead><tr><th>Mesmo período (janeiro a abril), R$ milhões, por estágio de execução</th><th class="num">2025</th><th class="num">2026</th><th class="num">Var.</th></tr></thead>
+    <tbody>
+      <tr><td>Receita realizada</td><td class="num">9.097</td><td class="num">11.238</td><td class="num">+23,5%</td></tr>
+      <tr><td>Despesa, estágio pago</td><td class="num">7.597</td><td class="num">8.391</td><td class="num">+10,5%</td></tr>
+      <tr><td>Investimentos, estágio empenhado</td><td class="num">1.948</td><td class="num">2.255</td><td class="num">+15,7%</td></tr>
+    </tbody>
+  </table>
+  <table class="data-table" style="margin-top:8px; font-size:11px;">
+    <thead><tr><th>Metas do ano inteiro de 2026 (RREO, posição de abril)</th><th class="num">R$ milhões</th></tr></thead>
+    <tbody>
+      <tr><td>Previsão atualizada da receita para o ano</td><td class="num">32.100</td></tr>
+      <tr><td>Dotação atualizada da despesa para o ano</td><td class="num">32.924</td></tr>
+    </tbody>
+  </table>
+  <p class="tbl-note">A DCL de jan-abr/2025 (menos 10,63% da RCL) usa a mesma decomposição RGF Anexo 2 da página 7; a diferença de patamar frente a abril de 2026 (menos 54,72%) decorre principalmente de "Demais Haveres Financeiros" ter saltado de R$2,01 bilhões (abr/2025) para R$13,85 bilhões já em dezembro de 2025 (ver p. 7), não de uma mudança na dívida bruta.</p>
+  <div class="highlight">Os quatro primeiros meses de 2026 mostram receita crescendo acima da despesa paga, com DCL e despesa com pessoal dentro dos limites legais, mas é o retrato de um começo de ano: entre 2023 e 2025, o resultado do exercício se definiu nos últimos meses, quando despesas represadas e restos a pagar se acumulam (página 4). A forte melhora aparente da DCL frente a jan-abr/2025 não deve ser lida como avanço fiscal equivalente a mais caixa disponível: decorre sobretudo da entrada do recebível de Fundão em "demais haveres financeiros" (ver composição na página 7), um efeito contábil, não um aumento de disponibilidade. A dotação orçamentária atualizada para 2026 já projeta gastar R$824 milhões a mais do que a receita prevista, diferença compatível com créditos abertos com base em superávit financeiro de exercícios anteriores, prática legal e comum, mas que reduz a folga acumulada em anos futuros se repetida.</div>
+  <p class="note">Poupança corrente (RTE, período parcial) de 31,5% e royalties com alta de 56,8% no período: indicadores complementares, detalhados na metodologia (página 15). O KPI "resultado primário" e o resultado orçamentário fechado de 2025 usam a mesma definição da página 3; despesa empenhada (diferente de paga) não é comparável entre um exercício fechado e um parcial, por isso a comparação acima usa despesa paga e investimentos empenhados, ambos com o mesmo perímetro nos dois anos.</p>
+  <p class="src"><b>Fontes:</b> 2025 fechado: RREO e RGF, via SICONFI/Tesouro Nacional, bimestre/quadrimestre de fechamento (ver páginas 3, 4, 6 e 7). Jan-abr/2025 (comparável): RREO Anexo 1, bimestre 2 de 2025, e RGF 1º quadrimestre de 2025, mesmas fontes SICONFI. 2026 parcial: SEFAZ-ES, Audiência Pública na Assembleia Legislativa do Espírito Santo, 1º quadrimestre de 2026, 13 de julho de 2026; DCL, DTP e demais indicadores oficiais confirmados via RGF 1º quadrimestre de 2026 e RREO Anexo 1 e 6, bimestre 2 de 2026, SICONFI/Tesouro Nacional.</p>
+</div>
+<div class="pagebreak"></div>
+
+<!-- TELA 03: RESULTADO ORCAMENTARIO E PRIMARIO -->
+<div class="screen">
+  <div class="pagehead"><span class="no">03</span><h2>Resultado Orçamentário, Primário e Superávit Financeiro</h2></div>
+  <p class="datatag">Dado mais recente: RREO Anexos 1 e 6, bimestre 6 de 2025 (fechado, posição 31/12), bimestral (ver p. 15).</p>
+  <p class="subhead">Resultado orçamentário do exercício (receita realizada menos despesa empenhada) e resultado primário, com e sem a receita do regime próprio de previdência (RPPS), ante a meta fixada na Lei de Diretrizes Orçamentárias (LDO) de cada ano, com o superávit financeiro considerado na abertura de créditos adicionais como fio analítico.</p>
+  <p class="def">O <b>RPPS</b> é o sistema de aposentadoria dos servidores, que recebe contribuições e um aporte obrigatório do Tesouro. Quando essas entradas superam os benefícios pagos no ano, o saldo positivo entra somado no resultado geral do Estado (<b>resultado com RPPS</b>), o que pode mascarar um resultado ruim do restante do governo. O <b>resultado sem RPPS</b> isola o desempenho das áreas de educação, saúde, segurança e administração, fora da previdência; é essa versão, e não a que inclui o RPPS, que o Tribunal de Contas do Estado usa como "resultado primário" oficial em seu parecer sobre as contas do Governador.</p>
+  <div class="chart-title">Resultado orçamentário, 2020-2025 (R$ milhões)</div>
+  <div class="chart-wrap" id="chart-orcamentario"></div>
+  <table class="data-table" style="margin-top:6px; font-size:9.8px;">
+    <thead><tr><th>Conciliação, 2021-2025 (R$ milhões nominais), elemento central desta página</th><th class="num">2021</th><th class="num">2022</th><th class="num">2023</th><th class="num">2024</th><th class="num">2025</th></tr></thead>
+    <tbody>
+      <tr><td>Resultado orçamentário</td><td class="num">1.303</td><td class="num">1.236</td><td class="num">798</td><td class="num">883</td><td class="num">888</td></tr>
+      <tr><td>Resultado primário com RPPS</td><td class="num">não disponível¹</td><td class="num">não disponível¹</td><td class="num">menos 468</td><td class="num">465</td><td class="num">11</td></tr>
+      <tr><td>Resultado primário sem RPPS</td><td class="num">não disponível¹</td><td class="num">não disponível¹</td><td class="num">menos 711</td><td class="num">101</td><td class="num">menos 440</td></tr>
+      <tr><td>Meta da LDO (sem RPPS)</td><td class="num">não disponível¹</td><td class="num">não disponível¹</td><td class="num">menos 977</td><td class="num">menos 1.703</td><td class="num">menos 1.571</td></tr>
+      <tr class="total"><td>Resultado sem RPPS acima da meta</td><td class="num">não disponível¹</td><td class="num">não disponível¹</td><td class="num">266</td><td class="num">1.804</td><td class="num">1.131</td></tr>
+      <tr><td>Superávit financeiro considerado em créditos adicionais abertos</td><td class="num">3.711</td><td class="num">4.605</td><td class="num">4.346</td><td class="num">3.506</td><td class="num">3.874</td></tr>
+      <tr><td>Variação da disponibilidade de caixa líquida</td><td class="num">625</td><td class="num">menos 62</td><td class="num">menos 302</td><td class="num">menos 898</td><td class="num">273</td></tr>
+      <tr><td>Inscrição líquida de restos a pagar não processados</td><td class="num">menos 32</td><td class="num">123</td><td class="num">284</td><td class="num">318</td><td class="num">menos 64</td></tr>
+    </tbody>
+  </table>
+  <p class="tbl-note">¹ O RREO Anexo 6 só passou a separar resultado primário "com RPPS" de "sem RPPS" a partir do exercício de 2023; antes disso, a conta é um resultado primário agregado, não comparável linha a linha com a série 2023-2025 (ver Metodologia, página 15). O resultado "com RPPS" soma o saldo do regime próprio de previdência ao restante do governo, o que pode mascarar um resultado ruim fora da previdência (ver definição acima); por isso o TCE-ES usa o "sem RPPS" como referência oficial. "Superávit financeiro considerado em créditos adicionais abertos" é a conta "Superávit Financeiro Utilizado para Créditos Adicionais" do RREO Anexo 1: mede a base orçamentária usada para abrir créditos adicionais naquele exercício, não o consumo financeiro efetivo das reservas, que este diagnóstico não concilia. "Variação da disponibilidade" e "inscrição líquida de RP" são a diferença ano a ano dos estoques de fim de exercício da página 4 (RGF Anexo 5), não têm fonte própria. Esta conciliação aproxima, mas não substitui, uma conciliação contábil formal entre os demonstrativos.</p>
+  <div class="highlight">O resultado orçamentário caiu de R$1,3 bilhão em 2021 para uma média de R$860 milhões em 2023-2025. Sem RPPS, o resultado primário foi negativo em 2023 (menos R$711 milhões) e 2025 (menos R$440 milhões); com RPPS, negativo só em 2023 (menos R$468 milhões). Nos três anos, o resultado sem RPPS superou a meta da LDO, também negativa: <b>meta fiscal cumprida, embora com resultado negativo compatível com créditos adicionais abertos com base em superávit financeiro de exercícios anteriores</b>. Isso não deve ser lido como "favorável" no sentido de geração de resultado próprio: é conformidade formal com a meta; este diagnóstico não concilia o consumo financeiro efetivo dessas reservas.</div>
+  <p class="note">O TCE-ES emitiu parecer prévio recomendando a aprovação, sem ressalvas, das contas de governo de 2024 (o julgamento definitivo cabe à Assembleia Legislativa), citando resultado orçamentário de R$908,9 milhões, resultado primário (sem RPPS) de R$101,42 milhões e dívida consolidada líquida negativa.</p>
+  <p class="src"><b>Fontes:</b> Relatório Resumido da Execução Orçamentária (RREO), Anexos 1 e 6, via SICONFI/Tesouro Nacional, último bimestre publicado em cada ano; meta fixada no Anexo de Metas Fiscais da LDO, RREO Anexo 6. Superávit financeiro considerado em créditos adicionais abertos: RREO Anexo 1, conta "Superávit Financeiro Utilizado para Créditos Adicionais". Parecer prévio sobre as contas de 2024: Tribunal de Contas do Estado do Espírito Santo (TCE-ES), Parecer Prévio TC-062/2025, Processo TC 4.006/2025-7, seção IX (Conclusão), item 1.1 (recomendação de aprovação ao Legislativo Estadual, art. 80, I, da LC Estadual nº 621/2012).</p>
+</div>
+<div class="pagebreak"></div>
+
+<!-- TELA 04: DISPONIBILIDADE DE CAIXA E RESTOS A PAGAR -->
+<div class="screen">
+  <div class="pagehead"><span class="no">04</span><h2>Disponibilidade de Caixa e Restos a Pagar</h2></div>
+  <p class="datatag">Dado mais recente: RGF Anexo 5, 3º quadrimestre de 2025 (fechado, posição 31/12), quadrimestral (ver p. 15).</p>
+  <p class="subhead">Disponibilidade de caixa não vinculada, decomposta em bruta, obrigações financeiras e restos a pagar não processados, R$ milhões nominais. Posição de 31 de dezembro de cada ano.</p>
+  <p class="def">Parte do caixa do Estado tem destinação obrigatória por lei (saúde, educação, previdência). <b>Recursos não vinculados</b> são os sem essa amarra, a parcela livre para o Estado decidir onde aplicar. <b>Restos a pagar não processados</b> são despesas já empenhadas (compromissos assumidos) cujo produto ou serviço ainda não foi conferido nem pago. A <b>disponibilidade de caixa líquida</b> é a bruta menos obrigações financeiras e menos esses restos a pagar: é o teste que a Lei de Responsabilidade Fiscal exige para saber se um governante pode assumir novos compromissos. <b>Importante:</b> a líquida já é o resultado final dessa subtração; comparar a líquida de novo com os restos a pagar contaria o mesmo componente duas vezes. A razão de cobertura da tabela abaixo evita esse problema (ver fórmula na nota da tabela).</p>
+  <div class="lawbox"><span class="lawtag">Base legal: Art. 42, Lei Complementar nº 101/2000 (LRF)</span>Veda contrair, nos últimos dois quadrimestres do mandato, obrigação de despesa que não possa ser cumprida no exercício ou que caia no seguinte sem disponibilidade de caixa suficiente. O RGF Anexo 5 (fonte desta página) existe para demonstrar esse cálculo a cada quadrimestre.</div>
+  <div class="chart-title">Decomposição aritmética da disponibilidade não vinculada em 2025 (R$ milhões)</div>
+  <div class="dclbridge">
+    <div class="dclbridge-step"><div class="lbl">Bruta</div><div class="val">2.710</div></div>
+    <div class="dclbridge-arrow">&minus;</div>
+    <div class="dclbridge-step neg"><div class="lbl">Obrigações financeiras</div><div class="val">491</div></div>
+    <div class="dclbridge-arrow">&minus;</div>
+    <div class="dclbridge-step neg"><div class="lbl">RP não processados</div><div class="val">956</div></div>
+    <div class="dclbridge-arrow">=</div>
+    <div class="dclbridge-step final"><div class="lbl">Líquida</div><div class="val">1.264</div></div>
+  </div>
+  <div class="chart-wrap" id="chart-caixa"></div>
+  <table class="data-table" style="margin-top:6px; font-size:11.5px;">
+    <thead><tr><th>Ano</th><th class="num">Bruta</th><th class="num">(–) Obrig. financ.</th><th class="num">(–) RP não proc.</th><th class="num">(=) Líquida</th><th class="num">Cobertura</th></tr></thead>
+    <tbody>
+      <tr><td>2019</td><td class="num">1.593</td><td class="num">100</td><td class="num">210</td><td class="num">1.283</td><td class="num">7,1x</td></tr>
+      <tr><td>2020</td><td class="num">2.024</td><td class="num">70</td><td class="num">327</td><td class="num">1.627</td><td class="num">6,0x</td></tr>
+      <tr><td>2021</td><td class="num">2.682</td><td class="num">134</td><td class="num">295</td><td class="num">2.253</td><td class="num">8,6x</td></tr>
+      <tr><td>2022</td><td class="num">2.812</td><td class="num">204</td><td class="num">418</td><td class="num">2.191</td><td class="num">6,2x</td></tr>
+      <tr><td>2023</td><td class="num">3.088</td><td class="num">498</td><td class="num">702</td><td class="num">1.889</td><td class="num">3,7x</td></tr>
+      <tr><td>2024</td><td class="num">2.345</td><td class="num">335</td><td class="num">1.019</td><td class="num">991</td><td class="num">2,0x</td></tr>
+      <tr><td>2025</td><td class="num">2.710</td><td class="num">491</td><td class="num">956</td><td class="num">1.264</td><td class="num">2,3x</td></tr>
+    </tbody>
+  </table>
+  <p class="tbl-note">Valores nominais, R$ milhões, recursos não vinculados, RGF Anexo 5. "Cobertura" = (disponibilidade bruta menos obrigações financeiras) dividida pelos restos a pagar não processados: quantas vezes a disponibilidade já livre de obrigações financeiras, mas ainda sem descontar o RPNP, cobriria o estoque represado. Descontar apenas as obrigações financeiras (não o próprio RPNP) evita tanto ignorar as obrigações financeiras quanto contar o RPNP duas vezes.</p>
+  <div class="highlight">A cobertura caiu de 7,1 vezes em 2019 para 2,0 vezes em 2024, o ponto mais apertado da série, com recuperação parcial para 2,3 vezes em 2025. Em termos reais (R$ de 2025), a disponibilidade de caixa líquida não vinculada caiu de um pico de R$2,73 bilhões em 2021 para R$1,03 bilhão em 2024 (queda de 62%), com recuperação parcial para R$1,26 bilhão em 2025. O estoque de restos a pagar não processados quase quadruplicou em termos reais entre 2019 e 2024. As duas tendências, lidas juntas pela razão de cobertura acima (não pela comparação direta entre líquida e RP), indicam redução genuína da folga de caixa até 2024, com recuperação parcial, mas incompleta, em 2025.</div>
+  <p class="note">O aporte extra-orçamentário para cobrir a insuficiência do Fundo Financeiro e do Fundo de Proteção Social dos Militares somou R$3,71 bilhões em 2025 e já R$1,24 bilhão nos quatro primeiros meses de 2026 (detalhe na página 13).</p>
+  <p class="src"><b>Fontes:</b> série 2019 a 2025, Relatório de Gestão Fiscal Anexo 5, via SICONFI/Tesouro Nacional (mesma API da página 7, no_anexo=RGF-Anexo 05, colunas "CAIXA BRUTA" e "LÍQUIDA APÓS A INSCRIÇÃO EM RESTOS A PAGAR NÃO PROCESSADOS"). Deflator: IPCA acumulado anual, IBGE (ver Metodologia, página 15). SEFAZ-ES, <i>Demonstrativo do Resultado de Caixa do Tesouro Estadual, Poder Executivo, janeiro a abril de 2026</i>, sefaz.es.gov.br/resultado-de-caixa-do-tesouro-estadual.</p>
+</div>
+<div class="pagebreak"></div>
+
+<!-- TELA 05: RESULTADO DE CAIXA DO TESOURO -->
+<div class="screen">
+  <div class="pagehead"><span class="no">05</span><h2>Resultado de Caixa do Tesouro Estadual</h2></div>
+  <p class="datatag">Dado mais recente: Demonstrativo SEFAZ-ES, janeiro a dezembro de 2025 (fechado); janeiro a abril de 2026 (parcial), bimestral (ver p. 15).</p>
+  <p class="subhead">Resultado líquido de caixa do Tesouro (receita de caixa menos despesa, mais uso de superávit financeiro de exercícios anteriores), Poder Executivo, em R$ milhões de 2025 (deflacionado pelo IPCA), com o dado parcial de 2026 em valor nominal.</p>
+  <p class="def">O <b>Demonstrativo do Resultado de Caixa do Tesouro Estadual</b> é publicado bimestralmente pela SEFAZ-ES e mede quanto o caixa do Tesouro melhorou ou piorou naquele período: a diferença entre tudo o que entrou e tudo o que saiu, incluindo o uso de recursos guardados de anos anteriores. Um valor menor não significa necessariamente prejuízo, mas indica que o período deixou uma sobra de caixa menor do que em períodos comparáveis anteriores.</p>
+  <div class="chart-wrap" id="chart-resultadocaixa"></div>
+  <p class="tbl-note">2019 a 2025: ano fechado (janeiro a dezembro), valor real. 2026*: apenas janeiro a abril, último bimestre publicado até a data deste diagnóstico, valor nominal e não anualizado, por isso destacado em cor diferente e não comparável diretamente com os totais anuais.</p>
+  <div class="highlight">Em termos reais, o resultado de caixa do Tesouro caiu de um pico de R$3,91 bilhões em 2021 para R$594 milhões em 2024 (queda de 85%), com recuperação parcial para R$1,31 bilhão em 2025, ainda 66% abaixo do pico. O movimento é na mesma direção observada na disponibilidade de caixa líquida (página 4), embora as duas métricas tenham fonte, perímetro e conceito diferentes, e não devam ser lidas como confirmação uma da outra. Os quatro primeiros meses de 2026 somaram R$922 milhões nominais, início de ano que ainda não permite antecipar o resultado do exercício fechado.</div>
+  <p class="note">Os dois indicadores são complementares, mas não diretamente comparáveis: o resultado de caixa mede fluxo no período (o quanto o caixa do Tesouro mudou naquele ano), e a disponibilidade líquida da página 4 mede estoque em uma data (o saldo em 31 de dezembro), com perímetro e metodologia próprios.</p>
+  <p class="src"><b>Fonte:</b> Espírito Santo, Secretaria de Estado da Fazenda (SEFAZ-ES). <i>Demonstrativo do Resultado de Caixa do Tesouro Estadual, Poder Executivo</i>, janeiro a dezembro de cada exercício fechado, 2019 a 2025, e janeiro a abril de 2026, sefaz.es.gov.br/resultado-de-caixa-do-tesouro-estadual (Anexo Único das Ordens de Serviço SUBSET nº 08/2020, 04/2021, 04/2022, 11/2023, 08/2024, 07/2025 e 09/2026). Deflator IPCA, IBGE, aplicado apenas à série 2019 a 2025.</p>
+</div>
+<div class="pagebreak"></div>
+
+<!-- TELA 06: CAPAG -->
+<div class="screen">
+  <div class="pagehead"><span class="no">06</span><h2>Capacidade de Pagamento (CAPAG)</h2></div>
+  <p class="datatag">Dado mais recente: STN, ano-base 2024 (oficial vigente); RTE 3º quadrimestre de 2025 (indicativo da SEFAZ-ES), anual/quadrimestral (ver p. 15).</p>
+  <p class="subhead">Metodologia da Secretaria do Tesouro Nacional (Portaria Normativa MF nº 1.583/2023) para avaliar a capacidade de um ente de honrar operações de crédito com aval da União. Três indicadores, cada um com nota própria.</p>
+  <div class="def"><b>Classificação oficial vigente: Nota A+ (ano-base 2024)</b>, anunciada pela STN em 15/09/2025 no "Prêmio Qualidade da Informação 2025". A nota A+ exige nota A nos três indicadores da CAPAG <i>e</i> nota A no Ranking de Qualidade da Informação Contábil e Fiscal (cerca de 180 itens avaliados); sete estados a obtiveram nessa rodada. Os números de 2025 exibidos abaixo são o <b>cálculo indicativo divulgado pela própria SEFAZ-ES</b> no RTE do 3º quadrimestre; a própria SEFAZ registra que "a ratificação desses dados será divulgada pela STN", ainda pendente na data deste relatório.</div>
+  <div class="capag-grid">
+    <div class="capag-card">
+      <div class="capag-card-head">
+        <span class="capag-idx">I</span>
+        <div><div class="capag-name">Endividamento</div><div class="capag-formula">Dívida Consolidada / Receita Corrente Líquida Ajustada</div></div>
+        <div class="capag-score"><span class="capag-ratio">29,5%</span><span class="pill warn">2025 · indicativo</span></div>
+      </div>
+      <table class="capag-table">
+        <thead><tr><th></th><th class="num">2023</th><th class="num">2024 (oficial)</th><th class="num">2025 (indicativo)</th></tr></thead>
+        <tbody>
+          <tr><td>Dívida Consolidada (R$ milhões)</td><td class="num">7.531</td><td class="num">8.403</td><td class="num">8.291</td></tr>
+          <tr><td>RCL Ajustada (R$ milhões)</td><td class="num">22.336</td><td class="num">26.287</td><td class="num">28.057</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="capag-card">
+      <div class="capag-card-head">
+        <span class="capag-idx">II</span>
+        <div><div class="capag-name">Poupança Corrente</div><div class="capag-formula">Despesa Corrente / Receita Corrente Ajustada</div></div>
+        <div class="capag-score"><span class="capag-ratio">80,3%</span><span class="pill warn">2025 · indicativo</span></div>
+      </div>
+      <table class="capag-table">
+        <thead><tr><th></th><th class="num">2023</th><th class="num">2024 (oficial)</th><th class="num">2025 (indicativo)</th></tr></thead>
+        <tbody>
+          <tr><td>Despesa Corrente (R$ milhões)</td><td class="num">19.361</td><td class="num">21.961</td><td class="num">24.084</td></tr>
+          <tr><td>Receita Corrente Ajustada (R$ milhões)</td><td class="num">24.093</td><td class="num">28.283</td><td class="num">29.992</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="capag-card">
+      <div class="capag-card-head">
+        <span class="capag-idx">III</span>
+        <div><div class="capag-name">Liquidez</div><div class="capag-formula">(Obrigações Financeiras menos Disponibilidade de Caixa Bruta) / RCL Ajustada</div></div>
+        <div class="capag-score"><span class="capag-ratio">menos 7,9%</span><span class="pill warn">2025 · indicativo</span></div>
+      </div>
+      <table class="capag-table">
+        <thead><tr><th></th><th class="num">2023</th><th class="num">2024 (oficial)</th><th class="num">2025 (indicativo)</th></tr></thead>
+        <tbody>
+          <tr><td>Obrigações Financeiras (R$ milhões)</td><td class="num">498</td><td class="num">335</td><td class="num">491</td></tr>
+          <tr><td>Disponibilidade de Caixa Bruta (R$ milhões)</td><td class="num">3.088</td><td class="num">2.345</td><td class="num">2.710</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="highlight">Com os dados de 2024, base da classificação oficial vigente, os três indicadores já indicavam nota A (endividamento 32,0%, poupança corrente 77,7%, liquidez menos 7,6% da RCL ajustada), o que resultou na nota geral A+. O cálculo indicativo da SEFAZ para 2025 mantém as três notas A; o indicador com menor margem segue sendo a poupança corrente, 80,3% contra um limite de 85% para nota A, margem de 4,7 pontos percentuais, o mais sensível a qualquer aceleração da despesa corrente acima da receita.</div>
+  <p class="note">Os indicadores I e III usam a dívida e o caixa brutos do Poder Executivo, sem descontar aplicações financeiras ou compensar entre si; por isso os valores desta página não coincidem com a dívida líquida (página 7) nem com a disponibilidade de caixa líquida (página 4), que usam bases de cálculo diferentes, ambas explicadas nas páginas correspondentes.</p>
+  <p class="src"><b>Fontes:</b> classificação oficial A+ (ano-base 2024): Secretaria do Tesouro Nacional (STN), "Prêmio Qualidade da Informação 2025", 15/09/2025, tesourotransparente.gov.br/temas/estados-e-municipios/capacidade-de-pagamento-capag. Cálculo indicativo de 2025: Secretaria de Estado da Fazenda do Espírito Santo (SEFAZ-ES), <i>Resultado do Tesouro Estadual (RTE), 3º quadrimestre de 2025</i>, seção "Indicadores da CAPAG", p. 5, sefaz.es.gov.br/media/Tesouro Estadual/RTE 2025 - 3º Quadrimestre.pdf.</p>
+</div>
+<div class="pagebreak"></div>
+
+<!-- TELA 07: DIVIDA CONSOLIDADA LIQUIDA -->
+<div class="screen">
+  <div class="pagehead"><span class="no">07</span><h2>Dívida Consolidada Líquida</h2></div>
+  <p class="datatag">Dado mais recente: RGF Anexo 2, 1º quadrimestre de 2026 (posição 30/04, publicado 02/06/2026), quadrimestral (ver p. 15).</p>
+  <p class="subhead">Dívida consolidada líquida (DCL) como percentual da receita corrente líquida (RCL), posição de 31 de dezembro de cada ano. Limite fixado pela Resolução nº 40/2001 do Senado Federal: 200% da RCL.</p>
+  <p class="def"><b>Dívida consolidada líquida</b> é a dívida contratual do Estado (empréstimos e financiamentos já tomados, prazo superior a 12 meses) menos duas deduções previstas na Lei de Responsabilidade Fiscal: a disponibilidade de caixa (já líquida de restos a pagar processados e de depósitos restituíveis e valores vinculados, que reduzem essa disponibilidade e não são deduções à parte) e os demais haveres financeiros. Um valor negativo indica que essas deduções superam a dívida contratual; não significa, por si só, que todo esse valor esteja em caixa disponível para uso imediato, como mostra o item abaixo.</p>
+  <div class="chart-title">Decomposição da DCL em 2026, 1º quadrimestre (R$ milhões)</div>
+  <div class="dclbridge">
+    <div class="dclbridge-step"><div class="lbl">Dívida bruta (I)</div><div class="val">8.158</div></div>
+    <div class="dclbridge-arrow">&minus;</div>
+    <div class="dclbridge-step neg"><div class="lbl">Disponibilidade de caixa</div><div class="val">10.618</div></div>
+    <div class="dclbridge-arrow">&minus;</div>
+    <div class="dclbridge-step neg"><div class="lbl">Demais haveres financeiros</div><div class="val">13.908</div><div class="sub">dos quais Fundão: 12.564</div></div>
+    <div class="dclbridge-arrow">=</div>
+    <div class="dclbridge-step final"><div class="lbl">DCL oficial (I − II)</div><div class="val">menos 16.368</div></div>
+    <div class="dclbridge-arrow">&rArr;</div>
+    <div class="dclbridge-step analytic"><div class="lbl">Sem o recebível de Fundão</div><div class="val">menos 3.804</div><div class="sub">medida analítica, não legal</div></div>
+  </div>
+  <div class="chart-wrap" id="chart-dcl"></div>
+  <table class="data-table" style="margin-top:8px; font-size:10.5px;">
+    <thead><tr><th>Mesma decomposição em 2025, 3º quadrimestre, para referência (R$ milhões); ponte acima já traz o detalhe de 2026</th><th class="num">2025</th></tr></thead>
+    <tbody>
+      <tr><td>Disponibilidade de Caixa Bruta (menos RP processados e depósitos vinculados)</td><td class="num">9.174</td></tr>
+      <tr><td>(+) Demais Haveres Financeiros, do qual recebível de Fundão não confirmado nesta rodada</td><td class="num">13.846</td></tr>
+      <tr><td>(=) Deduções totais (II)</td><td class="num">23.020</td></tr>
+      <tr><td>Dívida Consolidada bruta (I)</td><td class="num">8.291</td></tr>
+      <tr class="total"><td>Dívida Consolidada Líquida (DCL) oficial (I − II)</td><td class="num">menos 14.729</td></tr>
+    </tbody>
+  </table>
+  <div class="callout">Achado desta revisão: a nota explicativa do RGF do 1º quadrimestre de 2026 (conta contábil 121210700) confirma que R$12.563.917.516,50 dos "Demais Haveres Financeiros" são um recebível certo do rompimento da barragem de Fundão (Mariana/MG), não caixa nem aplicação financeira disponível, base da medida analítica ajustada na ponte acima. "Demais Haveres Financeiros" em 2025 somava R$13,85 bilhões, valor próximo ao de 2026, mas este relatório não localizou a nota explicativa equivalente do RGF de 2025 e não confirma, nesta rodada, se o recebível de Fundão já era seu principal componente naquele ano.</div>
+  <p class="note">Além da dívida contratual, o Estado concedeu garantias a entidades controladas (avais em operações de crédito): 0,76% da RCL ajustada em 2025, 0,69% no 1º quadrimestre de 2026, bem abaixo do limite do Senado Federal (22%) e do limite de alerta (19,8%). Essas garantias estão cobertas por contragarantias recebidas das próprias entidades, no mesmo valor: não representam, na posição mais recente, passivo contingente líquido relevante para o Tesouro estadual. Operações de crédito contratadas somaram 0,74% da RCL ajustada no 1º quadrimestre de 2026, dentro do limite geral de 16%.</p>
+  <p class="src"><b>Fontes:</b> Relatório de Gestão Fiscal (RGF), Anexo 2, Poder Executivo, via API pública do SICONFI/Tesouro Nacional (apidatalake.tesouro.gov.br/ords/siconfi/tt/rgf, no_anexo=RGF-Anexo 02, id_ente=32), 3º quadrimestre de 2025 e 1º quadrimestre de 2026. Nota explicativa do recebível de Fundão: SEFAZ-ES, RGF 1º quadrimestre de 2026, Anexo 2, nota 6, Ordem de Serviço SUBSET nº 37 de 27/05/2026, sefaz.es.gov.br/rgf. Garantias, contragarantias e operações de crédito: RGF Anexos 3 e 4, mesmos períodos.</p>
+</div>
+<div class="pagebreak"></div>
+
+<!-- TELA 08: COMPOSICAO DA RECEITA -->
+<div class="screen">
+  <div class="pagehead"><span class="no">08</span><h2>Composição da Receita por Categoria Econômica</h2></div>
+  <p class="datatag">Dado mais recente: RREO Anexo 1, bimestre 6 de 2025 (fechado); bimestre 2 de 2026, bimestral (ver p. 15).</p>
+  <p class="subhead">Receita realizada por categoria, 2019 e 2025, em R$ milhões nominais e variação nominal e real (deflacionada pelo IPCA), com o valor parcial de 2026 para referência.</p>
+  <p class="def">As categorias contábeis abaixo são heterogêneas por dentro: receita patrimonial mistura rendimento financeiro (ligado à Selic) e royalties (ligados ao preço do petróleo); outras receitas correntes misturam itens recorrentes e indenizações judiciais pontuais; receitas de capital misturam operação de crédito e transferência de capital. Por isso este diagnóstico não classifica a categoria inteira como "estrutural" ou "volátil": a ressalva qualitativa abaixo é feita apenas sobre os itens especificamente identificados dentro de cada categoria, não decompostos aqui por falta de abertura oficial linha a linha.</p>
+  <table class="data-table" id="tbl-receita">
+    <thead><tr><th></th><th>Categoria</th><th class="num">2019</th><th class="num">2025</th><th class="num">2026 (jan-abr, parcial)</th><th class="num">Var. nominal</th><th class="num">Var. real</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>Impostos e taxas</td><td class="num">8.594</td><td class="num">17.232</td><td class="num">6.081</td><td class="num">+100%</td><td class="num">+44%</td></tr>
+      <tr><td class="num">2</td><td>Contribuições</td><td class="num">375</td><td class="num">783</td><td class="num">231</td><td class="num">+109%</td><td class="num">+50%</td></tr>
+      <tr><td class="num">3</td><td>Transferências correntes (principalmente da União)</td><td class="num">6.026</td><td class="num">8.093</td><td class="num">2.761</td><td class="num">+34%</td><td class="num">menos 4%</td></tr>
+      <tr><td class="num">4</td><td>Receita patrimonial (rendimentos financeiros e royalties)</td><td class="num">840</td><td class="num">1.995</td><td class="num">645</td><td class="num">+138%</td><td class="num">+71%</td></tr>
+      <tr><td class="num">5</td><td>Receita agropecuária, industrial e de serviços</td><td class="num">68</td><td class="num">103</td><td class="num">28</td><td class="num">+50%</td><td class="num">+8%</td></tr>
+      <tr><td class="num">6</td><td>Outras receitas correntes (inclui indenizações judiciais)</td><td class="num">325</td><td class="num">1.332</td><td class="num">1.018</td><td class="num">+310%</td><td class="num">+195%</td></tr>
+      <tr><td class="num">7</td><td>Receitas de capital (empréstimos e transferências de capital)</td><td class="num">443</td><td class="num">1.959</td><td class="num">352</td><td class="num">+342%</td><td class="num">+217%</td></tr>
+      <tr class="total"><td></td><td>Subtotal (exceto receitas intra-orçamentárias)</td><td class="num">16.672</td><td class="num">31.496</td><td class="num">11.116</td><td class="num">+89%</td><td class="num">+36%</td></tr>
+      <tr><td></td><td>(+) Receitas intra-orçamentárias</td><td class="num">2.793</td><td class="num">487</td><td class="num">122</td><td class="num">menos 83%</td><td class="num">menos 87%</td></tr>
+      <tr class="total"><td></td><td>(=) Total das receitas (RREO)</td><td class="num">19.465</td><td class="num">31.983</td><td class="num">11.238</td><td class="num">+64%</td><td class="num">+18%</td></tr>
+    </tbody>
+  </table>
+  <p class="tbl-note">As sete categorias numeradas são a classificação completa da receita por categoria econômica do RREO Anexo 1 (a mesma classificação, com os mesmos códigos de conta, usada na Declaração de Contas Anuais); a soma das linhas fecha com o subtotal exceto receitas intra-orçamentárias, sem resíduo, não com o total oficial do RREO. Receitas intra-orçamentárias são transferências entre órgãos e fundos do próprio governo (ex.: contribuições patronais à previdência de servidores), contabilizadas nos dois lados do orçamento; a linha de reconciliação acima soma esse valor ao subtotal para fechar com o Total das Receitas do RREO Anexo 1. A coluna de 2026 é o valor nominal realizado até abril (35% do ano), sem variação calculada nas sete categorias: comparar um período parcial a anos fechados por percentual distorceria a leitura.</p>
+  <div class="highlight">Depois de descontada a inflação, a receita (exceto intra-orçamentárias) cresceu 36% entre 2019 e 2025, bem menos que os 89% nominais. As transferências correntes da União encolheram 4% em termos reais (cresceram 34% nominal, abaixo da inflação de 39%). Dentro das categorias que mais cresceram em termos reais, três itens especificamente identificados chamam atenção: os rendimentos financeiros dentro da receita patrimonial (sensíveis à taxa Selic), as indenizações judiciais do acordo de Fundão dentro de outras receitas correntes (de R$71 milhões em 2022 para R$638 milhões em 2025) e as receitas de capital ligadas a operações de crédito pontuais. Não é a categoria inteira que é instável, mas esses componentes específicos dentro dela.</div>
+  <p class="note">Rendimentos de aplicações financeiras somaram R$1,74 bilhão em 2025 (6,2% da RCL, terceiro maior percentual entre os estados), valor sensível à taxa Selic e ao volume de caixa do Tesouro. Royalties de petróleo caíram 23,5% entre janeiro e agosto de 2025 frente a 2024, mas subiram 56,8% no primeiro quadrimestre de 2026, por causa da alta do preço internacional do petróleo: uma fonte de receita relevante e volátil nas duas direções. O parecer prévio do TCE-ES sobre as contas de 2024 também cientificou a SEFAZ sobre fragilidades na governança de renúncias de receita e incentivos fiscais vigentes, recomendando maior controle sobre sua concessão e ampliação: um risco para a previsibilidade da receita própria que este diagnóstico não tinha, até aqui, quantificado.</p>
+  <p class="src"><b>Fontes:</b> Relatório Resumido da Execução Orçamentária (RREO), Anexo 1, via SICONFI/Tesouro Nacional, receita realizada até o bimestre 6 de 2019 e 2025, e até o bimestre 2 de 2026. Classificação cruzada com a Declaração de Contas Anuais (DCA), Anexo I-C, mesmos códigos de conta. Deflator IPCA, IBGE. Rendimentos financeiros e royalties: SEFAZ-ES, notas de divulgação fiscal. Alerta sobre incentivos fiscais: TCE-ES, Parecer Prévio TC-062/2025, itens 1.3.2 e 1.3.3.</p>
+</div>
+<div class="pagebreak"></div>
+
+<!-- TELA 09: DESPESA POR CATEGORIA ECONOMICA -->
+<div class="screen">
+  <div class="pagehead"><span class="no">09</span><h2>Despesa por Categoria Econômica</h2></div>
+  <p class="datatag">Dado mais recente: RREO Anexo 1, bimestre 6 de cada exercício até 2025, bimestral; 2026 não incluído (despesa empenhada parcial distorce a comparação, ver p. 15).</p>
+  <p class="subhead">Despesa empenhada por categoria econômica, 2019 (em R$ de 2025, deflacionado pelo IPCA) e 2025 (nominal), com variação nominal e real do período.</p>
+  <table class="data-table">
+    <thead><tr><th></th><th>Categoria</th><th class="num">2019 (real)</th><th class="num">2025</th><th class="num">Var. nominal</th><th class="num">Var. real</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>Pessoal e encargos sociais</td><td class="num">10.656</td><td class="num">12.735</td><td class="num">+66%</td><td class="num">+20%</td></tr>
+      <tr><td class="num">2</td><td>Outras despesas correntes (custeio)</td><td class="num">5.854</td><td class="num">10.449</td><td class="num">+148%</td><td class="num">+79%</td></tr>
+      <tr><td class="num">3</td><td>Juros e encargos da dívida</td><td class="num">452</td><td class="num">452</td><td class="num">+39%</td><td class="num">0%</td></tr>
+      <tr><td class="num">4</td><td>Investimentos</td><td class="num">1.493</td><td class="num">5.187</td><td class="num">+384%</td><td class="num">+248%</td></tr>
+      <tr><td class="num">5</td><td>Inversões financeiras</td><td class="num">748</td><td class="num">1.303</td><td class="num">+143%</td><td class="num">+74%</td></tr>
+      <tr><td class="num">6</td><td>Amortização da dívida</td><td class="num">196</td><td class="num">396</td><td class="num">+181%</td><td class="num">+102%</td></tr>
+    </tbody>
+  </table>
+  <p class="tbl-note">Coluna de 2019 em R$ milhões de 2025 (deflacionada); coluna de 2025 em valor nominal. A soma das categorias acima não fecha exatamente com o total da despesa empenhada, pois não inclui despesas intra-orçamentárias e reserva de contingência, itens secundários no valor total. As seis categorias numeradas são a classificação completa da despesa por categoria econômica do RREO Anexo 1 (três despesas correntes: pessoal, juros, outras correntes; três despesas de capital: investimentos, inversões financeiras, amortização), não um recorte: não há categoria oficial adicional a incluir.</p>
+  <div class="highlight">Em termos reais, a despesa com pessoal cresceu 20% entre 2019 e 2025, um ritmo moderado, coerente com a estabilidade do indicador pessoal sobre RCL (página 11). Já o custeio (outras despesas correntes) cresceu 79% em termos reais, quase o dobro do crescimento real da receita total no mesmo período (36%, página 8). Investimentos foram a categoria que mais cresceu em termos reais (248%), resultado que sustenta o discurso oficial de recorde de investimentos, mas que também depende da composição da receita discutida na página 8.</div>
+  <p class="note">Os dados de 2026 (RREO, posição de abril) não entram nesta tabela: despesa empenhada de um período parcial superestima sistematicamente a comparação com anos fechados, porque compromissos anuais (como parte da folha de pessoal) são empenhados de uma só vez no início do exercício. Por essa distorção, a própria SEFAZ-ES reporta "% Realizado" acima de 100% em algumas rubricas nos primeiros meses do ano. A execução de 2026 é tratada à parte, com os indicadores adequados a um período parcial, na página 2.</p>
+  <p class="src"><b>Fonte:</b> Relatório Resumido da Execução Orçamentária (RREO), Anexo 1, via SICONFI/Tesouro Nacional, despesas empenhadas até o bimestre 6 (fechamento anual). Deflator IPCA, IBGE.</p>
+</div>
+<div class="pagebreak"></div>
+
+<!-- TELA 10: DESPESA POR FUNCAO -->
+<div class="screen">
+  <div class="pagehead"><span class="no">10</span><h2>Despesa por Função</h2></div>
+  <p class="datatag">Dado mais recente: RREO Anexo 2, bimestre 6 de 2019 e de 2025 (dois pontos, não série completa), bimestral (ver p. 15).</p>
+  <p class="subhead">Despesa empenhada por função de governo, 2019 e 2025, em R$ milhões nominais e variação nominal e real (deflacionada pelo IPCA).</p>
+  <p class="def"><b>Função</b> classifica a despesa pela área de política pública a que se destina (saúde, educação, segurança, previdência), complementar à categoria econômica da página 9, que classifica pelo tipo de gasto (pessoal, custeio, investimento). As duas juntas respondem perguntas diferentes: onde o dinheiro é gasto e como ele é gasto.</p>
+  <table class="data-table">
+    <thead><tr><th></th><th>Função</th><th class="num">2019</th><th class="num">2025</th><th class="num">Var. nominal</th><th class="num">Var. real</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>Saúde</td><td class="num">2.598</td><td class="num">5.667</td><td class="num">+118%</td><td class="num">+57%</td></tr>
+      <tr><td class="num">2</td><td>Previdência social</td><td class="num">2.978</td><td class="num">5.140</td><td class="num">+73%</td><td class="num">+24%</td></tr>
+      <tr><td class="num">3</td><td>Educação</td><td class="num">1.419</td><td class="num">3.910</td><td class="num">+176%</td><td class="num">+98%</td></tr>
+      <tr><td class="num">4</td><td>Segurança pública</td><td class="num">1.383</td><td class="num">3.036</td><td class="num">+120%</td><td class="num">+58%</td></tr>
+      <tr><td class="num">5</td><td>Encargos especiais</td><td class="num">1.432</td><td class="num">2.691</td><td class="num">+88%</td><td class="num">+35%</td></tr>
+      <tr><td class="num">6</td><td>Transporte</td><td class="num">725</td><td class="num">2.670</td><td class="num">+268%</td><td class="num">+165%</td></tr>
+      <tr><td class="num">7</td><td>Judiciária</td><td class="num">973</td><td class="num">1.486</td><td class="num">+53%</td><td class="num">+10%</td></tr>
+      <tr><td class="num">8</td><td>Administração</td><td class="num">348</td><td class="num">1.018</td><td class="num">+193%</td><td class="num">+110%</td></tr>
+      <tr><td class="num">9</td><td>Essencial à justiça</td><td class="num">471</td><td class="num">847</td><td class="num">+80%</td><td class="num">+29%</td></tr>
+      <tr><td class="num">10</td><td>Legislativa</td><td class="num">299</td><td class="num">482</td><td class="num">+61%</td><td class="num">+16%</td></tr>
+      <tr><td class="num">11</td><td>Demais funções (13 áreas menores)</td><td class="num">1.394</td><td class="num">3.700</td><td class="num">+165%</td><td class="num">+91%</td></tr>
+      <tr class="total"><td></td><td>Despesa total (todas as funções)</td><td class="num">14.021</td><td class="num">30.647</td><td class="num">+119%</td><td class="num">+57%</td></tr>
+    </tbody>
+  </table>
+  <p class="tbl-note">As 24 funções de governo do RREO Anexo 2 são a classificação completa; as 13 menores (assistência social, cultura, urbanismo, saneamento, entre outras) foram agrupadas para caber na página, mas entram no total. O total desta página (Anexo 2) difere em cerca de 0,4% do total da página 9 (Anexo 1), uma divergência normal de consolidação entre os dois demonstrativos, não um erro de soma.</p>
+  <div class="highlight">Saúde e previdência social são, juntas, mais de um terço da despesa total, e cresceram acima da inflação (+57% e +24% reais). Mas o crescimento mais acelerado, em termos reais, foi o de transporte (+165%) e administração (+110%), refletindo o ciclo de investimentos em infraestrutura discutido na página 9. Educação também cresceu bem acima da média (+98% real), coerente com a aplicação mínima constitucional tratada na página 12.</div>
+  <p class="src"><b>Fonte:</b> Relatório Resumido da Execução Orçamentária (RREO), Anexo 2, via SICONFI/Tesouro Nacional, despesas empenhadas até o bimestre 6 de 2019 e 2025. Deflator IPCA, IBGE.</p>
+</div>
+<div class="pagebreak"></div>
+
+<!-- TELA 11: DESPESA COM PESSOAL -->
+<div class="screen">
+  <div class="pagehead"><span class="no">11</span><h2>Despesa com Pessoal (LRF)</h2></div>
+  <p class="datatag">Dado mais recente: RGF Anexo 1, 3º quadrimestre de cada exercício até 2025, quadrimestral (ver p. 15).</p>
+  <p class="subhead">Despesa total com pessoal do Poder Executivo, percentual da receita corrente líquida ajustada. Limite máximo da LRF: 49% para o Poder Executivo estadual.</p>
+  <div class="chart-wrap" id="chart-pessoal"></div>
+  <div class="stat-tiles" style="margin:8px 0;">
+    <div class="stat-tile">
+      <div class="name">Margem sobre o limite máximo (49%)</div>
+      <div class="big">13,6 p.p.</div>
+      <div class="delta">DTP de 35,4% da RCL ajustada em 2025; maior margem da série (2021: 14,2 p.p.), menor em 2023 (10,7 p.p.)</div>
+    </div>
+    <div class="stat-tile">
+      <div class="name">Margem sobre o limite de alerta (44,1%)</div>
+      <div class="big">8,7 p.p.</div>
+      <div class="delta">O limite de alerta soa antes do prudencial (46,5%) e do máximo (49%); nenhum foi tocado na série 2019-2025</div>
+    </div>
+  </div>
+  <div class="highlight">A despesa com pessoal do Poder Executivo ficou estável, entre 35% e 39% da RCL ajustada, sempre abaixo do limite legal de 49% (limite prudencial 46,5%, limite de alerta 44,1%). Isoladamente, este indicador não mostra fragilidade.</div>
+  <p class="note">Os aportes obrigatórios à previdência (13,2% da RCL em 2025, detalhados na página 13) não podem ser simplesmente somados a este indicador: a Despesa Total com Pessoal (DTP) do RGF já inclui a folha de inativos e pensionistas, e este diagnóstico não dispõe de conciliação contábil, linha a linha, que comprove quais parcelas do aporte previdenciário estão ou não já embutidas na DTP. Sem essa conciliação, somar os dois indicadores poderia contar a mesma despesa duas vezes. As aplicações mínimas constitucionais em educação e saúde, outra obrigação de despesa que disputa o mesmo espaço fiscal, são tratadas em detalhe na página 12.</p>
+  <p class="note">O parecer prévio do TCE-ES sobre as contas de 2024 também cientificou a Secretaria de Estado de Gestão e Recursos Humanos sobre um risco fiscal ainda não incorporado às séries acima: a decisão do STF na ADI 6.812 sobre contratação temporária, que pode obrigar o Estado a substituir servidores temporários por efetivos em funções críticas, com custos de rescisão e FGTS a provisionar. O Tribunal recomendou levantamento imediato dos contratos afetados e constituição de reserva específica; este diagnóstico não tem, até aqui, uma estimativa de valor para esse risco.</p>
+  <p class="src"><b>Fontes:</b> Relatório de Gestão Fiscal (RGF), Anexo 1, via SICONFI/Tesouro Nacional. Risco da ADI 6.812: TCE-ES, Parecer Prévio TC-062/2025, item 1.3.5.</p>
+</div>
+<div class="pagebreak"></div>
+
+<!-- TELA 12: APLICACAO MINIMA EDUCACAO E SAUDE -->
+<div class="screen">
+  <div class="pagehead"><span class="no">12</span><h2>Aplicação Mínima em Educação e Saúde</h2></div>
+  <p class="datatag">Dado mais recente: Relatório de Gestão (Anexo II, Item 02), documento anual até o exercício de 2025; 2026 não disponível, o documento só existe ao fim do exercício (ver p. 15).</p>
+  <p class="subhead">Percentual da Receita Líquida de Impostos (RLI) aplicado em Manutenção e Desenvolvimento do Ensino (MDE) e em ações e serviços públicos de saúde, 2019 a 2025, ante os mínimos constitucionais.</p>
+  <p class="def">A Constituição Federal exige aplicação mínima anual de <b>25% da RLI em educação</b> (art. 212) e <b>12% da RLI em saúde</b> (art. 198, Emenda Constitucional nº 29/2000 e Lei Complementar nº 141/2012) pelos Estados. RLI é a receita de impostos já descontadas as transferências constitucionais devidas a Municípios. O Estado aplicou acima dos dois mínimos em todos os anos da série, mas a margem em educação vem se estreitando ano após ano.</p>
+  <div class="chart-wrap" id="chart-aplicacao-minima"></div>
+  <div class="stat-tiles" style="margin:8px 0;">
+    <div class="stat-tile">
+      <div class="name">Margem sobre o mínimo em educação (25%)</div>
+      <div class="big">0,28 p.p.</div>
+      <div class="delta">Aplicado 25,28% da RLI em 2025; caiu de 2,80 p.p. em 2019, a folga mais estreita deste diagnóstico</div>
+    </div>
+    <div class="stat-tile">
+      <div class="name">Margem sobre o mínimo em saúde (12%)</div>
+      <div class="big">4,46 p.p.</div>
+      <div class="delta">Aplicado 16,46% da RLI em 2025; oscilou entre 14,51% (2021) e 17,19% (2023), sempre com folga confortável</div>
+    </div>
+  </div>
+  <div class="highlight">A margem acima do mínimo constitucional em educação caiu de 2,80 pontos percentuais em 2019 (27,80% aplicado) para apenas 0,28 ponto percentual em 2025 (25,28% aplicado), a menor folga de toda a série e a mais estreita entre todos os limites e mínimos legais deste diagnóstico. Em saúde, a folga permanece confortável acima dos 12% exigidos.</div>
+  <p class="note">Uma margem tão estreita em educação significa que uma variação futura na composição da receita de impostos, a base de cálculo do indicador, pode levar o Estado a descumprir o mínimo constitucional, o que exigiria reforço orçamentário ainda dentro do próprio exercício para regularizar a aplicação.</p>
+  <p class="src"><b>Fonte:</b> Espírito Santo, Secretaria de Estado da Fazenda (SEFAZ-ES), <i>Relatório de Gestão</i> (Anexo II, Item 02, Instrução Normativa TCE-ES nº 68/2020, nº 43 para o exercício de 2019), um documento por exercício, 2019 a 2025, sefaz.es.gov.br/prestacao-de-contas-do-governador.</p>
+</div>
+<div class="pagebreak"></div>
+
+<!-- TELA 13: PASSIVO ATUARIAL DO RPPS -->
+<div class="screen">
+  <div class="pagehead"><span class="no">13</span><h2>Passivo Atuarial do Regime Próprio de Previdência</h2></div>
+  <p class="datatag">Dado mais recente: RGF Anexo 2 até 2025; IPAJM, Avaliação Atuarial, posição de dez/2025, publicada em 08/05/2026, anual (ver p. 15).</p>
+  <p class="subhead">Passivo atuarial do RPPS, em R$ bilhões nominais, posição de 31 de dezembro de cada ano.</p>
+  <p class="def"><b>Passivo atuarial</b> é uma projeção, feita por atuários, do valor presente de todos os benefícios de aposentadoria e pensão já prometidos a servidores atuais e futuros, descontadas as reservas financeiras que já existem para cobrir parte dessa conta. Não é uma dívida que vence amanhã, mas mede o compromisso de longuíssimo prazo do Estado. Déficit atuarial é comum à maioria dos RPPS no Brasil; o que importa aqui é o tamanho frente ao orçamento estadual e a tendência dos aportes anuais, não a mera existência do passivo.</p>
+  <div class="chart-title">Estoque: passivo atuarial total, posição de 31 de dezembro (R$ bilhões)</div>
+  <div class="chart-wrap" id="chart-atuarial"></div>
+  <div class="highlight">O passivo atuarial saltou de R$6,1 bilhões em 2022 para cerca de R$59 bilhões a partir de 2023 (linha tracejada no gráfico), quase o dobro da RCL anual. Este diagnóstico registra uma quebra metodológica/revisão de premissas atuariais entre os dois exercícios, sem indicação documental específica sobre quais premissas mudaram; não é um evento de caixa isolado, mas o novo patamar é o que consta nos relatórios desde então.</div>
+  <div class="chart-title" style="margin-top:10px;">Estoque por fundo, dezembro de 2025 (R$ bilhões)</div>
+  <div class="stat-tiles" style="margin:4px 0;">
+    <div class="stat-tile">
+      <div class="name">Fundo Financeiro (regime civil)</div>
+      <div class="big">R$ 36,97 bilhões</div>
+      <div class="delta">Menos 2,3% frente a 2024. Regime com reservas próprias, hoje insuficientes, fechado a novos servidores</div>
+    </div>
+    <div class="stat-tile">
+      <div class="name">Fundo de Proteção Social dos Militares</div>
+      <div class="big">R$ 15,95 bilhões</div>
+      <div class="delta">Menos 0,5% frente a 2024. Regime de repartição simples, sem formação de reservas</div>
+    </div>
+  </div>
+  <div class="chart-title" style="margin-top:10px;">Fluxo: aporte extra-orçamentário anual ao Fundo Financeiro e ao FPS Militares (R$ milhões)</div>
+  <div class="chart-wrap" id="chart-aporte"></div>
+  <div class="callout">Esse aporte, dentro da linha "Pessoal e Encargos Sociais" do Demonstrativo de Caixa do Tesouro, não discriminado nos relatórios de execução orçamentária padrão, <b>cresceu todos os anos desde 2022</b>: de R$2,66 bilhões para R$3,71 bilhões em 2025 (2026 é dado parcial de janeiro a abril, cor diferente no gráfico, não comparável ao total anual), alta de 39% entre 2022 e 2025, acima da inflação do período. O parecer prévio do TCE-ES sobre as contas de 2024 cientificou formalmente o IPAJM e a SEP sobre esse risco, recomendando um Fundo de Oscilação de Riscos ainda não criado.</div>
+  <p class="src"><b>Fontes:</b> passivo atuarial total (série 2019 a 2025), RGF Anexo 2, item de memória, via SICONFI, mesmo valor do passivo formal no balanço patrimonial (DCA, conta 2.2.7.2.0.00.00). Detalhamento por fundo (dez/2025): IPAJM, <i>Relatório da Avaliação Atuarial Espírito Santo, dez/2025 (versão final)</i>, publicado em 08/05/2026. Alerta do TCE-ES (base 2024): Parecer Prévio TC-062/2025, itens 1.2.1 e 1.3.4. Aportes: SEFAZ-ES, Demonstrativo do Resultado de Caixa do Tesouro Estadual.</p>
+</div>
+<div class="pagebreak"></div>
+
+<!-- TELA 14: PAINEL DE RISCO -->
+<div class="screen">
+  <div class="pagehead"><span class="no">14</span><h2>Painel de Risco Fiscal</h2></div>
+  <p class="datatag">Dado mais recente: TCE-ES, Parecer Prévio TC-062/2025 (exercício de 2024), anual; parecer sobre 2025 ainda não localizado (ver p. 15).</p>
+  <p class="subhead">Leitura de conjunto das páginas anteriores, com a classificação de cada item calibrada pelo que os dados efetivamente mostram, não por um modelo fixo de análise aplicado da mesma forma a todo indicador. O parecer também trouxe 3 recomendações e 12 avisos-alerta a órgãos estaduais; os com relação direta ao Tesouro estão incorporados abaixo.</p>
+  <table class="risk-table compact">
+    <tr>
+      <td class="risk-pillar">I. Passivo previdenciário<small>Passivo atuarial, p. 13</small></td>
+      <td class="risk-status"><span class="pill bad">Elevado</span><div class="ra-mini">Tendência: estoque estável, fluxo ↑ piorando<br>Incerteza: baixa</div></td>
+      <td class="risk-horizon">Longo prazo</td>
+      <td class="risk-desc"><b class="vuln">Vulnerabilidade alta.</b> Estoque de cerca de R$59 bilhões, quase o dobro da RCL anual, aproximadamente estável desde 2023 (caiu levemente em 2025); mas o fluxo de aportes anuais do Tesouro cresce todo ano desde 2022, pressão de caixa crescente mesmo com o estoque estável. Único item com alerta formal do TCE-ES em nome próprio, que recomendou um fundo de oscilação de riscos ainda não criado.</td>
+    </tr>
+    <tr>
+      <td class="risk-pillar">II. Liquidez do caixa livre<small>Caixa e RP, p. 4</small></td>
+      <td class="risk-status"><span class="pill warn">Atenção</span><div class="ra-mini">Tendência: piora até 2024, alívio em 2025<br>Incerteza: baixa</div></td>
+      <td class="risk-horizon">Curto/médio prazo</td>
+      <td class="risk-desc"><b class="vuln">Vulnerabilidade média.</b> Disponibilidade de caixa líquida real 54% abaixo do pico de 2021 em 2024, com recuperação parcial em 2025; a cobertura da disponibilidade (já líquida de obrigações financeiras) sobre os restos a pagar não processados caiu de 7,1 vezes (2019) para 2,0 vezes (2024), o ponto mais apertado da série. Tendência real, não artefato de metodologia.</td>
+    </tr>
+    <tr>
+      <td class="risk-pillar">III. Riscos do TCE-ES<small>Pessoal, p. 11; receita, p. 8</small></td>
+      <td class="risk-status"><span class="pill warn">Atenção</span><div class="ra-mini">Tendência: não avaliável<br>Incerteza: alta</div></td>
+      <td class="risk-horizon">Não determinado</td>
+      <td class="risk-desc"><b class="vuln">Vulnerabilidade não estimada.</b> Dois alertas de 2024 sem valor estimado aqui: substituição de temporários por efetivos (ADI 6.812 do STF) e fragilidades na governança de incentivos fiscais.</td>
+    </tr>
+    <tr>
+      <td class="risk-pillar">IV. Aplicação mínima em educação<small>P. 12</small></td>
+      <td class="risk-status"><span class="pill warn">Atenção</span><div class="ra-mini">Tendência: ↑ piorando<br>Incerteza: baixa</div></td>
+      <td class="risk-horizon">Curto prazo</td>
+      <td class="risk-desc"><b class="vuln">Risco de conformidade, não de solvência.</b> Margem acima do mínimo caiu de 2,80 pontos percentuais (2019) para 0,28 ponto (2025), a folga mais estreita deste diagnóstico. Ainda cumprida; o risco é de menor flexibilidade de execução orçamentária, não de insolvência ou de caixa.</td>
+    </tr>
+    <tr>
+      <td class="risk-pillar">V. Composição da receita<small>Itens identificados, p. 8</small></td>
+      <td class="risk-status"><span class="pill warn">Monitoramento</span><div class="ra-mini">Tendência: não conclusiva<br>Incerteza: média</div></td>
+      <td class="risk-horizon">Médio prazo</td>
+      <td class="risk-desc"><b class="vuln">Vulnerabilidade média.</b> Rendimentos financeiros, indenizações do acordo de Fundão e receitas de capital ligadas a operações de crédito pontuais cresceram, em termos reais, bem mais rápido que a receita tributária própria e as transferências da União entre 2019 e 2025 (comparação de dois pontos, não série anual completa). Item para monitorar, não problema de caixa atual nem tendência confirmada ano a ano.</td>
+    </tr>
+    <tr>
+      <td class="risk-pillar">VI. Resultado primário<small>P. 3</small></td>
+      <td class="risk-status"><span class="pill warn">Meta cumprida</span><div class="ra-mini">Tendência: &rarr; estável<br>Incerteza: baixa</div></td>
+      <td class="risk-horizon">Recorrente</td>
+      <td class="risk-desc"><b class="vuln">Vulnerabilidade baixa.</b> O resultado sem RPPS foi negativo em 2023 e 2025, mas superou a própria meta (também negativa) da LDO nos três anos, compatível com créditos adicionais abertos com base em superávit financeiro de exercícios anteriores (sem conciliação do consumo efetivo). O TCE-ES emitiu parecer prévio recomendando a aprovação de 2024, sem ressalvas. Não deve ser lido como "favorável" no sentido de geração de resultado próprio.</td>
+    </tr>
+    <tr>
+      <td class="risk-pillar">VII. Solvência, CAPAG e garantias<small>Dívida líquida, p. 7; CAPAG, p. 6</small></td>
+      <td class="risk-status"><span class="pill good">Favorável</span><div class="ra-mini">Tendência: &rarr; estável<br>Incerteza: baixa</div></td>
+      <td class="risk-horizon">Estrutural</td>
+      <td class="risk-desc"><b class="vuln">Vulnerabilidade baixa.</b> Dívida líquida negativa desde 2021 (embora com recebível de Fundão embutido nas deduções, ver p. 7); classificação oficial vigente CAPAG A+ (ano-base 2024), cálculo indicativo da SEFAZ mantém nota A nos três indicadores em 2025. Avais a entidades controladas somam 0,76% da RCL, sob o limite do Senado, hoje cobertos por contragarantias no mesmo valor: não configuram passivo oculto relevante. Nenhum sinal de restrição de crédito.</td>
+    </tr>
+  </table>
+  <p class="tbl-note">Cinco dimensões avaliadas por item: situação atual (pílula de cor), tendência (direção observada na série), vulnerabilidade (magnitude do impacto potencial, quando estimável), horizonte (prazo em que o risco tende a se manifestar) e incerteza (confiança na fonte e na mensuração; "alta" incerteza marca itens sem valor estimado ou sem série histórica).</p>
+  <p class="note" style="margin-top:10px;">Só o item I tem gravidade confirmada por fonte externa ao Tesouro (o TCE-ES). Os itens II, III e V pedem monitoramento contínuo, mas nenhum indica ruptura iminente de caixa ou crédito. O item IV é risco de conformidade e de flexibilidade de execução, não de solvência. O item VI é conformidade formal com a meta, não sinal de geração de resultado próprio: leitura neutra, nem favorável nem desfavorável. O item VII, lido com cuidado, pesa a favor da situação fiscal do Estado.</p>
+  <p class="src"><b>Fonte:</b> leitura de conjunto elaborada a partir dos indicadores e fontes detalhados em cada página deste diagnóstico. TCE-ES, Parecer Prévio TC-062/2025, exercício de 2024.</p>
+</div>
+<div class="pagebreak"></div>
+
+<!-- TELA 15: METODOLOGIA E REFERENCIAS -->
+<div class="screen refs">
+  <div class="pagehead"><span class="no">15</span><h2>Metodologia e Referências</h2></div>
+
+  <p style="font-size:11px; margin-bottom:3px;">Valores em preços correntes de cada ano, exceto onde indicado "real" ou "deflacionado". A deflação usa o IPCA acumulado anual do IBGE (2019: 4,31%; 2020: 4,52%; 2021: 10,06%; 2022: 5,79%; 2023: 4,62%; 2024: 4,83%; 2025: 4,26%), convertendo todos os valores para poder de compra de dezembro de 2025.</p>
+  <p style="font-size:11px; margin-bottom:3px;">"Recursos não vinculados" são recursos de caixa sem destinação legal obrigatória. "Resultado orçamentário" é a diferença entre receita realizada e despesa empenhada no exercício (RREO Anexo 1), comparável apenas entre anos fechados: no meio do ano, despesas de contratos anuais já empenhadas distorcem a comparação, por isso a execução de 2026 (página 2) usa também os números já divulgados pela própria SEFAZ-ES.</p>
+  <p style="font-size:11px; margin-bottom:3px;">Para os anos de 2019 a 2025, o Relatório de Gestão Fiscal usado é o do terceiro quadrimestre (posição de 31 de dezembro), formando uma série anual de fim de exercício nos indicadores de caixa, dívida líquida e passivo atuarial (páginas 7, 4 e 13). A SEFAZ-ES publicou o RGF do 1º quadrimestre de 2026 em 02/06/2026 (posição de 30 de abril), incorporado às páginas 2, 7 e 11 como dado parcial do exercício em curso, não comparável diretamente à série anual fechada das mesmas páginas.</p>
+
+  <h3 style="font-family:'Playfair Display',serif; font-size:13px; color:var(--navy); margin-bottom:5px;">Atualidade dos dados, por página</h3>
+  <p style="font-size:11px; margin-bottom:4px;">Prioridade de revisão: cada página deve usar o dado oficial mais recente e metodologicamente adequado disponível até o fechamento desta versão, antes de qualquer decisão sobre alongar a série histórica para trás.</p>
+  <table class="data-table" style="font-size:9.5px; margin-bottom:4px;">
+    <thead><tr><th>Página</th><th>Fonte e data-base mais recente usada</th><th>Periodicidade</th><th>2026 parcial incorporado</th></tr></thead>
+    <tbody>
+      <tr><td>02 Fechamento/Execução</td><td>RGF 1º quadrimestre de 2026 (posição 30/04, publicado 02/06/2026); RREO bimestre 2/2026; Audiência Pública SEFAZ-ES de 13/07/2026</td><td>Quadrimestral / bimestral</td><td>Sim, seção própria, não anualizado</td></tr>
+      <tr><td>03 Resultados</td><td>RREO Anexos 1 e 6, bimestre 6 de 2025 (fechado)</td><td>Bimestral</td><td>Não; ver página 2. A divisão com/sem RPPS no bimestre 2 não fecha o exercício</td></tr>
+      <tr><td>04 Caixa e RP</td><td>RGF Anexo 5, 3º quadrimestre de 2025 (posição 31/12)</td><td>Quadrimestral</td><td>Não na série anual; RGF do 1º quadrimestre de 2026 citado à parte no texto</td></tr>
+      <tr><td>05 Resultado de Caixa</td><td>Demonstrativo SEFAZ-ES, janeiro a dezembro de 2025 (fechado) e janeiro a abril de 2026</td><td>Bimestral na fonte; uso em fechamento anual</td><td>Sim, coluna própria, valor nominal não anualizado</td></tr>
+      <tr><td>06 CAPAG</td><td>STN, ano-base 2024 (única classificação oficial vigente); RTE 3º quadrimestre de 2025 (indicativo da SEFAZ-ES)</td><td>Anual (oficial) / quadrimestral (indicativo)</td><td>Não disponível; a STN calcula a CAPAG oficial com uma defasagem estrutural de um exercício</td></tr>
+      <tr><td>07 DCL</td><td>RGF Anexo 2, 1º quadrimestre de 2026 (posição 30/04, publicado 02/06/2026)</td><td>Quadrimestral</td><td>Sim; é medida de estoque numa data, comparável como posição mais recente mesmo sem fechar o exercício</td></tr>
+      <tr><td>08 Receita</td><td>RREO Anexo 1, bimestre 6 de 2025 (fechado) e bimestre 2 de 2026</td><td>Bimestral</td><td>Sim, coluna própria, não anualizado</td></tr>
+      <tr><td>09 Despesa por Categoria</td><td>RREO Anexo 1, bimestre 6 de cada exercício até 2025</td><td>Bimestral</td><td>Não; despesa empenhada parcial de exercício em curso distorce a comparação (ver acima)</td></tr>
+      <tr><td>10 Despesa por Função</td><td>RREO Anexo 2, bimestre 6 de 2019 e de 2025 (dois pontos, não série completa)</td><td>Bimestral</td><td>Não</td></tr>
+      <tr><td>11 Pessoal (LRF)</td><td>RGF Anexo 1, 3º quadrimestre de cada exercício até 2025</td><td>Quadrimestral</td><td>Não incluído nesta série</td></tr>
+      <tr><td>12 Aplicação mínima</td><td>Relatório de Gestão (Anexo II, Item 02), documento anual até o exercício de 2025</td><td>Anual, documento de fechamento</td><td>Não disponível; o documento só existe ao fim do exercício</td></tr>
+      <tr><td>13 Previdência</td><td>RGF Anexo 2 (item de memória) até 2025; IPAJM, Avaliação Atuarial, posição de dez/2025, publicada em 08/05/2026</td><td>Anual</td><td>Não aplicável; a próxima avaliação atuarial só sai em 2027</td></tr>
+      <tr><td>14 Painel de Risco</td><td>TCE-ES, Parecer Prévio TC-062/2025 (exercício de 2024)</td><td>Anual</td><td>Não aplicável; parecer sobre as contas de 2025 ainda não localizado</td></tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:11px; margin-bottom:3px;"><b>Quebra metodológica confirmada:</b> o RREO Anexo 6 só passou a separar "Resultado Primário (com RPPS)" de "Resultado Primário (sem RPPS)" a partir do exercício de 2023; nos exercícios de 2015 a 2022, a conta é um resultado primário agregado, sem essa distinção nomeada. Por isso a série "sem RPPS" usada nas páginas 2, 3 e 14 começa em 2023, e a conciliação da página 3 não estende essas duas linhas a 2021-2022.</p>
+  <p style="font-size:11px; margin-bottom:3px;">O passivo atuarial total do SICONFI (item de memória do RGF Anexo 2) e a soma do déficit atuarial dos dois fundos previdenciários apurada pelo IPAJM usam metodologias e datas de referência distintas: os dois números são próximos, mas não idênticos, e este relatório cita cada um com sua fonte específica.</p>
+  <p style="font-size:11px; margin-bottom:3px;">As categorias de despesa por categoria econômica (página 9), despesa por função (página 10) e receita (página 8) foram conferidas linha a linha contra o RREO Anexos 1 e 2 de cada exercício. A classificação de receita e despesa por categoria econômica usa os mesmos códigos de conta da Declaração de Contas Anuais (DCA), Anexo I-C.</p>
+  <p style="font-size:11px; margin-bottom:3px;">O painel de risco da página 14 incorpora só os alertas do Parecer Prévio TC-062/2025 do TCE-ES com relação direta ao Tesouro; os demais, sobre contratações, clima e metas setoriais de saúde e assistência social, ficam fora do escopo financeiro deste diagnóstico.</p>
+  <p style="font-size:11.5px; margin-bottom:3px;">Antes do fechamento desta versão, verificou-se se havia dado de 2026 mais recente: no SICONFI, o RREO não vai além do bimestre 2, e o RGF do 1º quadrimestre de 2026 (publicado pela SEFAZ-ES em 02/06/2026) já está incorporado às páginas 2, 7 e 11; no site da SEFAZ-ES, o Demonstrativo de Caixa mais recente é o de janeiro a abril de 2026 e não há RTE de 2026 publicado; o Portal da Transparência do TCE-ES chega apenas ao 1º bimestre. O Painel de Controle do TCE-ES (dados do SIGEFES) tem acesso restrito a login e não foi verificado nesta edição.</p>
+  <p style="font-size:11.5px; margin-bottom:8px;">Cobertura temporal: recência vem antes de alongamento histórico neste diagnóstico, conforme a tabela acima. As fontes primárias (SICONFI, Demonstrativo de Caixa, Parecer Prévio do TCE-ES, Avaliação Atuarial do IPAJM) têm dado estruturado disponível desde 2015 ou antes, não desde 2019; o recorte 2019-2025 é uma escolha editorial, ainda em avaliação, não uma limitação geral de disponibilidade de dado. A decisão de ampliar ou não a janela temporal por indicador, e se isso melhora materialmente a leitura sem prejudicar a comparabilidade, permanece em aberto.</p>
+
+  <h3 style="font-family:'Playfair Display',serif; font-size:13px; color:var(--navy); margin-bottom:6px;">Referências</h3>
+  <ol>
+    <li>Secretaria do Tesouro Nacional (STN). <em>SICONFI, Relatório de Gestão Fiscal (RGF), Anexos 1, 2, 3, 4 e 5, Relatório Resumido da Execução Orçamentária (RREO), Anexos 1, 2, 3 e 6, e Declaração de Contas Anuais (DCA), Anexo I-AB (balanço patrimonial) e Anexo I-C</em>. Governo do Estado do Espírito Santo, 2019 a 2026 (RGF até o 1º quadrimestre de 2026). apidatalake.tesouro.gov.br/ords/siconfi</li>
+    <li>Espírito Santo, Secretaria de Estado da Fazenda (SEFAZ-ES). <em>Relatório de Gestão Fiscal (RGF), 1º quadrimestre de 2026</em>, publicado em 02/06/2026, com nota explicativa 6 sobre o recebível do acordo de Fundão (Ordem de Serviço SUBSET nº 37 de 27/05/2026). sefaz.es.gov.br/rgf</li>
+    <li>Tribunal de Contas do Estado do Espírito Santo (TCE-ES). <em>Parecer Prévio TC-062/2025, Processo TC 4.006/2025-7, Prestação de Contas Anual de Governador, exercício de 2024</em>, 8 de julho de 2025. sefaz.es.gov.br/prestacao-de-contas-do-governador</li>
+    <li>Espírito Santo, Secretaria de Estado da Fazenda (SEFAZ-ES). <em>Resultado do Tesouro Estadual (RTE), 3º quadrimestre de 2025</em>. sefaz.es.gov.br/media/Tesouro Estadual/RTE 2025 - 3º Quadrimestre.pdf</li>
+    <li>Espírito Santo, Secretaria de Estado da Fazenda (SEFAZ-ES). <em>Demonstrativo do Resultado de Caixa do Tesouro Estadual, Poder Executivo</em>, janeiro a dezembro de cada exercício fechado, 2019 a 2025, e janeiro a abril de 2026. sefaz.es.gov.br/resultado-de-caixa-do-tesouro-estadual</li>
+    <li>Espírito Santo, Secretaria de Estado da Fazenda (SEFAZ-ES). <em>Audiência Pública na Assembleia Legislativa, 1º quadrimestre de 2026</em>, 13 de julho de 2026.</li>
+    <li>Espírito Santo, Secretaria de Estado da Fazenda (SEFAZ-ES). <em>Relatório de Gestão</em> (Anexo II, Item 02, Instrução Normativa TCE-ES nº 68/2020), um documento por exercício, 2019 a 2025. sefaz.es.gov.br/prestacao-de-contas-do-governador</li>
+    <li>Brasil. <em>Lei Complementar nº 101, de 4 de maio de 2000 (Lei de Responsabilidade Fiscal)</em>, art. 42. planalto.gov.br/ccivil_03/leis/lcp/lcp101.htm</li>
+    <li>Brasil, Senado Federal. <em>Resolução nº 40, de 2001</em> (limite de endividamento). Ministério da Fazenda. <em>Portaria Normativa MF nº 1.583, de 2023</em> (metodologia CAPAG), e alterações posteriores vigentes na data deste diagnóstico.</li>
+    <li>Brasil. <em>Constituição Federal de 1988</em>, art. 212 (aplicação mínima em educação) e art. 198 c/c Emenda Constitucional nº 29/2000 e Lei Complementar nº 141/2012 (aplicação mínima em saúde). planalto.gov.br</li>
+    <li>Tribunal de Contas do Estado do Espírito Santo (TCE-ES). <em>Prestação de Contas do Governador 2024</em>, seção Previdência. tcees.tc.br/contasdegovernoestado/previdencia</li>
+    <li>Instituto de Previdência dos Servidores do Estado do Espírito Santo (IPAJM). <em>Relatório da Avaliação Atuarial Espírito Santo, posição de dezembro de 2025 (versão final)</em>, publicado em 08/05/2026. ipajm.es.gov.br/avaliacao-atuarial</li>
+    <li>Instituto Brasileiro de Geografia e Estatística (IBGE). <em>Índice Nacional de Preços ao Consumidor Amplo (IPCA), variações anuais de 2019 a 2025</em>. agenciadenoticias.ibge.gov.br</li>
+  </ol>
+
+  <p class="src" style="margin-top:4px; padding-top:4px;">Documento elaborado com dados públicos. Não expressa opinião sobre decisões de política pública nem recomendação de voto.</p>
+</div>
+
+<footer class="doc-footer">Diagnóstico Fiscal, Estado do Espírito Santo. Execução até abril de 2026. Uso interno, não indexado.</footer>
+
+<script>
+(function () {
+  var INK = '#1c1c1c';
+  var MUTED = '#565550';
+  var GRID = '#e4e0d3';
+  var BLUE = '#1c5cab';
+  var GOLD = '#b8922a';
+
+  function fmt(v, opts) {
+    opts = opts || {};
+    var s;
+    if (opts.pct) {
+      s = v.toFixed(opts.decimals != null ? opts.decimals : 1).replace('.', ',') + '%';
+    } else if (opts.decimals) {
+      s = v.toLocaleString('pt-BR', {minimumFractionDigits: opts.decimals, maximumFractionDigits: opts.decimals});
+    } else {
+      s = Math.round(v).toLocaleString('pt-BR');
+    }
+    return s;
+  }
+
+  function svgEl(tag, attrs) {
+    var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+
+  function lineChart(containerId, opts) {
+    var container = document.getElementById(containerId);
+    if (!container) return;
+    var W = 800, H = opts.height || 270;
+    var padL = 46, padR = 20, padT = 16, padB = 26;
+    var years = opts.years;
+    var series = opts.series;
+
+    var allVals = [];
+    series.forEach(function (s) { s.values.forEach(function (v) { if (v != null) allVals.push(v); }); });
+    var rawMin = Math.min.apply(null, allVals);
+    var vMax = Math.max.apply(null, allVals);
+    var vMin = (opts.forceZero !== false) ? Math.min(rawMin, 0) : rawMin;
+    var span = vMax - vMin || 1;
+    var padSpan = span * 0.14;
+    vMin -= padSpan; vMax += padSpan;
+    if (rawMin >= 0 && opts.forceZero !== false) vMin = 0;
+
+    var x = function (i) { return padL + (i / (years.length - 1)) * (W - padL - padR); };
+    var y = function (v) { return padT + (1 - (v - vMin) / (vMax - vMin)) * (H - padT - padB); };
+
+    var svg = svgEl('svg', {viewBox: '0 0 ' + W + ' ' + H, preserveAspectRatio: 'xMidYMid meet'});
+
+    var ticks = opts.yTicks || 4;
+    for (var t = 0; t <= ticks; t++) {
+      var val = vMin + (t / ticks) * (vMax - vMin);
+      var yy = y(val);
+      svg.appendChild(svgEl('line', {x1: padL, x2: W - padR, y1: yy, y2: yy, stroke: GRID, 'stroke-width': 1}));
+      var lbl = svgEl('text', {x: padL - 8, y: yy + 4, 'text-anchor': 'end', 'font-size': 10, fill: MUTED});
+      lbl.textContent = fmt(val, opts.valueFmt);
+      svg.appendChild(lbl);
+    }
+    if (vMin < 0 && vMax > 0) {
+      var y0 = y(0);
+      svg.appendChild(svgEl('line', {x1: padL, x2: W - padR, y1: y0, y2: y0, stroke: '#b7b2a1', 'stroke-width': 1.2}));
+    }
+
+    if (opts.refLines) {
+      opts.refLines.forEach(function (rl) {
+        var yr = y(rl.value);
+        svg.appendChild(svgEl('line', {x1: padL, x2: W - padR, y1: yr, y2: yr, stroke: rl.color || '#8b1a1a', 'stroke-width': 1.2, 'stroke-dasharray': '4,3'}));
+        var left = rl.labelAlign === 'left';
+        var lt = svgEl('text', {x: left ? padL : W - padR, y: yr - 4, 'text-anchor': left ? 'start' : 'end', 'font-size': 9, fill: rl.color || '#8b1a1a', 'font-weight': 700});
+        lt.textContent = rl.label;
+        svg.appendChild(lt);
+      });
+    }
+
+    years.forEach(function (yr, i) {
+      var lbl = svgEl('text', {x: x(i), y: H - 6, 'text-anchor': 'middle', 'font-size': 10.5, fill: MUTED});
+      lbl.textContent = yr;
+      svg.appendChild(lbl);
+    });
+
+    series.forEach(function (s) {
+      var pts = [];
+      s.values.forEach(function (v, i) { if (v != null) pts.push([x(i), y(v), v, i]); });
+      var d = pts.map(function (p, idx) { return (idx === 0 ? 'M' : 'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ');
+      svg.appendChild(svgEl('path', {d: d, fill: 'none', stroke: s.color, 'stroke-width': 2.1, 'stroke-linecap': 'round', 'stroke-linejoin': 'round'}));
+      pts.forEach(function (p) {
+        svg.appendChild(svgEl('circle', {cx: p[0], cy: p[1], r: 3.2, fill: s.color}));
+      });
+      var last = pts[pts.length - 1];
+      if (last) {
+        var above = s.labelAbove !== false;
+        var ly = above ? last[1] - 9 : last[1] + 15;
+        var tt = svgEl('text', {x: last[0], y: ly, 'text-anchor': 'end', 'font-size': 11, 'font-weight': 700, fill: INK});
+        tt.textContent = fmt(last[2], s.format || opts.valueFmt);
+        svg.appendChild(tt);
+      }
+    });
+
+    container.innerHTML = '';
+    container.appendChild(svg);
+
+    if (series.length > 1) {
+      var leg = document.createElement('div');
+      leg.className = 'legend';
+      series.forEach(function (s) {
+        var item = document.createElement('span');
+        item.innerHTML = '<span class="dot" style="background:' + s.color + '"></span>' + s.name;
+        leg.appendChild(item);
+      });
+      container.appendChild(leg);
+    }
+  }
+
+  function barChart(containerId, opts) {
+    var container = document.getElementById(containerId);
+    if (!container) return;
+    var W = 800, H = opts.height || 270;
+    var padL = 46, padR = 20, padT = 16, padB = 26;
+    var years = opts.years;
+    var values = opts.values;
+    var color = opts.color || BLUE;
+
+    var vMax = Math.max.apply(null, values.filter(function (v) { return v != null; }));
+    var vMin = Math.min(0, Math.min.apply(null, values.filter(function (v) { return v != null; })));
+    if (opts.limitLine != null) vMax = Math.max(vMax, opts.limitLine);
+    vMax = vMax * 1.18;
+
+    var n = years.length;
+    var slot = (W - padL - padR) / n;
+    var barW = Math.min(46, slot * 0.52);
+    var x = function (i) { return padL + slot * i + slot / 2; };
+    var y = function (v) { return padT + (1 - (v - vMin) / (vMax - vMin)) * (H - padT - padB); };
+    var y0 = y(0);
+
+    var svg = svgEl('svg', {viewBox: '0 0 ' + W + ' ' + H, preserveAspectRatio: 'xMidYMid meet'});
+
+    var ticks = opts.yTicks || 4;
+    for (var t = 0; t <= ticks; t++) {
+      var val = vMin + (t / ticks) * (vMax - vMin);
+      var yy = y(val);
+      svg.appendChild(svgEl('line', {x1: padL, x2: W - padR, y1: yy, y2: yy, stroke: GRID, 'stroke-width': 1}));
+      var lbl = svgEl('text', {x: padL - 8, y: yy + 4, 'text-anchor': 'end', 'font-size': 10, fill: MUTED});
+      lbl.textContent = fmt(val, opts.valueFmt);
+      svg.appendChild(lbl);
+    }
+
+    if (opts.limitLine != null) {
+      var yl = y(opts.limitLine);
+      svg.appendChild(svgEl('line', {x1: padL, x2: W - padR, y1: yl, y2: yl, stroke: '#8b1a1a', 'stroke-width': 1.3, 'stroke-dasharray': '4,3'}));
+      var lt = svgEl('text', {x: W - padR, y: yl - 5, 'text-anchor': 'end', 'font-size': 9.5, fill: '#8b1a1a', 'font-weight': 700});
+      lt.textContent = opts.limitLabel || ('limite ' + opts.limitLine);
+      svg.appendChild(lt);
+    }
+
+    years.forEach(function (yr, i) {
+      var v = values[i];
+      var lbl = svgEl('text', {x: x(i), y: H - 6, 'text-anchor': 'middle', 'font-size': 10.5, fill: MUTED});
+      lbl.textContent = yr;
+      svg.appendChild(lbl);
+      if (v == null) return;
+      var yy = y(v);
+      var rectY = Math.min(yy, y0);
+      var rectH = Math.abs(yy - y0);
+      var barColor = (opts.colors && opts.colors[i]) || color;
+      svg.appendChild(svgEl('rect', {x: x(i) - barW / 2, y: rectY, width: barW, height: Math.max(rectH, 1), fill: barColor, rx: 2}));
+      var above = v >= 0;
+      var tt = svgEl('text', {x: x(i), y: above ? yy - 6 : yy + 14, 'text-anchor': 'middle', 'font-size': 10.5, 'font-weight': 700, fill: INK});
+      tt.textContent = fmt(v, opts.valueFmt);
+      svg.appendChild(tt);
+    });
+
+    if (opts.breakBefore != null) {
+      var bx = padL + slot * opts.breakBefore;
+      svg.appendChild(svgEl('line', {x1: bx, x2: bx, y1: padT, y2: H - padB, stroke: '#8b1a1a', 'stroke-width': 1.2, 'stroke-dasharray': '3,3'}));
+      var bt = svgEl('text', {x: bx + 4, y: padT + 10, 'text-anchor': 'start', 'font-size': 9, 'font-weight': 700, fill: '#8b1a1a'});
+      bt.textContent = opts.breakLabel || 'quebra';
+      svg.appendChild(bt);
+    }
+
+    container.innerHTML = '';
+    container.appendChild(svg);
+  }
+
+  var YEARS = ['2019','2020','2021','2022','2023','2024','2025'];
+
+  barChart('chart-orcamentario', {
+    years: ['2020','2021','2022','2023','2024','2025'], height: 110, valueFmt: {decimals: 0}, color: BLUE,
+    values: [1063, 1303, 1236, 798, 883, 888]
+  });
+
+  lineChart('chart-caixa', {
+    years: YEARS, yTicks: 4, valueFmt: {decimals: 0}, height: 160,
+    series: [
+      { name: 'Disponibilidade de caixa líquida não vinculada (real, R$ 2025)', color: BLUE, values: [1786, 2167, 2725, 2505, 2064, 1033, 1264], labelAbove: true }
+    ]
+  });
+
+  barChart('chart-resultadocaixa', {
+    years: ['2019','2020','2021','2022','2023','2024','2025','2026*'], valueFmt: {decimals: 0}, color: BLUE,
+    colors: [BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, GOLD],
+    values: [3079, 2022, 3905, 3287, 2649, 594, 1312, 922]
+  });
+
+  lineChart('chart-dcl', {
+    years: YEARS, yTicks: 4, valueFmt: {pct: true, decimals: 0}, height: 130,
+    series: [{ name: 'Dívida líquida / RCL', color: BLUE, values: [14.0, 9.1, -0.8, -4.1, -6.6, -9.7, -52.4] }]
+  });
+
+  barChart('chart-atuarial', {
+    years: YEARS, valueFmt: {decimals: 1}, color: '#8b1a1a', height: 190,
+    values: [3.3, 2.5, 5.5, 6.1, 55.1, 58.9, 58.9],
+    breakBefore: 4, breakLabel: 'quebra metodológica'
+  });
+
+  barChart('chart-aporte', {
+    years: ['2022','2023','2024','2025','2026 (jan-abr)'], valueFmt: {decimals: 0}, color: '#8b1a1a', height: 170,
+    colors: ['#8b1a1a', '#8b1a1a', '#8b1a1a', '#8b1a1a', GOLD],
+    values: [2664, 2836, 3200, 3712, 1236]
+  });
+
+  barChart('chart-pessoal', {
+    years: YEARS, valueFmt: {pct: true, decimals: 1}, color: BLUE,
+    limitLine: 49, limitLabel: 'limite LRF 49%', yTicks: 4,
+    values: [36.3, 38.8, 34.8, 37.5, 38.3, 36.1, 35.4]
+  });
+
+  lineChart('chart-aplicacao-minima', {
+    years: YEARS, yTicks: 4, valueFmt: {pct: true, decimals: 1},
+    refLines: [
+      { value: 25, label: 'mínimo educação 25%', color: '#8b1a1a', labelAlign: 'left' },
+      { value: 12, label: 'mínimo saúde 12%', color: '#6b6b6b' }
+    ],
+    series: [
+      { name: 'Educação (MDE), % da RLI', color: BLUE, values: [27.80, 26.98, 25.85, 25.76, 25.61, 25.72, 25.28], labelAbove: true },
+      { name: 'Saúde, % da RLI', color: GOLD, values: [17.17, 16.82, 14.51, 15.66, 17.19, 15.43, 16.46], labelAbove: true }
+    ]
+  });
+})();
+</script>
+
+</body>
+</html>
