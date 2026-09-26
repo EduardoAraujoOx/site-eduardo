@@ -105,6 +105,10 @@ for delta_pp in deltas_pp:
         nova_receita = pos + delta_liquido
         nova_variacao_pct = (nova_receita / contra - 1) * 100
 
+        propria_original = pos - seguro
+        seguro_novo = seguro - delta_absorvido_seguro
+        propria_nova = propria_original + delta_bruto
+
         anos_out.append({
             'ano': ano,
             'delta_bruto_destino_rs': delta_bruto,
@@ -115,6 +119,10 @@ for delta_pp in deltas_pp:
             'contrafactual_rs': contra,
             'variacao_original_pct': uf_rc['variacao_por_ano'][str(ano)] * 100,
             'variacao_nova_pct': nova_variacao_pct,
+            'receita_propria_original_rs': propria_original,
+            'repasse_seguro_original_rs': seguro,
+            'receita_propria_nova_rs': propria_nova,
+            'repasse_seguro_novo_rs': seguro_novo,
         })
     cenarios.append({
         'delta_pp': delta_pp,
@@ -125,7 +133,7 @@ for delta_pp in deltas_pp:
 
 saida = {
     '_meta': {
-        'descricao': 'Fase 1 (só Espírito Santo, 2029-2033) do teste de sensibilidade: efeito de uma alíquota própria de IBS estadual diferente da referência sobre a receita total do estado, considerando o degrau do Seguro-Receita e o novo confronto com o contrafactual já publicado.',
+        'descricao': 'Fase 1 (só Espírito Santo, 2029-2033) do teste de sensibilidade: efeito de uma alíquota própria de IBS estadual diferente da referência sobre a receita total do estado e sobre a composição dessa receita entre receita própria e repasse de Seguro-Receita, considerando o degrau do Seguro-Receita e o confronto com o contrafactual já publicado.',
         'uf': UF,
         'base_tributavel_rs': base_uf,
         'aliquota_referencia_estadual_pct': aliq_ref_estadual_pct,

@@ -563,6 +563,44 @@
             </table>
         </div>
 
+        <div class="prose">
+            <p>
+                "R$ 0 de efeito líquido" descreve a receita total, mas não descreve o que está por trás dela.
+                O total fica parado porque uma fonte substitui a outra, real por real: cada real a mais que a
+                alíquota própria traz em receita de destino é um real a menos que o Seguro-Receita transfere. O
+                estado passa a depender menos do fundo de solidariedade interestadual e mais da própria base
+                tributária, mesmo sem nenhum ganho na receita total. O gráfico e a tabela abaixo mostram essa
+                troca de composição, para o mesmo cenário escolhido acima.
+            </p>
+        </div>
+
+        <div class="chart-panel">
+            <p class="chart-panel-title">Composição da receita do ES, receita própria vs. repasse de Seguro-Receita, original e no cenário escolhido</p>
+            <canvas id="chart-composicao-es" style="max-height:320px"></canvas>
+            <div class="chart-legend-note">
+                <span><span class="legend-dot" style="background:#1A3A5C"></span>Receita própria (histórico + destino)</span>
+                <span><span class="legend-dot" style="background:#9a6b1e"></span>Repasse do Seguro-Receita</span>
+            </div>
+        </div>
+
+        <span class="section-label">Mesmos números, em tabela</span>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="th-left">Ano</th>
+                        <th>Receita própria, original (R$ bi)</th>
+                        <th>Repasse, original (R$ mi)</th>
+                        <th>Receita própria, cenário (R$ bi)</th>
+                        <th>Repasse, cenário (R$ mi)</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-composicao-es">
+                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
         <div class="chart-panel">
             <p class="chart-panel-title">Variação vs. contrafactual, original e no cenário escolhido, ES, 2029&ndash;2033</p>
             <canvas id="chart-sim-es" style="max-height:300px"></canvas>
@@ -786,6 +824,7 @@
     let UF_DATA = null;
     let SIM_ES_DATA = null;
     let simEsChart = null;
+    let composicaoEsChart = null;
 
     async function init() {
         try {
@@ -978,6 +1017,49 @@
             <td>${fmtNum(a.receita_total_nova_rs/1e9,3)}</td>
             <td>${fmtPct(a.variacao_nova_pct,2)}</td>
         </tr>`).join('');
+
+        document.getElementById('tbody-composicao-es').innerHTML = c.anos.map(a => `<tr class="row-resposta">
+            <td class="td-left">${a.ano}</td>
+            <td>${fmtNum(a.receita_propria_original_rs/1e9,3)}</td>
+            <td>${fmtNum(a.repasse_seguro_original_rs/1e6,1)}</td>
+            <td>${fmtNum(a.receita_propria_nova_rs/1e9,3)}</td>
+            <td>${fmtNum(a.repasse_seguro_novo_rs/1e6,1)}</td>
+        </tr>`).join('');
+
+        const elComp = document.getElementById('chart-composicao-es');
+        if (elComp && typeof Chart !== 'undefined') {
+            if (composicaoEsChart) composicaoEsChart.destroy();
+            const labels = [];
+            c.anos.forEach(a => { labels.push(`${a.ano} original`); labels.push(`${a.ano} cenário`); });
+            const propriaData = [];
+            const seguroData = [];
+            c.anos.forEach(a => {
+                propriaData.push(a.receita_propria_original_rs / 1e9, a.receita_propria_nova_rs / 1e9);
+                seguroData.push(a.repasse_seguro_original_rs / 1e9, a.repasse_seguro_novo_rs / 1e9);
+            });
+            composicaoEsChart = new Chart(elComp, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [
+                        { label: 'Receita própria', data: propriaData, backgroundColor: '#1A3A5C', stack: 's', borderRadius: 3, maxBarThickness: 26 },
+                        { label: 'Repasse Seguro-Receita', data: seguroData, backgroundColor: '#9a6b1e', stack: 's', borderRadius: 3, maxBarThickness: 26 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: true, aspectRatio: 2.0,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: R$ ${fmtNum(ctx.raw,2)} bi` } }
+                    },
+                    scales: {
+                        x: { stacked: true, grid: { display: false }, ticks: { font: { size: 9 } } },
+                        y: { stacked: true, grid: { color: 'rgba(128,128,128,0.15)' }, ticks: { font: { size: 10 }, callback: v => fmtNum(v,0) }, title: { display: true, text: 'R$ bi', font: { size: 10 } } }
+                    }
+                }
+            });
+        }
 
         const el = document.getElementById('chart-sim-es');
         if (!el || typeof Chart === 'undefined') return;
