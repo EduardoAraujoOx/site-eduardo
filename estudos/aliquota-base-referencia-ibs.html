@@ -67,6 +67,7 @@
         .section-label { display: block; font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 0.5rem; }
 
         .table-wrap { overflow-x: auto; margin-bottom: 1.5rem; }
+        .table-note { font-family: var(--sans); font-size: 0.76rem; color: var(--text-muted); margin: 0.5rem 0 0; }
         .data-table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
         .data-table th { background: var(--bg); border: 1px solid var(--border); padding: 0.42rem 0.6rem; text-align: center; font-family: var(--sans); font-weight: 600; font-size: 0.76rem; white-space: nowrap; color: var(--text); }
         .data-table th.th-left { text-align: left; }
@@ -77,6 +78,9 @@
         .data-table tr.row-extreme-low td { background: var(--pos-bg); }
         .data-table tr.row-extreme-high td { background: var(--warn-bg); }
         .data-table tr:hover:not(.row-resposta):not(.row-extreme-low):not(.row-extreme-high) { background: var(--accent-bg); }
+        .data-table tr.row-total td { font-weight: 700; }
+        .data-table tr.row-sub td.td-left { padding-left: 1.6rem; font-weight: 400; color: var(--text-muted); }
+        .data-table tr.row-sub td:not(.td-left) { font-weight: 400; color: var(--text-muted); }
 
         .chart-panel { background: var(--border-light); border-radius: 8px; padding: 1.25rem 1.25rem 1.5rem; margin: 0 0 1.5rem; }
         .chart-panel-title { font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin: 0 0 1rem; }
@@ -91,6 +95,11 @@
         .limitacoes-list { font-family: var(--serif); font-size: 0.9rem; line-height: 1.75; color: var(--text); margin: 0.5rem 0 0; padding-left: 1.4rem; }
         .limitacoes-list li { margin-bottom: 0.9rem; }
         .limitacoes-list li:last-child { margin-bottom: 0; }
+
+        .cenario-btns { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0 0 1.5rem; }
+        .cenario-btn { font-family: var(--mono); font-size: 0.76rem; font-weight: 500; padding: 0.4rem 0.75rem; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+        .cenario-btn:hover { border-color: var(--accent); color: var(--text); }
+        .cenario-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
         .footnotes { margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
         .footnotes p { font-family: var(--serif); font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.4rem; }
@@ -501,6 +510,90 @@
             </p>
         </div>
 
+        <h2 class="section-h">Teste de sensibilidade, fase 1: o Espírito Santo votando uma alíquota própria</h2>
+        <div class="prose">
+            <p>
+                As seções anteriores derivaram a base tributável e a alíquota de referência de cada estado; esta
+                seção usa as duas para simular uma pergunta de política, não mais uma verificação de consistência:
+                o que aconteceria com a receita total de um estado se ele votasse uma alíquota própria diferente
+                da referência? A fórmula é direta, a mesma do passo 5, só que agora usada para frente, não para
+                trás:
+            </p>
+        </div>
+        <div class="lei-box mono">
+            <p>&Delta; receita de destino, no ano = (alíquota hipotética &minus; alíquota de referência estadual) &times; peso do destino no ano &times; base tributável do estado</p>
+        </div>
+        <div class="prose">
+            <p>
+                Falta uma peça para chegar ao efeito líquido na receita total: o Seguro-Receita. Enquanto a
+                receita própria de um estado, antes do repasse, ficar abaixo do piso que o fundo garante, qualquer
+                receita extra de destino apenas reduz o repasse na mesma medida, sem mudar a receita total nem um
+                real. O ganho só passa a valer de verdade depois que a receita extra ultrapassa o valor do repasse
+                daquele ano. Não é uma absorção suave e proporcional, é um degrau: zero até um ponto de virada, e
+                só depois disso o efeito passa a aparecer na receita total.
+            </p>
+        </div>
+
+        <div class="resposta-box">
+            <div class="resposta-label">O que os cenários testados mudam na receita total do ES, 2029&ndash;2033</div>
+            <div class="resposta-numero" id="resposta-numero-sim-es">Calculando...</div>
+            <div class="resposta-sub" id="resposta-sub-sim-es"></div>
+        </div>
+        <div class="piso-note">
+            <span>⚠</span>
+            <span>O Espírito Santo recebe repasse do Seguro-Receita em todos os anos deste horizonte, o que
+            significa que sua receita própria (antes do repasse) ainda está abaixo do piso garantido. É esse
+            degrau, não a base ou a alíquota em si, que explica o resultado abaixo.</span>
+        </div>
+
+        <span class="section-label">Escolha uma alíquota própria hipotética para o IBS estadual do ES</span>
+        <div class="cenario-btns" id="cenario-btns"></div>
+
+        <div class="prose">
+            <p>
+                "R$ 0 de efeito líquido" descreve o total, mas não descreve o que está por trás dele: uma fonte
+                substitui a outra, real por real. Cada real a mais que a alíquota própria traz em receita de
+                destino é um real a menos que o Seguro-Receita transfere; o estado passa a depender menos do
+                fundo de solidariedade interestadual e mais da própria base tributária, mesmo sem nenhum ganho
+                no total. A tabela abaixo mostra essa composição inteira em um só lugar: a receita no cenário sem
+                reforma, a receita no cenário com a alíquota escolhida acima já decomposta nas suas quatro
+                fontes, a diferença entre as duas e a variação percentual resultante.
+            </p>
+        </div>
+
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="th-left">Variável</th>
+                        <th>2029</th>
+                        <th>2030</th>
+                        <th>2031</th>
+                        <th>2032</th>
+                        <th>2033</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-sim-es">
+                    <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+            </table>
+            <p class="table-note">Valores em R$ bilhões, exceto a última linha (variação percentual). A soma das
+            quatro fontes do cenário com reforma fecha exatamente na receita total daquele cenário, em cada ano.</p>
+        </div>
+
+        <div class="callout" id="callout-limiares-sim-es">Calculando os pontos de virada...</div>
+
+        <div class="prose">
+            <p>
+                O resultado é, em si, o achado desta seção: durante toda a transição 2029&ndash;2033, o critério
+                de destino ainda pesa tão pouco no total do IBS que nenhuma alíquota própria razoável muda a
+                receita do Espírito Santo. É só a partir de 2034, quando o peso do destino passa a subir de
+                verdade rumo aos 98% de 2077, que essa alavanca ganha força. Testar isso de fato exigiria uma
+                projeção de longo prazo por estado, que ainda não existe neste site (só existe em nível nacional);
+                fica registrado aqui como a fase 2 deste teste, não feita ainda.
+            </p>
+        </div>
+
         <h2 class="section-h">Como validar esta estimativa quando o IBS começar a ser cobrado</h2>
         <div class="prose">
             <p>
@@ -648,6 +741,12 @@
             seção anterior precisa de dois dados que ainda não existem, a alíquota estadual efetivamente
             legislada ano a ano e a receita de destino real por estado; fica registrada como plano de verificação
             para quando o Comitê Gestor do IBS publicar esses números, não como uma conclusão deste estudo.</li>
+            <li><strong>O teste de sensibilidade é fase 1, só o Espírito Santo, só 2029&ndash;2033.</strong> Uma
+            alíquota própria aplicada de forma constante nos cinco anos simplifica o que seria, na prática, uma
+            escolha renovável ano a ano; e o resultado de que nenhuma alíquota razoável muda a receita do ES
+            neste horizonte é específico da combinação entre o peso ainda pequeno do critério de destino e o
+            repasse de Seguro-Receita que o ES recebe, não uma conclusão geral para todos os estados. Estender a
+            outros entes e a 2077 é a extensão natural, não feita aqui.</li>
         </ol>
 
         <div class="footnotes">
@@ -678,6 +777,9 @@
             2026, citada aqui apenas pelos números agregados que o próprio documento apresenta como estimativas
             preliminares e não oficiais; os dados de base e a tabela de ponderações por categoria não foram
             reproduzidos de forma independente neste estudo.</p>
+            <p>6. Teste de sensibilidade (ES, 2029&ndash;2033): contrafactual e variação já publicados em
+            <code>data/resultados-consolidados-ibs.json</code>; repasse de Seguro-Receita em
+            <code>data/painel-estados.json</code>; cálculo em <code>data/build-simulacao-aliquota-es.py</code>.</p>
         </div>
     </div>
 
@@ -691,17 +793,20 @@
     const fmtPct = (v, d=2) => v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }) + '%';
 
     let UF_DATA = null;
+    let SIM_ES_DATA = null;
 
     async function init() {
         try {
-            const [resNac, resUf, resEsferas] = await Promise.all([
+            const [resNac, resUf, resEsferas, resSimEs] = await Promise.all([
                 fetch('/data/aliquota-base-referencia.json?t=' + Date.now()),
                 fetch('/data/carga-implicita-uf.json?t=' + Date.now()),
-                fetch('/data/aliquota-referencia-esferas.json?t=' + Date.now())
+                fetch('/data/aliquota-referencia-esferas.json?t=' + Date.now()),
+                fetch('/data/simulacao-aliquota-es.json?t=' + Date.now())
             ]);
             const dataNac = await resNac.json();
             UF_DATA = await resUf.json();
             const dataEsferas = await resEsferas.json();
+            SIM_ES_DATA = await resSimEs.json();
             buildRespostaNacional(dataNac);
             buildResultadosTable(dataNac);
             buildChartNacional(dataNac);
@@ -709,10 +814,12 @@
             buildRespostaUf();
             buildTableUf();
             buildChartUf();
+            initSimEs();
         } catch (e) {
             console.error(e);
             document.getElementById('resposta-numero-nacional').textContent = 'Erro ao carregar dados.';
             document.getElementById('resposta-numero-uf').textContent = 'Erro ao carregar dados.';
+            document.getElementById('resposta-numero-sim-es').textContent = 'Erro ao carregar dados.';
         }
     }
 
@@ -830,6 +937,67 @@
                 }
             }
         });
+    }
+
+    function initSimEs() {
+        const meta = SIM_ES_DATA._meta;
+        const cenarios = SIM_ES_DATA.cenarios;
+
+        const naoNulos = cenarios.filter(c => c.anos.some(a => a.delta_liquido_receita_total_rs > 0));
+        document.getElementById('resposta-numero-sim-es').textContent =
+            naoNulos.length ? 'R$ 0 até quase escapar do Seguro-Receita' : 'R$ 0 em todos os cenários testados';
+        document.getElementById('resposta-sub-sim-es').innerHTML =
+            `Testamos alíquotas de ${fmtPct(cenarios[0].aliquota_pct,2)} (a referência) até ${fmtPct(cenarios[cenarios.length-1].aliquota_pct,2)}. Até +20 pontos percentuais acima da referência, o efeito líquido na receita total do ES é exatamente zero em todos os cinco anos; só muito perto do limiar que escapa do Seguro-Receita (ver abaixo) aparece algum efeito, e mesmo assim irrisório.`;
+
+        const btnsEl = document.getElementById('cenario-btns');
+        btnsEl.innerHTML = cenarios.map((c, i) => `<button class="cenario-btn" data-i="${i}">${c.label}</button>`).join('');
+        btnsEl.querySelectorAll('.cenario-btn').forEach(btn => {
+            btn.addEventListener('click', () => selectCenarioEs(parseInt(btn.dataset.i, 10)));
+        });
+
+        const defaultIdx = Math.max(0, cenarios.findIndex(c => c.delta_pp === 2));
+        selectCenarioEs(defaultIdx === -1 ? 0 : defaultIdx);
+
+        const l2033 = meta.limiares_por_ano['2033'];
+        document.getElementById('callout-limiares-sim-es').innerHTML =
+            `<strong>Dois pontos de virada, em 2033.</strong> A alíquota própria precisaria chegar a
+            ${fmtPct(l2033.aliquota_escapa_seguro_receita_pct,2)} só para o ES deixar de receber Seguro-Receita
+            naquele ano (hoje, com a alíquota de referência de ${fmtPct(meta.aliquota_referencia_estadual_pct,2)},
+            o repasse é de R$ ${fmtNum(l2033.seguro_rs/1e6,0)} milhões); e precisaria chegar a
+            ${fmtPct(l2033.aliquota_zera_lacuna_pct,2)}, um número sem sentido econômico (acima de 100%), para
+            fechar sozinha toda a lacuna de R$ ${fmtNum(l2033.lacuna_vs_contrafactual_rs/1e9,2)} bilhões frente ao
+            contrafactual naquele ano. Os dois números são altos pela mesma razão: o critério de destino ainda
+            pesa pouco em 2033.`;
+    }
+
+    function selectCenarioEs(idx) {
+        const cenarios = SIM_ES_DATA.cenarios;
+        const c = cenarios[idx];
+
+        document.querySelectorAll('#cenario-btns .cenario-btn').forEach((btn, i) => {
+            btn.classList.toggle('active', i === idx);
+        });
+
+        const bi = v => fmtNum(v / 1e9, 3);
+        const linha = (label, campo, cls) => `<tr class="${cls}">
+            <td class="td-left">${label}</td>
+            ${c.anos.map(a => `<td>${bi(a[campo])}</td>`).join('')}
+        </tr>`;
+
+        const rows = [
+            linha('(1) Arrecadação no cenário sem reforma', 'contrafactual_rs', 'row-total'),
+            linha(`(2) Arrecadação no cenário com reforma (alíquota de IBS = ${fmtPct(c.aliquota_pct,2)})`, 'receita_total_nova_rs', 'row-total'),
+            linha('ICMS/ISS remanescente', 'origem_rs', 'row-sub'),
+            linha('IBS transição (média histórica)', 'cpt_rs', 'row-sub'),
+            linha('IBS destino', 'destino_novo_rs', 'row-sub'),
+            linha('Seguro-Receita', 'seguro_novo_rs', 'row-sub'),
+            linha('(3) Diferença (2) &minus; (1)', 'diferenca_vs_contrafactual_rs', 'row-total'),
+            `<tr class="row-resposta">
+                <td class="td-left">Variação % (3)/(1)</td>
+                ${c.anos.map(a => `<td>${fmtPct(a.variacao_nova_pct,2)}</td>`).join('')}
+            </tr>`
+        ];
+        document.getElementById('tbody-sim-es').innerHTML = rows.join('');
     }
 
     init();
