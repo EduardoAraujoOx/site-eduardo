@@ -1,0 +1,542 @@
+{
+ "_meta": {
+  "descricao": "Fase 1 (só Espírito Santo, 2029-2033) do teste de sensibilidade: efeito de uma alíquota própria de IBS estadual diferente da referência sobre a receita total do estado, considerando o degrau do Seguro-Receita e o novo confronto com o contrafactual já publicado.",
+  "uf": "ES",
+  "base_tributavel_rs": 88894003863.89958,
+  "aliquota_referencia_estadual_pct": 10.732906442114901,
+  "limiares_por_ano": {
+   "2029": {
+    "seguro_rs": 53068365.505680054,
+    "lacuna_vs_contrafactual_rs": 202192382.15393448,
+    "aliquota_escapa_seguro_receita_pct": 34.35199341276402,
+    "aliquota_zera_lacuna_pct": 124.34156466468727
+   },
+   "2030": {
+    "seguro_rs": 108035979.33839512,
+    "lacuna_vs_contrafactual_rs": 378749124.6605797,
+    "aliquota_escapa_seguro_receita_pct": 34.06515103330723,
+    "aliquota_zera_lacuna_pct": 115.86259730443128
+   },
+   "2031": {
+    "seguro_rs": 165505510.1500187,
+    "lacuna_vs_contrafactual_rs": 563564196.6504822,
+    "aliquota_escapa_seguro_receita_pct": 33.971678112824385,
+    "aliquota_zera_lacuna_pct": 113.10221386282035
+   },
+   "2032": {
+    "seguro_rs": 225449013.1720085,
+    "lacuna_vs_contrafactual_rs": 755976075.4411774,
+    "aliquota_escapa_seguro_receita_pct": 33.923762088604946,
+    "aliquota_zera_lacuna_pct": 111.68738496319438
+   },
+   "2033": {
+    "seguro_rs": 287830706.29162574,
+    "lacuna_vs_contrafactual_rs": 1533814591.6195145,
+    "aliquota_escapa_seguro_receita_pct": 33.839567184000394,
+    "aliquota_zera_lacuna_pct": 156.97213308055603
+   }
+  },
+  "fonte_base_e_aliquota_referencia": "Estudo 16 (data/carga-implicita-uf.json, data/aliquota-referencia-esferas.json)",
+  "fonte_receita_contrafactual_variacao": "data/resultados-consolidados-ibs.json (por_uf_estado.ES)",
+  "fonte_seguro_receita": "data/painel-estados.json (repasse_seguro_receita_por_ano.estado)",
+  "mecanismo_seguro_receita": "Degrau, não absorção proporcional: enquanto a receita própria (antes do repasse) ficar abaixo do piso garantido, qualquer receita extra de destino só reduz o repasse, sem mudar a receita total; o ganho líquido só começa a valer depois que a receita extra ultrapassa o valor do repasse do ano."
+ },
+ "cenarios": [
+  {
+   "delta_pp": 0,
+   "aliquota_pct": 10.732906442114901,
+   "label": "Referência (10.73%)",
+   "anos": [
+    {
+     "ano": 2029,
+     "delta_bruto_destino_rs": 0.0,
+     "delta_absorvido_seguro_receita_rs": 0.0,
+     "delta_liquido_receita_total_rs": 0.0,
+     "receita_total_original_rs": 18126444496.45207,
+     "receita_total_nova_rs": 18126444496.45207,
+     "contrafactual_rs": 18328636878.606003,
+     "variacao_original_pct": -1.103150133275554,
+     "variacao_nova_pct": -1.1031501332755544
+    },
+    {
+     "ano": 2030,
+     "delta_bruto_destino_rs": 0.0,
+     "delta_absorvido_seguro_receita_rs": 0.0,
+     "delta_liquido_receita_total_rs": 0.0,
+     "receita_total_original_rs": 18316460491.517673,
+     "receita_total_nova_rs": 18316460491.517673,
+     "contrafactual_rs": 18695209616.178253,
+     "variacao_original_pct": -2.0259153678214012,
+     "variacao_nova_pct": -2.025915367821407
+    },
+    {
+     "ano": 2031,
+     "delta_bruto_destino_rs": 0.0,
+     "delta_absorvido_seguro_receita_rs": 0.0,
+     "delta_liquido_receita_total_rs": 0.0,
+     "receita_total_original_rs": 18542940031.083637,
+     "receita_total_nova_rs": 18542940031.083637,
+     "contrafactual_rs": 19106504227.73412,
+     "variacao_original_pct": -2.9495934469919325,
+     "variacao_nova_pct": -2.9495934469919383
+    },
+    {
+     "ano": 2032,
+     "delta_bruto_destino_rs": 0.0,
+     "delta_absorvido_seguro_receita_rs": 0.0,
+     "delta_liquido_receita_total_rs": 0.0,
+     "receita_total_original_rs": 18770871245.303078,
+     "receita_total_nova_rs": 18770871245.303078,
+     "contrafactual_rs": 19526847320.744255,
+     "variacao_original_pct": -3.8714702021460967,
+     "variacao_nova_pct": -3.871470202146099
+    },
+    {
+     "ano": 2033,
+     "delta_bruto_destino_rs": 0.0,
+     "delta_absorvido_seguro_receita_rs": 0.0,
+     "delta_liquido_receita_total_rs": 0.0,
+     "receita_total_original_rs": 18422623370.181114,
+     "receita_total_nova_rs": 18422623370.181114,
+     "contrafactual_rs": 19956437961.80063,
+     "variacao_original_pct": -7.685813443037515,
+     "variacao_nova_pct": -7.685813443037515
+    }
+   ]
+  },
+  {
+   "delta_pp": 1,
+   "aliquota_pct": 11.732906442114901,
+   "label": "+1 p.p. (11.73%)",
+   "anos": [
+    {
+     "ano": 2029,
+     "delta_bruto_destino_rs": 2246842.376744996,
+     "delta_absorvido_seguro_receita_rs": 2246842.376744996,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18126444496.45207,
+     "receita_total_nova_rs": 18126444496.45207,
+     "contrafactual_rs": 18328636878.606003,
+     "variacao_original_pct": -1.103150133275554,
+     "variacao_nova_pct": -1.1031501332755544
+    },
+    {
+     "ano": 2030,
+     "delta_bruto_destino_rs": 4630329.453137032,
+     "delta_absorvido_seguro_receita_rs": 4630329.453137032,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18316460491.517673,
+     "receita_total_nova_rs": 18316460491.517673,
+     "contrafactual_rs": 18695209616.178253,
+     "variacao_original_pct": -2.0259153678214012,
+     "variacao_nova_pct": -2.025915367821407
+    },
+    {
+     "ano": 2031,
+     "delta_bruto_destino_rs": 7121956.035164474,
+     "delta_absorvido_seguro_receita_rs": 7121956.035164474,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18542940031.083637,
+     "receita_total_nova_rs": 18542940031.083637,
+     "contrafactual_rs": 19106504227.73412,
+     "variacao_original_pct": -2.9495934469919325,
+     "variacao_nova_pct": -2.9495934469919383
+    },
+    {
+     "ano": 2032,
+     "delta_bruto_destino_rs": 9721461.623005286,
+     "delta_absorvido_seguro_receita_rs": 9721461.623005286,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18770871245.303078,
+     "receita_total_nova_rs": 18770871245.303078,
+     "contrafactual_rs": 19526847320.744255,
+     "variacao_original_pct": -3.8714702021460967,
+     "variacao_nova_pct": -3.871470202146099
+    },
+    {
+     "ano": 2033,
+     "delta_bruto_destino_rs": 12456611.948686913,
+     "delta_absorvido_seguro_receita_rs": 12456611.948686913,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18422623370.181114,
+     "receita_total_nova_rs": 18422623370.181114,
+     "contrafactual_rs": 19956437961.80063,
+     "variacao_original_pct": -7.685813443037515,
+     "variacao_nova_pct": -7.685813443037515
+    }
+   ]
+  },
+  {
+   "delta_pp": 2,
+   "aliquota_pct": 12.7329064421149,
+   "label": "+2 p.p. (12.73%)",
+   "anos": [
+    {
+     "ano": 2029,
+     "delta_bruto_destino_rs": 4493684.753489992,
+     "delta_absorvido_seguro_receita_rs": 4493684.753489992,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18126444496.45207,
+     "receita_total_nova_rs": 18126444496.45207,
+     "contrafactual_rs": 18328636878.606003,
+     "variacao_original_pct": -1.103150133275554,
+     "variacao_nova_pct": -1.1031501332755544
+    },
+    {
+     "ano": 2030,
+     "delta_bruto_destino_rs": 9260658.906274064,
+     "delta_absorvido_seguro_receita_rs": 9260658.906274064,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18316460491.517673,
+     "receita_total_nova_rs": 18316460491.517673,
+     "contrafactual_rs": 18695209616.178253,
+     "variacao_original_pct": -2.0259153678214012,
+     "variacao_nova_pct": -2.025915367821407
+    },
+    {
+     "ano": 2031,
+     "delta_bruto_destino_rs": 14243912.070328947,
+     "delta_absorvido_seguro_receita_rs": 14243912.070328947,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18542940031.083637,
+     "receita_total_nova_rs": 18542940031.083637,
+     "contrafactual_rs": 19106504227.73412,
+     "variacao_original_pct": -2.9495934469919325,
+     "variacao_nova_pct": -2.9495934469919383
+    },
+    {
+     "ano": 2032,
+     "delta_bruto_destino_rs": 19442923.24601057,
+     "delta_absorvido_seguro_receita_rs": 19442923.24601057,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18770871245.303078,
+     "receita_total_nova_rs": 18770871245.303078,
+     "contrafactual_rs": 19526847320.744255,
+     "variacao_original_pct": -3.8714702021460967,
+     "variacao_nova_pct": -3.871470202146099
+    },
+    {
+     "ano": 2033,
+     "delta_bruto_destino_rs": 24913223.897373825,
+     "delta_absorvido_seguro_receita_rs": 24913223.897373825,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18422623370.181114,
+     "receita_total_nova_rs": 18422623370.181114,
+     "contrafactual_rs": 19956437961.80063,
+     "variacao_original_pct": -7.685813443037515,
+     "variacao_nova_pct": -7.685813443037515
+    }
+   ]
+  },
+  {
+   "delta_pp": 3,
+   "aliquota_pct": 13.732906442114901,
+   "label": "+3 p.p. (13.73%)",
+   "anos": [
+    {
+     "ano": 2029,
+     "delta_bruto_destino_rs": 6740527.13023499,
+     "delta_absorvido_seguro_receita_rs": 6740527.13023499,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18126444496.45207,
+     "receita_total_nova_rs": 18126444496.45207,
+     "contrafactual_rs": 18328636878.606003,
+     "variacao_original_pct": -1.103150133275554,
+     "variacao_nova_pct": -1.1031501332755544
+    },
+    {
+     "ano": 2030,
+     "delta_bruto_destino_rs": 13890988.359411102,
+     "delta_absorvido_seguro_receita_rs": 13890988.359411102,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18316460491.517673,
+     "receita_total_nova_rs": 18316460491.517673,
+     "contrafactual_rs": 18695209616.178253,
+     "variacao_original_pct": -2.0259153678214012,
+     "variacao_nova_pct": -2.025915367821407
+    },
+    {
+     "ano": 2031,
+     "delta_bruto_destino_rs": 21365868.105493426,
+     "delta_absorvido_seguro_receita_rs": 21365868.105493426,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18542940031.083637,
+     "receita_total_nova_rs": 18542940031.083637,
+     "contrafactual_rs": 19106504227.73412,
+     "variacao_original_pct": -2.9495934469919325,
+     "variacao_nova_pct": -2.9495934469919383
+    },
+    {
+     "ano": 2032,
+     "delta_bruto_destino_rs": 29164384.869015876,
+     "delta_absorvido_seguro_receita_rs": 29164384.869015876,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18770871245.303078,
+     "receita_total_nova_rs": 18770871245.303078,
+     "contrafactual_rs": 19526847320.744255,
+     "variacao_original_pct": -3.8714702021460967,
+     "variacao_nova_pct": -3.871470202146099
+    },
+    {
+     "ano": 2033,
+     "delta_bruto_destino_rs": 37369835.84606076,
+     "delta_absorvido_seguro_receita_rs": 37369835.84606076,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18422623370.181114,
+     "receita_total_nova_rs": 18422623370.181114,
+     "contrafactual_rs": 19956437961.80063,
+     "variacao_original_pct": -7.685813443037515,
+     "variacao_nova_pct": -7.685813443037515
+    }
+   ]
+  },
+  {
+   "delta_pp": 4,
+   "aliquota_pct": 14.732906442114901,
+   "label": "+4 p.p. (14.73%)",
+   "anos": [
+    {
+     "ano": 2029,
+     "delta_bruto_destino_rs": 8987369.50697999,
+     "delta_absorvido_seguro_receita_rs": 8987369.50697999,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18126444496.45207,
+     "receita_total_nova_rs": 18126444496.45207,
+     "contrafactual_rs": 18328636878.606003,
+     "variacao_original_pct": -1.103150133275554,
+     "variacao_nova_pct": -1.1031501332755544
+    },
+    {
+     "ano": 2030,
+     "delta_bruto_destino_rs": 18521317.812548142,
+     "delta_absorvido_seguro_receita_rs": 18521317.812548142,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18316460491.517673,
+     "receita_total_nova_rs": 18316460491.517673,
+     "contrafactual_rs": 18695209616.178253,
+     "variacao_original_pct": -2.0259153678214012,
+     "variacao_nova_pct": -2.025915367821407
+    },
+    {
+     "ano": 2031,
+     "delta_bruto_destino_rs": 28487824.140657913,
+     "delta_absorvido_seguro_receita_rs": 28487824.140657913,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18542940031.083637,
+     "receita_total_nova_rs": 18542940031.083637,
+     "contrafactual_rs": 19106504227.73412,
+     "variacao_original_pct": -2.9495934469919325,
+     "variacao_nova_pct": -2.9495934469919383
+    },
+    {
+     "ano": 2032,
+     "delta_bruto_destino_rs": 38885846.49202117,
+     "delta_absorvido_seguro_receita_rs": 38885846.49202117,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18770871245.303078,
+     "receita_total_nova_rs": 18770871245.303078,
+     "contrafactual_rs": 19526847320.744255,
+     "variacao_original_pct": -3.8714702021460967,
+     "variacao_nova_pct": -3.871470202146099
+    },
+    {
+     "ano": 2033,
+     "delta_bruto_destino_rs": 49826447.79474769,
+     "delta_absorvido_seguro_receita_rs": 49826447.79474769,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18422623370.181114,
+     "receita_total_nova_rs": 18422623370.181114,
+     "contrafactual_rs": 19956437961.80063,
+     "variacao_original_pct": -7.685813443037515,
+     "variacao_nova_pct": -7.685813443037515
+    }
+   ]
+  },
+  {
+   "delta_pp": 10,
+   "aliquota_pct": 20.732906442114903,
+   "label": "+10 p.p. (20.73%)",
+   "anos": [
+    {
+     "ano": 2029,
+     "delta_bruto_destino_rs": 22468423.76744997,
+     "delta_absorvido_seguro_receita_rs": 22468423.76744997,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18126444496.45207,
+     "receita_total_nova_rs": 18126444496.45207,
+     "contrafactual_rs": 18328636878.606003,
+     "variacao_original_pct": -1.103150133275554,
+     "variacao_nova_pct": -1.1031501332755544
+    },
+    {
+     "ano": 2030,
+     "delta_bruto_destino_rs": 46303294.53137034,
+     "delta_absorvido_seguro_receita_rs": 46303294.53137034,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18316460491.517673,
+     "receita_total_nova_rs": 18316460491.517673,
+     "contrafactual_rs": 18695209616.178253,
+     "variacao_original_pct": -2.0259153678214012,
+     "variacao_nova_pct": -2.025915367821407
+    },
+    {
+     "ano": 2031,
+     "delta_bruto_destino_rs": 71219560.35164477,
+     "delta_absorvido_seguro_receita_rs": 71219560.35164477,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18542940031.083637,
+     "receita_total_nova_rs": 18542940031.083637,
+     "contrafactual_rs": 19106504227.73412,
+     "variacao_original_pct": -2.9495934469919325,
+     "variacao_nova_pct": -2.9495934469919383
+    },
+    {
+     "ano": 2032,
+     "delta_bruto_destino_rs": 97214616.23005292,
+     "delta_absorvido_seguro_receita_rs": 97214616.23005292,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18770871245.303078,
+     "receita_total_nova_rs": 18770871245.303078,
+     "contrafactual_rs": 19526847320.744255,
+     "variacao_original_pct": -3.8714702021460967,
+     "variacao_nova_pct": -3.871470202146099
+    },
+    {
+     "ano": 2033,
+     "delta_bruto_destino_rs": 124566119.4868692,
+     "delta_absorvido_seguro_receita_rs": 124566119.4868692,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18422623370.181114,
+     "receita_total_nova_rs": 18422623370.181114,
+     "contrafactual_rs": 19956437961.80063,
+     "variacao_original_pct": -7.685813443037515,
+     "variacao_nova_pct": -7.685813443037515
+    }
+   ]
+  },
+  {
+   "delta_pp": 20,
+   "aliquota_pct": 30.732906442114903,
+   "label": "+20 p.p. (30.73%)",
+   "anos": [
+    {
+     "ano": 2029,
+     "delta_bruto_destino_rs": 44936847.53489996,
+     "delta_absorvido_seguro_receita_rs": 44936847.53489996,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18126444496.45207,
+     "receita_total_nova_rs": 18126444496.45207,
+     "contrafactual_rs": 18328636878.606003,
+     "variacao_original_pct": -1.103150133275554,
+     "variacao_nova_pct": -1.1031501332755544
+    },
+    {
+     "ano": 2030,
+     "delta_bruto_destino_rs": 92606589.0627407,
+     "delta_absorvido_seguro_receita_rs": 92606589.0627407,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18316460491.517673,
+     "receita_total_nova_rs": 18316460491.517673,
+     "contrafactual_rs": 18695209616.178253,
+     "variacao_original_pct": -2.0259153678214012,
+     "variacao_nova_pct": -2.025915367821407
+    },
+    {
+     "ano": 2031,
+     "delta_bruto_destino_rs": 142439120.70328957,
+     "delta_absorvido_seguro_receita_rs": 142439120.70328957,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18542940031.083637,
+     "receita_total_nova_rs": 18542940031.083637,
+     "contrafactual_rs": 19106504227.73412,
+     "variacao_original_pct": -2.9495934469919325,
+     "variacao_nova_pct": -2.9495934469919383
+    },
+    {
+     "ano": 2032,
+     "delta_bruto_destino_rs": 194429232.46010587,
+     "delta_absorvido_seguro_receita_rs": 194429232.46010587,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18770871245.303078,
+     "receita_total_nova_rs": 18770871245.303078,
+     "contrafactual_rs": 19526847320.744255,
+     "variacao_original_pct": -3.8714702021460967,
+     "variacao_nova_pct": -3.871470202146099
+    },
+    {
+     "ano": 2033,
+     "delta_bruto_destino_rs": 249132238.97373846,
+     "delta_absorvido_seguro_receita_rs": 249132238.97373846,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18422623370.181114,
+     "receita_total_nova_rs": 18422623370.181114,
+     "contrafactual_rs": 19956437961.80063,
+     "variacao_original_pct": -7.685813443037515,
+     "variacao_nova_pct": -7.685813443037515
+    }
+   ]
+  },
+  {
+   "delta_pp": 23.11,
+   "aliquota_pct": 33.8429064421149,
+   "label": "+23.11 p.p. (33.84%)",
+   "anos": [
+    {
+     "ano": 2029,
+     "delta_bruto_destino_rs": 51924527.32657688,
+     "delta_absorvido_seguro_receita_rs": 51924527.32657688,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18126444496.45207,
+     "receita_total_nova_rs": 18126444496.45207,
+     "contrafactual_rs": 18328636878.606003,
+     "variacao_original_pct": -1.103150133275554,
+     "variacao_nova_pct": -1.1031501332755544
+    },
+    {
+     "ano": 2030,
+     "delta_bruto_destino_rs": 107006913.66199686,
+     "delta_absorvido_seguro_receita_rs": 107006913.66199686,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18316460491.517673,
+     "receita_total_nova_rs": 18316460491.517673,
+     "contrafactual_rs": 18695209616.178253,
+     "variacao_original_pct": -2.0259153678214012,
+     "variacao_nova_pct": -2.025915367821407
+    },
+    {
+     "ano": 2031,
+     "delta_bruto_destino_rs": 164588403.97265106,
+     "delta_absorvido_seguro_receita_rs": 164588403.97265106,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18542940031.083637,
+     "receita_total_nova_rs": 18542940031.083637,
+     "contrafactual_rs": 19106504227.73412,
+     "variacao_original_pct": -2.9495934469919325,
+     "variacao_nova_pct": -2.9495934469919383
+    },
+    {
+     "ano": 2032,
+     "delta_bruto_destino_rs": 224662978.1076523,
+     "delta_absorvido_seguro_receita_rs": 224662978.1076523,
+     "delta_liquido_receita_total_rs": 0,
+     "receita_total_original_rs": 18770871245.303078,
+     "receita_total_nova_rs": 18770871245.303078,
+     "contrafactual_rs": 19526847320.744255,
+     "variacao_original_pct": -3.8714702021460967,
+     "variacao_nova_pct": -3.871470202146099
+    },
+    {
+     "ano": 2033,
+     "delta_bruto_destino_rs": 287872302.13415474,
+     "delta_absorvido_seguro_receita_rs": 287830706.29162574,
+     "delta_liquido_receita_total_rs": 41595.84252899885,
+     "receita_total_original_rs": 18422623370.181114,
+     "receita_total_nova_rs": 18422664966.023643,
+     "contrafactual_rs": 19956437961.80063,
+     "variacao_original_pct": -7.685813443037515,
+     "variacao_nova_pct": -7.685605009836117
+    }
+   ]
+  }
+ ]
+}
