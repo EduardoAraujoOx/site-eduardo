@@ -97,6 +97,10 @@
         .limitacoes-list li:last-child { margin-bottom: 0; }
 
         .cenario-btns { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0 0 1.5rem; }
+        .year-slider-wrap { margin: 0 0 1.5rem; }
+        .year-slider-label { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .year-slider-label span:nth-child(2) { color: var(--text); font-weight: 600; }
+        .year-slider-wrap input[type="range"] { width: 100%; accent-color: var(--accent); }
         .cenario-btn { font-family: var(--mono); font-size: 0.76rem; font-weight: 500; padding: 0.4rem 0.75rem; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
         .cenario-btn:hover { border-color: var(--accent); color: var(--text); }
         .cenario-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
@@ -588,9 +592,80 @@
                 O resultado é, em si, o achado desta seção: durante toda a transição 2029&ndash;2033, o critério
                 de destino ainda pesa tão pouco no total do IBS que nenhuma alíquota própria razoável muda a
                 receita do Espírito Santo. É só a partir de 2034, quando o peso do destino passa a subir de
-                verdade rumo aos 98% de 2077, que essa alavanca ganha força. Testar isso de fato exigiria uma
-                projeção de longo prazo por estado, que ainda não existe neste site (só existe em nível nacional);
-                fica registrado aqui como a fase 2 deste teste, não feita ainda.
+                verdade rumo aos 98% de 2077, que essa alavanca começa a ganhar força, questão que a próxima
+                seção estende até o fim da transição.
+            </p>
+        </div>
+
+        <h2 class="section-h">Teste de sensibilidade, fase 2: a mesma pergunta, até 2077</h2>
+        <div class="prose">
+            <p>
+                A receita por estado publicada em painel-estados.json para 2029&ndash;2033 é só um caso particular
+                de uma fórmula genérica: aplicar os três coeficientes fixos de cada estado (participação neutra,
+                de transição e de destino pleno) aos agregados nacionais do ano. Esses agregados nacionais já
+                existem também para 2034&ndash;2077 (extensão de longo prazo dos Estudos 09 e 11), e o repasse do
+                Seguro-Receita por estado também já existe ano a ano até 2077. Bastou reaplicar a mesma fórmula a
+                esses dados de mais longo prazo, sem coletar nada novo, e conferir o resultado contra os cinco
+                anos já publicados antes de aceitar a extensão: bate a menos de um real de diferença em todos
+                eles. O que faltava na seção anterior não era o dado, era só montar a conta.
+            </p>
+        </div>
+
+        <div class="resposta-box">
+            <div class="resposta-label">Alíquota própria do ES necessária para zerar a lacuna até o ano escolhido</div>
+            <div class="resposta-numero" id="resposta-numero-longo-prazo">Calculando...</div>
+            <div class="resposta-sub" id="resposta-sub-longo-prazo"></div>
+        </div>
+
+        <div class="year-slider-wrap">
+            <div class="year-slider-label">
+                <span>2029</span>
+                <span id="year-slider-value">Ano escolhido: 2033</span>
+                <span>2077</span>
+            </div>
+            <input type="range" id="year-slider" min="2029" max="2077" step="1" value="2033">
+        </div>
+
+        <div class="chart-panel">
+            <p class="chart-panel-title">Alíquota própria de virada do ES, 2029&ndash;2077</p>
+            <canvas id="chart-longo-prazo" style="max-height:320px"></canvas>
+            <div class="chart-legend-note">
+                <span><span class="legend-dot" style="background:#9a6b1e"></span>Escapa do Seguro-Receita</span>
+                <span><span class="legend-dot" style="background:#1A3A5C"></span>Zera a lacuna vs. contrafactual</span>
+            </div>
+        </div>
+
+        <span class="section-label">Mesma série, em anos-âncora</span>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="th-left">Ano</th>
+                        <th>Variação vs. contrafactual</th>
+                        <th>Alíquota que escapa do Seguro-Receita</th>
+                        <th>Alíquota que zera a lacuna</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-longo-prazo">
+                    <tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="prose">
+            <p>
+                Dois achados, não um. O primeiro é sobre a alavanca que esta seção testa: a alíquota que zeraria
+                a lacuna do ES cai ao longo da transição (de 156,93% em 2033 para 71,14% em 2077, a essa altura o
+                critério de destino já pesa muito mais), mas nunca chega perto de um valor plausível; mesmo o
+                número mais baixo de toda a série continua muito acima de qualquer alíquota de referência
+                discutida neste estudo. A alíquota que só escapa do Seguro-Receita, por sua vez, fica estável
+                perto de 33,8% o tempo todo, porque ela depende do tamanho do repasse relativo à base, não do
+                tamanho da lacuna. O segundo achado é mais importante que o primeiro e não é sobre a alavanca, é
+                sobre o próprio ES: a variação do estado frente ao contrafactual piora ao longo da transição, de
+                &minus;1,10% em 2029 para &minus;22,84% em 2077. O Espírito Santo é um estado cuja participação
+                de destino pleno é menor que sua participação neutra de origem, então, quanto mais a fórmula pesa
+                o critério de destino, pior fica sua posição relativa, exatamente o oposto do que uma alíquota
+                própria mais alta poderia compensar sozinha.
             </p>
         </div>
 
@@ -777,9 +852,15 @@
             2026, citada aqui apenas pelos números agregados que o próprio documento apresenta como estimativas
             preliminares e não oficiais; os dados de base e a tabela de ponderações por categoria não foram
             reproduzidos de forma independente neste estudo.</p>
-            <p>6. Teste de sensibilidade (ES, 2029&ndash;2033): contrafactual e variação já publicados em
+            <p>6. Teste de sensibilidade, fase 1 (ES, 2029&ndash;2033): contrafactual e variação já publicados em
             <code>data/resultados-consolidados-ibs.json</code>; repasse de Seguro-Receita em
             <code>data/painel-estados.json</code>; cálculo em <code>data/build-simulacao-aliquota-es.py</code>.</p>
+            <p>7. Teste de sensibilidade, fase 2 (ES, 2029&ndash;2077): coeficientes fixos do estado em
+            <code>data/painel-estados.json</code>; agregados nacionais de longo prazo em
+            <code>data/ibs-projecao-longo-prazo.json</code> (extensão dos Estudos 09 e 11); repasse de
+            Seguro-Receita de longo prazo em <code>data/seguro-receita-repasses-longo-prazo.json</code>; cálculo
+            em <code>data/build-simulacao-aliquota-es-longo-prazo.py</code>, com a fórmula conferida contra os
+            cinco anos já publicados na fase 1 antes de aceitar a extensão.</p>
         </div>
     </div>
 
@@ -794,19 +875,23 @@
 
     let UF_DATA = null;
     let SIM_ES_DATA = null;
+    let LONGO_PRAZO_DATA = null;
+    let longoPrazoChart = null;
 
     async function init() {
         try {
-            const [resNac, resUf, resEsferas, resSimEs] = await Promise.all([
+            const [resNac, resUf, resEsferas, resSimEs, resLongoPrazo] = await Promise.all([
                 fetch('/data/aliquota-base-referencia.json?t=' + Date.now()),
                 fetch('/data/carga-implicita-uf.json?t=' + Date.now()),
                 fetch('/data/aliquota-referencia-esferas.json?t=' + Date.now()),
-                fetch('/data/simulacao-aliquota-es.json?t=' + Date.now())
+                fetch('/data/simulacao-aliquota-es.json?t=' + Date.now()),
+                fetch('/data/simulacao-aliquota-es-longo-prazo.json?t=' + Date.now())
             ]);
             const dataNac = await resNac.json();
             UF_DATA = await resUf.json();
             const dataEsferas = await resEsferas.json();
             SIM_ES_DATA = await resSimEs.json();
+            LONGO_PRAZO_DATA = await resLongoPrazo.json();
             buildRespostaNacional(dataNac);
             buildResultadosTable(dataNac);
             buildChartNacional(dataNac);
@@ -815,11 +900,13 @@
             buildTableUf();
             buildChartUf();
             initSimEs();
+            initLongoPrazo();
         } catch (e) {
             console.error(e);
             document.getElementById('resposta-numero-nacional').textContent = 'Erro ao carregar dados.';
             document.getElementById('resposta-numero-uf').textContent = 'Erro ao carregar dados.';
             document.getElementById('resposta-numero-sim-es').textContent = 'Erro ao carregar dados.';
+            document.getElementById('resposta-numero-longo-prazo').textContent = 'Erro ao carregar dados.';
         }
     }
 
@@ -998,6 +1085,73 @@
             </tr>`
         ];
         document.getElementById('tbody-sim-es').innerHTML = rows.join('');
+    }
+
+    function initLongoPrazo() {
+        const serie = LONGO_PRAZO_DATA.serie;
+
+        const anosAncora = [2029, 2033, 2040, 2050, 2060, 2070, 2077];
+        document.getElementById('tbody-longo-prazo').innerHTML = anosAncora.map(ano => {
+            const s = serie.find(x => x.ano === ano);
+            return `<tr class="row-resposta">
+                <td class="td-left">${s.ano}</td>
+                <td>${fmtPct(s.variacao_pct,2)}</td>
+                <td>${fmtPct(s.aliquota_escapa_seguro_receita_pct,2)}</td>
+                <td>${fmtPct(s.aliquota_zera_lacuna_pct,2)}</td>
+            </tr>`;
+        }).join('');
+
+        const el = document.getElementById('chart-longo-prazo');
+        if (el && typeof Chart !== 'undefined') {
+            longoPrazoChart = new Chart(el, {
+                type: 'line',
+                data: {
+                    labels: serie.map(s => s.ano),
+                    datasets: [
+                        { label: 'Escapa do Seguro-Receita', data: serie.map(s => s.aliquota_escapa_seguro_receita_pct), borderColor: '#9a6b1e', backgroundColor: '#9a6b1e', borderWidth: 2, pointRadius: 0, tension: 0 },
+                        { label: 'Zera a lacuna vs. contrafactual', data: serie.map(s => s.aliquota_zera_lacuna_pct), borderColor: '#1A3A5C', backgroundColor: '#1A3A5C', borderWidth: 2, pointRadius: 0, tension: 0 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: true, aspectRatio: 2.2,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${fmtPct(ctx.raw,2)}` } }
+                    },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { font: { size: 10 }, maxTicksLimit: 10 } },
+                        y: { grid: { color: 'rgba(128,128,128,0.15)' }, ticks: { font: { size: 10 }, callback: v => v + '%' }, title: { display: true, text: 'Alíquota própria do ES', font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        const slider = document.getElementById('year-slider');
+        slider.addEventListener('input', () => updateLongoPrazo(parseInt(slider.value, 10)));
+        updateLongoPrazo(2033);
+    }
+
+    function updateLongoPrazo(ano) {
+        const serie = LONGO_PRAZO_DATA.serie;
+        const idx = serie.findIndex(s => s.ano === ano);
+        const s = serie[idx];
+
+        document.getElementById('year-slider').value = ano;
+        document.getElementById('year-slider-value').textContent = `Ano escolhido: ${ano}`;
+        document.getElementById('resposta-numero-longo-prazo').textContent = fmtPct(s.aliquota_zera_lacuna_pct, 2);
+        document.getElementById('resposta-sub-longo-prazo').innerHTML =
+            `Nesse mesmo ano, a variação do ES frente ao contrafactual seria de ${fmtPct(s.variacao_pct,2)}, e a
+            alíquota que bastaria para escapar do Seguro-Receita seria de ${fmtPct(s.aliquota_escapa_seguro_receita_pct,2)}.`;
+
+        if (longoPrazoChart) {
+            const n = serie.length;
+            const radios = new Array(n).fill(0);
+            radios[idx] = 5;
+            longoPrazoChart.data.datasets[0].pointRadius = radios;
+            longoPrazoChart.data.datasets[1].pointRadius = radios;
+            longoPrazoChart.update('none');
+        }
     }
 
     init();
