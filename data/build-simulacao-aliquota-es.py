@@ -3,8 +3,8 @@
 Fase 1 do teste de sensibilidade por alíquota própria, só para o Espírito Santo
 (2029-2033). Testa, para uma lista de alíquotas hipotéticas de IBS estadual,
 qual seria o efeito em reais na receita de destino do ES, quanto desse efeito
-o Seguro-Receita absorve, e como isso mudaria a variação do ES frente ao
-contrafactual já publicado no painel.
+o Seguro-Receita absorve, e como isso muda a composição da receita total do
+estado (não só o seu total) frente ao contrafactual já publicado no painel.
 
 O mecanismo do Seguro-Receita não é uma absorção proporcional, é um degrau:
 enquanto a receita própria do ente (histórico + destino, antes do repasse)
@@ -21,10 +21,22 @@ calcular os dois pontos de virada:
   referência + (repasse do ano + lacuna frente ao contrafactual no ano) /
   (peso do destino no ano * base tributável do ES)
 
+A receita total do ente já publicada (pos_por_ano) se decompõe exatamente
+(sem resíduo) em quatro fontes, disponíveis em painel-estados.json,
+componentes_por_ano.estado: origem/ICMS-ISS remanescente, IBS de transição
+(critério da média histórica), IBS de destino e repasse do Seguro-Receita.
+Usamos essa mesma decomposição, e não o valor de repasse de outra fonte
+(seguro-receita-repasses-longo-prazo.json), porque só ela soma exatamente
+ao total publicado, o que é indispensável para que a tabela de composição
+feche sem resíduo em cada ano e em cada cenário. O cenário testado altera
+só duas das quatro fontes: a receita de destino (cresce pelo delta bruto)
+e o repasse do Seguro-Receita (cai pelo mesmo valor, até o limite do
+degrau); origem e transição não dependem da alíquota de destino do estado
+e ficam inalteradas.
+
 Fontes: as mesmas já usadas no Estudo 16 (base tributável e alíquota de
 referência estadual) e o mesmo painel-estados.json / resultados-consolidados
-já publicados (receita própria, repasse de Seguro-Receita, contrafactual e
-variação).
+já publicados (decomposição da receita, contrafactual e variação).
 """
 import json
 
@@ -44,7 +56,7 @@ aliq_ref_estadual_pct = esferas['anos'][0]['aliquota_estadual_bruta_pct']
 aliq_ref_estadual = aliq_ref_estadual_pct / 100
 
 uf_rc = rc['por_uf_estado'][UF]
-seguro_por_ano = painel[UF]['repasse_seguro_receita_por_ano']['estado']
+componentes_por_ano = painel[UF]['componentes_por_ano']['estado']
 
 ANOS = [2029, 2030, 2031, 2032, 2033]
 
@@ -58,7 +70,7 @@ for a in nac['projecao']:
 limiares_por_ano = {}
 for ano in ANOS:
     peso = pesos_destino[ano]
-    seguro = seguro_por_ano[str(ano)]
+    seguro = componentes_por_ano[str(ano)]['seguro']
     pos = uf_rc['pos_por_ano'][str(ano)]
     contra = uf_rc['contrafactual_por_ano'][str(ano)]
     lacuna = contra - pos
@@ -85,13 +97,14 @@ for delta_pp in deltas_pp:
     anos_out = []
     for ano in ANOS:
         peso = pesos_destino[ano]
-        seguro = seguro_por_ano[str(ano)]
-        pos = uf_rc['pos_por_ano'][str(ano)]
+        c = componentes_por_ano[str(ano)]
+        origem, cpt, destino_original, seguro_original = c['origem'], c['cpt'], c['destino'], c['seguro']
+        pos = origem + cpt + destino_original + seguro_original
         contra = uf_rc['contrafactual_por_ano'][str(ano)]
 
         delta_bruto = (aliq_cenario - aliq_ref_estadual) * peso * base_uf
-        delta_absorvido_seguro = min(max(delta_bruto, 0), seguro)
-        delta_liquido = max(delta_bruto - seguro, 0) if delta_bruto > 0 else delta_bruto
+        delta_absorvido_seguro = min(max(delta_bruto, 0), seguro_original)
+        delta_liquido = max(delta_bruto - seguro_original, 0) if delta_bruto > 0 else delta_bruto
         # Nota: para delta_bruto negativo (alíquota abaixo da referência), o
         # repasse do Seguro-Receita cresceria na mesma proporção (o ente já
         # está abaixo do piso), então o efeito líquido também é zero por
@@ -102,27 +115,26 @@ for delta_pp in deltas_pp:
             delta_liquido = 0.0
             delta_absorvido_seguro = 0.0
 
-        nova_receita = pos + delta_liquido
+        destino_novo = destino_original + delta_bruto
+        seguro_novo = seguro_original - delta_absorvido_seguro
+        nova_receita = origem + cpt + destino_novo + seguro_novo
         nova_variacao_pct = (nova_receita / contra - 1) * 100
-
-        propria_original = pos - seguro
-        seguro_novo = seguro - delta_absorvido_seguro
-        propria_nova = propria_original + delta_bruto
 
         anos_out.append({
             'ano': ano,
             'delta_bruto_destino_rs': delta_bruto,
             'delta_absorvido_seguro_receita_rs': delta_absorvido_seguro,
             'delta_liquido_receita_total_rs': delta_liquido,
-            'receita_total_original_rs': pos,
-            'receita_total_nova_rs': nova_receita,
             'contrafactual_rs': contra,
+            'receita_total_original_rs': pos,
             'variacao_original_pct': uf_rc['variacao_por_ano'][str(ano)] * 100,
+            'origem_rs': origem,
+            'cpt_rs': cpt,
+            'destino_novo_rs': destino_novo,
+            'seguro_novo_rs': seguro_novo,
+            'receita_total_nova_rs': nova_receita,
+            'diferenca_vs_contrafactual_rs': nova_receita - contra,
             'variacao_nova_pct': nova_variacao_pct,
-            'receita_propria_original_rs': propria_original,
-            'repasse_seguro_original_rs': seguro,
-            'receita_propria_nova_rs': propria_nova,
-            'repasse_seguro_novo_rs': seguro_novo,
         })
     cenarios.append({
         'delta_pp': delta_pp,
@@ -133,14 +145,14 @@ for delta_pp in deltas_pp:
 
 saida = {
     '_meta': {
-        'descricao': 'Fase 1 (só Espírito Santo, 2029-2033) do teste de sensibilidade: efeito de uma alíquota própria de IBS estadual diferente da referência sobre a receita total do estado e sobre a composição dessa receita entre receita própria e repasse de Seguro-Receita, considerando o degrau do Seguro-Receita e o confronto com o contrafactual já publicado.',
+        'descricao': 'Fase 1 (só Espírito Santo, 2029-2033) do teste de sensibilidade: efeito de uma alíquota própria de IBS estadual diferente da referência sobre a receita total do estado e sobre a composição dessa receita entre as quatro fontes já publicadas (origem, transição, destino e Seguro-Receita), considerando o degrau do Seguro-Receita e o confronto com o contrafactual já publicado.',
         'uf': UF,
         'base_tributavel_rs': base_uf,
         'aliquota_referencia_estadual_pct': aliq_ref_estadual_pct,
         'limiares_por_ano': limiares_por_ano,
         'fonte_base_e_aliquota_referencia': 'Estudo 16 (data/carga-implicita-uf.json, data/aliquota-referencia-esferas.json)',
-        'fonte_receita_contrafactual_variacao': 'data/resultados-consolidados-ibs.json (por_uf_estado.ES)',
-        'fonte_seguro_receita': 'data/painel-estados.json (repasse_seguro_receita_por_ano.estado)',
+        'fonte_contrafactual_variacao': 'data/resultados-consolidados-ibs.json (por_uf_estado.ES)',
+        'fonte_decomposicao_receita': 'data/painel-estados.json (componentes_por_ano.estado: origem, cpt, destino, seguro; soma exata à receita total publicada)',
         'mecanismo_seguro_receita': 'Degrau, não absorção proporcional: enquanto a receita própria (antes do repasse) ficar abaixo do piso garantido, qualquer receita extra de destino só reduz o repasse, sem mudar a receita total; o ganho líquido só começa a valer depois que a receita extra ultrapassa o valor do repasse do ano.',
     },
     'cenarios': cenarios,
@@ -159,4 +171,7 @@ print()
 for c in cenarios:
     print(c['label'])
     for a in c['anos']:
-        print('  ', a['ano'], 'delta_liquido=%.2fmi'%(a['delta_liquido_receita_total_rs']/1e6), 'nova_variacao=%.3f%%'%a['variacao_nova_pct'], '(original %.3f%%)'%a['variacao_original_pct'])
+        soma = a['origem_rs'] + a['cpt_rs'] + a['destino_novo_rs'] + a['seguro_novo_rs']
+        print('  ', a['ano'], 'delta_liquido=%.2fmi'%(a['delta_liquido_receita_total_rs']/1e6),
+              'nova_receita=%.1fmi'%(a['receita_total_nova_rs']/1e6), 'soma_componentes=%.1fmi'%(soma/1e6),
+              'nova_variacao=%.3f%%'%a['variacao_nova_pct'])
