@@ -660,3 +660,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# Workflow de auditoria habilitado em 2026-09-29.
