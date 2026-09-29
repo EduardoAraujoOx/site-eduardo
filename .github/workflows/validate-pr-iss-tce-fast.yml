@@ -1,0 +1,41 @@
+name: Validar ISS PR TCE rápido
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "data/validate-pr-iss-tce-fast.py"
+      - ".github/workflows/validate-pr-iss-tce-fast.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install remotezip beautifulsoup4
+      - name: Validar anomalias
+        run: python3 data/validate-pr-iss-tce-fast.py
+      - name: Salvar resultados sem apagar arquivos existentes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          mkdir -p /tmp/audit-output
+          cp data/auditoria-pr-validacao/validacao-iss-tce-pr-fast-* /tmp/audit-output/
+          cp data/auditoria-pr-validacao/resumo-validacao-iss-tce-pr-fast-* /tmp/audit-output/
+          git fetch origin main
+          git reset --hard origin/main
+          mkdir -p data/auditoria-pr-validacao
+          cp /tmp/audit-output/* data/auditoria-pr-validacao/
+          git add data/auditoria-pr-validacao/
+          if git diff --staged --quiet; then exit 0; fi
+          git commit -m "dados: validação rápida de ISS PR com TCE-PR"
+          git push origin HEAD:main
