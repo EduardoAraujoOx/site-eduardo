@@ -1,0 +1,40 @@
+name: Validar ISS PR com TCE-PR
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "data/validate-pr-iss-tce.py"
+      - ".github/workflows/validate-pr-iss-tce.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  validar-iss:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Dependência
+        run: pip install remotezip
+      - name: Validar ISS contra PIT TCE-PR
+        run: python3 data/validate-pr-iss-tce.py
+      - name: Salvar resultados
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          cp -R data/auditoria-pr-validacao /tmp/auditoria-pr-validacao
+          git fetch origin main
+          git reset --hard origin/main
+          rm -rf data/auditoria-pr-validacao
+          cp -R /tmp/auditoria-pr-validacao data/auditoria-pr-validacao
+          git add data/auditoria-pr-validacao/
+          if git diff --staged --quiet; then exit 0; fi
+          git commit -m "dados: validação de ISS PR com PIT TCE-PR"
+          git push origin HEAD:main
