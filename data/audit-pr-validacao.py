@@ -294,11 +294,13 @@ def build_iss_anomalies(obs_rows):
 
 
 def state_dca_url(ano):
+    # A consulta sem filtros redundantes de esfera/tipo é a mesma forma usada
+    # pelo coletor validado de "Outras Deduções". Em algumas respostas da API,
+    # adicionar co_esfera/co_tipo_demonstrativo preserva o bruto mas omite
+    # dimensões de dedução da conta.
     params = {
         "an_exercicio": ano,
-        "co_tipo_demonstrativo": "DCA",
         "no_anexo": "DCA-Anexo I-C",
-        "co_esfera": "E",
         "id_ente": 41,
     }
     return f"{SICONFI_BASE}/dca?{urllib.parse.urlencode(params)}"
