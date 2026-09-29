@@ -8,6 +8,7 @@ on:
     paths:
       - "data/audit-pr-validacao.py"
       - "data/reconstruct-pr-cota-portal.py"
+      - "data/reproject-pr-audited.py"
       - ".github/workflows/audit-pr-validacao.yml"
 
 permissions:
@@ -39,6 +40,9 @@ jobs:
 
       - name: Reconstruir CPT municipal com repasses estaduais
         run: python3 data/reconstruct-pr-cota-portal.py
+
+      - name: Reprojetar municípios com base auditada
+        run: python3 data/reproject-pr-audited.py
 
       - name: Publicar artefato
         uses: actions/upload-artifact@v4
