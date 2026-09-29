@@ -1,0 +1,45 @@
+name: Inventário remoto PIT TCE-PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      ano:
+        description: "Ano"
+        required: false
+        default: "2025"
+  push:
+    branches:
+      - main
+    paths:
+      - "data/inspect-tce-remotezip.py"
+      - ".github/workflows/inspect-tce-remotezip.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  inventario:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Dependência
+        run: pip install remotezip
+      - name: Inspecionar via Range
+        run: python3 data/inspect-tce-remotezip.py "${{ inputs.ano || '2025' }}"
+      - name: Salvar inventário
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          cp -R data/auditoria-pr-validacao /tmp/auditoria-pr-validacao
+          git fetch origin main
+          git reset --hard origin/main
+          rm -rf data/auditoria-pr-validacao
+          cp -R /tmp/auditoria-pr-validacao data/auditoria-pr-validacao
+          git add data/auditoria-pr-validacao/
+          if git diff --staged --quiet; then exit 0; fi
+          git commit -m "dados: inventário remoto PIT TCE-PR"
+          git push origin HEAD:main
