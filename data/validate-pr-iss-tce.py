@@ -27,11 +27,15 @@ import math
 import time
 import zipfile
 import xml.etree.ElementTree as ET
+import urllib.parse
+import urllib.request
+import re
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
 from remotezip import RemoteZip
+from bs4 import BeautifulSoup
 
 HERE = Path(__file__).resolve().parent
 AUDIT = HERE / "auditoria-pr-validacao"
@@ -71,14 +75,30 @@ def extract_total_impostos(rz, ano, codigo_ibge):
     infos = {i.filename: i for i in rz.infolist()}
     info = infos.get(target)
     if info is None:
-        return None, target, "receita_zip_ausente"
+        return None, None, target, "receita_zip_ausente"
 
     rawzip = rz.read(info)
+    entity_id = None
     with zipfile.ZipFile(io.BytesIO(rawzip)) as nz:
         name = next((n for n in nz.namelist() if "ReceitasConsolidado" in n), None)
+        ent_name = next((n for n in nz.namelist() if "ReceitasEntidade" in n), None)
         if not name:
-            return None, target, "xml_consolidado_ausente"
+            return None, None, target, "xml_consolidado_ausente"
         root = ET.fromstring(nz.read(name))
+        if ent_name:
+            eroot = ET.fromstring(nz.read(ent_name))
+            entities = {}
+            for el in eroot.iter():
+                a = el.attrib
+                pid = a.get("idpessoa")
+                nm = (a.get("nmEntidade") or "").strip()
+                if pid and nm:
+                    entities[pid] = nm
+            for pid, nm in entities.items():
+                up = nm.upper()
+                if up.startswith("MUNICÍPIO DE ") or up.startswith("MUNICIPIO DE "):
+                    entity_id = pid
+                    break
 
     candidates = []
     for el in root.iter():
@@ -99,7 +119,7 @@ def extract_total_impostos(rz, ano, codigo_ibge):
             candidates.append((mf, vf, (a.get("dsItem") or "").strip(), a.get("idSumarioItem")))
 
     if not candidates:
-        return None, target, "item_impostos_ausente"
+        return None, entity_id, target, "item_impostos_ausente"
 
     # Preferimos dezembro; se não houver, o maior acumulado disponível.
     dec = [x for x in candidates if x[0] == 12]
@@ -109,7 +129,106 @@ def extract_total_impostos(rz, ano, codigo_ibge):
         "valor": chosen[1],
         "dsItem": chosen[2],
         "idSumarioItem": chosen[3],
-    }, target, "ok"
+    }, entity_id, target, "ok"
+
+
+
+
+ISS_LABEL = re.compile(
+    r"imposto\s+sobre\s+servi[cç]os\s+de\s+qualquer\s+natureza",
+    re.IGNORECASE,
+)
+
+
+def br_money(text):
+    if text is None:
+        return None
+    s = str(text).strip()
+    m = re.fullmatch(r"-?\d{1,3}(?:\.\d{3})*,\d{2}", s)
+    if not m:
+        m = re.fullmatch(r"-?\d+,\d{2}", s)
+    if not m:
+        return None
+    return float(s.replace(".", "").replace(",", "."))
+
+
+def fetch_detail_iss(entity_id, ano):
+    if not entity_id:
+        return None, None, "entidade_municipal_ausente"
+    params = {
+        "IdEntidade": entity_id,
+        "NrAno": ano,
+        "NrMes": 12,
+        "tipo": "padrao",
+        "tipoExibicao": "Imprimir",
+    }
+    url = (
+        "https://pit.tce.pr.gov.br/Receitas/ReceitaDetalhes/PlanoOrcamentarioPadrao?"
+        + urllib.parse.urlencode(params)
+    )
+    req = urllib.request.Request(url, headers={"User-Agent": UA})
+    try:
+        with urllib.request.urlopen(req, timeout=90) as resp:
+            html = resp.read().decode("utf-8", errors="replace")
+    except Exception as exc:
+        return None, url, f"erro_http:{type(exc).__name__}:{exc}"
+
+    soup = BeautifulSoup(html, "html.parser")
+    rows = []
+    for tr in soup.find_all("tr"):
+        cells = [" ".join(td.stripped_strings) for td in tr.find_all(["td", "th"])]
+        joined = " ".join(cells)
+        if not ISS_LABEL.search(joined):
+            continue
+        low = joined.lower()
+        # Seleciona a rubrica agregada do ISS, não seus desdobramentos.
+        if any(k in low for k in (
+            " - principal",
+            " - multas",
+            " - juros",
+            " - dívida ativa",
+            " - divida ativa",
+            "adicional iss",
+        )):
+            continue
+        monies = []
+        for cell in cells:
+            v = br_money(cell)
+            if v is not None:
+                monies.append(v)
+        # Em alguns layouts código+descrição ficam juntos; capturamos valores
+        # monetários também no texto integral da linha.
+        if len(monies) < 2:
+            for tok in re.findall(r"-?\d{1,3}(?:\.\d{3})*,\d{2}|-?\d+,\d{2}", joined):
+                v = br_money(tok)
+                if v is not None:
+                    monies.append(v)
+        if monies:
+            rows.append({"text": joined, "values": monies, "realizado": monies[-1]})
+
+    if not rows:
+        return None, url, "rubrica_iss_nao_localizada"
+
+    # Normalmente há uma única rubrica agregada. Se houver duplicidade,
+    # preferimos a linha mais curta, que tende a ser o nível-pai.
+    rows.sort(key=lambda x: len(x["text"]))
+    return rows[0], url, "ok"
+
+
+def classify_exact(dca, tce):
+    if dca is None or tce is None:
+        return "sem_comparacao", None
+    if tce == 0:
+        return ("coerente_ate_5pct", 0.0) if dca == 0 else ("divergencia_extrema", math.inf)
+    delta = (dca / tce - 1) * 100
+    ad = abs(delta)
+    if ad <= 5:
+        return "coerente_ate_5pct", delta
+    if ad <= 20:
+        return "revisar_5a20pct", delta
+    if ad <= 100:
+        return "divergencia_forte_20a100pct", delta
+    return "divergencia_extrema_acima_100pct", delta
 
 
 def classify(iss_dca, impostos_tce):
@@ -148,12 +267,15 @@ def main():
                 for r in by_year[ano]:
                     iss = float(r["iss_dca"]) if r.get("iss_dca") not in (None, "") else None
                     try:
-                        tce, target, status = extract_total_impostos(rz, ano, r["codigo_ibge"])
+                        tce, entity_id, target, status = extract_total_impostos(rz, ano, r["codigo_ibge"])
                     except Exception as exc:
-                        tce, target, status = None, f"{ano}_{pit_code(r['codigo_ibge'])}_Receita.zip", f"erro:{type(exc).__name__}:{exc}"
+                        tce, entity_id, target, status = None, None, f"{ano}_{pit_code(r['codigo_ibge'])}_Receita.zip", f"erro:{type(exc).__name__}:{exc}"
 
                     impostos = tce["valor"] if isinstance(tce, dict) else None
                     cls, ratio = classify(iss, impostos)
+                    detail, detail_url, detail_status = fetch_detail_iss(entity_id, ano)
+                    iss_tce = detail["realizado"] if isinstance(detail, dict) else None
+                    exact_cls, exact_delta = classify_exact(iss, iss_tce)
                     output.append({
                         "codigo_ibge": r["codigo_ibge"],
                         "municipio": r["municipio"],
@@ -163,7 +285,14 @@ def main():
                         "razao_iss_mediana_dca": r.get("razao_valor_mediana"),
                         "tce_total_impostos": impostos,
                         "razao_iss_dca_sobre_total_impostos_tce": ratio,
-                        "classificacao_tce": cls,
+                        "classificacao_teste_total_impostos": cls,
+                        "tce_iss_detalhado": iss_tce,
+                        "diferenca_dca_vs_tce_iss_pct": exact_delta,
+                        "classificacao_iss_detalhado": exact_cls,
+                        "status_iss_detalhado": detail_status,
+                        "url_iss_detalhado": detail_url,
+                        "linha_iss_tce": (detail or {}).get("text") if isinstance(detail, dict) else None,
+                        "id_entidade_tce": entity_id,
                         "status_leitura_tce": status,
                         "arquivo_pit": target,
                         "item_tce": (tce or {}).get("dsItem") if isinstance(tce, dict) else None,
@@ -183,7 +312,14 @@ def main():
                     "razao_iss_mediana_dca": r.get("razao_valor_mediana"),
                     "tce_total_impostos": None,
                     "razao_iss_dca_sobre_total_impostos_tce": None,
-                    "classificacao_tce": "tce_indisponivel",
+                    "classificacao_teste_total_impostos": "tce_indisponivel",
+                    "tce_iss_detalhado": None,
+                    "diferenca_dca_vs_tce_iss_pct": None,
+                    "classificacao_iss_detalhado": "sem_comparacao",
+                    "status_iss_detalhado": "tce_indisponivel",
+                    "url_iss_detalhado": None,
+                    "linha_iss_tce": None,
+                    "id_entidade_tce": None,
                     "status_leitura_tce": year_meta[str(ano)]["status"],
                     "arquivo_pit": None,
                     "item_tce": None,
@@ -193,9 +329,13 @@ def main():
                 })
         time.sleep(0.2)
 
-    strong = [r for r in output if r["classificacao_tce"] == "inconsistencia_forte_iss_maior_que_total_impostos"]
-    near = [r for r in output if r["classificacao_tce"] == "iss_proximo_do_total_impostos_requer_detalhe"]
-    unresolved = [r for r in output if r["classificacao_tce"].startswith("teste_nao_conclusivo")]
+    strong = [r for r in output if r["classificacao_teste_total_impostos"] == "inconsistencia_forte_iss_maior_que_total_impostos"]
+    near = [r for r in output if r["classificacao_teste_total_impostos"] == "iss_proximo_do_total_impostos_requer_detalhe"]
+    unresolved = [r for r in output if r["classificacao_teste_total_impostos"].startswith("teste_nao_conclusivo")]
+    exact_ok = [r for r in output if r["classificacao_iss_detalhado"] == "coerente_ate_5pct"]
+    exact_review = [r for r in output if r["classificacao_iss_detalhado"] == "revisar_5a20pct"]
+    exact_strong = [r for r in output if r["classificacao_iss_detalhado"] in {"divergencia_forte_20a100pct", "divergencia_extrema_acima_100pct"}]
+    exact_missing = [r for r in output if r["classificacao_iss_detalhado"] == "sem_comparacao"]
 
     summary = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -210,13 +350,21 @@ def main():
         "n_inconsistencia_forte": len(strong),
         "n_iss_proximo_total_impostos": len(near),
         "n_teste_inconclusivo": len(unresolved),
+        "validacao_iss_detalhada": {
+            "n_coerente_ate_5pct": len(exact_ok),
+            "n_revisar_5a20pct": len(exact_review),
+            "n_divergencia_forte_ou_extrema": len(exact_strong),
+            "n_sem_comparacao": len(exact_missing),
+            "divergencias_fortes_ou_extremas": exact_strong,
+            "coerentes_ate_5pct": exact_ok,
+        },
         "anos": year_meta,
-        "inconsistencias_fortes": strong,
+        "inconsistencias_fortes_teste_total_impostos": strong,
         "proximos_do_total": near,
         "nota": (
-            "O item do PIT é agregado de todos os impostos, não uma rubrica específica de ISS. "
-            "O teste é unidirecional e conservador: serve para rejeitar valores impossíveis, "
-            "não para confirmar valores abaixo do total."
+            "O teste agregado usa 'Impostos' apenas como limite superior conservador. "
+            "A validação principal adicional consulta a rubrica detalhada de ISSQN no próprio PIT, "
+            "por entidade, ano e dezembro, e compara diretamente o realizado com a DCA."
         ),
     }
 
