@@ -13,6 +13,7 @@ on:
     paths:
       - "data/inspect-tce-receita-structure.py"
       - "data/probe-tce-iss-structure.py"
+      - "data/probe-tce-iss-detail.py"
       - ".github/workflows/inspect-tce-structure.yml"
 
 permissions:
@@ -27,11 +28,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install remotezip
+      - run: pip install remotezip beautifulsoup4
       - name: Resumir estrutura
         run: python3 data/inspect-tce-receita-structure.py "${{ inputs.ano || '2025' }}"
       - name: Localizar estrutura do ISS
         run: python3 data/probe-tce-iss-structure.py "${{ inputs.ano || '2025' }}"
+      - name: Testar endpoint detalhado do ISS
+        run: python3 data/probe-tce-iss-detail.py "${{ inputs.ano || '2025' }}"
       - name: Salvar resultado
         run: |
           git config user.name "github-actions[bot]"
