@@ -1,0 +1,79 @@
+{
+  "generated_at_utc": "2026-09-29T23:40:40.739758+00:00",
+  "fonte": "PIT/TCE-PR, arquivo anual consolidado, tema Receita, ReceitasConsolidado.xml",
+  "teste": "Compara o ISS do DCA/SICONFI com o item agregado 'Impostos' do PIT. ISS_DCA superior ao total de impostos do TCE, com tolerância de 2%, é classificado como inconsistência forte. ISS abaixo do total de impostos não é validado por este teste e permanece inconclusivo.",
+  "n_observacoes_sinalizadas": 22,
+  "n_inconsistencia_forte": 2,
+  "n_iss_proximo_total_impostos": 0,
+  "n_teste_inconclusivo": 20,
+  "anos": {
+    "2019": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2019_PIT_TodosArquivos.zip",
+      "status": "ok",
+      "n_anomalias": 4
+    },
+    "2020": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2020_PIT_TodosArquivos.zip",
+      "status": "ok",
+      "n_anomalias": 3
+    },
+    "2021": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2021_PIT_TodosArquivos.zip",
+      "status": "ok",
+      "n_anomalias": 2
+    },
+    "2022": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2022_PIT_TodosArquivos.zip",
+      "status": "ok",
+      "n_anomalias": 2
+    },
+    "2024": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2024_PIT_TodosArquivos.zip",
+      "status": "ok",
+      "n_anomalias": 3
+    },
+    "2025": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2025_PIT_TodosArquivos.zip",
+      "status": "ok",
+      "n_anomalias": 8
+    }
+  },
+  "inconsistencias_fortes": [
+    {
+      "codigo_ibge": "4110953",
+      "municipio": "Itaipulândia",
+      "ano": 2022,
+      "iss_dca": 17026553.6,
+      "mediana_outros_anos_dca": "2699091.7750000004",
+      "razao_iss_mediana_dca": "6.308252930747417",
+      "tce_total_impostos": 9062300.76,
+      "razao_iss_dca_sobre_total_impostos_tce": 1.8788334277265812,
+      "classificacao_tce": "inconsistencia_forte_iss_maior_que_total_impostos",
+      "status_leitura_tce": "ok",
+      "arquivo_pit": "2022_411095_Receita.zip",
+      "item_tce": "Impostos",
+      "id_sumario_tce": "5040",
+      "mes_tce": 12,
+      "fonte_tce": "https://pit.tce.pr.gov.br/Arquivos/2022_PIT_TodosArquivos.zip"
+    },
+    {
+      "codigo_ibge": "4109500",
+      "municipio": "Guaraqueçaba",
+      "ano": 2025,
+      "iss_dca": 23811721.32,
+      "mediana_outros_anos_dca": "523222.77999999997",
+      "razao_iss_mediana_dca": "45.50971828864179",
+      "tce_total_impostos": 2451962.87,
+      "razao_iss_dca_sobre_total_impostos_tce": 9.711289518833537,
+      "classificacao_tce": "inconsistencia_forte_iss_maior_que_total_impostos",
+      "status_leitura_tce": "ok",
+      "arquivo_pit": "2025_410950_Receita.zip",
+      "item_tce": "Impostos",
+      "id_sumario_tce": "5040",
+      "mes_tce": 12,
+      "fonte_tce": "https://pit.tce.pr.gov.br/Arquivos/2025_PIT_TodosArquivos.zip"
+    }
+  ],
+  "proximos_do_total": [],
+  "nota": "O item do PIT é agregado de todos os impostos, não uma rubrica específica de ISS. O teste é unidirecional e conservador: serve para rejeitar valores impossíveis, não para confirmar valores abaixo do total."
+}
