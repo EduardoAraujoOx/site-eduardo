@@ -1,0 +1,38 @@
+name: Probe ZIP TCE-PR
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "data/probe-tce-zip.py"
+      - ".github/workflows/probe-tce-zip.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Testar Range
+        run: python3 data/probe-tce-zip.py
+      - name: Salvar resultado
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          cp data/auditoria-pr-validacao/probe-range-tce-2025.json /tmp/probe-range-tce-2025.json
+          git fetch origin main
+          git reset --hard origin/main
+          mkdir -p data/auditoria-pr-validacao
+          cp /tmp/probe-range-tce-2025.json data/auditoria-pr-validacao/probe-range-tce-2025.json
+          git add data/auditoria-pr-validacao/probe-range-tce-2025.json
+          if git diff --staged --quiet; then exit 0; fi
+          git commit -m "dados: diagnóstico de acesso parcial ao ZIP TCE-PR"
+          git push origin HEAD:main
