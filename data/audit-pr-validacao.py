@@ -83,7 +83,21 @@ def fetch_text(url: str, retries: int = 5, timeout: int = 60) -> str:
 
 
 def fetch_json(url: str, retries: int = 5, timeout: int = 60):
-    return json.loads(fetch_text(url, retries=retries, timeout=timeout))
+    errors = []
+    for attempt in range(1, retries + 1):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                raw = r.read()
+                # A API do SICONFI entrega JSON em UTF-8 mesmo quando o cabeçalho
+                # HTTP não informa corretamente o charset. Decodificar como
+                # latin-1 corrompe "Deduções" e impede a identificação das colunas.
+                return json.loads(raw.decode("utf-8"))
+        except Exception as exc:
+            errors.append(f"{type(exc).__name__}: {exc}")
+            if attempt < retries:
+                time.sleep(min(2 ** (attempt - 1), 16))
+    raise RuntimeError(f"Falha ao baixar JSON {url}: {' | '.join(errors[-3:])}")
 
 
 def norm_name(s: str) -> str:
@@ -93,7 +107,12 @@ def norm_name(s: str) -> str:
     s = s.lower()
     s = s.replace("d'", "d ")
     s = re.sub(r"[^a-z0-9]+", " ", s)
-    return re.sub(r"\s+", " ", s).strip()
+    s = re.sub(r"\s+", " ", s).strip()
+    # Divergência nominal entre IBGE/DCA e Portal PR.
+    aliases = {
+        "santa cruz de monte castelo": "santa cruz do monte castelo",
+    }
+    return aliases.get(s, s)
 
 
 def br_number(s: str):
