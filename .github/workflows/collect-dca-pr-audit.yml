@@ -1,0 +1,57 @@
+name: Auditoria DCA Paraná
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "data/audit-dca-pr.py"
+      - ".github/workflows/collect-dca-pr-audit.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auditoria-dca-pr
+  cancel-in-progress: false
+
+jobs:
+  coletar-e-auditar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Coletar e auditar DCA do Paraná
+        run: |
+          python3 data/audit-dca-pr.py \
+            --output data/auditoria-dca-pr \
+            --sleep 0.15
+
+      - name: Publicar artefato da auditoria
+        uses: actions/upload-artifact@v4
+        with:
+          name: auditoria-dca-pr
+          path: data/auditoria-dca-pr/
+          retention-days: 30
+
+      - name: Salvar fotografia e diagnóstico no repositório
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/auditoria-dca-pr/
+          if git diff --staged --quiet; then
+            echo "Sem alterações nos arquivos de auditoria."
+            exit 0
+          fi
+          git commit -m "dados: auditoria atualizada do DCA municipal do Paraná"
+          git pull --rebase origin main
+          git push origin HEAD:main
