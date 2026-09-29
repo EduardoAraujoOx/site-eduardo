@@ -123,7 +123,13 @@ def parse_portal_annual(ano: int):
             continue
         municipio = cells[0].strip()
         n = norm_name(municipio)
-        if not n or n.startswith("municipio") or n.startswith("totais") or n.startswith("acumulado"):
+        if (
+            not n
+            or n.startswith("municipio")
+            or n.startswith("totais")
+            or n.startswith("total em")
+            or n.startswith("acumulado")
+        ):
             continue
         if "repasse bruto" in n or "referencia" in n:
             continue
@@ -307,6 +313,13 @@ def parse_state_dca(ano):
     icms_rows = {i.get("coluna"): fnum(i.get("valor")) for i in items if i.get("cod_conta") == icms_code}
     fecop_rows = {i.get("coluna"): fnum(i.get("valor")) for i in items if i.get("cod_conta") == fecop_code}
 
+    def pick(rows, *needles):
+        for col, val in rows.items():
+            ncol = norm_name(col)
+            if all(norm_name(n) in ncol for n in needles):
+                return val
+        return None
+
     if not icms_rows:
         return {
             "ano": ano,
@@ -314,17 +327,20 @@ def parse_state_dca(ano):
             "icms_bruto": None,
             "cota_parte": None,
             "outras_deducoes": None,
-            "fecop": fecop_rows.get(COL_BRUTA) if fecop_rows else None,
+            "fecop": pick(fecop_rows, "receitas brutas") if fecop_rows else None,
+            "colunas_icms": [],
         }
     return {
         "ano": ano,
         "status": "ok",
-        "icms_bruto": icms_rows.get(COL_BRUTA),
-        "cota_parte": icms_rows.get(COL_TRANSF),
-        # Se a conta de ICMS existe e a coluna não aparece, interpretamos como
-        # ausência confirmada de dedução naquela dimensão, não falha de rede.
-        "outras_deducoes": icms_rows.get(COL_OUTRAS, 0.0) or 0.0,
-        "fecop": fecop_rows.get(COL_BRUTA) if fecop_rows else 0.0,
+        "icms_bruto": pick(icms_rows, "receitas brutas"),
+        "cota_parte": pick(icms_rows, "transferencias constitucionais"),
+        # Se a coluna não estiver na resposta atual, mantemos None. Não a
+        # transformamos em zero porque isso confundiria ausência de dimensão
+        # na resposta com valor contábil efetivamente nulo.
+        "outras_deducoes": pick(icms_rows, "outras deducoes"),
+        "fecop": pick(fecop_rows, "receitas brutas") if fecop_rows else None,
+        "colunas_icms": sorted(str(k) for k in icms_rows.keys() if k),
     }
 
 
@@ -362,11 +378,17 @@ def build_state_audit(portal_by_year):
             "cota_parte_base_atual": old_cota,
             "delta_cota_base_pct": pct(new["cota_parte"], old_cota),
             "soma_icms_bruto_portal_municipios": portal_total,
-            "delta_dca_estado_vs_portal_pct": (
+            "delta_nova_cota_dca_vs_portal_pct": (
                 (new["cota_parte"] / portal_total - 1) * 100
                 if new["cota_parte"] is not None and portal_total
                 else None
             ),
+            "delta_base_atual_cota_vs_portal_pct": (
+                (old_cota / portal_total - 1) * 100
+                if old_cota is not None and portal_total
+                else None
+            ),
+            "colunas_icms_resposta_atual": " | ".join(new.get("colunas_icms") or []),
             "outras_deducoes_novas": new["outras_deducoes"],
             "outras_deducoes_base_atual": old_outras,
             "delta_outras_pct": pct(new["outras_deducoes"], old_outras),
@@ -415,7 +437,11 @@ def main():
     for r in cross:
         classes[r["classificacao"]] += 1
 
-    # Municípios com alguma divergência forte/extrema em pelo menos um ano
+    # Municípios com alguma divergência forte/extrema em pelo menos um ano.
+    # O Portal informa bruto e líquido (líquido após FUNDEB). A comparação
+    # principal usa o bruto, coerente com a coluna "Receitas Brutas Realizadas"
+    # do DCA. Diferenças próximas de -20% são, portanto, um sinal adicional de
+    # que alguns entes podem ter escriturado o valor líquido na coluna bruta.
     strong_munis = sorted({
         r["municipio"] for r in cross
         if r["classificacao"] in {"divergencia_forte_20a100pct", "divergencia_extrema_acima_100pct"}
