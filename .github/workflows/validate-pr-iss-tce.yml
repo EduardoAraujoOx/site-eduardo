@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Dependência
-        run: pip install remotezip
+        run: pip install remotezip beautifulsoup4
       - name: Validar ISS contra PIT TCE-PR
         run: python3 data/validate-pr-iss-tce.py
       - name: Salvar resultados
