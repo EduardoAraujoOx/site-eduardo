@@ -51,11 +51,21 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          rm -rf /tmp/auditoria-pr-validacao
+          cp -R data/auditoria-pr-validacao /tmp/auditoria-pr-validacao
+
+          git fetch origin main
+          git reset --hard origin/main
+
+          rm -rf data/auditoria-pr-validacao
+          cp -R /tmp/auditoria-pr-validacao data/auditoria-pr-validacao
+
           git add data/auditoria-pr-validacao/
           if git diff --staged --quiet; then
             echo "Sem alterações."
             exit 0
           fi
+
           git commit -m "dados: validação DCA x Portal PR e auditoria estadual"
-          git pull --rebase origin main
           git push origin HEAD:main
