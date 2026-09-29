@@ -7,6 +7,7 @@ on:
       - main
     paths:
       - "data/audit-pr-validacao.py"
+      - "data/reconstruct-pr-cota-portal.py"
       - ".github/workflows/audit-pr-validacao.yml"
 
 permissions:
@@ -35,6 +36,9 @@ jobs:
 
       - name: Validar dados do Paraná
         run: python3 data/audit-pr-validacao.py
+
+      - name: Reconstruir CPT municipal com repasses estaduais
+        run: python3 data/reconstruct-pr-cota-portal.py
 
       - name: Publicar artefato
         uses: actions/upload-artifact@v4
