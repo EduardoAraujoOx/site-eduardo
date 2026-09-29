@@ -156,61 +156,65 @@ def classify(dca, tce):
     return "divergencia_extrema_acima_100pct", delta
 
 
-def process_year(ano, rows):
+def resolve_year_entities(ano, rows):
+    """Resolve idpessoa/arquivo para todos os casos de um exercício."""
     url = TCE_ZIP.format(ano=ano)
-    result = []
+    resolved = []
     try:
         with RemoteZip(url, headers={"User-Agent": UA}) as rz:
-            enriched = []
             for r in rows:
                 entity_id, archive, entity_status = entity_id_from_receita_zip(
                     rz, ano, r["codigo_ibge"]
                 )
-                enriched.append((r, entity_id, archive, entity_status))
+                resolved.append({
+                    "row": r,
+                    "ano": ano,
+                    "entity_id": entity_id,
+                    "archive": archive,
+                    "entity_status": entity_status,
+                })
     except Exception as exc:
         for r in rows:
-            result.append({
-                "codigo_ibge": r["codigo_ibge"],
-                "municipio": r["municipio"],
+            resolved.append({
+                "row": r,
                 "ano": ano,
-                "iss_dca": float(r["iss_dca"]),
-                "mediana_outros_anos_dca": float(r["mediana_outros_anos"]),
-                "razao_iss_mediana_dca": float(r["razao_valor_mediana"]),
-                "iss_tce": None,
-                "diferenca_dca_vs_tce_pct": None,
-                "classificacao": "sem_comparacao",
-                "id_entidade_tce": None,
-                "arquivo_pit": None,
-                "status": f"remotezip:{type(exc).__name__}:{exc}",
-                "url_detalhe": None,
-                "linha_tce": None,
+                "entity_id": None,
+                "archive": f"{ano}_{pit_code(r['codigo_ibge'])}_Receita.zip",
+                "entity_status": f"remotezip:{type(exc).__name__}:{exc}",
             })
-        return result
+    return resolved
 
-    for r, entity_id, archive, entity_status in enriched:
-        dca = float(r["iss_dca"])
-        if entity_id is None:
-            tce, detail_url, status, line = None, None, entity_status, None
-        else:
-            tce, detail_url, status, line = fetch_exact_iss(entity_id, ano)
-        cls, delta = classify(dca, tce)
-        result.append({
-            "codigo_ibge": r["codigo_ibge"],
-            "municipio": r["municipio"],
-            "ano": ano,
-            "iss_dca": dca,
-            "mediana_outros_anos_dca": float(r["mediana_outros_anos"]),
-            "razao_iss_mediana_dca": float(r["razao_valor_mediana"]),
-            "iss_tce": tce,
-            "diferenca_dca_vs_tce_pct": delta,
-            "classificacao": cls,
-            "id_entidade_tce": entity_id,
-            "arquivo_pit": archive,
-            "status": status if entity_status == "ok" else f"{entity_status};{status}",
-            "url_detalhe": detail_url,
-            "linha_tce": line,
-        })
-    return result
+
+def fetch_one_resolved(item):
+    r = item["row"]
+    ano = item["ano"]
+    entity_id = item["entity_id"]
+    archive = item["archive"]
+    entity_status = item["entity_status"]
+    dca = float(r["iss_dca"])
+
+    if entity_id is None:
+        tce, detail_url, status, line = None, None, entity_status, None
+    else:
+        tce, detail_url, status, line = fetch_exact_iss(entity_id, ano)
+
+    cls, delta = classify(dca, tce)
+    return {
+        "codigo_ibge": r["codigo_ibge"],
+        "municipio": r["municipio"],
+        "ano": ano,
+        "iss_dca": dca,
+        "mediana_outros_anos_dca": float(r["mediana_outros_anos"]),
+        "razao_iss_mediana_dca": float(r["razao_valor_mediana"]),
+        "iss_tce": tce,
+        "diferenca_dca_vs_tce_pct": delta,
+        "classificacao": cls,
+        "id_entidade_tce": entity_id,
+        "arquivo_pit": archive,
+        "status": status if entity_status == "ok" else f"{entity_status};{status}",
+        "url_detalhe": detail_url,
+        "linha_tce": line,
+    }
 
 
 def main():
@@ -219,14 +223,24 @@ def main():
     for r in anom:
         by_year[int(r["ano"])].append(r)
 
-    rows = []
+    # Etapa 1: resolve IDs por exercício, em paralelo. Essa fase transfere
+    # apenas diretórios centrais e os pequenos Receita.zip dos casos sinalizados.
+    resolved = []
     with ThreadPoolExecutor(max_workers=min(6, len(by_year))) as ex:
-        futs = {ex.submit(process_year, ano, rs): ano for ano, rs in by_year.items()}
+        futs = {ex.submit(resolve_year_entities, ano, rs): ano for ano, rs in by_year.items()}
         for fut in as_completed(futs):
             ano = futs[fut]
             yr = fut.result()
-            rows.extend(yr)
-            print(f"{ano}: {len(yr)} casos concluídos")
+            resolved.extend(yr)
+            print(f"{ano}: ids resolvidos para {len(yr)} casos")
+
+    # Etapa 2: páginas detalhadas podem ser consultadas independentemente.
+    # Até 12 conexões reduz o tempo total sem pressionar excessivamente o PIT.
+    rows = []
+    with ThreadPoolExecutor(max_workers=min(12, max(1, len(resolved)))) as ex:
+        futs = [ex.submit(fetch_one_resolved, item) for item in resolved]
+        for fut in as_completed(futs):
+            rows.append(fut.result())
 
     rows.sort(key=lambda r: (r["ano"], r["municipio"]))
     counts = defaultdict(int)
@@ -242,6 +256,7 @@ def main():
     ]
     coherent = [r for r in rows if r["classificacao"] == "coerente_ate_5pct"]
     review = [r for r in rows if r["classificacao"] == "revisar_5a20pct"]
+    missing = [r for r in rows if r["classificacao"] == "sem_comparacao"]
 
     summary = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -257,9 +272,11 @@ def main():
         "n_divergencia_forte_ou_extrema": len(strong),
         "n_coerentes_ate_5pct": len(coherent),
         "n_revisar_5a20pct": len(review),
+        "n_sem_comparacao": len(missing),
         "divergencias_fortes_ou_extremas": strong,
         "coerentes_ate_5pct": coherent,
         "revisar_5a20pct": review,
+        "sem_comparacao": missing,
         "nota": (
             "O teste temporal apenas seleciona observações para revisão. "
             "A classificação final desta rotina usa a comparação direta entre "
