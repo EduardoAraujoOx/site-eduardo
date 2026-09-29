@@ -12,6 +12,7 @@ on:
       - main
     paths:
       - "data/inspect-tce-receita-structure.py"
+      - "data/probe-tce-iss-structure.py"
       - ".github/workflows/inspect-tce-structure.yml"
 
 permissions:
@@ -29,6 +30,8 @@ jobs:
       - run: pip install remotezip
       - name: Resumir estrutura
         run: python3 data/inspect-tce-receita-structure.py "${{ inputs.ano || '2025' }}"
+      - name: Localizar estrutura do ISS
+        run: python3 data/probe-tce-iss-structure.py "${{ inputs.ano || '2025' }}"
       - name: Salvar resultado
         run: |
           git config user.name "github-actions[bot]"
