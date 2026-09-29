@@ -137,9 +137,13 @@ def main():
     nacional = load_json(HERE / "ibs-projecao-nacional.json")
     recon_rows = read_csv(OUT / "reconstrucao-cpt-portal-pr-latest.csv")
     adjusted_rows = read_csv(HERE / "auditoria-dca-pr" / "municipios-pr-latest.csv")
+    obs_rows = read_csv(HERE / "auditoria-dca-pr" / "observacoes-pr-latest.csv")
 
     recon = {r["codigo_ibge"]: r for r in recon_rows}
     adjusted = {r["codigo_ibge"]: r for r in adjusted_rows}
+    obs_by_code = {}
+    for o in obs_rows:
+        obs_by_code.setdefault(o["codigo_ibge"], []).append(o)
     nac_by_year = {int(r["ano"]): r for r in nacional["projecao"]}
 
     # Total usado para transformar o CPT reconstruído (%) em receita média (R$).
@@ -290,6 +294,31 @@ def main():
         and abs(r["delta_portal_vs_apos_faltantes_pp"]) >= 10
     ]
 
+    # Subamostra de maior qualidade para substituir, quando validada, o
+    # ranking do artigo. Como a cota-parte agora vem do Portal PR, a cobertura
+    # relevante do DCA é a do ISS: >=5 anos observados, ISS de 2025 observado
+    # diretamente e população média >=10 mil habitantes.
+    qualified = []
+    for r in output_rows:
+        cod = r["codigo_ibge"]
+        obs_c = obs_by_code.get(cod, [])
+        iss_observed_years = sum(1 for o in obs_c if o.get("new_iss") not in (None, ""))
+        o25 = next((o for o in obs_c if o.get("ano") == "2025"), None)
+        direct_iss_2025 = bool(o25 and o25.get("new_iss") not in (None, ""))
+        pop = pop_muni.get(cod, {}).get("pop_media", 0) or 0
+        if iss_observed_years >= 5 and direct_iss_2025 and pop >= 10000:
+            qualified.append(r)
+
+    qvars = sorted(r["variacao_2033_portal_reconciliado_pct"] for r in qualified
+                   if r["variacao_2033_portal_reconciliado_pct"] is not None)
+    if qvars:
+        mid = len(qvars) // 2
+        mediana_q = qvars[mid] if len(qvars) % 2 else (qvars[mid-1] + qvars[mid]) / 2
+    else:
+        mediana_q = None
+    qloss = sorted(qualified, key=lambda r: r["variacao_2033_portal_reconciliado_pct"])[:10]
+    qgain = sorted(qualified, key=lambda r: r["variacao_2033_portal_reconciliado_pct"], reverse=True)[:10]
+
     summary = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "metodo": (
@@ -306,6 +335,15 @@ def main():
             if r["variacao_2033_portal_reconciliado_pct"] is not None
             and abs(r["variacao_2033_portal_reconciliado_pct"]) >= 30
         ),
+        "amostra_artigo": {
+            "criterio": "ISS observado em >=5 anos; ISS 2025 observado diretamente; população média >=10 mil; cota-parte via Portal PR",
+            "n_municipios": len(qualified),
+            "n_negativos": sum(1 for r in qualified if r["variacao_2033_portal_reconciliado_pct"] < 0),
+            "n_positivos": sum(1 for r in qualified if r["variacao_2033_portal_reconciliado_pct"] > 0),
+            "mediana_variacao_2033_pct": mediana_q,
+            "maiores_perdas": qloss,
+            "maiores_ganhos": qgain,
+        },
         "top_20_revisoes_portal": output_rows[:20],
         "top_20_outliers_finais": outliers[:20],
         "nota": (
