@@ -1,0 +1,455 @@
+{
+ "_meta": {
+  "descricao": "Fase 2 (só Espírito Santo) do teste de sensibilidade: estende a Fase 1 (2029-2033) a todo o horizonte de transição do IBS (2029-2077), reaplicando os mesmos três coeficientes fixos do estado (participação neutra, de transição e de destino pleno) aos agregados nacionais de longo prazo e ao repasse de Seguro-Receita por UF, ambos já publicados ano a ano até 2077. Para cada ano, calcula as duas alíquotas de virada: a que faria o ES escapar do Seguro-Receita, e a que fecharia sozinha a lacuna frente ao contrafactual naquele ano.",
+  "uf": "ES",
+  "base_tributavel_rs": 88894003863.89958,
+  "aliquota_referencia_estadual_pct": 10.732906442114901,
+  "fonte_coeficientes_estado": "data/painel-estados.json (coef_neutro/cpt/pleno_estado_pct)",
+  "fonte_agregados_nacionais": "data/ibs-projecao-longo-prazo.json (2029-2077)",
+  "fonte_repasse_seguro_receita": "data/seguro-receita-repasses-longo-prazo.json (2029-2077)",
+  "validacao": "Receita total e contrafactual recalculados aqui batem, a menos de R$ 1, com data/resultados-consolidados-ibs.json (por_uf_estado.ES) nos cinco anos já publicados (2029-2033), o que confirma que a mesma fórmula de project_uf() foi reaplicada corretamente aos dados de mais longo prazo."
+ },
+ "serie": [
+  {
+   "ano": 2029,
+   "receita_total_rs": 18126444496.45207,
+   "contrafactual_rs": 18328636878.606003,
+   "lacuna_rs": 202192382.15393448,
+   "variacao_pct": -1.1031501332755544,
+   "aliquota_escapa_seguro_receita_pct": 33.879611673351036,
+   "aliquota_zera_lacuna_pct": 123.86918292527427
+  },
+  {
+   "ano": 2030,
+   "receita_total_rs": 18316460491.517673,
+   "contrafactual_rs": 18695209616.178253,
+   "lacuna_rs": 378749124.6605797,
+   "variacao_pct": -2.025915367821407,
+   "aliquota_escapa_seguro_receita_pct": 33.83182858739531,
+   "aliquota_zera_lacuna_pct": 115.62927485851935
+  },
+  {
+   "ano": 2031,
+   "receita_total_rs": 18542940031.083637,
+   "contrafactual_rs": 19106504227.73412,
+   "lacuna_rs": 563564196.6504822,
+   "variacao_pct": -2.9495934469919383,
+   "aliquota_escapa_seguro_receita_pct": 33.81597834263063,
+   "aliquota_zera_lacuna_pct": 112.94651409262661
+  },
+  {
+   "ano": 2032,
+   "receita_total_rs": 18770871245.303078,
+   "contrafactual_rs": 19526847320.744255,
+   "lacuna_rs": 755976075.4411774,
+   "variacao_pct": -3.871470202146099,
+   "aliquota_escapa_seguro_receita_pct": 33.807807810372495,
+   "aliquota_zera_lacuna_pct": 111.57143068496191
+  },
+  {
+   "ano": 2033,
+   "receita_total_rs": 18422623370.181114,
+   "contrafactual_rs": 19956437961.80063,
+   "lacuna_rs": 1533814591.6195145,
+   "variacao_pct": -7.685813443037515,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386251662,
+   "aliquota_zera_lacuna_pct": 156.9259197590723
+  },
+  {
+   "ano": 2034,
+   "receita_total_rs": 18757692994.544594,
+   "contrafactual_rs": 20395509874.4139,
+   "lacuna_rs": 1637816879.8693047,
+   "variacao_pct": -8.030281615680224,
+   "aliquota_escapa_seguro_receita_pct": 33.793353862500744,
+   "aliquota_zera_lacuna_pct": 141.00269346146598
+  },
+  {
+   "ano": 2035,
+   "receita_total_rs": 19098560567.37575,
+   "contrafactual_rs": 20844211091.650925,
+   "lacuna_rs": 1745650524.2751732,
+   "variacao_pct": -8.374749788320779,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250389,
+   "aliquota_zera_lacuna_pct": 129.6289603917341
+  },
+  {
+   "ano": 2036,
+   "receita_total_rs": 19445347590.002354,
+   "contrafactual_rs": 21302783735.667274,
+   "lacuna_rs": 1857436145.6649208,
+   "variacao_pct": -8.719217960960723,
+   "aliquota_escapa_seguro_receita_pct": 33.793353862513044,
+   "aliquota_zera_lacuna_pct": 121.09866058943553
+  },
+  {
+   "ano": 2037,
+   "receita_total_rs": 19798149538.30918,
+   "contrafactual_rs": 21771444977.852047,
+   "lacuna_rs": 1973295439.5428658,
+   "variacao_pct": -9.063686133604298,
+   "aliquota_escapa_seguro_receita_pct": 33.7933538624951,
+   "aliquota_zera_lacuna_pct": 114.46398296543386
+  },
+  {
+   "ano": 2038,
+   "receita_total_rs": 20157063224.1084,
+   "contrafactual_rs": 22250416767.36479,
+   "lacuna_rs": 2093353543.2563934,
+   "variacao_pct": -9.408154306245464,
+   "aliquota_escapa_seguro_receita_pct": 33.7933538624925,
+   "aliquota_zera_lacuna_pct": 109.15624086622373
+  },
+  {
+   "ano": 2039,
+   "receita_total_rs": 20522186807.706894,
+   "contrafactual_rs": 22739925936.246708,
+   "lacuna_rs": 2217739128.539814,
+   "variacao_pct": -9.752622478883321,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386251128,
+   "aliquota_zera_lacuna_pct": 104.81354278504786
+  },
+  {
+   "ano": 2040,
+   "receita_total_rs": 20893619810.382103,
+   "contrafactual_rs": 23240204306.844135,
+   "lacuna_rs": 2346584496.4620323,
+   "variacao_pct": -10.097090651526564,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386249435,
+   "aliquota_zera_lacuna_pct": 101.19462771740572
+  },
+  {
+   "ano": 2041,
+   "receita_total_rs": 21271463126.760757,
+   "contrafactual_rs": 23751488801.5947,
+   "lacuna_rs": 2480025674.8339424,
+   "variacao_pct": -10.441558824166975,
+   "aliquota_escapa_seguro_receita_pct": 33.7933538624989,
+   "aliquota_zera_lacuna_pct": 98.13246881401699
+  },
+  {
+   "ano": 2042,
+   "receita_total_rs": 21655819037.07177,
+   "contrafactual_rs": 24274021555.229816,
+   "lacuna_rs": 2618202518.1580467,
+   "variacao_pct": -10.786026996807863,
+   "aliquota_escapa_seguro_receita_pct": 33.793353862496595,
+   "aliquota_zera_lacuna_pct": 95.50776118253754
+  },
+  {
+   "ano": 2043,
+   "receita_total_rs": 22046791219.282986,
+   "contrafactual_rs": 24808050029.44494,
+   "lacuna_rs": 2761258810.161953,
+   "variacao_pct": -11.130495169449372,
+   "aliquota_escapa_seguro_receita_pct": 33.793353862496154,
+   "aliquota_zera_lacuna_pct": 93.23301456859447
+  },
+  {
+   "ano": 2044,
+   "receita_total_rs": 22444484761.09778,
+   "contrafactual_rs": 25353827130.092762,
+   "lacuna_rs": 2909342368.9949837,
+   "variacao_pct": -11.474963342089882,
+   "aliquota_escapa_seguro_receita_pct": 33.793353862501206,
+   "aliquota_zera_lacuna_pct": 91.24261128139452
+  },
+  {
+   "ano": 2045,
+   "receita_total_rs": 22849006171.802082,
+   "contrafactual_rs": 25911611326.954784,
+   "lacuna_rs": 3062605155.1527023,
+   "variacao_pct": -11.819431514731004,
+   "aliquota_escapa_seguro_receita_pct": 33.793353862498826,
+   "aliquota_zera_lacuna_pct": 89.48637308680198
+  },
+  {
+   "ano": 2046,
+   "receita_total_rs": 23260463393.9532,
+   "contrafactual_rs": 26481666776.14777,
+   "lacuna_rs": 3221203382.1945686,
+   "variacao_pct": -12.163899687371382,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250397,
+   "aliquota_zera_lacuna_pct": 87.92527246939086
+  },
+  {
+   "ano": 2047,
+   "receita_total_rs": 23678965814.89168,
+   "contrafactual_rs": 27064263445.223038,
+   "lacuna_rs": 3385297630.331356,
+   "variacao_pct": -12.50836786001237,
+   "aliquota_escapa_seguro_receita_pct": 33.793353862501064,
+   "aliquota_zera_lacuna_pct": 86.52849823275398
+  },
+  {
+   "ano": 2048,
+   "receita_total_rs": 24104624278.068607,
+   "contrafactual_rs": 27659677241.01789,
+   "lacuna_rs": 3555052962.9492836,
+   "variacao_pct": -12.85283603265378,
+   "aliquota_escapa_seguro_receita_pct": 33.793353862499586,
+   "aliquota_zera_lacuna_pct": 85.27140141978465
+  },
+  {
+   "ano": 2049,
+   "receita_total_rs": 24537551094.17114,
+   "contrafactual_rs": 28268190140.32021,
+   "lacuna_rs": 3730639046.1490707,
+   "variacao_pct": -13.197304205294314,
+   "aliquota_escapa_seguro_receita_pct": 33.7933538625002,
+   "aliquota_zera_lacuna_pct": 84.13402811281013
+  },
+  {
+   "ano": 2050,
+   "receita_total_rs": 24977860052.031906,
+   "contrafactual_rs": 28890090323.40733,
+   "lacuna_rs": 3912230271.3754234,
+   "variacao_pct": -13.541772377934224,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250488,
+   "aliquota_zera_lacuna_pct": 83.10005237919934
+  },
+  {
+   "ano": 2051,
+   "receita_total_rs": 25425666429.308475,
+   "contrafactual_rs": 29525672310.522358,
+   "lacuna_rs": 4100005881.2138824,
+   "variacao_pct": -13.88624055057579,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250389,
+   "aliquota_zera_lacuna_pct": 82.15598757894631
+  },
+  {
+   "ano": 2052,
+   "receita_total_rs": 25881087002.920006,
+   "contrafactual_rs": 30175237101.353783,
+   "lacuna_rs": 4294150098.433777,
+   "variacao_pct": -14.230708723217035,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250211,
+   "aliquota_zera_lacuna_pct": 81.2905948453792
+  },
+  {
+   "ano": 2053,
+   "receita_total_rs": 26344240059.219006,
+   "contrafactual_rs": 30839092317.58352,
+   "lacuna_rs": 4494852258.364513,
+   "variacao_pct": -14.575176895857222,
+   "aliquota_escapa_seguro_receita_pct": 33.793353862503785,
+   "aliquota_zera_lacuna_pct": 80.49443353049732
+  },
+  {
+   "ano": 2054,
+   "receita_total_rs": 26815245403.88545,
+   "contrafactual_rs": 31517552348.5704,
+   "lacuna_rs": 4702306944.684952,
+   "variacao_pct": -14.91964506849861,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250399,
+   "aliquota_zera_lacuna_pct": 79.7595153936857
+  },
+  {
+   "ano": 2055,
+   "receita_total_rs": 27294224371.528328,
+   "contrafactual_rs": 32210938500.238907,
+   "lacuna_rs": 4916714128.710579,
+   "variacao_pct": -15.264113241140464,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250049,
+   "aliquota_zera_lacuna_pct": 79.07903563737612
+  },
+  {
+   "ano": 2056,
+   "receita_total_rs": 27781299834.972897,
+   "contrafactual_rs": 32919579147.244244,
+   "lacuna_rs": 5138279312.271347,
+   "variacao_pct": -15.608581413779953,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250396,
+   "aliquota_zera_lacuna_pct": 78.44716157794578
+  },
+  {
+   "ano": 2057,
+   "receita_total_rs": 28276596214.212166,
+   "contrafactual_rs": 33643809888.483524,
+   "lacuna_rs": 5367213674.2713585,
+   "variacao_pct": -15.953049586422097,
+   "aliquota_escapa_seguro_receita_pct": 33.793353862500496,
+   "aliquota_zera_lacuna_pct": 77.85886503985641
+  },
+  {
+   "ano": 2058,
+   "receita_total_rs": 28780239485.0185,
+   "contrafactual_rs": 34383973706.03025,
+   "lacuna_rs": 5603734221.011749,
+   "variacao_pct": -16.297517759062764,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250128,
+   "aliquota_zera_lacuna_pct": 77.30978827097266
+  },
+  {
+   "ano": 2059,
+   "receita_total_rs": 29292357187.172634,
+   "contrafactual_rs": 35140421127.56282,
+   "lacuna_rs": 5848063940.390186,
+   "variacao_pct": -16.641985931702983,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250302,
+   "aliquota_zera_lacuna_pct": 76.79613580975878
+  },
+  {
+   "ano": 2060,
+   "receita_total_rs": 29813078432.31063,
+   "contrafactual_rs": 35913510392.3692,
+   "lacuna_rs": 6100431960.058571,
+   "variacao_pct": -16.986454104343895,
+   "aliquota_escapa_seguro_receita_pct": 33.793353862503665,
+   "aliquota_zera_lacuna_pct": 76.31458662737194
+  },
+  {
+   "ano": 2061,
+   "receita_total_rs": 30342533911.355843,
+   "contrafactual_rs": 36703607621.00137,
+   "lacuna_rs": 6361073709.645531,
+   "variacao_pct": -17.33092227698565,
+   "aliquota_escapa_seguro_receita_pct": 33.7933538625014,
+   "aliquota_zera_lacuna_pct": 75.86222224391645
+  },
+  {
+   "ano": 2062,
+   "receita_total_rs": 30880855901.51808,
+   "contrafactual_rs": 37511086988.66344,
+   "lacuna_rs": 6630231087.145355,
+   "variacao_pct": -17.675390449626626,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250183,
+   "aliquota_zera_lacuna_pct": 75.43646753007684
+  },
+  {
+   "ano": 2063,
+   "receita_total_rs": 31428178272.83452,
+   "contrafactual_rs": 38336330902.41396,
+   "lacuna_rs": 6908152629.579445,
+   "variacao_pct": -18.01985862226698,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250244,
+   "aliquota_zera_lacuna_pct": 75.03504165702662
+  },
+  {
+   "ano": 2064,
+   "receita_total_rs": 31984636494.232544,
+   "contrafactual_rs": 39179730182.267204,
+   "lacuna_rs": 7195093688.03466,
+   "variacao_pct": -18.36432679490776,
+   "aliquota_escapa_seguro_receita_pct": 33.793353862503615,
+   "aliquota_zera_lacuna_pct": 74.6559172213699
+  },
+  {
+   "ano": 2065,
+   "receita_total_rs": 32550367639.08753,
+   "contrafactual_rs": 40041684246.27701,
+   "lacuna_rs": 7491316607.18948,
+   "variacao_pct": -18.70879496754937,
+   "aliquota_escapa_seguro_receita_pct": 33.793353862501924,
+   "aliquota_zera_lacuna_pct": 74.29728599845026
+  },
+  {
+   "ano": 2066,
+   "receita_total_rs": 33125510390.25301,
+   "contrafactual_rs": 40922601299.69513,
+   "lacuna_rs": 7797090909.44212,
+   "variacao_pct": -19.053263140190957,
+   "aliquota_escapa_seguro_receita_pct": 33.793353862500844,
+   "aliquota_zera_lacuna_pct": 73.95753010305309
+  },
+  {
+   "ano": 2067,
+   "receita_total_rs": 33710205044.532818,
+   "contrafactual_rs": 41822898528.2884,
+   "lacuna_rs": 8112693483.755581,
+   "variacao_pct": -19.39773131283159,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250168,
+   "aliquota_zera_lacuna_pct": 73.63519758690717
+  },
+  {
+   "ano": 2068,
+   "receita_total_rs": 34304593516.57232,
+   "contrafactual_rs": 42743002295.910774,
+   "lacuna_rs": 8438408779.338455,
+   "variacao_pct": -19.7421994854717,
+   "aliquota_escapa_seguro_receita_pct": 33.793353862503295,
+   "aliquota_zera_lacuna_pct": 73.32898169656822
+  },
+  {
+   "ano": 2069,
+   "receita_total_rs": 34908819342.13907,
+   "contrafactual_rs": 43683348346.42076,
+   "lacuna_rs": 8774529004.281693,
+   "variacao_pct": -20.08666765811381,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250107,
+   "aliquota_zera_lacuna_pct": 73.0377031667336
+  },
+  {
+   "ano": 2070,
+   "receita_total_rs": 35523027680.76939,
+   "contrafactual_rs": 44644382010.04212,
+   "lacuna_rs": 9121354329.272736,
+   "variacao_pct": -20.431135830754734,
+   "aliquota_escapa_seguro_receita_pct": 33.793353862500986,
+   "aliquota_zera_lacuna_pct": 72.76029504308158
+  },
+  {
+   "ano": 2071,
+   "receita_total_rs": 36147365317.73778,
+   "contrafactual_rs": 45626558414.26305,
+   "lacuna_rs": 9479193096.525269,
+   "variacao_pct": -20.77560400339561,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250104,
+   "aliquota_zera_lacuna_pct": 72.4957896228551
+  },
+  {
+   "ano": 2072,
+   "receita_total_rs": 36781980665.33537,
+   "contrafactual_rs": 46630342699.37681,
+   "lacuna_rs": 9848362034.041435,
+   "variacao_pct": -21.120072176036253,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250165,
+   "aliquota_zera_lacuna_pct": 72.24330717627556
+  },
+  {
+   "ano": 2073,
+   "receita_total_rs": 37427023763.41373,
+   "contrafactual_rs": 47656210238.76299,
+   "lacuna_rs": 10229186475.349266,
+   "variacao_pct": -21.464540348676252,
+   "aliquota_escapa_seguro_receita_pct": 33.793353862502826,
+   "aliquota_zera_lacuna_pct": 72.00204617176547
+  },
+  {
+   "ano": 2074,
+   "receita_total_rs": 38082646279.16516,
+   "contrafactual_rs": 48704646864.015785,
+   "lacuna_rs": 10622000584.850624,
+   "variacao_pct": -21.809008521317143,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250304,
+   "aliquota_zera_lacuna_pct": 71.77127477614789
+  },
+  {
+   "ano": 2075,
+   "receita_total_rs": 38749001506.10777,
+   "contrafactual_rs": 49776149095.024155,
+   "lacuna_rs": 11027147588.916382,
+   "variacao_pct": -22.15347669395884,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250186,
+   "aliquota_zera_lacuna_pct": 71.55032343991833
+  },
+  {
+   "ano": 2076,
+   "receita_total_rs": 39426244362.236916,
+   "contrafactual_rs": 50871224375.11476,
+   "lacuna_rs": 11444980012.877846,
+   "variacao_pct": -22.497944866600285,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250162,
+   "aliquota_zera_lacuna_pct": 71.33857840936554
+  },
+  {
+   "ano": 2077,
+   "receita_total_rs": 40114531387.307335,
+   "contrafactual_rs": 51990391311.36722,
+   "lacuna_rs": 11875859924.059883,
+   "variacao_pct": -22.842413039240462,
+   "aliquota_escapa_seguro_receita_pct": 33.79335386250235,
+   "aliquota_zera_lacuna_pct": 71.13547603311972
+  }
+ ]
+}
