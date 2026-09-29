@@ -31,6 +31,8 @@ jobs:
         run: pip install remotezip
       - name: Inspecionar via Range
         run: python3 data/inspect-tce-remotezip.py "${{ inputs.ano || '2025' }}"
+      - name: Inspecionar amostras de Receita
+        run: python3 data/inspect-tce-receita-samples.py "${{ inputs.ano || '2025' }}"
       - name: Salvar inventário
         run: |
           git config user.name "github-actions[bot]"
