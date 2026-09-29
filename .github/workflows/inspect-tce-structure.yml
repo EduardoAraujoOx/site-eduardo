@@ -1,0 +1,44 @@
+name: Estrutura Receita PIT TCE-PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      ano:
+        description: "Ano"
+        required: false
+        default: "2025"
+  push:
+    branches:
+      - main
+    paths:
+      - "data/inspect-tce-receita-structure.py"
+      - ".github/workflows/inspect-tce-structure.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  estrutura:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install remotezip
+      - name: Resumir estrutura
+        run: python3 data/inspect-tce-receita-structure.py "${{ inputs.ano || '2025' }}"
+      - name: Salvar resultado
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          cp data/auditoria-pr-validacao/estrutura-tce-receita-${{ inputs.ano || '2025' }}.json /tmp/estrutura.json
+          git fetch origin main
+          git reset --hard origin/main
+          mkdir -p data/auditoria-pr-validacao
+          cp /tmp/estrutura.json data/auditoria-pr-validacao/estrutura-tce-receita-${{ inputs.ano || '2025' }}.json
+          git add data/auditoria-pr-validacao/
+          if git diff --staged --quiet; then exit 0; fi
+          git commit -m "dados: estrutura de receitas PIT TCE-PR"
+          git push origin HEAD:main
