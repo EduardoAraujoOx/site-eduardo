@@ -43,6 +43,7 @@ FONTE = "Times New Roman"
 MARK_RC, MARK_LS, MARK_LE, MARK_EQ = "§§RC§§", "§§LS§§", "§§LE§§", "§§EQ§§"
 LINHA = 1.5   # entrelinhas do corpo (edital: 1,5)
 LARG_FIG = []  # larguras (cm) das figuras reais, na ordem do texto
+TEM_PAISAGEM = False
 ABERTURA = None  # dict com titulo, subtitulo, resumo, palavras, abstract, keywords (--abertura JSON)
 TITULO = ""    # título do trabalho (pdftitle do LaTeX ou --titulo)
 EQ_IMAGEM = True  # equações com \\underbrace viram imagem (True) ou equação editável do Word (False)
@@ -135,6 +136,8 @@ def limpa_formatacao(s):
     s = s.replace("\\end{minipage}", "").replace("\\hfill", "")
     s = s.replace("\\raggedright", "").replace("\\raggedleft", "").replace("\\small", "")
     s = s.replace("\\clearpage", "")
+    global TEM_PAISAGEM
+    TEM_PAISAGEM = "\\begin{landscape}" in s
     def paisagem(m):
         b = m.group(1).replace("\\begingroup", "\\begin{table}").replace("\\endgroup", "\\end{table}")
         return MARK_LS + "\n\n" + b.replace("\\captionof{table}", "\\caption") + "\n\n" + MARK_LE
@@ -763,7 +766,7 @@ def pos_processa(docx_in, docx_out):
     # 5. tabelas
     # paisagem: tabela cujo "parágrafo final de seção" é paisagem => identifica pelo número de colunas (>=11)
     for t in d.tables:
-        pais = len(t.columns) >= 11
+        pais = TEM_PAISAGEM and len(t.columns) >= 11
         formata_tabela(t, paisagem=pais)
         larguras_fixas(t, 24.7 if pais else 16.0)
 
