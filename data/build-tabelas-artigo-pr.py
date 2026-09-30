@@ -45,14 +45,20 @@ SALTO_MAX = 10.0
 
 def carregar():
     final = {r["codigo_ibge"]: r for r in csv.DictReader(open(FINAL, encoding="utf-8-sig"))}
+    # Correções do PIT/TCE-PR já confirmadas na auditoria (divergência > 20%):
+    # o ISS do PIT substitui o da DCA, pelo mesmo critério da base final.
+    resumo = json.load(open(HERE / "auditoria-pr-validacao" / "resumo-pr-final-auditado-latest.json"))
+    pit = {(c["municipio"], c["ano"]): c["iss_pit_total"]
+           for c in resumo["pit_confirmations"] if c["substituido"]}
     iss25, hist = {}, {}
     for r in csv.DictReader(open(OBS, encoding="utf-8-sig")):
         if r["adjusted_iss"] in ("", None):
             continue
+        v = pit.get((r["municipio"], int(r["ano"])), float(r["adjusted_iss"]))
         if r["ano"] == "2025":
-            iss25[r["codigo_ibge"]] = float(r["adjusted_iss"])
+            iss25[r["codigo_ibge"]] = v
         else:
-            hist.setdefault(r["codigo_ibge"], []).append(float(r["adjusted_iss"]))
+            hist.setdefault(r["codigo_ibge"], []).append(v)
     # razão ISS 2025 / mediana 2019-2024 (triagem de salto atípico)
     salto = {c: iss25[c] / statistics.median(v) for c, v in hist.items()
              if c in iss25 and len(v) >= 3 and statistics.median(v) > 0}
@@ -99,13 +105,22 @@ def montar():
         l["pc_2025"] = l["base_2025"] / l["pop"]
         l["pc_2033"] = l["rec_2033"] / l["pop"]
         l["pc_2077"] = l["rec_2077"] / l["pop"]
-    # elegíveis: ISS 2025 direto, sem pendência de auditoria, >=5 anos observados
-    # e sem salto atípico (ISS 2025 > 10x a mediana 2019-2024: hoje só
-    # Guaraqueçaba, de R$ 0,5 mi para R$ 23,8 mi -- provável erro de declaração,
-    # a confirmar no PIT/TCE-PR; fica fora dos extremos até essa confirmação).
+    # Regra de tratamento de discrepâncias no ISS (aplicada em camadas):
+    # 1) sinal: valor anual >= 5x ou <= 0,2x a mediana dos demais anos;
+    # 2) sinal conferido no PIT/TCE-PR: divergência > 20% -> substitui pelo PIT
+    #    (feito acima); PIT coerente -> valor mantido (dado confirmado);
+    # 3) sinal em 2025 SEM conferência disponível -> usa a mediana 2019-2024
+    #    como referência (salto_iss > SALTO_MAX ou < 1/SALTO_MAX); hoje nenhum
+    #    município cai aqui, é salvaguarda para bases futuras.
+    for l in linhas:
+        z = l["salto_iss"]
+        l["iss_substituido_mediana"] = False
+        if z and (z > SALTO_MAX or z < 1 / SALTO_MAX):
+            l["iss_2025"] = l["iss_2025"] / z
+            l["iss_pc"] = l["iss_2025"] / l["pop"]
+            l["iss_substituido_mediana"] = True
     elegiveis = [l for l in linhas if l["iss_direto"] and not l["pendente"]
-                 and l["obs_anos"] >= 5 and l["iss_pc"] is not None
-                 and (l["salto_iss"] or 0) <= SALTO_MAX]
+                 and l["obs_anos"] >= 5 and l["iss_pc"] is not None]
     return linhas, elegiveis
 
 
@@ -289,8 +304,8 @@ def gerar_docx(resumo):
         par("", after=4)
     par("Fonte: elaboração própria. Valores em R$ constantes de 2025; população fixa (média 2019-2026); 2033 e 2077 conforme o "
         "cronograma do art. 131 do ADCT (EC 132/2023) e crescimento real do PIB de 2,2% a.a. após 2033. Excluídos: municípios sem "
-        "ISS de 2025 observado diretamente, com pendência de auditoria, com menos de 5 anos de ISS observado ou com salto atípico "
-        "do ISS em 2025 (Guaraqueçaba, a confirmar no PIT/TCE-PR).", italic=True, size=8)
+        "ISS de 2025 observado diretamente, com pendência de auditoria ou com menos de 5 anos de ISS observado. ISS discrepante "
+        "(>= 5x ou <= 0,2x a mediana dos demais anos) substituído pelo PIT/TCE-PR quando a divergência supera 20%.", italic=True, size=8)
 
     doc.save(OUT / "tabelas-dispersao-percapita-pr.docx")
 
