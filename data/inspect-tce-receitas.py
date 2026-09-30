@@ -47,13 +47,19 @@ def decode(raw):
 
 def inspect_zip(zf, prefix="", depth=0):
     out = []
-    if depth > 2:
-        return out
+    inventory_all = []
+    if depth > 3:
+        return out, inventory_all, inventory_all
     for info in zf.infolist():
         if info.is_dir():
             continue
         name = f"{prefix}{info.filename}"
         low = name.lower()
+        inventory_all.append({
+            "name": name,
+            "size": info.file_size,
+            "compressed_size": info.compress_size,
+        })
         is_text = low.endswith((".csv", ".txt", ".tsv"))
         is_nested = low.endswith(".zip")
         interesting_name = "receit" in low or "arrecad" in low
@@ -62,7 +68,9 @@ def inspect_zip(zf, prefix="", depth=0):
             try:
                 raw = zf.read(info)
                 with zipfile.ZipFile(io.BytesIO(raw)) as nested:
-                    out.extend(inspect_zip(nested, prefix=name + "::", depth=depth + 1))
+                    nested_out, nested_all = inspect_zip(nested, prefix=name + "::", depth=depth + 1)
+                    out.extend(nested_out)
+                    inventory_all.extend(nested_all)
             except Exception as exc:
                 out.append({"name": name, "nested_error": str(exc)})
             continue
@@ -103,12 +111,14 @@ def main():
         download(url, archive)
         print(f"Arquivo: {archive.stat().st_size / 1024 / 1024:.1f} MB")
         with zipfile.ZipFile(archive) as zf:
-            inventory = inspect_zip(zf)
+            inventory, inventory_all = inspect_zip(zf)
 
     result = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "ano": ano,
         "url": url,
+        "n_files_all_levels": len(inventory_all),
+        "files_all_levels": inventory_all,
         "n_candidates": len(inventory),
         "candidates": inventory,
     }
