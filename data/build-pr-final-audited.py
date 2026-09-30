@@ -153,7 +153,7 @@ def main():
 
     obs_rows = read_csv(HERE / "auditoria-dca-pr" / "observacoes-pr-latest.csv")
     portal = load_json(OUT / "repasses-portal-pr-latest.json")
-    tce_validation = read_csv(OUT / "validacao-iss-tce-pr-fast-latest.csv")
+    tce_validation = read_csv(OUT / "validacao-iss-tce-pr-latest.csv")
     iss_flags_rows = read_csv(OUT / "anomalias-iss-pr-latest.csv")
 
     names = {}
@@ -174,11 +174,11 @@ def main():
     pit_corrections = {}
     pit_confirmations = []
     for row in tce_validation:
-        tce = num(row.get("iss_tce"))
+        tce = num(row.get("tce_iss_detalhado"))
         dca = num(row.get("iss_dca"))
         if tce is None or dca is None or tce == 0:
             continue
-        classificacao = row.get("classificacao") or ""
+        classificacao = row.get("classificacao_iss_detalhado") or ""
         substituido = classificacao in {
             "divergencia_forte_20a100pct",
             "divergencia_extrema_acima_100pct",
@@ -188,7 +188,7 @@ def main():
             "ano": int(row["ano"]),
             "iss_dca": dca,
             "iss_pit_total": tce,
-            "diferenca_pct": num(row.get("diferenca_dca_vs_tce_pct")),
+            "diferenca_pct": num(row.get("diferenca_dca_vs_tce_iss_pct")),
             "substituido": substituido,
         })
         if substituido:
