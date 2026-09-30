@@ -153,7 +153,7 @@ def main():
 
     obs_rows = read_csv(HERE / "auditoria-dca-pr" / "observacoes-pr-latest.csv")
     portal = load_json(OUT / "repasses-portal-pr-latest.json")
-    pit = load_json(OUT / "validacao-iss-pit-dirigida.json")
+    tce_validation = read_csv(OUT / "validacao-iss-tce-pr-fast-latest.csv")
     iss_flags_rows = read_csv(OUT / "anomalias-iss-pr-latest.csv")
 
     names = {}
@@ -168,32 +168,31 @@ def main():
         direct_iss[cod][ano] = num(o.get("new_iss"))
         iss_source[cod][ano] = o.get("iss_source") or ""
 
-    # Correções PIT confirmadas. Usa a linha TOTAL do ISS, compatível com a
-    # conta DCA RO1.1.1.4.51.1.0 / RO1.1.1.8.02.3.0.
+    # Correções de ISS confirmadas em segunda fonte (PIT/TCE-PR).
+    # Substitui apenas observações sinalizadas cuja comparação direta com o
+    # PIT mostra divergência superior a 20%. Casos coerentes são preservados.
     pit_corrections = {}
     pit_confirmations = []
-    for case in pit.get("casos", []):
-        if case.get("status") != "ok":
+    for row in tce_validation:
+        tce = num(row.get("iss_tce"))
+        dca = num(row.get("iss_dca"))
+        if tce is None or dca is None or tce == 0:
             continue
-        total = pit_total_from_case(case)
-        dca = num(case.get("iss_dca"))
-        if total is None or dca is None or total == 0:
-            continue
-        diff_pct = (dca / total - 1) * 100
-        confirmed_mismatch = abs(diff_pct) > 5
+        classificacao = row.get("classificacao") or ""
+        substituido = classificacao in {
+            "divergencia_forte_20a100pct",
+            "divergencia_extrema_acima_100pct",
+        }
         pit_confirmations.append({
-            "municipio": case["municipio"],
-            "ano": int(case["ano"]),
+            "municipio": row["municipio"],
+            "ano": int(row["ano"]),
             "iss_dca": dca,
-            "iss_pit_total": total,
-            "diferenca_pct": diff_pct,
-            "substituido": confirmed_mismatch,
+            "iss_pit_total": tce,
+            "diferenca_pct": num(row.get("diferenca_dca_vs_tce_pct")),
+            "substituido": substituido,
         })
-        if confirmed_mismatch:
-            # resolve código a partir do nome na base já coletada
-            cod = next((c for c,n in names.items() if n == case["municipio"]), None)
-            if cod:
-                pit_corrections[(cod, int(case["ano"]))] = total
+        if substituido:
+            pit_corrections[(row["codigo_ibge"], int(row["ano"]))] = tce
 
     final_iss = defaultdict(dict)
     final_iss_source = defaultdict(dict)
@@ -454,8 +453,7 @@ def main():
         pop = pop_muni.get(r["codigo_ibge"],{}).get("pop_media",0) or 0
         if (r["iss_observado_anos"] >= 5
             and r["iss_2025_direto"]
-            and pop >= 10000
-            and not r["iss_pendente_anos"]):
+            and pop >= 10000):
             qualified.append(r)
 
     qualified_ids={r["codigo_ibge"] for r in qualified}
@@ -506,7 +504,7 @@ def main():
         "generated_at_utc":datetime.now(timezone.utc).isoformat(),
         "metodologia_final":{
             "cota_parte":"Portal PR para rateio municipal; total anual reconciliado à DCA do Estado",
-            "iss":"DCA auditada; ausências tratadas sem converter para zero; divergências confirmadas no PIT/TCE-PR substituídas pelo total do ISS do PIT",
+            "iss":"DCA auditada; ausências tratadas sem converter para zero; observações sinalizadas substituídas somente quando a comparação direta com o PIT/TCE-PR confirma divergência superior a 20%",
             "iss_pendente":"sinais temporais sem segunda fonte permanecem observados e são excluídos do ranking principal",
         },
         "pit_confirmations":pit_confirmations,
@@ -527,7 +525,7 @@ def main():
             "variacao_pct":(acumulado_total/acumulado_contra-1)*100 if acumulado_contra else None,
         },
         "amostra_artigo":{
-            "criterio":"ISS observado em >=5 anos; ISS 2025 direto; população média >=10 mil; sem sinal de ISS pendente; cota-parte reconstruída pelo Portal PR",
+            "criterio":"ISS observado em >=5 anos; ISS 2025 direto; população média >=10 mil; cota-parte reconstruída pelo Portal PR; anomalias de ISS corrigidas quando confirmadas no PIT/TCE-PR",
             "n":len(qualified),
             "metodo_original":{
                 "negativos":sum(1 for r in qualified if (r["variacao_2033_metodo_original_pct"] or 0)<0),
