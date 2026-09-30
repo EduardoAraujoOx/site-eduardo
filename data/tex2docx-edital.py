@@ -245,9 +245,11 @@ def numera_e_resolve(s, tmp=None):
         elif tipo == "abre":
             env = dado
         elif tipo == "caption":
-            cont[env] += 1
-            num = (prefixo if env == "table" else "") + str(cont[env])
-            rot = "Tabela" if env == "table" else "Gráfico"
+            ml = re.search(r"\\label\{fig:mapa[^}]*\}", s[dado:dado + 400])
+            chave = "mapa" if (env == "figure" and ml) else env
+            cont[chave] = cont.get(chave, 0) + 1
+            num = (prefixo if env == "table" else "") + str(cont[chave])
+            rot = "Tabela" if env == "table" else ("Mapa" if chave == "mapa" else "Gráfico")
             inserir.append((dado, "\\textbf{" + rot + " " + num + ":}~"))
             ultimo = num
         elif tipo == "label":
@@ -649,6 +651,18 @@ def insere_equacoes_imagem(d):
             p.add_run().add_picture(caminho, width=Cm(float(larg)))
 
 
+def sinal_menos(d):
+    """Hífen antes de número negativo vira sinal de menos (U+2212), sem alterar intervalos."""
+    pad = re.compile(r"(?<![\w.,])-(?=\d)")
+    corpos = [d.element.body]
+    for sec in d.sections:
+        corpos.append(sec.footer._element)
+    for corpo in corpos:
+        for t in corpo.iter(qn("w:t")):
+            if t.text and "-" in t.text:
+                t.text = pad.sub("\u2212", t.text)
+
+
 def pos_processa(docx_in, docx_out):
     d = Document(docx_in)
     desfaz_tabelas_de_figura(d)
@@ -774,6 +788,7 @@ def pos_processa(docx_in, docx_out):
     cp = d.core_properties
     cp.author = cp.last_modified_by = cp.comments = cp.keywords = cp.subject = cp.category = ""
     cp.title = ""
+    sinal_menos(d)
     d.save(docx_out)
 
 
