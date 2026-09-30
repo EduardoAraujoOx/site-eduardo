@@ -458,8 +458,19 @@ def main():
             and not r["iss_pendente_anos"]):
             qualified.append(r)
 
+    qualified_ids={r["codigo_ibge"] for r in qualified}
+    for r in rows:
+        r["qualificado_artigo"] = r["codigo_ibge"] in qualified_ids
+
     qvals=sorted(r["variacao_2033_final_pct"] for r in qualified)
     med = statistics.median(qvals) if qvals else None
+    qorig=[r["variacao_2033_metodo_original_pct"] for r in qualified if r["variacao_2033_metodo_original_pct"] is not None]
+    med_orig=statistics.median(qorig) if qorig else None
+    sign_flips=sum(
+        1 for r in qualified
+        if r["variacao_2033_metodo_original_pct"] is not None
+        and ((r["variacao_2033_metodo_original_pct"] < 0) != (r["variacao_2033_final_pct"] < 0))
+    )
     qloss=sorted(qualified,key=lambda r:r["variacao_2033_final_pct"])[:10]
     qgain=sorted(qualified,key=lambda r:r["variacao_2033_final_pct"],reverse=True)[:10]
 
@@ -518,9 +529,21 @@ def main():
         "amostra_artigo":{
             "criterio":"ISS observado em >=5 anos; ISS 2025 direto; população média >=10 mil; sem sinal de ISS pendente; cota-parte reconstruída pelo Portal PR",
             "n":len(qualified),
-            "negativos":sum(1 for r in qualified if r["variacao_2033_final_pct"]<0),
-            "positivos":sum(1 for r in qualified if r["variacao_2033_final_pct"]>0),
-            "mediana_pct":med,
+            "metodo_original":{
+                "negativos":sum(1 for r in qualified if (r["variacao_2033_metodo_original_pct"] or 0)<0),
+                "positivos":sum(1 for r in qualified if (r["variacao_2033_metodo_original_pct"] or 0)>0),
+                "mediana_pct":med_orig,
+            },
+            "metodo_auditado":{
+                "negativos":sum(1 for r in qualified if r["variacao_2033_final_pct"]<0),
+                "positivos":sum(1 for r in qualified if r["variacao_2033_final_pct"]>0),
+                "mediana_pct":med,
+            },
+            "mudancas_de_sinal":sign_flips,
+            "media_abs_revisao_pp":(
+                sum(abs(r["delta_metodologia_2033_pp"]) for r in qualified if r["delta_metodologia_2033_pp"] is not None)
+                / max(1,sum(1 for r in qualified if r["delta_metodologia_2033_pp"] is not None))
+            ),
             "maiores_perdas":qloss,
             "maiores_ganhos":qgain,
         },
