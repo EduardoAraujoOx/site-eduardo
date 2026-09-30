@@ -154,24 +154,13 @@ def docx(linhas, saida):
             cel(c[1 + k], v, bold=neg)
         if neg:
             for x in c: sombra(x)
-
-    rs = resumo(linhas)
-    for k, (rot, key) in enumerate([("Diferença média absoluta (27 UFs)", "todas"), (f"Idem, sem as UFs com ¹ ({rs['n_sem']} UFs)", "sem_flag")]):
-        c = nova()
-        m = c[0].merge(c[2]); cel(m, rot, bold=True, align="l")
-        a, b, g = rs[key]
-        cel(c[3], sg(a).replace("+", ""), bold=True)
-        for x in c[4:7]: cel(x, "")
-        cel(c[7], sg(b).replace("+", ""), bold=True); cel(c[8], sg(g).replace("+", ""), bold=True)
-        for x in c:
-            sombra(x)
-            if k == 0: borda(x, top=("single", 6))
-            if k == 1: borda(x, bottom=("single", 12))
+        if l is linhas[-1]:
+            for x in c: borda(x, bottom=("single", 12))
 
     n = doc.add_paragraph(); n.paragraph_format.space_before = Pt(4)
     r = n.add_run("Nota: Δ = (IPEA / nosso) − 1. Valores em R$ bilhões, preços de 2025. \"Nosso\" usa o coeficiente de destino próprio (POF e Censo); "
                   "\"Nosso com coef. IPEA\" aplica ao mesmo modelo o coeficiente de destino de Gobetti e Monteiro (2023), com o Seguro-Receita "
-                  "recalculado. A diferença média é calculada em valor absoluto. ¹ UFs com diferença de 5% ou mais já na base de 2025 (tratamento "
+                  "recalculado. ¹ UFs com diferença de 5% ou mais já na base de 2025 (tratamento "
                   "de fundos estaduais e de receita média), de modo que a divergência de 2033 reflete também a base, e não o coeficiente. "
                   "Ordenada pela diferença na base 2025.")
     r.font.size = Pt(8)
