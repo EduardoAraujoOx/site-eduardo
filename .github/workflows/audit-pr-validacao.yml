@@ -9,6 +9,7 @@ on:
       - "data/audit-pr-validacao.py"
       - "data/reconstruct-pr-cota-portal.py"
       - "data/reproject-pr-audited.py"
+      - "data/build-pr-final-audited.py"
       - ".github/workflows/audit-pr-validacao.yml"
 
 permissions:
@@ -43,6 +44,9 @@ jobs:
 
       - name: Reprojetar municípios com base auditada
         run: python3 data/reproject-pr-audited.py
+
+      - name: Consolidar metodologia municipal final
+        run: python3 data/build-pr-final-audited.py
 
       - name: Publicar artefato
         uses: actions/upload-artifact@v4
