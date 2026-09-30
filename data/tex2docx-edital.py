@@ -40,9 +40,11 @@ from docx.shared import Cm, Pt, RGBColor
 from docx.text.paragraph import Paragraph
 
 FONTE = "Times New Roman"
-MARK_RC, MARK_LS, MARK_LE = "§§RC§§", "§§LS§§", "§§LE§§"
+MARK_RC, MARK_LS, MARK_LE, MARK_EQ = "§§RC§§", "§§LS§§", "§§LE§§", "§§EQ§§"
 LINHA = 1.5   # entrelinhas do corpo (edital: 1,5)
 LARG_FIG = []  # larguras (cm) das figuras reais, na ordem do texto
+TITULO = ""    # título do trabalho (pdftitle do LaTeX ou --titulo)
+EQ_IMAGEM = True  # equações com \\underbrace viram imagem (True) ou equação editável do Word (False)
 
 
 # ───────────────────────── pré-processamento do LaTeX ─────────────────────────
@@ -132,13 +134,92 @@ def limpa_formatacao(s):
     s = s.replace("\\end{minipage}", "").replace("\\hfill", "")
     s = s.replace("\\raggedright", "").replace("\\raggedleft", "").replace("\\small", "")
     s = s.replace("\\clearpage", "")
-    s = s.replace("\\begin{landscape}", MARK_LS + "\n\n").replace("\\end{landscape}", "\n\n" + MARK_LE)
-    s = s.replace("\\begingroup", "\\begin{table}").replace("\\endgroup", "\\end{table}")
-    s = s.replace("\\captionof{table}", "\\caption")
+    def paisagem(m):
+        b = m.group(1).replace("\\begingroup", "\\begin{table}").replace("\\endgroup", "\\end{table}")
+        return MARK_LS + "\n\n" + b.replace("\\captionof{table}", "\\caption") + "\n\n" + MARK_LE
+    s = re.sub(r"\\begin\{landscape\}(.*?)\\end\{landscape\}", paisagem, s, flags=re.S)
+    s = re.sub(r"\\setlength\{\\Urlmuskip\}\{[^}]*\}", "", s)
+    for c in ("\\begingroup", "\\endgroup", "\\sloppy"):
+        s = s.replace(c, "")
     return s
 
 
-def numera_e_resolve(s):
+def renderiza_equacao_modelo(numero, saida, largura_cm=16.0, alvo_cm=15.2):
+    """Equação com chaves (\\underbrace) e rótulos: desenhada numa só linha, em alta resolução,
+    com as chaves sob cada termo e o rótulo centrado abaixo. Retorna a largura (cm) da imagem.
+    É uma imagem (não editável): o OMML do Word quebra a linha quando os rótulos são mais largos
+    que os termos, e o desenho garante a leitura."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import PathPatch
+    from matplotlib.path import Path as MP
+    plt.rcParams.update({"mathtext.fontset": "stix", "font.family": "STIXGeneral"})
+    T1 = r"$f_t\,w_i^{0}$"; T2 = r"$s_t\,\lambda_t\,w_i^{H}$"; T3 = r"$s_t\,(1-\lambda_t)\,(1-\rho_t)\,w_i^{D}$"
+    T4 = r"$S_{it}$"; T5 = r"$G_{it}$"
+    itens = [("t", r"$R_{it}^{R}\;=\;A_t$"), ("col", "["), ("b", T1, "ICMS/ISS residual"), ("t", r"$+$"),
+             ("b", T2, "IBS pelo histórico"), ("t", r"$+$"), ("b", T3, "IBS pelo destino"), ("col", "]"),
+             ("t", r"$+$"), ("b", T4, "Seguro-Receita"), ("t", r"$-$"), ("b", T5, "CGIBS"), ("t", r"$.$")]
+    fs0 = 12.0
+    fig = plt.figure(figsize=(8, 2), dpi=300)
+    rend = fig.canvas.get_renderer()
+
+    def larg(txt, fs):
+        t = fig.text(0, 0, txt, fontsize=fs)
+        w = t.get_window_extent(rend).width * 72 / fig.dpi
+        t.remove()
+        return w
+    def medida(fs):
+        x, pos = 0.0, []
+        for it in itens:
+            if it[0] == "b":
+                wt, wl = larg(it[1], fs), larg(it[2], 0.68 * fs)
+                slot = max(wt, wl + 0.6 * fs)
+                pos.append((it, x + (slot - wt) / 2, wt, x + slot / 2)); x += slot
+            elif it[0] == "col":
+                w = larg("[", 1.9 * fs) * 0.9
+                pos.append((it, x, w, 0)); x += w + 0.1 * fs
+            else:
+                w = larg(it[1], fs)
+                pad = 0.5 * fs if it[1] in (r"$+$", r"$-$") else (0.05 * fs if it[1] == r"$.$" else 0.0)
+                pos.append((it, x + pad, w, 0)); x += w + 2 * pad
+        return x, pos
+    total, _ = medida(fs0)
+    num_txt = "$(%s)$" % numero
+    wnum = larg(num_txt, fs0)
+    alvo_pt = alvo_cm / 2.54 * 72
+    fs = fs0 * min(1.0, (alvo_pt - wnum * 1.0) / total)
+    total, pos = medida(fs)
+    wnum = larg(num_txt, fs)
+    largura_pt = largura_cm / 2.54 * 72
+    x0 = (largura_pt - wnum - total) / 2
+    alt = 4.2 * fs
+    plt.close(fig)
+    fig = plt.figure(figsize=(largura_pt / 72, alt / 72), dpi=300)
+    ax = fig.add_axes([0, 0, 1, 1]); ax.set_xlim(0, largura_pt); ax.set_ylim(0, alt); ax.axis("off")
+    y0 = 2.6 * fs
+    for it, xi, w, xc in pos:
+        if it[0] == "t":
+            ax.text(x0 + xi, y0, it[1], fontsize=fs, va="baseline", ha="left")
+        elif it[0] == "col":
+            ax.text(x0 + xi, y0 + 0.25 * fs, it[1], fontsize=1.9 * fs, va="center", ha="left")
+        else:
+            ax.text(x0 + xi, y0, it[1], fontsize=fs, va="baseline", ha="left")
+            a, b = x0 + xi, x0 + xi + w
+            h, r = 0.42 * fs, min(0.42 * fs, (b - a) / 4)
+            ytop = y0 - 0.5 * fs; xm = (a + b) / 2
+            verts = [(a, ytop + h * 0.0), (a, ytop - h), (a + r, ytop - h), (xm - r, ytop - h), (xm, ytop - h),
+                     (xm, ytop - 2 * h), (xm + r, ytop - h), (b - r, ytop - h), (b, ytop - h), (b, ytop)]
+            codes = [MP.MOVETO, MP.CURVE3, MP.CURVE3, MP.LINETO, MP.CURVE3, MP.CURVE3, MP.CURVE3, MP.LINETO, MP.CURVE3, MP.CURVE3]
+            ax.add_patch(PathPatch(MP(verts, codes), fill=False, lw=0.8, ec="black"))
+            ax.text(x0 + xc, ytop - 2 * h - 0.25 * fs, it[2], fontsize=0.68 * fs, va="top", ha="center")
+    ax.text(largura_pt, y0, num_txt, fontsize=fs, va="baseline", ha="right")
+    fig.savefig(saida, dpi=300, facecolor="white")
+    plt.close(fig)
+    return largura_cm, alt / 72 * 2.54
+
+
+def numera_e_resolve(s, tmp=None):
     """Numera tabelas (A.1, B.1...), gráficos e equações e resolve \\ref."""
     eventos = []
     for m in re.finditer(r"\\renewcommand\{\\thetable\}\{([A-Z])\.\\arabic\{table\}\}", s):
@@ -179,6 +260,10 @@ def numera_e_resolve(s):
 
     def eq(m):
         n[0] += 1
+        if EQ_IMAGEM and "\\underbrace" in m.group(1) and tmp is not None:
+            png = Path(tmp) / ("eq_%d.png" % n[0])
+            larg_cm, _ = renderiza_equacao_modelo(n[0], png)
+            return "\n\n" + MARK_EQ + str(png) + "|" + "%.2f" % larg_cm + MARK_EQ + "\n\n"
         corpo = re.sub(r"\\label\{[^}]*\}", "", m.group(1)).strip().rstrip(",") if False else re.sub(r"\\label\{[^}]*\}", "", m.group(1)).strip()
         return "\n\n$$" + corpo + "\\qquad\\qquad (" + str(n[0]) + ")$$\n\n"
     s = re.sub(r"\\begin\{equation\}(.*?)\\end\{equation\}", eq, s, flags=re.S)
@@ -204,8 +289,14 @@ def figuras(s, imgdir, tmp):
             mw = re.search(r"width=([0-9.]*)\\(?:linewidth|textwidth)", opc)
             if mw and not lado_a_lado:
                 fr = float(mw.group(1) or 1.0)
-            origem = (Path(imgdir) / Path(arq).name) if imgdir else None
-            if origem and origem.exists():
+            origem = None
+            if imgdir:
+                nome = Path(arq)
+                for cand in (nome.stem + ".png", nome.stem + ".jpg", nome.stem + ".jpeg", nome.name):
+                    if (Path(imgdir) / cand).exists():
+                        origem = Path(imgdir) / cand
+                        break
+            if origem is not None:
                 if origem.suffix.lower() == ".pdf":
                     png = Path(tmp) / (origem.stem + ".png")
                     pymupdf.open(origem)[0].get_pixmap(dpi=220).save(png)
@@ -217,8 +308,16 @@ def figuras(s, imgdir, tmp):
     return re.sub(r"\\begin\{figure\}.*?\\end\{figure\}", bloco, s, flags=re.S)
 
 
-def prepara_tex(tex, imgdir, tmp):
+def prepara_tex(tex, imgdir, tmp, trocas=()):
+    global TITULO
     s = tex
+    for velho, novo in trocas:
+        if velho not in s:
+            raise SystemExit("trecho não encontrado para --troca: " + velho[:80])
+        s = s.replace(velho, novo)
+    mt = re.search(r"pdftitle=\{([^}]*)\}", s)
+    if mt and not TITULO:
+        TITULO = mt.group(1).strip()
     # macros de nota/fonte das tabelas: versão simples, estilizada depois
     s = re.sub(r"\\newcommand\{\\tablenote\}\[1\]\{.*\}", r"\\newcommand{\\tablenote}[1]{\\par\\textit{Nota:} #1\\par}", s)
     s = re.sub(r"\\newcommand\{\\tablesource\}\[1\]\{.*\}", r"\\newcommand{\\tablesource}[1]{\\par\\textit{Fonte:} #1\\par}", s)
@@ -226,7 +325,7 @@ def prepara_tex(tex, imgdir, tmp):
     pre, corpo = s[:ini], s[ini:]
     corpo = limpa_formatacao(corpo)
     corpo = normaliza_tabelas(corpo)
-    corpo, mapa = numera_e_resolve(corpo)
+    corpo, mapa = numera_e_resolve(corpo, tmp)
     corpo = figuras(corpo, imgdir, tmp)
     # \setcounter / \thetable já foram usados na numeração
     corpo = re.sub(r"\\setcounter\{table\}\{0\}", "", corpo)
@@ -531,10 +630,26 @@ def ajusta_figuras(d):
                 e.set("cx", str(ncx)); e.set("cy", str(ncy))
 
 
+def insere_equacoes_imagem(d):
+    for p in d.paragraphs:
+        t = p.text.strip()
+        if t.startswith(MARK_EQ) and t.endswith(MARK_EQ):
+            caminho, larg = t[len(MARK_EQ):-len(MARK_EQ)].split("|")
+            for r in list(p.runs):
+                r._r.getparent().remove(r._r)
+            p.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            p.paragraph_format.first_line_indent = Cm(0)
+            p.paragraph_format.line_spacing = 1.0
+            p.paragraph_format.space_before, p.paragraph_format.space_after = Pt(6), Pt(6)
+            p.paragraph_format.keep_together = True
+            p.add_run().add_picture(caminho, width=Cm(float(larg)))
+
+
 def pos_processa(docx_in, docx_out):
     d = Document(docx_in)
     desfaz_tabelas_de_figura(d)
     ajusta_figuras(d)
+    insere_equacoes_imagem(d)
     cinza = RGBColor(0x59, 0x59, 0x59)
     sec = d.sections[0]
     pagina(sec); rodape(sec)
@@ -543,7 +658,7 @@ def pos_processa(docx_in, docx_out):
 
     # 1. espaço reservado: título, resumo, abstract e palavras-chave
     blocos = [
-        ("[INSERIR TÍTULO DO TRABALHO]", WD_ALIGN_PARAGRAPH.CENTER, True, 14, 0, 18, False),
+        ((TITULO or "[INSERIR TÍTULO DO TRABALHO]"), WD_ALIGN_PARAGRAPH.CENTER, True, 14, 0, 18, not TITULO),
         ("RESUMO", WD_ALIGN_PARAGRAPH.LEFT, True, 12, 6, 6, False),
         ("[Inserir resumo: de 150 a 500 palavras, em parágrafo único, conforme a ABNT NBR 6028. Não identificar autoria.]",
          WD_ALIGN_PARAGRAPH.JUSTIFY, False, 12, 0, 6, True),
@@ -580,8 +695,22 @@ def pos_processa(docx_in, docx_out):
             for r in p.runs:
                 r.font.size, r.font.color.rgb = Pt(10), cinza
 
-    # 3. espaço para Referências, antes do primeiro anexo
-    if anexo_ini is not None:
+    # 3. Referências: se o texto já traz a seção, formata as entradas (ABNT NBR 6023: alinhadas à
+    #    esquerda, espaço simples, separadas por uma linha); senão, deixa espaço reservado.
+    ref_h = next((p for p in d.paragraphs if p.style.name.startswith("Heading 1") and p.text.strip().lower().endswith("referências")), None)
+    if ref_h is not None:
+        el = ref_h._p.getnext()
+        while el is not None and el.tag == qn("w:p"):
+            par = Paragraph(el, ref_h._parent)
+            if par.style.name.startswith("Heading"):
+                break
+            pf = par.paragraph_format
+            pf.alignment, pf.line_spacing, pf.first_line_indent = WD_ALIGN_PARAGRAPH.LEFT, 1.0, Cm(0)
+            pf.space_before, pf.space_after = Pt(0), Pt(8)
+            for r in par.runs:
+                r.font.size, r.font.name = Pt(11), FONTE
+            el = el.getnext()
+    elif anexo_ini is not None:
         h = novo_par_antes(anexo_ini, "REFERÊNCIAS", "Heading 1")
         h.paragraph_format.page_break_before = False
         ph = novo_par_antes(anexo_ini, "[Inserir as referências citadas no texto, em ordem alfabética, conforme a ABNT NBR 6023.]")
@@ -630,13 +759,20 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("tex"); ap.add_argument("saida")
     ap.add_argument("--imgdir", default=None)
+    ap.add_argument("--troca", nargs=2, action="append", default=[], metavar=("VELHO", "NOVO"),
+                    help="substitui um trecho do .tex antes da conversão (pode repetir)")
+    ap.add_argument("--equacao-editavel", action="store_true",
+                    help="mantém a equação com chaves como equação do Word (editável), em vez de imagem")
+    ap.add_argument("--titulo", default=None, help="título do trabalho (padrão: pdftitle do LaTeX)")
     ap.add_argument("--linha", type=float, default=1.5, help="entrelinhas do corpo (padrão 1,5, como no edital)")
     a = ap.parse_args()
-    global LINHA
+    global LINHA, TITULO, EQ_IMAGEM
+    EQ_IMAGEM = not a.equacao_editavel
     LINHA = a.linha
+    TITULO = a.titulo or ""
     with tempfile.TemporaryDirectory() as tmp:
         tex = Path(a.tex).read_text(encoding="utf-8")
-        novo, mapa = prepara_tex(tex, a.imgdir, tmp)
+        novo, mapa = prepara_tex(tex, a.imgdir, tmp, a.troca)
         (Path(tmp) / "x.tex").write_text(novo, encoding="utf-8")
         ref = Path(tmp) / "ref.docx"
         referencia_docx(ref)
