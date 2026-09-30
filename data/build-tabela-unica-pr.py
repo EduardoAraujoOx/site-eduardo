@@ -3,8 +3,7 @@
 Tabela única do artigo: receita per capita municipal do Paraná (ISS + cota-parte
 do ICMS em 2025, substituídos pelo IBS depois) nos municípios de maior e menor
 valor em 2025, com colunas 2025, 2029, 2033, 2050 e 2077, e medidas de
-dispersão (desvio-padrão, coeficiente de variação, desvio médio absoluto
-relativo, Gini, razão máx./mín.) calculadas sobre todos os municípios elegíveis.
+dispersão (razão máx./mín. e Gini) calculadas sobre todos os municípios elegíveis.
 
 Reaproveita montar() de build-tabelas-artigo-pr.py (base final auditada, ISS com
 correções do PIT/TCE-PR, R$ constantes de 2025, população fixa). 2029-2033 vêm
@@ -32,13 +31,7 @@ def dma_rel(v):
 
 
 def medidas(v):
-    m = statistics.mean(v)
-    return {
-        "Média (R$)": (m, 0), "Desvio-padrão (R$)": (statistics.pstdev(v), 0),
-        "Coeficiente de variação (%)": (100 * statistics.pstdev(v) / m, 1),
-        "Desvio médio absoluto / média (%)": (100 * dma_rel(v), 1),
-        "Índice de Gini": (bt.gini(v), 3), "Razão máx./mín.": (max(v) / min(v), 1),
-    }
+    return {"Razão máx./mín.": (max(v) / min(v), 1), "Índice de Gini": (bt.gini(v), 3)}
 
 
 def main():
@@ -131,9 +124,8 @@ def gerar_docx(ext, disp, n_eleg):
     par("Fonte: elaboração própria, com base na DCA/Siconfi, Portal da Transparência do PR e PIT/TCE-PR (base municipal final auditada). "
         "Receita per capita = ISS + cota-parte do ICMS em 2025, substituídos pelo IBS municipal de 2029 em diante, conforme o cronograma "
         "do art. 131 do ADCT (EC 132/2023) e PIB real de 2,2% a.a. após 2033. Valores em R$ constantes de 2025; população fixa (média "
-        "2019-2026). Medidas de dispersão calculadas sobre todos os municípios elegíveis, e não só os exibidos; o desvio-padrão em reais "
-        "acompanha o crescimento real da receita, por isso o coeficiente de variação e o desvio médio relativo (ambos divididos pela média) "
-        "são as medidas comparáveis entre anos.", italic=True, size=8)
+        "2019-2026). Razão máx./mín. = maior valor per capita dividido pelo menor; o Índice de Gini (0 = igualdade perfeita) "
+        "considera todos os municípios elegíveis, e não só os exibidos.", italic=True, size=8)
     doc.save(OUT / "tabela-unica-dispersao-percapita-pr.docx")
 
 
