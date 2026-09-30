@@ -427,6 +427,10 @@ def main():
             "delta_metodologia_2033_pp": (
                 proj[2033]["var"]*100 - old_var*100 if old_var is not None else None
             ),
+            "seguro_2029_final": proj[2029]["rep"],
+            "seguro_2030_final": proj[2030]["rep"],
+            "seguro_2031_final": proj[2031]["rep"],
+            "seguro_2032_final": proj[2032]["rep"],
             "seguro_2033_final": proj[2033]["rep"],
         })
 
@@ -475,6 +479,18 @@ def main():
     acumulado_total=sum(a["total"] for a in aggregate.values())
     acumulado_contra=sum(a["contra"] for a in aggregate.values())
 
+    seguro_pr_municipios = []
+    for r in rows:
+        vals = [r[f"seguro_{ano}_final"] for ano in ANOS_PROJ]
+        if any(v > 1e-6 for v in vals):
+            seguro_pr_municipios.append({
+                "codigo_ibge": r["codigo_ibge"],
+                "municipio": r["municipio"],
+                **{str(ano): r[f"seguro_{ano}_final"] for ano in ANOS_PROJ},
+                "total": sum(vals),
+            })
+    seguro_pr_municipios.sort(key=lambda x:x["municipio"])
+
     summary={
         "generated_at_utc":datetime.now(timezone.utc).isoformat(),
         "metodologia_final":{
@@ -491,6 +507,7 @@ def main():
         "portal_sum_pr":portal_sum,
         "fator_reconciliacao":fator_reconciliacao,
         "seguro_receita":seguro_summary,
+        "seguro_receita_municipios_pr":seguro_pr_municipios,
         "agregado_municipios_pr":agg_summary,
         "acumulado_2029_2033":{
             "receita_final":acumulado_total,
