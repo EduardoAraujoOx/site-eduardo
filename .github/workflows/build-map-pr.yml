@@ -1,0 +1,28 @@
+name: Gerar mapa municipal PR
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "data/build-map-pr-variacoes.py"
+      - ".github/workflows/build-map-pr.yml"
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pandas matplotlib geopandas requests
+      - run: python data/build-map-pr-variacoes.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mapa-municipal-pr
+          path: |
+            artifacts/mapa_variacao_municipal_pr_2033.pdf
+            artifacts/mapa_variacao_municipal_pr_2033.png
+          retention-days: 7
