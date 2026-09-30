@@ -72,6 +72,7 @@ def main():
 
 def gerar_docx(ext, disp, n_eleg):
     from docx import Document
+    from docx.enum.section import WD_ORIENT
     from docx.enum.table import WD_TABLE_ALIGNMENT
     from docx.enum.text import WD_ALIGN_PARAGRAPH
     from docx.oxml import OxmlElement
@@ -79,53 +80,94 @@ def gerar_docx(ext, disp, n_eleg):
     from docx.shared import Pt, Cm
     br = bt._br
     doc = Document()
-    s = doc.sections[0]; s.left_margin = s.right_margin = Cm(2.2)
-    doc.styles["Normal"].font.name = "Times New Roman"; doc.styles["Normal"].font.size = Pt(11)
+    s = doc.sections[0]
+    s.page_width, s.page_height = Cm(21.0), Cm(29.7)
+    s.left_margin = s.right_margin = Cm(2.0)
+    st = doc.styles["Normal"]; st.font.name = "Times New Roman"; st.font.size = Pt(10)
+    st.element.rPr.rFonts.set(qn("w:eastAsia"), "Times New Roman")
 
-    def par(t, bold=False, italic=False, size=None, after=4):
-        p = doc.add_paragraph(); r = p.add_run(t); r.bold, r.italic = bold, italic
-        if size: r.font.size = Pt(size)
+    def par(t, bold=False, italic=False, size=10, after=4, align=None):
+        p = doc.add_paragraph(); r = p.add_run(t); r.bold, r.italic = bold, italic; r.font.size = Pt(size)
         p.paragraph_format.space_after = Pt(after)
+        if align: p.alignment = align
+        return p
 
     def borda(c, **kw):
-        b = OxmlElement("w:tcBorders")
-        for lado, v in kw.items():
-            e = OxmlElement(f"w:{lado}"); e.set(qn("w:val"), v); e.set(qn("w:sz"), "6"); b.append(e)
-        c._tc.get_or_add_tcPr().append(b)
+        tcPr = c._tc.get_or_add_tcPr()
+        b = tcPr.find(qn("w:tcBorders"))
+        if b is None:
+            b = OxmlElement("w:tcBorders"); tcPr.append(b)
+        for lado, (v, sz) in kw.items():
+            e = OxmlElement(f"w:{lado}"); e.set(qn("w:val"), v); e.set(qn("w:sz"), str(sz)); b.append(e)
 
-    par("Tabela 1 – Receita per capita de ISS e cota-parte do ICMS (2025) e do IBS municipal (2029-2077): "
-        "municípios paranaenses de maior e menor valor em 2025 e medidas de dispersão (R$ de 2025)", bold=True, size=10)
-    cab = ["Município", "População"] + [str(y) for y in ANOS]
-    t = doc.add_table(rows=1, cols=len(cab)); t.alignment = WD_TABLE_ALIGNMENT.CENTER
-    def linha(vals, bold=False, sep=None, ultima=False):
-        cells = t.add_row().cells if vals is not cab else t.rows[0].cells
-        for i, v in enumerate(vals):
-            cells[i].text = ""; r = cells[i].paragraphs[0].add_run(str(v)); r.font.size = Pt(9); r.bold = bold
-            cells[i].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT if i else WD_ALIGN_PARAGRAPH.LEFT
-            cells[i].paragraphs[0].paragraph_format.space_after = Pt(0)
-            if sep: borda(cells[i], **sep)
-    linha(cab, bold=True, sep=dict(top="single", bottom="single"))
-    for i, l in enumerate(ext):
-        rk = i + 1 if i < N else n_eleg - 2 * N + i + 1
-        linha([f"{rk}. {l['municipio']}", br(l["pop"])] + [br(l[f"pc{y}"]) for y in ANOS],
-              sep=dict(bottom="dashed") if i == N - 1 else None)
-    nomes = list(disp[2025].keys())
-    c = t.add_row().cells; m = c[0].merge(c[-1]); m.text = ""
-    r = m.paragraphs[0].add_run(f"Medidas de dispersão – {n_eleg} municípios com dados auditados"); r.bold = True; r.font.size = Pt(9)
-    m.paragraphs[0].paragraph_format.space_after = Pt(0); borda(m, top="single")
-    for k, nome in enumerate(nomes):
+    def sombra(c, cor="E7E6E6"):
+        e = OxmlElement("w:shd"); e.set(qn("w:val"), "clear"); e.set(qn("w:color"), "auto"); e.set(qn("w:fill"), cor)
+        c._tc.get_or_add_tcPr().append(e)
+
+    def celula(c, txt, bold=False, italic=False, align="r", size=9):
+        c.text = ""; p = c.paragraphs[0]; r = p.add_run(txt); r.bold, r.italic = bold, italic; r.font.size = Pt(size)
+        p.alignment = {"l": WD_ALIGN_PARAGRAPH.LEFT, "r": WD_ALIGN_PARAGRAPH.RIGHT, "c": WD_ALIGN_PARAGRAPH.CENTER}[align]
+        p.paragraph_format.space_after = Pt(0); p.paragraph_format.space_before = Pt(1)
+
+    par("Tabela 1 – Receita per capita de ISS e cota-parte do ICMS (2025) e do IBS municipal (2029-2077) nos municípios "
+        "paranaenses de maior e menor valor em 2025, com medidas de dispersão (R$ de 2025)", bold=True, size=10, after=6)
+
+    larg = [4.3, 1.9] + [1.75] * len(ANOS) + [2.05]
+    ncol = len(larg)
+    t = doc.add_table(rows=0, cols=ncol); t.alignment = WD_TABLE_ALIGNMENT.CENTER; t.autofit = False
+    tblPr = t._tbl.tblPr
+    lay = OxmlElement("w:tblLayout"); lay.set(qn("w:type"), "fixed"); tblPr.append(lay)
+    def nova():
+        r = t.add_row()
+        for i, w in enumerate(larg): r.cells[i].width = Cm(w)
+        return r.cells
+    def var(a, b):
+        v = f"{(b / a - 1) * 100:+,.1f}%".replace(",", "X").replace(".", ",").replace("X", ".")
+        return v.replace("-", "\u2212")
+
+    # cabeçalho em dois níveis (células de rótulo mescladas na vertical)
+    c = nova()
+    g = c[2].merge(c[2 + len(ANOS) - 1]); celula(g, "Receita per capita (R$)", bold=True, align="c")
+    borda(g, bottom=("single", 4))
+    c2 = nova()
+    for i in range(2, 2 + len(ANOS)): celula(c2[i], str(ANOS[i - 2]), bold=True, align="c")
+    for i, h in ((0, "Município"), (1, "População"), (ncol - 1, "Variação\n2025-2077")):
+        m = c[i].merge(c2[i]); celula(m, h, bold=True, align="l" if i == 0 else "c")
+    for cel in c: borda(cel, top=("single", 12))
+    for cel in c2: borda(cel, bottom=("single", 6))
+
+    n = N
+    def linha_mun(rot, l):
+        c = nova()
+        celula(c[0], rot, align="l"); celula(c[1], br(l["pop"]))
+        for k, y in enumerate(ANOS): celula(c[2 + k], br(l[f"pc{y}"]))
+        celula(c[-1], var(l["pc2025"], l["pc2077"]))
+    for i, l in enumerate(ext[:n]): linha_mun(f"{i + 1}. {l['municipio']}", l)
+    c = nova()
+    celula(c[0], f"... ({n_eleg - 2 * n} municípios omitidos)", italic=True, align="l")
+    for k in range(1, ncol): celula(c[k], "...", italic=True, align="c")
+    for i, l in enumerate(ext[n:]): linha_mun(f"{n_eleg - n + i + 1}. {l['municipio']}", l)
+
+    # linhas de dispersão, destacadas
+    for k, nome in enumerate(disp[2025]):
         casas = disp[2025][nome][1]
-        linha([nome, ""] + [br(disp[y][nome][0], casas) for y in ANOS],
-              sep=dict(bottom="single") if k == len(nomes) - 1 else None)
-    for row in t.rows:
-        for i, w in enumerate([5.2, 2.0] + [1.9] * len(ANOS)):
-            row.cells[i].width = Cm(w)
-    par("", after=2)
-    par("Fonte: elaboração própria, com base na DCA/Siconfi, Portal da Transparência do PR e PIT/TCE-PR (base municipal final auditada). "
-        "Receita per capita = ISS + cota-parte do ICMS em 2025, substituídos pelo IBS municipal de 2029 em diante, conforme o cronograma "
-        "do art. 131 do ADCT (EC 132/2023) e PIB real de 2,2% a.a. após 2033. Valores em R$ constantes de 2025; população fixa (média "
-        "2019-2026). Razão máx./mín. = maior valor per capita dividido pelo menor; o Índice de Gini (0 = igualdade perfeita) "
-        "considera todos os municípios elegíveis, e não só os exibidos.", italic=True, size=8)
+        c = nova()
+        rot = f"{nome} – {n_eleg} municípios"
+        celula(c[0], rot, bold=True, align="l", size=9)
+        g = c[0].merge(c[1]); celula(g, rot, bold=True, align="l")
+        for kk, y in enumerate(ANOS): celula(c[2 + kk], br(disp[y][nome][0], casas), bold=True)
+        celula(c[-1], var(disp[2025][nome][0], disp[2077][nome][0]), bold=True)
+        for cel in c:
+            sombra(cel)
+            if k == 0: borda(cel, top=("single", 8))
+            if k == len(disp[2025]) - 1: borda(cel, bottom=("single", 12))
+    par("", after=2, size=4)
+    par("Fonte: elaboração própria, com base na DCA/Siconfi, no Portal da Transparência do Paraná e no PIT/TCE-PR (base municipal final "
+        "auditada). Nota: receita per capita = ISS + cota-parte do ICMS em 2025, substituídos pelo IBS municipal de 2029 em diante, conforme o "
+        "cronograma do art. 131 do ADCT (EC 132/2023) e PIB real de 2,2% a.a. após 2033; valores em R$ constantes de 2025 e população fixa "
+        "(média 2019-2026). Razão máx./mín. = maior valor per capita dividido pelo menor; Índice de Gini (0 = igualdade perfeita). As duas "
+        "medidas consideram todos os municípios elegíveis, e não apenas os exibidos; os municípios intermediários foram omitidos (...).",
+        italic=False, size=8, after=0)
     doc.save(OUT / "tabela-unica-dispersao-percapita-pr.docx")
 
 
