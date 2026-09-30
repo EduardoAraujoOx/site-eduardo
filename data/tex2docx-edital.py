@@ -43,6 +43,7 @@ FONTE = "Times New Roman"
 MARK_RC, MARK_LS, MARK_LE, MARK_EQ = "§§RC§§", "§§LS§§", "§§LE§§", "§§EQ§§"
 LINHA = 1.5   # entrelinhas do corpo (edital: 1,5)
 LARG_FIG = []  # larguras (cm) das figuras reais, na ordem do texto
+ABERTURA = None  # dict com titulo, subtitulo, resumo, palavras, abstract, keywords (--abertura JSON)
 TITULO = ""    # título do trabalho (pdftitle do LaTeX ou --titulo)
 EQ_IMAGEM = True  # equações com \\underbrace viram imagem (True) ou equação editável do Word (False)
 
@@ -667,9 +668,27 @@ def pos_processa(docx_in, docx_out):
         ("[Insert abstract in English, consistent with the Portuguese resumo.]", WD_ALIGN_PARAGRAPH.JUSTIFY, False, 12, 0, 6, True),
         ("Keywords: [insert 3 to 5 keywords, separated by semicolons].", WD_ALIGN_PARAGRAPH.LEFT, False, 12, 6, 14, True),
     ]
+    if ABERTURA:
+        A = ABERTURA
+        J, L, C = WD_ALIGN_PARAGRAPH.JUSTIFY, WD_ALIGN_PARAGRAPH.LEFT, WD_ALIGN_PARAGRAPH.CENTER
+        blocos = [(A["titulo"], C, True, 14, 0, 6, False)]
+        if A.get("subtitulo"):
+            blocos.append((A["subtitulo"], C, True, 12, 0, 18, False))
+        blocos += [("RESUMO", L, True, 12, 6, 6, False), (A["resumo"], J, False, 12, 0, 6, False),
+                   ("Palavras-chave: " + A["palavras"], L, False, 12, 6, 14, False),
+                   ("ABSTRACT", L, True, 12, 6, 6, False), (A["abstract"], J, False, 12, 0, 6, False),
+                   ("Keywords: " + A["keywords"], L, False, 12, 6, 14, False)]
     for texto, alinh, neg, tam, antes, depois, cinza_ in blocos:
         par = novo_par_antes(primeiro, texto)
-        p_fmt(par, alinh, negrito=neg, tam=tam, antes=antes, depois=depois, cor=cinza if cinza_ else None, italico=cinza_)
+        p_fmt(par, alinh, negrito=neg, tam=tam, antes=antes, depois=depois, cor=cinza if cinza_ else None,
+              italico=cinza_, linha=(1.0 if ABERTURA and alinh == WD_ALIGN_PARAGRAPH.JUSTIFY else None))
+        for rot in ("Palavras-chave:", "Keywords:"):
+            if ABERTURA and texto.startswith(rot):
+                par.runs[0].text = texto[len(rot):]
+                r = par.runs[0]._r.addprevious  # insere o rótulo em negrito antes do texto
+                nr = OxmlElement("w:r"); par.runs[0]._r.addprevious(nr)
+                from docx.text.run import Run
+                rr = Run(nr, par); rr.text = rot; rr.font.bold = True; rr.font.name = FONTE; rr.font.size = Pt(tam)
     # quebra de página após o bloco de abertura
     primeiro.paragraph_format.page_break_before = False
 
@@ -764,9 +783,13 @@ def main():
     ap.add_argument("--equacao-editavel", action="store_true",
                     help="mantém a equação com chaves como equação do Word (editável), em vez de imagem")
     ap.add_argument("--titulo", default=None, help="título do trabalho (padrão: pdftitle do LaTeX)")
+    ap.add_argument("--abertura", default=None, help="JSON com titulo, subtitulo, resumo, palavras, abstract, keywords")
     ap.add_argument("--linha", type=float, default=1.5, help="entrelinhas do corpo (padrão 1,5, como no edital)")
     a = ap.parse_args()
-    global LINHA, TITULO, EQ_IMAGEM
+    global LINHA, TITULO, EQ_IMAGEM, ABERTURA
+    if a.abertura:
+        import json
+        ABERTURA = json.loads(Path(a.abertura).read_text(encoding="utf-8"))
     EQ_IMAGEM = not a.equacao_editavel
     LINHA = a.linha
     TITULO = a.titulo or ""
