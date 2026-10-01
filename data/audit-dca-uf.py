@@ -629,6 +629,79 @@ def summarize(snapshot: dict, rows: list[dict], details: list[dict], nat: dict):
     }
 
 
+# Limiares do teste temporal (participação no total da UF vs. mediana dos demais anos).
+TEMPORAL_FORTE = (0.20, 5.0)
+TEMPORAL_MODERADO = (0.40, 2.5)
+TEMPORAL_MIN_ANOS = 4  # mínimo de outros anos observados para formar a mediana
+
+
+def build_temporal_anomalies(snapshot: dict):
+    """Detecta oscilações anormais ano a ano, para ISS e cota-parte, em TODOS os anos.
+
+    Em vez de comparar valores nominais (que crescem de fato com inflação e
+    atividade), compara a participação do município no total observado da UF
+    em cada ano com a mediana da sua participação nos demais anos. Isso remove
+    a tendência comum a todos os municípios e isola o comportamento idiossincrático.
+    Sinaliza também o padrão de "pico e reversão" (sobe e volta no ano seguinte),
+    típico de erro de lançamento. Apenas sinaliza; não substitui valores.
+    A materialidade mede quanto o desvio pesa na receita média anual (ISS+cota)
+    do município, para priorizar a análise manual.
+    """
+    codes = sorted(snapshot["municipios"])
+    out = []
+    for comp, key in (("iss", "iss"), ("cota_parte", "cota_raw")):
+        val = {c: {a: snapshot["municipios"][c]["anos"][str(a)].get(key) for a in ANOS} for c in codes}
+        tot = {a: sum(v for c in codes if (v := val[c][a]) is not None) for a in ANOS}
+        share = {c: {a: (val[c][a] / tot[a] if val[c][a] is not None and tot[a] > 0 else None) for a in ANOS} for c in codes}
+        for c in codes:
+            # receita média anual (ISS+cota) observada, para materialidade
+            rec = []
+            for a in ANOS:
+                r = snapshot["municipios"][c]["anos"][str(a)]
+                rec.append((r.get("iss") or 0) + (r.get("cota_raw") or 0))
+            rec_med = (sum(rec) / len(rec)) if rec else 0
+            for a in ANOS:
+                sh = share[c][a]
+                if sh is None:
+                    continue
+                peers = [share[c][y] for y in ANOS if y != a and share[c][y] is not None and share[c][y] > 0]
+                if len(peers) < TEMPORAL_MIN_ANOS:
+                    continue
+                med = statistics.median(peers)
+                ratio = sh / med if med > 0 else None
+                if ratio is None:
+                    continue
+                if ratio >= TEMPORAL_FORTE[1] or ratio <= TEMPORAL_FORTE[0]:
+                    grau = "forte"
+                elif ratio >= TEMPORAL_MODERADO[1] or ratio <= TEMPORAL_MODERADO[0]:
+                    grau = "moderado"
+                else:
+                    continue
+                esperado = med * tot[a]
+                desvio = val[c][a] - esperado
+                # pico e reversão: desvio em a, e anos vizinhos de volta ao normal
+                vizinhos = [share[c][y] for y in (a - 1, a + 1) if y in share[c] and share[c][y] is not None]
+                reversao = bool(vizinhos) and all(
+                    TEMPORAL_MODERADO[0] < (v / med) < TEMPORAL_MODERADO[1] for v in vizinhos
+                )
+                out.append({
+                    "codigo_ibge": c,
+                    "municipio": snapshot["municipios"][c]["nome"],
+                    "componente": comp,
+                    "ano": a,
+                    "valor_observado": val[c][a],
+                    "valor_esperado_pela_mediana": esperado,
+                    "razao_participacao_vs_mediana": ratio,
+                    "grau": grau,
+                    "sinal": "muito_acima" if ratio > 1 else "muito_abaixo",
+                    "padrao_pico_reversao": reversao,
+                    "desvio_abs": desvio,
+                    "materialidade_pct_receita_media": (abs(desvio) / rec_med * 100) if rec_med > 0 else None,
+                })
+    out.sort(key=lambda r: (r["grau"] != "forte", -(r["materialidade_pct_receita_media"] or 0)))
+    return out
+
+
 def main():
     global UF
     ap = argparse.ArgumentParser()
@@ -652,6 +725,20 @@ def main():
     adjusted = build_adjusted_series(snapshot, ref_data)
     rows, details, nat = build_diagnostics(snapshot, adjusted, ref_data)
     summary = summarize(snapshot, rows, details, nat)
+    temporal = build_temporal_anomalies(snapshot)
+    summary["anomalias_temporais"] = {
+        "criterio": (
+            "participação do município no total da UF no ano vs. mediana das participações nos demais anos "
+            f"(forte: <= {TEMPORAL_FORTE[0]} ou >= {TEMPORAL_FORTE[1]}; moderado: <= {TEMPORAL_MODERADO[0]} ou >= {TEMPORAL_MODERADO[1]}); "
+            "ISS e cota-parte, todos os anos; apenas sinalizador"
+        ),
+        "n_forte": sum(1 for r in temporal if r["grau"] == "forte"),
+        "n_moderado": sum(1 for r in temporal if r["grau"] == "moderado"),
+        "n_pico_reversao": sum(1 for r in temporal if r["padrao_pico_reversao"]),
+        "n_municipios_afetados": len({r["codigo_ibge"] for r in temporal}),
+    }
+    write_csv(outdir / f"anomalias-temporais-{tag}-{today}.csv", temporal)
+    write_csv(outdir / f"anomalias-temporais-{tag}-latest.csv", temporal)
 
     dump_json(outdir / f"diagnostico-{tag}-{today}.json", summary)
     dump_json(outdir / f"diagnostico-{tag}-latest.json", summary)

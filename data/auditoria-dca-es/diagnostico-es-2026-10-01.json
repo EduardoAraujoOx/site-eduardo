@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-10-01T17:09:58.242589+00:00",
+  "generated_at_utc": "2026-10-01T17:45:20.200254+00:00",
   "uf": "ES",
   "n_municipios": 78,
   "n_observacoes_municipio_ano": 546,
@@ -13,9 +13,9 @@
   "municipios_outlier_abs_30pct_apos_ajuste": 1,
   "municipios_com_mudanca_10pp_ou_mais": 0,
   "total_br_2025_antigo": 1016767628985.4602,
-  "total_br_2025_ajustado_pr": 1017036880054.9202,
-  "iss_pr_2025_antigo": 2769305387.2500014,
-  "iss_pr_2025_nova_serie_ajustada": 3038556456.71,
+  "total_br_2025_ajustado_uf": 1017036880054.9202,
+  "iss_uf_2025_antigo": 2769305387.2500014,
+  "iss_uf_2025_nova_serie_ajustada": 3038556456.71,
   "top_20_outliers_ajustados": [
     {
       "codigo_ibge": "3204302",
@@ -340,5 +340,12 @@
       "flags": ""
     }
   ],
-  "nota_metodologica": "A série ajustada prioriza a nova coleta. Se a API atual não devolve um componente, preserva-se o valor arquivado na fotografia anterior, quando existente. Apenas na ausência de ambos ocorre imputação temporal. ISS é atualizado pela variação agregada entre municípios comuns aos dois anos. A cota-parte usa a participação municipal no(s) ano(s) mais próximo(s), renormalizada para fechar no total estadual da cota-parte. Valores observados extremos não são substituídos automaticamente; são apenas sinalizados."
+  "nota_metodologica": "A série ajustada prioriza a nova coleta. Se a API atual não devolve um componente, preserva-se o valor arquivado na fotografia anterior, quando existente. Apenas na ausência de ambos ocorre imputação temporal. ISS é atualizado pela variação agregada entre municípios comuns aos dois anos. A cota-parte usa a participação municipal no(s) ano(s) mais próximo(s), renormalizada para fechar no total estadual da cota-parte. Valores observados extremos não são substituídos automaticamente; são apenas sinalizados.",
+  "anomalias_temporais": {
+    "criterio": "participação do município no total da UF no ano vs. mediana das participações nos demais anos (forte: <= 0.2 ou >= 5.0; moderado: <= 0.4 ou >= 2.5); ISS e cota-parte, todos os anos; apenas sinalizador",
+    "n_forte": 0,
+    "n_moderado": 8,
+    "n_pico_reversao": 8,
+    "n_municipios_afetados": 7
+  }
 }
