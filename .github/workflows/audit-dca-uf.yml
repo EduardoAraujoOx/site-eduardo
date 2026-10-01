@@ -1,0 +1,89 @@
+name: Auditoria DCA municipal por UF
+
+on:
+  workflow_dispatch:
+    inputs:
+      ufs:
+        description: "UFs separadas por vírgula (ex.: ES,MG) ou 'todas'"
+        required: true
+        default: "todas"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: audit-dca-uf
+  cancel-in-progress: false
+
+jobs:
+  preparar:
+    runs-on: ubuntu-latest
+    outputs:
+      ufs: ${{ steps.lista.outputs.ufs }}
+    steps:
+      - id: lista
+        run: |
+          TODAS='["AC","AL","AM","AP","BA","CE","DF","ES","GO","MA","MG","MS","MT","PA","PB","PE","PI","PR","RJ","RN","RO","RR","RS","SC","SE","SP","TO"]'
+          IN="${{ github.event.inputs.ufs }}"
+          if [ "$IN" = "todas" ]; then
+            echo "ufs=$TODAS" >> "$GITHUB_OUTPUT"
+          else
+            LISTA=$(echo "$IN" | tr 'a-z' 'A-Z' | tr -d ' ' | python3 -c "import sys,json; print(json.dumps([u for u in sys.stdin.read().split(',') if u]))")
+            echo "ufs=$LISTA" >> "$GITHUB_OUTPUT"
+          fi
+
+  auditar:
+    needs: preparar
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        uf: ${{ fromJSON(needs.preparar.outputs.ufs) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Pasta de saída em minúsculas
+        run: echo "UFL=$(echo '${{ matrix.uf }}' | tr 'A-Z' 'a-z')" >> "$GITHUB_ENV"
+      - name: Coletar e auditar ${{ matrix.uf }}
+        run: python3 data/audit-dca-uf.py --uf ${{ matrix.uf }} --sleep 0.15
+      - uses: actions/upload-artifact@v4
+        with:
+          name: auditoria-dca-${{ matrix.uf }}
+          path: data/auditoria-dca-${{ env.UFL }}/
+          retention-days: 30
+
+  consolidar:
+    needs: auditar
+    if: ${{ always() && needs.auditar.result != 'cancelled' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: auditoria-dca-*
+          path: /tmp/auditorias
+      - name: Posicionar resultados
+        run: |
+          for d in /tmp/auditorias/auditoria-dca-*; do
+            uf=$(basename "$d" | sed 's/auditoria-dca-//' | tr 'A-Z' 'a-z')
+            rm -rf "data/auditoria-dca-$uf"
+            cp -R "$d" "data/auditoria-dca-$uf"
+          done
+      - name: Consolidar ranking nacional
+        run: python3 data/consolidate-audit-dca-br.py
+      - name: Salvar no repositório
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/auditoria-dca-*/
+          if git diff --staged --quiet; then echo "Sem alterações."; exit 0; fi
+          git commit -m "dados: auditoria nacional do DCA municipal por UF"
+          git pull --rebase origin "${{ github.ref_name }}"
+          git push origin "HEAD:${{ github.ref_name }}"
