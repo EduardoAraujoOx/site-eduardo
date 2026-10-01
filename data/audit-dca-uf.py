@@ -593,9 +593,9 @@ def summarize(snapshot: dict, rows: list[dict], details: list[dict], nat: dict):
             1 for r in rows if r["delta_variacao_pp"] is not None and abs(r["delta_variacao_pp"]) >= 10
         ),
         "total_br_2025_antigo": nat["old_total"][2025],
-        "total_br_2025_ajustado_pr": nat["total_2025"],
-        "iss_pr_2025_antigo": nat["old_pr_iss"][2025],
-        "iss_pr_2025_nova_serie_ajustada": nat["new_pr_iss"][2025],
+        "total_br_2025_ajustado_uf": nat["total_2025"],
+        "iss_uf_2025_antigo": nat["old_pr_iss"][2025],
+        "iss_uf_2025_nova_serie_ajustada": nat["new_pr_iss"][2025],
         "top_20_outliers_ajustados": [
             {
                 "codigo_ibge": r["codigo_ibge"],
