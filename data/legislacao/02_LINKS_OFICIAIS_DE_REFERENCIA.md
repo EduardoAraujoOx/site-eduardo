@@ -25,3 +25,14 @@ https://www2.camara.leg.br/legin/fed/leicom/2026/leicomplementar-227-13-janeiro-
 Fonte oficial alternativa para texto constitucional consolidado:
 
 https://www2.senado.leg.br/bdsf/bitstream/handle/id/645769/CF88_EC132_livro.pdf
+
+
+## Lei Complementar nº 214/2025
+
+Fonte primária desejável:
+
+https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm
+
+Fonte oficial alternativa consultável:
+
+https://www2.camara.leg.br/legin/fed/leicom/2025/leicomplementar-214-16-janeiro-2025-796905-normaatualizada-pl.html
