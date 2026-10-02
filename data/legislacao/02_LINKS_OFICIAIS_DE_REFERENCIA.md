@@ -1,0 +1,27 @@
+# Links oficiais de referência
+
+## Emenda Constitucional nº 132/2023
+
+Fonte primária desejável:
+
+https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc132.htm
+
+Fonte oficial alternativa consultável:
+
+https://www.in.gov.br/en/web/dou/-/emenda-constitucional-n-132-532314756
+
+## Lei Complementar nº 227/2026
+
+Fonte primária desejável:
+
+https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp227.htm
+
+Fonte oficial alternativa consultável:
+
+https://www2.camara.leg.br/legin/fed/leicom/2026/leicomplementar-227-13-janeiro-2026-798657-normaatualizada-pl.html
+
+## Constituição Federal compilada
+
+Fonte oficial alternativa para texto constitucional consolidado:
+
+https://www2.senado.leg.br/bdsf/bitstream/handle/id/645769/CF88_EC132_livro.pdf
