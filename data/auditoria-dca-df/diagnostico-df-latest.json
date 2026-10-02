@@ -1,0 +1,28 @@
+{
+  "generated_at_utc": "2026-10-02T01:30:41.117192+00:00",
+  "uf": "DF",
+  "n_municipios": 1,
+  "n_observacoes_municipio_ano": 7,
+  "status_nova_coleta": {
+    "absent_dca": 7
+  },
+  "municipios_com_imputacao_temporal": 0,
+  "municipios_com_snapshot_legado_utilizado": 0,
+  "municipios_com_componente_nao_resolvido": 1,
+  "municipios_outlier_abs_30pct_apos_ajuste": 0,
+  "municipios_com_mudanca_10pp_ou_mais": 0,
+  "total_br_2025_antigo": 1016767628985.4602,
+  "total_br_2025_ajustado_uf": 1012904843153.4202,
+  "iss_uf_2025_antigo": 3862785832.04,
+  "iss_uf_2025_nova_serie_ajustada": 0,
+  "top_20_outliers_ajustados": [],
+  "top_20_maiores_revisoes": [],
+  "nota_metodologica": "A série ajustada prioriza a nova coleta. Se a API atual não devolve um componente, preserva-se o valor arquivado na fotografia anterior, quando existente. Apenas na ausência de ambos ocorre imputação temporal. ISS é atualizado pela variação agregada entre municípios comuns aos dois anos. A cota-parte usa a participação municipal no(s) ano(s) mais próximo(s), renormalizada para fechar no total estadual da cota-parte. Valores observados extremos não são substituídos automaticamente; são apenas sinalizados.",
+  "anomalias_temporais": {
+    "criterio": "participação do município no total da UF no ano vs. mediana das participações nos demais anos (forte: <= 0.2 ou >= 5.0; moderado: <= 0.4 ou >= 2.5); ISS e cota-parte, todos os anos; apenas sinalizador",
+    "n_forte": 0,
+    "n_moderado": 0,
+    "n_pico_reversao": 0,
+    "n_municipios_afetados": 0
+  }
+}
