@@ -1,11 +1,16 @@
 name: Auditoria DCA municipal por UF
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "data/audit-dca-uf-run.trigger"
   workflow_dispatch:
     inputs:
       ufs:
         description: "UFs separadas por vírgula (ex.: ES,MG) ou 'todas'"
-        required: true
+        required: false
         default: "todas"
 
 permissions:
@@ -25,7 +30,7 @@ jobs:
         run: |
           TODAS='["AC","AL","AM","AP","BA","CE","DF","ES","GO","MA","MG","MS","MT","PA","PB","PE","PI","PR","RJ","RN","RO","RR","RS","SC","SE","SP","TO"]'
           IN="${{ github.event.inputs.ufs }}"
-          if [ "$IN" = "todas" ]; then
+          if [ -z "$IN" ] || [ "$IN" = "todas" ]; then
             echo "ufs=$TODAS" >> "$GITHUB_OUTPUT"
           else
             LISTA=$(echo "$IN" | tr 'a-z' 'A-Z' | tr -d ' ' | python3 -c "import sys,json; print(json.dumps([u for u in sys.stdin.read().split(',') if u]))")
