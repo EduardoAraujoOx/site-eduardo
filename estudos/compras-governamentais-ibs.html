@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compras governamentais e o IBS: quem recebe o imposto que o governo paga | Eduardo Reis Araújo</title>
+    <meta name="description" content="Como o IBS funciona quando é o próprio governo que compra: o que diz a Constituição, quanto se paga, para quem vai o imposto e por que isso muda a divisão da receita entre municípios.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/compras-governamentais-ibs.html">
+
+    <meta property="og:title" content="Compras governamentais e o IBS: quem recebe o imposto que o governo paga">
+    <meta property="og:description" content="Quando a prefeitura, o Estado ou a União compram, o IBS e a CBS seguem regras próprias. Uma explicação acessível, com a legislação conferida, e o que isso muda na divisão da receita.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/compras-governamentais-ibs.html">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '\\(', right: '\\)', display: false}
+            ],
+            throwOnError: false
+        })"></script>
+
+    <link rel="stylesheet" href="/css/notas.css?v=4">
+    <link rel="stylesheet" href="/css/search.css">
+
+    <style>
+        .study-hero { max-width: 820px; margin: 0 auto; padding: 3rem 2rem 1.5rem; }
+        .study-hero-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+        .study-hero-tag { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); padding: 0.25rem 0.6rem; border-radius: 4px; }
+        .study-hero-topic { font-family: var(--sans); font-size: 0.73rem; color: var(--text-secondary); background: var(--border-light); padding: 0.2rem 0.55rem; border-radius: 4px; }
+        .study-hero-date { font-family: var(--sans); font-size: 0.73rem; color: var(--text-muted); margin-left: auto; }
+        .study-hero h1 { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2.05rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 0.8rem; }
+        .study-hero .lead { font-family: var(--serif); font-size: 1rem; line-height: 1.72; color: var(--text-secondary); max-width: 760px; }
+        .study-hero .study-meta { font-family: var(--sans); font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem; }
+
+        .study-content { max-width: 820px; margin: 0 auto; padding: 0 2rem 5rem; }
+
+        .nota-section { margin-top: 3rem; }
+        .nota-section:first-of-type { margin-top: 0.5rem; }
+        .nota-section h2 { font-family: var(--display); font-size: 1.4rem; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 1.1rem; color: var(--text); scroll-margin-top: 90px; }
+        .nota-section p { font-family: var(--serif); font-size: 1rem; line-height: 1.82; color: var(--text-secondary); max-width: 72ch; margin: 0 0 1.2rem; }
+        .nota-section p:last-child { margin-bottom: 0; }
+        .nota-section strong { color: var(--text); font-weight: 600; }
+
+        .meto-section-title { font-family: var(--sans); font-size: 0.85rem; font-weight: 600; color: var(--text); margin: 1.5rem 0 0.4rem; }
+        .meto-note { font-family: var(--serif); font-size: 0.95rem; color: var(--text-secondary); line-height: 1.75; margin: 0.4rem 0 1.2rem; max-width: 72ch; }
+        .meto-note:last-child { margin-bottom: 0; }
+
+        .meto-formula-box { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 1.25rem 1.5rem; margin: 1rem 0 1.4rem; overflow-x: auto; }
+        .meto-formula-box .katex-display { margin: 0.3rem 0; }
+        .meto-formula-box + .meto-note { margin-top: -0.4rem; }
+
+        .param-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 0.5rem 0 1.4rem; }
+        .param-table th { text-align: left; font-family: var(--sans); font-weight: 600; font-size: 0.74rem; color: var(--text-muted); border-bottom: 1px solid var(--border); padding: 0.4rem 0.7rem; }
+        .param-table td { font-family: var(--serif); font-size: 0.87rem; padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--border-light); vertical-align: top; color: var(--text-secondary); }
+        .param-table td:first-child { font-family: var(--mono); font-weight: 600; font-size: 0.86rem; color: var(--text); white-space: nowrap; }
+        .param-table tr:last-child td { border-bottom: none; }
+        .param-table.transition-table td, .param-table.transition-table th { text-align: right; }
+        .param-table.transition-table td:first-child, .param-table.transition-table th:first-child { text-align: left; font-family: var(--sans); font-weight: 600; color: var(--text-secondary); }
+        .param-table.transition-table tr.extinct td { color: var(--accent); font-weight: 600; }
+
+        .closing-note { background: var(--accent-light); border-radius: 8px; padding: 1.2rem 1.4rem; font-family: var(--serif); font-size: 0.9rem; color: var(--text-secondary); line-height: 1.75; margin-top: 3rem; }
+        .closing-note strong { color: var(--text); }
+
+        .footnotes { margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+        .footnotes p { font-family: var(--serif); font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.4rem; }
+        .footnotes a { color: var(--accent); text-decoration: none; }
+        .footnotes a:hover { text-decoration: underline; }
+
+        @media (max-width: 640px) {
+            .study-hero { padding: 2rem 1.25rem 1rem; }
+            .study-content { padding: 0 1.25rem 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
+            <div class="header-right-group">
+                <nav class="header-nav">
+                    <a href="/#publicacoes">Publicações</a>
+                    <a href="/ensino/">Ensino</a>
+                    <a href="/estudos/" class="active">Estudos</a>
+                    <a href="/#contato">Contato</a>
+                </nav>
+                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="study-hero">
+        <div class="study-hero-meta">
+            <span class="study-hero-tag">Estudo 17</span>
+            <span class="study-hero-topic">Reforma Tributária</span>
+            <span class="study-hero-topic">Compras Governamentais</span>
+            <span class="study-hero-topic">Federalismo Fiscal</span>
+            <span class="study-hero-date">Outubro de 2026</span>
+        </div>
+        <h1>Compras governamentais e o IBS: quem recebe o imposto que o próprio governo paga</h1>
+        <p class="lead">
+            Quando uma prefeitura compra remédios, contrata uma obra ou paga uma empresa de limpeza, ela também paga IBS e CBS
+            embutidos no preço. A reforma tributária decidiu que esse imposto não segue o caminho do consumo das famílias:
+            ele volta para o governo que comprou. Este estudo explica, em linguagem simples e com o texto da lei conferido,
+            como isso funciona, quanto vale e por que muda, principalmente, a divisão da receita entre os municípios.
+        </p>
+        <p class="study-meta">
+            Estimativa própria e independente, não o cálculo oficial que competirá ao Comitê Gestor do IBS.
+            Os números nacionais de compras são de terceiros e estão identificados como tais.
+        </p>
+    </div>
+
+    <div class="study-content">
+
+        <section class="nota-section">
+            <h2>1. O problema que a Constituição quis resolver</h2>
+            <p>Imagine que o Estado compra um lote de ambulâncias por R$ 100 mil e que o imposto sobre esse negócio seja de R$ 20 mil. Se o imposto fosse cobrado como em qualquer venda, o Estado pagaria R$ 20 mil ao vendedor, o vendedor repassaria esse valor ao fisco, e o dinheiro iria, em parte, para a União, em parte para o próprio Estado e em parte para os municípios. Para o Estado, a conta seria estranha: ele pagaria um imposto que só em parte volta para o seu caixa, e a União e as prefeituras receberiam, de graça, parte do que o Estado gastou do próprio orçamento.</p>
+            <p>A Constituição respondeu a isso no art. 149-C, incluído pela Emenda 132. A regra diz que o IBS e a CBS cobrados nas compras da administração direta, das autarquias e das fundações públicas vão <strong>integralmente para o ente que comprou</strong>. A União paga ao seu próprio caixa quando compra, o Estado ao dele, e a prefeitura ao seu. Para isso, as alíquotas devidas aos demais entes são zeradas, e a do ente comprador sobe na mesma medida.</p>
+            <p>Não se trata, portanto, de isenção. O imposto continua a existir e a ser pago pelo vendedor, só que o destino do dinheiro muda. A Constituição usa o mesmo mecanismo, no § 3º do art. 149-C, para dar concretude à imunidade recíproca nas importações do governo: em vez de proibir o imposto, a lei o neutraliza fazendo-o voltar a quem comprou.</p>
+        </section>
+
+        <section class="nota-section">
+            <h2>2. O que a lei complementar determina</h2>
+            <p>Quem disciplina o assunto é a Lei Complementar 214/2025, com as mudanças da LC 227/2026, nos arts. 370, 472 e 473. São duas regras diferentes, que convém não misturar.</p>
+            <p>A primeira trata de <strong>quanto se paga</strong>. O art. 472 manda reduzir, de forma uniforme, as alíquotas do IBS e da CBS nas compras públicas. O tamanho dessa redução é fixado pelo art. 370 de modo que a receita total das esferas de governo seja neutra, isto é, que o conjunto de União, Estados e Municípios receba, com o novo imposto reduzido, aproximadamente o que recebia com os tributos antigos sobre essas mesmas compras, medido pela média de 2024 a 2026. A redução vale de 2027 a 2033 e, a partir de 2034, permanece no nível de 2033. Ficam fora da redução as compras sujeitas a alíquotas nacionalmente uniformes e as feitas de fornecedores do Simples Nacional ou MEI.</p>
+            <p>A segunda trata de <strong>para quem vai</strong>. O art. 473 determina que o produto do imposto vai ao ente que contratou. Quando a compra é da União, o imposto é cobrado todo como CBS e o IBS dos demais entes é zerado. Quando é de um Estado, é cobrado todo como IBS estadual e a CBS e o IBS municipal são zerados. Na compra de um município, é cobrado todo como IBS municipal. No Distrito Federal, como não há esfera municipal separada, tudo vai para o IBS distrital. Há uma consequência importante dessa engenharia: na compra estadual, a parte que no regime comum seria da CBS federal passa a compor a receita do Estado.</p>
+            <p>A dispensa de licitação feita presencialmente sai dos dois mecanismos, e a compra segue o regime comum. As compras de consórcios públicos são tratadas como feitas pelo município sede, com o produto dividido entre os entes consorciados conforme o que cada um financiou. O regime vale para as compras da administração direta, das autarquias e das fundações. Empresas públicas e sociedades de economia mista não estão no art. 473.</p>
+        </section>
+
+        <section class="nota-section">
+            <h2>3. Quanto isso representa</h2>
+            <p>A fonte mais completa que conhecemos para o tamanho dessas compras é a nota técnica de Sergio Gobetti preparada para o COMSEFAZ (2026). Ela estima uma base efetiva de compras públicas de cerca de R$ 534 bilhões, sendo R$ 90 bi da União, R$ 148 bi dos Estados e R$ 295 bi dos Municípios. Sobre essa base, a alíquota efetiva seria de 15,9%, uma redução de cerca de 44% em relação à alíquota de referência de 28,4%. É uma estimativa de terceiro, que não verificamos, e a alíquota do redutor só será conhecida quando o cálculo oficial for publicado.</p>
+
+            <p class="meto-section-title">Tabela 1. Compras públicas e imposto resultante, estimativa de Gobetti (COMSEFAZ, 2026)</p>
+            <table class="param-table transition-table">
+                <thead><tr><th>Comprador</th><th>Base (R$ bi)</th><th>Participação</th><th>Imposto a 15,9% (R$ bi)</th></tr></thead>
+                <tbody>
+                    <tr><td>União</td><td>90,3</td><td>17%</td><td>14,4 (CBS)</td></tr>
+                    <tr><td>Estados</td><td>148,1</td><td>28%</td><td>23,5 (IBS estadual)</td></tr>
+                    <tr><td>Municípios</td><td>295,5</td><td>55%</td><td>47,0 (IBS municipal)</td></tr>
+                    <tr class="extinct"><td>Total</td><td>533,8</td><td>100%</td><td>84,9</td></tr>
+                </tbody>
+            </table>
+
+            <p>Dois pontos merecem atenção. O primeiro é que as compras da União não geram IBS para ninguém: toda a carga é CBS. O segundo é que os municípios compram o dobro dos Estados. Por isso, o IBS das compras pesa muito mais na esfera municipal (cerca de R$ 47 bi, perto de 30% de todo o IBS municipal na estimativa) do que na estadual (R$ 23,5 bi, menos de 3% do IBS estadual).</p>
+        </section>
+
+        <section class="nota-section">
+            <h2>4. O que muda na divisão da receita</h2>
+            <p>Há três níveis em que as compras podem alterar a divisão do IBS, e a importância deles é bem diferente.</p>
+            <p>No primeiro, a divisão nacional entre Estados e municípios, o efeito tende a ser pequeno no nosso modelo. Isso ocorre porque ele calibra essa divisão na arrecadação observada de ICMS e ISS em 2024-2025, que já traz embutidos os impostos que os governos pagam nas suas compras. E a regra de neutralidade do art. 370 foi desenhada para que a receita total não mude de lado. A confirmação disso é um teste que ainda faremos.</p>
+            <p>No segundo, a divisão entre Estados, o efeito é mínimo. As compras estaduais são uma fatia pequena do IBS dos Estados, e a diferença no coeficiente de destino de cada UF fica na casa de centésimos de ponto percentual.</p>
+            <p>No terceiro, a divisão entre os municípios de cada Estado, o efeito é grande. Hoje o nosso modelo reparte o IBS municipal como se viesse todo do consumo das famílias, proporcionalmente à renda e à população. Pela lei, cerca de um terço dele vai para a prefeitura que comprou, em proporção ao que ela gasta com bens e serviços. Uma prefeitura que contrata muito, por ter hospital regional, muitas obras ou grande estrutura de serviços, recebe mais do que o consumo de seus moradores indicaria. Um município-dormitório, que compra pouco, recebe menos.</p>
+        </section>
+
+        <section class="nota-section">
+            <h2>5. Exemplos com números do Espírito Santo</h2>
+            <p>Para ver o mecanismo funcionando, vale acompanhar quatro situações reais do Espírito Santo. Os valores de alíquota (28,4% sem redutor e 15,9% com redutor) são os da estimativa de Gobetti citada acima, e servem para ilustrar a lógica. O redutor oficial só será conhecido depois do cálculo previsto no art. 370.</p>
+
+            <p class="meto-section-title">5.1. Uma compra da Prefeitura de Vitória</p>
+            <p>Suponha que a Prefeitura de Vitória contrate R$ 1 milhão em serviços de limpeza urbana de uma empresa de Vila Velha. No regime comum, o IBS e a CBS somariam R$ 284 mil (28,4%) e seriam divididos entre a União, o Estado do Espírito Santo e o município de destino, segundo o critério geral do IBS. No regime das compras governamentais, a alíquota cai para 15,9%, ou seja, R$ 159 mil, e <strong>todo esse valor vai para a Prefeitura de Vitória</strong>, porque foi ela quem contratou. O fornecedor, a empresa de Vila Velha, não muda nada na sua rotina, e Vila Velha não recebe nada, embora a empresa esteja lá. O que mudou foi só o endereço do imposto: em vez de seguir o consumo no local do destino, segue o comprador.</p>
+
+            <p class="meto-section-title">5.2. Uma compra do Governo do Espírito Santo</p>
+            <p>Agora o Estado compra R$ 10 milhões em medicamentos para a rede estadual. Com a alíquota de 15,9%, o imposto é de R$ 1,59 milhão. Pela regra do art. 473, esse valor é cobrado integralmente como IBS estadual, inclusive a parte que, no regime comum, seria CBS federal. A União, portanto, não recebe nada dessa operação. Resta a dúvida do tópico 6: se a cota-parte de 25% dos municípios incide também sobre esse IBS, R$ 397,5 mil seriam repassados aos 78 municípios, divididos pelo critério de população do art. 128 (80% por habitante, 10% e 5% por indicadores de educação e meio ambiente e 5% em partes iguais). Se não incidir, todo o valor fica com o Estado.</p>
+
+            <p class="meto-section-title">5.3. Quanto compram as prefeituras capixabas</p>
+            <p>As prefeituras informam à Secretaria do Tesouro Nacional, na Declaração de Contas Anuais, o que gastaram em cada elemento de despesa. Somamos, entre as despesas liquidadas em 2024, os elementos que correspondem a compras de bens e serviços de empresas: material de consumo, serviços de terceiros de pessoa jurídica, locação de mão de obra, tecnologia, obras e equipamentos. Ficam de fora pessoal, juros, transferências, serviços de pessoa física e despesas de exercícios anteriores. As 78 prefeituras somam R$ 10,5 bilhões, e o Governo do Estado, R$ 5,3 bilhões. Aplicando a alíquota efetiva de 15,9%, seria um IBS de compras de cerca de R$ 1,7 bilhão para os municípios e R$ 0,84 bilhão para o Estado. Esses valores são um teto, porque a soma não desconta o que é comprado de fornecedores do Simples e as dispensas presenciais, que fogem do regime.</p>
+
+            <p class="meto-section-title">Tabela 2. Compras estimadas de dez prefeituras do Espírito Santo, 2024 (DCA Anexo I-D, despesas liquidadas)</p>
+            <table class="param-table transition-table">
+                <thead><tr><th>Município</th><th>População</th><th>Compras (R$ mi)</th><th>% da despesa total</th><th>Compras por habitante (R$)</th></tr></thead>
+                <tbody><tr><td>Vitória</td><td>331.785</td><td>1.196</td><td>38%</td><td>3.604</td></tr><tr><td>Serra</td><td>546.405</td><td>1.194</td><td>38%</td><td>2.186</td></tr><tr><td>Vila Velha</td><td>493.242</td><td>827</td><td>41%</td><td>1.678</td></tr><tr><td>Cariacica</td><td>375.500</td><td>734</td><td>46%</td><td>1.955</td></tr><tr><td>Cachoeiro de Itapemirim</td><td>196.133</td><td>372</td><td>37%</td><td>1.897</td></tr><tr><td>Linhares</td><td>171.265</td><td>445</td><td>37%</td><td>2.599</td></tr><tr><td>Aracruz</td><td>99.336</td><td>384</td><td>42%</td><td>3.869</td></tr><tr><td>Anchieta</td><td>29.613</td><td>154</td><td>34%</td><td>5.195</td></tr><tr><td>Presidente Kennedy</td><td>14.718</td><td>592</td><td>72%</td><td>40.221</td></tr><tr><td>Fundão</td><td>17.884</td><td>45</td><td>34%</td><td>2.491</td></tr></tbody>
+            </table>
+
+            <p>As diferenças são grandes. Vitória compra R$ 3.604 por habitante, mais que o dobro de Vila Velha (R$ 1.678), embora Vila Velha tenha quase 50% mais moradores. Presidente Kennedy, com menos de 15 mil habitantes, compra R$ 592 milhões, 72% de toda a sua despesa, o que equivale a mais de R$ 40 mil por habitante. Dessa despesa, R$ 300 milhões são serviços de terceiros de pessoa jurídica e R$ 191 milhões, obras e instalações. É um município de receita expressiva de royalties de petróleo, e esse é o tipo de caso que o regime de compras favorece e que o rateio por renda e população não enxerga. A composição exata dessa despesa ainda deve ser conferida antes de se usar o número no modelo.</p>
+
+            <p class="meto-section-title">5.4. O que muda no rateio entre as prefeituras</p>
+            <p>Hoje o nosso modelo reparte o IBS municipal próprio, aquele que não é cota-parte, em proporção à renda total do município (renda média vezes população). Para ver a diferença, imagine que 30% desse IBS, proporção da estimativa nacional, venha das compras e seja repartido pela despesa de compras de cada prefeitura, e que os 70% restantes sigam como hoje. A Tabela 3 mostra o resultado.</p>
+
+            <p class="meto-section-title">Tabela 3. Participação de cada município no IBS municipal próprio do ES, com e sem o efeito das compras (ilustração)</p>
+            <table class="param-table transition-table">
+                <thead><tr><th>Município</th><th>Rateio atual (renda × população)</th><th>Participação nas compras</th><th>Rateio com compras (70% / 30%)</th><th>Variação (R$ mi por cada R$ 100 mi)</th></tr></thead>
+                <tbody><tr><td>Vitória</td><td>17,65%</td><td>11,38%</td><td>15,77%</td><td>−1,88</td></tr><tr><td>Serra</td><td>12,43%</td><td>11,37%</td><td>12,11%</td><td>−0,32</td></tr><tr><td>Vila Velha</td><td>16,56%</td><td>7,87%</td><td>13,96%</td><td>−2,61</td></tr><tr><td>Cariacica</td><td>6,99%</td><td>6,99%</td><td>6,99%</td><td>−0,00</td></tr><tr><td>Cachoeiro de Itapemirim</td><td>4,60%</td><td>3,54%</td><td>4,28%</td><td>−0,32</td></tr><tr><td>Linhares</td><td>3,89%</td><td>4,24%</td><td>4,00%</td><td>+0,10</td></tr><tr><td>Aracruz</td><td>2,29%</td><td>3,66%</td><td>2,70%</td><td>+0,41</td></tr><tr><td>Anchieta</td><td>0,58%</td><td>1,46%</td><td>0,84%</td><td>+0,27</td></tr><tr><td>Presidente Kennedy</td><td>0,21%</td><td>5,63%</td><td>1,84%</td><td>+1,63</td></tr><tr><td>Fundão</td><td>0,43%</td><td>0,42%</td><td>0,43%</td><td>−0,00</td></tr></tbody>
+            </table>
+
+            <p>A leitura é direta. Para cada R$ 100 milhões de IBS próprio dos municípios capixabas, Vila Velha receberia R$ 2,61 milhões a menos, e Vitória, R$ 1,88 milhão a menos, porque a renda concentrada nesses municípios pesa mais no rateio atual do que a despesa de suas prefeituras. Presidente Kennedy receberia R$ 1,63 milhão a mais e Aracruz, R$ 0,41 milhão a mais. No total, 59 dos 78 municípios ganhariam e 19 perderiam, e a variação média, em valor absoluto, é de cerca de 27% da participação de cada um. Isso não é uma previsão. O percentual de 30% é nacional, a base de compras é bruta, e este estudo ainda não testou outros pesos. Serve para mostrar quanto o critério de rateio pode mexer nos resultados municipais.</p>
+
+            <p>Para a cota-parte, o efeito é outro. Se os 25% incidirem sobre o IBS das compras estaduais, o Espírito Santo transferiria cerca de R$ 209 milhões aos municípios (teto), divididos por população. A parte de Vitória, por exemplo, seria de cerca de R$ 16,7 milhões. Essa transferência não depende de quanto cada município compra.</p>
+        </section>
+
+        <section class="nota-section">
+            <h2>6. O que ainda não sabemos</h2>
+            <p>Há quatro pontos em aberto, e o modelo tratará cada um como cenário explícito, não como fato.</p>
+            <p>O primeiro é o valor real do redutor, que depende de cálculo oficial. O segundo é a cota-parte municipal de 25%. A LC 227 diz que o IBS destinado ao Estado contratante compõe a receita inicial (art. 106, III) e, depois, o art. 118 tira dessa receita a parcela que pertence aos municípios (art. 158, IV, "b", da Constituição). A leitura literal é que o IBS das compras estaduais também divide 25% com os municípios do Estado. Mas a lei não o afirma de forma expressa, e o Comitê Gestor pode regulamentar de outro modo. O terceiro é a parcela das compras que escapa do redutor ou do regime, como a dispensa presencial e os fornecedores do Simples. O quarto é a relação entre a despesa que o município registra e a base de cálculo de fato: nem tudo que é contabilizado como "outros serviços de terceiros" é compra sujeita ao imposto.</p>
+        </section>
+
+        <section class="nota-section">
+            <h2>7. Como pretendemos incorporar ao modelo</h2>
+            <p>O modelo atual não separa as compras do consumo das famílias. A incorporação, ainda por fazer, terá três passos. Primeiro, separar o IBS municipal de cada Estado em duas partes, uma que vem das famílias, rateada como hoje, e outra que vem de compras, de cerca de 30% do total na estimativa de Gobetti. Segundo, ratear a parte das compras entre os municípios de acordo com a despesa observada de cada prefeitura na DCA, no lugar da renda e da população. A coleta já está pronta (<code>data/collect-compras-dca.py</code>) e foi rodada para o Espírito Santo, com os 78 municípios e o Estado; as demais UFs podem ser coletadas da mesma forma. Terceiro, rodar cenários com o redutor, a cota-parte sobre compras estaduais e a parcela fora do regime. As conclusões publicadas serão então comparadas com as atuais, para que fique claro quem ganha e quem perde com a mudança.</p>
+        </section>
+
+        <div class="closing-note">
+            <strong>Nota sobre fontes.</strong> O texto dos dispositivos legais citados foi conferido no texto atualizado da LC 214/2025 (Câmara dos Deputados) e nos arquivos de legislação do repositório deste site. A estimativa nacional de compras é de Sergio Gobetti, em nota técnica para o COMSEFAZ (2026), e não foi verificada de forma independente. Os dados de compras vêm da Declaração de Contas Anuais (SICONFI/Tesouro Nacional), Anexo I-D, exercício de 2024, despesas liquidadas, coletados pelo script <code>data/collect-compras-dca.py</code>; as tabelas 2 e 3 são reproduzidas por <code>data/build-compras-es-exemplo.py</code>.
+        </div>
+
+        <div class="footnotes">
+            <p><strong>Fontes e estudos relacionados:</strong></p>
+            <p>1. Base legal: CF/88, arts. 149-C e 158, IV, "b" (EC 132/2023); LC 214/2025, arts. 351, 370, 472 e 473; LC 227/2026, arts. 106, III, 118 e 128. Transcrição conferida no repositório: <code>data/legislacao/13_COMPRAS_GOVERNAMENTAIS_...md</code>.</p>
+            <p>2. Procedimento geral do modelo: <a href="/estudos/nota-metodologica-ibs.html">Estudo 14</a>. Coeficiente de destino: <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a>. Alíquota de referência: <a href="/estudos/aliquota-base-referencia-ibs.html">Estudo 16</a>.</p>
+            <p>3. Gobetti, S. W. Nota técnica para o COMSEFAZ sobre a reforma tributária do consumo, 2026.</p>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
+    </footer>
+
+    <script src="/js/search.js"></script>
+</body>
+</html>

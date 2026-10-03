@@ -689,17 +689,24 @@ critério — pesquisa concluída, mas o autor optou por não avançar com essa
 frente. Hoje o modelo aproxima os 15% de educação-equidade + ambiental pelo
 próprio critério populacional (ver "Implementado, ago/2026" acima).
 
-**Pendência para próxima etapa: nota técnica sobre compras governamentais.**
-O IBS sobre compras governamentais (GND 3 e 4 — bens e serviços de custeio
-e investimento comprados pelo poder público) retorna 100% ao ente
-**comprador**, não segue o critério de destino normal do consumo privado
-(realocação dentro do bolo já calibrado pelo PIB, não uma adição a ele — ver
-a explicação já dada na conversa: base nacional de compras governamentais
-R$ 533,8 bi, Estados 28%/Municípios 55%/União 17%, alíquota efetiva 15,9%,
-conforme dados levantados por Gobetti). Esse mecanismo ainda não está
-incorporado nas estimativas por ente. Planejado como um estudo novo e
-independente (nota técnica dedicada), a partir de uma nota técnica mais
-recente que o autor do site vai fornecer para revisão.
+**Compras governamentais — legislação conferida e estudo publicado (out/2026).**
+O IBS/CBS sobre compras da administração direta, autarquias e fundações retorna
+100% ao ente **comprador** (CF art. 149-C; LC 214 arts. 472-473), com redutor
+uniforme calibrado por neutralidade de receita (art. 370; de 2034 mantém-se o
+nível de 2033). Compras da União geram só CBS; compras estaduais concentram na
+alíquota estadual do IBS a soma IBS+CBS (art. 473 §1º, II); compras municipais,
+na municipal. O IBS do ente contratante compõe a receita inicial (LC 227 art.
+106, III) e, portanto, a Receita-Base, sujeita aos arts. 109-111 e 118. Texto
+transcrito em `13_COMPRAS_GOVERNAMENTAIS_...md`; estudo acessível em
+`estudos/compras-governamentais-ibs.html` (Estudo 17). Dimensionamento nacional
+(Gobetti/COMSEFAZ, 2026): base R$ 533,8 bi (União 17%, Estados 28%, Municípios
+55%), alíquota efetiva 15,9%. **Ainda não incorporado às estimativas por ente.**
+Plano: separar o IBS municipal em parte famílias e parte compras e ratear esta
+pela despesa observada (DCA Anexo I-D, elementos 30/32/35/37/39/40 e 4.4.90.35/
+39/40/51/52/61); cenários para o redutor, para a cota-parte de 25% sobre compras
+estaduais (leitura literal: incide; não expresso em lei) e para a parcela fora
+do regime (dispensa presencial; Simples/MEI e alíquotas uniformes só escapam do
+redutor).
 
 ---
 
