@@ -836,7 +836,7 @@
                 DCA/SICONFI, de <code>coeficientes-uf.json</code> e de <code>phi-dest-pof-censo.json</code>.</p>
 
                 <p><sup>2</sup> <strong>Seguro-Receita (art. 132 ADCT):</strong> os 5% retidos sobre o IBSd
-                (pós-CGIBS) não desaparecem — o
+                bruto (antes do CGIBS, arts. 110-111 LC 227/2026) não desaparecem — o
                 <a href="/estudos/seguro-receita-repasses.html">Estudo 12</a> estima quem recebe esse fundo de
                 volta, ente a ente, por nivelamento sequencial entre as 5.596 entidades do país (ADCT art. 132;
                 LC 227/2026 art. 117). O <strong>Cenário 1</strong> (destino pleno) já soma esse repasse estimado
@@ -905,7 +905,7 @@
         2033: { fa: 0.0, sa: 1.00, alphaBIS: 0.90, ca: 0.005,  estimated: true  },
     };
 
-    const RHO = 0.05;  // Seguro Receita (art. 132 ADCT): 5% do IBSd pós-CGIBS forma fundo de garantia
+    const RHO = 0.05;  // Seguro Receita (art. 132 ADCT): 5% do IBSd bruto forma fundo de garantia
     // FUNDEB não deduzido: EC 132/2023 garante simetria entre ICMS e IBS (ver nota 3)
 
     const UFS = ['AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT',
@@ -1004,7 +1004,7 @@
         const deltaPct      = cntEstadual > 0 ? delta / cntEstadual : 0;
 
         return { cntEstadual, icmsReform, ibst,
-                 ibsd_bruto, ibsd_cgibs, ibsd_poscgibs, ibsSeguro, repasse, ibsd_liq,
+                 ibsd_bruto, ibsd_cgibs, ibsd_posSeguro, ibsSeguro, repasse, ibsd_liq,
                  ibsTotal, totalReform, delta, deltaPct, estimated: ADCT[nac.ano].estimated };
     }
 
@@ -1276,15 +1276,15 @@
             rowStatic('φ_ES^dest: coeficiente de destino ES (estimativa própria, POF x Censo) ¹', 'Nota 1', `C1: ${(coefDests.pess*100).toFixed(4).replace('.',',')}% | C2: ${(coefDests.inter*100).toFixed(4).replace('.',',')}% | C3: ${(coefDests.neutro*100).toFixed(4).replace('.',',')}%`),
             rowScen('IBSd bruto = (IBS bruto − IBS histórico) nacional × φ_ES^dest', 'já inclui sa × (1−αa)', rP.ibsd_bruto, rI.ibsd_bruto, rN.ibsd_bruto),
 
-            secHead('F. Fator 3: CGIBS (art. 51 LC 227/2026), sobre o IBSd bruto — antes do Seguro-Receita'),
-            rowStatic('ca em 2029', 'Art. 51 LC 227/2026', 'ca = 2,00%; sem equivalente no ICMS'),
-            rowScen('CGIBS = IBSd bruto × ca', '× 2,00%', rP.ibsd_cgibs, rI.ibsd_cgibs, rN.ibsd_cgibs),
-            rowScen('IBSd pós-CGIBS = IBSd bruto − CGIBS', '× (1−2%)', rP.ibsd_poscgibs, rI.ibsd_poscgibs, rN.ibsd_poscgibs),
+            secHead('F. Seguro-Receita retido (arts. 110-111 LC 227/2026), sobre o IBSd bruto — antes do CGIBS'),
+            rowScen('Seguro-Receita retido = IBSd bruto × ρ ²', '× 5% · art. 132 ADCT', rP.ibsSeguro, rI.ibsSeguro, rN.ibsSeguro),
+            rowScen('Receita-Base (art. 111) = IBSd bruto − retido', '× (1−5%)', rP.ibsd_posSeguro, rI.ibsd_posSeguro, rN.ibsd_posSeguro),
 
-            secHead('G. Seguro-Receita (art. 132 ADCT), sobre o IBSd pós-CGIBS'),
-            rowScen('Seguro-Receita retido = IBSd pós-CGIBS × ρ ²', '× 5% · art. 132 ADCT', rP.ibsSeguro, rI.ibsSeguro, rN.ibsSeguro),
+            secHead('G. Fator 3: CGIBS (art. 51 LC 227/2026), sobre a Receita-Base, e Seguro-Receita recebido'),
+            rowStatic('ca em 2029', 'Art. 51 LC 227/2026', 'ca = 2,00%; sem equivalente no ICMS'),
+            rowScen('CGIBS = Receita-Base × ca', '× 2,00%', rP.ibsd_cgibs, rI.ibsd_cgibs, rN.ibsd_cgibs),
             rowScen('Seguro-Receita recebido (Estudo 12) ²', 'nivelamento sequencial, só Cenário 1', rP.repasse, rI.repasse, rN.repasse),
-            rowScen('IBSd líquido = IBSd pós-CGIBS − retido + recebido', '', rP.ibsd_liq, rI.ibsd_liq, rN.ibsd_liq, 'row-total'),
+            rowScen('IBSd líquido = Receita-Base − CGIBS + recebido', '', rP.ibsd_liq, rI.ibsd_liq, rN.ibsd_liq, 'row-total'),
 
             secHead('H. Resultado fiscal 2029'),
             rowScen('IBS total estadual = IBSt + IBSd líquido', 'IBSt + IBSd_liq', rP.ibsTotal, rI.ibsTotal, rN.ibsTotal),
