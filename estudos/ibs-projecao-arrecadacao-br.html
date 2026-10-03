@@ -1063,6 +1063,22 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
         });
     });
 
+    function foldFundosArt115b(ref) {
+        // Soma ao FECOP o ajuste dos fundos estaduais do art. 115, I, "b" (LC 227/2026), gravado em
+        // ajuste_fundos_art115b por data/build-fundos-art115-b.py. Espelha data/fundos_art115b.py.
+        const aj = ref && ref.ajuste_fundos_art115b;
+        if (!aj || ref._fundosArt115bAplicado) return ref;
+        ref.dca_fecop_por_uf = ref.dca_fecop_por_uf || {};
+        for (const [ano, ufs] of Object.entries(aj.fecop_por_uf || {})) {
+            ref.dca_fecop_por_uf[ano] = ref.dca_fecop_por_uf[ano] || {};
+            for (const [uf, v] of Object.entries(ufs)) ref.dca_fecop_por_uf[ano][uf] = (ref.dca_fecop_por_uf[ano][uf] || 0) + v;
+        }
+        ref.dca_fecop_br = ref.dca_fecop_br || {};
+        for (const [ano, v] of Object.entries(aj.fecop_br || {})) ref.dca_fecop_br[ano] = (ref.dca_fecop_br[ano] || 0) + v;
+        ref._fundosArt115bAplicado = true;
+        return ref;
+    }
+
     (async function init() {
         const statusEl = document.getElementById('status-main');
         try {
@@ -1077,7 +1093,7 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
             if (!refResp.ok || !coefResp.ok || !phiDestResp.ok || !giniIdhResp.ok || !nacResp.ok || !seguroResp.ok) {
                 throw new Error('Erro ao carregar dados');
             }
-            const refData        = await refResp.json();
+            const refData        = foldFundosArt115b(await refResp.json());
             const coeficientesUF = await coefResp.json();
             const phiDestData    = await phiDestResp.json();
             const giniIdhData    = await giniIdhResp.json();

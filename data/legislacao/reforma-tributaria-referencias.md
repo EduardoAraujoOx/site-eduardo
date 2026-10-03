@@ -734,3 +734,18 @@ Correção do FCP **não implementada**, por decisão do autor.
 **Citação.** Enquadramento: art. 115, I, "b" e §3º (LC 227), art. 350, II, "b" (LC 214) e a lei estadual de cada fundo. Valores: DCA/SICONFI (AM) e Nota Técnica COMSEFAZ v3 (GO e MT), até os valores oficiais do CGIBS.
 
 **Efeito estimado na simulação (não implementado):** coeficiente histórico AM 1,357% para 1,659%, GO 2,314% para 2,511%; receita de AM em 2033 +R$ 3,6 bi, GO +R$ 2,3 bi; resultado relativo de 2033 praticamente inalterado; `frac_estado` +0,06 pp; Seguro-Receita de AM 2033 R$ 550 mi para 836 mi. Ver `data/auditoria-fundos-art115/`.
+
+### 7.2 Implementação no modelo (out/2026): somente o Amazonas
+
+**Decisão do autor (03/out/2026):** incluir apenas o Amazonas; GO e MT ficam anotados como dependentes de informação oficial (Secretaria de Fazenda do Estado ou valores que o CGIBS divulgar). Motivo: só o valor do AM é verificável diretamente no SICONFI/STN (DCA Anexo I-C, conta "Outras Contribuições Econômicas": R$ 2.521, 2.456 e 2.414 milhões em 2021-2023). Os valores de GO (PROTEGE) e MT (FUNDES) constam apenas da Nota Técnica COMSEFAZ v3, preliminar, e não são localizáveis no SICONFI; em GO há ainda o risco de dupla contagem com a linha do adicional de ICMS (FECOP), a esclarecer.
+
+**Como está feito.**
+- Fonte e método: `data/fundos-art115-b.json` (inclui a seção `pendentes_informacao_oficial` com GO, MT, RJ e as demais UFs).
+- Cálculo: `data/build-fundos-art115-b.py`, art. 115, §3º, II da LC 227: média 2021-2023 corrigida pelo ICMS da UF até 2023 e pelo ICMS+ISS nacional depois (aqui até 2025, base do modelo). AM = R$ 3,155 bi a preços de 2025.
+- Gravação: chave própria `ajuste_fundos_art115b` em `data/reforma-tributaria.json` (o fluxo `collect-dca-estados.yml` reescreve `dca_fecop_*` por inteiro, então não se mistura ao FECOP; o fluxo agora reexecuta o cálculo).
+- Uso: `data/fundos_art115b.py` (`fold`) soma o ajuste ao FECOP em memória em todos os scripts que leem `reforma-tributaria.json` (inclusive os do estudo do Paraná) e a mesma lógica existe em JavaScript nas páginas de estudos que leem o JSON bruto. A contribuição é tratada como o FECOP: receita só do Estado, fora da cota-parte municipal do ICMS.
+- Ordem de execução de toda a cadeia: `bash data/rodar-modelo.sh tudo`.
+
+**Efeitos nacionais:** razão bolo/PIB 7,9947% para 8,0193%; parcela estadual do destino (`frac_estado`) 63,8331% (antes 63,7985%); alíquota de referência combinada 12,60% para 12,64%.
+
+**Defasagem anterior:** as saídas publicadas (inclusive as do estudo do Paraná) estavam defasadas em relação aos dados de entrada já presentes no repositório; a regeneração sem o ajuste do AM foi commitada à parte (commit "regenera saídas do painel…") para separar defasagem de efeito do AM.

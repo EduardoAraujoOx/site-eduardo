@@ -54,6 +54,7 @@ Uso:
 
 import json
 from pathlib import Path
+from fundos_art115b import fold
 
 HERE = Path(__file__).parent
 OUT = HERE / "phi-dest-pof-censo.json"
@@ -157,7 +158,7 @@ def compute_pof_censo(pof, censo):
 
 def main():
     with open(HERE / "reforma-tributaria.json") as f:
-        ref_data = json.load(f)
+        ref_data = fold(json.load(f))
     with open(HERE / "macro-parametros.json") as f:
         macro = json.load(f)
     with open(HERE / "coeficientes-uf.json") as f:

@@ -25,6 +25,7 @@ import unicodedata
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
+from fundos_art115b import fold
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "auditoria-pr-validacao"
@@ -132,7 +133,7 @@ def build_state_entities(ref, coef_uf, phi, pop_uf):
 
 
 def main():
-    ref = load_json(HERE / "reforma-tributaria.json")
+    ref = fold(load_json(HERE / "reforma-tributaria.json"))
     coef_uf = load_json(HERE / "coeficientes-uf.json")
     coef_muni = load_json(HERE / "coeficientes-municipios.json")["municipios"]
     phi = load_json(HERE / "phi-dest-pof-censo.json")

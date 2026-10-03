@@ -17,6 +17,7 @@ Uso:
 
 import json
 from pathlib import Path
+from fundos_art115b import fold
 
 HERE = Path(__file__).parent
 SRC = HERE / "reforma-tributaria.json"
@@ -27,7 +28,7 @@ ANOS = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
 
 def main():
     with open(SRC) as f:
-        d = json.load(f)
+        d = fold(json.load(f))
 
     dca_icms_br = d.get("dca_icms_br", {})
     dca_iss_br = d.get("dca_iss_br", {})

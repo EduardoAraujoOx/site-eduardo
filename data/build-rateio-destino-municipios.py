@@ -80,6 +80,7 @@ Uso:
 
 import json
 from pathlib import Path
+from fundos_art115b import fold
 
 HERE = Path(__file__).parent
 OUT = HERE / "rateio-destino-municipios.json"
@@ -140,7 +141,7 @@ def compute_params(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cota_declara
 
 def main():
     with open(HERE / "reforma-tributaria.json") as f:
-        ref_data = json.load(f)
+        ref_data = fold(json.load(f))
     with open(HERE / "coeficientes-uf.json") as f:
         coeficientes_uf = json.load(f)
     with open(HERE / "phi-dest-pof-censo.json") as f:

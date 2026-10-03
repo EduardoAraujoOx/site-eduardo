@@ -199,7 +199,9 @@ jobs:
           git fetch origin main
           git reset --hard origin/main
           cp /tmp/reforma-tributaria-new.json data/reforma-tributaria.json
-          git add data/reforma-tributaria.json
+          # recalcula o ajuste dos fundos do art. 115, I, "b" (chave propria; a coleta acima reescreve dca_fecop_*)
+          python3 data/build-fundos-art115-b.py
+          git add data/reforma-tributaria.json data/fundos-art115-b.json
           if git diff --staged --quiet; then
             echo "Sem alterações, nada a commitar."
             exit 0

@@ -71,6 +71,7 @@ Uso: python3 build-ibs-projecao-nacional.py
 
 import json
 from pathlib import Path
+from fundos_art115b import fold
 
 DATA_DIR = Path(__file__).parent
 OUTPUT = DATA_DIR / "ibs-projecao-nacional.json"
@@ -128,7 +129,7 @@ RHO_SEGURO_RECEITA = 0.05
 
 
 def main():
-    ref = json.load(open(DATA_DIR / "reforma-tributaria.json"))
+    ref = fold(json.load(open(DATA_DIR / "reforma-tributaria.json")))
     macro = json.load(open(DATA_DIR / "macro-parametros.json"))
 
     dca_icms_por_uf = dict(ref["dca_icms_por_uf"])

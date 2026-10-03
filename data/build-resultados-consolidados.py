@@ -43,6 +43,7 @@ Uso:
 
 import json
 from pathlib import Path
+from fundos_art115b import fold
 
 HERE = Path(__file__).parent
 OUT = HERE / "resultados-consolidados-ibs.json"
@@ -496,7 +497,7 @@ def project_municipio(cod, r0_2025, coef_cpt, coef_pleno, uf, total_br_2025,
 
 
 def main():
-    ref_data = load("reforma-tributaria.json")
+    ref_data = fold(load("reforma-tributaria.json"))
     coef_uf = load("coeficientes-uf.json")
     phi_dest = load("phi-dest-pof-censo.json")
     nac_data = load("ibs-projecao-nacional.json")

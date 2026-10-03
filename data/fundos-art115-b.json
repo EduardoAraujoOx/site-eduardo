@@ -1,0 +1,60 @@
+{
+  "_meta": {
+    "descricao": "Contribuições a fundos estaduais do art. 115, I, 'b', da LC 227/2026 (e art. 350, II, 'b', da LC 214/2025) incluídas na receita média de referência dos Estados.",
+    "criterio_legal": "Fundo em funcionamento em 30/04/2023; contribuição estabelecida como condição para diferimento, regime especial ou outro tratamento diferenciado de ICMS; exclui contribuições sobre produtos primários e semielaborados substituídas por contribuições semelhantes (art. 115, §3º, I, LC 227; art. 136 do ADCT).",
+    "metodo": "Art. 115, §3º, II: média de 2021-2023, corrigida pela variação do ICMS da UF até 2023 e pela variação nominal do ICMS+ISS nacional depois (aqui até 2025, base do modelo). Cálculo em data/build-fundos-art115-b.py.",
+    "tratamento_no_modelo": "Somado ao FECOP (receita só do Estado, fora da cota-parte municipal do ICMS), no coeficiente histórico e no bolo nacional. Ver data/fundos_art115b.py.",
+    "criterio_de_inclusao": "Só entram UFs cujo valor pode ser verificado diretamente no SICONFI/STN (DCA Anexo I-C). As demais dependem de informação oficial (ver pendentes_informacao_oficial).",
+    "valores_provisorios": "Os Estados informarão ao CGIBS as normas e os valores das contribuições; o CGIBS calcula e divulga os valores definitivos (LC 227/2026). Substituir por esses valores quando divulgados.",
+    "auditoria": "data/auditoria-fundos-art115/ e data/legislacao/reforma-tributaria-referencias.md, seção 7.1"
+  },
+  "por_uf": {
+    "AM": {
+      "fundo": "FMPES (Fundo de Apoio às Micro e Pequenas Empresas e ao Desenvolvimento Social) e demais contribuições econômicas registradas na conta do DCA",
+      "base_estadual": "Lei estadual nº 2.826/2003 e alterações (política de incentivos fiscais e extrafiscais)",
+      "conta_dca": "Contribuições Econômicas - Outras Contribuições Econômicas (RO1.2.2.1.99.0.0; em 2021, RO1.2.2.0.99.0.0), Receitas Brutas Realizadas",
+      "fonte": "SICONFI/STN, DCA Anexo I-C, ente 13 (Amazonas)",
+      "serie_dca_rs": {
+        "2021": 2521322799.13,
+        "2022": 2456463918.32,
+        "2023": 2413874018.57
+      },
+      "verificacao": "Valores coletados diretamente do SICONFI. Condicionalidade da contribuição à fruição de incentivo de ICMS e enquadramento no art. 115, I, 'b', conforme a matriz da Nota Técnica COMSEFAZ v3 (preliminar); texto da lei estadual não conferido linha a linha.",
+      "valor_art115_rs_2025": 3154928125.78,
+      "calculo": {
+        "fator_icms_iss_nacional_2023_2025": 1.235193,
+        "fatores_icms_uf_ate_2023": {
+          "2021": 1.088935,
+          "2022": 1.019011,
+          "2023": 1.0
+        },
+        "valores_corrigidos_rs_2025": {
+          "2021": 3391291507.14,
+          "2022": 3091891973.9,
+          "2023": 2981600896.3
+        }
+      }
+    }
+  },
+  "pendentes_informacao_oficial": {
+    "GO": {
+      "fundo": "PROTEGE (Lei 14.469/2003, art. 9º)",
+      "situacao": "Enquadramento confirmado no texto da lei (contribuição de até 15% condiciona benefícios e incentivos fiscais; PRODUZIR e incentivos financeiros, até 2%). Valores não localizáveis no SICONFI (o DCA de GO não tem linha de contribuição econômica). Risco de dupla contagem com a linha de adicional de ICMS (FECOP) a esclarecer.",
+      "depende_de": "Informação oficial da Secretaria de Fazenda de GO ou valor divulgado pelo CGIBS."
+    },
+    "MT": {
+      "fundo": "FUNDES (Lei 11.308/2021) e demais fundos vinculados ao PRODEIC",
+      "situacao": "O DCA de MT traz 'Outras Contribuições Econômicas' (R$ 334, 439 e 370 milhões em 2021-2023), mas o subconjunto elegível não é separável no SICONFI. Contribuições sobre commodities (FETHAB) excluídas pelo art. 136 do ADCT. Valor imaterial (da ordem de R$ 0,1 bi).",
+      "depende_de": "Informação oficial da Secretaria de Fazenda de MT ou valor divulgado pelo CGIBS."
+    },
+    "RJ": {
+      "fundo": "FOT (Lei 8.645/2019)",
+      "situacao": "Já contabilizado dentro da receita de ICMS: não somar, para evitar dupla contagem.",
+      "depende_de": "—"
+    },
+    "demais_UFs": {
+      "situacao": "Nenhuma contribuição a fundo identificada nas contas de receita do DCA. Ausência de linha não prova inexistência de fundo elegível.",
+      "depende_de": "Informação oficial dos Estados ao CGIBS."
+    }
+  }
+}
