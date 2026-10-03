@@ -36,6 +36,9 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
+      - name: Excluir referencias externas do site
+        run: rm -rf data/referencias-externas
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
