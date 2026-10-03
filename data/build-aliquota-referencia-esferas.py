@@ -28,9 +28,14 @@ Fontes:
 - Alíquota bruta simplificada combinada, por ano: data/aliquota-base-referencia.json
 """
 import json
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from fundos_art115b import fold  # noqa: E402
 
 NACIONAL = json.load(open('data/ibs-projecao-nacional.json'))
-REF = json.load(open('data/reforma-tributaria.json'))
+REF = fold(json.load(open('data/reforma-tributaria.json')))
 COMBINADA = json.load(open('data/aliquota-base-referencia.json'))
 
 historico_por_ano = {h['ano']: h for h in NACIONAL['historico']}

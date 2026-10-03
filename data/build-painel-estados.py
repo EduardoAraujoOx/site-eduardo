@@ -20,6 +20,7 @@ Uso:
 import importlib.util
 import json
 from pathlib import Path
+from fundos_art115b import fold
 
 HERE = Path(__file__).parent
 OUT = HERE / "painel-estados.json"
@@ -34,7 +35,7 @@ HIST_ANOS = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
 
 
 def main():
-    ref_data = brc.load("reforma-tributaria.json")
+    ref_data = fold(brc.load("reforma-tributaria.json"))
     coef_uf = brc.load("coeficientes-uf.json")
     phi_dest = brc.load("phi-dest-pof-censo.json")
     nac_data = brc.load("ibs-projecao-nacional.json")

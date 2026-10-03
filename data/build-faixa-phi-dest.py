@@ -34,6 +34,7 @@ Uso:
 import importlib.util
 import json
 from pathlib import Path
+from fundos_art115b import fold
 
 HERE = Path(__file__).parent
 OUT = HERE / "faixa-phi-dest-estados.json"
@@ -79,7 +80,7 @@ def main():
     seguro_mod = load_module("build-seguro-receita-repasses")
     UFS = seguro_mod.UFS
 
-    ref = load("reforma-tributaria.json")
+    ref = fold(load("reforma-tributaria.json"))
     coeficientes_uf = load("coeficientes-uf.json")
     coeficientes_municipios = load("coeficientes-municipios.json")
     phi_dest_data = load("phi-dest-pof-censo.json")

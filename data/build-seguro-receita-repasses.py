@@ -67,6 +67,7 @@ Uso:
 
 import json
 from pathlib import Path
+from fundos_art115b import fold
 
 HERE = Path(__file__).parent
 OUT = HERE / "seguro-receita-repasses.json"
@@ -144,7 +145,7 @@ def water_fill(entidades, pool):
 
 def main():
     with open(HERE / "reforma-tributaria.json") as f:
-        ref_data = json.load(f)
+        ref_data = fold(json.load(f))
     with open(HERE / "coeficientes-uf.json") as f:
         coeficientes_uf = json.load(f)
     with open(HERE / "coeficientes-municipios.json") as f:
