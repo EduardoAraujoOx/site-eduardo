@@ -700,3 +700,37 @@ conforme dados levantados por Gobetti). Esse mecanismo ainda não está
 incorporado nas estimativas por ente. Planejado como um estudo novo e
 independente (nota técnica dedicada), a partir de uma nota técnica mais
 recente que o autor do site vai fornecer para revisão.
+
+---
+
+## 7. Registro de auditoria, out/2026 (sem alteração de código)
+
+**Auditoria do FCP (concluída para esta etapa, 02/out/2026).**
+
+1. *Erro identificado.* O art. 118, §§ 2º e 3º, da LC 227/2026 manda deduzir da Receita-Base do Estado, primeiro, a parcela do Fundo de Combate à Pobreza (FCP) e, só do remanescente, os 25% pertencentes aos Municípios (CF, art. 158, IV, "b"). O modelo aplica `frac_estado = 0,75 · alpha_E` ao total estadual de destino, de modo que 25% da parcela do FCP são repassados aos municípios. O FCP sobre o IBS só existe a partir de 1º/jan/2033 (art. 129, caput), portanto o erro vale de 2033 em diante.
+2. *Impacto relativamente pequeno.* Com os tetos do art. 129 (cenário de teto), o deslocamento dos municípios para os Estados seria de cerca de R$ 0,4 bi em 2033, R$ 1,4 bi em 2050 e R$ 4,3 bi em 2077 (0,04%, 0,08% e 0,14% do bolo do IBS), concentrado no Rio de Janeiro.
+3. *Percentual de FCP dependente de lei específica.* O art. 129 fixa só o teto (1%; para Estados com razão FCP/ICMS 2019-2026 acima de 1%: 3/4 dessa razão em 2033-2040, 1/2 em 2041-2048, 1/4 em 2049-2056 e 1% a partir de 2057). O percentual efetivo será definido por lei de cada ente e informado ao CGIBS até 31/jul do ano anterior. Deve ser tratado por cenários, não como previsão.
+4. *Seguro-Receita:* nenhuma alteração por enquanto (o art. 117, I, fala em receita "após a aplicação" da alínea "b" do art. 158, sem mencionar o FCP; ambiguidade não resolvida).
+
+Correção do FCP **não implementada**, por decisão do autor.
+
+**Auditoria dos fundos do art. 115, I, "b" e da variável `outras`:** ver `data/auditoria-fundos-art115/`.
+
+### 7.1 Fundos do art. 115, I, "b" (LC 227/2026) e art. 350, II, "b" (LC 214/2025): verificação, 03/out/2026
+
+**Correção ao registro anterior (seção 6, "Pendência conhecida").** Os valores atribuídos ao COMSEFAZ (AM +3,16; GO +2,14; MT +0,11 bi) não são médias 2019-2026: são as médias 2021-2023 das contribuições, corrigidas pelo §3º, II do art. 115 (variação do ICMS da UF até 2023 e do ICMS+ISS nacional de 2023 a 2026). Fonte dos valores: Tabela 9 da Nota Técnica COMSEFAZ v3 (`data/referencias-externas/NT_COMSEFAZ_RefTributaria_v3.md`): AM 2.521/2.457/2.414; GO 1.508/1.718/1.863; MT 81/95/79 (R$ milhões, 2021/22/23). Reproduzidos aqui: AM R$ 3,2 bi; GO R$ 2,2 bi; MT R$ 0,11 bi.
+
+**Enquadramento por Estado (critério: fundo em funcionamento em 30/04/2023, contribuição como condição para diferimento, regime especial ou outro tratamento diferenciado de ICMS, e fora do art. 136 do ADCT).**
+
+| UF | Fundo | Base estadual | Verificação |
+|---|---|---|---|
+| GO | PROTEGE | Lei 14.469/2003 (criada em 16/07/2003), art. 9º, II-IV | Texto da lei lido: benefício ou incentivo fiscal condicionado à contribuição (até 15%; PRODUZIR e incentivos financeiros até 2%). Enquadra. |
+| MT | FUNDES (unificou FUNDEIC e FDR) | Lei 11.308/2021 | Só fontes secundárias; texto da lei não lido. "FUNDED" da nota não identificado. FETHAB (contribuições sobre commodities) excluído pelo art. 136 do ADCT. |
+| AM | FMPES | Lei 2.826/2003 e alterações | Existência confirmada; condicionalidade da contribuição não confirmada; valor verificado no DCA (conta RO1.2.2.x.99). |
+| RJ | FOT | Lei 8.645/2019 | Já contabilizado dentro do ICMS (nota, Tabela 9-A): não somar. |
+
+**Risco de dupla contagem em GO (não resolvido).** O FECOP de GO no DCA (R$ mi) foi 1.043 (2019), 1.523 (2020), 2.148 (2021), 1.235 (2022), 414 (2023), 489 (2024) e 484 (2025), enquanto as contribuições condicionais do PROTEGE (Tabela 9) cresceram de 1.508 para 1.863 em 2021-2023. O PROTEGE é também o fundo de combate à pobreza de GO (adicional do art. 82 do ADCT, já incluído no modelo via FECOP). Se a linha FECOP de 2019-2022 incluir parte das contribuições condicionais, somá-las duplicaria. Pergunta à SEFAZ-GO: a conta RO1.1.1.4.50.2.0 inclui essas contribuições?
+
+**Citação.** Enquadramento: art. 115, I, "b" e §3º (LC 227), art. 350, II, "b" (LC 214) e a lei estadual de cada fundo. Valores: DCA/SICONFI (AM) e Nota Técnica COMSEFAZ v3 (GO e MT), até os valores oficiais do CGIBS.
+
+**Efeito estimado na simulação (não implementado):** coeficiente histórico AM 1,357% para 1,659%, GO 2,314% para 2,511%; receita de AM em 2033 +R$ 3,6 bi, GO +R$ 2,3 bi; resultado relativo de 2033 praticamente inalterado; `frac_estado` +0,06 pp; Seguro-Receita de AM 2033 R$ 550 mi para 836 mi. Ver `data/auditoria-fundos-art115/`.
