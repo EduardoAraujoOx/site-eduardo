@@ -9,9 +9,9 @@ Estima, com dados oficiais, a fração f das compras governamentais que carrega 
      r = carga das compras do governo / carga do consumo das famílias (a mesma medida nas duas pontas,
      o que neutraliza o que a medida não capta, como a cascata de tributos nos insumos).
      Variantes: com e sem o grupo financeiro (cujos "outros impostos" incluem IOF, que a reforma não substitui).
-  2. Cobertura da proxy. Consumo intermediário da administração pública (TRU 2023, levado a 2024 pelo PIB
-     nominal) contra o custeio da proxy de compras (DCA I-D 2024, elementos 3.3.90.*, Estados, municípios e
-     União): g = CI / proxy. g próximo de 1 indica que a proxy não superestima nem subestima as compras.
+  2. Cobertura da proxy. Consumo intermediário da administração pública (TRU 2023, levado a 2025 pelo PIB
+     nominal) contra o custeio da proxy de compras (DCA I-D média 2024-2025 a preços de 2025, elementos
+     3.3.90.*, Estados, municípios e União 2025): g = CI / proxy. g próximo de 1 indica que a proxy não superestima nem subestima as compras.
 
   f = g x r (compras da proxy que efetivamente carregam a carga média).
 Saída: data/fracao-compras-carga.json
@@ -58,9 +58,9 @@ def main():
     sub = sum(cust(m["por_elemento"]) for u, r in d.items() if u != "_meta"
               for m in list(r["municipios"].values()) + [r["estado"]] if m)
     uniao = json.loads((D / "compras-uniao-dca.json").read_text())
-    un = cust(uniao["por_elemento"])
+    un = cust(uniao["2025"]["por_elemento"])
     nac = {r["ano"]: r["pib_nominal"] for r in json.loads((D / "ibs-projecao-nacional.json").read_text())["historico"]}
-    ci24 = ci.sum() * 1e6 * nac[2024] / nac[2023]
+    ci24 = ci.sum() * 1e6 * nac[2025] / nac[2023]
     g = ci24 / (sub + un)
     # mistura da proxy completa (custeio com a carga das compras do governo; obras = construção; equipamentos = transformação)
     tot = {}
@@ -82,7 +82,7 @@ def main():
     saida = {
         "_meta": {"descricao": __doc__.strip().split("\n\n")[0], "fonte_tru": TRU,
                   "custeio_proxy_subnacional_reais": sub, "custeio_proxy_uniao_reais": un,
-                  "consumo_intermediario_adm_publica_2024_reais": ci24, "cobertura_g": g,
+                  "consumo_intermediario_adm_publica_2025_reais": ci24, "cobertura_g": g,
                   "mistura_proxy": {"custeio": s_cu, "obras": s_ob, "equipamentos": s_eq, "imoveis": s_im}},
         "carga_por_grupo": dict(zip(nomes, carga.tolist())),
         "resultado": res,

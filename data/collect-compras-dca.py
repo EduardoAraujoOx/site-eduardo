@@ -25,7 +25,8 @@ Fora da proxy, por decisão documentada (materiais/parametros-rateio-consumo-com
 Uso:
   python3 data/collect-compras-dca.py ES            # um ou mais UFs
   python3 data/collect-compras-dca.py ES PR --ano 2024
-Saída: data/compras-governamentais-dca.json (mescla por UF; idempotente)
+Saída: data/compras-governamentais-dca-<ano>.json (mescla por UF; idempotente). O arquivo usado pelo modelo,
+data/compras-governamentais-dca.json, é a média 2024-2025 gerada por data/build-compras-media.py.
 """
 import gzip
 import json
@@ -37,7 +38,6 @@ from pathlib import Path
 
 BASE = "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/dca"
 IBGE = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/{}/municipios"
-OUT = Path(__file__).parent / "compras-governamentais-dca.json"
 UF_COD = {"RO": 11, "AC": 12, "AM": 13, "RR": 14, "PA": 15, "AP": 16, "TO": 17,
           "MA": 21, "PI": 22, "CE": 23, "RN": 24, "PB": 25, "PE": 26, "AL": 27,
           "SE": 28, "BA": 29, "MG": 31, "ES": 32, "RJ": 33, "SP": 35, "PR": 41,
@@ -105,6 +105,7 @@ def main():
         ano = int(args[i + 1])
         del args[i:i + 2]
     ufs = args or ["ES"]
+    OUT = Path(__file__).parent / f"compras-governamentais-dca-{ano}.json"
     saida = json.loads(OUT.read_text()) if OUT.exists() else {}
     saida.setdefault("_meta", {})
     saida["_meta"].update({

@@ -13,10 +13,10 @@ Raciocínio (Estudo 17):
   2. Carga média dos tributos antigos sobre o gasto final (tax-inclusive):
          tau = (R + F) / (C_fam + f x C_gov)
      R = ICMS (líquido de outras deduções) + ISS + FECOP, DCA 2025 (bolo do modelo);
-     F = PIS/PASEP + Cofins + IPI, DCA da União 2024, levados a 2025 pelo crescimento do PIB nominal;
+     F = PIS/PASEP + Cofins + IPI, DCA da União 2025;
      C_fam = consumo das famílias 2025 (Contas Nacionais/IBGE);
-     C_gov = compras estaduais e municipais da DCA I-D 2024 (soma bruta dos elementos de despesa,
-     levada a 2025 pelo PIB nominal), e f = fração da proxy que carrega a carga média.
+     C_gov = compras estaduais e municipais da DCA I-D, média de 2024 e 2025 a preços de 2025 (soma bruta
+     dos elementos de despesa; data/build-compras-media.py), e f = fração da proxy que carrega a carga média.
   3. Receita de compras: X_M = tau x f x C_M (municípios) e X_E = tau x f x C_E (Estados e DF).
      A parte de famílias do IBS subnacional é R - X_M - X_E, dividida entre as esferas pelas
      alíquotas de referência (alfa_E, alfa_M, de phi-dest-pof-censo.json). Logo
@@ -54,9 +54,9 @@ def main():
 
     R = bolo(2025)
     pib = j("macro-parametros.json")["pib_nominal_historico"]
-    g = pib["2025"] / pib["2024"]
+    g = 1.0   # compras e tributos federais já estão a preços/ano de 2025
     fed = j("tributos-federais-dca-uniao.json")
-    F = fed["total_reais"] * g
+    F = fed["total_reais"]
     c_fam = j("aliquota-base-referencia.json")["_meta"]["consumo_familias_2025_rs"]
     dca = j("compras-governamentais-dca.json")
     cod = [u for u in dca if u != "_meta"]

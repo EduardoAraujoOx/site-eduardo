@@ -15,7 +15,7 @@ import json
 import urllib.request
 from pathlib import Path
 
-ANO = 2024
+ANO = 2025
 URL = ("https://apidatalake.tesouro.gov.br/ords/siconfi/tt/dca?an_exercicio=%d"
        "&no_anexo=DCA-Anexo%%20I-C&id_ente=1" % ANO)
 CONTAS = {
