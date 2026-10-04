@@ -252,7 +252,25 @@ def main():
                           "P_perda_maior_5pct": round(float((perda > 0.05 * ref0).mean()), 4),
                           "P_perda_maior_10pct": round(float((perda > 0.10 * ref0).mean()), 4)}
             risco[u] = r
-        resultados[esfera] = {"risco_em_reais": risco, "acumulado_2029_2033": acum_res, "por_uf": por_uf, "variancia_2033": var, "sinal_robusto_2033_p10_p90": robusto}
+        # nível da receita (R$ constantes de 2025): central, faixa de 10% a 90% e decomposição por componente
+        tot_c, _ = calcula(esfera, um_n, um_p, reais=True)
+        nivel = {}
+        for j, u in enumerate(UFS):
+            n0, c0, pl0, rep = parte(u, esfera)
+            nivel[u] = {}
+            for k, a in enumerate(ANOS):
+                r_ = nac[a]
+                ca_ = r_.get("ca", 0.0)
+                x = tot_r[:, j, k]
+                nivel[u][str(a)] = {
+                    "central_bi": round(float(tot_c[0, j, k]) / 1e9, 3),
+                    "p10_bi": round(float(np.percentile(x, 10)) / 1e9, 3), "p90_bi": round(float(np.percentile(x, 90)) / 1e9, 3),
+                    "largura_rel_80": round(float((np.percentile(x, 90) - np.percentile(x, 10)) / 2 / tot_c[0, j, k]), 4),
+                    "componentes_bi": {"icms_iss_residual": round(r_["icms_iss_residual"] * n0 / 1e9, 3),
+                                       "ibs_historico_liq_cgibs": round((1 - ca_) * r_["ibs_historico"] * c0 / 1e9, 3),
+                                       "ibs_destino_liquido": round(r_["ibs_destino_liquido"] * pl0 / 1e9, 3),
+                                       "seguro_receita_liq_cgibs": round((1 - ca_) * rep.get(a, 0.0) / 1e9, 3)}}
+        resultados[esfera] = {"nivel_em_reais_2025": nivel, "risco_em_reais": risco, "acumulado_2029_2033": acum_res, "por_uf": por_uf, "variancia_2033": var, "sinal_robusto_2033_p10_p90": robusto}
 
     # ── Longo prazo (2040, 2050, 2060, 2077): o contrafactual deixa de ser identificável (deriva
     # extrapolada), então reporta-se A+B e também B isolado (contrafactual congelado em 2025)
