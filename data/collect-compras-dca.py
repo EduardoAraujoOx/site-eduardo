@@ -14,10 +14,13 @@ despesas de exercícios anteriores (91, 92), obrigações tributárias (47).
 
   3.3.90.30 material de consumo           4.4.90.35 consultoria (investimento)
   3.3.90.32 material p/ distr. gratuita   4.4.90.39 serviços PJ (investimento)
-  3.3.90.35 consultoria                   4.4.90.40 TIC (investimento)
-  3.3.90.37 locação de mão de obra        4.4.90.51 obras e instalações
-  3.3.90.39 serviços de terceiros PJ      4.4.90.52 equipamentos e mat. permanente
-  3.3.90.40 TIC                           4.4.90.61 aquisição de imóveis
+  3.3.90.33 passagens e locomoção         4.4.90.40 TIC (investimento)
+  3.3.90.34 terceirização (contab. pessoal) 4.4.90.51 obras e instalações
+  3.3.90.35 consultoria                   4.4.90.52 equipamentos e mat. permanente
+  3.3.90.37 locação de mão de obra        4.4.90.61 aquisição de imóveis
+  3.3.90.39 serviços de terceiros PJ      3.3.90.40 TIC
+Fora da proxy, por decisão documentada (materiais/parametros-rateio-consumo-compras.md): 3.3.50 e 3.3.60
+(transferências sem contraprestação), 3.3.90.36 (pessoa física), 3.3.90.38 (sem registros relevantes).
 
 Uso:
   python3 data/collect-compras-dca.py ES            # um ou mais UFs
@@ -42,6 +45,8 @@ UF_COD = {"RO": 11, "AC": 12, "AM": 13, "RR": 14, "PA": 15, "AP": 16, "TO": 17,
 ELEMENTOS = {
     "3.3.90.30": "material de consumo",
     "3.3.90.32": "material para distribuição gratuita",
+    "3.3.90.33": "passagens e despesas com locomoção",
+    "3.3.90.34": "terceirização de mão de obra contabilizada como pessoal",
     "3.3.90.35": "serviços de consultoria",
     "3.3.90.37": "locação de mão de obra",
     "3.3.90.39": "outros serviços de terceiros PJ",

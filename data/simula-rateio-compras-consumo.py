@@ -45,7 +45,7 @@ HERE = Path(__file__).parent
 OUT = HERE / "rateio-destino-municipios-cenarios.json"
 
 _CAL = json.loads((HERE / "compras-calibracao.json").read_text())
-_C = _CAL["central"]
+_C = {"theta_M": _CAL["theta_municipal"], "theta_E": _CAL["theta_estadual"]}   # arredondados a 4 casas, como em rateio_consumo_compras.py
 _L = _CAL["grade"]["com_federal"][0]      # f = 0,6: limite inferior da faixa
 # pesos das compras calibrados em data/calibra-peso-compras.py (neutralidade do art. 370)
 CENARIOS = {
@@ -91,16 +91,21 @@ def pesos_consumo(muns, rend, med, eps):
     return w
 
 
+def _valido(d):
+    return bool(d) and d["compras"] > 0 and d.get("populacao") and d["compras"] <= 0.90 * (d.get("despesa_total_liquidada") or float("inf"))
+
+
 def compras_municipais(compras, ufs_munis):
-    """compras por município; ausentes ou zeradas recebem a mediana per capita da UF x população"""
+    """compras por município; ausentes, zeradas ou acima de 90% da despesa total (dado inconsistente)
+    recebem a mediana per capita da UF x população"""
     out, imput = {}, 0
     for uf, cods in ufs_munis.items():
         dados = compras.get(uf, {}).get("municipios", {})
-        pcs = sorted(d["compras"] / d["populacao"] for d in dados.values() if d.get("populacao") and d["compras"] > 0)
+        pcs = sorted(d["compras"] / d["populacao"] for d in dados.values() if _valido(d))
         med_pc = pcs[len(pcs) // 2] if pcs else 0
         for c, pop in cods.items():
             d = dados.get(c)
-            if d and d["compras"] > 0:
+            if _valido(d):
                 out[c] = d["compras"]
             else:
                 out[c] = med_pc * pop
@@ -119,7 +124,7 @@ def main():
     for c, m in rateio.items():
         ufs_munis.setdefault(m["uf"], {})[c] = m["pop_media"]
     c_mun, n_imput = compras_municipais(compras, ufs_munis)
-    pcs = sorted(c_mun[c] / pop for u in ufs_munis.values() for c, pop in u.items() if pop)
+    pcs = sorted(c_mun[c] / pop for uf_, u in ufs_munis.items() if uf_ != "DF" for c, pop in u.items() if pop)  # DF não tem município na DCA
     teto_pc = pcs[int(0.99 * (len(pcs) - 1))]
     c_mun_teto = {c: min(v, teto_pc * pop) for u in ufs_munis.values() for c, pop in u.items() for v in [c_mun[c]]}
     s_M = {u: sum(c_mun[c] for c in ufs_munis.get(u, {})) for u in UFS}
@@ -161,7 +166,12 @@ def main():
             estado_uf = S - cota_uf
             muns = ufs_munis[u]
             n, popuf = len(muns), sum(muns.values())
-            wc = pesos_consumo(muns, rend, med, eps)
+            # município sem renda no Censo 2022 recebe a média dos demais da UF (como em build-rateio-destino-municipios.py)
+            K = "renda_domiciliar_per_capita_2022"
+            rs = [rend[c][K] for c in muns if c in rend]
+            rm = sum(rs) / len(rs) if rs else 0
+            rend_uf = {c: (rend[c] if c in rend else {K: rm}) for c in muns}
+            wc = pesos_consumo(muns, rend_uf, med, eps)
             swc = sum(wc.values())
             cm = c_mun_teto if par.get("teto") else c_mun
             scm = sum(cm[c] for c in muns)

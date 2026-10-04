@@ -59,21 +59,29 @@ def pesos_consumo(pops, rend, med, eps=EPS):
     return w
 
 
+LIM_COMPRAS_DESPESA = 0.90
+
+
+def _valido(d):
+    return bool(d) and d["compras"] > 0 and d.get("populacao") and \
+        d["compras"] <= LIM_COMPRAS_DESPESA * (d.get("despesa_total_liquidada") or float("inf"))
+
+
 def compras_municipais(compras_json, pops_por_uf, teto_p=TETO_P):
     """compras por município e por UF. Retorna (compras, n_imputados, teto_pc).
 
-    Município sem dado, com valor não positivo ou sem população recebe a mediana per
-    capita da UF x população. O teto limita a compra per capita ao percentil teto_p
-    nacional (1 = sem teto)."""
+    Município sem dado, com valor não positivo, sem população ou com compras acima de
+    LIM_COMPRAS_DESPESA da despesa total (prefeitura sem folha de pessoal: classificação
+    inconsistente na DCA, como Quinta do Sol/PR, 95%) recebe a mediana per capita da UF x
+    população. O teto limita a compra per capita ao percentil teto_p nacional (1 = sem teto)."""
     out, imput = {}, 0
     for uf, pops in pops_por_uf.items():
         dados = compras_json.get(uf, {}).get("municipios", {})
-        pcs = sorted(d["compras"] / d["populacao"] for d in dados.values()
-                     if d.get("populacao") and d["compras"] > 0)
+        pcs = sorted(d["compras"] / d["populacao"] for d in dados.values() if _valido(d))
         med_pc = pcs[len(pcs) // 2] if pcs else 0.0
         for c, pop in pops.items():
             d = dados.get(c)
-            if d and d["compras"] > 0:
+            if _valido(d):
                 out[c] = d["compras"]
             else:
                 out[c] = med_pc * pop
