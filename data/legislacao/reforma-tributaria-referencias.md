@@ -717,10 +717,19 @@ em vez de +296%). Efeito na receita de 2033 (destino é só ~9-10% da receita pe
 90%): média ~1% em ES e PR; extremos Presidente Kennedy +14,6% (+2,9% com teto) e Curitiba
 -1,3%. ES passa de 1,724% para 1,763% do total nacional (phi estadual+municipal), PR de 5,970%
 para 5,936%.
-Pendências antes de publicar: revisar a proxy de compras por elemento; fixar regra para outliers
-(royalties/CFEM); fixar theta (20-30%) e a leitura da cota-parte; integrar ao
-`build-rateio-destino-municipios.py` (e, para o efeito por UF, ao `build-phi-dest-pof-censo.py`
-e aos consumidores de frac_estado/frac_muni) e regenerar a cadeia (`data/rodar-modelo.sh`).
+INTEGRADO AO MODELO (out/2026): `rateio_consumo_compras.py` (parâmetros por variável de ambiente:
+RATEIO_EPS=0,80; RATEIO_THETA_M=0,30; RATEIO_THETA_E=0,027; RATEIO_TETO_P=0,99; com THETA_M=0 e EPS=1 a
+cadeia reproduz o modelo anterior exatamente, verificado). Pontos alterados: `build-rateio-destino-
+municipios.py` (pesos do destino próprio), `build-phi-dest-pof-censo.py` (coeficientes por esfera e
+UF com compras: coef_estado_compras_pct, coef_muni_compras_pct) e os consumidores
+(`seguro-receita-repasses` x2, `resultados-consolidados`, `faixa-phi-dest`, `memoria-calculo`,
+`pr-final-audited`, `pr-full-audit-sensitivity`, `reproject-pr-audited`, `tabela-cenarios-pr`) via
+`rcc.esferas_uf()`; páginas JS `ibs-projecao-arrecadacao-br/es`, `ibs-projecao-longo-prazo`; painel
+e painelufir (memória de cálculo com conferências). Efeito vs. modelo anterior: coeficiente de
+destino municipal, média |Δ| 14,1%; receita municipal de 2033, média 1,5% (máx. +13,7%,
+municípios pequenos e pobres com compras per capita altas); receita por UF em 2033, média 0,3% (máx.
+0,85%, AC); ES +0,12% e PR -0,07% em 2033. Pendências: revisar a proxy de compras elemento a elemento
+(3.3.90.39 é 52%); fixar θ com dado oficial; leitura da cota-parte sobre compras estaduais.
 
 **Compras governamentais — legislação conferida e estudo publicado (out/2026).**
 O IBS/CBS sobre compras da administração direta, autarquias e fundações retorna

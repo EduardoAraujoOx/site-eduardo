@@ -20,6 +20,7 @@ import csv
 import json
 from pathlib import Path
 from datetime import datetime, timezone
+import rateio_consumo_compras as rcc
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "auditoria-pr-validacao"
@@ -102,8 +103,7 @@ def build_state_entities(ref, coef_uf, phi, pop_uf):
         iss = dca_iss.get(uf, 0) or 0
         fecop = dca_fecop.get(uf, 0) or 0
         outras = dca_outras.get(uf, 0) or 0
-        phi_uf = (phi["por_uf"].get(uf, {}).get("pof_censo_bruto_pct") or 0) / 100
-        phi_dest = phi_uf if is_df else phi_uf * frac_estado
+        phi_dest, _ = rcc.esferas_uf(phi["por_uf"].get(uf, {}), is_df, frac_estado, 0)
 
         coef_estado = (c.get("coeficiente_estado_pct") or 0) / 100
         coef_total = (c.get("coeficiente_total_pct") or 0) / 100

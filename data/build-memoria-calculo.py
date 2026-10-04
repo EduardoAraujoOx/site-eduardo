@@ -27,6 +27,7 @@ Uso:
 
 import json
 from pathlib import Path
+import rateio_consumo_compras as rcc
 
 HERE = Path(__file__).parent
 OUT_DIR = HERE / "memoria-calculo"
@@ -71,10 +72,32 @@ def nivel_de_nivelamento(entidades):
     return sum(niveis) / len(niveis)
 
 
+
+def compras_refs(uf, munis, phi, par, compras):
+    """Referências das compras governamentais (Estudo 17) para a memória de cálculo."""
+    if not par or not par.get("theta_compras_municipal"):
+        return None
+    est = {u: ((compras.get(u) or {}).get("estado") or {}).get("compras", 0) for u in compras if u != "_meta"}
+    pe = phi["por_uf"][uf]
+    return {
+        "elasticidade_consumo": par["elasticidade_consumo"],
+        "theta_municipal": par["theta_compras_municipal"],
+        "theta_estadual": par["theta_compras_estadual"],
+        "teto_compras_per_capita_reais": par.get("teto_compras_per_capita_reais"),
+        "compras_estado_reais": est.get(uf, 0),
+        "compras_estados_total_reais": sum(est.values()),
+        "phi_estado_compras_pct": pe.get("phi_estado_compras_pct"),
+        "phi_muni_compras_pct": pe.get("phi_muni_compras_pct"),
+        "soma_peso_consumo_uf": sum(m.get("peso_consumo_bruto") or 0 for m in munis.values()),
+        "soma_compras_uf_reais": sum(m.get("compras_base_reais") or 0 for m in munis.values()),
+        "theta_compras_uf": next((m.get("theta_compras_uf") for m in munis.values()), None),
+    }
+
 def main():
     coef_uf = carrega("coeficientes-uf.json")
     phi = carrega("phi-dest-pof-censo.json")
     rateio = carrega("rateio-destino-municipios.json")
+    compras = carrega("compras-governamentais-dca.json")
     estados = carrega("painel-estados.json")["estados"]
     seguro = carrega("seguro-receita-repasses.json")
 
@@ -145,10 +168,13 @@ def main():
                 "domicilios_censo_2022": p["domicilios_censo_2022"],
                 "produto_uf": p["despesa_pof_familiar"] * p["domicilios_censo_2022"],
                 "phi_dest_uf_pct": p["pof_censo_bruto_pct"],
+                "phi_estado_compras_pct": p.get("phi_estado_compras_pct"),
+                "phi_muni_compras_pct": p.get("phi_muni_compras_pct"),
                 "coef_estado_pct": edata["coef_pleno_estado_pct"],
                 "coef_municipios_pct": edata["coef_pleno_municipio_pct"],
                 "cota_parte_municipios_pct": sum(m["cota_parte_pct"] for m in munis.values()),
                 "propria_municipios_pct": sum(m["propria_pct"] for m in munis.values()),
+                "compras_governamentais": compras_refs(uf, munis, phi, rateio.get("parametros"), compras),
                 "pop_uf": pop_uf,
                 "n_municipios": len(munis),
                 "soma_renda_pop_uf": soma_renda_pop,
@@ -171,7 +197,9 @@ def main():
     p_es = phi["por_uf"]["ES"]
     dest_es = p_es["despesa_pof_familiar"] * p_es["domicilios_censo_2022"] / soma_produto_br * 100
     assert abs(dest_es - p_es["pof_censo_bruto_pct"]) < 1e-9, "φdest da UF não fecha"
-    assert abs(dest_es * phi["frac_estado_pct"] / 100 - es["coef_pleno_estado_pct"]) < 1e-9, \
+    esperado_estado = (p_es["coef_estado_compras_pct"] if rcc.THETA_M > 0 and p_es.get("coef_estado_compras_pct") is not None
+                       else dest_es * phi["frac_estado_pct"] / 100)
+    assert abs(esperado_estado - es["coef_pleno_estado_pct"]) < 1e-9, \
         "fração estadual do destino não fecha"
 
     maior = max(escritos, key=lambda x: x[1])

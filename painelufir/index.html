@@ -813,13 +813,13 @@ footer.site-foot a:hover{text-decoration:underline}
 
     <div class="prose">
         <h3>Fontes primárias</h3>
-        <p>A arrecadação histórica de ICMS, ISS e FECOP por UF e por município vem do SICONFI/STN (Declaração das Contas Anuais, DCA, Anexo I-C, e RREO Anexo 3). A população por município e por UF é a média simples 2019–2026 das estimativas do IBGE, no recorte pedido pela LC 227/2026 (art. 117, §§3º–6º). A renda domiciliar per capita por município, usada como proxy de consumo no rateio de destino, vem do Censo 2022.</p>
+        <p>A arrecadação histórica de ICMS, ISS e FECOP por UF e por município vem do SICONFI/STN (Declaração das Contas Anuais, DCA, Anexo I-C, e RREO Anexo 3). A população por município e por UF é a média simples 2019–2026 das estimativas do IBGE, no recorte pedido pela LC 227/2026 (art. 117, §§3º–6º). A renda domiciliar per capita por município (média e mediana), usada para estimar o consumo no rateio de destino, vem do Censo 2022. As compras de cada prefeitura e de cada governo estadual, que também entram no coeficiente de destino, vêm da DCA (Anexo I-D, 2024, despesas liquidadas).</p>
 
         <h3>Coeficiente de Participação de Transição (φ<sup>CPT</sup>)</h3>
         <p>Para cada ente, o coeficiente de participação de transição é a média de sete anos (2019–2025) da receita de referência (ICMS bruto menos deduções, mais ISS, mais FECOP e, quando aplicável, as contribuições a fundos estaduais do art. 115, I, "b", da LC 227/2026, para o ente estadual; ISS bruto mais cota-parte de ICMS, para o município), deflacionada a valores de 2025 e dividida pelo total nacional do mesmo agregado. É o critério histórico (origem) que rege a distribuição do "bolo" enquanto o cronograma do ADCT (art. 131, §1º) ainda não migrou totalmente para o destino.</p>
 
         <h3>Coeficiente de destino pleno (φ<sup>dest</sup>)</h3>
-        <p>Quando a transição se completa, a distribuição passa a seguir o local de consumo. Como não há uma medida direta de consumo por município, o painel usa como proxy a renda domiciliar per capita do Censo 2022 combinada com a Pesquisa de Orçamentos Familiares (POF 2017–2018), que mostra como a propensão a consumir cai com a renda: famílias mais pobres consomem quase 100% do que ganham. Essa proxy é validada externamente contra a estimativa de Gobetti e Monteiro (2023) por UF, pelo desvio médio absoluto e pela correlação de Pearson entre as duas séries.</p>
+        <p>Quando a transição se completa, a distribuição passa a seguir o local de consumo e, nas compras dos governos, o ente comprador. Como não há uma medida direta de consumo por município, o painel estima o consumo a partir da renda domiciliar per capita do Censo 2022 (média e mediana de cada município) e da elasticidade-renda do consumo estimada nos microdados da Pesquisa de Orçamentos Familiares (POF 2017–2018), de 0,80: o consumo cresce menos que a renda. A parcela do IBS que vem das compras públicas é distribuída pela despesa de compras de cada governo (CF art. 149-C; LC 214/2025, arts. 472 e 473; ver Estudo 17). O coeficiente por UF é validado externamente contra a estimativa de Gobetti e Monteiro (2023), pelo desvio médio absoluto e pela correlação de Pearson entre as duas séries.</p>
 
         <h3>Seguro-Receita</h3>
         <p>O ADCT (art. 132) reserva uma fração do IBS pelo critério de destino (5%) para um fundo que repassa aos entes cuja receita, por esse critério, ficar abaixo de um nível de nivelamento em relação à sua receita de referência. A distribuição é sequencial, não proporcional: o fundo eleva primeiro os entes de menor razão e se esgota num patamar comum, que é o nível do ano. Como o fundo é uma fração fixa do IBS de destino, e este cresce à medida que o ICMS e o ISS são extintos, tanto o montante do fundo quanto o nível sobem ano a ano; na projeção o fundo vai de R$ 1,10 bilhão em 2029 a R$ 5,97 bilhões em 2033, e o repasse da grande maioria dos contemplados cresce no período. Um ente deixa de receber quando sua própria receita de destino alcança o nível, não pelo simples decurso do prazo.</p>
@@ -858,8 +858,9 @@ footer.site-foot a:hover{text-decoration:underline}
             <tbody>
                 <tr><td>Arrecadação histórica de ICMS, ISS, FECOP e cota-parte</td><td>SICONFI/STN, DCA Anexo I-C e RREO Anexo 3</td><td>2019–2025</td></tr>
                 <tr><td>População por ente</td><td>Estimativas do IBGE (média simples do período)</td><td>2019–2026</td></tr>
-                <tr><td>Renda domiciliar per capita, proxy de consumo</td><td>Censo Demográfico do IBGE</td><td>2022</td></tr>
-                <tr><td>Propensão a consumir por faixa de renda</td><td>Pesquisa de Orçamentos Familiares (POF/IBGE)</td><td>2017–2018</td></tr>
+                <tr><td>Renda domiciliar per capita (média e mediana), para estimar o consumo</td><td>Censo Demográfico do IBGE (SIDRA 10295)</td><td>2022</td></tr>
+                <tr><td>Elasticidade-renda do consumo</td><td>Microdados da Pesquisa de Orçamentos Familiares (POF/IBGE)</td><td>2017–2018</td></tr>
+                <tr><td>Compras de bens e serviços de cada governo</td><td>SICONFI/STN, DCA Anexo I-D (despesas liquidadas)</td><td>2024</td></tr>
                 <tr><td>Crescimento real do PIB usado na projeção</td><td>Medianas do Boletim Focus (Banco Central)</td><td>2026–2033</td></tr>
                 <tr><td>Regras de transição, coeficientes e Seguro-Receita</td><td>EC 132/2023, LC 214/2024 e LC 227/2026 (ADCT, arts. 128, 131 e 132)</td><td>vigentes</td></tr>
                 <tr><td>Malhas territoriais dos mapas</td><td>Malhas do IBGE, estadual e municipal, em qualidade generalizada</td><td>vigentes</td></tr>
@@ -2411,7 +2412,7 @@ function memoHistoricoHtml(ctx){
 }
 
 // ── seção 2: coeficiente de destino ──
-function faixaDestPassoHtml(faixa){
+function faixaDestPassoHtml(faixa, numero){
     if (!faixa) return '';
     const linhas = Object.entries(faixa.metodos).map(([chave, m]) => {
         const meta = FAIXA_DEST.metodos[chave];
@@ -2422,7 +2423,7 @@ function faixaDestPassoHtml(faixa){
             <td class="num ${clsPct(m.variacao_por_ano['2033']/100)}">${fmtPct(m.variacao_por_ano['2033']/100)}</td>
         </tr>`;
     }).join('');
-    return passoHtml(4, 'E se o método de estimar o consumo fosse outro?', `
+    return passoHtml(numero || 4, 'E se o método de estimar o consumo fosse outro?', `
         <p>Os quatro métodos abaixo estimam a mesma coisa, a massa de consumo do estado, por caminhos diferentes. O painel publica o primeiro; os outros três, incluindo a tabela de Gobetti e Monteiro (2023), servem de comparação. Trocar o método muda também o repasse do Seguro-Receita de todos os entes, porque desloca a régua de nivelamento nacional; por isso a variação abaixo já vem recalculada com esse efeito, não é só o coeficiente sozinho.</p>
         <div class="table-wrap" style="margin-top:0.6rem">
             <table class="data" style="font-size:0.78rem"><thead><tr><th>Método</th><th class="num">Coeficiente do estado</th><th class="num">Variação em 2033</th></tr></thead><tbody>${linhas}</tbody></table>
@@ -2434,7 +2435,20 @@ function memoDestinoEstadoHtml(refs, faixa){
     const somaBr = MEMO_NAC.soma_produto_pof_censo_br;
     const fracE = MEMO_NAC.frac_estado_pct;
     const phiUf = refs.produto_uf / somaBr * 100;
-    const coefEstado = phiUf * fracE / 100;
+    const cg = refs.compras_governamentais;
+    const ehDf = !!(ESTADOS[MEMO.uf] && ESTADOS[MEMO.uf].is_df);
+    // Com compras governamentais (Estudo 17) a base da repartição é o φ da esfera estadual, que
+    // mistura o consumo das famílias com a participação do Estado nas compras dos Estados.
+    const sE = cg ? cg.compras_estado_reais / cg.compras_estados_total_reais * 100 : null;
+    const phiE = cg ? (1 - cg.theta_estadual) * phiUf + cg.theta_estadual * sE : phiUf;
+    const coefEstado = (cg && ehDf) ? refs.coef_estado_pct : phiE * fracE / 100;
+    const passoRep = cg ? 4 : 3;
+    const passoCompras = cg ? passoHtml(3, 'Compras governamentais', `
+            <p>O IBS e a CBS cobrados nas compras da administração direta, das autarquias e das fundações vão integralmente ao ente que comprou (CF art. 149-C; LC 214/2025, arts. 472 e 473) e entram na receita inicial do ente (LC 227/2026, art. 106, III). Por isso o coeficiente de destino do estado combina o consumo das famílias com a participação do governo estadual nas compras de todos os governos estaduais, que pesa ${fmtNum2(cg.theta_estadual*100, 1)}% do IBS estadual. As compras vêm da Declaração de Contas Anuais (SICONFI, Anexo I-D, 2024, despesas liquidadas).</p>
+            <div class="formula">${fmtExato(cg.compras_estado_reais)} ${op('÷')} ${fmtExato(cg.compras_estados_total_reais)} ${op('=')} <span class="res">${fmtPctPlain(sE, 6)}</span>
+                <span class="formula-nota">Participação do estado nas compras estaduais.</span></div>
+            <div class="formula">(1 ${op('−')} ${fmtNum2(cg.theta_estadual, 3)}) ${op('×')} ${fmtPctPlain(phiUf, 6)} ${op('+')} ${fmtNum2(cg.theta_estadual, 3)} ${op('×')} ${fmtPctPlain(sE, 6)} ${op('=')} <span class="res">${fmtPctPlain(phiE, 6)}</span>
+                <span class="formula-nota">φ da esfera estadual, com compras.</span>${confere(phiE, refs.phi_estado_compras_pct)}</div>`) : '';
     return `
     <div class="panel">
         <h3>Coeficiente de destino, φ<sup>dest</sup></h3>
@@ -2448,13 +2462,15 @@ function memoDestinoEstadoHtml(refs, faixa){
             <div class="formula">${fmtExato(refs.produto_uf)} ${op('÷')} ${fmtExato(somaBr)} ${op('=')} <span class="res">${fmtPctPlain(phiUf, 6)}</span>
                 <span class="formula-nota">Esta é a fatia da UF inteira, estado e municípios juntos.</span>${confere(phiUf, refs.phi_dest_uf_pct)}</div>`)}
 
-        ${passoHtml(3, 'Repartição entre as duas esferas', `
+        ${passoCompras}
+
+        ${passoHtml(passoRep, 'Repartição entre as duas esferas', `
             <p>O art. 361 da LC 214/2025, com a redação da LC 227/2026, reparte a receita de destino entre estado e municípios pela razão média entre a receita de referência de cada esfera e o PIB nominal de 2024 e 2025. A fração é a mesma para todas as UFs.</p>
-            <div class="formula">${fmtPctPlain(phiUf, 6)} ${op('×')} ${fmtNum2(fracE, 2)}% ${op('=')} <span class="res">${fmtPctPlain(coefEstado, 6)}</span>
+            <div class="formula">${fmtPctPlain(phiE, 6)} ${op('×')} ${fmtNum2(fracE, 2)}% ${op('=')} <span class="res">${fmtPctPlain(coefEstado, 6)}</span>
                 <span class="formula-nota">Coeficiente de destino do governo estadual, já líquido da cota-parte dos municípios.</span>${confere(coefEstado, refs.coef_estado_pct)}</div>
             <p>Os ${fmtNum2(MEMO_NAC.frac_muni_pct, 2)}% restantes, equivalentes a ${fmtPctPlain(refs.coef_municipios_pct, 6)} do IBS nacional, vão ao conjunto dos municípios desta UF: ${fmtPctPlain(refs.cota_parte_municipios_pct, 6)} como cota-parte e ${fmtPctPlain(refs.propria_municipios_pct, 6)} como destino próprio.</p>`)}
 
-        ${faixaDestPassoHtml(faixa)}
+        ${faixaDestPassoHtml(faixa, passoRep + 1)}
 
         <div class="memo-ressalva">
             <p><b>O que esta estimativa não é.</b> A POF mede despesa familiar por unidade da federação, não por município, e é de 2017–2018. O painel a combina com a contagem de domicílios de 2022 para atualizar a escala, mas a estrutura de consumo permanece a da pesquisa original. O número não é o cálculo oficial do Comitê Gestor do IBS.</p>
@@ -2466,7 +2482,22 @@ function memoDestinoMuniHtml(refs, m, cod){
     const pesoCota = 0.95 * (m.pop_media / refs.pop_uf) + 0.05 * (1 / refs.n_municipios);
     const renda = m.renda_domiciliar_per_capita_2022 || 0;
     const produto = renda * m.pop_media;
-    const pesoPropria = refs.soma_renda_pop_uf ? produto / refs.soma_renda_pop_uf : 0;
+    const cg = refs.compras_governamentais;
+    const med = m.renda_mediana_domiciliar_per_capita_2022 || 0;
+    // Com função de consumo e compras (Estudo 17) o peso do destino próprio combina dois critérios.
+    let eps = 0, sigma2 = 0, brutoCons = 0, pesoCons = 0, pesoCompras = 0, theta = 0;
+    let pesoPropria;
+    if (cg) {
+        eps = cg.elasticidade_consumo;
+        sigma2 = (med > 0 && renda >= med) ? 2 * Math.log(renda / med) : 0;
+        brutoCons = (med > 0 && renda >= med) ? m.pop_media * Math.pow(med, eps) * Math.exp(eps * eps * sigma2 / 2) : m.peso_consumo_bruto;
+        pesoCons = m.peso_consumo_bruto / cg.soma_peso_consumo_uf;
+        pesoCompras = m.compras_base_reais / cg.soma_compras_uf_reais;
+        theta = cg.theta_compras_uf || 0;
+        pesoPropria = (1 - theta) * pesoCons + theta * pesoCompras;
+    } else {
+        pesoPropria = refs.soma_renda_pop_uf ? produto / refs.soma_renda_pop_uf : 0;
+    }
     const cotaPct = pesoCota * refs.cota_parte_municipios_pct;
     const propriaPct = pesoPropria * refs.propria_municipios_pct;
     return `
@@ -2481,7 +2512,19 @@ function memoDestinoMuniHtml(refs, m, cod){
             <div class="formula">${fmtNum2(pesoCota*100, 6)}% ${op('×')} ${fmtPctPlain(refs.cota_parte_municipios_pct, 6)} ${op('=')} <span class="res">${fmtPctPlain(cotaPct, 6)}</span>
                 <span class="formula-nota">Fatia do IBS nacional que chega por este caminho.</span>${confere(cotaPct, m.cota_parte_pct)}</div>`)}
 
-        ${passoHtml(2, 'Caminho B: destino próprio, no lugar do ISS', `
+        ${cg ? passoHtml(2, 'Caminho B: destino próprio, no lugar do ISS', `
+            <p>A parcela que substitui o ISS é rateada por dois critérios. O primeiro é o consumo estimado do município. O painel parte da renda domiciliar per capita do Censo 2022, média e mediana, e aproxima a distribuição de renda por uma lognormal. O consumo cresce menos que a renda: a elasticidade-renda estimada nos microdados da POF 2017–2018 é de ${fmtNum2(eps, 2)}, e o consumo esperado do município é a população multiplicada por mediana<sup>${fmtNum2(eps, 2)}</sup> × exp(${fmtNum2(eps, 2)}² × σ² ÷ 2), com σ² = 2 × ln(média ÷ mediana).</p>
+            <div class="formula">σ² = 2 ${op('×')} ln(${fmtExato(renda)} ${op('÷')} ${fmtExato(med)}) ${op('=')} <span class="res">${fmtNum2(sigma2, 4)}</span></div>
+            <div class="formula">${fmtNum2(m.pop_media, 1)} ${op('×')} ${fmtExato(med)}<sup>${fmtNum2(eps, 2)}</sup> ${op('×')} exp(${fmtNum2(eps, 2)}² ${op('×')} ${fmtNum2(sigma2, 4)} ÷ 2) ${op('=')} <span class="res">${fmtExato(brutoCons)}</span>${confere(brutoCons, m.peso_consumo_bruto)}</div>
+            <div class="formula">${fmtExato(m.peso_consumo_bruto)} ${op('÷')} ${fmtExato(cg.soma_peso_consumo_uf)} ${op('=')} <span class="res">${fmtNum2(pesoCons*100, 6)}%</span>
+                <span class="formula-nota">Peso deste município no consumo estimado da UF.</span></div>
+            <p>O segundo critério são as compras da prefeitura: o IBS das compras vai ao ente comprador (CF art. 149-C; LC 214/2025, arts. 472 e 473). O painel mede as compras pela despesa liquidada em 2024 nos elementos de bens e serviços (SICONFI, DCA Anexo I-D), com teto por habitante no percentil 99 nacional e imputação pela mediana da UF quando o município não informou.</p>
+            <div class="formula">${fmtExato(m.compras_base_reais)} ${op('÷')} ${fmtExato(cg.soma_compras_uf_reais)} ${op('=')} <span class="res">${fmtNum2(pesoCompras*100, 6)}%</span>
+                <span class="formula-nota">Peso deste município nas compras dos municípios da UF.</span></div>
+            <p>As compras pesam ${fmtNum2(theta*100, 1)}% do destino próprio desta UF (${fmtNum2(cg.theta_municipal*100, 0)}% do IBS municipal na estimativa nacional, ajustado pela participação da UF nas compras).</p>
+            <div class="formula">(1 ${op('−')} ${fmtNum2(theta, 4)}) ${op('×')} ${fmtNum2(pesoCons*100, 6)}% ${op('+')} ${fmtNum2(theta, 4)} ${op('×')} ${fmtNum2(pesoCompras*100, 6)}% ${op('=')} <span class="res">${fmtNum2(pesoPropria*100, 6)}%</span></div>
+            <div class="formula">${fmtNum2(pesoPropria*100, 6)}% ${op('×')} ${fmtPctPlain(refs.propria_municipios_pct, 6)} ${op('=')} <span class="res">${fmtPctPlain(propriaPct, 6)}</span>
+                ${confere(propriaPct, m.propria_pct)}</div>`) : passoHtml(2, 'Caminho B: destino próprio, no lugar do ISS', `
             <p>A parcela que substitui o ISS é rateada pelo consumo estimado do município. Sem medida direta, o painel usa a renda domiciliar per capita do Censo 2022 multiplicada pela população média, como proxy da massa de consumo local.</p>
             <div class="formula">${fmtExato(renda)} ${op('×')} ${fmtNum2(m.pop_media, 1)} habitantes ${op('=')} <span class="res">${fmtExato(produto)}</span></div>
             <div class="formula">${fmtExato(produto)} ${op('÷')} ${fmtExato(refs.soma_renda_pop_uf)} ${op('=')} <span class="res">${fmtNum2(pesoPropria*100, 6)}%</span>
@@ -2494,7 +2537,7 @@ function memoDestinoMuniHtml(refs, m, cod){
                 <span class="formula-nota">Coeficiente de destino pleno do município.</span>${confere(cotaPct + propriaPct, m.coef_pleno_pct)}</div>`)}
 
         <div class="memo-ressalva">
-            <p><b>Duas ressalvas que afetam este número.</b> A primeira é que o consumo é função côncava da renda: famílias mais pobres consomem quase tudo o que ganham e as mais ricas poupam uma fração maior. Usar renda per capita de forma linear como proxy tende, portanto, a superestimar a fatia dos municípios mais ricos dentro da UF.</p>
+            ${cg ? `<p><b>Duas ressalvas que afetam este número.</b> A primeira é que a elasticidade-renda do consumo é um valor único (${fmtNum2(eps, 2)}), estimado em microdados da POF 2017–2018, mas a curva real não é de elasticidade constante, e a distribuição de renda de cada município é aproximada por uma lognormal. As compras são uma proxy bruta, a soma de elementos de despesa, que não desconta fornecedores do Simples Nacional nem dispensas de licitação presenciais.</p>` : `<p><b>Duas ressalvas que afetam este número.</b> A primeira é que o consumo é função côncava da renda: famílias mais pobres consomem quase tudo o que ganham e as mais ricas poupam uma fração maior. Usar renda per capita de forma linear como proxy tende, portanto, a superestimar a fatia dos municípios mais ricos dentro da UF.</p>`}
             <p>A segunda é que os 10% de educação e equidade e os 5% ambientais do art. 128 ainda não têm indicadores fixados por lei estadual na maior parte das unidades da federação. Enquanto não tiverem, o rateio da cota-parte exibido aqui é uma aproximação, e municípios com desempenho educacional ou ambiental acima da média tendem a receber mais do que este cálculo indica.</p>
         </div>
     </div>`;

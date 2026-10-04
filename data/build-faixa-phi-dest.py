@@ -35,6 +35,7 @@ import importlib.util
 import json
 from pathlib import Path
 from fundos_art115b import fold
+import rateio_consumo_compras as rcc
 
 HERE = Path(__file__).parent
 OUT = HERE / "faixa-phi-dest-estados.json"
@@ -156,8 +157,13 @@ def main():
         for uf in UFS:
             cf = coefs_fixos[uf]
             denom = (cf["coef_cpt_total"] if cf["is_df"] else cf["coef_cpt_estado"]) * total_br_2025
-            phi_uf = (phi_dest_data["por_uf"].get(uf, {}).get(chave_metodo) or 0) / 100
-            phi_dest_estado = phi_uf if cf["is_df"] else phi_uf * frac_estado
+            entrada = phi_dest_data["por_uf"].get(uf, {})
+            if chave_metodo == "pof_censo_bruto_pct":
+                # método central: inclui as compras governamentais quando ativas (rcc.THETA_M > 0)
+                phi_dest_estado, _ = rcc.esferas_uf(entrada, cf["is_df"], frac_estado, 0)
+            else:
+                phi_uf = (entrada.get(chave_metodo) or 0) / 100
+                phi_dest_estado = phi_uf if cf["is_df"] else phi_uf * frac_estado
             entidades.append({
                 "id": f"UF-{uf}", "uf": uf, "esfera": "estado", "is_df": cf["is_df"],
                 "denom": denom, "phi_dest": phi_dest_estado, "pop": pop_by_uf.get(uf, 0),

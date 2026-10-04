@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 """
+ATUALIZACAO (out/2026): o peso do destino proprio deixou de ser renda x populacao e passou a
+combinar (i) consumo esperado com elasticidade-renda < 1 (microdados da POF; media e mediana de
+renda do Censo 2022) e (ii) compras observadas de cada prefeitura (DCA I-D 2024), conforme
+data/rateio_consumo_compras.py e Estudo 17. Com RATEIO_EPS=1 e RATEIO_THETA_M=0 o script reproduz
+exatamente a versao anterior. O texto abaixo descreve o desenho original.
+
 Rateio do coeficiente de destino (phi^dest) do IBS entre os municipios
 individuais de cada UF, como preparacao para o estudo de repasses do
 Seguro-Receita por ente (ADCT art. 132).
@@ -81,6 +87,7 @@ Uso:
 import json
 from pathlib import Path
 from fundos_art115b import fold
+import rateio_consumo_compras as rcc
 
 HERE = Path(__file__).parent
 OUT = HERE / "rateio-destino-municipios.json"
@@ -120,9 +127,9 @@ def compute_params(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cota_declara
 
         # phi^dest: estimativa propria (POF x Censo, Estudo 13) -- Gobetti e Monteiro deixou de
         # ser insumo do modelo (fica so como comparacao, Estudos 07/13).
-        phi_uf = (phi_dest_por_uf.get(uf, {}).get('pof_censo_bruto_pct') or 0) / 100
-        coef_pleno_estado = phi_uf if is_df else phi_uf * frac_estado
-        coef_pleno_muni = None if is_df else phi_uf * frac_muni
+        # Coeficientes por esfera; com compras governamentais ativas (rcc.THETA_M > 0) vêm de
+        # phi-dest-pof-censo.json (coef_*_compras_pct), senão da fórmula original phi_UF x frac.
+        coef_pleno_estado, coef_pleno_muni = rcc.esferas_uf(phi_dest_por_uf.get(uf, {}), is_df, frac_estado, frac_muni)
 
         # Decomposicao da fatia municipal: cota-parte (1/3 da fatia estadual, ja que
         # 0,25/0,75 = 1/3) vs. destino proprio (o resto) -- ver docstring do modulo.
@@ -152,6 +159,7 @@ def main():
         pop_municipios = json.load(f)['municipios']
     with open(HERE / "censo-2022-renda-municipios.json") as f:
         renda_municipios = json.load(f)['municipios']
+    rend_medias, rend_medianas, compras_json = rcc.carrega_entradas()
 
     dca_icms_2025 = ref_data.get('dca_icms_por_uf', {}).get('2025', {})
     dca_iss_2025 = ref_data.get('dca_iss_por_uf', {}).get('2025', {})
@@ -170,6 +178,15 @@ def main():
     for cod, r in cpt_municipios['municipios'].items():
         municipios_por_uf.setdefault(r['uf'], []).append((cod, r))
 
+    # Compras governamentais (Estudo 17): base por município e participação de cada UF nas
+    # compras municipais; usadas só se THETA_M > 0.
+    pops_por_uf = {uf: {cod: pop_municipios[cod]['pop_media'] for cod, r in lst if cod in pop_municipios}
+                   for uf, lst in municipios_por_uf.items() if uf != 'DF'}
+    compras_mun, n_compras_imputadas, teto_pc = rcc.compras_municipais(compras_json, pops_por_uf)
+    compras_uf = {uf: sum(compras_mun[c] for c in pops) for uf, pops in pops_por_uf.items()}
+    compras_br = sum(compras_uf.values())
+    phi_fam_uf = {uf: (phi_dest_data['por_uf'].get(uf, {}).get('pof_censo_bruto_pct') or 0) / 100 for uf in UFS}
+
     resultado = {}
     validacao_uf = {}
     municipios_sem_renda = []
@@ -185,15 +202,26 @@ def main():
         rendas_uf = [renda_municipios[cod]['renda_domiciliar_per_capita_2022'] for cod, r in lst if cod in renda_municipios]
         renda_media_uf = sum(rendas_uf) / len(rendas_uf) if rendas_uf else 0
 
-        total_renda_pop_uf = 0.0
+        # Peso de consumo (microdados da POF): populacao x E[y^eps] com a media e a mediana
+        # de renda do Censo 2022 (lognormal); municipio sem renda no Censo recebe a media da UF.
+        pops_uf = {cod: pop_municipios.get(cod, {}).get('pop_media', 0) for cod, r in lst}
+        medias_uf, medianas_uf = {}, {}
         for cod, r in lst:
-            pop_media = pop_municipios.get(cod, {}).get('pop_media', 0)
             if cod in renda_municipios:
-                renda_pc = renda_municipios[cod]['renda_domiciliar_per_capita_2022']
+                medias_uf[cod] = rend_medias[cod]
+                medianas_uf[cod] = rend_medianas.get(cod)
             else:
-                renda_pc = renda_media_uf
+                medias_uf[cod] = renda_media_uf
+                medianas_uf[cod] = None
                 municipios_sem_renda.append(cod)
-            total_renda_pop_uf += renda_pc * pop_media
+        pesos_cons_uf = rcc.pesos_consumo(pops_uf, medias_uf, medianas_uf)
+        total_cons_uf = sum(pesos_cons_uf.values())
+        # Peso de compras (Estudo 17): despesa de compras da prefeitura (DCA I-D 2024)
+        total_compras_uf = sum(compras_mun.get(cod, 0) for cod, r in lst) or 1.0
+        s_M_uf = (compras_uf.get(uf, 0) / compras_br) if compras_br else 0.0
+        phi_f = phi_fam_uf.get(uf, 0)
+        denom = (1 - rcc.THETA_M) * phi_f + rcc.THETA_M * s_M_uf
+        theta_uf = (rcc.THETA_M * s_M_uf / denom) if denom > 0 else 0.0
 
         muni_agregado = params[uf]['municipio']
         cota_parte_agregado_uf = (muni_agregado['cotaParte'] * 100) if muni_agregado else 0
@@ -203,7 +231,7 @@ def main():
         soma_verif = 0.0
         for cod, r in lst:
             pop_media = pop_municipios.get(cod, {}).get('pop_media', 0)
-            renda_pc = renda_municipios.get(cod, {}).get('renda_domiciliar_per_capita_2022', renda_media_uf)
+            renda_pc = medias_uf[cod]
 
             peso_pop = (pop_media / total_pop_uf) if total_pop_uf > 0 else 0
             peso_igual = 1 / n_municipios_uf if n_municipios_uf > 0 else 0
@@ -215,7 +243,9 @@ def main():
 
             # Destino proprio: proxy de intensidade de consumo (renda per capita x populacao),
             # analogo a formula POF x Censo do Estudo 13 -- ver docstring do modulo.
-            peso_propria = ((renda_pc * pop_media) / total_renda_pop_uf) if total_renda_pop_uf > 0 else 0
+            peso_cons = (pesos_cons_uf[cod] / total_cons_uf) if total_cons_uf > 0 else 0
+            peso_compras = compras_mun.get(cod, 0) / total_compras_uf
+            peso_propria = (1 - theta_uf) * peso_cons + theta_uf * peso_compras
 
             cota_parte_m = cota_parte_agregado_uf * peso_cota_parte
             propria_m = propria_agregado_uf * peso_propria
@@ -228,6 +258,12 @@ def main():
                 'renda_domiciliar_per_capita_2022': renda_pc,
                 'peso_intra_uf_cota_parte': peso_cota_parte,
                 'peso_intra_uf_propria': peso_propria,
+                'renda_mediana_domiciliar_per_capita_2022': medianas_uf[cod],
+                'peso_consumo_bruto': pesos_cons_uf[cod],
+                'compras_base_reais': compras_mun.get(cod, 0),
+                'peso_intra_uf_propria_consumo': peso_cons,
+                'peso_intra_uf_propria_compras': peso_compras,
+                'theta_compras_uf': theta_uf,
                 'cota_parte_pct': cota_parte_m,
                 'propria_pct': propria_m,
                 'phi_dest_pct': phi_dest_m,
@@ -245,13 +281,15 @@ def main():
 
     output = {
         'fonte': (
-            "Rateio derivado, em duas contas separadas: (a) cota-parte (25% do destino do "
+            "Versao com funcao de consumo (microdados da POF) e compras governamentais -- ver "
+            "data/rateio_consumo_compras.py e Estudo 17. Rateio derivado, em duas contas separadas: (a) cota-parte (25% do destino do "
             "Estado, CF art. 158, IV, 'b'; LC 227/2026 arts. 118 par. 3o e 128), repartida entre "
             "municipios pelo criterio do art. 128 da LC 227/2026 (80% populacao + 10% "
             "educacao-equidade + 5% ambiental + 5% igualitario); (b) destino proprio do IBS "
             "municipal (sucessor do ISS, LC 227/2026 art. 106), repartido por um proxy de "
-            "intensidade de consumo (renda domiciliar per capita, Censo 2022, SIDRA tabela "
-            "10295, x populacao). Populacao: data/populacao-municipios-media-2019-2026.json "
+            "intensidade de consumo (populacao x consumo esperado com elasticidade-renda < 1, a partir "
+            "da media e da mediana de renda do Censo 2022, SIDRA 10295) combinada com as compras "
+            "observadas de cada prefeitura (DCA I-D 2024). Populacao: data/populacao-municipios-media-2019-2026.json "
             "(IBGE, media 2019-2026). Renda: data/censo-2022-renda-municipios.json."
         ),
         'metodo': (
@@ -260,20 +298,28 @@ def main():
             "10% educacao-equidade + 5% ambiental (art. 128, incisos II e III) dependem de "
             "indicadores ainda nao fixados por lei estadual em nenhuma UF, aproximados pelo "
             "criterio populacional do inciso I (95% populacao + 5% igualitario, na pratica). "
-            "propria_m = propria_UF x [(renda_m x pop_m) / soma_UF(renda x pop)] -- proxy de "
-            "consumo por municipio, no mesmo espirito da formula POF x Censo do Estudo 13 (a POF "
-            "nao abre por municipio). phi_dest_m = cota_parte_m + propria_m. cota_parte_UF e "
+            "propria_m = propria_UF x [(1 - theta_UF) x peso_consumo_m + theta_UF x peso_compras_m]; "
+            "peso_consumo_m = pop_m x E[y^e] / soma_UF (y lognormal com a media e a mediana de renda do "
+            "municipio; e = elasticidade-renda do consumo, POF 2017-18 microdados); peso_compras_m = "
+            "compras_m / soma_UF(compras); theta_UF = parte das compras no IBS municipal proprio da UF. "
+            "phi_dest_m = cota_parte_m + propria_m. cota_parte_UF e "
             "propria_UF vem da decomposicao de Municipio_UF em build-rateio-destino-municipios.py "
             "(cota_parte_UF = Estado_UF/3; propria_UF = Municipio_UF - cota_parte_UF)."
         ),
         'limitacao_proxy_renda': (
-            "Consumo e uma funcao concava da renda: familias mais pobres consomem quase 100% do "
-            "que ganham, familias mais ricas poupam uma fracao maior. Usar renda per capita "
-            "linearmente como proxy de consumo tende a superestimar a fatia de municipios mais "
-            "ricos dentro da UF. Nao ha dado publico de propensao a consumir por municipio para "
-            "corrigir isso; aplicar uma correcao inventada seria pior do que nao corrigir -- "
-            "documentado como limitacao, nao escondido."
+            "A elasticidade-renda do consumo (e = 0,80) vem dos microdados da POF por familia e e "
+            "aplicada a distribuicao de renda de cada municipio aproximada por uma lognormal com a "
+            "media e a mediana do Censo 2022; a curva real nao e de elasticidade constante (0,47 nos 20% "
+            "mais pobres a 0,89 na faixa de 50% a 80%). As compras sao uma proxy bruta (DCA I-D, soma de "
+            "elementos de despesa), sem descontar fornecedores do Simples/MEI nem dispensas presenciais, "
+            "e limitadas ao percentil 99 nacional por habitante; ver Estudo 17."
         ),
+        'parametros': {
+            'elasticidade_consumo': rcc.EPS, 'theta_compras_municipal': rcc.THETA_M,
+            'theta_compras_estadual': rcc.THETA_E, 'teto_compras_per_capita_percentil': rcc.TETO_P,
+            'teto_compras_per_capita_reais': teto_pc, 'n_municipios_compras_imputadas': n_compras_imputadas,
+            'cota_parte_incide_sobre_compras_estaduais': True,
+        },
         'total_br_2025': total_br_2025,
         'n_municipios': len(resultado),
         'n_municipios_sem_renda_censo': len(set(municipios_sem_renda)),

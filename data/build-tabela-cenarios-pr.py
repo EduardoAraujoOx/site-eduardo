@@ -24,6 +24,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Pt, Cm
+import rateio_consumo_compras as rcc
 
 HERE = Path(__file__).parent
 ROOT = HERE.parent
@@ -37,7 +38,7 @@ phi_uf = F["por_uf"]["PR"]
 N = {r["ano"]: r for r in json.load(open(ROOT / "painelufir/data/ibs-projecao-nacional.json"))["projecao"]}
 ref = {a: N[a]["icms_iss_residual"] + N[a]["ibs_bruto"] for a in N}
 c_neutro = R["contrafactual_por_ano"]["2033"] / ref[2033]
-c_own = phi_uf["pof_censo_bruto_pct"] / 100 * frac_estado
+c_own, _ = rcc.esferas_uf(phi_uf, False, frac_estado, 0)
 c_gob = phi_uf["gobetti_tabela1_2023_pct"] / 100 * frac_estado
 n33 = N[2033]
 c_cpt = (R["pos_por_ano"]["2033"] - n33["ibs_destino_liquido"] * c_own) / ((1 - n33["ca"]) * n33["ibs_historico"])

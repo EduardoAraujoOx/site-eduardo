@@ -26,6 +26,7 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 from fundos_art115b import fold
+import rateio_consumo_compras as rcc
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "auditoria-pr-validacao"
@@ -114,8 +115,7 @@ def build_state_entities(ref, coef_uf, phi, pop_uf):
         c = coef_uf["por_uf"][uf]
         is_df = bool(c.get("is_df"))
         iss = dca_iss.get(uf, 0) or 0
-        phi_uf = (phi["por_uf"].get(uf, {}).get("pof_censo_bruto_pct") or 0) / 100
-        phi_dest = phi_uf if is_df else phi_uf * frac_estado
+        phi_dest, _ = rcc.esferas_uf(phi["por_uf"].get(uf, {}), is_df, frac_estado, 0)
 
         coef_estado = (c.get("coeficiente_estado_pct") or 0) / 100
         coef_total = (c.get("coeficiente_total_pct") or 0) / 100
