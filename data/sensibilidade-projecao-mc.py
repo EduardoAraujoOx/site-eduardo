@@ -36,6 +36,8 @@ UFS = brc.UFS
 N_SIM = 20000
 SEED = 20261004
 SIGMA_PHI = 0.10          # central: erro relativo médio entre fontes (~10%)
+KAPPA = 1.0              # fator de escala dos intervalos (1 = sem recalibração; ver sensibilidade-incerteza-parametros.py)
+USAR_BOOT = True         # sorteia (s1, beta) do bootstrap em blocos (incerteza dos parâmetros)
 SIGMA_PHI_ALTO = 0.19     # sensibilidade: dispersão log entre POF/Censo e Gobetti 2023 (inclui UFs pequenas)
 
 
@@ -126,11 +128,13 @@ def main():
     n_uf = np.array([parte(u, "total")[0] for u in UFS])
     pl_uf = np.array([parte(u, "total")[2] for u in UFS])
 
-    def calcula(esfera, shock_n, shock_phi, acumulado=False):
+    def calcula(esfera, shock_n, shock_phi, acumulado=False, reais=False):
         """shock_n: (N, 27, nanos) multiplicador de participação; shock_phi: (N, 27).
         acumulado=True devolve a variação acumulada 2029-2033 (soma pós / soma contrafactual - 1), (N, 27)."""
         N = shock_phi.shape[0]
         out = np.zeros((N, len(UFS), len(ANOS)))
+        arr_t = np.zeros((N, len(UFS), len(ANOS)))
+        arr_c = np.zeros((N, len(UFS), len(ANOS)))
         sum_t = np.zeros((N, len(UFS)))
         sum_c = np.zeros((N, len(UFS)))
         for j, u in enumerate(UFS):
@@ -145,8 +149,12 @@ def main():
                        + r["ibs_destino_liquido"] * pp + (1 - ca) * rep.get(a, 0.0))
                 con = ref_a * nn
                 out[:, j, k] = tot / con - 1
+                arr_t[:, j, k] = tot
+                arr_c[:, j, k] = con
                 sum_t[:, j] += tot
                 sum_c[:, j] += con
+        if reais:
+            return arr_t, arr_c
         if acumulado:
             return sum_t / sum_c - 1
         return out
@@ -164,11 +172,21 @@ def main():
 
     rng = np.random.default_rng(SEED)
     horizontes = np.array([a - 2025 for a in ANOS], dtype=float)
-    sd_h = s1 * horizontes ** beta
+    pares = None
+    inc = HERE / "sensibilidade-incerteza-parametros.json"
+    if USAR_BOOT and inc.exists():
+        pares = np.array(json.loads(inc.read_text(encoding="utf-8"))["pares_s1_beta"])
+
+    def sd_sim(n, hs):
+        """Desvio da deriva por rodada e horizonte, shape (n, len(hs)): kappa * s1_i * h^beta_i."""
+        if pares is None:
+            return np.tile(KAPPA * s1 * hs ** beta, (n, 1))
+        i = rng.integers(0, len(pares), n)
+        return KAPPA * pares[i, 0][:, None] * hs[None, :] ** pares[i, 1][:, None]
 
     def sorteia(fontes, sigma_phi):
         z = rng.standard_normal((N_SIM, len(UFS)))
-        eps = z[:, :, None] * sd_h[None, None, :] if "A" in fontes else np.zeros((N_SIM, len(UFS), len(ANOS)))
+        eps = z[:, :, None] * sd_sim(N_SIM, horizontes)[:, None, :] if "A" in fontes else np.zeros((N_SIM, len(UFS), len(ANOS)))
         # participação UF (agregado estado+município): choque multiplicativo e renormalização
         m = np.exp(eps)
         den = (n_uf[None, :, None] * m).sum(1, keepdims=True)
@@ -220,7 +238,21 @@ def main():
         # quantas UFs têm sinal robusto (p10>0 ou p90<0) em 2033
         robusto = {"ganho": [u for u in UFS if por_uf[u]["2033"]["p10"] > 0],
                    "perda": [u for u in UFS if por_uf[u]["2033"]["p90"] < 0]}
-        resultados[esfera] = {"acumulado_2029_2033": acum_res, "por_uf": por_uf, "variancia_2033": var, "sinal_robusto_2033_p10_p90": robusto}
+        # métricas de risco em R$ (valores de 2025): receita em risco (perda frente ao contrafactual)
+        tot_r, con_r = calcula(esfera, sn_c, sp_c, reais=True)
+        risco = {}
+        for j, u in enumerate(UFS):
+            r = {}
+            for rot, perda, ref0 in [("2033", (con_r[:, j, -1] - tot_r[:, j, -1]), con_r[:, j, -1].mean()),
+                                     ("acumulado", (con_r[:, j, :] - tot_r[:, j, :]).sum(1), con_r[:, j, :].sum(1).mean())]:
+                q95 = float(np.percentile(perda, 95))
+                cauda = perda[perda >= q95]
+                r[rot] = {"RaR95_bi": round(q95 / 1e9, 3), "ES95_bi": round(float(cauda.mean()) / 1e9, 3),
+                          "RaR95_pct_contra": round(q95 / ref0, 4),
+                          "P_perda_maior_5pct": round(float((perda > 0.05 * ref0).mean()), 4),
+                          "P_perda_maior_10pct": round(float((perda > 0.10 * ref0).mean()), 4)}
+            risco[u] = r
+        resultados[esfera] = {"risco_em_reais": risco, "acumulado_2029_2033": acum_res, "por_uf": por_uf, "variancia_2033": var, "sinal_robusto_2033_p10_p90": robusto}
 
     # ── Longo prazo (2040, 2050, 2060, 2077): o contrafactual deixa de ser identificável (deriva
     # extrapolada), então reporta-se A+B e também B isolado (contrafactual congelado em 2025)
@@ -238,7 +270,7 @@ def main():
             eta = rng.standard_normal((N_SIM, len(UFS))) * SIGMA_PHI
             mp = np.exp(eta)
             sp = mp / (pl_uf[None, :] * mp).sum(1, keepdims=True) * pl_uf.sum()
-            mA = np.exp(z * s1 * h ** beta)
+            mA = np.exp(z * sd_sim(N_SIM, np.array([float(h)]))[:, :1])
             sn = mA / (n_uf[None, :] * mA).sum(1, keepdims=True) * n_uf.sum()
             res_a = {}
             for j, u in enumerate(UFS):
@@ -261,7 +293,8 @@ def main():
     saida = {"_meta": {
         "descricao": "Monte Carlo da variação (receita pós-reforma / contrafactual - 1). Não altera resultados publicados.",
         "n_sim": N_SIM, "seed": SEED, "sigma_phi_central": SIGMA_PHI, "sigma_phi_alto": SIGMA_PHI_ALTO,
-        "deriva_contrafactual": {"sd_h": "s1 * h^beta", "s1": s1, "beta": beta, "fonte": "sensibilidade-calibra-deriva.json"},
+        "deriva_contrafactual": {"sd_h": "kappa * s1 * h^beta", "s1": s1, "beta": beta, "kappa": KAPPA,
+                                 "incerteza_parametros_bootstrap": pares is not None, "fonte": "sensibilidade-calibra-deriva.json; sensibilidade-incerteza-parametros.json"},
         "verificacao_caso_central_dif_max": maxdif,
         "fora_do_mc": "nível do bolo (cancela na razão), Seguro-Receita (fixo no central), base do ICMS na transição "
                       "(cenário jurídico), compras governamentais (faixa de f), base ampla/conformidade (afetam a alíquota)"},

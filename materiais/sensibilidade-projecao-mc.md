@@ -25,3 +25,13 @@ Escala de volatilidade própria por UF piora o ajuste fora da amostra (cobertura
 ## Limites
 
 O desvio é normal com variância comum a todas as UFs; as janelas de oito anos são poucas e se sobrepõem; parte da deriva histórica decorre de política tributária dos próprios estados (incentivos, combustíveis), que também é incerteza legítima do contrafactual; o ICMS é usado como medida também para o ISS; o DF usa o desvio comum.
+
+## Robustez e validação (segunda rodada)
+
+Comparação fora da amostra de quatro modelos para a deriva (`data/sensibilidade-modelos-deriva.py`; 20 UFs, origens de 2019 a 2024, janela expansiva, horizontes de 1 a 4 anos; pontuação CRPS, menor é melhor). O passeio aleatório do modelo adotado vence: a âncora populacional com coeficiente 1 tem CRPS 7% pior, com coeficiente estimado 58% pior, e a escala por porte 2,6% pior. Isso é coerente com a literatura de previsão, em que o passeio aleatório é difícil de superar. Cobertura fora da amostra do modelo adotado: 87% para o intervalo de 80% e 93% para o de 90%, ou seja, ligeiramente folgado.
+
+Incerteza sobre a própria incerteza (`data/sensibilidade-incerteza-parametros.py`): o bootstrap em blocos de três anos dos choques anuais dá, para o desvio em oito anos, mediana de 16,6% e intervalo de 90% de 13,4% a 22,0% (estimativa pontual: 15,2%). A simulação principal sorteia um par (s1, β) por rodada, o que alarga a faixa. Um fator de escala kappa estimado por validação cruzada leave-one-origin-out resulta em 0,8, mas o ganho de CRPS é de apenas 1,5%, ou seja, o ótimo é plano e os dados não discriminam; por isso a faixa adotada mantém kappa = 1 e a versão reduzida em 20% fica como sensibilidade.
+
+Três calibrações lado a lado (`data/sensibilidade-calibracoes.py`), meia-largura do intervalo de 10% a 90% em pontos percentuais para 2029, 2031, 2033 e acumulado: parâmetros pontuais 1,4, 5,1, 20,1 e 7,6; bootstrap (adotada) 1,4, 5,6, 22,3 e 8,3; bootstrap com kappa de 0,8: 1,1, 4,5, 17,7 e 6,6. Em nenhuma delas algum estado tem sinal distinguível de zero em 2033 ou no acumulado; a chance de ganho do ES em 2033 varia de 31% a 35%.
+
+Métricas de risco em R$ de 2025 (receita em risco com 95% e perda esperada na cauda) estão em `resultados.estado.risco_em_reais` do JSON da simulação. Para o ES, na variação acumulada de 2029 a 2033, a receita em risco é de cerca de R$ 14 bilhões e a perda esperada na cauda de R$ 18 bilhões.
