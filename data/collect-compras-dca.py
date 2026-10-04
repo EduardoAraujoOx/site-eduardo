@@ -29,6 +29,7 @@ import json
 import sys
 import time
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 BASE = "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/dca"
@@ -112,12 +113,12 @@ def main():
         cod = UF_COD[uf]
         reg = {"estado": ente(cod, ano), "municipios": {}}
         muns = get(IBGE.format(cod)) or []
-        for m in muns:
-            r = ente(m["id"], ano)
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            resultados = list(pool.map(lambda m: ente(m["id"], ano), muns))
+        for m, r in zip(muns, resultados):
             if r:
                 r["nome"] = m["nome"]
                 reg["municipios"][str(m["id"])] = r
-            time.sleep(0.2)
         faltam = [m["nome"] for m in muns if str(m["id"]) not in reg["municipios"]]
         reg["sem_dado"] = faltam
         saida[uf] = reg
