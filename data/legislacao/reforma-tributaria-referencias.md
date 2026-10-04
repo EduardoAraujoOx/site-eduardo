@@ -701,7 +701,12 @@ transcrito em `13_COMPRAS_GOVERNAMENTAIS_...md`; estudo acessível em
 `estudos/compras-governamentais-ibs.html` (Estudo 17). Dimensionamento nacional
 (Gobetti/COMSEFAZ, 2026): base R$ 533,8 bi (União 17%, Estados 28%, Municípios
 55%), alíquota efetiva 15,9%. **Ainda não incorporado às estimativas por ente.**
-Plano: separar o IBS municipal em parte famílias e parte compras e ratear esta
+Leitura dos arts. 105-111/114-117 (out/2026): o IBS das compras entra na receita
+inicial e sofre as mesmas retenções (80%/90%/…/5%) e redistribuições (CPT, Seguro-
+Receita); logo o ajuste é no coeficiente de destino, sem mexer no bolo, no CPT nem
+no Seguro-Receita, e o efeito em 2029-2033 é atenuado pela retenção (destino pesa
+10-20%). Ponto em aberto: se a parcela "CBS-equivalente" conta como IBS extinto
+(art. 106, III). Plano: separar o IBS de cada esfera em parte famílias e parte compras e ratear esta
 pela despesa observada (DCA Anexo I-D, elementos 30/32/35/37/39/40 e 4.4.90.35/
 39/40/51/52/61); cenários para o redutor, para a cota-parte de 25% sobre compras
 estaduais (leitura literal: incide; não expresso em lei) e para a parcela fora
