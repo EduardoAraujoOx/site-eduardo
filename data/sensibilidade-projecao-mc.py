@@ -101,8 +101,13 @@ def main():
     ridx = brc.build_repasse_index(seguro, ANOS)
     central = json.loads((HERE / "resultados-consolidados-ibs.json").read_text(encoding="utf-8"))
 
-    bt = backtest()
-    s1, beta = bt["2013-2025"]["s1"], bt["2013-2025"]["beta"]
+    # parâmetros da deriva: amostra limpa de quebras de classificação da DCA (ver
+    # sensibilidade-calibra-deriva.py); a calibração anterior (bruta, 26 UFs) fica só como comparação
+    cal = json.loads((HERE / "sensibilidade-calibra-deriva.json").read_text(encoding="utf-8"))
+    s1, beta = cal["parametros_adotados"]["s1"], cal["parametros_adotados"]["beta"]
+    bt = {"adotada": cal["amostras"]["limpa_20UFs_2013_2025"], "anterior_contaminada": cal["amostras"]["bruta_26UFs_2013_2025"],
+          "liquida_2019_2025": cal["amostras"]["liquida_27UFs_2019_2025"],
+          "validacao_fora_da_amostra": cal["validacao_fora_da_amostra"]}
 
     # vetores por UF (esfera estado e agregado UF), por ano
     def parte(uf, esfera):
@@ -121,10 +126,13 @@ def main():
     n_uf = np.array([parte(u, "total")[0] for u in UFS])
     pl_uf = np.array([parte(u, "total")[2] for u in UFS])
 
-    def calcula(esfera, shock_n, shock_phi):
-        """shock_n: (N, 27, nanos) multiplicador de participação; shock_phi: (N, 27)."""
+    def calcula(esfera, shock_n, shock_phi, acumulado=False):
+        """shock_n: (N, 27, nanos) multiplicador de participação; shock_phi: (N, 27).
+        acumulado=True devolve a variação acumulada 2029-2033 (soma pós / soma contrafactual - 1), (N, 27)."""
         N = shock_phi.shape[0]
         out = np.zeros((N, len(UFS), len(ANOS)))
+        sum_t = np.zeros((N, len(UFS)))
+        sum_c = np.zeros((N, len(UFS)))
         for j, u in enumerate(UFS):
             n0, c0, pl0, rep = parte(u, esfera)
             for k, a in enumerate(ANOS):
@@ -137,6 +145,10 @@ def main():
                        + r["ibs_destino_liquido"] * pp + (1 - ca) * rep.get(a, 0.0))
                 con = ref_a * nn
                 out[:, j, k] = tot / con - 1
+                sum_t[:, j] += tot
+                sum_c[:, j] += con
+        if acumulado:
+            return sum_t / sum_c - 1
         return out
 
     # verificação: caso central reproduz o arquivo publicado
@@ -178,6 +190,12 @@ def main():
             sn, sp = sorteia(fontes, sg)
             comb[rot] = calcula(esfera, sn, sp)
         full = comb["A+B"]
+        sn_c, sp_c = sorteia("AB", SIGMA_PHI)
+        acum = calcula(esfera, sn_c, sp_c, acumulado=True)
+        acum_cen = calcula(esfera, um_n, um_p, acumulado=True)[0]
+        acum_res = {u: {"central": round(float(acum_cen[j]), 5), "p10": round(float(np.percentile(acum[:, j], 10)), 5),
+                        "p90": round(float(np.percentile(acum[:, j], 90)), 5),
+                        "prob_ganho": round(float((acum[:, j] > 0).mean()), 4)} for j, u in enumerate(UFS)}
         por_uf = {}
         for j, u in enumerate(UFS):
             d = {}
@@ -202,7 +220,7 @@ def main():
         # quantas UFs têm sinal robusto (p10>0 ou p90<0) em 2033
         robusto = {"ganho": [u for u in UFS if por_uf[u]["2033"]["p10"] > 0],
                    "perda": [u for u in UFS if por_uf[u]["2033"]["p90"] < 0]}
-        resultados[esfera] = {"por_uf": por_uf, "variancia_2033": var, "sinal_robusto_2033_p10_p90": robusto}
+        resultados[esfera] = {"acumulado_2029_2033": acum_res, "por_uf": por_uf, "variancia_2033": var, "sinal_robusto_2033_p10_p90": robusto}
 
     # ── Longo prazo (2040, 2050, 2060, 2077): o contrafactual deixa de ser identificável (deriva
     # extrapolada), então reporta-se A+B e também B isolado (contrafactual congelado em 2025)
@@ -243,7 +261,7 @@ def main():
     saida = {"_meta": {
         "descricao": "Monte Carlo da variação (receita pós-reforma / contrafactual - 1). Não altera resultados publicados.",
         "n_sim": N_SIM, "seed": SEED, "sigma_phi_central": SIGMA_PHI, "sigma_phi_alto": SIGMA_PHI_ALTO,
-        "deriva_contrafactual": {"sd_h": "s1 * h^beta", "s1": s1, "beta": beta},
+        "deriva_contrafactual": {"sd_h": "s1 * h^beta", "s1": s1, "beta": beta, "fonte": "sensibilidade-calibra-deriva.json"},
         "verificacao_caso_central_dif_max": maxdif,
         "fora_do_mc": "nível do bolo (cancela na razão), Seguro-Receita (fixo no central), base do ICMS na transição "
                       "(cenário jurídico), compras governamentais (faixa de f), base ampla/conformidade (afetam a alíquota)"},

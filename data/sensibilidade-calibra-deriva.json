@@ -1,0 +1,189 @@
+{
+ "_meta": {
+  "excluidas_amostra_limpa": [
+   "CE",
+   "DF",
+   "GO",
+   "MS",
+   "MT",
+   "RO",
+   "TO"
+  ],
+  "motivo": "quebras de classificação na DCA bruta (outras deduções só separadas a partir de 2019; CE/2018)"
+ },
+ "amostras": {
+  "bruta_26UFs_2013_2025": {
+   "s1": 0.0683,
+   "beta": 0.569,
+   "sd_h": {
+    "1": 0.0703,
+    "2": 0.0983,
+    "3": 0.1254,
+    "4": 0.1497,
+    "5": 0.1707,
+    "6": 0.1894,
+    "7": 0.208,
+    "8": 0.2262
+   },
+   "sd_h8": 0.2229
+  },
+  "limpa_20UFs_2013_2025": {
+   "s1": 0.048,
+   "beta": 0.555,
+   "sd_h": {
+    "1": 0.0472,
+    "2": 0.0716,
+    "3": 0.0903,
+    "4": 0.1041,
+    "5": 0.115,
+    "6": 0.1291,
+    "7": 0.1418,
+    "8": 0.1518
+   },
+   "sd_h8": 0.1523
+  },
+  "liquida_27UFs_2019_2025": {
+   "s1": 0.0462,
+   "beta": 0.525,
+   "sd_h": {
+    "1": 0.0462,
+    "2": 0.0661,
+    "3": 0.0823,
+    "4": 0.097,
+    "5": 0.1056,
+    "6": 0.1191
+   },
+   "sd_h6": 0.1183,
+   "sd_h8_extrapolado": 0.1376
+  }
+ },
+ "parametros_adotados": {
+  "amostra": "limpa_20UFs_2013_2025",
+  "s1": 0.048,
+  "beta": 0.555
+ },
+ "validacao_fora_da_amostra": {
+  "treino": "2013-2019 bruto",
+  "teste": "2019-2025 líquido, UFs limpas",
+  "alvo": {
+   "cob80": 0.8,
+   "cob90": 0.9
+  },
+  "resultado": {
+   "2": {
+    "limpa": {
+     "cob80": 0.87,
+     "cob90": 0.95,
+     "sd_z": 0.839
+    },
+    "contaminada": {
+     "cob80": 0.96,
+     "cob90": 0.99,
+     "sd_z": 0.603
+    }
+   },
+   "3": {
+    "limpa": {
+     "cob80": 0.875,
+     "cob90": 0.938,
+     "sd_z": 0.837
+    },
+    "contaminada": {
+     "cob80": 0.95,
+     "cob90": 1.0,
+     "sd_z": 0.632
+    }
+   },
+   "4": {
+    "limpa": {
+     "cob80": 0.85,
+     "cob90": 0.933,
+     "sd_z": 0.824
+    },
+    "contaminada": {
+     "cob80": 0.933,
+     "cob90": 1.0,
+     "sd_z": 0.646
+    }
+   }
+  },
+  "sd_h4_treino": {
+   "limpa": 0.1118,
+   "contaminada": 0.1427
+  }
+ },
+ "heterogeneidade_por_UF": {
+  "resultado": {
+   "2": {
+    "comum": {
+     "cob80": 0.87,
+     "loglik": 131.9
+    },
+    "propria": {
+     "cob80": 0.7,
+     "loglik": 104.9
+    },
+    "propria_encolhida": {
+     "cob80": 0.79,
+     "loglik": 130.9
+    }
+   },
+   "3": {
+    "comum": {
+     "cob80": 0.875,
+     "loglik": 86.9
+    },
+    "propria": {
+     "cob80": 0.738,
+     "loglik": 69.0
+    },
+    "propria_encolhida": {
+     "cob80": 0.825,
+     "loglik": 86.7
+    }
+   },
+   "4": {
+    "comum": {
+     "cob80": 0.85,
+     "loglik": 55.7
+    },
+    "propria": {
+     "cob80": 0.75,
+     "loglik": 45.4
+    },
+    "propria_encolhida": {
+     "cob80": 0.867,
+     "loglik": 56.3
+    }
+   }
+  },
+  "leitura": "escala própria não melhora fora da amostra; mantém-se a escala comum"
+ },
+ "curtose_padronizada": 4.26,
+ "preditores_h4": {
+  "amostra": "20 UFs, janelas 2013-2023",
+  "resultados": {
+   "variacao_participacao_populacao": {
+    "beta": 1.161,
+    "R2": 0.179
+   },
+   "variacao_participacao_PIB": {
+    "beta": 0.733,
+    "R2": 0.25
+   },
+   "nivel_ICMS_relativo_populacao": {
+    "beta": -0.077,
+    "R2": 0.069
+   },
+   "nivel_ICMS_relativo_PIB": {
+    "beta": -0.026,
+    "R2": 0.001
+   },
+   "desvio_anterior_4a": {
+    "beta": 0.017,
+    "R2": 0.0
+   }
+  },
+  "leitura": "população (conhecida, projetada pelo IBGE) explica ~18% da variância; PIB regional explica mais mas não é conhecido antecipadamente; persistência e convergência de nível não explicam"
+ }
+}
