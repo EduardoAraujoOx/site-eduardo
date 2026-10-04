@@ -293,7 +293,7 @@ def main():
     saida = {"_meta": {
         "descricao": "Monte Carlo da variação (receita pós-reforma / contrafactual - 1). Não altera resultados publicados.",
         "n_sim": N_SIM, "seed": SEED, "sigma_phi_central": SIGMA_PHI, "sigma_phi_alto": SIGMA_PHI_ALTO,
-        "deriva_contrafactual": {"sd_h": "kappa * s1 * h^beta", "s1": s1, "beta": beta, "kappa": KAPPA,
+        "deriva_contrafactual": {"sd_h": "kappa * c * sqrt(h) com c sorteado do bootstrap (ou s1 * h^beta se USAR_BOOT=False)", "s1": s1, "beta": beta, "kappa": KAPPA,
                                  "incerteza_parametros_bootstrap": pares is not None, "fonte": "sensibilidade-calibra-deriva.json; sensibilidade-incerteza-parametros.json"},
         "verificacao_caso_central_dif_max": maxdif,
         "fora_do_mc": "nível do bolo (cancela na razão), Seguro-Receita (fixo no central), base do ICMS na transição "
