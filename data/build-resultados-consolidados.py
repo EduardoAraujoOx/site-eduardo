@@ -44,6 +44,7 @@ Uso:
 import json
 from pathlib import Path
 from fundos_art115b import fold
+import rateio_consumo_compras as rcc
 
 HERE = Path(__file__).parent
 OUT = HERE / "resultados-consolidados-ibs.json"
@@ -185,9 +186,7 @@ def compute_params_uf(ref_data, coef_uf, phi_dest):
         coef_cpt_muni = (cuf.get("coeficiente_municipios_pct") / 100
                           if cuf.get("coeficiente_municipios_pct") is not None else None)
 
-        phi_uf = ((phi_by_uf.get(uf) or {}).get("pof_censo_bruto_pct") or 0) / 100
-        coef_pleno_estado = phi_uf if is_df else phi_uf * frac_estado
-        coef_pleno_muni = None if is_df else phi_uf * frac_muni
+        coef_pleno_estado, coef_pleno_muni = rcc.esferas_uf(phi_by_uf.get(uf) or {}, is_df, frac_estado, frac_muni)
 
         params[uf] = {
             "estado": {
@@ -241,8 +240,7 @@ def compute_anexo_a(ref_data, coef_uf, phi_dest, coef_muni, rateio_muni, params_
         cuf = coef_uf.get("por_uf", {}).get(uf, {})
         is_df = bool(cuf.get("is_df"))
         coef_cpt = ((cuf.get("coeficiente_total_pct") if is_df else cuf.get("coeficiente_estado_pct")) or 0) / 100
-        phi_uf = ((phi_by_uf.get(uf) or {}).get("pof_censo_bruto_pct") or 0) / 100
-        coef_pleno = phi_uf if is_df else phi_uf * frac_estado
+        coef_pleno, _ = rcc.esferas_uf(phi_by_uf.get(uf) or {}, is_df, frac_estado, 0)
         coef_neutro = r_estado[uf] / total_br_2025 if total_br_2025 else 0
         estados.append({
             "uf": uf, "nome": NOMES_UF[uf], "is_df": is_df,
@@ -256,7 +254,7 @@ def compute_anexo_a(ref_data, coef_uf, phi_dest, coef_muni, rateio_muni, params_
         if cod is None:
             cuf = coef_uf.get("por_uf", {}).get(uf, {})
             coef_cpt = (cuf.get("coeficiente_total_pct") or 0) / 100
-            phi_uf = ((phi_by_uf.get(uf) or {}).get("pof_censo_bruto_pct") or 0) / 100
+            phi_uf, _ = rcc.esferas_uf(phi_by_uf.get(uf) or {}, True, frac_estado, 0)
             capitais.append({
                 "uf": uf, "nome": nome, "sem_municipio_proprio": True,
                 "coef_cpt_pct": coef_cpt * 100, "coef_pleno_pct": phi_uf * 100,
@@ -278,7 +276,12 @@ def compute_anexo_a(ref_data, coef_uf, phi_dest, coef_muni, rateio_muni, params_
     validacao = []
     for uf in UFS:
         v = phi_by_uf.get(uf, {})
-        autonomo = v.get("pof_censo_bruto_pct") or 0
+        # coeficiente de destino total do modelo (consumo com elasticidade + compras), por UF;
+        # sem compras, cai para o índice de consumo das famílias (POF x Censo)
+        if v.get("coef_estado_compras_pct") is not None:
+            autonomo = v["coef_estado_compras_pct"] + (v.get("coef_muni_compras_pct") or 0)
+        else:
+            autonomo = v.get("pof_censo_bruto_pct") or 0
         gobetti = v.get("gobetti_tabela1_2023_pct") or 0
         validacao.append({
             "uf": uf, "nome": NOMES_UF[uf],

@@ -14,15 +14,19 @@ despesas de exercícios anteriores (91, 92), obrigações tributárias (47).
 
   3.3.90.30 material de consumo           4.4.90.35 consultoria (investimento)
   3.3.90.32 material p/ distr. gratuita   4.4.90.39 serviços PJ (investimento)
-  3.3.90.35 consultoria                   4.4.90.40 TIC (investimento)
-  3.3.90.37 locação de mão de obra        4.4.90.51 obras e instalações
-  3.3.90.39 serviços de terceiros PJ      4.4.90.52 equipamentos e mat. permanente
-  3.3.90.40 TIC                           4.4.90.61 aquisição de imóveis
+  3.3.90.33 passagens e locomoção         4.4.90.40 TIC (investimento)
+  3.3.90.34 terceirização (contab. pessoal) 4.4.90.51 obras e instalações
+  3.3.90.35 consultoria                   4.4.90.52 equipamentos e mat. permanente
+  3.3.90.37 locação de mão de obra        4.4.90.61 aquisição de imóveis
+  3.3.90.39 serviços de terceiros PJ      3.3.90.40 TIC
+Fora da proxy, por decisão documentada (materiais/parametros-rateio-consumo-compras.md): 3.3.50 e 3.3.60
+(transferências sem contraprestação), 3.3.90.36 (pessoa física), 3.3.90.38 (sem registros relevantes).
 
 Uso:
   python3 data/collect-compras-dca.py ES            # um ou mais UFs
   python3 data/collect-compras-dca.py ES PR --ano 2024
-Saída: data/compras-governamentais-dca.json (mescla por UF; idempotente)
+Saída: data/compras-governamentais-dca-<ano>.json (mescla por UF; idempotente). O arquivo usado pelo modelo,
+data/compras-governamentais-dca.json, é a média 2024-2025 gerada por data/build-compras-media.py.
 """
 import gzip
 import json
@@ -34,7 +38,6 @@ from pathlib import Path
 
 BASE = "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/dca"
 IBGE = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/{}/municipios"
-OUT = Path(__file__).parent / "compras-governamentais-dca.json"
 UF_COD = {"RO": 11, "AC": 12, "AM": 13, "RR": 14, "PA": 15, "AP": 16, "TO": 17,
           "MA": 21, "PI": 22, "CE": 23, "RN": 24, "PB": 25, "PE": 26, "AL": 27,
           "SE": 28, "BA": 29, "MG": 31, "ES": 32, "RJ": 33, "SP": 35, "PR": 41,
@@ -42,6 +45,8 @@ UF_COD = {"RO": 11, "AC": 12, "AM": 13, "RR": 14, "PA": 15, "AP": 16, "TO": 17,
 ELEMENTOS = {
     "3.3.90.30": "material de consumo",
     "3.3.90.32": "material para distribuição gratuita",
+    "3.3.90.33": "passagens e despesas com locomoção",
+    "3.3.90.34": "terceirização de mão de obra contabilizada como pessoal",
     "3.3.90.35": "serviços de consultoria",
     "3.3.90.37": "locação de mão de obra",
     "3.3.90.39": "outros serviços de terceiros PJ",
@@ -100,6 +105,7 @@ def main():
         ano = int(args[i + 1])
         del args[i:i + 2]
     ufs = args or ["ES"]
+    OUT = Path(__file__).parent / f"compras-governamentais-dca-{ano}.json"
     saida = json.loads(OUT.read_text()) if OUT.exists() else {}
     saida.setdefault("_meta", {})
     saida["_meta"].update({

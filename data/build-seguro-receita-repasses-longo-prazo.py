@@ -34,6 +34,7 @@ Uso: python3 build-seguro-receita-repasses-longo-prazo.py
 import json
 from pathlib import Path
 from fundos_art115b import fold
+import rateio_consumo_compras as rcc
 
 HERE = Path(__file__).parent
 OUT = HERE / "seguro-receita-repasses-longo-prazo.json"
@@ -71,9 +72,7 @@ def compute_params_estado(dca_icms_2025, dca_iss_2025, dca_fecop_2025, dca_cota_
 
         # phi^dest: estimativa propria (POF x Censo, Estudo 13) -- Gobetti e Monteiro deixou de
         # ser insumo do modelo (fica so como comparacao, Estudos 07/13).
-        phi_uf = (phi_dest_por_uf.get(uf, {}).get('pof_censo_bruto_pct') or 0) / 100
-        phi_dest_estado = phi_uf if is_df else phi_uf * frac_estado
-        phi_dest_muni = None if is_df else phi_uf * frac_muni
+        phi_dest_estado, phi_dest_muni = rcc.esferas_uf(phi_dest_por_uf.get(uf, {}), is_df, frac_estado, frac_muni)
 
         params[uf] = {
             'is_df': is_df,

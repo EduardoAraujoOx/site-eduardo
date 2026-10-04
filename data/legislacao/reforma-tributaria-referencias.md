@@ -701,11 +701,11 @@ constante (0,47 nos 20% mais pobres a 0,89 na faixa 50-80%). Caso-base da simula
 (coincide com a tabela 1.1.1 publicada); sensibilidade 0,75-0,87.
 (2) Mediana de renda por município (Censo 2022, SIDRA 10295 var. 13534; coletor
 `collect-censo-2022-renda-mediana-municipios.py`) permite lognormal com média e mediana.
-(3) Compras por ente: `collect-compras-dca.py` (27 UFs, DCA I-D 2024); proxy bruta ~1,5-1,6x a
+(3) Compras por ente: `collect-compras-dca.py` (27 UFs, DCA I-D 2024-2025, média a preços de 2025); proxy bruta ~1,5-1,6x a
 base efetiva de Gobetti/COMSEFAZ. Auditoria: 3.3.90.39 (outros serviços PJ) é 52% da proxy;
 dois municípios de TO com valor negativo e 24 sem dado (imputados pela mediana per capita da UF,
 30 no total); outlier extremo Quinta do Sol/PR (95% da despesa em compras); elementos não
-incluídos: passagens (3.3.90.33), transferências a entidades privadas (3.3.50).
+incluídos: transferências a entidades privadas (3.3.50) (passagens, 3.3.90.33, e terceirização, 3.3.90.34, entraram depois; imputação final: 14 municípios, com a média 2024-2025).
 (4) Simulação `simula-rateio-compras-consumo.py` -> `rateio-destino-municipios-cenarios.json`
 (cenários: base, consumo, compras, central, conservador, central com teto de compras per capita no
 p99 nacional, central sem cota sobre compras estaduais). Invariantes verificados: soma das UFs =
@@ -717,10 +717,19 @@ em vez de +296%). Efeito na receita de 2033 (destino é só ~9-10% da receita pe
 90%): média ~1% em ES e PR; extremos Presidente Kennedy +14,6% (+2,9% com teto) e Curitiba
 -1,3%. ES passa de 1,724% para 1,763% do total nacional (phi estadual+municipal), PR de 5,970%
 para 5,936%.
-Pendências antes de publicar: revisar a proxy de compras por elemento; fixar regra para outliers
-(royalties/CFEM); fixar theta (20-30%) e a leitura da cota-parte; integrar ao
-`build-rateio-destino-municipios.py` (e, para o efeito por UF, ao `build-phi-dest-pof-censo.py`
-e aos consumidores de frac_estado/frac_muni) e regenerar a cadeia (`data/rodar-modelo.sh`).
+INTEGRADO AO MODELO (out/2026; f = 1,0 estimado com a TRU 2023 do IBGE em data/estima-fracao-compras-carga.py, faixa 0,8-1,0; proxy com 3.3.90.33/.34; compras > 90% da despesa imputadas): `rateio_consumo_compras.py` (parâmetros por variável de ambiente:
+RATEIO_EPS=0,80; RATEIO_THETA_M=0.4161; RATEIO_THETA_E=0.0601 (calibrados em calibra-peso-compras.py); RATEIO_TETO_P=0,99; justificativas em materiais/parametros-rateio-consumo-compras.md; com THETA_M=0 e EPS=1 a
+cadeia reproduz o modelo anterior exatamente, verificado). Pontos alterados: `build-rateio-destino-
+municipios.py` (pesos do destino próprio), `build-phi-dest-pof-censo.py` (coeficientes por esfera e
+UF com compras: coef_estado_compras_pct, coef_muni_compras_pct) e os consumidores
+(`seguro-receita-repasses` x2, `resultados-consolidados`, `faixa-phi-dest`, `memoria-calculo`,
+`pr-final-audited`, `pr-full-audit-sensitivity`, `reproject-pr-audited`, `tabela-cenarios-pr`) via
+`rcc.esferas_uf()`; páginas JS `ibs-projecao-arrecadacao-br/es`, `ibs-projecao-longo-prazo`; painel
+e painelufir (memória de cálculo com conferências). Efeito vs. modelo anterior: coeficiente de
+destino municipal, média |Δ| 14,1%; receita municipal de 2033, média 1,5% (máx. +13,7%,
+municípios pequenos e pobres com compras per capita altas); receita por UF em 2033, média 0,3% (máx.
+0,85%, AC); ES +0,12% e PR -0,07% em 2033. Pendências: revisar a proxy de compras elemento a elemento
+(3.3.90.39 é 52%); fixar θ com dado oficial; leitura da cota-parte sobre compras estaduais.
 
 **Compras governamentais — legislação conferida e estudo publicado (out/2026).**
 O IBS/CBS sobre compras da administração direta, autarquias e fundações retorna

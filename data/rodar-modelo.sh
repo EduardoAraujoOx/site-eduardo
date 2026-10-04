@@ -48,10 +48,12 @@ planilhas() {
 }
 
 artigo_pr() {
+  run reproject-pr-audited.py
   run build-pr-final-audited.py
   run build-pr-full-audit-sensitivity.py
   run build-tabela-cenarios-pr.py
   run build-tabelas-artigo-pr.py
+  run build-tabela-unica-pr.py
   run build-tabela-uf.py
   # build-tabela-validacao-externa-pr.py precisa do caminho da nota tecnica do
   # COMSEFAZ (docx) como 1o argumento e roda a parte.

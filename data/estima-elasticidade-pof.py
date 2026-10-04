@@ -74,11 +74,15 @@ def main():
 
         # moradores: pessoas, renda e peso por UC
         mor = le(base, xl, "MORADOR.txt", "Morador",
-                 KEY + ["UF", "TIPO_SITUACAO_REG", "PESO_FINAL", "RENDA_TOTAL"])
+                 KEY + ["UF", "ESTRATO_POF", "TIPO_SITUACAO_REG", "PESO_FINAL", "RENDA_TOTAL",
+                        "V0306", "ANOS_ESTUDO"])
         g = mor.groupby(KEY).agg(pessoas=("UF", "size"), UF=("UF", "first"),
+                                 estrato=("ESTRATO_POF", "first"),
                                  sit=("TIPO_SITUACAO_REG", "first"),
                                  peso=("PESO_FINAL", "first"),
                                  renda=("RENDA_TOTAL", "first")).reset_index()
+        ref = mor[mor["V0306"] == 1].groupby(KEY)["ANOS_ESTUDO"].first().rename("anos_ref").reset_index()
+        g = g.merge(ref, on=KEY, how="left")
         tot = {}
         mon = {}
         # Fórmula oficial do IBGE (Memoria_de_Calculo, "Tabela de Despesa Geral"):
@@ -179,6 +183,34 @@ def main():
     be, see = wols(np.log(cel["renda"].values), np.log(cel["cons"].values), cel["w"].values)
     saida["entre_uf_situacao"] = {"n_celulas": int(len(cel)), "elasticidade": round(be, 4),
                                   "ep": round(see, 4)}
+    # elasticidade ENTRE estratos amostrais da POF (cada estrato reúne domicílios de uma mesma
+    # área geográfica e socioeconômica, a analogia mais próxima de um conjunto de municípios)
+    est = uc.groupby("estrato").apply(lambda s: pd.Series({
+        "renda": np.average(s["renda_pc"], weights=s["w"]),
+        "cons": np.average(s["cons_monet"] / s["pessoas"], weights=s["w"]),
+        "w": s["w"].sum(), "n": len(s)}), include_groups=False).reset_index()
+    est = est[est["n"] >= 30]
+    bs, ses = wols(np.log(est["renda"].values), np.log(est["cons"].values), est["w"].values)
+    saida["entre_estratos"] = {"n_estratos": int(len(est)), "elasticidade": round(bs, 4), "ep": round(ses, 4)}
+
+    # variável instrumental: log da renda per capita instrumentada pela escolaridade da pessoa de
+    # referência (corrige o viés de atenuação do erro de medida e da renda transitória; a hipótese
+    # de exclusão é imperfeita, pois a escolaridade também molda preferências, por isso é um
+    # limite superior plausível, não o valor central)
+    d = uc.dropna(subset=["anos_ref"]).copy()
+    d = d[d["cons_monet"] > 0]
+    x = np.log(d["renda_pc"].values); y = np.log((d["cons_monet"] / d["pessoas"]).values)
+    z = d["anos_ref"].values.astype(float); w = d["w"].values
+    Z = np.column_stack([np.ones_like(z), z]); X = np.column_stack([np.ones_like(x), x])
+    Wm = np.sqrt(w)[:, None]
+    pi = np.linalg.lstsq(Z * Wm, x * Wm[:, 0], rcond=None)[0]
+    xhat = Z @ pi
+    Xh = np.column_stack([np.ones_like(x), xhat])
+    b_iv = np.linalg.lstsq(Xh * Wm, y * Wm[:, 0], rcond=None)[0][1]
+    r2_1 = 1 - np.sum(w * (x - xhat) ** 2) / np.sum(w * (x - np.average(x, weights=w)) ** 2)
+    saida["variavel_instrumental"] = {"instrumento": "anos de estudo da pessoa de referência",
+                                      "elasticidade": round(float(b_iv), 4), "r2_primeiro_estagio": round(float(r2_1), 4),
+                                      "n_uc": int(len(d))}
     OUT.write_text(json.dumps(saida, ensure_ascii=False, indent=1))
     print(json.dumps(saida["brasil"], ensure_ascii=False, indent=1))
 

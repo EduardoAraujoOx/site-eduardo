@@ -1,4 +1,10 @@
 {
+  "compras_governamentais": {
+    "theta_municipal": 0.4161,
+    "theta_estadual": 0.0601,
+    "teto_compras_per_capita_percentil": 0.99,
+    "metodo": "phi_E = (1-thetaE) phi_fam + thetaE s_E; phi_M = (1-thetaM) phi_fam + thetaM s_M; coef_estado = frac_estado x phi_E; coef_muni = alfa_M phi_M + (frac_estado/3) phi_E; DF = alfa_E phi_E + alfa_M phi_M. s = participacao da UF nas compras (DCA I-D 2024). Ver data/rateio_consumo_compras.py e Estudo 17."
+  },
   "metodo": "phi_dest_UF = despesa de consumo media mensal familiar (POF 2017-2018, Tabela 1.1.13) x domicilios particulares ocupados (Censo 2022, tabela SIDRA 9922), normalizado pela soma nacional. Versao ponderada: mesma formula, substituindo a despesa total pela despesa ponderada por tributabilidade (Alimentacao, Saude e Educacao x 0,4 -- reducao geral de 60%, EC 132/2023 art. 9, Sec. 1 -- demais categorias x 1). Nao isola a cesta basica nacional (aliquota zero, lista especifica de produtos) porque a POF nao separa essa fatia por UF na tabela usada; e um teste de sensibilidade, nao um mapeamento fino da legislacao por categoria.",
   "es_gobetti_2025_sefaz_referencia_pct": 1.88,
   "es_gobetti_2025_sefaz_nota": "'IBS hipotetico 2025', apresentacao de Sergio Gobetti a SEFAZ-ES (2026) -- so disponivel para o ES; nao e um dado por UF, por isso fica fora da tabela principal, so como referencia de contexto.",
@@ -14,7 +20,11 @@
       "despesa_pof_familiar": 2897.46,
       "domicilios_censo_2022": 261001,
       "delta_bruto_vs_modelo_pp": -0.015368377398552069,
-      "delta_ponderado_vs_bruto_pp": 0.0009422463881276211
+      "delta_ponderado_vs_bruto_pp": 0.0009422463881276211,
+      "phi_estado_compras_pct": 0.3275020839458664,
+      "phi_muni_compras_pct": 0.3126883630937897,
+      "coef_estado_compras_pct": 0.20905485137782473,
+      "coef_muni_compras_pct": 0.11624159519753599
     },
     "AL": {
       "modelo_anterior_pct": 1.2475320013347566,
@@ -24,7 +34,11 @@
       "despesa_pof_familiar": 2018.02,
       "domicilios_censo_2022": 1041552,
       "delta_bruto_vs_modelo_pp": -0.47592308819311435,
-      "delta_ponderado_vs_bruto_pp": -0.015882084202115565
+      "delta_ponderado_vs_bruto_pp": -0.015882084202115565,
+      "phi_estado_compras_pct": 0.8167032860735857,
+      "phi_muni_compras_pct": 1.1910663099119128,
+      "coef_estado_compras_pct": 0.5213273211358126,
+      "coef_muni_compras_pct": 0.3511154434765199
     },
     "AM": {
       "modelo_anterior_pct": 1.4340342997249849,
@@ -34,7 +48,11 @@
       "despesa_pof_familiar": 2696.0,
       "domicilios_censo_2022": 1079880,
       "delta_bruto_vs_modelo_pp": -0.3652595172892952,
-      "delta_ponderado_vs_bruto_pp": 0.01778881179343128
+      "delta_ponderado_vs_bruto_pp": 0.01778881179343128,
+      "phi_estado_compras_pct": 1.1938993681640602,
+      "phi_muni_compras_pct": 1.4185221612975412,
+      "coef_estado_compras_pct": 0.7621034100438635,
+      "coef_muni_compras_pct": 0.46524038654906846
     },
     "AP": {
       "modelo_anterior_pct": 0.2860219997256559,
@@ -44,7 +62,11 @@
       "despesa_pof_familiar": 3613.2,
       "domicilios_censo_2022": 201021,
       "delta_bruto_vs_modelo_pp": -0.019382649033312882,
-      "delta_ponderado_vs_bruto_pp": -0.008167217838346286
+      "delta_ponderado_vs_bruto_pp": -0.008167217838346286,
+      "phi_estado_compras_pct": 0.3023870077992078,
+      "phi_muni_compras_pct": 0.2855943692792861,
+      "coef_estado_compras_pct": 0.1930231106086566,
+      "coef_muni_compras_pct": 0.10686361576640513
     },
     "BA": {
       "modelo_anterior_pct": 4.9413512178761945,
@@ -54,7 +76,11 @@
       "despesa_pof_familiar": 2906.56,
       "domicilios_censo_2022": 5088635,
       "delta_bruto_vs_modelo_pp": 0.4882934080596426,
-      "delta_ponderado_vs_bruto_pp": -0.1929771756588492
+      "delta_ponderado_vs_bruto_pp": -0.1929771756588492,
+      "phi_estado_compras_pct": 5.645676805658822,
+      "phi_muni_compras_pct": 6.217904786784573,
+      "coef_estado_compras_pct": 3.603812566057823,
+      "coef_muni_compras_pct": 2.1270641317970926
     },
     "CE": {
       "modelo_anterior_pct": 2.767904026446703,
@@ -64,7 +90,11 @@
       "despesa_pof_familiar": 2375.65,
       "domicilios_censo_2022": 3020374,
       "delta_bruto_vs_modelo_pp": -0.1337935066186553,
-      "delta_ponderado_vs_bruto_pp": -0.08138712479211963
+      "delta_ponderado_vs_bruto_pp": -0.08138712479211963,
+      "phi_estado_compras_pct": 2.715107430094384,
+      "phi_muni_compras_pct": 3.276043510459268,
+      "coef_estado_compras_pct": 1.7331382244487645,
+      "coef_muni_compras_pct": 1.06548782960729
     },
     "DF": {
       "modelo_anterior_pct": 3.182842853458768,
@@ -74,7 +104,11 @@
       "despesa_pof_familiar": 6994.48,
       "domicilios_censo_2022": 988191,
       "delta_bruto_vs_modelo_pp": -0.6454533479244744,
-      "delta_ponderado_vs_bruto_pp": 0.03737730645561976
+      "delta_ponderado_vs_bruto_pp": 0.03737730645561976,
+      "phi_estado_compras_pct": 2.6380767196771573,
+      "phi_muni_compras_pct": 1.481581732281474,
+      "coef_estado_compras_pct": 2.465884426567705,
+      "coef_muni_compras_pct": null
     },
     "ES": {
       "modelo_anterior_pct": 1.6987291943776253,
@@ -84,7 +118,11 @@
       "despesa_pof_familiar": 3287.27,
       "domicilios_censo_2022": 1428739,
       "delta_bruto_vs_modelo_pp": 0.02543685247114391,
-      "delta_ponderado_vs_bruto_pp": 0.01728060234126838
+      "delta_ponderado_vs_bruto_pp": 0.01728060234126838,
+      "phi_estado_compras_pct": 1.7665692944367248,
+      "phi_muni_compras_pct": 1.8774518566057607,
+      "coef_estado_compras_pct": 1.1276565841887658,
+      "coef_muni_compras_pct": 0.6554221831413376
     },
     "GO": {
       "modelo_anterior_pct": 3.4021662802244474,
@@ -94,7 +132,11 @@
       "despesa_pof_familiar": 3777.75,
       "domicilios_censo_2022": 2572930,
       "delta_bruto_vs_modelo_pp": 0.1660567955007055,
-      "delta_ponderado_vs_bruto_pp": 0.016451522735381197
+      "delta_ponderado_vs_bruto_pp": 0.016451522735381197,
+      "phi_estado_compras_pct": 3.5347836580044247,
+      "phi_muni_compras_pct": 3.485614137868289,
+      "coef_estado_compras_pct": 2.2563632675968672,
+      "coef_muni_compras_pct": 1.271099465962914
     },
     "MA": {
       "modelo_anterior_pct": 2.0185383701803667,
@@ -104,7 +146,11 @@
       "despesa_pof_familiar": 2228.67,
       "domicilios_censo_2022": 2091583,
       "delta_bruto_vs_modelo_pp": -0.30729537728542833,
-      "delta_ponderado_vs_bruto_pp": -0.03373976066324591
+      "delta_ponderado_vs_bruto_pp": -0.03373976066324591,
+      "phi_estado_compras_pct": 1.799976180802244,
+      "phi_muni_compras_pct": 2.3433638661864884,
+      "coef_estado_compras_pct": 1.1489812474702792,
+      "coef_muni_compras_pct": 0.7319007501435487
     },
     "MG": {
       "modelo_anterior_pct": 9.600173339828565,
@@ -114,7 +160,11 @@
       "despesa_pof_familiar": 3635.92,
       "domicilios_censo_2022": 7533434,
       "delta_bruto_vs_modelo_pp": 0.4551981323487908,
-      "delta_ponderado_vs_bruto_pp": -0.1610026547849781
+      "delta_ponderado_vs_bruto_pp": -0.1610026547849781,
+      "phi_estado_compras_pct": 9.764033994860725,
+      "phi_muni_compras_pct": 10.36945691807686,
+      "coef_estado_compras_pct": 6.232689120784449,
+      "coef_muni_compras_pct": 3.621487211557886
     },
     "MS": {
       "modelo_anterior_pct": 1.46510476707914,
@@ -124,7 +174,11 @@
       "despesa_pof_familiar": 3937.28,
       "domicilios_censo_2022": 979669,
       "delta_bruto_vs_modelo_pp": -0.049094250161894726,
-      "delta_ponderado_vs_bruto_pp": -0.013456293787890594
+      "delta_ponderado_vs_bruto_pp": -0.013456293787890594,
+      "phi_estado_compras_pct": 1.4566746060562887,
+      "phi_muni_compras_pct": 1.4729093007343494,
+      "coef_estado_compras_pct": 0.9298410856075178,
+      "coef_muni_compras_pct": 0.5292507287678854
     },
     "MT": {
       "modelo_anterior_pct": 2.107717383034826,
@@ -134,7 +188,11 @@
       "despesa_pof_familiar": 3830.03,
       "domicilios_censo_2022": 1278142,
       "delta_bruto_vs_modelo_pp": -0.31061800350072555,
-      "delta_ponderado_vs_bruto_pp": 0.017468458068988335
+      "delta_ponderado_vs_bruto_pp": 0.017468458068988335,
+      "phi_estado_compras_pct": 1.883702121665603,
+      "phi_muni_compras_pct": 2.0612147100534086,
+      "coef_estado_compras_pct": 1.2024261413554467,
+      "coef_muni_compras_pct": 0.7077060988869109
     },
     "PA": {
       "modelo_anterior_pct": 3.1403587258591994,
@@ -144,7 +202,11 @@
       "despesa_pof_familiar": 2615.29,
       "domicilios_censo_2022": 2444319,
       "delta_bruto_vs_modelo_pp": -0.7935994170807428,
-      "delta_ponderado_vs_bruto_pp": -0.03132724429011802
+      "delta_ponderado_vs_bruto_pp": -0.03132724429011802,
+      "phi_estado_compras_pct": 2.486454953632964,
+      "phi_muni_compras_pct": 2.8691169267384646,
+      "coef_estado_compras_pct": 1.587182177672235,
+      "coef_muni_compras_pct": 0.9562478976456094
     },
     "PB": {
       "modelo_anterior_pct": 1.36092494249309,
@@ -154,7 +216,11 @@
       "despesa_pof_familiar": 2349.91,
       "domicilios_censo_2022": 1372108,
       "delta_bruto_vs_modelo_pp": -0.1772557664427883,
-      "delta_ponderado_vs_bruto_pp": -0.027104875106869653
+      "delta_ponderado_vs_bruto_pp": -0.027104875106869653,
+      "phi_estado_compras_pct": 1.2341887293756726,
+      "phi_muni_compras_pct": 1.4313785278571067,
+      "coef_estado_compras_pct": 0.7878213728693866,
+      "coef_muni_compras_pct": 0.47572724474477385
     },
     "PE": {
       "modelo_anterior_pct": 3.0350092232566013,
@@ -164,7 +230,11 @@
       "despesa_pof_familiar": 2889.14,
       "domicilios_censo_2022": 3184223,
       "delta_bruto_vs_modelo_pp": 0.34223816503972504,
-      "delta_ponderado_vs_bruto_pp": -0.06674423182921752
+      "delta_ponderado_vs_bruto_pp": -0.06674423182921752,
+      "phi_estado_compras_pct": 3.454276002090832,
+      "phi_muni_compras_pct": 3.4547452524888738,
+      "coef_estado_compras_pct": 2.2049727059277235,
+      "coef_muni_compras_pct": 1.249373163566739
     },
     "PI": {
       "modelo_anterior_pct": 1.3641817960983194,
@@ -174,7 +244,11 @@
       "despesa_pof_familiar": 2428.64,
       "domicilios_censo_2022": 1071549,
       "delta_bruto_vs_modelo_pp": -0.408824133295291,
-      "delta_ponderado_vs_bruto_pp": -0.05950985397452979
+      "delta_ponderado_vs_bruto_pp": -0.05950985397452979,
+      "phi_estado_compras_pct": 1.0659558194967473,
+      "phi_muni_compras_pct": 1.2766526659120723,
+      "coef_estado_compras_pct": 0.6804330303347144,
+      "coef_muni_compras_pct": 0.41689376225797753
     },
     "PR": {
       "modelo_anterior_pct": 6.938051859942611,
@@ -184,7 +258,11 @@
       "despesa_pof_familiar": 3863.38,
       "domicilios_censo_2022": 4209432,
       "delta_bruto_vs_modelo_pp": -0.9679500427865921,
-      "delta_ponderado_vs_bruto_pp": 0.12345163497739886
+      "delta_ponderado_vs_bruto_pp": 0.12345163497739886,
+      "phi_estado_compras_pct": 5.985468655841432,
+      "phi_muni_compras_pct": 5.8237401646945175,
+      "coef_estado_compras_pct": 3.8207123606590168,
+      "coef_muni_compras_pct": 2.140676294788784
     },
     "RJ": {
       "modelo_anterior_pct": 9.102568147848832,
@@ -194,7 +272,11 @@
       "despesa_pof_familiar": 3753.21,
       "domicilios_censo_2022": 6152051,
       "delta_bruto_vs_modelo_pp": -0.6261259610647585,
-      "delta_ponderado_vs_bruto_pp": 0.12017423337178457
+      "delta_ponderado_vs_bruto_pp": 0.12017423337178457,
+      "phi_estado_compras_pct": 8.334124708631604,
+      "phi_muni_compras_pct": 7.98161003349156,
+      "coef_estado_compras_pct": 5.319933178242688,
+      "coef_muni_compras_pct": 2.9617050856324276
     },
     "RN": {
       "modelo_anterior_pct": 1.3495506173717842,
@@ -204,7 +286,11 @@
       "despesa_pof_familiar": 3336.17,
       "domicilios_censo_2022": 1141873,
       "delta_bruto_vs_modelo_pp": 0.048931087230198234,
-      "delta_ponderado_vs_bruto_pp": -0.0710030352771367
+      "delta_ponderado_vs_bruto_pp": -0.0710030352771367,
+      "phi_estado_compras_pct": 1.384868928233663,
+      "phi_muni_compras_pct": 1.4876813609863084,
+      "coef_estado_compras_pct": 0.8840052694672631,
+      "coef_muni_compras_pct": 0.5161715578483543
     },
     "RO": {
       "modelo_anterior_pct": 0.7938940072063898,
@@ -214,7 +300,11 @@
       "despesa_pof_familiar": 2566.77,
       "domicilios_censo_2022": 555099,
       "delta_bruto_vs_modelo_pp": -0.2708379785543451,
-      "delta_ponderado_vs_bruto_pp": 0.019782482210500274
+      "delta_ponderado_vs_bruto_pp": 0.019782482210500274,
+      "phi_estado_compras_pct": 0.5563992339650308,
+      "phi_muni_compras_pct": 0.55842861476626,
+      "coef_estado_compras_pct": 0.3551670809597703,
+      "coef_muni_compras_pct": 0.20153431059138435
     },
     "RR": {
       "modelo_anterior_pct": 0.23435731123658868,
@@ -224,7 +314,11 @@
       "despesa_pof_familiar": 2701.37,
       "domicilios_censo_2022": 177418,
       "delta_bruto_vs_modelo_pp": -0.058414079789015194,
-      "delta_ponderado_vs_bruto_pp": 0.0025609147859603776
+      "delta_ponderado_vs_bruto_pp": 0.0025609147859603776,
+      "phi_estado_compras_pct": 0.22328604546366654,
+      "phi_muni_compras_pct": 0.2733454759138225,
+      "coef_estado_compras_pct": 0.14253048556742834,
+      "coef_muni_compras_pct": 0.0882089844375555
     },
     "RS": {
       "modelo_anterior_pct": 6.766215369893269,
@@ -234,7 +328,11 @@
       "despesa_pof_familiar": 4170.46,
       "domicilios_censo_2022": 4256082,
       "delta_bruto_vs_modelo_pp": -0.2501601019192119,
-      "delta_ponderado_vs_bruto_pp": 0.032852334508348235
+      "delta_ponderado_vs_bruto_pp": 0.032852334508348235,
+      "phi_estado_compras_pct": 6.414362378880625,
+      "phi_muni_compras_pct": 6.099959143413206,
+      "coef_estado_compras_pct": 4.094488675137862,
+      "coef_muni_compras_pct": 2.2730617290552813
     },
     "SC": {
       "modelo_anterior_pct": 4.959410726461576,
@@ -244,7 +342,11 @@
       "despesa_pof_familiar": 4090.41,
       "domicilios_censo_2022": 2806100,
       "delta_bruto_vs_modelo_pp": -0.745738034288725,
-      "delta_ponderado_vs_bruto_pp": 0.08839904302418411
+      "delta_ponderado_vs_bruto_pp": 0.08839904302418411,
+      "phi_estado_compras_pct": 4.190950513047607,
+      "phi_muni_compras_pct": 4.207783991823389,
+      "coef_estado_compras_pct": 2.6752151500257466,
+      "coef_muni_compras_pct": 1.5182417252136564
     },
     "SE": {
       "modelo_anterior_pct": 0.8227351571697714,
@@ -254,7 +356,11 @@
       "despesa_pof_familiar": 3276.79,
       "domicilios_censo_2022": 782919,
       "delta_bruto_vs_modelo_pp": 0.11905957023137181,
-      "delta_ponderado_vs_bruto_pp": -0.053138642930213975
+      "delta_ponderado_vs_bruto_pp": -0.053138642930213975,
+      "phi_estado_compras_pct": 0.9976002632754659,
+      "phi_muni_compras_pct": 0.9746713360887137,
+      "coef_estado_compras_pct": 0.6367995350160996,
+      "coef_muni_compras_pct": 0.35738680550668966
     },
     "SP": {
       "modelo_anterior_pct": 24.899150143819544,
@@ -264,7 +370,11 @@
       "despesa_pof_familiar": 5080.59,
       "domicilios_censo_2022": 16224248,
       "delta_bruto_vs_modelo_pp": 5.360892639271235,
-      "delta_ponderado_vs_bruto_pp": 0.3003372681160634
+      "delta_ponderado_vs_bruto_pp": 0.3003372681160634,
+      "phi_estado_compras_pct": 29.362996295369786,
+      "phi_muni_compras_pct": 27.14894968749047,
+      "coef_estado_compras_pct": 18.743321424332652,
+      "coef_muni_compras_pct": 10.290022112817692
     },
     "TO": {
       "modelo_anterior_pct": 0.7884880632976189,
@@ -274,7 +384,11 @@
       "despesa_pof_familiar": 2139.12,
       "domicilios_censo_2022": 513796,
       "delta_bruto_vs_modelo_pp": -0.38501301752589706,
-      "delta_ponderado_vs_bruto_pp": 0.02057333635859815
+      "delta_ponderado_vs_bruto_pp": 0.02057333635859815,
+      "phi_estado_compras_pct": 0.4639749154557942,
+      "phi_muni_compras_pct": 0.6185247957022262,
+      "coef_estado_compras_pct": 0.2961697398227322,
+      "coef_muni_compras_pct": 0.19081634175956
     }
   }
 }

@@ -966,7 +966,9 @@
             // φ^dest: estimativa própria (POF x Censo, Estudo 13), dividida pela fração estadual
             // fixa (0,75 x rE/(rE+rM), ver Estudo 06) -- Gobetti e Monteiro deixou de ser insumo.
             const phiUF = ((phiByUf[uf] && phiByUf[uf].pof_censo_bruto_pct) || 0) / 100;
-            const coefPleno = isDf ? phiUF : phiUF * fracEstado;
+            const entradaPhi = phiByUf[uf] || {};
+            const usaCompras = !!phiDestData.compras_governamentais && entradaPhi.coef_estado_compras_pct != null;
+            const coefPleno = usaCompras ? entradaPhi.coef_estado_compras_pct / 100 : (isDf ? phiUF : phiUF * fracEstado);
 
             params[uf] = { r0_2025: rEstado, coefNeutro: coefNeutroEstado, coefCPT: coefCPTEstado, coefPleno };
         }

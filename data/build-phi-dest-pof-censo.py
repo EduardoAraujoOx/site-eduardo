@@ -55,6 +55,7 @@ Uso:
 import json
 from pathlib import Path
 from fundos_art115b import fold
+import rateio_consumo_compras as rcc
 
 HERE = Path(__file__).parent
 OUT = HERE / "phi-dest-pof-censo.json"
@@ -205,7 +206,38 @@ def main():
             "delta_ponderado_vs_bruto_pp": pp - pb,
         }
 
+    # Compras governamentais (Estudo 17): coeficientes por esfera e por UF. Só se THETA_M > 0.
+    compras_meta = None
+    if rcc.THETA_M > 0:
+        with open(HERE / "compras-governamentais-dca.json") as f:
+            compras_json = json.load(f)
+        with open(HERE / "coeficientes-municipios.json") as f:
+            cpt_mun = json.load(f)["municipios"]
+        with open(HERE / "populacao-municipios-media-2019-2026.json") as f:
+            pop_mun = json.load(f)["municipios"]
+        pops_por_uf = {}
+        for cod, r in cpt_mun.items():
+            if r["uf"] != "DF" and cod in pop_mun:
+                pops_por_uf.setdefault(r["uf"], {})[cod] = pop_mun[cod]["pop_media"]
+        df_uf = {u for u in UFS if coeficientes_uf["por_uf"].get(u, {}).get("is_df")}
+        phi_fam = {u: por_uf[u]["pof_censo_bruto_pct"] / 100 for u in UFS}
+        mix = rcc.phi_compras_por_uf(phi_fam, UFS, df_uf, frac_estado, frac_muni, compras_json, pops_por_uf)
+        for u in UFS:
+            por_uf[u]["phi_estado_compras_pct"] = mix[u]["phi_E"] * 100
+            por_uf[u]["phi_muni_compras_pct"] = mix[u]["phi_M"] * 100
+            por_uf[u]["coef_estado_compras_pct"] = mix[u]["coef_estado"] * 100
+            por_uf[u]["coef_muni_compras_pct"] = None if mix[u]["coef_muni"] is None else mix[u]["coef_muni"] * 100
+        compras_meta = {
+            "theta_municipal": rcc.THETA_M, "theta_estadual": rcc.THETA_E,
+            "teto_compras_per_capita_percentil": rcc.TETO_P,
+            "metodo": ("phi_E = (1-thetaE) phi_fam + thetaE s_E; phi_M = (1-thetaM) phi_fam + thetaM s_M; "
+                       "coef_estado = frac_estado x phi_E; coef_muni = alfa_M phi_M + (frac_estado/3) phi_E; "
+                       "DF = alfa_E phi_E + alfa_M phi_M. s = participacao da UF nas compras (DCA I-D 2024). "
+                       "Ver data/rateio_consumo_compras.py e Estudo 17."),
+        }
+
     output = {
+        "compras_governamentais": compras_meta,
         "metodo": (
             "phi_dest_UF = despesa de consumo media mensal familiar (POF 2017-2018, "
             "Tabela 1.1.13) x domicilios particulares ocupados (Censo 2022, tabela SIDRA "
