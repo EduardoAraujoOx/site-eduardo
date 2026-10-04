@@ -44,17 +44,20 @@ from pathlib import Path
 HERE = Path(__file__).parent
 OUT = HERE / "rateio-destino-municipios-cenarios.json"
 
-# theta_E guarda a mesma proporção de theta_M observada na nota (2,7% / 30% = 0,09)
+_CAL = json.loads((HERE / "compras-calibracao.json").read_text())
+_C = _CAL["central"]
+_L = _CAL["grade"]["com_federal"][0]      # f = 0,6: limite inferior da faixa
+# pesos das compras calibrados em data/calibra-peso-compras.py (neutralidade do art. 370)
 CENARIOS = {
     "base": dict(desc="modelo atual (elasticidade 1, sem compras)", eps=1.0, thM=0.0, thE=0.0, cota_compras=True),
     "consumo": dict(desc="só função de consumo (e = 0,80)", eps=0.80, thM=0.0, thE=0.0, cota_compras=True),
-    "compras": dict(desc="só compras (theta_M = 30%)", eps=1.0, thM=0.30, thE=0.027, cota_compras=True),
-    "central": dict(desc="consumo + compras (e = 0,80; theta_M = 30%)", eps=0.80, thM=0.30, thE=0.027, cota_compras=True),
-    "conservador": dict(desc="consumo + compras com theta_M = 20%", eps=0.80, thM=0.20, thE=0.018, cota_compras=True),
-    "central_teto": dict(desc="central, compras per capita limitadas ao percentil 99 nacional", eps=0.80, thM=0.30, thE=0.027, cota_compras=True, teto=True),
-    "central_sem_cota_compras": dict(desc="central, cota-parte NÃO incide sobre compras estaduais", eps=0.80, thM=0.30, thE=0.027, cota_compras=False),
+    "compras": dict(desc="só compras (theta central calibrado)", eps=1.0, thM=_C["theta_M"], thE=_C["theta_E"], cota_compras=True),
+    "central": dict(desc="consumo + compras (e = 0,80; theta central calibrado)", eps=0.80, thM=_C["theta_M"], thE=_C["theta_E"], cota_compras=True),
+    "conservador": dict(desc="consumo + compras, limite inferior da faixa (f = 0,6)", eps=0.80, thM=_L["theta_M"], thE=_L["theta_E"], cota_compras=True),
+    "central_teto": dict(desc="central, compras per capita limitadas ao percentil 99 nacional", eps=0.80, thM=_C["theta_M"], thE=_C["theta_E"], cota_compras=True, teto=True),
+    "central_sem_cota_compras": dict(desc="referência: leitura restritiva (cota-parte só sobre a parte de famílias)", eps=0.80, thM=_C["theta_M"], thE=_C["theta_E"], cota_compras=False),
 }
-SENSIBILIDADE_EPS = [0.75, 0.80, 0.87]
+SENSIBILIDADE_EPS = [0.75, 0.80, 0.87]   # limites e ponto médio (materiais/parametros-rateio-consumo-compras.md)
 UFS = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', 'MT',
        'PA', 'PB', 'PE', 'PI', 'PR', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO']
 CAPITAIS = {'AC': '1200401', 'AL': '2704302', 'AM': '1302603', 'AP': '1600303', 'BA': '2927408',
@@ -191,8 +194,8 @@ def main():
         for nome in CENARIOS:
             print(f"  {nome:26s} {resultado['uf'][nome][u]['phi_total_pct']:.4f}")
     # conferência: base reproduz o rateio publicado
-    dif = max(abs(mun[c]["base"] - rateio[c]["phi_dest_pct"]) for c in mun)
-    print("\nmax |base - rateio publicado| (pp do total nacional):", f"{dif:.2e}")
+    dif = max(abs(mun[c]["central_teto"] - rateio[c]["phi_dest_pct"]) for c in mun)
+    print("\nmax |central_teto - rateio vigente| (pp do total nacional; o vigente já é o modelo com consumo e compras):", f"{dif:.2e}")
     soma_base = sum(v["base"] for v in mun.values()) + sum(100 * 0 for _ in [0])
     for nome in CENARIOS:
         s = sum(v[nome] for v in mun.values())

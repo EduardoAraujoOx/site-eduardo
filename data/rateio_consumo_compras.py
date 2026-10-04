@@ -9,9 +9,12 @@ build-rateio-destino-municipios.py e simula-rateio-compras-consumo.py):
     com imputação para municípios sem dado e teto por habitante (Estudo 17).
 
 Parâmetros (podem ser sobrescritos por variável de ambiente, para avaliar etapas):
-  RATEIO_EPS        elasticidade-renda do consumo (padrão 0,80)
-  RATEIO_THETA_M    peso das compras no IBS municipal próprio (padrão 0,30; 0 desliga)
+  RATEIO_EPS        elasticidade-renda do consumo (padrão 0,80: ponto médio dos limites 0,75 e 0,87)
+  RATEIO_THETA_M    peso das compras no IBS municipal próprio (padrão: calibrado em
+                    data/calibra-peso-compras.py; 0 desliga)
+  RATEIO_THETA_E    idem, no IBS estadual
   RATEIO_TETO_P     percentil nacional do teto de compras per capita (padrão 0,99; 1 = sem teto)
+Justificativa de cada parâmetro: materiais/parametros-rateio-consumo-compras.md
 """
 import json
 import math
@@ -20,11 +23,20 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 
+def _calibracao():
+    """pesos das compras calibrados por data/calibra-peso-compras.py (neutralidade do art. 370)"""
+    try:
+        c = json.loads((HERE / "compras-calibracao.json").read_text())
+        return c["theta_municipal"], c["theta_estadual"]
+    except Exception:
+        return 0.30, 0.027   # reserva, caso a calibração não exista
+
+
+_TM, _TE = _calibracao()
 EPS = float(os.environ.get("RATEIO_EPS", "0.80"))
-THETA_M = float(os.environ.get("RATEIO_THETA_M", "0.30"))
+THETA_M = float(os.environ.get("RATEIO_THETA_M", str(_TM)))
 TETO_P = float(os.environ.get("RATEIO_TETO_P", "0.99"))
-# peso das compras no IBS estadual: mesma proporção da nota Gobetti/COMSEFAZ (2,7% / 30%)
-THETA_E = float(os.environ.get("RATEIO_THETA_E", str(round(THETA_M * 0.09, 6))))
+THETA_E = float(os.environ.get("RATEIO_THETA_E", str(_TE if "RATEIO_THETA_M" not in os.environ else round(THETA_M * 0.09, 6))))
 
 
 def pesos_consumo(pops, rend, med, eps=EPS):

@@ -1,0 +1,122 @@
+{
+ "_meta": {
+  "descricao": "Calibra o peso das compras governamentais no IBS subnacional (theta_M, municipal; theta_E,\nestadual) com dados do próprio acervo e do SICONFI, sem estimativas de terceiros.",
+  "entradas": {
+   "R_bolo_2025_reais": 1019922557111.2401,
+   "F_federal_2025_reais": 660072789830.1462,
+   "consumo_familias_2025_reais": 8081333000000.0,
+   "compras_municipais_2025_reais": 504567150320.9725,
+   "compras_estaduais_2025_reais": 237976260384.41776,
+   "crescimento_pib_nominal_2024_2025": 1.0814410921649813,
+   "alfa_E": 0.8511084829712815,
+   "alfa_M": 0.14889151702871842,
+   "fontes": [
+    "SICONFI DCA I-C (ICMS, ISS, FECOP, União)",
+    "SICONFI DCA I-D (compras)",
+    "IBGE Contas Nacionais (consumo das famílias, PIB)"
+   ]
+  },
+  "f_central": 0.8,
+  "intervalo_f": [
+   0.6,
+   1.0
+  ],
+  "leitura_legal": "IBS extinto destinado ao ente contratante inclui a parte equivalente a CBS (art. 473, par. 1o: a alíquota do ente comprador é fixada na soma das alíquotas de IBS e CBS); 'so_subnacional' é a leitura restritiva, mostrada como limite inferior."
+ },
+ "central": {
+  "f": 0.8,
+  "tau": 0.19365119721782778,
+  "X_municipal": 78168026189.1552,
+  "X_estadual": 36867510186.29122,
+  "theta_M": 0.36716181510391593,
+  "theta_E": 0.0456832584773959
+ },
+ "grade": {
+  "com_federal": [
+   {
+    "f": 0.6,
+    "tau": 0.19702393786444666,
+    "X_municipal": 59647084123.96812,
+    "X_estadual": 28132211963.51574,
+    "theta_M": 0.300587050868979,
+    "theta_E": 0.034245463950654094
+   },
+   {
+    "f": 0.7,
+    "tau": 0.19532300892395396,
+    "X_municipal": 68987501803.41412,
+    "X_estadual": 32537567461.52837,
+    "theta_M": 0.3353317678830878,
+    "theta_E": 0.03996294376676923
+   },
+   {
+    "f": 0.8,
+    "tau": 0.19365119721782778,
+    "X_municipal": 78168026189.1552,
+    "X_estadual": 36867510186.29122,
+    "theta_M": 0.36716181510391593,
+    "theta_E": 0.0456832584773959
+   },
+   {
+    "f": 0.9,
+    "tau": 0.19200776142911707,
+    "X_municipal": 87192728121.41885,
+    "X_estadual": 41123960126.716255,
+    "theta_M": 0.39642918777298203,
+    "theta_E": 0.051406410191492904
+   },
+   {
+    "f": 1.0,
+    "tau": 0.19039198519407702,
+    "X_municipal": 96065541413.32823,
+    "X_estadual": 45308772643.651886,
+    "theta_M": 0.42343139538549784,
+    "theta_E": 0.05713240102011156
+   }
+  ],
+  "so_subnacional": [
+   {
+    "f": 0.6,
+    "tau": 0.11961292564570626,
+    "X_municipal": 36211651820.76502,
+    "X_estadual": 17079022043.282755,
+    "theta_M": 0.20102514235329863,
+    "theta_E": 0.020337311102919413
+   },
+   {
+    "f": 0.7,
+    "tau": 0.11858029433657184,
+    "X_municipal": 41882204838.33834,
+    "X_estadual": 19753506501.050644,
+    "theta_M": 0.22692634913895302,
+    "theta_E": 0.023646711199701118
+   },
+   {
+    "f": 0.8,
+    "tau": 0.11756534005504654,
+    "X_municipal": 47455686886.47273,
+    "X_estadual": 22382207981.6979,
+    "theta_M": 0.25120095396128117,
+    "theta_E": 0.0269338275935716
+   },
+   {
+    "f": 0.9,
+    "tau": 0.11656761274876465,
+    "X_municipal": 52934569365.92656,
+    "X_estadual": 24966292107.50099,
+    "theta_M": 0.27399751845410447,
+    "theta_E": 0.03019888459885508
+   },
+   {
+    "f": 1.0,
+    "tau": 0.11558667751441301,
+    "X_municipal": 58321240488.5166,
+    "X_estadual": 27506885265.139675,
+    "theta_M": 0.2954470474128157,
+    "theta_E": 0.033442103529258645
+   }
+  ]
+ },
+ "theta_municipal": 0.3672,
+ "theta_estadual": 0.0457
+}

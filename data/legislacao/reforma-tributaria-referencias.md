@@ -718,7 +718,7 @@ em vez de +296%). Efeito na receita de 2033 (destino é só ~9-10% da receita pe
 -1,3%. ES passa de 1,724% para 1,763% do total nacional (phi estadual+municipal), PR de 5,970%
 para 5,936%.
 INTEGRADO AO MODELO (out/2026): `rateio_consumo_compras.py` (parâmetros por variável de ambiente:
-RATEIO_EPS=0,80; RATEIO_THETA_M=0,30; RATEIO_THETA_E=0,027; RATEIO_TETO_P=0,99; com THETA_M=0 e EPS=1 a
+RATEIO_EPS=0,80; RATEIO_THETA_M=0.3672; RATEIO_THETA_E=0.0457 (calibrados em calibra-peso-compras.py); RATEIO_TETO_P=0,99; justificativas em materiais/parametros-rateio-consumo-compras.md; com THETA_M=0 e EPS=1 a
 cadeia reproduz o modelo anterior exatamente, verificado). Pontos alterados: `build-rateio-destino-
 municipios.py` (pesos do destino próprio), `build-phi-dest-pof-censo.py` (coeficientes por esfera e
 UF com compras: coef_estado_compras_pct, coef_muni_compras_pct) e os consumidores
