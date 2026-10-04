@@ -689,6 +689,39 @@ critério — pesquisa concluída, mas o autor optou por não avançar com essa
 frente. Hoje o modelo aproxima os 15% de educação-equidade + ambiental pelo
 próprio critério populacional (ver "Implementado, ago/2026" acima).
 
+**Frentes "microdados da POF" e "compras" — resultados preliminares (out/2026, simulação, nada publicado).**
+(1) Elasticidade-renda do consumo, microdados da POF 2017-18 (`data/estima-elasticidade-pof.py`,
+saída `data/pof-elasticidade-consumo.json`; microdados em ftp.ibge.gov.br, não versionados).
+Auditoria: o consumo somado dos microdados reproduz a tabela 1.1.13 do IBGE com razão 1,0000 nas
+27 UFs (fórmula oficial da Memória de Cálculo, com o fator V9011 de meses nos itens mensais; a
+primeira versão omitia o fator e dava 76% da tabela). Resultados: Brasil 0,75 (domiciliar) e 0,74
+(20 quantis de renda per capita); regiões de 0,63 (Norte) a 0,77 (Sudeste); rural 0,70, urbano
+0,75; entre 54 células UF x situação, 0,87 (EP 0,02); aparado 1%/99%, 0,78. A curva não é
+constante (0,47 nos 20% mais pobres a 0,89 na faixa 50-80%). Caso-base da simulação: 0,80
+(coincide com a tabela 1.1.1 publicada); sensibilidade 0,75-0,87.
+(2) Mediana de renda por município (Censo 2022, SIDRA 10295 var. 13534; coletor
+`collect-censo-2022-renda-mediana-municipios.py`) permite lognormal com média e mediana.
+(3) Compras por ente: `collect-compras-dca.py` (27 UFs, DCA I-D 2024); proxy bruta ~1,5-1,6x a
+base efetiva de Gobetti/COMSEFAZ. Auditoria: 3.3.90.39 (outros serviços PJ) é 52% da proxy;
+dois municípios de TO com valor negativo e 24 sem dado (imputados pela mediana per capita da UF,
+30 no total); outlier extremo Quinta do Sol/PR (95% da despesa em compras); elementos não
+incluídos: passagens (3.3.90.33), transferências a entidades privadas (3.3.50).
+(4) Simulação `simula-rateio-compras-consumo.py` -> `rateio-destino-municipios-cenarios.json`
+(cenários: base, consumo, compras, central, conservador, central com teto de compras per capita no
+p99 nacional, central sem cota sobre compras estaduais). Invariantes verificados: soma das UFs =
+100% em todos os cenários; estado + municípios = total da UF; o cenário base reproduz o rateio
+publicado (dif. máx. 0,0004 pp, em um município de MT sem renda). Variação do coeficiente de
+destino municipal vs. modelo atual: só consumo, média |Δ| 2,9% (capitais perdem 2-10%); só
+compras, 12,5% (máx. +294%); central, 14,2%; central com teto, 14,1% (Presidente Kennedy +60%
+em vez de +296%). Efeito na receita de 2033 (destino é só ~9-10% da receita pela retenção de
+90%): média ~1% em ES e PR; extremos Presidente Kennedy +14,6% (+2,9% com teto) e Curitiba
+-1,3%. ES passa de 1,724% para 1,763% do total nacional (phi estadual+municipal), PR de 5,970%
+para 5,936%.
+Pendências antes de publicar: revisar a proxy de compras por elemento; fixar regra para outliers
+(royalties/CFEM); fixar theta (20-30%) e a leitura da cota-parte; integrar ao
+`build-rateio-destino-municipios.py` (e, para o efeito por UF, ao `build-phi-dest-pof-censo.py`
+e aos consumidores de frac_estado/frac_muni) e regenerar a cadeia (`data/rodar-modelo.sh`).
+
 **Compras governamentais — legislação conferida e estudo publicado (out/2026).**
 O IBS/CBS sobre compras da administração direta, autarquias e fundações retorna
 100% ao ente **comprador** (CF art. 149-C; LC 214 arts. 472-473), com redutor
