@@ -276,7 +276,12 @@ def compute_anexo_a(ref_data, coef_uf, phi_dest, coef_muni, rateio_muni, params_
     validacao = []
     for uf in UFS:
         v = phi_by_uf.get(uf, {})
-        autonomo = v.get("pof_censo_bruto_pct") or 0
+        # coeficiente de destino total do modelo (consumo com elasticidade + compras), por UF;
+        # sem compras, cai para o índice de consumo das famílias (POF x Censo)
+        if v.get("coef_estado_compras_pct") is not None:
+            autonomo = v["coef_estado_compras_pct"] + (v.get("coef_muni_compras_pct") or 0)
+        else:
+            autonomo = v.get("pof_censo_bruto_pct") or 0
         gobetti = v.get("gobetti_tabela1_2023_pct") or 0
         validacao.append({
             "uf": uf, "nome": NOMES_UF[uf],
