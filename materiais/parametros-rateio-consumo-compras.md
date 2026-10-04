@@ -29,49 +29,51 @@ Este documento registra, para cada parâmetro que entra no coeficiente de destin
 
 **Limitações.** O valor é único, mas a curva não tem elasticidade constante (de 0,47 nos 20% mais pobres a 0,89 na faixa de 50% a 80%), e a lognormal é uma aproximação da distribuição de renda municipal.
 
-## 3. Peso das compras no IBS subnacional: θ_M = 37,3% (municipal) e θ_E = 4,8% (estadual)
+## 3. Peso das compras no IBS subnacional: θ_M = 43,0% (municipal) e θ_E = 6,0% (estadual)
 
 **O que é.** Parcela do IBS de cada esfera que vem das compras do próprio governo (e vai ao ente que comprou), em vez do consumo das famílias (e do critério de destino). Define o quanto o rateio segue a despesa da prefeitura em vez da renda dos moradores.
 
 **Derivação.** O art. 370 da LC 214 manda calibrar o redutor das compras para que a receita seja neutra: o IBS e a CBS sobre as compras públicas devem render o que os tributos antigos rendiam sobre as mesmas operações. O art. 473 destina esse produto ao comprador, com a alíquota do comprador fixada na soma de IBS e CBS (§ 1º). Logo, o IBS que o Estado ou município recebe sobre suas compras equivale aos tributos antigos embutidos nelas: ICMS e ISS e também PIS, Cofins e IPI. A carga média dos tributos antigos sobre o gasto final é τ = (R + F) ÷ (C_fam + f × C_gov), onde R é o bolo subnacional (ICMS líquido, ISS e FECOP, DCA 2025: R$ 1.020 bi), F é a receita de PIS, Cofins e IPI (DCA da União 2024, levada a 2025 pelo crescimento do PIB nominal: R$ 660 bi), C_fam é o consumo das famílias (Contas Nacionais 2025: R$ 8.081 bi) e C_gov são as compras estaduais e municipais da DCA I-D (R$ 767 bi em 2025), e f é a fração delas que carrega a carga média. A receita de compras é X = τ × f × C_gov, e a parte de famílias do IBS subnacional é R − X, dividida entre as esferas pelas alíquotas de referência (α_E = 85,1%, α_M = 14,9%). Daí θ_M = X_M ÷ (X_M + α_M (R − X)) e θ_E = X_E ÷ (X_E + α_E (R − X)).
 
-**O que os dados não resolvem: f.** Depende do redutor oficial e da composição das compras (as de serviços tendem a ter carga antiga menor que as de bens). Dado o intervalo [0,6; 1,0], adota-se o ponto médio, f = 0,8. A tabela mostra a sensibilidade, na leitura legal (o comprador recebe também o equivalente à CBS) e na leitura restritiva (só a parte subnacional):
+**Como se estima f.** f é a fração das compras que carrega a carga média dos tributos antigos. Dois testes com dados oficiais (`data/estima-fracao-compras-carga.py`) a estimam. O primeiro compara a carga de impostos sobre produtos da cesta que a administração pública compra com a da cesta das famílias, nas Tabelas de Recursos e Usos 2023 do IBGE (carga de IPI, ICMS e outros impostos por grupo de produtos; composição do consumo intermediário da atividade "Administração, defesa, saúde e educação públicas" e do consumo das famílias). As compras do governo carregam 5,5% a 8,5% mais imposto que o consumo das famílias, porque o governo compra mais energia, comunicações e serviços financeiros e quase nenhum aluguel, que não paga imposto; a variante que exclui o grupo financeiro (cujos "outros impostos" incluem o IOF, que a reforma não substitui) dá 1,055 e a que o inclui, 1,085. Como a mesma medida vale nas duas pontas, o que ela não capta (a cascata de tributos nos insumos) afeta ambas por igual. O segundo teste verifica se a proxy tem o tamanho certo: o consumo intermediário da administração pública (R$ 583 bi em 2023, R$ 628 bi em 2024 pelo PIB nominal) está a 2% do custeio da proxy (elementos 3.3.90.* da DCA I-D 2024 de Estados, municípios e União: R$ 613 bi). O produto dos dois testes dá f entre 1,05 e 1,09.
+
+**Valor adotado.** Como f é uma fração, adota-se f = 1,0 como valor central e publica-se a faixa de 0,8 a 1,0. O limite inferior cobre o que os testes não captam: a cascata de tributos nos insumos (que pode diferir entre as cestas), a classificação das despesas na DCA (parte de 3.3.90.39 pode não ser compra tributável) e o fato de os dois testes serem nacionais. Em versão anterior usava-se 0,8, ponto médio de uma faixa de 0,6 a 1,0 sem amparo em dados; a evidência exclui a metade inferior dessa faixa. A tabela mostra a sensibilidade, na leitura legal (o comprador recebe também o equivalente à CBS) e na leitura restritiva (só a parte subnacional):
 
 Leitura legal (federal incluída):
 
 | f | τ | X (R$ bi) | θ_M | θ_E |
 |---|---|---|---|---|
-| 0.6 | 19,7% | 91 | 30,6% | 3,6% |
-| 0.7 | 19,5% | 105 | 34,1% | 4,2% |
-| 0.8 | 19,3% | 119 | 37,3% | 4,8% |
-| 0.9 | 19,2% | 132 | 40,3% | 5,4% |
-| 1.0 | 19,0% | 146 | 43,0% | 6,0% |
+| 0.80 | 19,3% | 119 | 37,3% | 4,8% |
+| 0.85 | 19,2% | 125 | 38,9% | 5,1% |
+| 0.90 | 19,2% | 132 | 40,3% | 5,4% |
+| 0.95 | 19,1% | 139 | 41,7% | 5,7% |
+| 1.00 | 19,0% | 146 | 43,0% | 6,0% |
 
 Leitura restritiva (só tributos subnacionais), como limite inferior:
 
 | f | τ | X (R$ bi) | θ_M | θ_E |
 |---|---|---|---|---|
-| 0.6 | 11,9% | 55 | 20,5% | 2,1% |
-| 0.7 | 11,8% | 64 | 23,1% | 2,5% |
-| 0.8 | 11,7% | 72 | 25,6% | 2,8% |
-| 0.9 | 11,6% | 80 | 27,9% | 3,2% |
-| 1.0 | 11,5% | 88 | 30,1% | 3,5% |
+| 0.80 | 11,7% | 72 | 25,6% | 2,8% |
+| 0.85 | 11,7% | 76 | 26,8% | 3,0% |
+| 0.90 | 11,6% | 80 | 27,9% | 3,2% |
+| 0.95 | 11,6% | 84 | 29,0% | 3,3% |
+| 1.00 | 11,5% | 88 | 30,1% | 3,5% |
 
 **Por que a leitura legal.** O art. 473, § 1º, II, "b", fixa a alíquota estadual do IBS na soma das alíquotas de IBS e CBS após o redutor; o valor arrecadado a essa alíquota é, portanto, IBS extinto destinado ao Estado contratante (art. 106, III, da LC 227). A leitura restritiva ignora a parcela federal, que a lei também direciona ao comprador. **Revisão.** Quando o Poder Executivo e o Comitê Gestor divulgarem o redutor do art. 370, f pode ser substituído por valor oficial. O script `data/calibra-peso-compras.py` recalcula tudo.
 
 ## 4. Teto de compras por habitante: percentil 99 nacional (R$ 10.075)
 
-**O que é.** Alguns municípios, em geral pequenos e financiados por royalties ou compensações minerais, têm compras por habitante muito acima dos demais, (valores atípicos por erro de classificação, como Quinta do Sol/PR, são tratados antes, pela regra da seção 5). O teto limita o peso de cada município ao valor do percentil 99. Sem ele, um único município (Presidente Kennedy/ES) teria o peso intra-UF 281% maior, e o rateio da UF passaria a depender dele.
+**O que é.** Alguns municípios, em geral pequenos e financiados por royalties ou compensações minerais, têm compras por habitante muito acima dos demais, (valores atípicos por erro de classificação, como Quinta do Sol/PR, são tratados antes, pela regra da seção 5). O teto limita o peso de cada município ao valor do percentil 99. Sem ele, um único município (Presidente Kennedy/ES) teria o peso intra-UF 293% maior, e o rateio da UF passaria a depender dele.
 
 **Evidência de robustez.** Variar o percentil de 95% a 99,5% muda pouco o resultado:
 
 | Percentil | Teto (R$/hab.) | Média das diferenças vs. p99 | Máxima diferença | Correlação de postos |
 |---|---|---|---|---|
-| sem teto | — | 0,48% | 281,1% | 0,99977 |
-| 99,5% | 12.109 | 0,17% | 16,3% | 0,99996 |
+| sem teto | — | 0,52% | 293,3% | 0,99975 |
+| 99,5% | 12.109 | 0,18% | 16,9% | 0,99996 |
 | **99%** | **10.075** | — | — | — |
-| 97,5% | 8.366 | 0,32% | 14,2% | 0,99993 |
-| 95% | 6.953 | 0,93% | 25,9% | 0,99966 |
+| 97,5% | 8.336 | 0,35% | 15,0% | 0,99992 |
+| 95% | 6.946 | 1,00% | 26,8% | 0,99960 |
 
 (Diferenças no peso final do município no rateio do IBS próprio da UF, já combinados consumo e compras.) O percentil 99 é a winsorização padrão de 1% e fica no centro de um intervalo em que a ordenação dos municípios é praticamente invariante. O teto limita 56 municípios e retira 0,7% das compras totais. **Limitação.** Valores extremos podem ser reais (royalties), e o teto subestima esses casos.
 
@@ -94,7 +96,7 @@ Municípios sem dado utilizável na DCA (24 sem informação, 6 com valor zero o
 | sem serviços de terceiros | −54% | 10,0% | 28,4% |
 | **com** transferências a entidades sem fins lucrativos (3.3.50) | +17% | 9,7% | 8,4% |
 
-(As quatro primeiras variantes foram medidas sobre a composição anterior, sem 3.3.90.33 e .34; a inclusão desses dois elementos mudou 1,6% a 2,6% as participações por UF e 3,1% as dos municípios na UF.) Como as compras respondem por cerca de 37% do peso do município, essas diferenças diluem-se no coeficiente final. **Limitação.** A DCA não separa, dentro de 3.3.90.39, o que é serviço tributável do que não é (por exemplo, contratos com organizações sociais, que alguns entes registram em 3.3.50 e outros em 3.3.90.39). A proxy trata os dois registros como aparecem; a classificação oficial só virá com a regulamentação do Comitê Gestor.
+(As quatro primeiras variantes foram medidas sobre a composição anterior, sem 3.3.90.33 e .34; a inclusão desses dois elementos mudou 1,6% a 2,6% as participações por UF e 3,1% as dos municípios na UF.) Como as compras respondem por cerca de 43% do peso do município, essas diferenças diluem-se no coeficiente final. **Limitação.** A DCA não separa, dentro de 3.3.90.39, o que é serviço tributável do que não é (por exemplo, contratos com organizações sociais, que alguns entes registram em 3.3.50 e outros em 3.3.90.39). A proxy trata os dois registros como aparecem; a classificação oficial só virá com a regulamentação do Comitê Gestor.
 
 ## 6. Reprodutibilidade
 

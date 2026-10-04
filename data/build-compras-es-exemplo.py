@@ -19,7 +19,8 @@ from pathlib import Path
 import rateio_consumo_compras as rcc
 
 D = Path(__file__).parent
-ALIQ_EFETIVA = 0.159   # só para o valor ilustrativo das compras estaduais na tabela 1 do estudo
+_CAL = json.loads((D / "compras-calibracao.json").read_text())["central"]
+ALIQ_EFETIVA = _CAL["tau"] * _CAL["f"]   # carga média x f: imposto sobre o gasto bruto (valores ilustrativos do estudo)
 COTA = 0.25
 
 c = json.loads((D / "compras-governamentais-dca.json").read_text())["ES"]

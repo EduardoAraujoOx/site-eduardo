@@ -21,9 +21,13 @@ Raciocínio (Estudo 17):
      A parte de famílias do IBS subnacional é R - X_M - X_E, dividida entre as esferas pelas
      alíquotas de referência (alfa_E, alfa_M, de phi-dest-pof-censo.json). Logo
          theta_M = X_M / (X_M + alfa_M (R - X)),   theta_E = X_E / (X_E + alfa_E (R - X)).
-  4. f é a única incerteza que os dados do acervo não resolvem: depende do redutor oficial (art.
-     370) e da composição das compras. Adota-se o ponto médio do intervalo [0,6; 1,0] como valor
-     central e publica-se o intervalo inteiro.
+  4. f é estimado em data/estima-fracao-compras-carga.py com as Tabelas de Recursos e Usos 2023 do
+     IBGE (carga de impostos sobre produtos, composição das compras da administração pública e do
+     consumo das famílias) e a cobertura da proxy frente ao consumo intermediário das Contas Nacionais:
+     f entre 1,05 e 1,09. Como f é uma fração, adota-se f = 1,0 (valor central) e publica-se a faixa
+     de 0,8 a 1,0. O limite inferior cobre a incerteza que a estimativa por produto não resolve (a
+     cascata de tributos nos insumos e a classificação das despesas na DCA); o superior é o teto de uma
+     fração. O redutor oficial do art. 370, quando divulgado, substitui a estimativa.
 
 Saída: data/compras-calibracao.json (lida por data/rateio_consumo_compras.py).
 """
@@ -33,8 +37,8 @@ from pathlib import Path
 from fundos_art115b import fold
 
 HERE = Path(__file__).parent
-F_CENTRAL = 0.80
-F_GRADE = [0.6, 0.7, 0.8, 0.9, 1.0]
+F_CENTRAL = 1.00
+F_GRADE = [0.8, 0.85, 0.9, 0.95, 1.0]
 
 
 def main():
