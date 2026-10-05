@@ -19,8 +19,12 @@ por construção.
 
 Cada ano é deflacionado por Índice_t = TotalBR_2025 / TotalBR_t, onde
 TotalBR = ICMS_BR + ISS_BR + FECOP_BR (DCA), igual à Tabela 3. A receita
-média de referência divide sempre por 7 (2019-2025) -- anos sem declaração
-contam como zero, mesma convenção do HTML, não são excluídos do denominador.
+média de referência divide sempre pelo número de anos da média -- anos sem declaração
+contam como zero, mesma convenção do HTML, não são excluídos do denominador. A média é
+a de 2019-2026, com 2026 estimado (data/cpt2026.py; data/parametros-cpt-2026.json): a
+cota-parte de cada município segue o fator da UF (nowcast do ICMS pelo RREO; não há
+nowcast municipal) e o ISS repete 2025. O campo coeficiente_obs_2019_2025_pct traz a
+média só dos sete anos observados (igual à Nota Técnica nº 02/2026 da SEFAZ-ES).
 
 Uso:
   python3 build-coeficientes-municipios.py
@@ -29,6 +33,7 @@ Uso:
 import json
 from pathlib import Path
 from fundos_art115b import fold
+import cpt2026
 
 HERE = Path(__file__).parent
 SRC = HERE / "reforma-tributaria.json"
@@ -73,6 +78,10 @@ def main():
     deflators = {ano: (1.0 if ano == 2025 else (total_b / total_br[ano] if total_br[ano] else None))
                  for ano in ANOS}
 
+    # 2026 estimado: fatores por UF (cota-parte) e ISS (ver cpt2026.py)
+    fat26, r_renorm = cpt2026.fatores(cpt2026.componentes_2025(d))
+    n_anos = cpt2026.n_anos()
+
     # ── Cota-parte alvo por UF (declarada pelo estado, ou 25% teórico) ─────
     cota_alvo_uf = {}  # {ano: {uf: valor}}
     for ano in ANOS:
@@ -100,10 +109,12 @@ def main():
 
     resultado = {}
     soma_cpt_por_uf = {}
+    soma_cpt_obs_por_uf = {}
     for cod, m in municipios.items():
         uf = m["uf"]
         soma = 0.0
         anos_com_dado = 0
+        r25 = None
         for ano in ANOS:
             dado = m["dados"].get(ano)
             defl = deflators[ano]
@@ -117,9 +128,15 @@ def main():
             else:
                 cota_muni = dado["cota_dca"]
             soma += (dado["iss"] + cota_muni) * defl
+            if ano == 2025:
+                r25 = (dado["iss"], cota_muni)
 
-        receita_media = soma / len(ANOS)
+        receita_media_obs = soma / len(ANOS)
+        fi, fr = fat26.get(uf, (0.0, 0.0))
+        soma26 = (r25[0] * fr + r25[1] * fi) if (r25 and n_anos > len(ANOS)) else 0.0   # defl. de 2025 = 1; sem dado em 2025, 2026 = 0
+        receita_media = (soma + soma26) / n_anos
         cpt = (receita_media / total_b) * 100
+        cpt_obs = (receita_media_obs / total_b) * 100
 
         resultado[cod] = {
             "nome": m["nome"],
@@ -127,8 +144,11 @@ def main():
             "cobertura_anos": anos_com_dado,
             "receita_media_referencia": receita_media,
             "coeficiente_pct": cpt,
+            "receita_media_referencia_obs_2019_2025": receita_media_obs,
+            "coeficiente_obs_2019_2025_pct": cpt_obs,
         }
         soma_cpt_por_uf[uf] = soma_cpt_por_uf.get(uf, 0.0) + cpt
+        soma_cpt_obs_por_uf[uf] = soma_cpt_obs_por_uf.get(uf, 0.0) + cpt_obs
 
     # ── Validação: Σ cpt_município por UF == cpt municipal da UF (Tabela 3) ─
     validacao_uf = {}
@@ -150,7 +170,12 @@ def main():
             if cota_ano is not None:
                 soma_cota += cota_ano * defl
             n_iss += 1
-        media_munis_uf = (soma_iss + soma_cota) / len(ANOS)
+        fi, fr = fat26.get(uf, (0.0, 0.0))
+        if n_anos > len(ANOS):    # 2026 estimado: ISS repete 2025 (fator r) e a cota-parte segue o fator da UF
+            iss_25 = sum((v.get("valor") or 0) for v in (dca_det.get("2025") or {}).values() if v.get("uf") == uf)
+            soma_iss += iss_25 * fr
+            soma_cota += (cota_alvo_uf[2025].get(uf) or 0.0) * fi
+        media_munis_uf = (soma_iss + soma_cota) / n_anos
         cpt_munis_uf_tabela3 = (media_munis_uf / total_b) * 100
         cpt_munis_uf_soma_individual = soma_cpt_por_uf.get(uf, 0.0)
         diff = cpt_munis_uf_soma_individual - cpt_munis_uf_tabela3
@@ -166,11 +191,14 @@ def main():
     output = {
         "fonte": "DCA Anexo I-C (dca_detalhes) — ISS bruto + cota-parte ICMS declarada, por município",
         "metodo": (
-            "receita_media_referencia = média_7anos[(ISS_muni,t + cota_muni,t) × deflator_t]; "
+            "receita_media_referencia = média_(7 ou 8 anos)[(ISS_muni,t + cota_muni,t) × deflator_t], com 2026 estimado conforme data/cpt2026.py; "
             "cota_muni,t = cota_alvo_UF,t × (cota_dca_muni,t / cota_total_dca_UF,t); "
             "coeficiente_pct = receita_media_referencia / TotalBR_2025 × 100"
         ),
         "anos": ANOS,
+        "tratamento_2026": cpt2026.tratamento(),
+        "n_anos_media": n_anos,
+        "r_renorm_2026": r_renorm,
         "total_br_2025": total_b,
         "n_municipios": len(resultado),
         "n_duplicados_ibge": len(duplicados),

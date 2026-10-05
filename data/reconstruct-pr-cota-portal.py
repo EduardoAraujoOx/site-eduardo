@@ -30,6 +30,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+import sys
+sys.path.insert(0, str(HERE))
+import cpt2026
+from fundos_art115b import fold
 OUT = HERE / "auditoria-pr-validacao"
 ANOS = list(range(2019, 2026))
 
@@ -139,6 +143,7 @@ def main():
     total_2025 = total_nat[2025]
     deflator = {ano: (1.0 if ano == 2025 else total_2025 / total_nat[ano]) for ano in ANOS}
 
+    fi26, fr26, n_anos = cpt2026.fatores_uf(fold(ref), "PR")     # 2026 estimado: cota-parte segue a UF, ISS repete 2025
     old_diag = {r["codigo_ibge"]: r for r in muni_diag}
     rows = []
     for cod, nome in names.items():
@@ -153,7 +158,8 @@ def main():
             else:
                 annual.append((i + cp) * deflator[ano])
 
-        hist = None if unresolved else sum(annual) / len(ANOS)
+        est26 = 0.0 if (unresolved or n_anos == len(ANOS)) else iss[cod][2025] * fr26 + recon_cota[cod][2025] * fi26
+        hist = None if unresolved else (sum(annual) + est26) / n_anos
         cpt = hist / total_2025 if hist is not None else None
         base = None
         if iss[cod].get(2025) is not None and recon_cota[cod].get(2025) is not None:

@@ -590,7 +590,7 @@
 
             // φ^dest: estimativa própria (POF x Censo, Estudo 13) -- Gobetti e Monteiro deixou de
             // ser insumo do modelo (fica só como comparação, Estudos 07/13).
-            const phiUF = ((phiByUf[uf] && phiByUf[uf].pof_censo_bruto_pct) || 0) / 100;
+            const phiUF = ((phiByUf[uf] && (phiByUf[uf].phi_fam_pct != null ? phiByUf[uf].phi_fam_pct : phiByUf[uf].pof_censo_bruto_pct)) || 0) / 100;
             // Com compras governamentais (Estudo 17) os coeficientes por esfera vêm prontos de
             // phi-dest-pof-censo.json (coef_*_compras_pct); senão, a fórmula phi_UF x fração.
             const entradaPhi = phiByUf[uf] || {};

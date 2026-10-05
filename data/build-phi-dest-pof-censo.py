@@ -189,15 +189,14 @@ def main():
                                          dca_outras_deducoes_2025)
     gobetti_t1 = compute_gobetti_tabela1(gobetti)
     pof_bruto, pof_ponderado = compute_pof_censo(pof, censo)
-    # Variante de teste (não altera o publicado): PHI_FAM_METODO=robusto troca a base φ_fam pelo composto de
-    # data/phi-dest-robusto.json (estima-phi-destino-robusto.py). Sem a variável, o resultado é o de sempre.
+    # φ_fam usado pelo modelo: composto robusto (data/phi-dest-robusto.json; estima-phi-destino-robusto.py), adotado em 2026-10-05.
+    # PHI_FAM_METODO=bruto volta ao POF x Censo em consumo bruto (a antiga referência), só para comparação.
     robusto = None
     rpath = HERE / "phi-dest-robusto.json"
     if rpath.exists():
         robusto = {u: v["phi_robusto_pct"] for u, v in json.loads(rpath.read_text(encoding="utf-8"))["por_uf"].items()}
-    if os.environ.get("PHI_FAM_METODO") == "robusto":
-        assert robusto, "phi-dest-robusto.json ausente"
-        pof_bruto = robusto
+    usa_robusto = robusto is not None and os.environ.get("PHI_FAM_METODO", "robusto") != "bruto"
+    phi_fam_pct = robusto if usa_robusto else pof_bruto
     frac_estado, frac_muni = compute_frac_estado_muni(ref_data, macro)
 
     por_uf = {}
@@ -211,6 +210,7 @@ def main():
             "pof_censo_bruto_pct": pb,
             "pof_censo_ponderado_pct": pp,
             "phi_robusto_pct": None if robusto is None else robusto[uf],
+            "phi_fam_pct": phi_fam_pct[uf],
             "despesa_pof_familiar": pof['despesa_por_uf'][uf]['total'],
             "domicilios_censo_2022": censo['por_uf'][uf]['domicilios_particulares_ocupados'],
             "delta_bruto_vs_modelo_pp": pb - ma,
@@ -231,7 +231,7 @@ def main():
             if r["uf"] != "DF" and cod in pop_mun:
                 pops_por_uf.setdefault(r["uf"], {})[cod] = pop_mun[cod]["pop_media"]
         df_uf = {u for u in UFS if coeficientes_uf["por_uf"].get(u, {}).get("is_df")}
-        phi_fam = {u: por_uf[u]["pof_censo_bruto_pct"] / 100 for u in UFS}
+        phi_fam = {u: por_uf[u]["phi_fam_pct"] / 100 for u in UFS}
         mix = rcc.phi_compras_por_uf(phi_fam, UFS, df_uf, frac_estado, frac_muni, compras_json, pops_por_uf)
         for u in UFS:
             por_uf[u]["phi_estado_compras_pct"] = mix[u]["phi_E"] * 100
@@ -260,6 +260,7 @@ def main():
             "fatia por UF na tabela usada; e um teste de sensibilidade, nao um mapeamento "
             "fino da legislacao por categoria."
         ),
+        "metodo_phi_fam": "robusto (data/phi-dest-robusto.json)" if usa_robusto else "pof_censo_bruto",
         "es_gobetti_2025_sefaz_referencia_pct": 1.88,
         "es_gobetti_2025_sefaz_nota": (
             "'IBS hipotetico 2025', apresentacao de Sergio Gobetti a SEFAZ-ES (2026) -- so "

@@ -152,5 +152,5 @@ def esferas_uf(entry, is_df, frac_estado, frac_muni):
         ce = entry["coef_estado_compras_pct"] / 100
         cm = entry.get("coef_muni_compras_pct")
         return ce, (None if cm is None else cm / 100)
-    phi_uf = (entry.get("pof_censo_bruto_pct") or 0) / 100
+    phi_uf = (entry.get("phi_fam_pct", entry.get("pof_censo_bruto_pct")) or 0) / 100
     return (phi_uf if is_df else phi_uf * frac_estado), (None if is_df else phi_uf * frac_muni)

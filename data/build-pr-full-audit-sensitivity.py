@@ -27,6 +27,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from fundos_art115b import fold
 import rateio_consumo_compras as rcc
+import cpt2026
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "auditoria-pr-validacao"
@@ -232,6 +233,7 @@ def main():
         for ano in ANOS_HIST
     }
 
+    fi26, fr26, n_anos = cpt2026.fatores_uf(ref, "PR")     # 2026 estimado (cpt2026.py)
     diag = {r["codigo_ibge"]: r for r in diag_rows}
     audited = {}
     reconstruction_rows = []
@@ -247,7 +249,8 @@ def main():
             else:
                 annual.append((i + cp) * deflator[ano])
 
-        hist = None if unresolved else sum(annual) / len(ANOS_HIST)
+        est26 = 0.0 if (unresolved or n_anos == len(ANOS_HIST)) else iss[cod][2025] * fr26 + recon_cota[cod][2025] * fi26
+        hist = None if unresolved else (sum(annual) + est26) / n_anos
         cpt = hist / total_2025 if hist is not None else None
         base = None
         if iss[cod].get(2025) is not None and recon_cota[cod].get(2025) is not None:
