@@ -37,9 +37,11 @@ N_SIM = 20000
 SEED = 20261004
 SIGMA_PHI = 0.10          # central: erro relativo médio entre fontes (~10%)
 SD_G_2026 = 0.007        # erro do crescimento de 2026 (ano quase fechado em out/2026), em fração
+G_BLOCO_MEDIO = 4        # bootstrap estacionário (Politis-Romano) dos desvios de crescimento; ver sensibilidade-focus-erros.py
+BIAS_G = 0.0             # deslocamento anual da trajetória central de crescimento (cenário de viés histórico do Focus)
 KAPPA_G = 1.0            # escala da variabilidade histórica do crescimento real a partir de 2027
 SD_REF = 0.012           # incerteza da razão bolo/PIB de referência (média 2024-2026, com 2026 estimado)
-SD_RATIO = 0.037         # desvio anual (log) da razão bolo/PIB, 2013-2025, ruído sem acumulação
+SD_RATIO = 0.06          # ruído anual do bolo em relação ao PIB (razão, elasticidade, mudanças tributárias); calibrado no backtest do nível (CRPS mínimo em 0,06-0,07); o desvio anual histórico da razão é 0,037
 KAPPA = 1.0              # fator de escala dos intervalos (1 = sem recalibração; ver sensibilidade-incerteza-parametros.py)
 USAR_BOOT = True         # sorteia (s1, beta) do bootstrap em blocos (incerteza dos parâmetros)
 SIGMA_PHI_ALTO = 0.19     # sensibilidade: dispersão log entre POF/Censo e Gobetti 2023 (inclui UFs pequenas)
@@ -270,8 +272,13 @@ def main():
             eps = np.zeros((n, len(g_c)))
             if "G" in fontes:
                 eps[:, 0] = rng.normal(0, SD_G_2026, n)
-                eps[:, 1:] = KAPPA_G * rng.choice(dev, (n, len(g_c) - 1))
-            F = (np.cumprod(1 + g_c[None, :] + eps, axis=1) / np.cumprod(1 + g_c)[None, :])[:, idx_anos]
+                pos = rng.integers(0, len(dev), n)
+                for t in range(1, len(g_c)):
+                    if t > 1:
+                        novo = rng.random(n) < 1.0 / G_BLOCO_MEDIO
+                        pos = np.where(novo, rng.integers(0, len(dev), n), (pos + 1) % len(dev))
+                    eps[:, t] = KAPPA_G * dev[pos]
+            F = (np.cumprod(1 + g_c[None, :] + BIAS_G * (np.arange(len(g_c)) >= 1)[None, :] + eps, axis=1) / np.cumprod(1 + g_c)[None, :])[:, idx_anos]
             if "R" in fontes:
                 F = F * np.exp(rng.normal(0, SD_REF, (n, 1)) + rng.normal(0, SD_RATIO, (n, len(ANOS))))
             return F
