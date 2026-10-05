@@ -26,6 +26,7 @@ import importlib.util
 import json
 from pathlib import Path
 from fundos_art115b import fold
+import cpt2026
 
 HERE = Path(__file__).parent
 OUT_DIR = HERE / "painel-municipios"
@@ -95,6 +96,9 @@ def main():
         }
     cota_total_dca_uf_hist = {ano: (dca_cota_uf.get(str(ano)) or {}) for ano in HIST_ANOS}
 
+    fat26, _ = cpt2026.fatores(cpt2026.componentes_2025(ref_data))
+    com_2026 = cpt2026.n_anos() > len(HIST_ANOS)
+
     municipios = {}
     for cod, cm in coef_muni.items():
         rd = rateio_muni.get(cod)
@@ -142,6 +146,18 @@ def main():
                 "total_reais_2025": (iss_v + cota_v) * defl,
             }
 
+        # 2026 estimado (cpt2026.py): a cota-parte segue o fator da UF; o ISS repete 2025
+        estimativa_2026 = None
+        if com_2026 and 2025 in historico_por_ano:
+            fi, fr = fat26.get(uf, (0.0, 0.0))
+            h25 = historico_por_ano[2025]
+            estimativa_2026 = {
+                "tratamento": cpt2026.tratamento(),
+                "iss_reais_2025": h25["iss_reais_2025"] * fr,
+                "cota_parte_reais_2025": h25["cota_parte_reais_2025"] * fi,
+                "total_reais_2025": h25["iss_reais_2025"] * fr + h25["cota_parte_reais_2025"] * fi,
+            }
+
         # Decomposição em 4 categorias, mesma fórmula de project_municipio
         # (não reescrita, só exposta por parte em vez de só o total): quanto
         # da receita projetada vem do ICMS/ISS residual (origem), do IBS pelo
@@ -168,7 +184,9 @@ def main():
             "neutro_suspeito": neutro_suspeito,
             "pop_media": pop,
             "pre_2025": r0,
-            "receita_media_referencia_7anos": cm.get("receita_media_referencia"),
+            "receita_media_referencia": cm.get("receita_media_referencia"),
+            "receita_media_referencia_7anos": cm.get("receita_media_referencia_obs_2019_2025", cm.get("receita_media_referencia")),
+            "estimativa_2026": estimativa_2026,
             "coef_neutro_pct": coef_neutro * 100,
             "coef_cpt_pct": coef_cpt * 100,
             "coef_pleno_pct": coef_pleno * 100,

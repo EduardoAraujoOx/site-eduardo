@@ -40,9 +40,9 @@ def main():
         v22_total = float(row["Coeficiente_total"]) if row["Coeficiente_total"] else None
 
         meu = cpt_uf.get(uf, {})
-        meu_estado = meu.get("coeficiente_estado_pct")
-        meu_munis = meu.get("coeficiente_municipios_pct")
-        meu_total = meu.get("coeficiente_total_pct")
+        meu_estado = meu.get("coeficiente_estado_obs_2019_2025_pct")
+        meu_munis = meu.get("coeficiente_municipios_obs_2019_2025_pct")
+        meu_total = meu.get("coeficiente_total_obs_2019_2025_pct")
 
         div_uf[uf] = {
             "v22_estado": v22_estado, "meu_estado": meu_estado,
@@ -59,7 +59,7 @@ def main():
         cod = row["Codigo"]
         v22_cpt = float(row["Coeficiente"]) if row["Coeficiente"] else None
         meu = cpt_munis.get(cod, {})
-        meu_cpt = meu.get("coeficiente_pct")
+        meu_cpt = meu.get("coeficiente_obs_2019_2025_pct")
         div_munis_es[cod] = {
             "nome": row["Municipio"],
             "v22": v22_cpt, "meu": meu_cpt,

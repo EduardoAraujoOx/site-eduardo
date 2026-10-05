@@ -517,7 +517,7 @@
                     <tbody>
                         <tr><td>$\text{TotalBR}_{2025}$</td><td>Soma nacional ICMS + ISS + FECOP (DCA 2025): ano-base dos coeficientes de participação (φ^neutro, φ^CPT, φ^dest), fixos; a base efetivamente distribuída ano a ano vem do Estudo 11 e cresce com o PIB</td><td id="vt-totalBR">—</td></tr>
                         <tr><td>$\varphi^{neutro}_{ES}$</td><td>$r_0^{2025}/\text{TotalBR}_{2025}$: participação ES pelo critério de origem em 2025; base do ICMS residual e do Cenário 3</td><td id="vt-neutroES">—</td></tr>
-                        <tr><td>$\varphi^{CPT}_{ES}$</td><td><code>coeficientes-uf.json</code>: participação histórica 2019–2025, validada contra a Nota Técnica nº 02/2026; base do IBSt ($\lambda_{ES} &lt; 1$, determinístico)</td><td id="vt-cptES">—</td></tr>
+                        <tr><td>$\varphi^{CPT}_{ES}$</td><td><code>coeficientes-uf.json</code>: participação histórica 2019–2026 (2026 estimado pelo RREO; a média de 2019–2025 é a validada contra a Nota Técnica nº 02/2026); base do IBSt ($\lambda_{ES} &lt; 1$, determinístico)</td><td id="vt-cptES">—</td></tr>
                         <tr><td>$\varphi^{dest}_{ES}$</td><td>Participação ES pelo critério de destino/consumo, diferenciada por esfera (Estudo 06); base do IBSd; varia por cenário (incerto)</td><td id="vt-delta">—</td></tr>
                         <tr><td>$\lambda_{ES}$</td><td>$\varphi^{CPT}_{ES}/\varphi^{neutro}_{ES} = r_0^{avg}/r_0^{2025}$: indica que o ES cresceu acima da média nacional no período base, logo $\lambda &lt; 1$</td><td id="vt-lambda">—</td></tr>
                         <tr><td>$r_0^{2025}$</td><td>$\text{TotalBR}_{2025}\times\varphi^{neutro}_{ES}$, equivalente a (ICMS − cota-parte declarada + FECOP)_ES 2025: valor monetário derivado</td><td id="vt-r0-2025">—</td></tr>
@@ -965,7 +965,7 @@
 
             // φ^dest: estimativa própria (POF x Censo, Estudo 13), dividida pela fração estadual
             // fixa (0,75 x rE/(rE+rM), ver Estudo 06) -- Gobetti e Monteiro deixou de ser insumo.
-            const phiUF = ((phiByUf[uf] && phiByUf[uf].pof_censo_bruto_pct) || 0) / 100;
+            const phiUF = ((phiByUf[uf] && (phiByUf[uf].phi_fam_pct != null ? phiByUf[uf].phi_fam_pct : phiByUf[uf].pof_censo_bruto_pct)) || 0) / 100;
             const entradaPhi = phiByUf[uf] || {};
             const usaCompras = !!phiDestData.compras_governamentais && entradaPhi.coef_estado_compras_pct != null;
             const coefPleno = usaCompras ? entradaPhi.coef_estado_compras_pct / 100 : (isDf ? phiUF : phiUF * fracEstado);
@@ -1259,7 +1259,7 @@
             secHead('A. Base nacional 2029 (Estudo 11) e coeficientes de participação do ES'),
             rowSame('Referência 2029 = ICMS residual + IBS bruto (Estudo 11)', 'Cresce a cada ano com o PIB — não é mais uma base fixa em 2025', nac2029.icms_iss_residual + nac2029.ibs_bruto),
             rowStatic('φ^neutro_ES (2025, cota-parte declarada + FECOP)', 'Participação ES pelo critério de origem, mesma base do Estudo 06', `${(coefNeutro*100).toFixed(4).replace('.',',')}%`),
-            rowStatic('φ^CPT_ES (coeficientes-uf.json, 2019–2025)', 'Coeficiente de Participação de Transição, validado contra a Nota Técnica nº 02/2026', `${(coefCPT*100).toFixed(4).replace('.',',')}%`),
+            rowStatic('φ^CPT_ES (coeficientes-uf.json, 2019–2026, com 2026 estimado)', 'Coeficiente de Participação de Transição, validado contra a Nota Técnica nº 02/2026', `${(coefCPT*100).toFixed(4).replace('.',',')}%`),
             rowStatic('λ_ES = φ^CPT_ES / φ^neutro_ES', 'ES cresceu acima da média nacional no período → λ < 1', `${lambda.toFixed(4).replace('.',',')} (${((lambda-1)*100).toFixed(2).replace('.', ',')}% vs. 2025)`),
 
             secHead('B. Referência sem reforma, 2029: Referência₂₀₂₉ × φ^neutro_ES'),

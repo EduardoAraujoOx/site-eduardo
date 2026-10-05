@@ -687,7 +687,7 @@ $$R^{0}_{a,\,\text{ente}} \;=\; \mathrm{Ref}_a\cdot\varphi^{neutro}_{\text{ente}
             // Monteiro (IPEA, 2023) deixou de ser insumo do modelo e vira só comparação (Estudos 07
             // e 13). φ_UF já soma 100% nacionalmente; a divisão entre esfera estadual e municipal
             // usa fracEstado/fracMuni, iguais para todas as UFs.
-            const phiUF = ((phiByUf[uf] && phiByUf[uf].pof_censo_bruto_pct) || 0) / 100;
+            const phiUF = ((phiByUf[uf] && (phiByUf[uf].phi_fam_pct != null ? phiByUf[uf].phi_fam_pct : phiByUf[uf].pof_censo_bruto_pct)) || 0) / 100;
             // Com compras governamentais (Estudo 17) os coeficientes por esfera vêm prontos de
             // phi-dest-pof-censo.json (coef_*_compras_pct); senão, a fórmula phi_UF x fração.
             const entradaPhi = phiByUf[uf] || {};

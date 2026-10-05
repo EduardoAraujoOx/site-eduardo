@@ -116,7 +116,7 @@ def compras_municipais(compras, ufs_munis):
 def main():
     rateio, phi, rend, med, compras = carrega()
     fE, fM = phi["frac_estado_pct"] / 100, phi["frac_muni_pct"] / 100
-    phi_fam = {u: phi["por_uf"][u]["pof_censo_bruto_pct"] / 100 for u in UFS}
+    phi_fam = {u: phi["por_uf"][u].get("phi_fam_pct", phi["por_uf"][u]["pof_censo_bruto_pct"]) / 100 for u in UFS}
     alfa_E = fE / 0.75         # esfera estadual bruta (antes da cota-parte de 25%)
     alfa_M = fM - fE / 3       # IBS municipal próprio (sucessor do ISS)
 

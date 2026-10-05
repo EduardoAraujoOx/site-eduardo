@@ -4,7 +4,7 @@ Tabela do artigo: projeção da receita tributária estadual (ICMS/IBS) do Paran
 2029-2033, em três cenários para o coeficiente de destino (formato da Tabela 6
 do estudo do ES). Um único parâmetro varia: a fonte do coeficiente de destino.
 
-  Própria  : POF/Censo bruto (phi-dest-pof-censo.json, pof_censo_bruto_pct)
+  Própria  : composto robusto de POF, Censo e PNAD (phi-dest-pof-censo.json, phi_fam_pct)
   Neutro   : destino = participação de origem em 2025 (referência, não previsão)
   Gobetti  : Gobetti e Monteiro (2023, IPEA), Tabela 1 (gobetti_tabela1_2023_pct)
 
@@ -52,7 +52,7 @@ def receita(a, c_dest):
 for a in ANOS:   # validação: reproduz a projeção publicada (POF/Censo) em todos os anos
     assert abs(receita(a, c_own) - R["pos_por_ano"][str(a)]) < 1e3, a
 
-CEN = [("Estimativa própria", "POF/Censo", c_own), ("Neutro", "destino = origem", c_neutro),
+CEN = [("Estimativa própria", "Composto POF/Censo/PNAD", c_own), ("Neutro", "destino = origem", c_neutro),
        ("Gobetti e Monteiro", "IPEA, 2023", c_gob)]
 dados = {a: {"ref": ref[a] * c_neutro, "cen": [receita(a, c) for _, _, c in CEN]} for a in ANOS}
 
@@ -138,7 +138,7 @@ n = doc.add_paragraph(); n.paragraph_format.space_before = Pt(4)
 r = n.add_run("Nota: Ref. é a receita estadual projetada sem a reforma (participação neutra de 2025 do ente estadual, ICMS + FECOP, líquido de "
               "cota-parte, aplicada à receita de referência nacional de cada ano, em R$ bilhões de 2025). Δ% e Δ R$ mi comparam a receita projetada "
               "com a referência do mesmo ano; Acum. soma os cinco anos. Os cenários diferem apenas na fonte do coeficiente de destino: estimativa "
-              "própria com POF e Censo; neutro (destino igual à participação de origem, referência e não previsão; o histórico de transição "
+              "própria (composto de POF, Censo e PNAD Contínua); neutro (destino igual à participação de origem, referência e não previsão; o histórico de transição "
               "continua valendo); e Gobetti e Monteiro (2023, Tabela 1). O Paraná não recebe repasse do Seguro-Receita na esfera estadual.")
 r.italic = False; r.font.size = Pt(8)
 n2 = doc.add_paragraph()

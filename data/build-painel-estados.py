@@ -21,6 +21,7 @@ import importlib.util
 import json
 from pathlib import Path
 from fundos_art115b import fold
+import cpt2026
 
 HERE = Path(__file__).parent
 OUT = HERE / "painel-estados.json"
@@ -67,6 +68,10 @@ def main():
                              (total_br_hist[2025] / total_br_hist[ano] if total_br_hist.get(ano) else None))
                        for ano in HIST_ANOS}
 
+    # 2026 estimado para a média do coeficiente histórico (ver cpt2026.py): componentes de 2025 x fatores da UF
+    fat26, _ = cpt2026.fatores(cpt2026.componentes_2025(ref_data))
+    com_2026 = cpt2026.n_anos() > len(HIST_ANOS)
+
     estados = {}
     for uf in brc.UFS:
         p = params_uf[uf]
@@ -93,6 +98,21 @@ def main():
                 "cota_parte_reais_2025": cota_v * defl,
                 "estado_reais_2025": r_estado * defl,
                 "municipios_reais_2025": None if r_muni is None else r_muni * defl,
+            }
+
+        estimativa_2026 = None
+        if com_2026 and 2025 in historico_por_ano:
+            fi, fr = fat26[uf]
+            h = historico_por_ano[2025]
+            estimativa_2026 = {
+                "tratamento": cpt2026.tratamento(),
+                "icms_reais_2025": h["icms_reais_2025"] * fi,
+                "outras_deducoes_reais_2025": h["outras_deducoes_reais_2025"] * fi,
+                "iss_reais_2025": h["iss_reais_2025"] * fr,
+                "fecop_reais_2025": h["fecop_reais_2025"] * fi,
+                "cota_parte_reais_2025": h["cota_parte_reais_2025"] * fi,
+                "estado_reais_2025": (h["estado_reais_2025"] - (h["iss_reais_2025"] if is_df else 0.0)) * fi + (h["iss_reais_2025"] * fr if is_df else 0.0),
+                "municipios_reais_2025": None if h["municipios_reais_2025"] is None else h["iss_reais_2025"] * fr + h["cota_parte_reais_2025"] * fi,
             }
 
         # Decomposição em 4 categorias e repasse do Seguro-Receita, por
@@ -129,6 +149,7 @@ def main():
             "coef_cpt_municipio_pct": None if not p["municipio"] else p["municipio"]["coefCPT"] * 100,
             "coef_pleno_municipio_pct": None if not p["municipio"] else p["municipio"]["coefPleno"] * 100,
             "historico_por_ano": historico_por_ano,
+            "estimativa_2026": estimativa_2026,
             "componentes_por_ano": componentes,
             "repasse_seguro_receita_por_ano": repasse_por_ano,
         }
@@ -154,6 +175,8 @@ def main():
             "fonte": "Estudos 02, 03, 06, 09, 10, 11, 12, 13, 15 deste site; ver nota-metodologica-ibs.html",
             "anos_projecao": brc.ANOS,
             "anos_historico": HIST_ANOS,
+            "ano_estimado_na_media": 2026 if com_2026 else None,
+            "tratamento_2026": cpt2026.tratamento(),
         },
         "estados": estados,
     }

@@ -1,0 +1,512 @@
+{
+ "_meta": {
+  "descricao": "φ de destino robusto (base tributável, três rotas, composto); NÃO alimenta resultado publicado",
+  "rotas": {
+   "A": "POF 2017-18 base tributável por pessoa x moradores Censo 2022",
+   "B": "A x (renda relativa PNAD Contínua 2022/2018)^eps, eps = 0.75",
+   "C": "classes de renda do Censo 2022 x base tributável por pessoa/classe da POF (encolhimento regional 0.5)"
+  },
+  "pesos_base": "LC 214/2025, cenário S1 de teste-base-tributavel-pof.py (aluguel imputado e transporte coletivo fora; alimentação item a item)",
+  "erro_estrutural_rel": 0.0764
+ },
+ "validacao_leave_one_uf_out_POF": {
+  "populacao": {
+   "rmse_pp": 1.871,
+   "erro_relativo_medio_pct": 40.24
+  },
+  "massa_renda": {
+   "rmse_pp": 0.221,
+   "erro_relativo_medio_pct": 6.2
+  },
+  "classes_kappa_nacional": {
+   "rmse_pp": 0.588,
+   "erro_relativo_medio_pct": 8.95
+  },
+  "classes_kappa_regional": {
+   "rmse_pp": 0.516,
+   "erro_relativo_medio_pct": 7.64
+  }
+ },
+ "comparacao": {
+  "phi_atual_POFxCenso_bruto": {
+   "rmse_pp_vs_composto": 0.379,
+   "PR": 5.97,
+   "rmse_pp_vs_comsefaz_2025": 0.668,
+   "rmse_pp_vs_gobetti": 0.728
+  },
+  "gobetti_2023": {
+   "rmse_pp_vs_composto": 0.439,
+   "PR": 6.839
+  },
+  "comsefaz_base_IBS_2025": {
+   "rmse_pp_vs_composto": 0.325,
+   "PR": 6.84
+  },
+  "comsefaz_base_TRU_2018": {
+   "rmse_pp_vs_composto": 0.401,
+   "PR": 6.479
+  },
+  "composto": {
+   "PR": 6.485,
+   "rmse_pp_vs_comsefaz_2025": 0.325,
+   "rmse_pp_vs_gobetti": 0.439
+  },
+  "rota_A": {
+   "PR": 6.504,
+   "rmse_pp_vs_comsefaz_2025": 0.566,
+   "rmse_pp_vs_gobetti": 0.702
+  },
+  "rota_B": {
+   "PR": 6.281,
+   "rmse_pp_vs_comsefaz_2025": 0.395,
+   "rmse_pp_vs_gobetti": 0.521
+  },
+  "rota_C": {
+   "PR": 6.67,
+   "rmse_pp_vs_comsefaz_2025": 0.254,
+   "rmse_pp_vs_gobetti": 0.2
+  }
+ },
+ "por_uf": {
+  "AC": {
+   "phi_robusto_pct": 0.2644432290935041,
+   "rota_A_pct": 0.2636021627171967,
+   "rota_B_pct": 0.25334562609507083,
+   "rota_C_pct": 0.2763818984682446,
+   "faixa_variantes_pct": [
+    0.24991993659399034,
+    0.29949325922494524
+   ],
+   "dispersao_rotas_rel": 0.03563450907443811,
+   "incerteza_rel": 0.08430170957327147,
+   "phi_atual_bruto_pct": 0.2776197973542171
+  },
+  "AL": {
+   "phi_robusto_pct": 0.8476193159915693,
+   "rota_A_pct": 0.7298250548222125,
+   "rota_B_pct": 0.7820193981431436,
+   "rota_C_pct": 1.0310134950093515,
+   "faixa_variantes_pct": [
+    0.7295688542636933,
+    1.0884595558248207
+   ],
+   "dispersao_rotas_rel": 0.1550439429233005,
+   "incerteza_rel": 0.17284555023836645,
+   "phi_atual_bruto_pct": 0.7716089131416423
+  },
+  "AM": {
+   "phi_robusto_pct": 1.0982846295528643,
+   "rota_A_pct": 1.0127509979058986,
+   "rota_B_pct": 1.06141933454843,
+   "rota_C_pct": 1.2206835562042644,
+   "faixa_variantes_pct": [
+    1.0127509979058986,
+    1.3308636389697972
+   ],
+   "dispersao_rotas_rel": 0.08085374965404453,
+   "incerteza_rel": 0.11123978080308727,
+   "phi_atual_bruto_pct": 1.0687747824356897
+  },
+  "AP": {
+   "phi_robusto_pct": 0.26677170118565985,
+   "rota_A_pct": 0.25611059601259095,
+   "rota_B_pct": 0.2859266486776781,
+   "rota_C_pct": 0.2582778588667104,
+   "faixa_variantes_pct": [
+    0.23957251833472057,
+    0.30748500204001306
+   ],
+   "dispersao_rotas_rel": 0.05088043816233694,
+   "incerteza_rel": 0.09179204207114794,
+   "phi_atual_bruto_pct": 0.266639350692343
+  },
+  "BA": {
+   "phi_robusto_pct": 5.055980839115369,
+   "rota_A_pct": 5.302079711382324,
+   "rota_B_pct": 5.06943628090655,
+   "rota_C_pct": 4.796426525057231,
+   "faixa_variantes_pct": [
+    4.5982093175704755,
+    5.38909334643652
+   ],
+   "dispersao_rotas_rel": 0.04087262172043212,
+   "incerteza_rel": 0.0866460109081863,
+   "phi_atual_bruto_pct": 5.429644625935837
+  },
+  "CE": {
+   "phi_robusto_pct": 2.6031245131313434,
+   "rota_A_pct": 2.5000227429328734,
+   "rota_B_pct": 2.365408042535532,
+   "rota_C_pct": 2.9439427539256258,
+   "faixa_variantes_pct": [
+    2.3212724462474994,
+    3.1055039804451443
+   ],
+   "dispersao_rotas_rel": 0.0949557185251319,
+   "incerteza_rel": 0.12187513479222936,
+   "phi_atual_bruto_pct": 2.634110519828048
+  },
+  "DF": {
+   "phi_robusto_pct": 2.552366708406345,
+   "rota_A_pct": 2.6718505123539655,
+   "rota_B_pct": 2.717813847326212,
+   "rota_C_pct": 2.2674357655388566,
+   "faixa_variantes_pct": [
+    2.2152417220500857,
+    2.741427180359744
+   ],
+   "dispersao_rotas_rel": 0.07927878266515748,
+   "incerteza_rel": 0.11010034232857441,
+   "phi_atual_bruto_pct": 2.5373895055342937
+  },
+  "ES": {
+   "phi_robusto_pct": 1.854397753013843,
+   "rota_A_pct": 1.7771226248193015,
+   "rota_B_pct": 1.8334420986157136,
+   "rota_C_pct": 1.9526285356065132,
+   "faixa_variantes_pct": [
+    1.755030073570901,
+    1.9860776223470291
+   ],
+   "dispersao_rotas_rel": 0.03945549658671101,
+   "incerteza_rel": 0.08598660483414823,
+   "phi_atual_bruto_pct": 1.7241660468487692
+  },
+  "GO": {
+   "phi_robusto_pct": 3.8141377797144718,
+   "rota_A_pct": 3.781474180856336,
+   "rota_B_pct": 3.962629286213413,
+   "rota_C_pct": 3.6983098720736653,
+   "faixa_variantes_pct": [
+    3.598636864060531,
+    4.053161278996462
+   ],
+   "dispersao_rotas_rel": 0.028932378141507537,
+   "incerteza_rel": 0.08169481320697895,
+   "phi_atual_bruto_pct": 3.568223075725153
+  },
+  "MA": {
+   "phi_robusto_pct": 1.8171403813708074,
+   "rota_A_pct": 1.6330492192924662,
+   "rota_B_pct": 1.7947425315594696,
+   "rota_C_pct": 2.023629393260485,
+   "faixa_variantes_pct": [
+    1.6330492192924662,
+    2.1523396648118402
+   ],
+   "dispersao_rotas_rel": 0.08818157071191422,
+   "incerteza_rel": 0.11667454483828223,
+   "phi_atual_bruto_pct": 1.7112429928949384
+  },
+  "MG": {
+   "phi_robusto_pct": 10.204823862490858,
+   "rota_A_pct": 10.150781261952233,
+   "rota_B_pct": 10.261271774822669,
+   "rota_C_pct": 10.202418550697669,
+   "faixa_variantes_pct": [
+    10.042188855095906,
+    10.355138460847447
+   ],
+   "dispersao_rotas_rel": 0.004423360694005073,
+   "incerteza_rel": 0.07652794339213141,
+   "phi_atual_bruto_pct": 10.055371472177356
+  },
+  "MS": {
+   "phi_robusto_pct": 1.5604547317694442,
+   "rota_A_pct": 1.553932165196636,
+   "rota_B_pct": 1.662828169183297,
+   "rota_C_pct": 1.464603860928399,
+   "faixa_variantes_pct": [
+    1.4238262857530766,
+    1.7047250957205824
+   ],
+   "dispersao_rotas_rel": 0.051943870685773205,
+   "incerteza_rel": 0.09238574403997799,
+   "phi_atual_bruto_pct": 1.4160105169172452
+  },
+  "MT": {
+   "phi_robusto_pct": 2.038879949835033,
+   "rota_A_pct": 1.995146164831579,
+   "rota_B_pct": 2.0831497035241306,
+   "rota_C_pct": 2.0383439811493878,
+   "faixa_variantes_pct": [
+    1.979738493331279,
+    2.112524461172982
+   ],
+   "dispersao_rotas_rel": 0.01762207386870698,
+   "incerteza_rel": 0.07840597864598187,
+   "phi_atual_bruto_pct": 1.7970993795341006
+  },
+  "PA": {
+   "phi_robusto_pct": 2.427220592388583,
+   "rota_A_pct": 2.252801136711076,
+   "rota_B_pct": 2.473078205209697,
+   "rota_C_pct": 2.555782435244974,
+   "faixa_variantes_pct": [
+    2.222227265501108,
+    2.7788369947878784
+   ],
+   "dispersao_rotas_rel": 0.052682194976088906,
+   "incerteza_rel": 0.09280287531913355,
+   "phi_atual_bruto_pct": 2.3467593087784566
+  },
+  "PB": {
+   "phi_robusto_pct": 1.221609736530581,
+   "rota_A_pct": 1.1630222804538863,
+   "rota_B_pct": 1.1318352764174286,
+   "rota_C_pct": 1.3699716527204273,
+   "faixa_variantes_pct": [
+    1.1124530069047243,
+    1.4423591115333447
+   ],
+   "dispersao_rotas_rel": 0.08650675957390305,
+   "incerteza_rel": 0.11541394825573323,
+   "phi_atual_bruto_pct": 1.1836691760503018
+  },
+  "PE": {
+   "phi_robusto_pct": 3.223874051232052,
+   "rota_A_pct": 3.260336298599772,
+   "rota_B_pct": 3.230700345708519,
+   "rota_C_pct": 3.1805855093878628,
+   "faixa_variantes_pct": [
+    3.0549232613689057,
+    3.3417134523492473
+   ],
+   "dispersao_rotas_rel": 0.010209451903572883,
+   "incerteza_rel": 0.07707913406474783,
+   "phi_atual_bruto_pct": 3.3772473882963263
+  },
+  "PI": {
+   "phi_robusto_pct": 1.0301282877326625,
+   "rota_A_pct": 0.9568134474727749,
+   "rota_B_pct": 1.0719191250982865,
+   "rota_C_pct": 1.0616522906269255,
+   "faixa_variantes_pct": [
+    0.9568134474727749,
+    1.1580298910386047
+   ],
+   "dispersao_rotas_rel": 0.05048942442813527,
+   "incerteza_rel": 0.09157588098994397,
+   "phi_atual_bruto_pct": 0.9553576628030284
+  },
+  "PR": {
+   "phi_robusto_pct": 6.48520879156642,
+   "rota_A_pct": 6.504490164759061,
+   "rota_B_pct": 6.281013091112103,
+   "rota_C_pct": 6.670123118828094,
+   "faixa_variantes_pct": [
+    6.141973521317473,
+    6.723250448788818
+   ],
+   "dispersao_rotas_rel": 0.024584792939193627,
+   "incerteza_rel": 0.0802581587370594,
+   "phi_atual_bruto_pct": 5.970101817156019
+  },
+  "RJ": {
+   "phi_robusto_pct": 8.017017555620209,
+   "rota_A_pct": 7.502950641929966,
+   "rota_B_pct": 7.679719772819028,
+   "rota_C_pct": 8.86838225211163,
+   "faixa_variantes_pct": [
+    7.498024577106429,
+    9.14292443042705
+   ],
+   "dispersao_rotas_rel": 0.07562859430429844,
+   "incerteza_rel": 0.10750183382828482,
+   "phi_atual_bruto_pct": 8.476442186784073
+  },
+  "RN": {
+   "phi_robusto_pct": 1.359147052477335,
+   "rota_A_pct": 1.3987333692497854,
+   "rota_B_pct": 1.4359849773068838,
+   "rota_C_pct": 1.2427228108753352,
+   "faixa_variantes_pct": [
+    1.1954210418411573,
+    1.4589051879605068
+   ],
+   "dispersao_rotas_rel": 0.06159545167695974,
+   "incerteza_rel": 0.09813745292847519,
+   "phi_atual_bruto_pct": 1.3984817046019824
+  },
+  "RO": {
+   "phi_robusto_pct": 0.6062757771441255,
+   "rota_A_pct": 0.5724378363269284,
+   "rota_B_pct": 0.601866274669205,
+   "rota_C_pct": 0.6445232204362428,
+   "faixa_variantes_pct": [
+    0.5701702448101353,
+    0.6979397729266473
+   ],
+   "dispersao_rotas_rel": 0.048811862903146055,
+   "incerteza_rel": 0.09066177783429755,
+   "phi_atual_bruto_pct": 0.5230560286520447
+  },
+  "RR": {
+   "phi_robusto_pct": 0.1856901832253196,
+   "rota_A_pct": 0.17118999249927025,
+   "rota_B_pct": 0.166032133595539,
+   "rota_C_pct": 0.21984842358114948,
+   "faixa_variantes_pct": [
+    0.16203357379195144,
+    0.2403311507344169
+   ],
+   "dispersao_rotas_rel": 0.13056767667219832,
+   "incerteza_rel": 0.1512774873917984,
+   "phi_atual_bruto_pct": 0.17594323144757348
+  },
+  "RS": {
+   "phi_robusto_pct": 6.733050253309887,
+   "rota_A_pct": 6.7148567884711765,
+   "rota_B_pct": 6.94997765379898,
+   "rota_C_pct": 6.534316317659502,
+   "faixa_variantes_pct": [
+    6.465958948823979,
+    7.0288629431985035
+   ],
+   "dispersao_rotas_rel": 0.02527531701848248,
+   "incerteza_rel": 0.08047236575610779,
+   "phi_atual_bruto_pct": 6.516055267974057
+  },
+  "SC": {
+   "phi_robusto_pct": 4.710777428001869,
+   "rota_A_pct": 4.588967526002002,
+   "rota_B_pct": 4.6194994147616715,
+   "rota_C_pct": 4.923865343241929,
+   "faixa_variantes_pct": [
+    4.57640403117558,
+    4.943480110879873
+   ],
+   "dispersao_rotas_rel": 0.03209461638926575,
+   "incerteza_rel": 0.08286751113177061,
+   "phi_atual_bruto_pct": 4.213672692172851
+  },
+  "SE": {
+   "phi_robusto_pct": 0.9087852152868396,
+   "rota_A_pct": 0.9504518297654457,
+   "rota_B_pct": 0.9727470112478318,
+   "rota_C_pct": 0.8031568048472412,
+   "faixa_variantes_pct": [
+    0.7719066943904206,
+    0.9923289066203391
+   ],
+   "dispersao_rotas_rel": 0.08279526782192205,
+   "incerteza_rel": 0.11265884951349273,
+   "phi_atual_bruto_pct": 0.9417947274011432
+  },
+  "SP": {
+   "phi_robusto_pct": 28.610883892302912,
+   "rota_A_pct": 29.911201881707125,
+   "rota_B_pct": 28.78345090610793,
+   "rota_C_pct": 27.137998889093662,
+   "faixa_variantes_pct": [
+    26.560134865198535,
+    29.98522406174531
+   ],
+   "dispersao_rotas_rel": 0.039799966077958944,
+   "incerteza_rel": 0.08614521054479281,
+   "phi_atual_bruto_pct": 30.26004278309078
+  },
+  "TO": {
+   "phi_robusto_pct": 0.5019057885101074,
+   "rota_A_pct": 0.42399941097609345,
+   "rota_B_pct": 0.468743069995621,
+   "rota_C_pct": 0.6129748845586073,
+   "faixa_variantes_pct": [
+    0.42345907787006243,
+    0.6620886553875516
+   ],
+   "dispersao_rotas_rel": 0.16065559833316376,
+   "incerteza_rel": 0.17789654655385204,
+   "phi_atual_bruto_pct": 0.40347504577172183
+  }
+ },
+ "consumo_bruto_rotas_pct": {
+  "A_bruto": {
+   "AC": 0.26086680487215563,
+   "AL": 0.7707761251397129,
+   "AM": 1.0914630180027922,
+   "AP": 0.26816486012116475,
+   "BA": 5.361514920212104,
+   "CE": 2.570447387896318,
+   "DF": 2.5434973499643254,
+   "ES": 1.7348182161881802,
+   "GO": 3.5739084527310316,
+   "MA": 1.6785758014228604,
+   "MG": 9.984867064276457,
+   "MS": 1.4488910496157474,
+   "MT": 1.8226220250077216,
+   "PA": 2.331520267178661,
+   "PB": 1.170422029484491,
+   "PE": 3.29570796689865,
+   "PI": 0.9746664343690722,
+   "PR": 6.083876397019514,
+   "RJ": 8.231268087708886,
+   "RN": 1.3494607009554407,
+   "RO": 0.52356525009782,
+   "RR": 0.17998006359373933,
+   "RS": 6.547474397102939,
+   "SC": 4.396967834506672,
+   "SE": 0.9426335808041332,
+   "SP": 30.46100367815309,
+   "TO": 0.40104023667633387
+  },
+  "B_bruto": {
+   "AC": 0.2507607541225298,
+   "AL": 0.8260442602910218,
+   "AM": 1.1441149126063692,
+   "AP": 0.2994368612537175,
+   "BA": 5.127164381762178,
+   "CE": 2.432467998140671,
+   "DF": 2.587707276624025,
+   "ES": 1.7901115041841602,
+   "GO": 3.7457780098216,
+   "MA": 1.8451010033790116,
+   "MG": 10.095325231173636,
+   "MS": 1.5506984506563075,
+   "MT": 1.9033501218252282,
+   "PA": 2.559944177478444,
+   "PB": 1.1392367467530946,
+   "PE": 3.2663243419138634,
+   "PI": 1.0921117152386501,
+   "PR": 5.875882816192155,
+   "RJ": 8.426676798154286,
+   "RN": 1.3856434998791538,
+   "RO": 0.5505779286388816,
+   "RR": 0.17458803761324612,
+   "RS": 6.777925157842896,
+   "SC": 4.4270000536694765,
+   "SE": 0.9649148891142937,
+   "SP": 29.31767409706659,
+   "TO": 0.4434389746045252
+  },
+  "C_bruto": {
+   "AC": 0.28103249137122177,
+   "AL": 1.0508475532441157,
+   "AM": 1.247907134644173,
+   "AP": 0.261602404559148,
+   "BA": 4.882251229568195,
+   "CE": 2.9978522928303413,
+   "DF": 2.1431986870477218,
+   "ES": 1.981614807712479,
+   "GO": 3.5983268228304546,
+   "MA": 2.081891008368205,
+   "MG": 10.367915180893478,
+   "MS": 1.4233557247028519,
+   "MT": 1.977065361679402,
+   "PA": 2.6140052786231016,
+   "PB": 1.3914986582615758,
+   "PE": 3.2215182091763155,
+   "PI": 1.0844633379407158,
+   "PR": 6.4874881869007845,
+   "RJ": 8.956675625137287,
+   "RN": 1.2534325186446689,
+   "RO": 0.6475607445229439,
+   "RR": 0.22229570632922985,
+   "RS": 6.343320012347589,
+   "SC": 4.773526894745346,
+   "SE": 0.8113838769810571,
+   "SP": 27.282531598117703,
+   "TO": 0.6154386528198964
+  }
+ }
+}

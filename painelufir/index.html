@@ -816,10 +816,10 @@ footer.site-foot a:hover{text-decoration:underline}
         <p>A arrecadação histórica de ICMS, ISS e FECOP por UF e por município vem do SICONFI/STN (Declaração das Contas Anuais, DCA, Anexo I-C, e RREO Anexo 3). A população por município e por UF é a média simples 2019–2026 das estimativas do IBGE, no recorte pedido pela LC 227/2026 (art. 117, §§3º–6º). A renda domiciliar per capita por município (média e mediana), usada para estimar o consumo no rateio de destino, vem do Censo 2022. As compras de cada prefeitura e de cada governo estadual, que também entram no coeficiente de destino, vêm da DCA (Anexo I-D, 2024, despesas liquidadas).</p>
 
         <h3>Coeficiente de Participação de Transição (φ<sup>CPT</sup>)</h3>
-        <p>Para cada ente, o coeficiente de participação de transição é a média de sete anos (2019–2025) da receita de referência (ICMS bruto menos deduções, mais ISS, mais FECOP e, quando aplicável, as contribuições a fundos estaduais do art. 115, I, "b", da LC 227/2026, para o ente estadual; ISS bruto mais cota-parte de ICMS, para o município), deflacionada a valores de 2025 e dividida pelo total nacional do mesmo agregado. É o critério histórico (origem) que rege a distribuição do "bolo" enquanto o cronograma do ADCT (art. 131, §1º) ainda não migrou totalmente para o destino.</p>
+        <p>Para cada ente, o coeficiente de participação de transição é a média de oito anos (2019–2026, com 2026 ainda estimado) da receita de referência (ICMS bruto menos deduções, mais ISS, mais FECOP e, quando aplicável, as contribuições a fundos estaduais do art. 115, I, "b", da LC 227/2026, para o ente estadual; ISS bruto mais cota-parte de ICMS, para o município), deflacionada a valores de 2025 e dividida pelo total nacional do mesmo agregado. O exercício de 2026 só fecha no SICONFI em 2027; a lei o inclui na média, e o painel o estima: o ICMS (receita líquida do estado e cota-parte municipal) segue a participação de 2025 corrigida pelo nowcast do RREO de janeiro a agosto de 2026 para o estado, e o ISS repete 2025, com as participações renormalizadas para somar 100%. Os municípios herdam o fator do estado na cota-parte e repetem o ISS, sem nowcast próprio; num teste de previsão (2022 a 2025), esse é o melhor tratamento em todas as faixas de população. É o critério histórico (origem) que rege a distribuição do "bolo" enquanto o cronograma do ADCT (art. 131, §1º) ainda não migrou totalmente para o destino.</p>
 
         <h3>Coeficiente de destino pleno (φ<sup>dest</sup>)</h3>
-        <p>Quando a transição se completa, a distribuição passa a seguir o local de consumo e, nas compras dos governos, o ente comprador. Como não há uma medida direta de consumo por município, o painel estima o consumo a partir da renda domiciliar per capita do Censo 2022 (média e mediana de cada município) e da elasticidade-renda do consumo estimada nos microdados da Pesquisa de Orçamentos Familiares (POF 2017–2018), de 0,80: o consumo cresce menos que a renda. A parcela do IBS que vem das compras públicas é distribuída pela despesa de compras de cada governo (CF art. 149-C; LC 214/2025, arts. 472 e 473; ver Estudo 17). O coeficiente por UF é validado externamente contra a estimativa de Gobetti e Monteiro (2023), pelo desvio médio absoluto e pela correlação de Pearson entre as duas séries.</p>
+        <p>Quando a transição se completa, a distribuição passa a seguir o local de consumo e, nas compras dos governos, o ente comprador. Para as UFs, o coeficiente é a média de três estimativas da participação na base tributável do IBS (despesa tributável da POF 2017–2018 por pessoa vezes os moradores do Censo 2022; a mesma atualizada pela renda relativa da PNAD Contínua entre 2018 e 2022; e a distribuição de renda por classe de salário mínimo do Censo 2022 vezes o consumo tributável por classe da POF), com a incerteza medida pela dispersão entre as rotas e por uma validação dentro da POF; o composto fica mais próximo da base de Gobetti e da nota técnica do COMSEFAZ do que o consumo bruto usado até outubro de 2026. Como não há uma medida direta de consumo por município, o painel estima o consumo a partir da renda domiciliar per capita do Censo 2022 (média e mediana de cada município) e da elasticidade-renda do consumo estimada nos microdados da Pesquisa de Orçamentos Familiares (POF 2017–2018), de 0,80: o consumo cresce menos que a renda. A parcela do IBS que vem das compras públicas é distribuída pela despesa de compras de cada governo (CF art. 149-C; LC 214/2025, arts. 472 e 473; ver Estudo 17). O coeficiente por UF é validado externamente contra a estimativa de Gobetti e Monteiro (2023), pelo desvio médio absoluto e pela correlação de Pearson entre as duas séries.</p>
 
         <h3>Seguro-Receita</h3>
         <p>O ADCT (art. 132) reserva uma fração do IBS pelo critério de destino (5%) para um fundo que repassa aos entes cuja receita, por esse critério, ficar abaixo de um nível de nivelamento em relação à sua receita de referência. A distribuição é sequencial, não proporcional: o fundo eleva primeiro os entes de menor razão e se esgota num patamar comum, que é o nível do ano. Como o fundo é uma fração fixa do IBS de destino, e este cresce à medida que o ICMS e o ISS são extintos, tanto o montante do fundo quanto o nível sobem ano a ano; na projeção o fundo vai de R$ 1,10 bilhão em 2029 a R$ 5,97 bilhões em 2033, e o repasse da grande maioria dos contemplados cresce no período. Um ente deixa de receber quando sua própria receita de destino alcança o nível, não pelo simples decurso do prazo.</p>
@@ -856,10 +856,11 @@ footer.site-foot a:hover{text-decoration:underline}
         <table class="proveniencia">
             <thead><tr><th>Indicador</th><th>Fonte primária</th><th>Período</th></tr></thead>
             <tbody>
-                <tr><td>Arrecadação histórica de ICMS, ISS, FECOP e cota-parte</td><td>SICONFI/STN, DCA Anexo I-C e RREO Anexo 3</td><td>2019–2025</td></tr>
+                <tr><td>Arrecadação histórica de ICMS, ISS, FECOP e cota-parte</td><td>SICONFI/STN, DCA Anexo I-C e RREO Anexo 3 (2026 estimado pelo RREO de janeiro a agosto)</td><td>2019–2026</td></tr>
                 <tr><td>População por ente</td><td>Estimativas do IBGE (média simples do período)</td><td>2019–2026</td></tr>
                 <tr><td>Renda domiciliar per capita (média e mediana), para estimar o consumo</td><td>Censo Demográfico do IBGE (SIDRA 10295)</td><td>2022</td></tr>
-                <tr><td>Elasticidade-renda do consumo</td><td>Microdados da Pesquisa de Orçamentos Familiares (POF/IBGE)</td><td>2017–2018</td></tr>
+                <tr><td>Elasticidade-renda do consumo e base tributável por pessoa e por classe de renda</td><td>Microdados da Pesquisa de Orçamentos Familiares (POF/IBGE)</td><td>2017–2018</td></tr>
+                <tr><td>Renda por UF (média, e moradores por classe de salário mínimo)</td><td>Censo Demográfico 2022 (SIDRA 10295 e 10296) e PNAD Contínua anual (SIDRA 7395)</td><td>2018–2023</td></tr>
                 <tr><td>Compras de bens e serviços de cada governo</td><td>SICONFI/STN, DCA Anexo I-D (despesas liquidadas)</td><td>2024</td></tr>
                 <tr><td>Crescimento real do PIB usado na projeção</td><td>Medianas do Boletim Focus (Banco Central)</td><td>2026–2033</td></tr>
                 <tr><td>Regras de transição, coeficientes e Seguro-Receita</td><td>EC 132/2023, LC 214/2024 e LC 227/2026 (ADCT, arts. 128, 131 e 132)</td><td>vigentes</td></tr>
@@ -1358,12 +1359,12 @@ function coefTilesHtml(neutro, cpt, pleno){
         <div class="kpi-card">
             <div class="kpi-label">Coeficiente histórico (φ<sup>CPT</sup>)</div>
             <div class="kpi-value" style="font-size:1.15rem">${fmtPctPlain(cpt)}</div>
-            <div class="coef-explain">Média de 7 anos (2019–2025) da receita de referência. É o critério que ainda pesa mais até 2033.</div>
+            <div class="coef-explain">Média de 8 anos (2019–2026, com 2026 estimado) da receita de referência. É o critério que ainda pesa mais até 2033.</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-label">Coeficiente de destino (φ<sup>dest</sup>)</div>
             <div class="kpi-value" style="font-size:1.15rem">${fmtPctPlain(pleno)}</div>
-            <div class="coef-explain">Baseado em consumo (renda × POF). Pesa ~10% em 2033; por inteiro, só em 2078.</div>
+            <div class="coef-explain">Baseado na base tributável do consumo (POF, Censo e PNAD). Pesa ~10% em 2033; por inteiro, só em 2078.</div>
         </div>
     </div>`;
 }
@@ -2354,9 +2355,11 @@ function confere(calculado, publicado, dec){
 
 // ── seção 1: coeficiente histórico ──
 function memoHistoricoHtml(ctx){
-    const anos = MEMO_NAC.anos_historicos;
+    const anosObs = MEMO_NAC.anos_historicos;
+    const anoEst = (ctx.estimativa && MEMO_NAC.ano_estimado_na_media) || null;
+    const anos = anoEst ? anosObs.concat([anoEst]) : anosObs;
     const totalBr = MEMO_NAC.total_br_2025;
-    const serie = anos.map(a => ctx.historico[String(a)] || null);
+    const serie = anos.map(a => a === anoEst ? ctx.estimativa : (ctx.historico[String(a)] || null));
     const valores = serie.map(h => h ? h[ctx.campoTotal] : null);
     const validos = valores.filter(v => v != null);
     const media = validos.length ? validos.reduce((x,y)=>x+y, 0) / anos.length : null;
@@ -2377,7 +2380,7 @@ function memoHistoricoHtml(ctx){
             const v = h ? h[c.campo] : null;
             return `<td class="num"${c.total ? ' style="font-weight:700"' : ''}>${fmtExato(v)}</td>`;
         }).join('');
-        return `<tr><td>${a}</td>${cels}</tr>`;
+        return `<tr><td>${a}${a === anoEst ? ' <small>(estimado)</small>' : ''}</td>${cels}</tr>`;
     }).join('');
 
     const soma = validos.reduce((x,y)=>x+y, 0);
@@ -2385,7 +2388,7 @@ function memoHistoricoHtml(ctx){
     return `
     <div class="panel">
         <h3>Coeficiente histórico, φ<sup>CPT</sup></h3>
-        <p class="panel-sub">É a fatia do ente no critério de origem, que rege 90% do IBS em 2033 e vai cedendo lugar ao destino até 2078 (ADCT art. 131, §1º). A base é a receita de referência média de sete anos, definida no art. 115 da LC 227/2026.</p>
+        <p class="panel-sub">É a fatia do ente no critério de origem, que rege 90% do IBS em 2033 e vai cedendo lugar ao destino até 2078 (ADCT art. 131, §1º). A base é a receita de referência média de ${anoEst ? '2019 a ' + anoEst + ' (com ' + anoEst + ' estimado)' : 'sete anos'}, definida no art. 115 da LC 227/2026.</p>
 
         ${passoHtml(1, 'Receita de referência, ano a ano', `
             <p>${ctx.descricaoReferencia}</p>
@@ -2394,9 +2397,10 @@ function memoHistoricoHtml(ctx){
             </div>
             <p style="margin-top:0.5rem">Todos os valores estão deflacionados a reais de 2025, para que anos distantes possam ser somados.</p>`)}
 
-        ${passoHtml(2, 'Média dos sete anos', `
+        ${passoHtml(2, 'Média dos ' + (anos.length === 8 ? 'oito' : 'sete') + ' anos', `
             <div class="formula">${fmtExato(soma)} ${op('÷')} ${anos.length} ${op('=')} <span class="res">${fmtExato(media)}</span>
-                <span class="formula-nota">O dividendo é a soma da última coluna da tabela acima.</span></div>`)}
+                <span class="formula-nota">O dividendo é a soma da última coluna da tabela acima.</span></div>
+            ${anoEst ? '<p style="margin-top:0.5rem">' + anoEst + ' ainda não fechou no SICONFI, e a lei o inclui na média. O painel o estima: o ICMS (receita líquida do estado e cota-parte municipal) segue a participação de 2025 corrigida pelo nowcast do RREO de janeiro a agosto de ' + anoEst + ' para o estado, e o ISS repete 2025, com as participações renormalizadas para somar 100%. Os municípios herdam o fator do estado na cota-parte e repetem o ISS, sem nowcast próprio.</p>' : ''}`)}
 
         ${passoHtml(3, 'Divisão pelo total nacional', `
             <p>O denominador é a receita de referência de todos os entes do país somada, no mesmo conceito e na mesma moeda.</p>
@@ -2404,9 +2408,9 @@ function memoHistoricoHtml(ctx){
                 ${confere(coef, ctx.coefPublicado)}</div>`)}
 
         ${passoHtml(4, 'Participação neutra, para comparação', neutroAproximado ? `
-            <p>A participação neutra usa só o ano de 2025, em vez da média de sete anos, e é a fatia com que o painel monta o contrafactual de cada ano. Este ente não tem registro individualizado de 2025 no SICONFI, então a rotina usa em seu lugar o próprio φ<sup>CPT</sup> do passo 3, calculado com os anos disponíveis.</p>
+            <p>A participação neutra usa só o ano de 2025, em vez da média dos anos, e é a fatia com que o painel monta o contrafactual de cada ano. Este ente não tem registro individualizado de 2025 no SICONFI, então a rotina usa em seu lugar o próprio φ<sup>CPT</sup> do passo 3, calculado com os anos disponíveis.</p>
             <div class="formula">${fmtPctPlain(neutro, 6)} <span class="formula-nota">Igual ao φ<sup>CPT</sup> acima, por construção: é a aproximação que o painel adota quando falta 2025, não um segundo cálculo.</span></div>` : `
-            <p>A participação neutra não é o φ<sup>CPT</sup>: usa só o ano de 2025, em vez da média de sete anos, e é a fatia com que o painel monta o contrafactual de cada ano.</p>
+            <p>A participação neutra não é o φ<sup>CPT</sup>: usa só o ano de 2025, em vez da média dos anos, e é a fatia com que o painel monta o contrafactual de cada ano.</p>
             <div class="formula">${fmtExato(ref2025)} ${op('÷')} ${fmtExato(totalBr)} ${op('=')} <span class="res">${fmtPctPlain(neutro, 6)}</span></div>`)}
     </div>`;
 }
@@ -2424,7 +2428,7 @@ function faixaDestPassoHtml(faixa, numero){
         </tr>`;
     }).join('');
     return passoHtml(numero || 4, 'E se o método de estimar o consumo fosse outro?', `
-        <p>Os quatro métodos abaixo estimam a mesma coisa, a massa de consumo do estado, por caminhos diferentes. O painel publica o primeiro; os outros três, incluindo a tabela de Gobetti e Monteiro (2023), servem de comparação. Trocar o método muda também o repasse do Seguro-Receita de todos os entes, porque desloca a régua de nivelamento nacional; por isso a variação abaixo já vem recalculada com esse efeito, não é só o coeficiente sozinho.</p>
+        <p>Os métodos abaixo estimam a mesma coisa, a participação do estado no consumo nacional, por caminhos diferentes. O painel publica o primeiro (o φ robusto); os outros, incluindo o método anterior (consumo bruto da POF vezes domicílios) e a tabela de Gobetti e Monteiro (2023), servem de comparação. Trocar o método muda também o repasse do Seguro-Receita de todos os entes, porque desloca a régua de nivelamento nacional; por isso a variação abaixo já vem recalculada com esse efeito, não é só o coeficiente sozinho.</p>
         <div class="table-wrap" style="margin-top:0.6rem">
             <table class="data" style="font-size:0.78rem"><thead><tr><th>Método</th><th class="num">Coeficiente do estado</th><th class="num">Variação em 2033</th></tr></thead><tbody>${linhas}</tbody></table>
         </div>
@@ -2434,7 +2438,8 @@ function faixaDestPassoHtml(faixa, numero){
 function memoDestinoEstadoHtml(refs, faixa){
     const somaBr = MEMO_NAC.soma_produto_pof_censo_br;
     const fracE = MEMO_NAC.frac_estado_pct;
-    const phiUf = refs.produto_uf / somaBr * 100;
+    const rb = refs.robusto;
+    const phiUf = rb ? rb.phi_robusto_pct : refs.produto_uf / somaBr * 100;
     const cg = refs.compras_governamentais;
     const ehDf = !!(ESTADOS[MEMO.uf] && ESTADOS[MEMO.uf].is_df);
     // Com compras governamentais (Estudo 17) a base da repartição é o φ da esfera estadual, que
@@ -2454,11 +2459,19 @@ function memoDestinoEstadoHtml(refs, faixa){
         <h3>Coeficiente de destino, φ<sup>dest</sup></h3>
         <p class="panel-sub">É a fatia do ente no critério de consumo, que responde por 10% do IBS em 2033 e cresce um quarenta e cinco avos por ano a partir de 2034. Como não existe medida direta de consumo por ente, o painel estima a proporção do consumo nacional.</p>
 
-        ${passoHtml(1, 'Consumo estimado da unidade da federação', `
+        ${rb ? passoHtml(1, 'Três estimativas da participação na base tributável', `
+            <p>A participação da UF no consumo nacional tributável é estimada por três caminhos independentes, todos sobre a despesa tributável da POF 2017–2018 (com os pesos da LC 214/2025: aluguel imputado e transporte coletivo fora da base, alimentação básica a alíquota zero, saúde e educação com redução de 60%). A rota A multiplica a despesa tributável por pessoa pelos moradores do Censo 2022. A rota B atualiza a A pela renda relativa da PNAD Contínua entre 2018 e 2022, com a elasticidade-renda do consumo estimada na própria POF. A rota C aplica ao número de moradores de cada classe de salário mínimo do Censo 2022 o consumo tributável por pessoa de cada classe da POF.</p>
+            <div class="table-wrap" style="margin-top:0.6rem"><table class="data" style="font-size:0.78rem"><thead><tr><th>Rota</th><th class="num">Participação da UF</th></tr></thead><tbody>
+                <tr><td>A. POF por pessoa × moradores (Censo 2022)</td><td class="num">${fmtPctPlain(rb.rota_A_pct, 6)}</td></tr>
+                <tr><td>B. A atualizada pela renda relativa (PNAD Contínua)</td><td class="num">${fmtPctPlain(rb.rota_B_pct, 6)}</td></tr>
+                <tr><td>C. Classes de renda do Censo 2022 × consumo por classe (POF)</td><td class="num">${fmtPctPlain(rb.rota_C_pct, 6)}</td></tr>
+            </tbody></table></div>`) : passoHtml(1, 'Consumo estimado da unidade da federação', `
             <p>A despesa de consumo média mensal por família vem da POF 2017–2018 (Tabela 1.1.13) e o número de domicílios particulares ocupados vem do Censo 2022 (SIDRA 9922). O produto dos dois é a massa de consumo da UF.</p>
             <div class="formula">${fmtExato(refs.despesa_pof_familiar)} ${op('×')} ${fmtNum2(refs.domicilios_censo_2022, 0)} domicílios ${op('=')} <span class="res">${fmtExato(refs.produto_uf)}</span></div>`)}
 
-        ${passoHtml(2, 'Proporção do consumo nacional', `
+        ${rb ? passoHtml(2, 'Média das três rotas', `
+            <div class="formula">(${fmtPctPlain(rb.rota_A_pct, 6)} ${op('+')} ${fmtPctPlain(rb.rota_B_pct, 6)} ${op('+')} ${fmtPctPlain(rb.rota_C_pct, 6)}) ${op('÷')} 3 ${op('=')} <span class="res">${fmtPctPlain(phiUf, 6)}</span>
+                <span class="formula-nota">Esta é a fatia da UF inteira, estado e municípios juntos. A incerteza relativa estimada é de ±${fmtNum2(rb.incerteza_rel * 100, 1)}%, e as variantes (elasticidade, classificação da alimentação, encolhimento regional) vão de ${fmtPctPlain(rb.faixa_variantes_pct[0], 4)} a ${fmtPctPlain(rb.faixa_variantes_pct[1], 4)}.</span>${confere(phiUf, refs.phi_dest_uf_pct)}</div>`) : passoHtml(2, 'Proporção do consumo nacional', `
             <div class="formula">${fmtExato(refs.produto_uf)} ${op('÷')} ${fmtExato(somaBr)} ${op('=')} <span class="res">${fmtPctPlain(phiUf, 6)}</span>
                 <span class="formula-nota">Esta é a fatia da UF inteira, estado e municípios juntos.</span>${confere(phiUf, refs.phi_dest_uf_pct)}</div>`)}
 
@@ -2473,7 +2486,7 @@ function memoDestinoEstadoHtml(refs, faixa){
         ${faixaDestPassoHtml(faixa, passoRep + 1)}
 
         <div class="memo-ressalva">
-            <p><b>O que esta estimativa não é.</b> A POF mede despesa familiar por unidade da federação, não por município, e é de 2017–2018. O painel a combina com a contagem de domicílios de 2022 para atualizar a escala, mas a estrutura de consumo permanece a da pesquisa original. O número não é o cálculo oficial do Comitê Gestor do IBS.</p>
+            <p><b>O que esta estimativa não é.</b> A POF mede despesa familiar por unidade da federação, não por município, e é de 2017–2018. O painel a combina com a renda e a população de 2018 a 2022 para atualizar a escala, mas a estrutura de consumo permanece a da pesquisa original, e não há correção das rendas mais altas pelo IRPF no número central (a sensibilidade a ela é pequena; ver materiais/phi-destino-robusto.md). O número não é o cálculo oficial do Comitê Gestor do IBS.</p>
         </div>
     </div>`;
 }
@@ -2635,6 +2648,7 @@ function renderMemoria(){
         if (MEMO.secao === 'historico') {
             const ctx = ehEstado ? {
                 historico: e.historico_por_ano,
+                estimativa: e.estimativa_2026,
                 campoTotal: 'estado_reais_2025',
                 coefPublicado: e.coef_cpt_estado_pct,
                 descricaoReferencia: 'Para o ente estadual, a receita de referência é o ICMS bruto declarado ao SICONFI, menos outras deduções do imposto, menos a cota-parte transferida aos municípios, mais o FECOP' + (e.is_df ? ', mais o ISS, que no Distrito Federal é receita do próprio ente' : '') + '.',
@@ -2646,6 +2660,7 @@ function renderMemoria(){
                  .concat([{rotulo:'+ FECOP', campo:'fecop_reais_2025'}, {rotulo:'= Referência', campo:'estado_reais_2025', total:true}]),
             } : {
                 historico: m.historico_por_ano,
+                estimativa: m.estimativa_2026,
                 campoTotal: 'total_reais_2025',
                 coefPublicado: m.coef_cpt_pct,
                 descricaoReferencia: 'Para o município, a receita de referência é o ISS bruto declarado ao SICONFI mais a cota-parte de ICMS recebida do estado.',
@@ -2660,9 +2675,10 @@ function renderMemoria(){
             corpo = ehEstado ? memoDestinoEstadoHtml(memo.refs, FAIXA_DEST && FAIXA_DEST.por_uf[MEMO.uf]) : memoDestinoMuniHtml(memo.refs, m, MEMO.cod);
         } else {
             const serie = ehEstado ? memo.seguro_estado : (memo.seguro_municipios[MEMO.cod] || null);
+            const nEst = (e.estimativa_2026 && MEMO_NAC.ano_estimado_na_media) ? 1 : 0;
             const mediaRef = ehEstado
-                ? MEMO_NAC.anos_historicos.reduce((soma,a) => soma + ((e.historico_por_ano[String(a)]||{}).estado_reais_2025 || 0), 0) / MEMO_NAC.anos_historicos.length
-                : m.receita_media_referencia_7anos;
+                ? (MEMO_NAC.anos_historicos.reduce((soma,a) => soma + ((e.historico_por_ano[String(a)]||{}).estado_reais_2025 || 0), 0) + (nEst ? e.estimativa_2026.estado_reais_2025 : 0)) / (MEMO_NAC.anos_historicos.length + nEst)
+                : (m.receita_media_referencia != null ? m.receita_media_referencia : m.receita_media_referencia_7anos);
             corpo = memoSeguroHtml(serie, mediaRef, ehEstado ? 'estadual' : 'municipal');
         }
 

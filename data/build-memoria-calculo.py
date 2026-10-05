@@ -26,6 +26,7 @@ Uso:
 """
 
 import json
+import cpt2026
 from pathlib import Path
 import rateio_consumo_compras as rcc
 
@@ -114,6 +115,8 @@ def main():
     nacional = {
         "fonte": "Reorganização dos resultados já publicados; nenhum valor é recalculado aqui.",
         "anos_historicos": ANOS_HIST,
+        "ano_estimado_na_media": 2026 if cpt2026.n_anos() > len(ANOS_HIST) else None,
+        "tratamento_2026": cpt2026.tratamento(),
         "total_br_2025": total_br,
         "soma_produto_pof_censo_br": soma_produto_br,
         "frac_estado_pct": phi["frac_estado_pct"],
@@ -151,6 +154,14 @@ def main():
     for cod, m in rateio["municipios"].items():
         por_uf_munis.setdefault(m["uf"], {})[cod] = m
 
+    # φ de destino robusto (data/phi-dest-robusto.json): três rotas, composto, faixa e incerteza por UF
+    rpath = HERE / "phi-dest-robusto.json"
+    robusto_uf = {}
+    if rpath.exists():
+        rj = json.loads(rpath.read_text(encoding="utf-8"))
+        robusto_uf = {u: {k: v[k] for k in ("rota_A_pct", "rota_B_pct", "rota_C_pct", "phi_robusto_pct", "faixa_variantes_pct", "incerteza_rel")}
+                      for u, v in rj["por_uf"].items()}
+
     OUT_DIR.mkdir(exist_ok=True)
     escritos = []
     for uf, edata in estados.items():
@@ -167,7 +178,9 @@ def main():
                 "despesa_pof_familiar": p["despesa_pof_familiar"],
                 "domicilios_censo_2022": p["domicilios_censo_2022"],
                 "produto_uf": p["despesa_pof_familiar"] * p["domicilios_censo_2022"],
-                "phi_dest_uf_pct": p["pof_censo_bruto_pct"],
+                "phi_dest_uf_pct": p.get("phi_fam_pct", p["pof_censo_bruto_pct"]),
+                "phi_pof_censo_bruto_pct": p["pof_censo_bruto_pct"],
+                "robusto": robusto_uf.get(uf),
                 "phi_estado_compras_pct": p.get("phi_estado_compras_pct"),
                 "phi_muni_compras_pct": p.get("phi_muni_compras_pct"),
                 "coef_estado_pct": edata["coef_pleno_estado_pct"],
@@ -191,7 +204,8 @@ def main():
     # Conferência: as cadeias que a página vai exibir precisam fechar aqui,
     # antes de virarem texto na tela.
     es = estados["ES"]
-    media_es = sum(es["historico_por_ano"][str(a)]["estado_reais_2025"] for a in ANOS_HIST) / len(ANOS_HIST)
+    est26 = (es.get("estimativa_2026") or {}).get("estado_reais_2025", 0.0)
+    media_es = (sum(es["historico_por_ano"][str(a)]["estado_reais_2025"] for a in ANOS_HIST) + est26) / (len(ANOS_HIST) + (1 if es.get("estimativa_2026") else 0))
     cpt_es = media_es / total_br * 100
     assert abs(cpt_es - es["coef_cpt_estado_pct"]) < 1e-9, "φCPT estadual não fecha"
     p_es = phi["por_uf"]["ES"]
