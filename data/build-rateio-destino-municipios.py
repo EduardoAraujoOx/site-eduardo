@@ -185,7 +185,7 @@ def main():
     compras_mun, n_compras_imputadas, teto_pc = rcc.compras_municipais(compras_json, pops_por_uf)
     compras_uf = {uf: sum(compras_mun[c] for c in pops) for uf, pops in pops_por_uf.items()}
     compras_br = sum(compras_uf.values())
-    phi_fam_uf = {uf: (phi_dest_data['por_uf'].get(uf, {}).get('pof_censo_bruto_pct') or 0) / 100 for uf in UFS}
+    phi_fam_uf = {uf: ((phi_dest_data['por_uf'].get(uf, {}).get('phi_fam_pct', phi_dest_data['por_uf'].get(uf, {}).get('pof_censo_bruto_pct'))) or 0) / 100 for uf in UFS}
 
     resultado = {}
     validacao_uf = {}

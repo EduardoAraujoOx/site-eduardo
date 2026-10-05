@@ -803,3 +803,8 @@ Correção do FCP **não implementada**, por decisão do autor.
 **Efeitos nacionais:** razão bolo/PIB 7,9947% para 8,0193%; parcela estadual do destino (`frac_estado`) 63,8331% (antes 63,7985%); alíquota de referência combinada 12,60% para 12,64%.
 
 **Defasagem anterior:** as saídas publicadas (inclusive as do estudo do Paraná) estavam defasadas em relação aos dados de entrada já presentes no repositório; a regeneração sem o ajuste do AM foi commitada à parte (commit "regenera saídas do painel…") para separar defasagem de efeito do AM.
+
+
+## 8. Decisões de método, 05/out/2026: φ de destino robusto e 2026 no coeficiente histórico
+
+**Decisão do autor (05/out/2026):** (i) adotar o φ de destino robusto, média de três rotas sobre a base tributável (POF 2017-2018, Censo 2022 e PNAD Contínua), no lugar do consumo bruto da POF vezes domicílios; (ii) incluir 2026 no coeficiente histórico (art. 115 da LC 227/2026, exercícios de 2019 a 2026), estimado por nowcast do RREO de janeiro a agosto para o ICMS e repetindo 2025 para o ISS. A nota técnica do COMSEFAZ repete 2025 em 2026; em backtest (20 UFs, anos terminais 2020 a 2025), omitir 2026 erra 0,90% da participação, repetir 2025 erra 0,45% e o nowcast erra 0,24%. Para os municípios não há nowcast próprio (cota-parte pelo fator da UF, ISS repetindo 2025). Código: `data/estima-phi-destino-robusto.py`, `data/cpt2026.py`, `data/parametros-cpt-2026.json`. Detalhes e resultados: `materiais/phi-destino-robusto.md`. Não alterado: a fração estadual/municipal do destino (art. 361) segue a média de 2024-2025 (2026 ainda fica de fora desse cálculo). A Nota Técnica nº 02/2026 (SEFAZ-ES) permanece com sete exercícios observados e é reproduzida pelos campos `*_obs_2019_2025`.

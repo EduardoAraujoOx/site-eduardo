@@ -41,10 +41,15 @@ HERE = Path(__file__).parent
 OUT = HERE / "faixa-phi-dest-estados.json"
 
 METODOS = {
+    "phi_robusto": {
+        "chave": "phi_fam_pct",
+        "rotulo": "φ robusto (adotado)",
+        "nota": "Método adotado nas demais abas do painel: média de três rotas sobre a base tributável (POF 2017–2018 por pessoa × moradores do Censo 2022; a mesma atualizada pela renda relativa da PNAD Contínua; e a distribuição de renda por classe do Censo 2022 × base tributável por classe da POF), com as compras governamentais quando ativas. Ver materiais/phi-destino-robusto.md.",
+    },
     "pof_censo_bruto": {
         "chave": "pof_censo_bruto_pct",
-        "rotulo": "POF/Censo, consumo bruto",
-        "nota": "Método publicado nas demais abas do painel: despesa de consumo média mensal (POF 2017–2018) × domicílios (Censo 2022), sem ajuste por tributabilidade.",
+        "rotulo": "POF/Censo, consumo bruto (método anterior)",
+        "nota": "Método usado até out/2026: despesa de consumo média mensal (POF 2017–2018) × domicílios (Censo 2022), sem ajuste por tributabilidade e sem atualização de renda. Aqui sem compras governamentais, como os demais comparadores.",
     },
     "pof_censo_ponderado": {
         "chave": "pof_censo_ponderado_pct",
@@ -158,7 +163,7 @@ def main():
             cf = coefs_fixos[uf]
             denom = (cf["coef_cpt_total"] if cf["is_df"] else cf["coef_cpt_estado"]) * total_br_2025
             entrada = phi_dest_data["por_uf"].get(uf, {})
-            if chave_metodo == "pof_censo_bruto_pct":
+            if chave_metodo == "phi_fam_pct":
                 # método central: inclui as compras governamentais quando ativas (rcc.THETA_M > 0)
                 phi_dest_estado, _ = rcc.esferas_uf(entrada, cf["is_df"], frac_estado, 0)
             else:
@@ -239,7 +244,7 @@ def main():
     max_diff_coef = 0.0
     max_diff_var = 0.0
     for uf in UFS:
-        m = por_uf[uf]["metodos"]["pof_censo_bruto"]
+        m = por_uf[uf]["metodos"]["phi_robusto"]
         max_diff_coef = max(max_diff_coef, abs(m["coef_pleno_estado_pct"] - painel_estados[uf]["coef_pleno_estado_pct"]))
         pub_var = resultados_pub[uf]["variacao_por_ano"]
         for a in ANOS:
@@ -263,8 +268,8 @@ def main():
 
     saida = {
         "fonte": "data/phi-dest-pof-censo.json (quatro métodos) + o mesmo nivelamento do Seguro-Receita de build-seguro-receita-repasses.py, refeito para cada método.",
-        "descricao": "Faixa de variação do governo estadual em cada ano da transição, conforme o método usado para estimar o coeficiente de destino (φdest). O método 'pof_censo_bruto' é o publicado nas demais abas; os outros três servem de comparação. Municípios não estão aqui: ver docstring de build-faixa-phi-dest.py.",
-        "metodo_publicado": "pof_censo_bruto",
+        "descricao": "Faixa de variação do governo estadual em cada ano da transição, conforme o método usado para estimar o coeficiente de destino (φdest). O método 'phi_robusto' é o adotado nas demais abas; os outros quatro servem de comparação. Municípios não estão aqui: ver docstring de build-faixa-phi-dest.py.",
+        "metodo_publicado": "phi_robusto",
         "anos": ANOS,
         "metodos": METODOS,
         "por_uf": por_uf,
