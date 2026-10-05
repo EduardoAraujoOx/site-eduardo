@@ -36,6 +36,10 @@ UFS = brc.UFS
 N_SIM = 20000
 SEED = 20261004
 SIGMA_PHI = 0.10          # central: erro relativo médio entre fontes (~10%)
+SD_G_2026 = 0.007        # erro do crescimento de 2026 (ano quase fechado em out/2026), em fração
+KAPPA_G = 1.0            # escala da variabilidade histórica do crescimento real a partir de 2027
+SD_REF = 0.012           # incerteza da razão bolo/PIB de referência (média 2024-2026, com 2026 estimado)
+SD_RATIO = 0.037         # desvio anual (log) da razão bolo/PIB, 2013-2025, ruído sem acumulação
 KAPPA = 1.0              # fator de escala dos intervalos (1 = sem recalibração; ver sensibilidade-incerteza-parametros.py)
 USAR_BOOT = True         # sorteia (s1, beta) do bootstrap em blocos (incerteza dos parâmetros)
 SIGMA_PHI_ALTO = 0.19     # sensibilidade: dispersão log entre POF/Censo e Gobetti 2023 (inclui UFs pequenas)
@@ -252,8 +256,33 @@ def main():
                           "P_perda_maior_5pct": round(float((perda > 0.05 * ref0).mean()), 4),
                           "P_perda_maior_10pct": round(float((perda > 0.10 * ref0).mean()), 4)}
             risco[u] = r
-        # nível da receita (R$ constantes de 2025): central, faixa de 10% a 90% e decomposição por componente
+        # nível da receita (R$ constantes de 2025): central, faixa de 10% a 90%, decomposição por componente e
+        # contribuição de cada fonte de incerteza: A deriva do ICMS próprio, B erro de φ, G crescimento real do
+        # PIB (reamostra o desvio histórico 1996-2023, IBGE), R razão bolo/PIB
         tot_c, _ = calcula(esfera, um_n, um_p, reais=True)
+        cres = json.loads((HERE / "sidra-pib-crescimento-brasil.json").read_text(encoding="utf-8"))["crescimento_real_pct"]
+        gh = np.array(list(cres.values())) / 100.0
+        dev = gh - gh.mean()
+        g_c = np.array([m_["pib_real_pct"] for m_ in nac_data["macro_path"]])      # 2026-2033, Focus/IFI
+        idx_anos = [a_ - 2026 for a_ in ANOS]
+
+        def macro(n, fontes):
+            eps = np.zeros((n, len(g_c)))
+            if "G" in fontes:
+                eps[:, 0] = rng.normal(0, SD_G_2026, n)
+                eps[:, 1:] = KAPPA_G * rng.choice(dev, (n, len(g_c) - 1))
+            F = (np.cumprod(1 + g_c[None, :] + eps, axis=1) / np.cumprod(1 + g_c)[None, :])[:, idx_anos]
+            if "R" in fontes:
+                F = F * np.exp(rng.normal(0, SD_REF, (n, 1)) + rng.normal(0, SD_RATIO, (n, len(ANOS))))
+            return F
+
+        mac_todas = macro(N_SIM, "GR")
+        sn_a, sp_a = sorteia("A", SIGMA_PHI)
+        tot_A, _ = calcula(esfera, sn_a, sp_a, reais=True)
+        sn_b, sp_b = sorteia("B", SIGMA_PHI)
+        tot_B, _ = calcula(esfera, sn_b, sp_b, reais=True)
+        mac_G = macro(N_SIM, "G")
+        mac_R = macro(N_SIM, "R")
         nivel = {}
         for j, u in enumerate(UFS):
             n0, c0, pl0, rep = parte(u, esfera)
@@ -261,15 +290,27 @@ def main():
             for k, a in enumerate(ANOS):
                 r_ = nac[a]
                 ca_ = r_.get("ca", 0.0)
-                x = tot_r[:, j, k]
+                cen = float(tot_c[0, j, k])
+                hw = lambda x: float((np.percentile(x, 90) - np.percentile(x, 10)) / 2 / cen)
+                x_ab = tot_r[:, j, k]
+                x_all = x_ab * mac_todas[:, k]
                 nivel[u][str(a)] = {
-                    "central_bi": round(float(tot_c[0, j, k]) / 1e9, 3),
-                    "p10_bi": round(float(np.percentile(x, 10)) / 1e9, 3), "p90_bi": round(float(np.percentile(x, 90)) / 1e9, 3),
-                    "largura_rel_80": round(float((np.percentile(x, 90) - np.percentile(x, 10)) / 2 / tot_c[0, j, k]), 4),
+                    "central_bi": round(cen / 1e9, 3),
+                    "p10_bi": round(float(np.percentile(x_all, 10)) / 1e9, 3), "p90_bi": round(float(np.percentile(x_all, 90)) / 1e9, 3),
+                    "p05_bi": round(float(np.percentile(x_all, 5)) / 1e9, 3), "p95_bi": round(float(np.percentile(x_all, 95)) / 1e9, 3),
+                    "largura_rel_80": round(hw(x_all), 4),
+                    "largura_rel_80_sem_macro": round(hw(x_ab), 4),
+                    "largura_por_fonte": {"A_deriva_ICMS": round(hw(tot_A[:, j, k]), 4), "B_phi": round(hw(tot_B[:, j, k]), 4),
+                                          "G_crescimento_PIB": round(hw(cen * mac_G[:, k]), 4), "R_razao_bolo_PIB": round(hw(cen * mac_R[:, k]), 4)},
                     "componentes_bi": {"icms_iss_residual": round(r_["icms_iss_residual"] * n0 / 1e9, 3),
                                        "ibs_historico_liq_cgibs": round((1 - ca_) * r_["ibs_historico"] * c0 / 1e9, 3),
                                        "ibs_destino_liquido": round(r_["ibs_destino_liquido"] * pl0 / 1e9, 3),
                                        "seguro_receita_liq_cgibs": round((1 - ca_) * rep.get(a, 0.0) / 1e9, 3)}}
+            soma_cen = float(tot_c[0, j, :].sum())
+            soma_all = (tot_r[:, j, :] * mac_todas).sum(1)
+            nivel[u]["acumulado_2029_2033"] = {"central_bi": round(soma_cen / 1e9, 3), "p10_bi": round(float(np.percentile(soma_all, 10)) / 1e9, 3),
+                                               "p90_bi": round(float(np.percentile(soma_all, 90)) / 1e9, 3),
+                                               "largura_rel_80": round(float((np.percentile(soma_all, 90) - np.percentile(soma_all, 10)) / 2 / soma_cen), 4)}
         resultados[esfera] = {"nivel_em_reais_2025": nivel, "risco_em_reais": risco, "acumulado_2029_2033": acum_res, "por_uf": por_uf, "variancia_2033": var, "sinal_robusto_2033_p10_p90": robusto}
 
     # ── Longo prazo (2040, 2050, 2060, 2077): o contrafactual deixa de ser identificável (deriva
