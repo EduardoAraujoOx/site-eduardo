@@ -2,8 +2,8 @@
 """
 Mapa do artigo: variação da receita municipal bruta em 2033 (IBS municipal
 versus o contrafactual sem reforma) nos 399 municípios do Paraná, em classes de
-cor divergentes (azul = ganha, vermelho = perde). Municípios fora da amostra do
-artigo (qualificado_artigo = False) recebem hachura branca. Sem título.
+cor divergentes (azul = ganha, vermelho = perde). Todos os municípios entram no
+mapa, sem hachura (a amostra de 187 municípios é só teste de robustez). Sem título.
 
 Malha: IBGE, Malha Municipal 2024 (baixada na execução).
 Uso: python3 build-mapa-variacao-pr.py -> graficos-artigo/mapa-variacao-2033-pr.{png,svg}
@@ -66,11 +66,7 @@ m = m.to_crs(31982)   # SIRGAS 2000 / UTM 22S: proporções corretas
 plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 7.5, "text.color": INK})
 fig = plt.figure(figsize=(6.5, 4.3), dpi=300)
 ax = fig.add_axes([0.0, 0.2, 1.0, 0.8])
-dentro = m[m["qualificado_artigo"] == True]
-fora = m[m["qualificado_artigo"] != True]
-dentro.plot(ax=ax, color=dentro["cor"], edgecolor="white", linewidth=0.25)
-plt.rcParams["hatch.linewidth"] = 0.45
-fora.plot(ax=ax, color=fora["cor"], edgecolor="white", linewidth=0.25, hatch="//////")
+m.plot(ax=ax, color=m["cor"], edgecolor="white", linewidth=0.25)
 m.dissolve().boundary.plot(ax=ax, color=INK2, linewidth=0.5)
 ax.set_axis_off()
 
@@ -88,10 +84,9 @@ for nome, (dx, dy, ha, guia) in ROTULOS.items():
 
 cont = lambda lo, hi: int(((m.v >= lo) & (m.v < hi)).sum())
 handles = [Patch(facecolor=c, edgecolor="white", label=f"{lab} ({cont(lo, hi)})") for lo, hi, c, lab in CLASSES[::-1]]
-handles.append(Patch(facecolor="#cfcfcf", edgecolor="white", hatch="//////", label=f"Fora da amostra do artigo ({len(fora)})"))
 fig.legend(handles=handles, loc="lower left", frameon=False, fontsize=6.8, ncol=3, handlelength=1.3, handleheight=1.0,
            title="Variação da receita municipal em 2033 (n.º de municípios)", title_fontsize=7, alignment="left",
            bbox_to_anchor=(0.03, 0.0), columnspacing=1.4)
 fig.savefig(OUT / "mapa-variacao-2033-pr.png", dpi=300, facecolor="white")
 fig.savefig(OUT / "mapa-variacao-2033-pr.svg", facecolor="white")
-print({lab: cont(lo, hi) for lo, hi, _, lab in CLASSES}, len(dentro), len(fora))
+print({lab: cont(lo, hi) for lo, hi, _, lab in CLASSES}, len(m))

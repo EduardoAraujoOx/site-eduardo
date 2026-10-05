@@ -3,7 +3,8 @@
 Tabela única do artigo: receita per capita municipal do Paraná (ISS + cota-parte
 do ICMS em 2025, substituídos pelo IBS depois) nos municípios de maior e menor
 valor em 2025, com colunas 2025, 2029, 2033, 2050 e 2077, e medidas de
-dispersão (razão máx./mín. e Gini) calculadas sobre todos os municípios elegíveis.
+dispersão (razão máx./mín. e Gini) calculadas sobre todos os 399 municípios (teste de robustez
+com os elegíveis, de ISS completo, no JSON de resumo).
 
 Reaproveita montar() de build-tabelas-artigo-pr.py (base final auditada, ISS com
 correções do PIT/TCE-PR, R$ constantes de 2025, população fixa). 2029-2033 vêm
@@ -53,15 +54,20 @@ def main():
             l[f"pc{y}"] = rec[y] / l["pop"]
     assert all(abs(l["pc2033"] - l["pc_2033"]) < 1e-6 and abs(l["pc2077"] - l["pc_2077"]) < 1e-6 for l in linhas)
 
+    todos, eleg_rob = linhas, eleg
+    eleg = todos   # base principal: todos os municípios; os elegíveis (ISS completo) ficam como robustez
     rank = sorted(eleg, key=lambda l: -l["pc2025"])
     ext = rank[:N] + rank[-N:]
     disp = {y: medidas([l[f"pc{y}"] for l in eleg]) for y in ANOS}
-    json.dump({"n": len(eleg), "extremos": [{k: l[k] for k in ["municipio", "pop"] + [f"pc{y}" for y in ANOS]} for l in ext],
+    disp_rob = {y: medidas([l[f"pc{y}"] for l in eleg_rob]) for y in ANOS}
+    json.dump({"n": len(eleg), "n_robustez_iss_completo": len(eleg_rob),
+               "dispersao_robustez_iss_completo": {str(y): {k: v[0] for k, v in d.items()} for y, d in disp_rob.items()},
+               "extremos": [{k: l[k] for k in ["municipio", "pop"] + [f"pc{y}" for y in ANOS]} for l in ext],
                "dispersao": {str(y): {k: v[0] for k, v in d.items()} for y, d in disp.items()}},
               open(OUT / "resumo-tabela-unica.json", "w"), ensure_ascii=False, indent=1)
     with open(OUT / "municipios-percapita-pr-anos.csv", "w", newline="", encoding="utf-8-sig") as f:
         w = csv.writer(f)
-        ids = {l["codigo_ibge"] for l in eleg}
+        ids = {l["codigo_ibge"] for l in eleg_rob}
         w.writerow(["codigo_ibge", "municipio", "pop_media"] + [f"receita_pc_{y}" for y in ANOS] + ["elegivel"])
         for l in sorted(linhas, key=lambda l: -l["pc2025"]):
             w.writerow([l["codigo_ibge"], l["municipio"], round(l["pop"], 1)] + [round(l[f"pc{y}"], 2) for y in ANOS]
@@ -166,7 +172,7 @@ def gerar_docx(ext, disp, n_eleg):
         "auditada). Nota: receita per capita = ISS + cota-parte do ICMS em 2025, substituídos pelo IBS municipal de 2029 em diante, conforme o "
         "cronograma do art. 131 do ADCT (EC 132/2023) e PIB real de 2,2% a.a. após 2033; valores em R$ constantes de 2025 e população fixa "
         "(média 2019-2026). Razão máx./mín. = maior valor per capita dividido pelo menor; Índice de Gini (0 = igualdade perfeita). As duas "
-        "medidas consideram todos os municípios elegíveis, e não apenas os exibidos; os municípios intermediários foram omitidos (...).",
+        "medidas consideram os 399 municípios do Estado, e não apenas os exibidos; os municípios intermediários foram omitidos (...).",
         italic=False, size=8, after=0)
     doc.save(OUT / "tabela-unica-dispersao-percapita-pr.docx")
 
