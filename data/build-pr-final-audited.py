@@ -28,6 +28,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from fundos_art115b import fold
 import rateio_consumo_compras as rcc
+import cpt2026
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "auditoria-pr-validacao"
@@ -274,7 +275,8 @@ def main():
     total_2025 = total_nat[2025]
     deflator = {ano: (1.0 if ano == 2025 else total_2025 / total_nat[ano]) for ano in ANOS_HIST}
 
-    # Base 2025 e CPT auditados.
+    # Base 2025 e CPT auditados. 2026 estimado (cpt2026.py): cota-parte segue a UF, ISS repete 2025.
+    fi26, fr26, n_anos = cpt2026.fatores_uf(ref, "PR")
     municipal = {}
     for cod,nome in names.items():
         real_series = []
@@ -287,7 +289,8 @@ def main():
                 real_series.append((i + cp) * deflator[ano])
         if any(v is None for v in real_series):
             continue
-        hist_mean = sum(real_series) / len(real_series)
+        est26 = 0.0 if n_anos == len(ANOS_HIST) else final_iss[cod][2025] * fr26 + cota_final[cod][2025] * fi26
+        hist_mean = (sum(real_series) + est26) / n_anos
         cpt = hist_mean / total_2025
         r0 = final_iss[cod][2025] + cota_final[cod][2025]
         municipal[cod] = {

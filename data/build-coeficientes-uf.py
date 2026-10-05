@@ -5,7 +5,9 @@ municipal agregado), replicando em Python a mesma lógica já implementada em
 JS na Tabela 3 de estudos/reforma-tributaria-coeficiente.html.
 
 Estado: (ICMS bruto DCA - cota-parte declarada/25% teórico + FECOP) × deflator,
-média 2019-2025, dividida pelo agregado nacional A_2025.
+média 2019-2026 (2026 ainda não fechado no DCA: tratamento em data/parametros-cpt-2026.json e data/cpt2026.py;
+o campo *_obs_2019_2025 traz a média só dos sete anos observados, igual à Nota Técnica nº 02/2026 da SEFAZ-ES),
+dividida pelo agregado nacional A_2025.
 Municípios (agregado por UF): (ISS bruto DCA + cota-parte) × deflator, mesma
 média e mesmo denominador.
 DF: ICMS + FECOP + ISS integrais, sem dedução, sem componente municipal
@@ -18,6 +20,7 @@ Uso:
 import json
 from pathlib import Path
 from fundos_art115b import fold
+import cpt2026
 
 HERE = Path(__file__).parent
 SRC = HERE / "reforma-tributaria.json"
@@ -65,6 +68,11 @@ def main():
 
     ufs = sorted((dca_icms_uf.get("2025") or {}).keys())
 
+    # 2026 (ver cpt2026.py): componentes de 2025 em R$ de 2025 (deflator 1) e fatores por UF
+    comp25 = cpt2026.componentes_2025(d)
+    fat26, r_renorm = cpt2026.fatores(comp25)
+    n_anos = cpt2026.n_anos()
+
     resultado = {}
     for uf in ufs:
         is_df = uf == "DF"
@@ -93,33 +101,53 @@ def main():
                 if cota_val is not None:
                     soma_cota += cota_val * defl
 
-        media_icms = soma_icms / len(ANOS) if n_icms else None
-        media_iss = soma_iss / len(ANOS) if n_iss else None
-        media_fecop = soma_fecop / len(ANOS)
-        media_cota = soma_cota / len(ANOS) if not is_df else None
+        def medias(div, fi=0.0, fr=0.0, com_2026=False):
+            """médias por componente; com_2026 acrescenta o termo estimado de 2026 (fatores fi para ICMS, fr para ISS)."""
+            a26 = comp25[uf]
+            icms_x = (soma_icms + (((dca_icms_uf.get("2025") or {}).get(uf) or 0) - ((dca_outras_deducoes_uf.get("2025") or {}).get(uf, 0) or 0)) * fi) if com_2026 else soma_icms
+            fecop_x = (soma_fecop + ((dca_fecop_uf.get("2025") or {}).get(uf, 0) or 0) * fi) if com_2026 else soma_fecop
+            iss_x = (soma_iss + a26["iss"] * fr) if com_2026 else soma_iss
+            cota25_alvo = 0.0
+            if not is_df:
+                cd = (dca_transf_uf.get("2025") or {}).get(uf)
+                iu = (dca_icms_uf.get("2025") or {}).get(uf)
+                cota25_alvo = cd if cd is not None else (iu * 0.25 if iu is not None else 0.0)
+            cota_x = (soma_cota + cota25_alvo * fi) if com_2026 else soma_cota
+            m_icms = icms_x / div if n_icms else None
+            m_iss = iss_x / div if n_iss else None
+            m_fecop = fecop_x / div
+            m_cota = cota_x / div if not is_df else None
+            if is_df:
+                m_estado = (m_icms + m_fecop) if m_icms is not None else None
+                m_munis = None
+                m_total = (m_estado + (m_iss or 0)) if m_estado is not None else None
+            else:
+                m_estado = (m_icms - m_cota + m_fecop) if (m_icms is not None and m_cota is not None) else None
+                m_munis = ((m_iss or 0) + (m_cota or 0)) if (m_iss is not None or m_cota is not None) else None
+                m_total = (m_estado + m_munis) if (m_estado is not None and m_munis is not None) else None
+            return m_estado, m_munis, m_total
 
-        if is_df:
-            media_estado = (media_icms + media_fecop) if media_icms is not None else None
-            media_munis = None
-            media_total = (media_estado + (media_iss or 0)) if media_estado is not None else None
-        else:
-            media_estado = (media_icms - media_cota + media_fecop) if (
-                media_icms is not None and media_cota is not None) else None
-            media_munis = ((media_iss or 0) + (media_cota or 0)) if (
-                media_iss is not None or media_cota is not None) else None
-            media_total = (media_estado + media_munis) if (
-                media_estado is not None and media_munis is not None) else None
+        fi, fr = fat26[uf]
+        media_estado, media_munis, media_total = medias(n_anos, fi, fr, com_2026=(n_anos > len(ANOS)))
+        obs_estado, obs_munis, obs_total = medias(len(ANOS))
 
+        pct = lambda x: (x / total_b * 100) if x is not None else None
         resultado[uf] = {
             "is_df": is_df,
-            "coeficiente_estado_pct": (media_estado / total_b * 100) if media_estado is not None else None,
-            "coeficiente_municipios_pct": (media_munis / total_b * 100) if media_munis is not None else None,
-            "coeficiente_total_pct": (media_total / total_b * 100) if media_total is not None else None,
+            "coeficiente_estado_pct": pct(media_estado),
+            "coeficiente_municipios_pct": pct(media_munis),
+            "coeficiente_total_pct": pct(media_total),
+            "coeficiente_estado_obs_2019_2025_pct": pct(obs_estado),
+            "coeficiente_municipios_obs_2019_2025_pct": pct(obs_munis),
+            "coeficiente_total_obs_2019_2025_pct": pct(obs_total),
         }
 
     output = {
         "fonte": "DCA Anexo I-C, agregado por UF",
         "anos": ANOS,
+        "tratamento_2026": cpt2026.tratamento(),
+        "n_anos_media": n_anos,
+        "r_renorm_2026": r_renorm,
         "total_br_2025": total_b,
         "por_uf": resultado,
         "soma_coeficiente_total_pct": sum(
