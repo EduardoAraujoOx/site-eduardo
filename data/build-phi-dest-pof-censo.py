@@ -53,6 +53,7 @@ Uso:
 """
 
 import json
+import os
 from pathlib import Path
 from fundos_art115b import fold
 import rateio_consumo_compras as rcc
@@ -188,6 +189,15 @@ def main():
                                          dca_outras_deducoes_2025)
     gobetti_t1 = compute_gobetti_tabela1(gobetti)
     pof_bruto, pof_ponderado = compute_pof_censo(pof, censo)
+    # Variante de teste (não altera o publicado): PHI_FAM_METODO=robusto troca a base φ_fam pelo composto de
+    # data/phi-dest-robusto.json (estima-phi-destino-robusto.py). Sem a variável, o resultado é o de sempre.
+    robusto = None
+    rpath = HERE / "phi-dest-robusto.json"
+    if rpath.exists():
+        robusto = {u: v["phi_robusto_pct"] for u, v in json.loads(rpath.read_text(encoding="utf-8"))["por_uf"].items()}
+    if os.environ.get("PHI_FAM_METODO") == "robusto":
+        assert robusto, "phi-dest-robusto.json ausente"
+        pof_bruto = robusto
     frac_estado, frac_muni = compute_frac_estado_muni(ref_data, macro)
 
     por_uf = {}
@@ -200,6 +210,7 @@ def main():
             "gobetti_tabela1_2023_pct": gobetti_t1[uf],
             "pof_censo_bruto_pct": pb,
             "pof_censo_ponderado_pct": pp,
+            "phi_robusto_pct": None if robusto is None else robusto[uf],
             "despesa_pof_familiar": pof['despesa_por_uf'][uf]['total'],
             "domicilios_censo_2022": censo['por_uf'][uf]['domicilios_particulares_ocupados'],
             "delta_bruto_vs_modelo_pp": pb - ma,
