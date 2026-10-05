@@ -41,7 +41,10 @@ G_BLOCO_MEDIO = 4        # bootstrap estacionário (Politis-Romano) dos desvios 
 BIAS_G = 0.0             # deslocamento anual da trajetória central de crescimento (cenário de viés histórico do Focus)
 KAPPA_G = 1.0            # escala da variabilidade histórica do crescimento real a partir de 2027
 SD_REF = 0.012           # incerteza da razão bolo/PIB de referência (média 2024-2026, com 2026 estimado)
-SD_RATIO = 0.06          # ruído anual do bolo em relação ao PIB (razão, elasticidade, mudanças tributárias); calibrado no backtest do nível (CRPS mínimo em 0,06-0,07); o desvio anual histórico da razão é 0,037
+SD_RATIO = 0.075         # desvio de longo prazo do bolo em relação ao PIB (razão, elasticidade, mudanças tributárias), AR(1) com reversão à média; calibrado no backtest do nível (CRPS mínimo)
+R_PHI = 0.8              # persistência do desvio do bolo; sd(h) = SD_RATIO * sqrt(1 - R_PHI^(2h)): 4,5% em 1 ano, 6,8% em 4, 7,5% em 8
+USAR_NOWCAST = False     # condiciona a participação de cada UF ao RREO de jan-ago de 2026 (sensibilidade-nowcast-2026.json)
+USAR_ESCALA_UF = False   # escala da deriva própria de cada UF, com encolhimento (sensibilidade-nowcast-2026.json)
 KAPPA = 1.0              # fator de escala dos intervalos (1 = sem recalibração; ver sensibilidade-incerteza-parametros.py)
 USAR_BOOT = True         # sorteia (s1, beta) do bootstrap em blocos (incerteza dos parâmetros)
 SIGMA_PHI_ALTO = 0.19     # sensibilidade: dispersão log entre POF/Censo e Gobetti 2023 (inclui UFs pequenas)
@@ -178,6 +181,20 @@ def main():
 
     rng = np.random.default_rng(SEED)
     horizontes = np.array([a - 2025 for a in ANOS], dtype=float)
+    nowj = HERE / "sensibilidade-nowcast-2026.json"
+    MU_NOW = np.zeros(len(UFS))
+    SRES = 0.0
+    KUF = np.ones(len(UFS))
+    if (USAR_NOWCAST or USAR_ESCALA_UF) and nowj.exists():
+        nj = json.loads(nowj.read_text(encoding="utf-8"))
+        if USAR_NOWCAST:
+            MU_NOW = np.array([nj["mu_uf"].get(u, 0.0) for u in UFS])
+            SRES = nj["sd_residual"]
+        if USAR_ESCALA_UF:
+            KUF = np.array([nj["k_uf"].get(u, 1.0) for u in UFS])
+    if USAR_NOWCAST:
+        m_c = np.exp(MU_NOW)[None, :, None]
+        um_n = np.repeat(m_c / (n_uf[None, :, None] * m_c).sum(1, keepdims=True) * n_uf.sum(), len(ANOS), axis=2)
     pares = None
     inc = HERE / "sensibilidade-incerteza-parametros.json"
     if USAR_BOOT and inc.exists():
@@ -192,9 +209,15 @@ def main():
 
     def sorteia(fontes, sigma_phi):
         z = rng.standard_normal((N_SIM, len(UFS)))
-        eps = z[:, :, None] * sd_sim(N_SIM, horizontes)[:, None, :] if "A" in fontes else np.zeros((N_SIM, len(UFS), len(ANOS)))
+        if "A" in fontes:
+            sdA = sd_sim(N_SIM, np.maximum(horizontes - (1.0 if USAR_NOWCAST else 0.0), 0.0))
+            if USAR_NOWCAST:
+                sdA = np.sqrt(sdA ** 2 + SRES ** 2)
+            eps = z[:, :, None] * sdA[:, None, :] * KUF[None, :, None]
+        else:
+            eps = np.zeros((N_SIM, len(UFS), len(ANOS)))
         # participação UF (agregado estado+município): choque multiplicativo e renormalização
-        m = np.exp(eps)
+        m = np.exp(eps + MU_NOW[None, :, None])
         den = (n_uf[None, :, None] * m).sum(1, keepdims=True)
         sn = m / den * n_uf.sum()
         if "B" in fontes:
@@ -280,7 +303,12 @@ def main():
                     eps[:, t] = KAPPA_G * dev[pos]
             F = (np.cumprod(1 + g_c[None, :] + BIAS_G * (np.arange(len(g_c)) >= 1)[None, :] + eps, axis=1) / np.cumprod(1 + g_c)[None, :])[:, idx_anos]
             if "R" in fontes:
-                F = F * np.exp(rng.normal(0, SD_REF, (n, 1)) + rng.normal(0, SD_RATIO, (n, len(ANOS))))
+                x_r = np.zeros(n)
+                path = []
+                for _ in g_c:
+                    x_r = R_PHI * x_r + rng.normal(0, SD_RATIO * np.sqrt(1 - R_PHI ** 2), n)
+                    path.append(x_r)
+                F = F * np.exp(rng.normal(0, SD_REF, (n, 1)) + np.column_stack(path)[:, idx_anos])
             return F
 
         mac_todas = macro(N_SIM, "GR")

@@ -51,6 +51,13 @@ def main():
         zs = np.array([e / np.hypot(np.hypot(sd_g[h - 1], s_), SD_REF) for h, e in erros])
         grade[str(s_)] = {"cobertura80": round(float((np.abs(zs) < 1.2816).mean()), 2), "cobertura90": round(float((np.abs(zs) < 1.645).mean()), 2),
                           "CRPS_medio_pct": round(float(np.mean([crps(e, np.hypot(np.hypot(sd_g[h - 1], s_), SD_REF)) for h, e in erros]) * 100), 3)}
+    # AR(1) com reversão à média (adotado na simulação): sd(h) = s_inf * sqrt(1 - phi^(2h))
+    PHI, S_INF = 0.8, 0.075
+    sdr = {h: np.hypot(np.hypot(sd_g[h - 1], S_INF * np.sqrt(1 - PHI ** (2 * h))), SD_REF) for h in range(1, 9)}
+    zs = np.array([e / sdr[h] for h, e in erros])
+    ar1 = {"phi": PHI, "s_inf": S_INF, "cobertura80": round(float((np.abs(zs) < 1.2816).mean()), 2), "cobertura90": round(float((np.abs(zs) < 1.645).mean()), 2),
+           "CRPS_medio_pct": round(float(np.mean([crps(e, sdr[h]) for h, e in erros]) * 100), 3),
+           "ruido_por_horizonte_pct": {str(h): round(float(S_INF * np.sqrt(1 - PHI ** (2 * h)) * 100), 1) for h in (1, 4, 8)}}
     SD_RATIO = np.hypot(SD_RATIO_ADOTADO, SD_REF)
     z = {h: [] for h in range(1, 9)}
     for h in range(1, 9):
@@ -65,7 +72,7 @@ def main():
                   "sd_empirico_pct": round(float(((v * np.hypot(sd_g[h - 1], SD_RATIO)).std(ddof=1)) * 100), 1) if len(v) > 1 else None,
                   "cobertura80": round(float((np.abs(v) < 1.2816).mean()), 2), "cobertura90": round(float((np.abs(v) < 1.645).mean()), 2)}
     saida = {"_meta": {"descricao": "Cobertura da faixa do nível da arrecadação (bolo real) em janelas de 2013-2025", "nota": "janelas sobrepostas e poucas; mu e sigma são de amostra inteira (dentro da amostra)"},
-             "grade_ruido_da_razao": grade, "ruido_adotado": SD_RATIO_ADOTADO, "por_horizonte": res, "geral": {"n": int(len(todos)), "cobertura80": round(float((np.abs(todos) < 1.2816).mean()), 2),
+             "grade_ruido_da_razao": grade, "ar1_adotado": ar1, "ruido_adotado": SD_RATIO_ADOTADO, "por_horizonte": res, "geral": {"n": int(len(todos)), "cobertura80": round(float((np.abs(todos) < 1.2816).mean()), 2),
                                              "cobertura90": round(float((np.abs(todos) < 1.645).mean()), 2), "sd_z": round(float(todos.std(ddof=1)), 2)}}
     OUT.write_text(json.dumps(saida, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps(saida, ensure_ascii=False, indent=1))
