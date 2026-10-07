@@ -59,8 +59,8 @@ def main():
     pop_m, nome_m = serie("n6")
     res = {}
     for cod, v in pop_m.items():
-        if 2022 not in v:
-            continue
+        if not v:
+            continue   # município novo (ex.: Boa Esperança do Norte-MT) usa só os anos com estimativa
         nm, uf = nome_m[cod].rsplit(" - ", 1)
         res[cod] = {"nome": nm, "uf": uf, "pop_media": sum(v.values()) / len(v), "anos_com_dado": sorted(v), "pop_por_ano": {str(a): v[a] for a in sorted(v)}}
     out = dict(meta, n_municipios=len(res), total_pop_media=sum(m["pop_media"] for m in res.values()), municipios=res)

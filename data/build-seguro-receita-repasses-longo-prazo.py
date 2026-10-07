@@ -217,11 +217,16 @@ def main():
         for e, repasse in zip(entidades, repasses):
             agregado_uf[e['uf']][e['esfera']] += repasse
 
+        niveis = [(e['numerador'] + r) / e['denom_capado'] for e, r in zip(entidades, repasses)
+                  if r > 1e-6 and e['denom_capado'] > 0]
         resultado_por_ano[a] = {
             'pool': pool,
             'soma_repasses': soma_repasses,
             'diff_pool': soma_repasses - pool,
             'n_beneficiarios': n_beneficiarios,
+            'nivel_equalizacao': (sum(niveis) / len(niveis)) if niveis else None,
+            'razao_estados': {e['uf']: e['numerador'] / e['denom_capado'] for e in entidades
+                              if e['esfera'] == 'estado' and e['denom_capado'] > 0},
             'repasse_por_uf': agregado_uf,
         }
         if a in (2029, 2033, 2034, 2043, 2053, 2063, 2073, 2077):
