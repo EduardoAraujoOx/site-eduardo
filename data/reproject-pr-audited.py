@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import csv
 import json
+import seguro_lei
 from pathlib import Path
 from datetime import datetime, timezone
 import rateio_consumo_compras as rcc
@@ -206,10 +207,10 @@ def main():
     seguro_meta = {}
     for ano in ANOS:
         nac = nac_by_year[ano]
-        for e in entities:
-            e["numerador"] = nac["ibs_destino_liquido"] * e["phi_dest"]
-        pairs = [(e["numerador"], e["denom_capado"]) for e in entities]
-        reps = water_fill(pairs, nac["ibs_seguro_receita"])
+        reps, nums = seguro_lei.seguro_ano([e["denom_capado"] for e in entities], [e["phi_dest"] for e in entities],
+                                           nac_by_year, ano, water_fill)
+        for e, n_ in zip(entities, nums):
+            e["numerador"] = n_
         level = None
         beneficiaries = 0
         for e, rep in zip(entities, reps):

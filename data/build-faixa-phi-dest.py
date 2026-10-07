@@ -33,6 +33,9 @@ Uso:
 
 import importlib.util
 import json
+import sys
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent))
+import seguro_lei
 from pathlib import Path
 from fundos_art115b import fold
 import rateio_consumo_compras as rcc
@@ -203,12 +206,8 @@ def main():
 
         repasse_estado_por_ano = {uf: {} for uf in UFS}
         for a in ANOS:
-            nac = nac_by_year[a]
-            ibsd = nac["ibs_destino_liquido"]
-            for e in entidades:
-                e["numerador"] = ibsd * e["phi_dest"]
-            pares = [(e["numerador"], e["denom_capado"]) for e in entidades]
-            repasses = seguro_mod.water_fill(pares, nac["ibs_seguro_receita"])
+            repasses, _nums = seguro_lei.seguro_ano([e["denom_capado"] for e in entidades], [e["phi_dest"] for e in entidades],
+                                                    nac_by_year, a, seguro_mod.water_fill)
             for e, rep in zip(entidades, repasses):
                 if e["esfera"] == "estado":
                     repasse_estado_por_ano[e["uf"]][a] = rep

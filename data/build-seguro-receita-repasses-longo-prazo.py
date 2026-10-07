@@ -32,6 +32,7 @@ Uso: python3 build-seguro-receita-repasses-longo-prazo.py
 """
 
 import json
+import seguro_lei
 from pathlib import Path
 from fundos_art115b import fold
 import rateio_consumo_compras as rcc
@@ -199,11 +200,10 @@ def main():
         ibsd = nac['ibs_destino_liquido']
         pool = nac['ibs_seguro_receita']
 
-        for e in entidades:
-            e['numerador'] = ibsd * e['phi_dest']
-
-        pares = [(e['numerador'], e['denom_capado']) for e in entidades]
-        repasses = water_fill(pares, pool)
+        repasses, nums = seguro_lei.seguro_ano([e['denom_capado'] for e in entidades], [e['phi_dest'] for e in entidades],
+                                               nac_by_year, a, water_fill)
+        for e, n_ in zip(entidades, nums):
+            e['numerador'] = n_
 
         soma_repasses = sum(repasses)
         n_beneficiarios = sum(1 for r in repasses if r > 1e-6)
