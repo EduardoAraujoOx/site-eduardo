@@ -228,6 +228,7 @@ def main():
             teto = 3 * media_percapita_estado * e['pop']
         else:
             teto = 3 * media_percapita_muni * e['pop']
+        e['teto'] = teto
         e['denom_capado'] = min(e['denom'], teto) if e['pop'] > 0 else e['denom']
 
     # ── Para cada ano: só o numerador (IBS-destino recebido) muda; denom_capado é fixo ──
@@ -251,6 +252,7 @@ def main():
             linhas.append({
                 'id': e['id'], 'nome': e['nome'], 'uf': e['uf'], 'esfera': e['esfera'],
                 'numerador': e['numerador'], 'denom_capado': e['denom_capado'],
+                'denom_ref': e['denom'], 'teto': e['teto'],
                 'razao': razao, 'repasse': repasse,
             })
 
