@@ -15,6 +15,7 @@ etapa="${1:-modelo}"
 # Entradas que NÃO rodam aqui (dependem de dados externos ao repositório; rodar à parte quando mudarem):
 #   data/collect-renda-uf-censo-pnadc.py  -> data/renda-uf-censo-pnadc.json (SIDRA)
 #   data/estima-phi-destino-robusto.py <pasta_pof> -> data/phi-dest-robusto.json (φ de destino robusto; precisa dos microdados da POF e dos caches pof_uc*.pkl)
+#   data/build-populacao-sidra.py         -> data/populacao-{municipios,uf}-media-2019-2026.json (população de 2019 a 2026, API SIDRA; teto do Seguro-Receita)
 #   data/sensibilidade-nowcast-2026.py    -> data/sensibilidade-nowcast-2026.json (nowcast de 2026 do histórico; precisa de data/rreo-icms-mensal.json)
 # O tratamento de 2026 no coeficiente histórico está em data/parametros-cpt-2026.json (variável CPT_2026 sobrepõe).
 modelo() {

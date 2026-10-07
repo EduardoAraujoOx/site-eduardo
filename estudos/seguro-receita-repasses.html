@@ -169,7 +169,7 @@
             Estimativa, não o cálculo oficial: o coeficiente de fato será calculado e publicado pelo
             Comitê Gestor do IBS (CGIBS), com base em dados que ainda não existem por completo (DCA
             2026) e sujeito a um processo de contestação dos entes (LC 227/2026, art. 116, §§7º-8º). Ver
-            metodologia e simplificações abaixo.
+            metodologia e simplificações abaixo. Para a lei transcrita e explicada, o exemplo numérico e a lista de beneficiários, ver o <a href="/estudos/seguro-receita-lei-e-beneficiarios.html">Estudo 18</a>.
         </p>
     </div>
 
@@ -437,11 +437,11 @@
                 </p>
 
                 <div class="meto-formula-box">
-$$\text{razão}_{\text{ente},a} = \frac{\text{IBS-destino recebido no ano } a}{\text{receita média de referência ajustada}}$$
+$$\text{razão}_{\text{ente},a} = \frac{\text{média de 12 meses do IBS apurado pelo destino (art. 117, I)}}{\text{receita média de referência ajustada}}$$
                 </div>
 
                 <p class="meto-note">
-                    O numerador cresce a cada ano, junto com o próprio IBS. Já o denominador, que a lei
+                    O numerador é o IBS total do ente pelo critério do destino, com as alíquotas de referência (art. 108), e não só a fração já distribuída por esse critério; cresce a cada ano, junto com o próprio IBS. Já o denominador, que a lei
                     chama de "receita média de referência ajustada" (art. 117, §§3º-6º), é o
                     <strong>menor valor</strong> entre (i) a receita média histórica do ente (art. 115 da
                     LC 227/2026: média de 2019 a 2026, corrigida pela variação nominal do ICMS+ISS
@@ -515,16 +515,16 @@ $$\text{razão}_{\text{ente},a} = \frac{\text{IBS-destino recebido no ano } a}{\
                     <thead><tr><th>Simplificação</th><th>Motivo</th></tr></thead>
                     <tbody>
                         <tr>
-                            <td>Anual em vez de mensal</td>
-                            <td>A lei apura uma média móvel dos últimos 12 meses e distribui todo mês; esta página usa o ano-calendário inteiro como proxy, consistente com o horizonte anual do Estudo 06.</td>
+                            <td>Receita constante dentro de cada ano</td>
+                            <td>A distribuição é feita mês a mês, com média móvel de 12 meses e, de 2029 a 2033, a correção dos meses do ano anterior pela razão entre as alíquotas de referência (art. 117, §2º); admite-se receita mensal constante dentro de cada ano e crescimento da base entre os anos. Não se deduzem a devolução geral do IBS (art. 107, I) e os créditos presumidos (art. 108, I), cujos percentuais o CGIBS ainda não fixou.</td>
                         </tr>
                         <tr>
-                            <td>População: 5 dos 8 anos pedidos</td>
-                            <td>O teto per capita usa a "média da população entre 2019 e 2026" (art. 117, §§3º-6º) de cada ente. O IBGE publica estimativa anual para 2019, 2020, 2021, 2024 e 2025; 2022 e 2023 não têm estimativa normal (o Censo Demográfico 2022 a substituiu nesses dois anos) e 2026 ainda não foi publicado. A média usada é desses 5 anos disponíveis.</td>
+                            <td>População: 2022 e 2023</td>
+                            <td>O teto per capita usa a "média da população entre 2019 e 2026" (art. 117, §§3º-6º) de cada ente. O IBGE publica estimativa anual para 2019, 2020, 2021, 2024, 2025 e 2026; em 2022 usa-se o Censo Demográfico e em 2023, a média entre o Censo e a estimativa de 2024 (data/build-populacao-sidra.py).</td>
                         </tr>
                         <tr>
-                            <td>Numerador do DF restrito ao ICMS</td>
-                            <td>O φ<sup>dest</sup> do DF, em todo o site, é calculado só a partir do ICMS, já que o DF nunca teve um φ<sup>dest</sup> municipal próprio calculado em nenhum estudo; só o teto (denominador) foi corrigido para somar ICMS+ISS, por consistência com o restante do site.</td>
+                            <td>Numerador do DF</td>
+                            <td>O φ<sup>dest</sup> do DF soma as duas esferas (ICMS e ISS), como o denominador (art. 117, §6º).</td>
                         </tr>
                         <tr>
                             <td>Estimativa própria, não o cálculo oficial</td>
@@ -542,7 +542,7 @@ $$\text{razão}_{\text{ente},a} = \frac{\text{IBS-destino recebido no ano } a}{\
             <p>2. IBS pelo critério destino (numerador) e o fundo do Seguro-Receita (5% do IBS-destino bruto, retido antes do CGIBS -- LC 227/2026, arts. 109 a 111): <a href="/estudos/ibs-projecao-nacional.html">Estudo 11</a>, campos <code>ibs_destino_liquido</code> e <code>ibs_seguro_receita</code> de <code>data/ibs-projecao-nacional.json</code>.</p>
             <p>3. Coeficiente de participação pelo critério destino (φ<sup>dest</sup>), por estado: <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> — estimativa própria (POF 2017-2018 x Censo 2022, <a href="/estudos/ibs-destino-pof-censo.html">Estudo 13</a>), dividida entre esfera estadual e municipal pela média 2024-2025 da razão receita de referência/PIB por esfera (LC 214/2025 art. 361); Gobetti e Monteiro (IPEA, 2023) permanece só como comparação (Estudos 07 e 13). Agregado dos municípios de cada UF, decomposto em duas contas: (a) cota-parte (25% do destino do próprio estado, CF art. 158, IV, "b"; LC 227/2026 arts. 118, §3º, e 128), rateada entre os municípios pelo critério do art. 128 — 80% na proporção da população + 5% em partes iguais (valores exatos da lei); os 15% restantes (educação-equidade e ambiental, art. 128, incisos II e III) dependem de indicadores ainda não fixados por lei estadual, aproximados pelo mesmo critério populacional; (b) destino próprio (sucessor do ISS, LC 227/2026 art. 106), rateado por um proxy de intensidade de consumo — renda domiciliar per capita média do Censo 2022 (SIDRA tabela 10295) multiplicada pela população, já que a POF não abre por município. Limitação documentada: consumo é função côncava da renda, então este proxy tende a favorecer municípios mais ricos dentro de cada UF; não há dado público de propensão a consumir por município para corrigir isso. Ver <code>data/build-rateio-destino-municipios.py</code>, <code>data/rateio-destino-municipios.json</code> e <code>data/censo-2022-renda-municipios.json</code>.</p>
             <p>4. Receita média de referência (denominador): <code>data/coeficientes-uf.json</code> e <code>data/coeficientes-municipios.json</code>, validados contra a Nota Técnica nº 02/2026 (SEFAZ-ES).</p>
-            <p>5. População: IBGE, Estimativas da População Residente no Brasil e Unidades da Federação, e nos Municípios Brasileiros, publicação no Diário Oficial da União (2019, 2020, 2021, 2024 e 2025, média simples dos anos disponíveis; ver <code>data/populacao-uf-media-2019-2026.json</code> e <code>data/populacao-municipios-media-2019-2026.json</code>).</p>
+            <p>5. População: IBGE, Estimativas da População Residente no Brasil e Unidades da Federação, e nos Municípios Brasileiros, publicação no Diário Oficial da União (2019, 2020, 2021, 2024, 2025 e 2026, com o Censo de 2022 e a interpolação de 2023; ver <code>data/populacao-uf-media-2019-2026.json</code> e <code>data/populacao-municipios-media-2019-2026.json</code>).</p>
             <p>6. Algoritmo de nivelamento e dados desta página: <code>data/build-seguro-receita-repasses.py</code>, saída em <code>data/seguro-receita-repasses.json</code>.</p>
             <p>7. Planilha com memória de cálculo: <code>data/build-seguro-receita-planilha.py</code>, gerada a partir do mesmo algoritmo, verificada numericamente contra ele (diferença menor que R$ 0,01 em todos os anos).</p>
         </div>

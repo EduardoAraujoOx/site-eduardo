@@ -31,27 +31,18 @@ federativos com maior perda de participação relativa na receita").
   o DF ganhar uma linha própria nesse segundo grupo); o teto do próprio DF
   soma as duas médias per capita, multiplicadas pela população do DF.
 
-Simplificações explícitas desta implementação (a lei opera com mais
-granularidade do que uma projeção anual permite):
-  1. MENSAL -> ANUAL. Uso o ano-calendário inteiro como proxy da "média
-     móvel de 12 meses" (não modelo a apuração mês a mês nem o ajuste do
-     §2º para meses de alíquota diferente entre anos).
-  2. POPULAÇÃO: era estimativa 2025 (ponto único) numa versão anterior; já
-     corrigido para a média 2019-2026 exigida pelo art. 117, §§3º-6º -- ver
-     data/build-populacao-municipios.py e build-populacao-uf-media.py.
-     Cobertura real: 2019, 2020, 2021, 2024 e 2025 (5 dos 8 anos pedidos);
-     2022-2023 não têm estimativa anual normal (Censo Demográfico 2022 a
-     substituiu nesses dois anos) e 2026 ainda não foi publicado pelo IBGE.
-  3. DF, numerador: o φ^dest do DF nesta página segue a convenção já
-     estabelecida no Estudo 06 (baseada só no ICMS, sem ISS separado, já
-     que o DF não tem φ^dest municipal próprio calculado em nenhum estudo
-     do site) -- só o TETO (item II) foi corrigido para somar ICMS+ISS,
-     como manda o art. 115, §5º; o numerador (item I) segue com o mesmo
-     escopo (só ICMS) do restante do site, por consistência com o que já
-     foi publicado e revisado.
+Implementação do art. 117 (ver seguro_lei.py):
+  - Numerador: IBS total do ente pelo destino com as alíquotas de referência (art. 108), líquido do CGIBS,
+    e não só a fração que o destino já distribui (1 - alfa). Média móvel de 12 meses, com a correção do §2º
+    (2029 a 2033) e receita constante dentro de cada ano; distribuição mês a mês, resultado anual = soma dos meses.
+  - População: média de 2019 a 2026 completa (build-populacao-sidra.py): estimativas do IBGE em 2019-2021 e
+    2024-2026, Censo de 2022 em 2022 e interpolação em 2023.
+  - DF: numerador e denominador somam as duas esferas (art. 115, §5º, e art. 117, §6º).
+  - Não se deduzem a devolução geral do IBS (art. 107, I) e os créditos presumidos (art. 108, I): os percentuais
+    serão fixados pelo CGIBS e são iguais para todos os entes.
 
 Fórmulas:
-  numerador_ente,a    = ibs_destino_liquido(a) × φ^dest_ente        (cresce)
+  numerador_ente,a    = ibs_bruto(a) × (1 - ca) × φ^dest_ente × fator_do_mês   (média móvel de 12 meses)
   denom_ente           = receita_media_referencia_ente               (fixo)
   teto_ente             = 3 × média_percapita_da_esfera × pop_ente
   denom_capado_ente     = min(denom_ente, teto_ente)
@@ -66,6 +57,7 @@ Uso:
 """
 
 import json
+import seguro_lei
 from pathlib import Path
 from fundos_art115b import fold
 import rateio_consumo_compras as rcc
@@ -245,11 +237,10 @@ def main():
         ibsd = nac['ibs_destino_liquido']
         pool = nac['ibs_seguro_receita']
 
-        for e in entidades:
-            e['numerador'] = ibsd * e['phi_dest']
-
-        pares = [(e['numerador'], e['denom_capado']) for e in entidades]
-        repasses = water_fill(pares, pool)
+        repasses, nums = seguro_lei.seguro_ano([e['denom_capado'] for e in entidades], [e['phi_dest'] for e in entidades],
+                                               nac_by_year, a, water_fill)
+        for e, n_ in zip(entidades, nums):
+            e['numerador'] = n_
 
         soma_repasses = sum(repasses)
         n_beneficiarios = sum(1 for r in repasses if r > 1e-6)

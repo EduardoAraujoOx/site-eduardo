@@ -55,9 +55,9 @@ def nivel_de_nivelamento(entidades):
 
     O repasse é sequencial: quem tem a menor razão entre o IBS-destino
     recebido e a receita de referência ajustada é elevado primeiro, e o fundo
-    se esgota num patamar comum. Conferir que esse patamar é o mesmo para
-    todos os contemplados é o que valida a leitura; se não for, a premissa
-    mudou e a memória estaria contando outra história.
+    se esgota num patamar comum. Com a média móvel mensal (LC 227/2026, art.
+    117, I), o patamar é uniforme em cada mês, não no ano: o nível anual é a
+    média dos meses e varia pouco entre os entes (tolerância de 1%).
     """
     niveis = [
         (e["numerador"] + e["repasse"]) / e["denom_capado"]
@@ -66,7 +66,7 @@ def nivel_de_nivelamento(entidades):
     ]
     if not niveis:
         return None
-    if max(niveis) - min(niveis) > 1e-6:
+    if max(niveis) - min(niveis) > 0.01 * max(niveis):
         raise SystemExit(
             f"nivelamento não é uniforme: {min(niveis):.8f} a {max(niveis):.8f}"
         )

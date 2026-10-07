@@ -32,6 +32,7 @@ Uso: python3 build-seguro-receita-repasses-longo-prazo.py
 """
 
 import json
+import seguro_lei
 from pathlib import Path
 from fundos_art115b import fold
 import rateio_consumo_compras as rcc
@@ -199,11 +200,10 @@ def main():
         ibsd = nac['ibs_destino_liquido']
         pool = nac['ibs_seguro_receita']
 
-        for e in entidades:
-            e['numerador'] = ibsd * e['phi_dest']
-
-        pares = [(e['numerador'], e['denom_capado']) for e in entidades]
-        repasses = water_fill(pares, pool)
+        repasses, nums = seguro_lei.seguro_ano([e['denom_capado'] for e in entidades], [e['phi_dest'] for e in entidades],
+                                               nac_by_year, a, water_fill)
+        for e, n_ in zip(entidades, nums):
+            e['numerador'] = n_
 
         soma_repasses = sum(repasses)
         n_beneficiarios = sum(1 for r in repasses if r > 1e-6)
@@ -217,11 +217,16 @@ def main():
         for e, repasse in zip(entidades, repasses):
             agregado_uf[e['uf']][e['esfera']] += repasse
 
+        niveis = [(e['numerador'] + r) / e['denom_capado'] for e, r in zip(entidades, repasses)
+                  if r > 1e-6 and e['denom_capado'] > 0]
         resultado_por_ano[a] = {
             'pool': pool,
             'soma_repasses': soma_repasses,
             'diff_pool': soma_repasses - pool,
             'n_beneficiarios': n_beneficiarios,
+            'nivel_equalizacao': (sum(niveis) / len(niveis)) if niveis else None,
+            'razao_estados': {e['uf']: e['numerador'] / e['denom_capado'] for e in entidades
+                              if e['esfera'] == 'estado' and e['denom_capado'] > 0},
             'repasse_por_uf': agregado_uf,
         }
         if a in (2029, 2033, 2034, 2043, 2053, 2063, 2073, 2077):
