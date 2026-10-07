@@ -209,6 +209,22 @@ main{max-width:var(--max);margin:0 auto;padding:1.75rem 1.25rem 4rem}
 .seguro-value{font-size:1.5rem;font-weight:700;color:#8a6200}
 .seguro-value.muted{color:var(--ink-muted);font-size:1.15rem}
 .seguro-note{font-size:0.8rem;color:var(--ink-light);margin-top:0.6rem;line-height:1.55}
+.seg-prosa p{font-size:0.92rem;line-height:1.7;color:var(--ink-light);margin-bottom:0.8rem;max-width:62rem}
+.seg-prosa p:last-child{margin-bottom:0}
+.seg-scroll{max-height:34rem;overflow:auto;border:1px solid var(--border);border-radius:8px}
+.seg-scroll table.data{margin:0}
+.seg-scroll thead th{position:sticky;top:0;background:#f4f6f7;z-index:2}
+tr.seg-linha{cursor:pointer}
+tr.seg-linha:hover td{background:#f7f9fa}
+tr.seg-linha td:first-child::before{content:'▸';display:inline-block;width:1rem;color:var(--ink-muted);font-size:0.7rem}
+tr.seg-linha.aberta td:first-child::before{content:'▾'}
+tr.seg-detalhe td{background:#fbfaf5;padding:0.9rem 1.1rem;white-space:normal}
+.seg-detalhe-txt{font-size:0.84rem;line-height:1.6;color:var(--ink-light);margin-bottom:0.7rem;max-width:60rem}
+.seg-link{background:none;border:0;color:var(--teal);font-size:0.8rem;font-weight:600;padding:0;text-decoration:underline;cursor:pointer}
+.seg-contagem{font-size:0.8rem;color:var(--ink-muted);margin:0.6rem 0 0}
+tr.seg-resumo-linha{cursor:pointer}
+tr.seg-resumo-linha:hover td{background:#f7f9fa}
+
 
 /* ── breadcrumb ── */
 .breadcrumb{font-size:0.82rem;color:var(--ink-muted);margin-bottom:0.9rem}
@@ -550,6 +566,10 @@ footer.site-foot a:hover{text-decoration:underline}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
             Rankings
         </button>
+        <button class="tab-btn" data-view="seguro-receita">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 3v6c0 4.5-3.2 7.6-8 9-4.8-1.4-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+            Seguro-Receita
+        </button>
         <button class="tab-btn" data-view="coeficientes">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h2M12 10h2M16 10h.01M8 14h2M12 14h2M16 14v4M8 18h6"/></svg>
             Coeficientes
@@ -749,6 +769,44 @@ footer.site-foot a:hover{text-decoration:underline}
     </div>
 </section>
 
+<!-- ============ SEGURO-RECEITA ============ -->
+<section class="view" id="view-seguro-receita">
+    <div class="view-head">
+        <h2>Seguro-Receita</h2>
+        <p class="sub">Quem recebe o fundo de nivelamento do IBS entre 2029 e 2033, e por quê.</p>
+    </div>
+
+    <div class="panel seg-prosa">
+        <h3>O que é</h3>
+        <p>O Seguro-Receita é um fundo previsto no art. 132 do ADCT e regulado pelos arts. 106 a 110 e 117 da LC 227/2026. Ele reserva 5% do IBS distribuído pelo critério de destino para complementar a receita dos estados e municípios que mais perdem na troca do ICMS e do ISS pelo IBS. Funciona como um piso de transição, e não como um benefício permanente.</p>
+        <p>A regra se resume a uma razão calculada para cada ente. No numerador entra o IBS que o ente receberia se todo o imposto fosse repartido pelo destino, medido pela média dos últimos doze meses, com as alíquotas de referência e já líquido do CGIBS. No denominador entra a receita média de referência do ente em 2019–2026, limitada a três vezes a média per capita da esfera (estadual ou municipal). O fundo atende primeiro os entes de menor razão e os eleva, todos, até um mesmo nível, o nível de equalização do ano, até que o dinheiro acabe. Quem já está acima desse nível não recebe nada.</p>
+        <p>Como o fundo e o IBS pelo destino crescem a cada ano, o nível sobe e a lista de beneficiados muda. As tabelas abaixo mostram, para cada ano de 2029 a 2033, o nível, quem recebe e as contas de cada ente. Os valores estão em reais de 2025. Para os estados, a ficha de cada UF mostra ainda quando ela passa a receber ao longo da transição, até 2077. Para os municípios, só há estimativa individual até 2033.</p>
+    </div>
+
+    <div class="panel">
+        <h3>Resumo por ano</h3>
+        <p class="panel-sub">Clique num ano para ver os beneficiados daquele ano na lista abaixo.</p>
+        <div class="table-wrap"><table class="data" id="segResumo"></table></div>
+    </div>
+
+    <div class="panel" id="segListaPanel">
+        <h3>Entes beneficiados</h3>
+        <p class="panel-sub">Clique num ente para ver o numerador, o denominador e a razão em cada ano, e o motivo de ele entrar no fundo.</p>
+        <div class="table-tools">
+            <select class="select-uf" id="segAno" aria-label="Ano"></select>
+            <select class="select-uf" id="segUf" aria-label="Estado"></select>
+            <select class="select-uf" id="segEsfera" aria-label="Esfera">
+                <option value="">Estados e municípios</option>
+                <option value="estado">Só estados</option>
+                <option value="municipio">Só municípios</option>
+            </select>
+            <input type="text" class="search-input" id="segBusca" placeholder="Buscar pelo nome…">
+        </div>
+        <div class="seg-scroll"><table class="data" id="segLista"></table></div>
+        <p class="seg-contagem" id="segContagem"></p>
+    </div>
+</section>
+
 <!-- ============ COEFICIENTES ============ -->
 <section class="view" id="view-coeficientes">
     <div class="view-head">
@@ -822,7 +880,7 @@ footer.site-foot a:hover{text-decoration:underline}
         <p>Quando a transição se completa, a distribuição passa a seguir o local de consumo e, nas compras dos governos, o ente comprador. Para as UFs, o coeficiente é a média de três estimativas da participação na base tributável do IBS (despesa tributável da POF 2017–2018 por pessoa vezes os moradores do Censo 2022; a mesma atualizada pela renda relativa da PNAD Contínua entre 2018 e 2022; e a distribuição de renda por classe de salário mínimo do Censo 2022 vezes o consumo tributável por classe da POF), com a incerteza medida pela dispersão entre as rotas e por uma validação dentro da POF; o composto fica mais próximo da base de Gobetti e da nota técnica do COMSEFAZ do que o consumo bruto usado até outubro de 2026. Como não há uma medida direta de consumo por município, o painel estima o consumo a partir da renda domiciliar per capita do Censo 2022 (média e mediana de cada município) e da elasticidade-renda do consumo estimada nos microdados da Pesquisa de Orçamentos Familiares (POF 2017–2018), de 0,80: o consumo cresce menos que a renda. A parcela do IBS que vem das compras públicas é distribuída pela despesa de compras de cada governo (CF art. 149-C; LC 214/2025, arts. 472 e 473; ver Estudo 17). O coeficiente por UF é validado externamente contra a estimativa de Gobetti e Monteiro (2023), pelo desvio médio absoluto e pela correlação de Pearson entre as duas séries.</p>
 
         <h3>Seguro-Receita</h3>
-        <p>O ADCT (art. 132) reserva uma fração do IBS pelo critério de destino (5%) para um fundo que repassa aos entes cuja receita, por esse critério, ficar abaixo de um nível de nivelamento em relação à sua receita de referência. A distribuição é sequencial, não proporcional: o fundo eleva primeiro os entes de menor razão e se esgota num patamar comum, que é o nível do ano. Como o fundo é uma fração fixa do IBS de destino, e este cresce à medida que o ICMS e o ISS são extintos, tanto o montante do fundo quanto o nível sobem ano a ano; na projeção o fundo vai de R$ 1,10 bilhão em 2029 a R$ 5,97 bilhões em 2033, e o repasse da grande maioria dos contemplados cresce no período. Um ente deixa de receber quando sua própria receita de destino alcança o nível, não pelo simples decurso do prazo.</p>
+        <p>O ADCT (art. 132) reserva 5% do IBS pelo critério de destino para um fundo que repassa aos entes cuja razão fica abaixo de um nível de equalização. A razão é o IBS que o ente receberia se todo o imposto fosse repartido pelo destino, com as alíquotas de referência, líquido do CGIBS e em média móvel de doze meses (LC 227/2026, art. 108), dividido pela sua receita média de referência de 2019–2026, limitada a três vezes a média per capita da esfera (art. 117). A distribuição é sequencial, não proporcional: o fundo eleva primeiro os entes de menor razão e se esgota num patamar comum, que é o nível do ano. Como o fundo é uma fração do IBS de destino, e este cresce à medida que o ICMS e o ISS são extintos, o montante do fundo e o nível sobem ano a ano; na projeção, o fundo vai de R$ 1,10 bilhão em 2029 a R$ 5,99 bilhões em 2033, com o nível de equalização passando de 0,06 a 0,65. Um ente deixa de receber quando sua razão alcança o nível, não pelo simples decurso do prazo. O painel não aplica a devolução geral (art. 107, I) nem os créditos presumidos (art. 108, I) ao numerador. A aba Seguro-Receita lista os beneficiados ano a ano, com numerador, denominador e razão de cada um.</p>
 
         <h3>Projeção 2029–2033</h3>
         <p>Há dois cronogramas distintos, e é fácil confundi-los. O ADCT (art. 128) reduz a alíquota do ICMS e do ISS a cada ano, de 2029 a 2032, e os extingue por completo em 2033; a partir desse ano, todo o "bolo" já é IBS. Dentro do IBS, um segundo cronograma, separado (ADCT art. 131, §1º), pondera o critério histórico e o de destino: a fração histórica é de 80% em 2029–2032 e sobe para 90% em 2033, só caindo a partir de 2034, à razão de um quarenta e cinco avos por ano, até chegar a 100% destino em 2078, não em 2033. A projeção da receita de referência nacional segue as medianas do Boletim Focus (BCB) para o crescimento real do PIB, mantendo constante a razão observada entre o "bolo" tributário e o PIB.</p>
@@ -971,6 +1029,7 @@ function montarInfos(raiz){
 let RESULTADOS = null;      // resultados-consolidados-ibs.json
 let NACIONAL = null;        // ibs-projecao-nacional.json
 let ESTADOS = null;         // painel-estados.json .estados
+let SEG = null;             // painel-seguro-receita.json (beneficiários, níveis, trajetória dos estados)
 let FAIXA_DEST = null;      // faixa-phi-dest-estados.json (só governo estadual)
 let MUNI_INDEX = null;      // painel-municipios/index.json .municipios (cod -> {nome,uf})
 const ufMuniCache = {};     // uf -> {cod: registro completo}
@@ -1006,35 +1065,39 @@ function showView(name){
     // antes de os dados existirem; nesse caso quem desenha é o loadCore.
     if (name === 'municipios' && MUNI_INDEX) renderMuniMapa();
     if (name === 'coeficientes' && ESTADOS) renderMemoria();
+    if (name === 'seguro-receita') renderSeguro();
     if (name === 'simulacoes' && ESTADOS) renderSimulacoes();
     window.scrollTo({top:0});
     history.replaceState(null, '', '#' + name);
 }
 tabs.forEach(t => t.addEventListener('click', () => showView(t.dataset.view)));
 const initialHash = location.hash.replace('#','');
-if (['visao-geral','estados','municipios','rankings','coeficientes','simulacoes','metodologia','sobre'].includes(initialHash)) {
+if (['visao-geral','estados','municipios','rankings','seguro-receita','coeficientes','simulacoes','metodologia','sobre'].includes(initialHash)) {
     showView(initialHash);
 }
 
 // ── carregamento dos dados principais (leves; municípios completos são por UF, sob demanda) ──
 async function loadCore(){
-    const [r1, r2, r3, r4, r5] = await Promise.all([
+    const [r1, r2, r3, r4, r5, r6] = await Promise.all([
         fetch('/data/resultados-consolidados-ibs.json').then(r=>r.json()),
         fetch('/data/ibs-projecao-nacional.json').then(r=>r.json()),
         fetch('/data/painel-estados.json').then(r=>r.json()),
         fetch('/data/painel-municipios/index.json').then(r=>r.json()),
         fetch('/data/faixa-phi-dest-estados.json').then(r=>r.ok ? r.json() : null).catch(()=>null),
+        fetch('/data/painel-seguro-receita.json').then(r=>r.ok ? r.json() : null).catch(()=>null),
     ]);
     RESULTADOS = r1;
     NACIONAL = r2;
     ESTADOS = r3.estados;
     MUNI_INDEX = r4.municipios;
     FAIXA_DEST = r5;
+    SEG = r6;
     renderContextoNacional();
     renderMapaTabela();
     renderMap();
     populateUfSelect();
     renderRankings();
+    if (document.getElementById('view-seguro-receita').classList.contains('active')) renderSeguro();
     if (document.getElementById('view-estados').classList.contains('active')) renderUfView();
     if (document.getElementById('view-municipios').classList.contains('active')) renderMuniMapa();
     if (document.getElementById('view-coeficientes').classList.contains('active')) renderMemoria();
@@ -1322,9 +1385,9 @@ function statBandHtml(ctx){
     const v = ctx.varByYear['2033'];
     const cls = v == null ? '' : (v >= 0 ? 'pos' : 'neg');
     const rumo = v == null ? '' : (v >= 0 ? 'acima do cenário sem a reforma' : 'abaixo do cenário sem a reforma');
-    const seguro2033 = (ctx.repasse && ctx.repasse['2033']) || 0;
-    const recebeSeguro = ANOS.some(a => ((ctx.repasse && ctx.repasse[String(a)]) || 0) > 1);
-    const seguroTexto = seguro2033 > 1 ? fmtMoney(seguro2033) : (recebeSeguro ? 'Só até 2032' : 'Não recebe');
+    const sg = seguroSituacao(ctx);
+    const seguroTexto = sg.valorTile;
+    const seguroRotulo = sg.recebe2033 ? 'Seguro-Receita 2033' : 'Seguro-Receita';
     return `
         <div class="stat-hero ${cls}">
             <div class="stat-label">Variação em 2033</div>
@@ -1342,7 +1405,7 @@ function statBandHtml(ctx){
                 <div class="stat-value">${fmtMoney(ctx.posByYear['2033'])}</div>
             </div>
             <div class="stat-tile">
-                <div class="stat-label">Seguro-Receita 2033</div>
+                <div class="stat-label">${seguroRotulo}</div>
                 <div class="stat-value">${seguroTexto}</div>
             </div>
         </div>`;
@@ -1369,29 +1432,75 @@ function coefTilesHtml(neutro, cpt, pleno){
     </div>`;
 }
 
-function seguroCardHtml(repasseByYear, posByYear){
-    const v2033 = (repasseByYear && repasseByYear['2033']) || 0;
-    const recebeAlgumAno = ANOS.some(a => ((repasseByYear && repasseByYear[String(a)]) || 0) > 1);
-    if (!recebeAlgumAno) {
-        return `<div class="seguro-card">
-            <div class="seguro-label">Seguro-Receita (ADCT art. 132)</div>
-            <div class="seguro-value muted">Não recebe</div>
-            <div class="seguro-note">Em 2029–2033, a receita deste ente pelo critério de destino fica acima do nível de nivelamento em todos os anos do período; não há repasse.</div>
+// Em que anos o ente recebe do Seguro-Receita. Para os estados há trajetória
+// até 2077 (SEG.estados_longo); para os municípios, só 2029–2033, porque o
+// horizonte longo existe publicado apenas agregado por UF.
+function faixaAnos(anos, plano){
+    const runs = [];
+    anos.forEach(a => {
+        const r = runs[runs.length-1];
+        if (r && a === r[1] + 1) r[1] = a; else runs.push([a, a]);
+    });
+    if (plano) return runs.map(([a, b]) => a === b ? String(a) : `${a}–${b}`).join(', ');
+    const txt = runs.map(([a, b]) => a === b ? `em ${a}` : `de ${a} a ${b}`);
+    return txt.length > 1 ? txt.slice(0,-1).join(', ') + ' e ' + txt[txt.length-1] : txt[0];
+}
+function seguroSituacao(ctx){
+    const rep = ctx.repasse || {};
+    const v2033 = rep['2033'] || 0;
+    const anos = ANOS.filter(a => (rep[String(a)] || 0) > 1);
+    const estado = ctx.esfera === 'estado' && SEG && SEG.estados_longo && SEG.estados_longo[ctx.uf];
+    const longo = estado ? SEG.estados_longo[ctx.uf].anos : null;
+    const hor = SEG ? SEG.horizonte : 2077;
+    const r = { v2033, anos, longo, hor, recebe2033: v2033 > 1 };
+    if (r.recebe2033) r.valorTile = fmtMoney(v2033);
+    else if (longo) r.valorTile = longo.length === 0 ? 'Não recebe até ' + hor : (longo[0] > 2033 ? 'A partir de ' + longo[0] : 'Só ' + faixaAnos(longo));
+    else r.valorTile = anos.length ? 'Só ' + faixaAnos(anos) : 'Não recebe até 2033';
+    return r;
+}
+
+function seguroCardHtml(repasseByYear, posByYear, ctx){
+    const sg = seguroSituacao(ctx || {repasse: repasseByYear, esfera: 'municipio'});
+    const rot = '<div class="seguro-label">Seguro-Receita (ADCT art. 132)</div>';
+    // O link só existe para quem aparece na lista de beneficiados de 2029–2033.
+    const idEnte = ctx && ctx.esfera ? (ctx.esfera === 'estado' ? 'UF-' + ctx.uf : 'MUN-' + ctx.cod) : null;
+    const veria = idEnte && SEG && SEG.entes.some(x => x.id === idEnte)
+        ? `<p class="seguro-note"><button type="button" class="seg-link" data-seg-ver="${idEnte}">Ver as contas do ente na aba Seguro-Receita</button></p>` : '';
+    if (sg.recebe2033) {
+        const total2033 = posByYear && posByYear['2033'];
+        const share = total2033 ? (sg.v2033/total2033*100) : null;
+        const quando = sg.longo
+            ? `Pela projeção, recebe ${faixaAnos(sg.longo)}.`
+            : `Recebe ${faixaAnos(sg.anos)}; depois de 2033 o painel não estima o repasse município a município.`;
+        return `<div class="seguro-card recebe">${rot}
+            <div class="seguro-value">${fmtMoney(sg.v2033)}</div>
+            <div class="seguro-note">Repasse bruto em 2033${share!=null ? ' ('+share.toLocaleString('pt-BR',{maximumFractionDigits:1})+'% da receita projetada do ente naquele ano)' : ''}. ${quando}</div>${veria}
         </div>`;
     }
-    if (v2033 <= 1) {
-        return `<div class="seguro-card recebe">
-            <div class="seguro-label">Seguro-Receita (ADCT art. 132)</div>
-            <div class="seguro-value muted">Não recebe em 2033</div>
-            <div class="seguro-note">Recebeu repasse em anos anteriores da transição, mas deixa de receber a partir de 2033: a receita própria pelo critério de destino alcançou o nível de nivelamento daquele ano.</div>
+    if (sg.longo) {
+        if (!sg.longo.length) {
+            return `<div class="seguro-card">${rot}
+                <div class="seguro-value muted">${sg.valorTile}</div>
+                <div class="seguro-note">Em nenhum ano da projeção, de 2029 a ${sg.hor}, a razão deste ente fica abaixo do nível de equalização. O fundo não o atende nesse horizonte.</div>
+            </div>`;
+        }
+        const depois = sg.longo[0] > 2033;
+        return `<div class="seguro-card recebe">${rot}
+            <div class="seguro-value muted">${sg.valorTile}</div>
+            <div class="seguro-note">${depois
+                ? `Não recebe de 2029 a 2033. Passa a receber em ${sg.longo[0]}, quando a razão do ente cai abaixo do nível de equalização, que sobe a cada ano. Recebe ${faixaAnos(sg.longo)}.`
+                : `Recebe ${faixaAnos(sg.longo)} e não em 2033: nesse ano a receita de destino do ente alcançou o nível de equalização.`}</div>${veria}
         </div>`;
     }
-    const total2033 = posByYear && posByYear['2033'];
-    const share = total2033 ? (v2033/total2033*100) : null;
-    return `<div class="seguro-card recebe">
-        <div class="seguro-label">Seguro-Receita (ADCT art. 132)</div>
-        <div class="seguro-value">${fmtMoney(v2033)}</div>
-        <div class="seguro-note">Repasse bruto em 2033${share!=null ? ' ('+share.toLocaleString('pt-BR',{maximumFractionDigits:1})+'% da receita projetada do ente naquele ano)' : ''}. Veja a memória de cálculo para a série ano a ano e o nível de nivelamento de cada ano.</div>
+    if (sg.anos.length) {
+        return `<div class="seguro-card recebe">${rot}
+            <div class="seguro-value muted">${sg.valorTile}</div>
+            <div class="seguro-note">Recebeu repasse ${faixaAnos(sg.anos)} e deixa de receber em 2033: a receita de destino do ente alcançou o nível de equalização. Depois de 2033 o painel não estima o repasse município a município.</div>${veria}
+        </div>`;
+    }
+    return `<div class="seguro-card">${rot}
+        <div class="seguro-value muted">${sg.valorTile}</div>
+        <div class="seguro-note">Em 2029–2033 a razão deste município fica acima do nível de equalização em todos os anos, e o fundo não o atende. O nível sobe com o tempo, e o painel só estima o repasse por município até 2033; depois disso, só por UF.</div>
     </div>`;
 }
 
@@ -1854,7 +1963,7 @@ function renderFicha(idPrefix, nome, ctx){
     document.getElementById(idPrefix+'StatBand').innerHTML = statBandHtml(ctx);
     document.getElementById(idPrefix+'Frase').innerHTML = fraseResumo(nome, ctx.contraByYear['2033'], ctx.posByYear['2033'], ctx.varByYear['2033']);
     document.getElementById(idPrefix+'CoefTiles').innerHTML = coefTilesHtml(ctx.neutro, ctx.cpt, ctx.pleno);
-    document.getElementById(idPrefix+'Seguro').innerHTML = seguroCardHtml(ctx.repasse, ctx.posByYear);
+    document.getElementById(idPrefix+'Seguro').innerHTML = seguroCardHtml(ctx.repasse, ctx.posByYear, ctx);
     document.getElementById(idPrefix+'Historico').innerHTML = historicoTableHtml(ctx.historico, ctx.fieldKey);
 
     const labels = [...HIST_ANOS.map(String), ...ANOS.map(String)];
@@ -2698,6 +2807,113 @@ document.getElementById('memoUfSelect').addEventListener('change', e => {
 });
 document.getElementById('memoMuniSelect').addEventListener('change', e => {
     MEMO.cod = e.target.value; renderMemoria();
+});
+
+
+// ── SEGURO-RECEITA (aba) ──
+const SEGF = { ano:'2033', uf:'', esfera:'', busca:'', pronto:false };
+const escHtml = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const nomeEnte = e => e.esfera === 'estado' ? NOMES_UF[e.uf] : e.nome;
+const SEG_MIN = 1;
+
+function segIniciar(){
+    document.getElementById('segAno').innerHTML = SEG.anos.map(a => `<option value="${a}">Beneficiados em ${a}</option>`).join('')
+        + `<option value="todos">Em qualquer ano de ${SEG.anos[0]} a ${SEG.anos[SEG.anos.length-1]}</option>`;
+    document.getElementById('segUf').innerHTML = '<option value="">Todas as UFs</option>' + UFS.map(u => `<option value="${u}">${NOMES_UF[u]}</option>`).join('');
+    const ligar = (id, k, ev) => document.getElementById(id).addEventListener(ev, e => { SEGF[k] = e.target.value; segLista(); });
+    ligar('segAno','ano','change'); ligar('segUf','uf','change'); ligar('segEsfera','esfera','change'); ligar('segBusca','busca','input');
+    SEGF.pronto = true;
+}
+
+function renderSeguro(){
+    const tab = document.getElementById('segResumo');
+    if (!SEG) { tab.innerHTML = '<tbody><tr><td class="table-empty">Carregando…</td></tr></tbody>'; return; }
+    if (!SEGF.pronto) segIniciar();
+    document.getElementById('segAno').value = SEGF.ano;
+    tab.innerHTML = '<thead><tr><th>Ano</th><th class="num">Fundo</th><th class="num">Nível de equalização</th><th class="num">Estados</th><th class="num">Municípios</th><th class="num">Entes atendidos</th></tr></thead><tbody>'
+        + SEG.anos.map(a => {
+            const n = SEG.niveis[a];
+            return `<tr class="seg-resumo-linha" data-ano="${a}"><td><b>${a}</b></td><td class="num">${fmtMoney(n.fundo)}</td><td class="num">${fmtRs2(n.nivel)}</td><td class="num">${n.n_estados}</td><td class="num">${fmtNum(n.n_municipios)}</td><td class="num">${fmtNum(n.n_estados + n.n_municipios)}</td></tr>`;
+        }).join('') + '</tbody>';
+    tab.querySelectorAll('tr[data-ano]').forEach(tr => tr.addEventListener('click', () => {
+        SEGF.ano = tr.dataset.ano; document.getElementById('segAno').value = SEGF.ano; segLista();
+        document.getElementById('segListaPanel').scrollIntoView({behavior:'smooth', block:'start'});
+    }));
+    segLista();
+}
+
+function segLista(){
+    const todos = SEGF.ano === 'todos';
+    const q = norm(SEGF.busca);
+    let rows = SEG.entes.filter(e =>
+        (!SEGF.uf || e.uf === SEGF.uf) &&
+        (!SEGF.esfera || (SEGF.esfera === 'estado' ? e.esfera === 'estado' : e.esfera !== 'estado')) &&
+        (!q || norm(nomeEnte(e)).includes(q)) &&
+        (todos ? e.acumulado > SEG_MIN : e.anos[SEGF.ano].rep > SEG_MIN));
+    rows = rows.slice().sort((a, b) => todos ? b.acumulado - a.acumulado : b.anos[SEGF.ano].rep - a.anos[SEGF.ano].rep);
+    const tab = document.getElementById('segLista');
+    const cab = todos
+        ? '<th>Ente</th><th>UF</th><th>Esfera</th><th>Anos com repasse</th><th class="num">Repasse acumulado</th>'
+        : '<th>Ente</th><th>UF</th><th>Esfera</th><th class="num">Razão</th><th class="num">Nível</th><th class="num">Repasse</th>';
+    const ncol = todos ? 5 : 6;
+    tab.innerHTML = `<thead><tr>${cab}</tr></thead><tbody>` + (rows.length ? rows.map(e => {
+        const base = `<td>${escHtml(nomeEnte(e))}</td><td>${e.uf}</td><td>${e.esfera === 'estado' ? 'Estado' : 'Município'}</td>`;
+        if (todos) {
+            const anos = SEG.anos.filter(a => e.anos[a].rep > SEG_MIN);
+            return `<tr class="seg-linha" data-id="${e.id}">${base}<td>${faixaAnos(anos, true)}</td><td class="num">${fmtMoney(e.acumulado)}</td></tr>`;
+        }
+        const y = e.anos[SEGF.ano];
+        return `<tr class="seg-linha" data-id="${e.id}">${base}<td class="num">${fmtRs2(y.razao)}</td><td class="num">${fmtRs2(SEG.niveis[SEGF.ano].nivel)}</td><td class="num">${fmtMoney(y.rep)}</td></tr>`;
+    }).join('') : `<tr><td colspan="${ncol}" class="table-empty">Nenhum ente atende aos filtros.</td></tr>`) + '</tbody>';
+    const soma = rows.reduce((t, e) => t + (todos ? e.acumulado : e.anos[SEGF.ano].rep), 0);
+    document.getElementById('segContagem').textContent = rows.length
+        ? `${fmtNum(rows.length)} ${rows.length === 1 ? 'ente' : 'entes'}, somando ${fmtMoney(soma)}${todos ? ' no acumulado do período' : ' em ' + SEGF.ano}.`
+        : '';
+    tab.querySelectorAll('tr.seg-linha').forEach(tr => tr.addEventListener('click', () => segDetalhe(tr, ncol)));
+}
+
+function segDetalhe(tr, ncol){
+    const prox = tr.nextElementSibling;
+    const aberta = tr.classList.contains('aberta');
+    if (prox && prox.classList.contains('seg-detalhe')) prox.remove();
+    tr.classList.toggle('aberta', !aberta);
+    if (aberta) return;
+    const e = SEG.entes.find(x => x.id === tr.dataset.id);
+    const ano = SEGF.ano !== 'todos' ? SEGF.ano : String(SEG.anos.find(a => e.anos[a].rep > SEG_MIN));
+    const y = e.anos[ano], nv = SEG.niveis[ano].nivel;
+    const alvo = e.esfera === 'estado' ? 'estados' : 'municípios';
+    const linhas = SEG.anos.map(a => {
+        const z = e.anos[a], n = SEG.niveis[a].nivel, rec = z.rep > SEG_MIN;
+        return `<tr><td>${a}</td><td class="num">${fmtMoney(z.num)}</td><td class="num">${fmtMoney(z.den)}</td><td class="num">${fmtRs2(z.razao)}</td><td class="num">${fmtRs2(n)}</td><td class="num">${rec ? fmtMoney(z.rep) : '—'}</td><td>${rec ? 'Recebe' : 'Acima do nível'}</td></tr>`;
+    }).join('');
+    const texto = `<p class="seg-detalhe-txt"><b>Por que entra.</b> Em ${ano}, a razão do ente (numerador dividido por denominador) é ${fmtRs2(y.razao)}, abaixo do nível de equalização de ${fmtRs2(nv)}. O fundo eleva, então, todos os ${alvo} de razão inferior até esse nível, o que dá a este ente ${fmtMoney(y.rep)}. Em linhas gerais, o repasse é o nível vezes o denominador, menos o numerador; o cálculo da lei é mensal e a tabela mostra a média do ano.</p>
+        <p class="seg-detalhe-txt"><b>Denominador.</b> A receita média de referência do ente em 2019–2026 é de ${fmtMoney(e.denom_ref)}, e o teto de três vezes a média per capita dos ${alvo} é de ${fmtMoney(e.teto)}. Vale o menor valor, que aqui é ${e.teto_aplicado ? 'o teto, e por isso o denominador fica abaixo da receita de referência' : 'a receita de referência'}.</p>`;
+    const det = document.createElement('tr');
+    det.className = 'seg-detalhe';
+    det.innerHTML = `<td colspan="${ncol}">${texto}
+        <div class="table-wrap"><table class="data" style="font-size:0.8rem"><thead><tr><th>Ano</th><th class="num">Numerador (IBS pelo destino)</th><th class="num">Denominador</th><th class="num">Razão</th><th class="num">Nível</th><th class="num">Repasse</th><th>Situação</th></tr></thead><tbody>${linhas}</tbody></table></div>
+        <p style="margin-top:0.7rem"><button type="button" class="seg-link" data-seg-ficha="${e.id}">Abrir a ficha do ente</button></p></td>`;
+    tr.after(det);
+}
+
+document.addEventListener('click', ev => {
+    const f = ev.target.closest('[data-seg-ficha]');
+    if (f) {
+        const id = f.dataset.segFicha;
+        if (id.startsWith('UF-')) { selectedUf = id.slice(3); showView('estados'); }
+        else { showView('municipios'); openMunicipio(id.slice(4)); }
+        return;
+    }
+    const v = ev.target.closest('[data-seg-ver]');
+    if (v) {
+        const e = SEG && SEG.entes.find(x => x.id === v.dataset.segVer);
+        SEGF.busca = e ? nomeEnte(e) : ''; SEGF.uf = e ? e.uf : ''; SEGF.esfera = ''; SEGF.ano = 'todos';
+        showView('seguro-receita');
+        const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+        set('segBusca', SEGF.busca); set('segUf', SEGF.uf); set('segEsfera', ''); set('segAno', 'todos');
+        segLista();
+        document.getElementById('segListaPanel').scrollIntoView({block:'start'});
+    }
 });
 
 // ── RANKINGS ──
