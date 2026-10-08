@@ -1,0 +1,21 @@
+# Literatura de apoio (somente consulta)
+
+PDFs de trabalhos usados na revisão de literatura do artigo sobre o Paraná e nos estudos do site. A pasta não é publicada no site (exclusão em `.vercelignore` e em `.github/workflows/deploy.yml`), mas o repositório é público no GitHub. Todos os arquivos são de acesso aberto nas fontes indicadas; a licença de redistribuição só foi conferida onde está dito. Para extrair o texto: `pdftotext -layout arquivo.pdf saida.txt`. Acesso em 8 out. 2026.
+
+Obras de acesso restrito (Delalibera et al., 2024, *Journal of Economic Dynamics and Control*; Oates, 1999, *Journal of Economic Literature*) e a OECD (2017, *International VAT/GST Guidelines*) não foram baixadas e devem ser consultadas nas fontes.
+
+## Arquivos
+
+**`gobetti-monteiro-2023-cc60-nota18.pdf`.** GOBETTI, S. W.; MONTEIRO, P. K. Impactos redistributivos da reforma tributária: estimativas atualizadas. Carta de Conjuntura, Brasília, n. 60, Nota de Conjuntura 18, 3.º trim. 2023. Fonte: repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download. Conferido no texto: cenário estático com base em 2022 e no texto da reforma aprovado pela Câmara; "60% dos estados" e "82% dos municípios" ganham (p. 1), o que equivale a 78% das UFs somando estado e municípios (nota 2); Tabela 1: Paraná passa de R$ 47,372 bi para R$ 54,804 bi (saldo de R$ 7,432 bi, ou +15,7%, cálculo próprio, pois a nota não publica o percentual); Tabela 2: 361 dos 399 municípios paranaenses ganham.
+
+**`haddad-araujo-sacco-2023-nereus-td08.pdf`.** HADDAD, E. A.; ARAÚJO, I. F.; SACCO, J. G. Reforma tributária no Brasil: impactos regionais da PEC 45/2019. São Paulo: NEREUS/USP, 2023. (TD Nereus 08-2023). Fonte: usp.br/nereus/wp-content/uploads/TD_NEREUS_08_2023.pdf. Modelo de equilíbrio geral computável inter-regional. Conferido no texto: sem fundo compensatório, AM, BA, SP, PR, SC, RS, MT e GO tenderiam a perder arrecadação do IBS (resumo e p. 26). Tabela 5A, regime 1, cenário 5 (R$ milhões de 2019, estados e municípios somados): Paraná passa de 45.535 para 39.771, uma perda de 5.763 (−12,7%). O sinal para o Paraná é oposto ao de Gobetti e Monteiro.
+
+**`orair-gobetti-2021-cadernos-financas-publicas.pdf`.** ORAIR, R. O.; GOBETTI, S. W. Reforma tributária e federalismo fiscal: uma análise das propostas de criação de um novo imposto sobre o valor adicionado para o Brasil. Cadernos de Finanças Públicas, Brasília, v. 21, n. 1, p. 1-51, 2021. DOI 10.55532/1806-8944.2021.131. Fonte: publicacoes.tesouro.gov.br/index.php/cadernos/article/download/131/113. Estima a alíquota neutra do IBS e sua divisão entre os entes, simula a regra de transição para a partilha pelo destino e avalia os efeitos sobre a partilha federativa.
+
+**`araujo-et-al-2024-revista-tcu-154.pdf`.** ARAÚJO, E. S.; LEITE, J. P. D.; MENEZES, M. A. S.; NUNES, S. G. C. Reforma tributária no Brasil: análise bibliométrica e revisão sistemática. Revista do TCU, Brasília, v. 154, n. 1, p. 32-51, jul./dez. 2024. DOI 10.69518/rtcu.154.32-51. Fonte: revista.tcu.gov.br/ojs/index.php/RTCU/article/download/1929/1986. Licença CC BY 4.0 (conferida na página da revista). O resumo registra 16 artigos, de Web of Science, Scopus e SciELO, cobrindo os últimos 23 anos.
+
+**`cebreiro-gomez-et-al-2025-imf-wp-25-266.pdf`.** CEBREIRO GOMEZ, A.; DAL PIZZOL, G.; KOLERUS, C.; MOREIRA, P.; PECHO, M. Brazil's VAT reform: ensuring revenue neutrality. Washington, DC: IMF, dez. 2025. (IMF Working Paper WP/25/266). Fonte: imf.org/-/media/files/publications/wp/2025/english/wpiea2025266-source-pdf.pdf. A ordem dos autores é a do documento. Conferido no resumo: a neutralidade depende sobretudo do hiato de conformidade e da informalidade, e a gestão do crédito do imposto é crítica.
+
+**`prado-2025-dimensao-federativa.pdf`.** PRADO, S. A dimensão federativa da reforma tributária: uma síntese didática e vários pontos críticos. Redação final jun. 2025 (139 p.). Fonte: joserobertoafonso.com.br/wp-content/uploads/2025/08/A_DIMENSAO_FEDERATIVA_DA_REFORMA_TRIBUTARIA.pdf. Ainda não lido em detalhe.
+
+**`afonso-1992-estudos-economicos.pdf`.** AFONSO, J. R. R. Aspectos conceituais das relações financeiras intergovernamentais. Estudos Econômicos, São Paulo, v. 22, n. 1, p. 5-34, 1992. DOI 10.11606/1980-53572211jrra. Fonte: revistas.usp.br/ee/article/download/158775/153774.
