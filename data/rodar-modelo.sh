@@ -35,6 +35,7 @@ modelo() {
   run build-faixa-phi-dest.py          # confere contra painel-estados e resultados-consolidados
   run build-painel-municipios.py
   run build-painel-seguro-receita.py   # aba Seguro-Receita do painel (grava também em painelufir/data)
+  run build-sensibilidade-painel.py     # aba Sensibilidade do painel (grava também em painelufir/data)
   run build-memoria-calculo.py
   run build-carga-implicita-uf.py
   run build-divergencia-vs-nota-v22.py

@@ -484,6 +484,61 @@ footer.site-foot a:hover{text-decoration:underline}
 /* Faixa entre o menor e o maior método de estimar o consumo (φdest): um
    segundo número, menor e mais discreto que o principal, porque é apoio,
    não a resposta. Só existe para o governo estadual. */
+/* ── Análise de sensibilidade (aba Sensibilidade) ── */
+.sens-controles{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;margin-bottom:1.1rem}
+.sens-ctl label,.sens-lab{display:block;font-size:0.74rem;font-weight:600;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:0.45rem}
+.sens-chips{display:flex;flex-wrap:wrap;gap:0.4rem}
+.sens-chip{border:1px solid var(--border-strong);background:#fff;padding:0.32rem 0.7rem;font-size:0.78rem;border-radius:999px;font-weight:600;color:var(--ink-muted)}
+.sens-chip[aria-pressed=true]{background:var(--navy-mid);border-color:var(--navy-mid);color:#fff}
+.sens-chip:disabled{cursor:default;opacity:0.92}
+.sens-chip:focus-visible,.sens-ano:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.sens-dica{font-size:0.76rem;color:var(--ink-muted);margin-top:0.4rem;line-height:1.5}
+.sens-leitura{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0.7rem;margin:0.4rem 0 1.1rem}
+.sens-tile{background:var(--paper-alt);border:1px solid var(--border);border-radius:var(--radius);padding:0.7rem 0.9rem}
+.sens-tile .k{font-size:0.7rem;font-weight:600;letter-spacing:0.03em;text-transform:uppercase;color:var(--ink-muted)}
+.sens-tile .v{font:700 1.25rem var(--sans);color:var(--navy);font-variant-numeric:tabular-nums;margin-top:0.15rem}
+.sens-tile .v.pos{color:var(--pos)} .sens-tile .v.neg{color:var(--neg)}
+.sens-tile .d b.pos{color:var(--pos)} .sens-tile .d b.neg{color:var(--neg)}
+.sens-tile .d{font-size:0.76rem;color:var(--ink-muted);line-height:1.45;margin-top:0.2rem}
+.sens-ytitle{font-size:0.78rem;font-weight:600;color:var(--ink-light);margin-bottom:0.3rem}
+.sens-chart-wrap{position:relative;width:100%}
+.sens-chart-wrap svg{display:block;width:100%;height:auto;overflow:visible;touch-action:pan-y}
+.sens-chart-wrap text{font-family:var(--sans)}
+.sens-tip{position:absolute;pointer-events:none;background:#fff;border:1px solid var(--border-strong);border-radius:6px;box-shadow:0 4px 14px rgba(15,36,64,0.16);padding:0.5rem 0.65rem;font-size:0.76rem;line-height:1.5;z-index:5;min-width:11rem;max-width:17rem}
+.sens-tip b{color:var(--navy)}
+.sens-tip .lin{display:flex;justify-content:space-between;gap:0.8rem;font-variant-numeric:tabular-nums}
+.sens-leg{display:flex;flex-wrap:wrap;gap:0.4rem 1.1rem;font-size:0.76rem;color:var(--ink-light);margin-top:0.6rem;align-items:center}
+.sens-leg .tit{font-weight:600;color:var(--ink-muted)}
+.sens-leg .it{display:inline-flex;align-items:center;gap:0.35rem}
+.sens-leg svg{width:30px;height:10px;flex-shrink:0}
+.sens-anos{display:flex;flex-wrap:wrap;align-items:center;gap:0.4rem;margin:0.9rem 0 0.6rem}
+.sens-anos .lab{font-size:0.78rem;font-weight:600;color:var(--ink-muted);margin-right:0.2rem}
+.sens-ano{border:1px solid var(--border-strong);background:#fff;padding:0.3rem 0.7rem;font-size:0.78rem;border-radius:5px;font-weight:600;color:var(--ink-muted)}
+.sens-ano[aria-pressed=true]{background:var(--navy-mid);border-color:var(--navy-mid);color:#fff}
+table.data.sens-tab thead th{cursor:default;text-align:right}
+table.data.sens-tab thead th:first-child{text-align:left}
+table.data.sens-tab thead th:hover{color:var(--ink-muted)}
+table.data.sens-tab tbody tr,table.data.sens-tab tbody tr:hover{cursor:default;background:none}
+table.data.sens-tab td.sens-min{background:var(--neg-bg)}
+table.data.sens-tab td.sens-max{background:var(--pos-bg)}
+table.data.sens-tab td.sens-central{font-weight:700;box-shadow:inset 0 0 0 1.5px var(--navy-mid)}
+table.data.sens-todos tbody tr{cursor:pointer}
+table.data.sens-todos tbody tr.sel{background:#eaf1f8}
+table.data.sens-todos thead th{cursor:default}
+.sens-sel-ano{font-size:0.78rem;color:var(--ink-muted);margin-bottom:0.5rem}
+.sens-aviso{margin-top:0.9rem;font-size:0.78rem;color:var(--ink-muted);line-height:1.55}
+.sens-como{margin-top:1.1rem;border-top:1px solid var(--border);padding-top:0.9rem}
+.sens-como summary{cursor:pointer;font-weight:700;font-size:0.88rem;color:var(--navy-mid)}
+.sens-como p{font-size:0.84rem;line-height:1.65;color:var(--ink-light);margin-top:0.7rem}
+.sens-secao{margin:1.8rem 0 0.2rem;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted)}
+@media (min-width:760px){
+    .sens-controles{grid-template-columns:minmax(12rem,16rem) minmax(0,1fr)}
+    .sens-ctl-erro{grid-column:1 / -1}
+}
+@media (max-width:620px){
+    .sens-leitura{grid-template-columns:minmax(0,1fr)}
+}
+
 /* ── Simulação de alíquota própria ── */
 .sim-controle{background:var(--paper-alt);border-left:3px solid var(--wine);border-radius:var(--radius);padding:1rem 1.2rem;margin-bottom:1.2rem}
 .sim-controle label{display:block;font-size:0.78rem;font-weight:600;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:0.6rem}
@@ -576,7 +631,7 @@ footer.site-foot a:hover{text-decoration:underline}
         </button>
         <button class="tab-btn" data-view="simulacoes">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21v-7M4 10V3M12 21v-11M12 6V3M20 21v-5M20 12V3M1 14h6M9 6h6M17 16h6"/></svg>
-            Simulações
+            Sensibilidade
         </button>
         <button class="tab-btn" data-view="metodologia">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
@@ -833,13 +888,66 @@ footer.site-foot a:hover{text-decoration:underline}
     <div id="memoConteudo"></div>
 </section>
 
-<!-- ============ SIMULAÇÕES ============ -->
+<!-- ============ SENSIBILIDADE ============ -->
 <section class="view" id="view-simulacoes">
     <div class="view-head">
-        <h2>Simulações</h2>
-        <p class="sub">Simulações de receita própria de destino, à parte dos dados que o resto do painel relata. Os valores aqui são hipóteses que você ajusta, não a projeção oficial do painel.</p>
+        <h2>Sensibilidade</h2>
+        <p class="sub">Quanto a variação projetada para cada governo estadual depende de duas escolhas do modelo, e o que muda quando se altera uma ou outra. É um teste de robustez, não a projeção oficial do painel; a projeção oficial é a das demais abas.</p>
     </div>
 
+    <div class="panel accent">
+        <h3>Quão firme é a variação projetada de cada estado?</h3>
+        <p class="panel-sub">Dois pontos do modelo exigem uma escolha. O primeiro é o <b>cenário sem reforma</b>: o painel supõe que, sem a reforma, o estado manteria a mesma fatia da arrecadação nacional que tinha em 2025, mas o ano de referência poderia ser outro. O segundo é o <b>consumo no destino</b>: parte do IBS é repartida conforme onde se consome, e o consumo de cada estado só pode ser estimado, com uma margem de erro. O gráfico cruza as duas escolhas. Cada linha é um ano de referência, com o destino no valor central; a faixa cinza vai da menor à maior variação entre todas as combinações.</p>
+
+        <div class="sens-controles">
+            <div class="sens-ctl">
+                <label for="sensUf">Estado</label>
+                <select class="select-uf" id="sensUf" aria-label="Selecionar estado"></select>
+            </div>
+            <div class="sens-ctl">
+                <span class="sens-lab" id="sensChipsLab">Cenário sem reforma mantém a participação do Estado em:</span>
+                <div class="sens-chips" id="sensChips" role="group" aria-labelledby="sensChipsLab"></div>
+                <p class="sens-dica">2025 é a referência central do painel e fica sempre ligada. Ligue outros anos para ver se a conclusão muda; 2026 é estimado.</p>
+            </div>
+            <div class="sens-ctl sens-ctl-erro">
+                <label for="sensErro">Erro admitido na estimativa do consumo no destino</label>
+                <div class="sim-slider-row">
+                    <input type="range" id="sensErro" min="0" max="20" step="0.1" value="8">
+                    <span class="sim-slider-valor" id="sensErroValor"></span>
+                    <button type="button" class="sim-reset" id="sensErroReset">Voltar ao erro medido</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sens-leitura" id="sensLeitura"></div>
+
+        <div class="sens-ytitle">Variação da receita do governo estadual em relação ao cenário sem reforma</div>
+        <div class="sens-chart-wrap" id="sensChartWrap">
+            <svg id="sensSvg" role="img" aria-label="Gráfico de linhas da variação projetada da receita estadual de 2029 a 2033 em cada ano de referência, com faixa de sensibilidade"></svg>
+            <div class="sens-tip" id="sensTip" hidden></div>
+        </div>
+        <div class="sens-leg" id="sensLeg"></div>
+
+        <div class="sens-anos" id="sensAnos" role="group" aria-label="Ano mostrado na tabela"></div>
+        <div id="sensTabela"></div>
+        <p class="sens-aviso" id="sensAviso"></p>
+
+        <details class="sens-como">
+            <summary>Como ler esta análise e como a faixa foi construída</summary>
+            <p>A variação de um estado é a diferença entre a receita projetada com a reforma e a receita que ele teria sem ela, no mesmo ano. A segunda é o que o painel chama de cenário sem reforma: o bolo nacional de referência daquele ano multiplicado pela fatia do estado em um ano-base. O painel usa 2025 como ano-base central. Usar 2019 ou 2026 é igualmente defensável, e cada um dá um resultado um pouco diferente, porque a fatia de um estado muda de um ano para outro.</p>
+            <p>A outra escolha é o consumo no destino. Parte do IBS é distribuída conforme o consumo de cada estado, e esse consumo não é observado diretamente; ele é estimado por três métodos diferentes, e os métodos não dão o mesmo número. O erro medido vem de duas fontes: a diferença entre os três métodos e um teste que retira um estado por vez e verifica quanto a estimativa dos demais se desloca. As duas se combinam em um único percentual por estado, que é o valor inicial do controle acima. Esse erro vai de cerca de 8% a 18%, conforme o estado.</p>
+            <p>A faixa cinza é a menor e a maior variação entre as combinações: cada ano de referência ligado, com o destino no valor central, e com o destino reduzido e aumentado pelo erro admitido. Com os três anos iniciais, são nove combinações. A faixa não é um intervalo de confiança, não tem probabilidade associada e não diz que o valor verdadeiro cai dentro dela; ela mostra o quanto o resultado se mexe com escolhas razoáveis. O repasse do Seguro-Receita é mantido no valor central em todas as combinações, o que a deixa um pouco mais estreita do que seria se ele também variasse.</p>
+            <p>O ponto de virada responde a uma pergunta direta: quanto o consumo no destino precisaria ser diferente do estimado para que a variação central chegasse a zero. Se esse número é maior do que o erro medido, a conclusão sobre o sinal da variação não depende da incerteza do destino.</p>
+        </details>
+    </div>
+
+    <div class="panel">
+        <h3>Os 27 estados lado a lado</h3>
+        <p class="panel-sub">Mesma conta do gráfico, com os anos de referência 2019, 2025 e 2026 e o erro medido de cada estado, para o ano escolhido acima. Clique em uma linha para abrir o estado.</p>
+        <div id="sensTodos" class="seg-scroll"></div>
+    </div>
+
+    <p class="sens-secao">Receita própria de destino</p>
     <div class="panel">
         <div class="memo-seletor">
             <div class="comp-toggle" id="simEsferaToggle">
@@ -892,7 +1000,7 @@ footer.site-foot a:hover{text-decoration:underline}
         <h3 id="met-aliquota">O que pode, e o que não pode, fechar esse gap</h3>
         <p>Duas explicações circulam sobre como um ente reduziria uma variação negativa, e a resposta depende de uma distinção que vale a pena separar com cuidado: se a mudança é nacional e uniforme, ou local e específica de um ente.</p>
         <p>Uma ampliação de base <b>nacional e uniforme</b>, o país inteiro sonegando um pouco menos de forma parecida, por exemplo, não move esse gap, pelo mesmo motivo que um choque de PIB não move: ela infla o bolo projetado por igual para todo mundo, entra tanto no "com a reforma" quanto no contrafactual de cada ente, e cancela na razão. A alíquota de referência em si é calibrada uma única vez, pelo ADCT (art. 130) e pela LC 214/2025 (arts. 361 a 365), para reproduzir a razão histórica entre a receita de referência e o PIB de 2024 a 2026, fixa para os cinco anos da transição; essa calibração trava apenas a base já observada até 2026, não recalcula ano a ano o que acontece depois. Existe um teto de segurança para uma ampliação nacional grande demais (ADCT art. 130, §§4º-5º), mas ele só atua a partir de 2035, fora do horizonte deste painel.</p>
-        <p>Uma ampliação de base <b>local</b>, um ente específico fiscalizando melhor ou reduzindo a sonegação só na sua própria jurisdição, é outra história, e mecanicamente é a mesma conta que votar uma alíquota própria acima da referência: as duas aumentam só a receita de destino daquele ente, sem mexer no contrafactual, que está ancorado em 2025. O modelo não distingue as duas causas, só o efeito líquido sobre a receita, e por isso a aba Simulações trata as duas juntas, sob o nome "receita própria de destino, acima ou abaixo da referência". Diferente de um choque de PIB, esse efeito não se cancela. Ele é pequeno em 2033, porque o critério de destino ainda pesa só 10% do IBS bruto nesse ano (91% ainda vem do critério histórico, que não responde a nenhuma decisão tomada agora); cresce muito depois, à medida que o peso do destino sobe no cronograma do ADCT, até 98% em 2077. Para um ente que já recebe Seguro-Receita, o efeito é ainda menor no curto prazo: como o fundo completa a receita do ente até um nível comum, a receita a mais reduz o repasse quase na mesma proporção, e o ganho líquido só aparece de verdade depois que o desvio é grande o bastante para dispensar o repasse por completo. A simulação mostra esse efeito explicitamente, junto com o número.</p>
+        <p>Uma ampliação de base <b>local</b>, um ente específico fiscalizando melhor ou reduzindo a sonegação só na sua própria jurisdição, é outra história, e mecanicamente é a mesma conta que votar uma alíquota própria acima da referência: as duas aumentam só a receita de destino daquele ente, sem mexer no contrafactual, que está ancorado em 2025. O modelo não distingue as duas causas, só o efeito líquido sobre a receita, e por isso a aba Sensibilidade trata as duas juntas, na seção "Receita própria de destino", sob o nome "receita própria de destino, acima ou abaixo da referência". Diferente de um choque de PIB, esse efeito não se cancela. Ele é pequeno em 2033, porque o critério de destino ainda pesa só 10% do IBS bruto nesse ano (91% ainda vem do critério histórico, que não responde a nenhuma decisão tomada agora); cresce muito depois, à medida que o peso do destino sobe no cronograma do ADCT, até 98% em 2077. Para um ente que já recebe Seguro-Receita, o efeito é ainda menor no curto prazo: como o fundo completa a receita do ente até um nível comum, a receita a mais reduz o repasse quase na mesma proporção, e o ganho líquido só aparece de verdade depois que o desvio é grande o bastante para dispensar o repasse por completo. A simulação mostra esse efeito explicitamente, junto com o número.</p>
         <p>O painel inteiro trabalha em reais, nunca em percentual de alíquota, e por isso o "acima ou abaixo da referência" da simulação é sempre um desvio de receita, não de alíquota. Ainda assim, vale registrar a ordem de grandeza: cruzando a receita de referência já projetada aqui com o consumo das famílias apurado pelas Contas Nacionais do IBGE (SIDRA, tabela 1846: R$ 8,08 trilhões em 2025, sobre um PIB de R$ 12,74 trilhões), a razão bruta receita/consumo fica perto de 12,6%, constante ao longo da transição porque as duas razões envolvidas (bolo/PIB e consumo/PIB) são mantidas fixas por hipótese. Esse número é um piso, não a alíquota que entrará em vigor: falta descontar itens não monetários, tributos já embutidos no preço, e os regimes diferenciados e específicos que a LC 214/2025 prevê para saúde, educação e a cesta básica, entre outros. Aplicando esses descontos, estimativas independentes, seguindo a mesma metodologia original de Orair e Gobetti (2019, IPEA) e sua atualização por Gobetti, Orair e Monteiro (2023, IPEA, Carta de Conjuntura 59), chegam a alíquotas de referência combinadas bem mais altas, na faixa de 25% a 28%.</p>
 
         <h3 id="met-memoria">Memória de cálculo por ente</h3>
@@ -903,6 +1011,10 @@ footer.site-foot a:hover{text-decoration:underline}
 
         <h3 id="met-fundos-art115b">Fundos estaduais do art. 115, I, "b" (LC 227/2026)</h3>
         <p>A lei manda somar à receita média de referência dos Estados as contribuições a fundos estaduais em funcionamento em 30 de abril de 2023 e estabelecidas como condição para diferimento, regime especial ou outro tratamento diferenciado de ICMS, pela média de 2021 a 2023 corrigida (art. 115, §3º). Nesta versão entra apenas o Amazonas, cujo valor é verificável diretamente no SICONFI/STN (DCA Anexo I-C, conta de contribuições econômicas): R$ 3,2 bilhões, a preços de 2025. Goiás (PROTEGE) e Mato Grosso (FUNDES) também têm fundos que podem se enquadrar, mas os valores não são localizáveis no SICONFI e dependem de informação oficial da Secretaria de Fazenda do Estado ou dos valores que o Comitê Gestor do IBS divulgar; por isso não foram incluídos. As contribuições sobre produtos primários e semielaborados substituídas por contribuições semelhantes (FETHAB, em Mato Grosso) ficam fora por força do art. 115, §3º, I, e do art. 136 do ADCT.</p>
+
+        <h3 id="met-sensibilidade">Análise de sensibilidade</h3>
+        <p>A aba Sensibilidade mede o quanto a variação projetada de cada governo estadual depende de duas escolhas do modelo. A primeira é o ano que ancora o cenário sem reforma. O painel usa 2025, mas a participação do estado na receita nacional de referência muda de um ano para outro, e a aba permite trocar o ano-base por qualquer um de 2019 a 2026. A segunda é a estimativa do consumo no destino, que é medida com erro. Para cada estado, o erro relativo combina a dispersão entre os três métodos de estimação do consumo e o desvio observado quando um estado é retirado da amostra por vez; ele varia de cerca de 8% a 18% conforme o estado e é o valor inicial do controle da aba.</p>
+        <p>Cada combinação de ano-base e de valor do destino (reduzido, central e aumentado pelo erro) produz uma variação, calculada pela mesma fórmula da projeção principal. Com o ano-base 2025 e o destino central, o resultado coincide com o das demais abas. A faixa do gráfico é a menor e a maior variação entre as combinações escolhidas. É uma grade determinística de cenários, e não um intervalo de confiança: não há distribuição de probabilidade por trás dela. O repasse do Seguro-Receita é mantido no valor central, e por isso a faixa de um estado que o recebe é um pouco mais estreita do que seria se o repasse também variasse. Os dados da aba são gerados por <code>data/build-sensibilidade-painel.py</code>.</p>
 
         <h3>Ressalvas de qualidade dos dados municipais</h3>
         <p>Municípios sinalizados como <span class="badge warn">estimativa aproximada</span> não têm registro individualizado de ISS e cota-parte de ICMS para 2025 no SICONFI; a participação neutra do ente é aproximada pela própria média de sete anos. Municípios sinalizados como <span class="badge err">dado a conferir</span> têm um valor declarado para 2025 que diverge de forma incompatível (mais de 5 vezes) do que a série histórica do próprio ente implicaria: provável falha de preenchimento na fonte primária, não uma mudança real de receita. Nos dois casos, o valor é exibido, mas não entra nos rankings nacionais de maiores ganhos e perdas.</p>
@@ -1029,6 +1141,7 @@ function montarInfos(raiz){
 let RESULTADOS = null;      // resultados-consolidados-ibs.json
 let NACIONAL = null;        // ibs-projecao-nacional.json
 let ESTADOS = null;         // painel-estados.json .estados
+let SENS_DATA = null;     // sensibilidade-uf.json (participação por ano-base e erro do destino, por UF)
 let SEG = null;             // painel-seguro-receita.json (beneficiários, níveis, trajetória dos estados)
 let FAIXA_DEST = null;      // faixa-phi-dest-estados.json (só governo estadual)
 let MUNI_INDEX = null;      // painel-municipios/index.json .municipios (cod -> {nome,uf})
@@ -1066,7 +1179,7 @@ function showView(name){
     if (name === 'municipios' && MUNI_INDEX) renderMuniMapa();
     if (name === 'coeficientes' && ESTADOS) renderMemoria();
     if (name === 'seguro-receita') renderSeguro();
-    if (name === 'simulacoes' && ESTADOS) renderSimulacoes();
+    if (name === 'simulacoes' && ESTADOS) { renderSensibilidade(); renderSimulacoes(); }
     window.scrollTo({top:0});
     history.replaceState(null, '', '#' + name);
 }
@@ -1078,13 +1191,14 @@ if (['visao-geral','estados','municipios','rankings','seguro-receita','coeficien
 
 // ── carregamento dos dados principais (leves; municípios completos são por UF, sob demanda) ──
 async function loadCore(){
-    const [r1, r2, r3, r4, r5, r6] = await Promise.all([
+    const [r1, r2, r3, r4, r5, r6, r7] = await Promise.all([
         fetch('/data/resultados-consolidados-ibs.json').then(r=>r.json()),
         fetch('/data/ibs-projecao-nacional.json').then(r=>r.json()),
         fetch('/data/painel-estados.json').then(r=>r.json()),
         fetch('/data/painel-municipios/index.json').then(r=>r.json()),
         fetch('/data/faixa-phi-dest-estados.json').then(r=>r.ok ? r.json() : null).catch(()=>null),
         fetch('/data/painel-seguro-receita.json').then(r=>r.ok ? r.json() : null).catch(()=>null),
+        fetch('/data/sensibilidade-uf.json').then(r=>r.ok ? r.json() : null).catch(()=>null),
     ]);
     RESULTADOS = r1;
     NACIONAL = r2;
@@ -1092,6 +1206,7 @@ async function loadCore(){
     MUNI_INDEX = r4.municipios;
     FAIXA_DEST = r5;
     SEG = r6;
+    SENS_DATA = r7;
     renderContextoNacional();
     renderMapaTabela();
     renderMap();
@@ -1101,6 +1216,7 @@ async function loadCore(){
     if (document.getElementById('view-estados').classList.contains('active')) renderUfView();
     if (document.getElementById('view-municipios').classList.contains('active')) renderMuniMapa();
     if (document.getElementById('view-coeficientes').classList.contains('active')) renderMemoria();
+    if (document.getElementById('view-simulacoes').classList.contains('active')) { renderSensibilidade(); renderSimulacoes(); }
 }
 
 // Equivalente em tabela do mapa. Um mapa coroplético codifica valor em cor,
@@ -1908,7 +2024,305 @@ async function montarSimAliquota(idPrefix, ctx){
     atualizar(0);
 }
 
-// ── aba Simulações: seletor de ente próprio, independente do da Memória de
+// ── aba Sensibilidade: o gráfico 3×3 (anos de referência × destino) como
+// análise padrão do painel. A conta é a forma fechada da própria projeção:
+//   com a reforma = residual×ref + histórico×φCPT×(1−ca) + destino×φdest×(1±erro)
+//                   + repasse×(1−ca)
+//   sem a reforma = ref × bolo projetado
+// em que ref é a participação do Estado na receita nacional de referência no
+// ano-base escolhido. Com ref de 2025 e destino central, reproduz exatamente a
+// variação publicada nas demais abas (conferido para os 27 estados). A faixa
+// é a menor e a maior das combinações: grade determinística, não intervalo de
+// confiança. O repasse do Seguro-Receita fica no valor central. ──
+const SENS = { uf: DEFAULT_UF, refs: ['2019', '2025', '2026'], erro: null, ano: 2033, montado: false };
+const SENS_ANOS_REF = ['2019','2020','2021','2022','2023','2024','2025','2026'];
+const SENS_REFS_PADRAO = ['2019', '2025', '2026'];
+const SENS_ESTILO = {
+    '2025': { cor: '#1f3864', w: 3.4, dash: '' },
+    '2026': { cor: '#2e7d32', w: 2.4, dash: '8 4' },
+    '2019': { cor: '#9c3d3d', w: 2.4, dash: '2 4' },
+    '2020': { cor: '#8a6d3b', w: 1.8, dash: '10 3 2 3' },
+    '2021': { cor: '#6b4c9a', w: 1.8, dash: '6 3' },
+    '2022': { cor: '#00799a', w: 1.8, dash: '3 3' },
+    '2023': { cor: '#b5651d', w: 1.8, dash: '12 4' },
+    '2024': { cor: '#7a7a7a', w: 1.8, dash: '1 3' },
+};
+let sensNacPorAno = null;
+
+// Variação em fração, formatada em pontos percentuais com duas casas: as
+// diferenças entre cenários são de décimos, e uma casa as esconderia.
+function fmtV(v){
+    if (v == null || !isFinite(v)) return '—';
+    const p = Math.round(v * 10000) / 100;
+    const sinal = p > 0 ? '+' : (p < 0 ? '−' : '');
+    return sinal + Math.abs(p).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '%';
+}
+function fmtErro(e){ return (e * 100).toLocaleString('pt-BR', {minimumFractionDigits: 1, maximumFractionDigits: 1}) + '%'; }
+const sensClsV = v => Math.abs(v) < 0.00005 ? '' : (v < 0 ? 'neg' : 'pos');
+
+function sensParams(uf){
+    const e = ESTADOS[uf], s = SENS_DATA.por_uf[uf];
+    return { uf, cpt: e.coef_cpt_estado_pct / 100, pleno: e.coef_pleno_estado_pct / 100,
+        rep: e.repasse_seguro_receita_por_ano.estado, ref: s.ref, medido: s.incerteza_rel };
+}
+function sensNac(ano){
+    if (!sensNacPorAno) { sensNacPorAno = {}; NACIONAL.projecao.forEach(r => { sensNacPorAno[r.ano] = r; }); }
+    return sensNacPorAno[ano];
+}
+function sensVar(P, refKey, mult, ano){
+    const s = sensNac(ano), ref = P.ref[refKey];
+    const pos = s.icms_iss_residual * ref + s.ibs_historico * P.cpt * (1 - s.ca)
+        + s.ibs_destino_liquido * P.pleno * (1 + mult) + (P.rep[String(ano)] || 0) * (1 - s.ca);
+    return pos / (ref * s.bolo_projetado) - 1;
+}
+// Para cada ano de referência e cada ano de 2029 a 2033: o valor com o
+// destino reduzido (lo), central (c) e aumentado (hi) pelo erro admitido,
+// mais a faixa total (mín. e máx. entre todas as combinações).
+function sensCalc(uf, refs, erro){
+    const P = sensParams(uf);
+    const linhas = {};
+    refs.forEach(r => { linhas[r] = ANOS.map(a => ({ lo: sensVar(P, r, -erro, a), c: sensVar(P, r, 0, a), hi: sensVar(P, r, erro, a) })); });
+    const banda = ANOS.map((a, i) => {
+        const vs = refs.flatMap(r => [linhas[r][i].lo, linhas[r][i].c, linhas[r][i].hi]);
+        return { min: Math.min(...vs), max: Math.max(...vs) };
+    });
+    return { P, erro, refs, linhas, banda };
+}
+function sensErroAtual(P){ return SENS.erro == null ? P.medido : SENS.erro; }
+
+// Quanto o coeficiente de destino precisaria diferir do estimado para zerar a
+// variação central (ano-base 2025) no ano dado; negativo = menor.
+function sensPontoVirada(P, ano){
+    const s = sensNac(ano), ref = P.ref['2025'];
+    const alvo = ref * s.bolo_projetado - s.icms_iss_residual * ref - s.ibs_historico * P.cpt * (1 - s.ca) - (P.rep[String(ano)] || 0) * (1 - s.ca);
+    const dest = s.ibs_destino_liquido * P.pleno;
+    return dest > 0 ? alvo / dest - 1 : null;
+}
+
+function sensClassifica(min, max){
+    if (min > 0.00005) return { txt: 'Ganho em todas as combinações', cls: 'pos' };
+    if (max < -0.00005) return { txt: 'Perda em todas as combinações', cls: 'neg' };
+    return { txt: 'Sinal incerto: a faixa inclui zero', cls: '' };
+}
+
+function sensMontar(){
+    if (SENS.montado) return;
+    SENS.montado = true;
+    const sel = document.getElementById('sensUf');
+    sel.innerHTML = UFS.map(u => `<option value="${u}">${NOMES_UF[u]}</option>`).join('');
+    sel.addEventListener('change', () => { SENS.uf = sel.value; SENS.erro = null; renderSensibilidade(); });
+
+    document.getElementById('sensChips').innerHTML = SENS_ANOS_REF.map(a => {
+        const rot = a === '2025' ? '2025 (central)' : (a === '2026' ? '2026 (estimado)' : a);
+        return `<button type="button" class="sens-chip" data-ref="${a}" ${a === '2025' ? 'disabled' : ''}>${rot}</button>`;
+    }).join('');
+    document.querySelectorAll('#sensChips .sens-chip').forEach(b => b.addEventListener('click', () => {
+        const a = b.dataset.ref;
+        SENS.refs = SENS.refs.includes(a) ? SENS.refs.filter(x => x !== a) : SENS.refs.concat(a).sort();
+        renderSensibilidade();
+    }));
+
+    const slider = document.getElementById('sensErro');
+    slider.addEventListener('input', () => { SENS.erro = Number(slider.value) / 100; renderSensibilidade(); });
+    document.getElementById('sensErroReset').addEventListener('click', () => { SENS.erro = null; renderSensibilidade(); });
+
+    document.getElementById('sensAnos').innerHTML = '<span class="lab">Ano analisado:</span>' + ANOS.map(a => `<button type="button" class="sens-ano" data-ano="${a}">${a}</button>`).join('');
+    document.querySelectorAll('#sensAnos .sens-ano').forEach(b => b.addEventListener('click', () => { SENS.ano = Number(b.dataset.ano); renderSensibilidade(); }));
+
+    let t = null;
+    window.addEventListener('resize', () => {
+        clearTimeout(t);
+        t = setTimeout(() => { if (document.getElementById('view-simulacoes').classList.contains('active') && SENS_DATA) renderSensibilidade(); }, 150);
+    });
+}
+
+function renderSensibilidade(){
+    if (!ESTADOS || !SENS_DATA || !NACIONAL) return;
+    sensMontar();
+    // O conjunto de referências sempre contém 2025: é a central do painel.
+    if (!SENS.refs.includes('2025')) SENS.refs = SENS.refs.concat('2025').sort();
+    const P = sensParams(SENS.uf);
+    const erro = sensErroAtual(P);
+    const calc = sensCalc(SENS.uf, SENS.refs, erro);
+    const i = ANOS.indexOf(SENS.ano);
+
+    document.getElementById('sensUf').value = SENS.uf;
+    document.querySelectorAll('#sensChips .sens-chip').forEach(b => b.setAttribute('aria-pressed', SENS.refs.includes(b.dataset.ref) ? 'true' : 'false'));
+    document.querySelectorAll('#sensAnos .sens-ano').forEach(b => b.setAttribute('aria-pressed', Number(b.dataset.ano) === SENS.ano ? 'true' : 'false'));
+
+    const slider = document.getElementById('sensErro');
+    slider.value = String(Math.round(erro * 1000) / 10);
+    const medidoTxt = fmtErro(P.medido);
+    document.getElementById('sensErroValor').textContent = SENS.erro == null
+        ? `±${medidoTxt} (erro medido para ${NOMES_UF[SENS.uf]})`
+        : `±${fmtErro(SENS.erro)} (medido: ±${medidoTxt})`;
+    document.getElementById('sensErroReset').disabled = SENS.erro == null;
+
+    sensLeitura(calc, i);
+    sensDesenhar(calc);
+    sensLegenda(calc);
+    sensTabela(calc, i);
+    sensTodos();
+}
+
+function sensLeitura(calc, i){
+    const ano = SENS.ano, P = calc.P, erro = calc.erro;
+    const c = calc.linhas['2025'][i].c;
+    const b = calc.banda[i];
+    const cl = sensClassifica(b.min, b.max);
+    const m = sensPontoVirada(P, ano);
+    let virada;
+    if (m == null) {
+        virada = { v: '—', d: 'Neste ano o destino não pesa no IBS.' };
+    } else if (m < -1) {
+        virada = { v: 'inalcançável', d: 'Nem um destino zero faria a variação central chegar a zero.' };
+    } else if (m > 1) {
+        virada = { v: 'mais que o dobro', d: `O destino teria de mais que dobrar para zerar a variação, muito além do erro medido de ±${fmtErro(P.medido)}: o sinal não depende da estimativa do destino.` };
+    } else {
+        const dentro = Math.abs(m) <= P.medido;
+        virada = { v: (m > 0 ? '+' : '−') + (Math.abs(m) * 100).toLocaleString('pt-BR', {maximumFractionDigits: 0}) + '%',
+            d: `É o quanto o destino teria de ser ${m > 0 ? 'maior' : 'menor'} que o estimado para zerar a variação central, contra um erro medido de ±${fmtErro(P.medido)}. ${dentro ? 'Está dentro do erro: o sinal depende da estimativa do destino.' : 'Está além do erro: o sinal não depende da estimativa do destino.'}` };
+    }
+    document.getElementById('sensLeitura').innerHTML = `
+        <div class="sens-tile"><div class="k">Variação central em ${ano}</div><div class="v ${sensClsV(c)}">${fmtV(c)}</div><div class="d">Ano-base 2025, destino no valor central: a mesma do restante do painel.</div></div>
+        <div class="sens-tile"><div class="k">Faixa de sensibilidade</div><div class="v">${fmtV(b.min)} a ${fmtV(b.max)}</div><div class="d"><b class="${cl.cls}">${cl.txt}.</b> Destino ±${fmtErro(erro)}; ${calc.refs.length} anos de referência.</div></div>
+        <div class="sens-tile"><div class="k">Ponto de virada do destino</div><div class="v">${virada.v}</div><div class="d">${virada.d}</div></div>`;
+}
+
+function sensTicks(lo, hi){
+    const passos = [0.05, 0.1, 0.2, 0.25, 0.5, 1, 2, 2.5, 5, 10, 20];
+    const passo = passos.find(p => (hi - lo) / p <= 6) || 20;
+    const ticks = [];
+    for (let t = Math.ceil(lo / passo - 1e-9) * passo; t <= hi + 1e-9; t += passo) ticks.push(Math.round(t * 1000) / 1000);
+    return ticks;
+}
+
+function sensDesenhar(calc){
+    const wrap = document.getElementById('sensChartWrap');
+    const svg = document.getElementById('sensSvg');
+    const W = Math.max(300, wrap.clientWidth || 760);
+    const H = W < 520 ? 320 : 400;
+    const m = { l: W < 520 ? 50 : 62, r: W < 520 ? 40 : 52, t: 14, b: 34 };
+    const iw = W - m.l - m.r, ih = H - m.t - m.b;
+    let lo = 0, hi = 0;
+    calc.banda.forEach(b => { lo = Math.min(lo, b.min * 100); hi = Math.max(hi, b.max * 100); });
+    const pad = Math.max((hi - lo) * 0.08, 0.05);
+    lo -= pad; hi += pad;
+    const ticks = sensTicks(lo, hi);
+    const x = k => m.l + iw * (k / (ANOS.length - 1));
+    const y = v => m.t + ih * (1 - (v - lo) / (hi - lo));
+    const sinal = t => t > 0 ? '+' : (t < 0 ? '−' : '');
+    const lblTick = t => sinal(t) + Math.abs(t).toLocaleString('pt-BR', {maximumFractionDigits: 2}) + (t === 0 ? '' : '%');
+
+    let s = '';
+    ticks.forEach(t => {
+        s += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(t)}" y2="${y(t)}" stroke="${t === 0 ? '#8a98a3' : '#e9edf0'}" stroke-width="${t === 0 ? 1.4 : 1}"/>`;
+        s += `<text x="${m.l - 8}" y="${y(t) + 4}" text-anchor="end" font-size="11" fill="#6b6b6b">${lblTick(t)}</text>`;
+    });
+    // coluna do ano selecionado
+    const xs = x(ANOS.indexOf(SENS.ano));
+    s += `<rect x="${xs - 14}" y="${m.t}" width="28" height="${ih}" fill="#1f3864" opacity="0.06"/>`;
+    // faixa
+    const sup = calc.banda.map((b, k) => `${x(k)},${y(b.max * 100)}`);
+    const inf = calc.banda.map((b, k) => `${x(k)},${y(b.min * 100)}`).reverse();
+    s += `<polygon points="${sup.concat(inf).join(' ')}" fill="#1f3864" opacity="0.13"/>`;
+    // linhas centrais, de fundo para frente: 2025 por último
+    const ordem = calc.refs.filter(r => r !== '2025').concat('2025');
+    ordem.forEach(r => {
+        const st = SENS_ESTILO[r];
+        const pts = calc.linhas[r].map((p, k) => `${x(k)},${y(p.c * 100)}`).join(' ');
+        s += `<polyline points="${pts}" fill="none" stroke="${st.cor}" stroke-width="${st.w}" ${st.dash ? `stroke-dasharray="${st.dash}"` : ''} stroke-linejoin="round" stroke-linecap="round"/>`;
+    });
+    calc.linhas['2025'].forEach((p, k) => { s += `<circle cx="${x(k)}" cy="${y(p.c * 100)}" r="${ANOS[k] === SENS.ano ? 5 : 3.4}" fill="#1f3864" stroke="#fff" stroke-width="1.6"/>`; });
+    // rótulos à direita, sem sobreposição
+    const fim = ordem.map(r => ({ r, y: y(calc.linhas[r][ANOS.length - 1].c * 100) })).sort((a, b) => a.y - b.y);
+    for (let k = 1; k < fim.length; k++) if (fim[k].y - fim[k - 1].y < 14) fim[k].y = fim[k - 1].y + 14;
+    fim.forEach(f => { s += `<text x="${W - m.r + 8}" y="${f.y + 4}" font-size="11.5" font-weight="700" fill="${SENS_ESTILO[f.r].cor}">${f.r}</text>`; });
+    // eixo x
+    ANOS.forEach((a, k) => {
+        const sel = a === SENS.ano;
+        s += `<text x="${x(k)}" y="${H - 10}" text-anchor="middle" font-size="12" font-weight="${sel ? 700 : 500}" fill="${sel ? '#0f2440' : '#6b6b6b'}">${a}</text>`;
+    });
+    // guia do tooltip e área de captura
+    s += `<line id="sensGuia" x1="0" x2="0" y1="${m.t}" y2="${m.t + ih}" stroke="#0f2440" stroke-width="1" opacity="0" />`;
+    s += `<rect id="sensHit" x="${m.l - 20}" y="${m.t}" width="${iw + 40}" height="${ih + 24}" fill="transparent" style="cursor:pointer"/>`;
+
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('width', W); svg.setAttribute('height', H);
+    svg.innerHTML = s;
+
+    const tip = document.getElementById('sensTip');
+    const hit = document.getElementById('sensHit'), guia = document.getElementById('sensGuia');
+    const idx = ev => {
+        const r = svg.getBoundingClientRect();
+        const px = (ev.clientX - r.left) * (W / r.width);
+        return Math.max(0, Math.min(ANOS.length - 1, Math.round((px - m.l) / iw * (ANOS.length - 1))));
+    };
+    const mostrar = ev => {
+        const k = idx(ev), a = ANOS[k];
+        guia.setAttribute('x1', x(k)); guia.setAttribute('x2', x(k)); guia.setAttribute('opacity', '0.35');
+        const b = calc.banda[k];
+        tip.innerHTML = `<b>${a}</b>` + ordem.slice().reverse().map(r => `<div class="lin"><span style="color:${SENS_ESTILO[r].cor};font-weight:700">${r}${r === '2025' ? ' (central)' : ''}</span><span>${fmtV(calc.linhas[r][k].c)}</span></div>`).join('')
+            + `<div class="lin" style="border-top:1px solid #dbe2e6;margin-top:3px;padding-top:3px"><span>Faixa</span><span>${fmtV(b.min)} a ${fmtV(b.max)}</span></div>`;
+        tip.hidden = false;
+        const tw = tip.offsetWidth, th = tip.offsetHeight;
+        let left = x(k) + 14; if (left + tw > W) left = x(k) - tw - 14;
+        tip.style.left = Math.max(0, left) + 'px';
+        tip.style.top = Math.max(0, Math.min(H - th - 4, m.t + 6)) + 'px';
+    };
+    hit.addEventListener('pointermove', mostrar);
+    hit.addEventListener('pointerleave', () => { tip.hidden = true; guia.setAttribute('opacity', '0'); });
+    hit.addEventListener('click', ev => { SENS.ano = ANOS[idx(ev)]; renderSensibilidade(); });
+
+    const c = calc.linhas['2025'];
+    svg.setAttribute('aria-label', `Variação da receita estadual de ${NOMES_UF[calc.P.uf]} de 2029 a 2033. No ano-base 2025 com destino central: ` + ANOS.map((a, k) => `${a}, ${fmtV(c[k].c)}`).join('; ') + `. Faixa em ${SENS.ano}: de ${fmtV(calc.banda[ANOS.indexOf(SENS.ano)].min)} a ${fmtV(calc.banda[ANOS.indexOf(SENS.ano)].max)}. Os valores completos estão na tabela abaixo.`);
+}
+
+function sensLegenda(calc){
+    const item = r => {
+        const st = SENS_ESTILO[r];
+        return `<span class="it"><svg viewBox="0 0 30 10" aria-hidden="true"><line x1="1" x2="29" y1="5" y2="5" stroke="${st.cor}" stroke-width="${Math.min(st.w, 3.4)}" ${st.dash ? `stroke-dasharray="${st.dash}"` : ''} stroke-linecap="round"/></svg>${r}${r === '2025' ? ' (central)' : r === '2026' ? ' (estimado)' : ''}</span>`;
+    };
+    document.getElementById('sensLeg').innerHTML =
+        `<span class="tit">Cenário sem reforma mantém a participação do Estado em:</span>` + calc.refs.map(item).join('') +
+        `<span class="it"><svg viewBox="0 0 30 10" aria-hidden="true"><rect x="0" y="1" width="30" height="8" fill="#1f3864" opacity="0.18"/></svg>Faixa: menor e maior valor entre as combinações</span>`;
+}
+
+function sensTabela(calc, i){
+    const e = calc.erro, ano = SENS.ano;
+    const vals = [];
+    calc.refs.forEach(r => { const p = calc.linhas[r][i]; vals.push(p.lo, p.c, p.hi); });
+    const mn = Math.min(...vals), mx = Math.max(...vals);
+    const cel = (v, central) => `<td class="num ${sensClsV(v)} ${v === mn ? 'sens-min' : ''} ${v === mx ? 'sens-max' : ''} ${central ? 'sens-central' : ''}">${fmtV(v)}</td>`;
+    const linhas = calc.refs.map(r => {
+        const p = calc.linhas[r][i];
+        return `<tr><td>${r}${r === '2025' ? ' (central)' : r === '2026' ? ' (estimado)' : ''}</td>${cel(p.lo, false)}${cel(p.c, r === '2025')}${cel(p.hi, false)}</tr>`;
+    }).join('');
+    document.getElementById('sensTabela').innerHTML = `
+        <div class="sens-sel-ano">Variação em <b>${ano}</b>, por ano de referência e por valor do destino. Menor valor em vermelho claro, maior em azul claro; o contorno marca a variação central do painel.</div>
+        <div class="seg-scroll"><table class="data sens-tab"><thead><tr><th>Cenário sem reforma mantém a participação de</th><th class="num">Destino −${fmtErro(e)}</th><th class="num">Destino central</th><th class="num">Destino +${fmtErro(e)}</th></tr></thead><tbody>${linhas}</tbody></table></div>`;
+    document.getElementById('sensAviso').textContent =
+        'Análise de sensibilidade, não a projeção oficial do painel: a faixa mostra o quanto o resultado depende de escolhas do modelo, não uma probabilidade. O repasse do Seguro-Receita é mantido no valor central.';
+}
+
+function sensTodos(){
+    const i = ANOS.indexOf(SENS.ano);
+    const linhas = UFS.map(uf => {
+        const P = sensParams(uf);
+        const c = sensCalc(uf, SENS_REFS_PADRAO, P.medido);
+        const b = c.banda[i], cen = c.linhas['2025'][i].c;
+        return { uf, medido: P.medido, cen, min: b.min, max: b.max, cl: sensClassifica(b.min, b.max) };
+    }).sort((a, b) => b.cen - a.cen);
+    const html = linhas.map(l => `<tr data-uf="${l.uf}" class="${l.uf === SENS.uf ? 'sel' : ''}"><td>${NOMES_UF[l.uf]}</td><td class="num">±${fmtErro(l.medido)}</td><td class="num ${sensClsV(l.cen)}">${fmtV(l.cen)}</td><td class="num ${sensClsV(l.min)}">${fmtV(l.min)}</td><td class="num ${sensClsV(l.max)}">${fmtV(l.max)}</td><td class="${l.cl.cls}" style="font-size:0.78rem;white-space:nowrap">${l.cl.txt.replace(': a faixa inclui zero', '')}</td></tr>`).join('');
+    const el = document.getElementById('sensTodos');
+    el.innerHTML = `<table class="data sens-todos pin-name"><thead><tr><th>Estado</th><th class="num">Erro do destino</th><th class="num">Central ${SENS.ano}</th><th class="num">Menor valor</th><th class="num">Maior valor</th><th>Leitura</th></tr></thead><tbody>${html}</tbody></table>`;
+    el.querySelectorAll('tr[data-uf]').forEach(tr => tr.addEventListener('click', () => {
+        SENS.uf = tr.dataset.uf; SENS.erro = null; renderSensibilidade();
+        document.getElementById('view-simulacoes').scrollIntoView({behavior: 'smooth', block: 'start'});
+    }));
+}
+
+// ── seção de alíquota própria da aba Sensibilidade: seletor de ente próprio, independente do da Memória de
 // cálculo, para a pessoa poder ter as duas abas abertas em fichas diferentes ──
 const SIM_ENTE = { esfera: 'estado', uf: DEFAULT_UF, cod: null };
 
