@@ -892,12 +892,12 @@ table.data.sens-todos thead th{cursor:default}
 <section class="view" id="view-simulacoes">
     <div class="view-head">
         <h2>Sensibilidade</h2>
-        <p class="sub">Quanto a variação projetada para cada governo estadual depende de duas escolhas do modelo, e o que muda quando se altera uma ou outra. É um teste de robustez, não a projeção oficial do painel; a projeção oficial é a das demais abas.</p>
+        <p class="sub">Mostra o quanto a variação projetada da receita de cada governo estadual muda quando se alteram duas hipóteses do modelo. É um teste de robustez, e não a projeção do painel, que está nas demais abas.</p>
     </div>
 
     <div class="panel accent">
-        <h3>Quão firme é a variação projetada de cada estado?</h3>
-        <p class="panel-sub">Dois pontos do modelo exigem uma escolha. O primeiro é o <b>cenário sem reforma</b>: o painel supõe que, sem a reforma, o estado manteria a mesma fatia da arrecadação nacional que tinha em 2025, mas o ano de referência poderia ser outro. O segundo é o <b>consumo no destino</b>: parte do IBS é repartida conforme onde se consome, e o consumo de cada estado só pode ser estimado, com uma margem de erro. O gráfico cruza as duas escolhas. Cada linha é um ano de referência, com o destino no valor central; a faixa cinza vai da menor à maior variação entre todas as combinações.</p>
+        <h3>Quanto o resultado de cada estado depende das hipóteses do modelo?</h3>
+        <p class="panel-sub">O modelo precisa fazer duas escolhas. A primeira é o <b>cenário sem reforma</b>: o painel supõe que, sem a reforma, o estado manteria a fatia da arrecadação nacional que tinha em 2025, mas outro ano de referência seria igualmente plausível. A segunda é o <b>consumo no destino</b>: parte do IBS é repartida conforme o lugar onde se consome, e o consumo de cada estado só pode ser estimado, com uma margem de erro. O gráfico cruza as duas escolhas. Cada linha usa um ano de referência, com o destino no valor central, e a faixa sombreada vai da menor à maior variação entre todos os cenários.</p>
 
         <div class="sens-controles">
             <div class="sens-ctl">
@@ -907,14 +907,14 @@ table.data.sens-todos thead th{cursor:default}
             <div class="sens-ctl">
                 <span class="sens-lab" id="sensChipsLab">Cenário sem reforma mantém a participação do Estado em:</span>
                 <div class="sens-chips" id="sensChips" role="group" aria-labelledby="sensChipsLab"></div>
-                <p class="sens-dica">2025 é a referência central do painel e fica sempre ligada. Ligue outros anos para ver se a conclusão muda; 2026 é estimado.</p>
+                <p class="sens-dica">O ano de 2025 é a referência central do painel e permanece sempre ligado. Ligue outros anos para ver se a conclusão muda. O ano de 2026 é estimado.</p>
             </div>
             <div class="sens-ctl sens-ctl-erro">
-                <label for="sensErro">Erro admitido na estimativa do consumo no destino</label>
+                <label for="sensErro">Margem de erro do consumo no destino</label>
                 <div class="sim-slider-row">
                     <input type="range" id="sensErro" min="0" max="20" step="0.1" value="8">
                     <span class="sim-slider-valor" id="sensErroValor"></span>
-                    <button type="button" class="sim-reset" id="sensErroReset">Voltar ao erro medido</button>
+                    <button type="button" class="sim-reset" id="sensErroReset">Voltar à margem medida</button>
                 </div>
             </div>
         </div>
@@ -934,16 +934,16 @@ table.data.sens-todos thead th{cursor:default}
 
         <details class="sens-como">
             <summary>Como ler esta análise e como a faixa foi construída</summary>
-            <p>A variação de um estado é a diferença entre a receita projetada com a reforma e a receita que ele teria sem ela, no mesmo ano. A segunda é o que o painel chama de cenário sem reforma: o bolo nacional de referência daquele ano multiplicado pela fatia do estado em um ano-base. O painel usa 2025 como ano-base central. Usar 2019 ou 2026 é igualmente defensável, e cada um dá um resultado um pouco diferente, porque a fatia de um estado muda de um ano para outro.</p>
-            <p>A outra escolha é o consumo no destino. Parte do IBS é distribuída conforme o consumo de cada estado, e esse consumo não é observado diretamente; ele é estimado por três métodos diferentes, e os métodos não dão o mesmo número. O erro medido vem de duas fontes: a diferença entre os três métodos e um teste que retira um estado por vez e verifica quanto a estimativa dos demais se desloca. As duas se combinam em um único percentual por estado, que é o valor inicial do controle acima. Esse erro vai de cerca de 8% a 18%, conforme o estado.</p>
-            <p>A faixa cinza é a menor e a maior variação entre as combinações: cada ano de referência ligado, com o destino no valor central, e com o destino reduzido e aumentado pelo erro admitido. Com os três anos iniciais, são nove combinações. A faixa não é um intervalo de confiança, não tem probabilidade associada e não diz que o valor verdadeiro cai dentro dela; ela mostra o quanto o resultado se mexe com escolhas razoáveis. O repasse do Seguro-Receita é mantido no valor central em todas as combinações, o que a deixa um pouco mais estreita do que seria se ele também variasse.</p>
-            <p>O ponto de virada responde a uma pergunta direta: quanto o consumo no destino precisaria ser diferente do estimado para que a variação central chegasse a zero. Se esse número é maior do que o erro medido, a conclusão sobre o sinal da variação não depende da incerteza do destino.</p>
+            <p>A variação de um estado é a diferença entre a receita projetada com a reforma e a que ele teria sem ela, no mesmo ano. Esta última é o cenário sem reforma: o bolo nacional de referência do ano multiplicado pela fatia que o estado tinha em um ano-base. O painel usa 2025 como ano-base central. Usar 2019 ou 2026 também é plausível e dá um resultado um pouco diferente, porque a fatia de um estado muda de um ano para outro.</p>
+            <p>A outra escolha é o consumo no destino. Parte do IBS é distribuída conforme o consumo de cada estado, e esse consumo não é observado diretamente: é estimado por três métodos, que não chegam ao mesmo número. A margem de erro vem de duas fontes: a diferença entre os três métodos e um teste que retira um estado de cada vez e mede quanto a estimativa dos demais se desloca. As duas se combinam em um único percentual por estado, que é o valor inicial do controle acima e vai de cerca de 8% a 18%.</p>
+            <p>A faixa sombreada reúne todos os cenários testados: cada ano de referência ligado, com o destino no valor central, reduzido e aumentado pela margem de erro. Com os três anos iniciais, são nove cenários. A faixa não é um intervalo de confiança nem tem probabilidade associada; ela mostra o quanto o resultado se move com escolhas razoáveis. O repasse do Seguro-Receita fica no valor central em todos os cenários, o que deixa a faixa, nos estados que o recebem, um pouco mais estreita do que seria se ele também variasse.</p>
+            <p>O indicador "destino que zera a variação" responde a uma pergunta direta: quanto o consumo no destino teria de diferir do estimado para a variação central chegar a zero. Se esse percentual é maior do que a margem de erro, a incerteza do destino não muda o sinal da variação. O ano de referência ainda pode mudá-lo, e é isso que a faixa mostra.</p>
         </details>
     </div>
 
     <div class="panel">
         <h3>Os 27 estados lado a lado</h3>
-        <p class="panel-sub">Mesma conta do gráfico, com os anos de referência 2019, 2025 e 2026 e o erro medido de cada estado, para o ano escolhido acima. Clique em uma linha para abrir o estado.</p>
+        <p class="panel-sub">Mesma conta do gráfico, com os anos de referência 2019, 2025 e 2026 e a margem de erro medida de cada estado, para o ano escolhido acima. Clique em uma linha para abrir o estado.</p>
         <div id="sensTodos" class="seg-scroll"></div>
     </div>
 
@@ -1013,8 +1013,8 @@ table.data.sens-todos thead th{cursor:default}
         <p>A lei manda somar à receita média de referência dos Estados as contribuições a fundos estaduais em funcionamento em 30 de abril de 2023 e estabelecidas como condição para diferimento, regime especial ou outro tratamento diferenciado de ICMS, pela média de 2021 a 2023 corrigida (art. 115, §3º). Nesta versão entra apenas o Amazonas, cujo valor é verificável diretamente no SICONFI/STN (DCA Anexo I-C, conta de contribuições econômicas): R$ 3,2 bilhões, a preços de 2025. Goiás (PROTEGE) e Mato Grosso (FUNDES) também têm fundos que podem se enquadrar, mas os valores não são localizáveis no SICONFI e dependem de informação oficial da Secretaria de Fazenda do Estado ou dos valores que o Comitê Gestor do IBS divulgar; por isso não foram incluídos. As contribuições sobre produtos primários e semielaborados substituídas por contribuições semelhantes (FETHAB, em Mato Grosso) ficam fora por força do art. 115, §3º, I, e do art. 136 do ADCT.</p>
 
         <h3 id="met-sensibilidade">Análise de sensibilidade</h3>
-        <p>A aba Sensibilidade mede o quanto a variação projetada de cada governo estadual depende de duas escolhas do modelo. A primeira é o ano que ancora o cenário sem reforma. O painel usa 2025, mas a participação do estado na receita nacional de referência muda de um ano para outro, e a aba permite trocar o ano-base por qualquer um de 2019 a 2026. A segunda é a estimativa do consumo no destino, que é medida com erro. Para cada estado, o erro relativo combina a dispersão entre os três métodos de estimação do consumo e o desvio observado quando um estado é retirado da amostra por vez; ele varia de cerca de 8% a 18% conforme o estado e é o valor inicial do controle da aba.</p>
-        <p>Cada combinação de ano-base e de valor do destino (reduzido, central e aumentado pelo erro) produz uma variação, calculada pela mesma fórmula da projeção principal. Com o ano-base 2025 e o destino central, o resultado coincide com o das demais abas. A faixa do gráfico é a menor e a maior variação entre as combinações escolhidas. É uma grade determinística de cenários, e não um intervalo de confiança: não há distribuição de probabilidade por trás dela. O repasse do Seguro-Receita é mantido no valor central, e por isso a faixa de um estado que o recebe é um pouco mais estreita do que seria se o repasse também variasse. Os dados da aba são gerados por <code>data/build-sensibilidade-painel.py</code>.</p>
+        <p>A aba Sensibilidade mede o quanto a variação projetada de cada governo estadual depende de duas escolhas do modelo. A primeira é o ano que ancora o cenário sem reforma. O painel usa 2025, mas a participação do estado na receita nacional de referência muda de um ano para outro, e a aba permite trocar o ano-base por qualquer um de 2019 a 2026. A segunda é a estimativa do consumo no destino, que tem margem de erro. Para cada estado, a margem relativa combina a dispersão entre os três métodos de estimação do consumo e o desvio observado quando um estado é retirado da amostra por vez; ele varia de cerca de 8% a 18% conforme o estado e é o valor inicial do controle da aba.</p>
+        <p>Cada combinação de ano-base e de valor do destino (reduzido, central e aumentado pela margem de erro) produz uma variação, calculada pela mesma fórmula da projeção principal. Com o ano-base 2025 e o destino central, o resultado coincide com o das demais abas. A faixa do gráfico é a menor e a maior variação entre as combinações escolhidas. É uma grade determinística de cenários, e não um intervalo de confiança: não há distribuição de probabilidade por trás dela. O repasse do Seguro-Receita é mantido no valor central, e por isso a faixa de um estado que o recebe é um pouco mais estreita do que seria se o repasse também variasse. Os dados da aba são gerados por <code>data/build-sensibilidade-painel.py</code>.</p>
 
         <h3>Ressalvas de qualidade dos dados municipais</h3>
         <p>Municípios sinalizados como <span class="badge warn">estimativa aproximada</span> não têm registro individualizado de ISS e cota-parte de ICMS para 2025 no SICONFI; a participação neutra do ente é aproximada pela própria média de sete anos. Municípios sinalizados como <span class="badge err">dado a conferir</span> têm um valor declarado para 2025 que diverge de forma incompatível (mais de 5 vezes) do que a série histórica do próprio ente implicaria: provável falha de preenchimento na fonte primária, não uma mudança real de receita. Nos dois casos, o valor é exibido, mas não entra nos rankings nacionais de maiores ganhos e perdas.</p>
@@ -2100,9 +2100,9 @@ function sensPontoVirada(P, ano){
 }
 
 function sensClassifica(min, max){
-    if (min > 0.00005) return { txt: 'Ganho em todas as combinações', cls: 'pos' };
-    if (max < -0.00005) return { txt: 'Perda em todas as combinações', cls: 'neg' };
-    return { txt: 'Sinal incerto: a faixa inclui zero', cls: '' };
+    if (min > 0.00005) return { txt: 'Ganho em todos os cenários', cls: 'pos' };
+    if (max < -0.00005) return { txt: 'Perda em todos os cenários', cls: 'neg' };
+    return { txt: 'Ganho ou perda, conforme o cenário', cls: '' };
 }
 
 function sensMontar(){
@@ -2154,8 +2154,8 @@ function renderSensibilidade(){
     slider.value = String(Math.round(erro * 1000) / 10);
     const medidoTxt = fmtErro(P.medido);
     document.getElementById('sensErroValor').textContent = SENS.erro == null
-        ? `±${medidoTxt} (erro medido para ${NOMES_UF[SENS.uf]})`
-        : `±${fmtErro(SENS.erro)} (medido: ±${medidoTxt})`;
+        ? `±${medidoTxt} (margem medida para ${NOMES_UF[SENS.uf]})`
+        : `±${fmtErro(SENS.erro)} (medida: ±${medidoTxt})`;
     document.getElementById('sensErroReset').disabled = SENS.erro == null;
 
     sensLeitura(calc, i);
@@ -2171,22 +2171,24 @@ function sensLeitura(calc, i){
     const b = calc.banda[i];
     const cl = sensClassifica(b.min, b.max);
     const m = sensPontoVirada(P, ano);
+    const cruza = b.min <= 0 && b.max >= 0;
+    const refNota = cruza ? ' O ano de referência pode mudá-lo.' : '';
     let virada;
     if (m == null) {
         virada = { v: '—', d: 'Neste ano o destino não pesa no IBS.' };
     } else if (m < -1) {
-        virada = { v: 'inalcançável', d: 'Nem um destino zero faria a variação central chegar a zero.' };
+        virada = { v: 'impossível', d: 'Nem um destino igual a zero faria a variação central chegar a zero.' };
     } else if (m > 1) {
-        virada = { v: 'mais que o dobro', d: `O destino teria de mais que dobrar para zerar a variação, muito além do erro medido de ±${fmtErro(P.medido)}: o sinal não depende da estimativa do destino.` };
+        virada = { v: 'mais que o dobro', d: `O destino teria de mais que dobrar para a variação central chegar a zero, muito além da margem medida de ±${fmtErro(P.medido)}. A incerteza do destino não muda o sinal.${refNota}` };
     } else {
         const dentro = Math.abs(m) <= P.medido;
-        virada = { v: (m > 0 ? '+' : '−') + (Math.abs(m) * 100).toLocaleString('pt-BR', {maximumFractionDigits: 0}) + '%',
-            d: `É o quanto o destino teria de ser ${m > 0 ? 'maior' : 'menor'} que o estimado para zerar a variação central, contra um erro medido de ±${fmtErro(P.medido)}. ${dentro ? 'Está dentro do erro: o sinal depende da estimativa do destino.' : 'Está além do erro: o sinal não depende da estimativa do destino.'}` };
+        virada = { v: (Math.abs(m) * 100).toLocaleString('pt-BR', {maximumFractionDigits: 0}) + '% ' + (m > 0 ? 'maior' : 'menor'),
+            d: `É o quanto o destino teria de diferir do estimado para a variação central chegar a zero, contra uma margem medida de ±${fmtErro(P.medido)}. ${dentro ? 'Isso cabe na margem: o sinal depende da estimativa do destino.' : 'Isso excede a margem: a incerteza do destino não muda o sinal.' + refNota}` };
     }
     document.getElementById('sensLeitura').innerHTML = `
-        <div class="sens-tile"><div class="k">Variação central em ${ano}</div><div class="v ${sensClsV(c)}">${fmtV(c)}</div><div class="d">Ano-base 2025, destino no valor central: a mesma do restante do painel.</div></div>
-        <div class="sens-tile"><div class="k">Faixa de sensibilidade</div><div class="v">${fmtV(b.min)} a ${fmtV(b.max)}</div><div class="d"><b class="${cl.cls}">${cl.txt}.</b> Destino ±${fmtErro(erro)}; ${calc.refs.length} anos de referência.</div></div>
-        <div class="sens-tile"><div class="k">Ponto de virada do destino</div><div class="v">${virada.v}</div><div class="d">${virada.d}</div></div>`;
+        <div class="sens-tile"><div class="k">Variação central em ${ano}</div><div class="v ${sensClsV(c)}">${fmtV(c)}</div><div class="d">Referência 2025 e destino central: é a mesma variação das demais abas.</div></div>
+        <div class="sens-tile"><div class="k">Faixa entre os cenários</div><div class="v">${fmtV(b.min)} a ${fmtV(b.max)}</div><div class="d"><b class="${cl.cls}">${cl.txt}.</b> Margem do destino de ±${fmtErro(erro)}; ${calc.refs.length} anos de referência.</div></div>
+        <div class="sens-tile"><div class="k">Destino que zera a variação</div><div class="v">${virada.v}</div><div class="d">${virada.d}</div></div>`;
 }
 
 function sensTicks(lo, hi){
@@ -2285,7 +2287,7 @@ function sensLegenda(calc){
     };
     document.getElementById('sensLeg').innerHTML =
         `<span class="tit">Cenário sem reforma mantém a participação do Estado em:</span>` + calc.refs.map(item).join('') +
-        `<span class="it"><svg viewBox="0 0 30 10" aria-hidden="true"><rect x="0" y="1" width="30" height="8" fill="#1f3864" opacity="0.18"/></svg>Faixa: menor e maior valor entre as combinações</span>`;
+        `<span class="it"><svg viewBox="0 0 30 10" aria-hidden="true"><rect x="0" y="1" width="30" height="8" fill="#1f3864" opacity="0.18"/></svg>Faixa: menor e maior valor entre os cenários</span>`;
 }
 
 function sensTabela(calc, i){
@@ -2313,9 +2315,9 @@ function sensTodos(){
         const b = c.banda[i], cen = c.linhas['2025'][i].c;
         return { uf, medido: P.medido, cen, min: b.min, max: b.max, cl: sensClassifica(b.min, b.max) };
     }).sort((a, b) => b.cen - a.cen);
-    const html = linhas.map(l => `<tr data-uf="${l.uf}" class="${l.uf === SENS.uf ? 'sel' : ''}"><td>${NOMES_UF[l.uf]}</td><td class="num">±${fmtErro(l.medido)}</td><td class="num ${sensClsV(l.cen)}">${fmtV(l.cen)}</td><td class="num ${sensClsV(l.min)}">${fmtV(l.min)}</td><td class="num ${sensClsV(l.max)}">${fmtV(l.max)}</td><td class="${l.cl.cls}" style="font-size:0.78rem;white-space:nowrap">${l.cl.txt.replace(': a faixa inclui zero', '')}</td></tr>`).join('');
+    const html = linhas.map(l => `<tr data-uf="${l.uf}" class="${l.uf === SENS.uf ? 'sel' : ''}"><td>${NOMES_UF[l.uf]}</td><td class="num">±${fmtErro(l.medido)}</td><td class="num ${sensClsV(l.cen)}">${fmtV(l.cen)}</td><td class="num ${sensClsV(l.min)}">${fmtV(l.min)}</td><td class="num ${sensClsV(l.max)}">${fmtV(l.max)}</td><td class="${l.cl.cls}" style="font-size:0.78rem;white-space:nowrap">${l.cl.txt}</td></tr>`).join('');
     const el = document.getElementById('sensTodos');
-    el.innerHTML = `<table class="data sens-todos pin-name"><thead><tr><th>Estado</th><th class="num">Erro do destino</th><th class="num">Central ${SENS.ano}</th><th class="num">Menor valor</th><th class="num">Maior valor</th><th>Leitura</th></tr></thead><tbody>${html}</tbody></table>`;
+    el.innerHTML = `<table class="data sens-todos pin-name"><thead><tr><th>Estado</th><th class="num">Margem de erro do destino</th><th class="num">Central ${SENS.ano}</th><th class="num">Menor valor</th><th class="num">Maior valor</th><th>Leitura</th></tr></thead><tbody>${html}</tbody></table>`;
     el.querySelectorAll('tr[data-uf]').forEach(tr => tr.addEventListener('click', () => {
         SENS.uf = tr.dataset.uf; SENS.erro = null; renderSensibilidade();
         document.getElementById('view-simulacoes').scrollIntoView({behavior: 'smooth', block: 'start'});
