@@ -35,6 +35,7 @@ repositório, replique manualmente aqui (ou peça para o Claude replicar):
 - `data/faixa-phi-dest-estados.json` (faixa entre os quatro métodos de coeficiente de destino)
 - `data/ibs-projecao-longo-prazo.json` e `data/seguro-receita-repasses-longo-prazo.json` (horizonte 2077, usados na simulação de alíquota própria)
 - `data/painel-seguro-receita.json` (aba Seguro-Receita: beneficiários por ano e trajetória dos estados; gerado por `data/build-painel-seguro-receita.py`, que já grava aqui)
+- `data/sensibilidade-uf.json` (aba Sensibilidade: participação do Estado por ano-base 2019–2026 e erro relativo do destino, por UF; gerado por `data/build-sensibilidade-painel.py`, que já grava aqui)
 - `images/brasao-es.png`, `images/brasao-es-branco.png`
 
 Diferenças propositais em relação ao arquivo original, e apenas estas três:
