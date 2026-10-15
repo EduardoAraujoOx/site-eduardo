@@ -654,7 +654,7 @@ function renderFicha(cod, base, m) {
             <div class="kpi"><span>Com a reforma, 2033</span><b>${fmtMoney(pos33)}</b><small>Com o cronograma do ADCT aplicado</small></div>
             <div class="kpi"><span>Diferença por ano, 2033</span><b class="${sinal}">${fmtMoney(dif33)}</b><small>Projeção menos cenário sem reforma</small></div>
         </div>
-        <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Receita realizada de 2019 a 2025 e projeção de 2029 a 2033, contra o cenário sem a reforma, em R$ de 2025. A área preenchida é a diferença entre os dois cenários.</p>
+        <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Receita realizada de 2019 a 2025 e projeção de 2029 a 2033, contra o cenário sem a reforma, em R$ de 2025. A área preenchida é a diferença entre os dois cenários. O traço pontilhado liga 2025 a 2029: a redução do ICMS e do ISS só começa em 2029 (ADCT, art. 128), e o painel projeta de 2029 a 2033, sem os anos intermediários.</p>
             <div class="canvas-box" style="height:320px"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano."></canvas></div></div>
         <div class="panel accent">
             <div class="panel-head"><div><h3>Como fica o ICMS/ISS na transição</h3><p class="panel-sub">Composição da receita projetada: quanto ainda vem do ICMS/ISS residual, quanto já é IBS pelos dois critérios, e quanto é Seguro-Receita.</p></div>
@@ -751,18 +751,37 @@ function desenharGraficos(m) {
     const tip = {callbacks: {label: c => c.parsed.y == null ? null : ' ' + c.dataset.label + ': ' + fmtMoney(c.parsed.y * 1e6)}};
     Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
     const rotulos = ANOS_HIST.concat(['2026', '2027', '2028'], ANOS);
+    const i25 = ANOS_HIST.length - 1, i29 = ANOS_HIST.length + 3;      // posições de 2025 e de 2029 no eixo
     const hist = rotulos.map(a => m.historico_por_ano[a] ? mi(m.historico_por_ano[a].total_reais_2025) : null);
-    const cf = rotulos.map(a => m.contrafactual_por_ano[a] != null ? mi(m.contrafactual_por_ano[a]) : null);
-    const pos = rotulos.map(a => m.pos_por_ano[a] != null ? mi(m.pos_por_ano[a]) : null);
+    // O modelo projeta 2029–2033 e não os anos intermediários. Os dois cenários partem do valor de 2025 (a referência
+    // da qual o contrafactual é construído, como no painel original), por duas séries auxiliares de traço fino
+    // pontilhado, e uma faixa cinza avisa que não há projeção em 2026–2028. Sem isso a linha parece três séries soltas.
+    const so2029 = serie => rotulos.map(a => ANOS.includes(a) && serie[a] != null ? mi(serie[a]) : null);
+    const ponte = serie => rotulos.map((a, i) => i === i25 ? mi(m.pre_2025) : (i === i29 ? mi(serie[a]) : null));
+    const faixaSemProjecao = {id: 'faixaSemProjecao', beforeDatasetsDraw(chart) {
+        const {ctx, chartArea, scales} = chart, x0 = scales.x.getPixelForValue(i25), x1 = scales.x.getPixelForValue(i29);
+        ctx.save();
+        ctx.fillStyle = 'rgba(133,131,132,.10)'; ctx.fillRect(x0, chartArea.top, x1 - x0, chartArea.bottom - chartArea.top);
+        ctx.fillStyle = '#6b6a6c'; ctx.font = '600 11px Inter, sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText('2026–2028', (x0 + x1) / 2, chartArea.top + 16); ctx.fillText('sem projeção', (x0 + x1) / 2, chartArea.top + 30);
+        ctx.restore();
+    }};
+    const estreito = $('gSerie').parentElement.clientWidth < 520;           // no celular, só 2019, 2025, 2029 e 2033
+    const auxiliar = (dados, cor) => ({label: 'ligação', data: dados, borderColor: cor, backgroundColor: cor, borderDash: [3, 5], borderWidth: 2, pointRadius: 0, pointHoverRadius: 0, spanGaps: true});
     graficos.push(new Chart($('gSerie'), {
         type: 'line',
+        plugins: [faixaSemProjecao],
         data: {labels: rotulos, datasets: [
             {label: 'Realizado (2019–2025)', data: hist, borderColor: '#1f2a55', backgroundColor: '#1f2a55', borderWidth: 3, pointRadius: 3, spanGaps: false},
-            {label: 'Projeção com a reforma', data: pos, borderColor: '#b8922f', backgroundColor: 'rgba(207,173,86,.22)', borderWidth: 4, pointRadius: 4, spanGaps: false, fill: '+1'},
-            {label: 'Cenário sem a reforma', data: cf, borderColor: '#858384', backgroundColor: '#858384', borderDash: [6, 5], borderWidth: 3, pointRadius: 3, spanGaps: false}
+            {label: 'Projeção com a reforma', data: so2029(m.pos_por_ano), borderColor: '#b8922f', backgroundColor: 'rgba(207,173,86,.22)', borderWidth: 4, pointRadius: 4, spanGaps: false, fill: '+1'},
+            {label: 'Cenário sem a reforma', data: so2029(m.contrafactual_por_ano), borderColor: '#858384', backgroundColor: '#858384', borderDash: [6, 5], borderWidth: 3, pointRadius: 3, spanGaps: false},
+            auxiliar(ponte(m.pos_por_ano), '#b8922f'),
+            auxiliar(ponte(m.contrafactual_por_ano), '#858384')
         ]},
         options: {responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false},
-            plugins: {legend: {position: 'bottom', labels: {usePointStyle: true, boxWidth: 8}}, tooltip: tip}, scales: {y: eixoR$, x: {grid: {display: false}}}}
+            plugins: {legend: {position: 'bottom', labels: {usePointStyle: false, boxWidth: 26, boxHeight: 2, padding: 14, filter: it => it.datasetIndex < 3}},
+                tooltip: Object.assign({}, tip, {filter: it => it.datasetIndex < 3})},
+            scales: {y: eixoR$, x: {grid: {display: false}, ticks: {maxRotation: 0, autoSkip: false, callback: (v, i) => (estreito && ![0, i25, i29, rotulos.length - 1].includes(i)) ? '' : rotulos[i]}}}}
     }));
     const desenhaComp = () => {
         const pct = modo === 'pct';
