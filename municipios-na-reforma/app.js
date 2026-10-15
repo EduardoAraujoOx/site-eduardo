@@ -83,6 +83,8 @@ let ESCOPO = 'BR', NIVEL = 'uf', ATUAL = null, MAPA = null, MINI = null, grafico
 const MEMO = {cod: null, secao: 'historico'};
 const RANK = {}, DADOS_UF = {};
 let LOCAL = null, MAPA_DESTAQUE = null;
+let UF_VISITANTE = null, RANK_UF = null, RANK_ORDEM = 'pct', RANK_PEQ = false;
+const RANK_MAIS = {perdas: false, ganhos: false};
 const CACHE_UF = new Map(), CACHE_MEMO = new Map();
 let MEMO_NAC = null;
 const GEO = {muni: null, uf: null, promessa: null};
@@ -100,6 +102,7 @@ function mostrarVisao(v) {
 document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => {
     mostrarVisao(b.dataset.view); track('aba', {aba: b.dataset.view});
     if (b.dataset.view === 'memoria') renderMemoria();
+    if (b.dataset.view === 'rankings') renderRankUF();
 }));
 document.querySelectorAll('[data-ir]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); mostrarVisao(a.dataset.ir); }));
 
@@ -257,19 +260,78 @@ function renderContexto() {
     $('contexto').innerHTML = partes.join('');
 }
 
-/* ── rankings ── */
-function montarRankings() {
-    $('tabUF').querySelector('tbody').innerHTML = linhasUF().map((l, i) => `<tr class="clicavel" data-uf="${l.uf}"><td>${i + 1}</td><td class="nome">${NOMES_UF[l.uf]}</td><td>${fmtInt(l.total)}</td><td>${fmtInt(l.perdem)} de ${fmtInt(l.n)} (${fmtPctSimples(l.perdem / l.n)})</td><td class="${clsSinal(l.v)}">${fmtPct(l.v)}</td></tr>`).join('');
-    $('tabUF').querySelectorAll('tr[data-uf]').forEach(tr => tr.addEventListener('click', () => { definirEscopo(tr.dataset.uf, 'muni'); mostrarVisao('visao-geral'); }));
+/* ── rankings: dentro do estado, abrindo no estado do visitante ── */
+const ufDoRanking = () => RANK_UF || UF_VISITANTE || (ATUAL && POR_COD[ATUAL] ? POR_COD[ATUAL].uf : null) || (ESCOPO !== 'BR' ? ESCOPO : null);
 
-    const d = RESULT && RESULT.destaques_municipios_2033;
-    const cr = RESULT && RESULT.criterios_destaque_municipal;
-    if (!d) { ['tabPerdas', 'tabGanhos'].forEach(id => { $(id).querySelector('tbody').innerHTML = '<tr><td colspan="4" class="vazio-td">Ranking indisponível no momento.</td></tr>'; }); return; }
-    if (cr) $('critRank').textContent = `Municípios com ao menos ${fmtInt(cr.populacao_min)} habitantes e ${cr.cobertura_anos_min} anos de dados, sem ressalva de qualidade, do maior para o menor impacto.`;
-    const corpo = lista => lista.map(m => `<tr class="clicavel" data-cod="${m.cod}"><td class="nome">${esc(m.nome)}<small>${m.uf}</small></td><td>${fmtMoney(m.contrafactual_2033)}</td><td>${fmtMoney(m.pos_2033)}</td><td class="${clsSinal(m.variacao_2033)}">${fmtPct(m.variacao_2033)}</td></tr>`).join('');
-    $('tabPerdas').querySelector('tbody').innerHTML = corpo(d.maiores_perdas);
-    $('tabGanhos').querySelector('tbody').innerHTML = corpo(d.maiores_ganhos);
-    ['tabPerdas', 'tabGanhos'].forEach(id => $(id).querySelectorAll('tr[data-cod]').forEach(tr => tr.addEventListener('click', () => abrirMunicipio(tr.dataset.cod))));
+function montarRankings() {
+    const ufs = Object.keys(NOMES_UF).filter(u => LISTA.some(m => m.uf === u)).sort((a, b) => NOMES_UF[a].localeCompare(NOMES_UF[b], 'pt-BR'));
+    $('rankUF').innerHTML = '<option value="">Escolha um estado</option>' + ufs.map(u => `<option value="${u}">${NOMES_UF[u]}</option>`).join('');
+    $('rankUF').addEventListener('change', e => selecionarRankUF(e.target.value));
+    document.querySelectorAll('#rankOrdem button').forEach(b => b.addEventListener('click', () => {
+        RANK_ORDEM = b.dataset.ordem;
+        document.querySelectorAll('#rankOrdem button').forEach(x => x.classList.toggle('active', x === b));
+        track('ranking_ordem', {ordem: RANK_ORDEM}); renderRankUF();
+    }));
+    $('rankPeq').addEventListener('change', e => { RANK_PEQ = e.target.checked; renderRankUF(); });
+    $('maisPerdas').addEventListener('click', () => { RANK_MAIS.perdas = !RANK_MAIS.perdas; renderRankUF(); });
+    $('maisGanhos').addEventListener('click', () => { RANK_MAIS.ganhos = !RANK_MAIS.ganhos; renderRankUF(); });
+
+    $('tabUF').querySelector('tbody').innerHTML = linhasUF().map((l, i) => `<tr class="clicavel" data-uf="${l.uf}"><td>${i + 1}</td><td class="nome">${NOMES_UF[l.uf]}</td><td>${fmtInt(l.total)}</td><td>${fmtInt(l.perdem)} de ${fmtInt(l.n)} (${fmtPctSimples(l.perdem / l.n)})</td><td class="${clsSinal(l.v)}">${fmtPct(l.v)}</td></tr>`).join('');
+    $('tabUF').querySelectorAll('tr[data-uf]').forEach(tr => tr.addEventListener('click', () => { selecionarRankUF(tr.dataset.uf); window.scrollTo({top: 0, behavior: 'smooth'}); }));
+}
+
+function selecionarRankUF(uf) {
+    RANK_UF = uf || null;
+    RANK_MAIS.perdas = RANK_MAIS.ganhos = false;
+    if (uf) track('ranking_uf', {uf});
+    renderRankUF();
+}
+
+async function renderRankUF() {
+    const uf = ufDoRanking();
+    $('rankUF').value = uf || '';
+    $('rankTitulo').textContent = uf ? 'Rankings de 2033, ' + NOMES_UF[uf] : 'Rankings de 2033';
+    $('rankVazio').hidden = !!uf; $('rankBloco').hidden = !uf; $('rankResumo').hidden = !uf;
+    if (!uf) return;
+    let munis;
+    try { munis = await municipiosDaUF(uf); } catch (e) { CACHE_UF.delete(uf); $('rankVazio').textContent = 'Não foi possível carregar os municípios deste estado. Tente novamente em instantes.'; $('rankVazio').hidden = false; $('rankBloco').hidden = true; return; }
+    if (ufDoRanking() !== uf) return;                         // o usuário já trocou de estado
+
+    const todos = Object.entries(munis).map(([cod, m]) => {
+        const cf = m.contrafactual_por_ano['2033'], pos = m.pos_por_ano['2033'];
+        return {cod, nome: m.nome, pop: m.pop_media, v: m.variacao_por_ano['2033'], dif: pos - cf, ok: !m.neutro_aproximado && !m.neutro_suspeito && m.cobertura_anos >= 5};
+    });
+    const base = todos.filter(x => x.ok && (RANK_PEQ || x.pop >= 10000));
+    const chave = RANK_ORDEM === 'rs' ? 'dif' : 'v';
+    const perdas = base.filter(x => x.dif < 0).sort((a, b) => a[chave] - b[chave]);
+    const ganhos = base.filter(x => x.dif > 0).sort((a, b) => b[chave] - a[chave]);
+
+    const noEstado = LISTA.filter(m => m.uf === uf), confiaveis = noEstado.filter(m => !m.r), perdem = confiaveis.filter(m => m.v < 0).length;
+    const ord = confiaveis.map(m => m.v).sort((x, y) => x - y);
+    const mediana = ord.length ? (ord.length % 2 ? ord[(ord.length - 1) / 2] : (ord[ord.length / 2 - 1] + ord[ord.length / 2]) / 2) : null;
+    $('rankResumo').innerHTML = [
+        `<span><b>${fmtInt(noEstado.length)}</b> municípios em ${esc(NOMES_UF[uf])}</span>`,
+        `<span><b class="neg">${fmtInt(perdem)}</b> de ${fmtInt(confiaveis.length)} com dados confiáveis (<b>${fmtPctSimples(perdem / Math.max(confiaveis.length, 1))}</b>) arrecadam menos em 2033</span>`,
+        mediana != null ? `<span>Variação mediana: <b class="${clsSinal(mediana)}">${fmtPct(mediana)}</b></span>` : '',
+        AGG[uf] != null ? `<span>Receita municipal agregada: <b class="${clsSinal(AGG[uf])}">${fmtPct(AGG[uf])}</b></span>` : ''
+    ].join('');
+
+    const crit = (RANK_PEQ ? 'Municípios com ao menos 5 anos de dados e sem ressalva de qualidade' : 'Municípios com ao menos 10 mil habitantes, 5 anos de dados e sem ressalva de qualidade')
+        + `, ordenados por ${RANK_ORDEM === 'rs' ? 'diferença em reais por ano' : 'variação percentual'}. ${fmtInt(base.length)} de ${fmtInt(todos.length)} entram no ranking.`;
+    $('rankCritPerdas').textContent = crit; $('rankCritGanhos').textContent = 'Mesmos critérios, do maior ganho para baixo.';
+
+    const N = 10;
+    const linhas = (lista, tudo) => (tudo ? lista : lista.slice(0, N)).map((m, i) => `<tr class="clicavel" data-cod="${m.cod}"><td>${i + 1}</td><td class="nome">${esc(m.nome)}</td><td class="col-pop">${fmtInt(m.pop)}</td><td class="${clsSinal(m.dif)}">${m.dif > 0 ? '+' : ''}${fmtMoney(m.dif)}</td><td class="${clsSinal(m.dif)}">${fmtPct(m.v)}</td></tr>`).join('')
+        || '<tr><td colspan="5" class="vazio-td">Nenhum município nesta situação com os critérios atuais.</td></tr>';
+    const preenche = (idTab, idBotao, lista, chaveMais) => {
+        $(idTab).querySelector('tbody').innerHTML = linhas(lista, RANK_MAIS[chaveMais]);
+        $(idTab).querySelectorAll('tr[data-cod]').forEach(tr => tr.addEventListener('click', () => { track('ranking_municipio', {municipio: POR_COD[tr.dataset.cod].nome}); abrirMunicipio(tr.dataset.cod); }));
+        const b = $(idBotao);
+        b.hidden = lista.length <= N;
+        b.textContent = RANK_MAIS[chaveMais] ? 'Mostrar só os ' + N + ' primeiros' : 'Ver todos os ' + fmtInt(lista.length) + ' municípios';
+    };
+    preenche('tabPerdas', 'maisPerdas', perdas, 'perdas');
+    preenche('tabGanhos', 'maisGanhos', ganhos, 'ganhos');
 }
 
 /* ── busca (padrão combobox), reaproveitada nas abas ── */
@@ -352,11 +414,20 @@ const chaveDispensa = 'mnr-local-dispensado';
 function dispensado() { try { return sessionStorage.getItem(chaveDispensa) === '1'; } catch (e) { return false; } }
 function lembrarDispensa() { try { sessionStorage.setItem(chaveDispensa, '1'); } catch (e) { /* sem armazenamento, sem problema */ } }
 
+function definirUFVisitante(uf) {
+    UF_VISITANTE = uf;
+    if (!RANK_UF && $('view-rankings').classList.contains('active')) renderRankUF();
+}
+
 function iniciarLocalizacao() {
-    if (dispensado()) return;
+    if (dispensado()) {                                       // quem recusou a sugestão ainda tem o estado estimado para os rankings
+        getJSON('/api/geo').then(g => { if (g && g.country === 'BR' && NOMES_UF[g.uf]) definirUFVisitante(g.uf); }).catch(() => {});
+        return;
+    }
     const viaConexao = () => getJSON('/api/geo').then(g => {
         if (!g || g.country !== 'BR' || !g.city) return;
         const alvo = norm(g.city), achados = LISTA.filter(m => m.uf === g.uf && m.chave === alvo);
+        if (NOMES_UF[g.uf]) definirUFVisitante(g.uf);
         if (achados.length === 1) sugerirLocal(achados[0].cod, 'conexao');
         else if (NOMES_UF[g.uf] && !ATUAL && ESCOPO === 'BR') definirEscopo(g.uf, 'muni');   // cidade não identificada: ao menos abre no estado
     }).catch(() => { /* fora da Vercel não há estimativa: tudo certo */ });
@@ -400,6 +471,7 @@ function municipioNaCoordenada(lon, lat) {
 function sugerirLocal(cod, origem) {
     if (ATUAL || (LOCAL && LOCAL.origem === 'gps' && origem !== 'gps')) return;      // quem já escolheu um município, ou já tem posição precisa, não é atropelado
     const m = POR_COD[cod];
+    definirUFVisitante(m.uf);
     LOCAL = {cod, origem};
     MAPA_DESTAQUE = cod;
     if (ESCOPO !== m.uf) definirEscopo(m.uf, 'muni');
@@ -625,7 +697,6 @@ function renderFicha(cod, base, m) {
     }).join('');
 
     $('fichaCorpo').innerHTML = `
-        <button type="button" class="voltar" id="btnVoltar">← Voltar ao mapa</button>
         <div class="ficha-top">
             <div>
                 <h2 id="fichaTitulo" tabindex="-1">${esc(base.nome)}<small>${base.uf}</small></h2>
@@ -637,19 +708,16 @@ function renderFicha(cod, base, m) {
             </div>
         </div>
         ${aviso ? `<div class="aviso" role="note">${aviso}</div>` : ''}
-        <div class="veredito ${sinal}">
-            <div class="grande">${fmtPct(v33)}<small>variação da receita em 2033</small></div>
-            <div><p>${leitura}</p><p>${nota}</p></div>
-        </div>
-        <div class="kpis">
-            <div class="kpi"><span>Receita de referência 2025</span><b>${fmtMoney(m.pre_2025)}</b><small>ISS mais cota-parte do ICMS, em R$ de 2025</small></div>
-            <div class="kpi"><span>Sem a reforma, 2033</span><b>${fmtMoney(cf33)}</b><small>Regras antigas e fatia de 2025</small></div>
-            <div class="kpi"><span>Com a reforma, 2033</span><b>${fmtMoney(pos33)}</b><small>Com o cronograma do ADCT aplicado</small></div>
-            <div class="kpi"><span>Diferença por ano, 2033</span><b class="${sinal}">${fmtMoney(dif33)}</b><small>Projeção menos cenário sem reforma</small></div>
+        <div class="faixa">
+            <div class="faixa-main ${sinal}"><span>Variação da receita em 2033</span><b>${fmtPct(v33)}</b><small>${Math.abs(v33) > 0.0005 ? fmtMoney(Math.abs(dif33)) + ' por ano ' + lado : 'Praticamente igual ao cenário sem a reforma'}</small></div>
+            <div class="kpi"><span>Referência 2025</span><b>${fmtMoney(m.pre_2025)}</b></div>
+            <div class="kpi"><span>Sem a reforma 2033</span><b>${fmtMoney(cf33)}</b></div>
+            <div class="kpi"><span>Com a reforma 2033</span><b>${fmtMoney(pos33)}</b></div>
         </div>
         <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Receita realizada de 2019 a 2025 e projeção de 2029 a 2033, com e sem a reforma, em R$ de 2025. A área preenchida é a diferença entre os dois cenários.</p>
             <div class="canvas-box" style="height:320px"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano."></canvas></div>
             <p class="nota nota-grafico">O eixo salta de 2025 para 2029: a redução do ICMS e do ISS só começa em 2029 (ADCT, art. 128) e o modelo não projeta 2026–2028. Os dois cenários partem do valor de 2025. O eixo vertical não parte de zero, para que a diferença entre eles fique visível.</p></div>
+        <div class="leitura"><p>${leitura}</p><p>${nota} Receita de referência: ISS mais cota-parte do ICMS, em R$ de 2025.</p></div>
         <div class="cta-inline">
             <p>${convite}</p>
             <div class="botoes" id="ctaInlineBotoes" style="margin:0"></div>
@@ -701,7 +769,6 @@ function renderFicha(cod, base, m) {
         </div>
         <p class="print-credito">Municípios na Reforma, iniciativa da Vertex Advisory · municipiosnareforma.com.br${CONFIG.email ? ' · ' + CONFIG.email : ''}</p>`;
 
-    $('btnVoltar').addEventListener('click', () => mostrarVisao('visao-geral'));
     $('btnMemoria').addEventListener('click', () => { track('abrir_memoria', {municipio: base.nome}); abrirMemoria(cod); });
     $('btnCopiar').addEventListener('click', e => {
         const url = location.origin + location.pathname + '?m=' + cod;
@@ -922,6 +989,7 @@ function contatoBotoes(alvo, base, resumo, local) {
     alvo.querySelectorAll('[data-ir]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); track('clique_contato', {canal: 'aba_vertex', municipio: base ? base.nome : 'geral', local: local || 'aba'}); mostrarVisao(a.dataset.ir); }));
 }
 contatoBotoes($('botoesContato'), null);
+$('btnVoltar').addEventListener('click', () => mostrarVisao('visao-geral'));
 if (CONFIG.razaoSocial) $('privControlador').textContent = CONFIG.razaoSocial + (CONFIG.cnpj ? ' (CNPJ ' + CONFIG.cnpj + ')' : '');
 if (CONFIG.email) $('privContato').textContent = CONFIG.email;
 if (CONFIG.gaId) $('privAnalytics').textContent = 'Este portal usa o Google Analytics 4 para medir audiência de forma agregada (páginas vistas, cliques nos botões de contato, uso do mapa). O Google define cookies para isso; você pode bloqueá-los no navegador sem perder nenhuma função do portal.';

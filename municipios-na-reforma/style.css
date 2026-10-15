@@ -28,6 +28,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }   /* o atributo hidden vale mesmo onde a classe define display */
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--paper); color: var(--ink); font: 400 1rem/1.6 var(--font-body); -webkit-font-smoothing: antialiased; }
 img { max-width: 100%; display: block; }
@@ -100,7 +101,7 @@ main { padding: 2rem 0 3rem; }
 .toggle button:first-child { border-radius: var(--radius) 0 0 var(--radius); }
 .toggle button:last-child { border-radius: 0 var(--radius) var(--radius) 0; border-left: 0; }
 .toggle button.active { background: var(--navy); color: #fff; border-color: var(--navy); }
-.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.2rem; }
 .grid2 > .panel { margin-bottom: 0; }
 @media (max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
 
@@ -294,10 +295,10 @@ table.dados td.nome { text-align: left; } table.dados td.nome small { color: #6b
 
 /* ── impressão: a ficha vira um documento ── */
 @media print {
-    .utility-bar, .tabnav, .credito, .view:not(#view-municipio), .site-foot, .ficha-acoes, .voltar, .search, .view-head { display: none !important; }
+    .utility-bar, .tabnav, .credito, .view:not(#view-municipio), .site-foot, .ficha-acoes, .ficha-barra, .voltar, .search, .view-head { display: none !important; }
     #view-municipio { display: block !important; }
     body { background: #fff; } .masthead { background: #fff; color: var(--ink); } .masthead h1, .masthead .sub { color: var(--ink); }
-    .veredito, .kpi, .panel { box-shadow: none; break-inside: avoid; }
+    .veredito, .faixa, .kpi, .panel { box-shadow: none; break-inside: avoid; }
     .cta-inline, .ladder { display: none !important; }
     .print-credito { display: block; margin-top: 1.2rem; padding-top: .6rem; border-top: 1px solid var(--line); font-size: .85rem; color: var(--ink-soft); }
 }
@@ -375,3 +376,48 @@ table.dados td.nome { text-align: left; } table.dados td.nome small { color: #6b
     .local-card { padding: .55rem .75rem; }
     .local-aviso { display: none; }
 }
+
+/* ── ficha enxuta: barra fina, nome, uma faixa de números e o gráfico ── */
+.ficha-barra { display: flex; align-items: center; justify-content: space-between; gap: .6rem 1.2rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.ficha-barra .voltar { margin: 0; }
+.ficha-barra .search-barra { flex: 0 1 380px; }
+.ficha-top { margin-bottom: .9rem; }
+.ficha-top h2 { font-size: clamp(1.6rem, 3.4vw, 2.1rem); }
+.faixa { display: grid; grid-template-columns: 1.35fr 1fr 1fr 1fr; gap: .8rem; margin-bottom: 1.1rem; }
+.faixa .kpi { padding: .85rem 1rem; display: flex; flex-direction: column; justify-content: center; }
+.faixa .kpi span { margin-bottom: .3rem; }
+.faixa-main { background: #fff; border: 1px solid var(--line); border-left: 6px solid var(--gray); border-radius: var(--radius); padding: .85rem 1.1rem; }
+.faixa-main.neg { border-left-color: var(--neg); } .faixa-main.pos { border-left-color: var(--pos); }
+.faixa-main span { display: block; font: 700 .7rem var(--font-head); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+.faixa-main b { display: block; font: 800 clamp(2rem, 4.4vw, 2.9rem)/1.05 var(--font-head); font-variant-numeric: tabular-nums; margin: .15rem 0; }
+.faixa-main.neg b { color: var(--neg); } .faixa-main.pos b { color: var(--pos); }
+.faixa-main small { color: var(--ink-soft); font-size: .84rem; }
+.leitura { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.3rem; margin-bottom: 1.2rem; }
+.leitura p { margin: 0; font-size: 1rem; } .leitura p + p { margin-top: .5rem; font-size: .9rem; color: var(--ink-soft); }
+@media (max-width: 900px) { .faixa { grid-template-columns: repeat(3, 1fr); } .faixa-main { grid-column: 1 / -1; } }
+@media (max-width: 560px) {
+    .faixa { grid-template-columns: repeat(3, 1fr); gap: .5rem; }
+    .faixa .kpi { padding: .6rem .6rem; }
+    .faixa .kpi span { font-size: .58rem; letter-spacing: .06em; }
+    .faixa .kpi b { font-size: 1.02rem; }
+    .ficha-barra .search-barra { flex-basis: 100%; }
+    .ficha-barra { margin-bottom: .7rem; }
+    #btnImprimir { display: none; }
+    .ficha-top { margin-bottom: .7rem; }
+}
+
+/* ── rankings por estado ── */
+.rank-barra { display: flex; align-items: center; gap: .7rem 1.2rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.rank-barra select { font: 600 .95rem var(--font-body); padding: .55rem .8rem; border: 1px solid #b9bdd0; border-radius: var(--radius); background: #fff; color: var(--ink); min-width: 14rem; }
+.check { display: inline-flex; align-items: center; gap: .5rem; font-size: .88rem; color: var(--ink-soft); cursor: pointer; }
+.check input { width: 1.05rem; height: 1.05rem; accent-color: var(--navy); }
+#view-rankings .contexto { margin-bottom: 1rem; }
+#view-rankings .aviso-geral { margin-bottom: 1rem; }
+.rank-mais { margin-top: .8rem; }
+#view-rankings .grid2 { margin-bottom: 1.2rem; }
+@media (max-width: 1100px) { .col-pop { display: none; } }
+@media (max-width: 640px) { .rank-barra select { flex: 1 1 100%; min-width: 0; } .rank-barra .toggle { flex: 1 1 100%; } .rank-barra .toggle button { flex: 1; } }
+@media (pointer: coarse) { .rank-barra select, .check { min-height: 44px; } }
+table.dados th.nome { text-align: left; }
+#tabPerdas td, #tabPerdas th, #tabGanhos td, #tabGanhos th { padding-inline: .45rem; }
+#tabPerdas td.nome, #tabGanhos td.nome { white-space: normal; min-width: 8rem; }
