@@ -133,7 +133,7 @@ main { padding: 2rem 0 3rem; }
 .trilho-lista { overflow-y: auto; }
 .rail-row { position: relative; display: grid; grid-template-columns: 1.8rem 1fr auto; gap: .5rem; align-items: baseline; width: 100%; text-align: left; background: none; border: 0; border-bottom: 1px solid #efeee9; padding: .6rem .9rem .8rem; cursor: pointer; font: 400 .9rem var(--font-body); color: var(--ink); }
 .rail-row:hover { background: var(--gold-pale); }
-.rail-row .rk { color: var(--gray); font-size: .78rem; font-variant-numeric: tabular-nums; }
+.rail-row .rk { color: #6b6a6c; font-size: .78rem; font-variant-numeric: tabular-nums; }
 .rail-row .nm small { display: block; color: var(--ink-soft); font-size: .76rem; }
 .rail-row .vl { font-weight: 700; font-variant-numeric: tabular-nums; }
 .rail-row .vl.neg, td.neg, b.neg, span.neg { color: var(--neg); }
@@ -153,7 +153,7 @@ main { padding: 2rem 0 3rem; }
 .voltar { background: none; border: 0; color: var(--navy); font: 600 .9rem var(--font-body); text-decoration: underline; cursor: pointer; padding: 0; margin-bottom: .8rem; }
 .ficha-top { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.2rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
 .ficha-top h2 { font: 800 clamp(1.7rem, 4vw, 2.5rem)/1.1 var(--font-head); margin: 0; }
-.ficha-top h2 small { font: 700 1rem var(--font-head); letter-spacing: .1em; color: var(--gray); margin-left: .5rem; }
+.ficha-top h2 small { font: 700 1rem var(--font-head); letter-spacing: .1em; color: #6b6a6c; margin-left: .5rem; }
 #fichaTitulo:focus { outline: none; }
 .ficha-meta { color: var(--ink-soft); font-size: .92rem; margin: .3rem 0 0; }
 .ficha-acoes { display: flex; gap: .5rem; flex-wrap: wrap; }
@@ -185,9 +185,6 @@ main { padding: 2rem 0 3rem; }
 @media (max-width: 900px) { .ficha-grid { grid-template-columns: 1fr; } }
 .posicao { display: flex; gap: .4rem 2rem; flex-wrap: wrap; margin: 0 0 1.2rem; color: var(--ink-soft); font-size: .95rem; }
 .posicao b { color: var(--navy); font-family: var(--font-head); }
-.cta-ficha { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; background: #fff; border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: var(--radius); padding: 1rem 1.3rem; }
-.cta-ficha p { margin: 0; color: var(--ink-soft); font-size: .95rem; max-width: 42rem; }
-.cta-ficha p strong { color: var(--navy); }
 
 /* ── tabelas ── */
 .table-wrap { overflow-x: auto; }
@@ -198,7 +195,7 @@ table.dados td { text-align: right; padding: .6rem .7rem; border-bottom: 1px sol
 table.dados td.neg, table.dados td.pos { font-weight: 700; }
 table.dados tr.clicavel { cursor: pointer; } table.dados tr.clicavel:hover td { background: var(--gold-pale); }
 table.dados tr:last-child td { border-bottom: 0; }
-table.dados td.nome { text-align: left; } table.dados td.nome small { color: var(--gray); margin-left: .3rem; font-weight: 600; }
+table.dados td.nome { text-align: left; } table.dados td.nome small { color: #6b6a6c; margin-left: .3rem; font-weight: 600; }
 .vazio-td { text-align: center !important; color: var(--ink-soft); }
 
 /* ── texto e Vertex ── */
@@ -216,11 +213,37 @@ table.dados td.nome { text-align: left; } table.dados td.nome small { color: var
 .site-foot { background: var(--navy-deep); color: #aab0cf; padding: 1.6rem 0; font-size: .85rem; }
 .site-foot p { margin: 0; max-width: 62rem; } .site-foot strong { color: #fff; }
 
+
+/* ── conversão: entra depois do dado, com o número do município ── */
+.tab-link { margin-left: auto; align-self: center; flex: none; color: #ecd28a; font: 600 .85rem var(--font-head); text-decoration: none; padding: .5rem .2rem; white-space: nowrap; }
+.tab-link:hover { color: #fff; text-decoration: underline; }
+.cta-inline { display: flex; justify-content: space-between; align-items: center; gap: 1rem 1.5rem; flex-wrap: wrap; background: #fbf7ea; border: 1px solid #eadfb8; border-left: 4px solid var(--gold); border-radius: var(--radius); padding: .9rem 1.2rem; margin-bottom: 1.2rem; }
+.cta-inline p { margin: 0; font-size: .95rem; max-width: 44rem; color: var(--ink); }
+.cta-inline p strong { color: var(--navy); }
+.ladder { background: #fff; border: 1px solid var(--line); border-top: 3px solid var(--gold); border-radius: var(--radius); padding: 1.3rem 1.4rem; }
+.ladder h3 { font-size: 1.05rem; margin-bottom: 1rem; }
+.ladder-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+@media (max-width: 760px) { .ladder-cols { grid-template-columns: 1fr; } }
+.ladder-col h4 { font: 700 .72rem var(--font-body); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 .5rem; }
+.ladder-col.mais h4 { color: var(--gold-deep); }
+.ladder-col ul { list-style: none; margin: 0; padding: 0; font-size: .93rem; }
+.ladder-col li { padding: .4rem 0 .4rem 1.4rem; border-bottom: 1px solid #efeee9; position: relative; color: var(--ink-soft); }
+.ladder-col li::before { content: '✓'; position: absolute; left: 0; color: var(--pos); font-weight: 700; }
+.ladder-col.mais li { color: var(--ink); }
+.ladder-col.mais li::before { content: '+'; color: var(--gold-deep); }
+.ladder-fim { display: flex; align-items: center; gap: .8rem 1.2rem; flex-wrap: wrap; margin-top: 1.1rem; }
+.ladder-fim small { color: var(--ink-soft); font-size: .84rem; }
+.print-credito { display: none; }
+@media (pointer: coarse) { .toggle button, .controles select, .btn-sm, .tab-btn, .tab-link { min-height: 44px; } }
+@media (max-width: 640px) { .tab-link { display: none; } }
+
 /* ── impressão: a ficha vira um documento ── */
 @media print {
-    .utility-bar, .tabnav, .credito, .view:not(#view-municipio), .site-foot, .ficha-acoes, .voltar, .search, .cta-ficha .botoes, .view-head { display: none !important; }
+    .utility-bar, .tabnav, .credito, .view:not(#view-municipio), .site-foot, .ficha-acoes, .voltar, .search, .view-head { display: none !important; }
     #view-municipio { display: block !important; }
     body { background: #fff; } .masthead { background: #fff; color: var(--ink); } .masthead h1, .masthead .sub { color: var(--ink); }
     .veredito, .kpi, .panel { box-shadow: none; break-inside: avoid; }
+    .cta-inline, .ladder { display: none !important; }
+    .print-credito { display: block; margin-top: 1.2rem; padding-top: .6rem; border-top: 1px solid var(--line); font-size: .85rem; color: var(--ink-soft); }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn, .map-tip { transition: none; } }

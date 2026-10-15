@@ -114,6 +114,7 @@ function iniciar(idx, res) {
     ativarBusca($('busca'), $('sugestoes'), $('formBusca'));
     ativarBusca($('buscaMuni'), $('sugestoesMuni'), $('formBuscaMuni'));
     $('dicaBusca').textContent = 'Base com ' + fmtInt(LISTA.length) + ' municípios. Comece a digitar e escolha na lista.';
+    renderManchete();
     definirEscopo('BR');
     montarRankings();
 
@@ -173,6 +174,11 @@ function renderTrilho() {
         lista.scrollTop = 0;
         lista.querySelectorAll('[data-cod]').forEach(b => b.addEventListener('click', () => { track('trilho_municipio', {municipio: POR_COD[b.dataset.cod].nome}); abrirMunicipio(b.dataset.cod); }));
     }
+}
+
+function renderManchete() {
+    const ok = LISTA.filter(m => !m.r), perdem = ok.filter(m => m.v < 0).length;
+    $('manchete').innerHTML = `Em 2033, <b>${fmtInt(perdem)} de ${fmtInt(ok.length)}</b> prefeituras com dados confiáveis arrecadam menos do que arrecadariam sem a reforma. Descubra a situação da sua.`;
 }
 
 function renderContexto() {
@@ -381,6 +387,14 @@ function renderFicha(cod, base, m) {
         ? 'Perda estimada não é destino: ela depende de decisões de orçamento, de arrecadação própria e de legislação local que ainda podem ser tomadas.'
         : 'Ganho estimado também exige planejamento: a receita de destino depende de consumo e de compras públicas que variam, e a projeção precisa ser acompanhada.';
 
+    const resumo = Math.abs(v33) > 0.0005 ? `${fmtPct(v33)} (${fmtMoney(Math.abs(dif33))} por ano ${lado})` : 'praticamente igual ao cenário sem a reforma';
+    const nomeSeg = esc(base.nome);
+    const convite = v33 < -0.0005
+        ? `<strong>Entenda de onde vem essa diferença.</strong> O diagnóstico de ${nomeSeg} detalha os ${fmtMoney(Math.abs(dif33))} por ano que a reforma tira do caixa em 2033 e propõe medidas de orçamento e de arrecadação.`
+        : v33 > 0.0005
+        ? `<strong>Um ganho também precisa de plano.</strong> O diagnóstico de ${nomeSeg} mostra o que sustenta os ${fmtMoney(Math.abs(dif33))} por ano a mais em 2033 e onde a projeção é mais frágil.`
+        : `<strong>Receita estável não é receita garantida.</strong> O diagnóstico de ${nomeSeg} testa a projeção com os dados da própria prefeitura.`;
+
     const linhas = ANOS.map((a, i) => {
         const v = m.variacao_por_ano[a], d = m.pos_por_ano[a] - m.contrafactual_por_ano[a];
         return `<tr><td>${a}</td><td>${fmtMoney(m.contrafactual_por_ano[a])}</td><td>${fmtMoney(m.pos_por_ano[a])}</td><td class="${clsSinal(v)}">${fmtMoney(d)}</td><td class="${clsSinal(v)}">${fmtPct(v)}</td>${temSeguro ? `<td>${seg[i] > 0 ? fmtMoney(seg[i]) : '—'}</td>` : ''}</tr>`;
@@ -402,6 +416,10 @@ function renderFicha(cod, base, m) {
         <div class="veredito ${sinal}">
             <div class="grande">${fmtPct(v33)}<small>variação da receita em 2033</small></div>
             <div><p>${leitura}</p><p>${nota}</p></div>
+        </div>
+        <div class="cta-inline">
+            <p>${convite}</p>
+            <div class="botoes" id="ctaInlineBotoes" style="margin:0"></div>
         </div>
         <div class="kpis">
             <div class="kpi"><span>Receita de referência 2025</span><b>${fmtMoney(m.pre_2025)}</b><small>ISS mais cota-parte do ICMS, em R$ de 2025</small></div>
@@ -429,10 +447,23 @@ function renderFicha(cod, base, m) {
             <span>Variação em 2033: <b>${fmtInt(posBR)}º</b> entre os ${fmtInt(ok.length)} municípios do país com dados confiáveis, do maior ganho à maior perda.</span>
             <span>Em ${base.uf}: <b>${fmtInt(posUF)}º</b> entre ${fmtInt(naUF.length)}.</span>`}
         </div>
-        <div class="cta-ficha">
-            <p><strong>Quer o diagnóstico completo de ${esc(base.nome)}?</strong> A Vertex Advisory monta o relatório individual, com plano de ação para o orçamento e capacitação da equipe.</p>
-            <div class="botoes" id="ctaFichaBotoes" style="margin:0"></div>
-        </div>`;
+        <div class="ladder">
+            <h3>O que o painel mostra e o que o diagnóstico de ${nomeSeg} acrescenta</h3>
+            <div class="ladder-cols">
+                <div class="ladder-col"><h4>No painel, com dados públicos</h4><ul>
+                    <li>Variação estimada da receita até 2033</li>
+                    <li>Composição por componente do IBS</li>
+                    <li>Série histórica declarada ao SICONFI</li>
+                    <li>Posição entre os municípios do país e do estado</li></ul></div>
+                <div class="ladder-col mais"><h4>No diagnóstico, feito pela Vertex</h4><ul>
+                    <li>Premissas ajustadas com os dados da própria prefeitura</li>
+                    <li>Cenários para a legislação e a política de arrecadação local</li>
+                    <li>Reflexo no PPA, na LDO e na LOA</li>
+                    <li>Plano de ação e capacitação da equipe</li></ul></div>
+            </div>
+            <div class="ladder-fim"><div class="botoes" id="ctaFichaBotoes" style="margin:0"></div><small>Modelo e metodologia de Eduardo Araújo, economista (Corecon nº 1401).</small></div>
+        </div>
+        <p class="print-credito">Municípios na Reforma, iniciativa da Vertex Advisory · municipiosnareforma.com.br${CONFIG.email ? ' · ' + CONFIG.email : ''}</p>`;
 
     $('btnVoltar').addEventListener('click', () => mostrarVisao('visao-geral'));
     $('btnCopiar').addEventListener('click', e => {
@@ -441,7 +472,8 @@ function renderFicha(cod, base, m) {
         track('copiar_link', {municipio: base.nome});
     });
     $('btnImprimir').addEventListener('click', () => { track('imprimir_ficha', {municipio: base.nome}); window.print(); });
-    contatoBotoes($('ctaFichaBotoes'), base);
+    contatoBotoes($('ctaFichaBotoes'), base, resumo, 'fim');
+    contatoBotoes($('ctaInlineBotoes'), base, resumo, 'inline');
     desenharGraficos(m);
     carregarMalha().then(() => {
         if (ATUAL !== cod || !$('miniSvg')) return;
@@ -486,17 +518,21 @@ function desenharGraficos(m) {
 }
 
 /* ── contato ──
-   Os links só existem quando WhatsApp ou e-mail estão configurados no topo deste arquivo. */
-function contatoBotoes(alvo, base) {
+   Os links só existem quando WhatsApp ou e-mail estão configurados no topo deste arquivo.
+   A mensagem já leva o município e o número da ficha, para que o contato chegue qualificado. */
+function contatoBotoes(alvo, base, resumo, local) {
     const assunto = base ? 'Diagnóstico da reforma tributária: ' + base.nome + '/' + base.uf : 'Diagnóstico da reforma tributária para a minha prefeitura';
     const texto = base
-        ? 'Olá! Vi a estimativa de ' + base.nome + '/' + base.uf + ' no Municípios na Reforma e gostaria de conversar sobre o diagnóstico da reforma tributária para a prefeitura.'
-        : 'Olá! Vim pelo Municípios na Reforma e gostaria de conversar sobre o diagnóstico da reforma tributária para a minha prefeitura.';
+        ? 'Olá! Escrevo da Prefeitura de ' + base.nome + '/' + base.uf + '. Vi no Municípios na Reforma que a variação estimada da receita em 2033 é ' + resumo + ', frente ao cenário sem a reforma, e gostaria de conversar sobre o diagnóstico da reforma tributária para o município. Meu nome e cargo: '
+        : 'Olá! Vim pelo Municípios na Reforma e gostaria de conversar sobre o diagnóstico da reforma tributária para a minha prefeitura. Meu nome, cargo e município: ';
+    const rotulo = base ? 'Pedir diagnóstico de ' + base.nome : null;
     const html = [];
-    if (CONFIG.whatsapp) html.push(`<a class="btn btn-gold btn-sm" data-contato="whatsapp" href="https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(texto)}" rel="noopener" target="_blank">Falar pelo WhatsApp</a>`);
-    if (CONFIG.email) html.push(`<a class="btn ${CONFIG.whatsapp ? 'btn-ghost' : 'btn-gold'} btn-sm" data-contato="email" href="mailto:${CONFIG.email}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(texto)}">Enviar e-mail</a>`);
+    if (CONFIG.whatsapp) html.push(`<a class="btn btn-gold btn-sm" data-contato="whatsapp" href="https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(texto)}" rel="noopener" target="_blank">${rotulo ? esc(rotulo) + ' pelo WhatsApp' : 'Falar pelo WhatsApp'}</a>`);
+    if (CONFIG.email) html.push(`<a class="btn ${CONFIG.whatsapp ? 'btn-ghost' : 'btn-gold'} btn-sm" data-contato="email" href="mailto:${CONFIG.email}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(texto)}">${rotulo && !CONFIG.whatsapp ? esc(rotulo) : 'Enviar e-mail'}</a>`);
+    if (!html.length && base) html.push('<a class="btn btn-gold btn-sm" href="#" data-ir="vertex">Falar com a Vertex</a>');
     alvo.innerHTML = html.join('') || '<span class="nota">Canal de contato em configuração.</span>';
-    alvo.querySelectorAll('[data-contato]').forEach(a => a.addEventListener('click', () => track('clique_contato', {canal: a.dataset.contato, municipio: base ? base.nome : 'geral'})));
+    alvo.querySelectorAll('[data-contato]').forEach(a => a.addEventListener('click', () => track('clique_contato', {canal: a.dataset.contato, municipio: base ? base.nome : 'geral', local: local || 'aba'})));
+    alvo.querySelectorAll('[data-ir]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); track('clique_contato', {canal: 'aba_vertex', municipio: base ? base.nome : 'geral', local: local || 'aba'}); mostrarVisao(a.dataset.ir); }));
 }
 contatoBotoes($('botoesContato'), null);
 })();
