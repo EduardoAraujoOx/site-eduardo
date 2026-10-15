@@ -23,11 +23,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
-<script src="memoria.js?v=3" defer></script>
-<script src="app.js?v=3" defer></script>
+<script src="memoria.js?v=4" defer></script>
+<script src="app.js?v=4" defer></script>
 </head>
 <body>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -152,25 +152,40 @@
 <!-- ============ RANKINGS ============ -->
 <section class="view" id="view-rankings">
     <div class="view-head">
-        <h2>Rankings de 2033</h2>
-        <p class="sub">Como cada estado e município se posiciona na variação da receita projetada para 2033, contra o cenário sem a reforma. Clique numa linha para abrir.</p>
+        <h2 id="rankTitulo">Rankings de 2033</h2>
+        <p class="sub">Os municípios do estado que mais perdem e mais ganham receita em 2033, contra o cenário sem a reforma. Clique numa linha para abrir a ficha.</p>
+    </div>
+    <div class="rank-barra">
+        <label class="sr-only" for="rankUF">Estado</label>
+        <select id="rankUF" aria-label="Estado"><option value="">Escolha um estado</option></select>
+        <div class="toggle" id="rankOrdem" role="group" aria-label="Ordenar por">
+            <button type="button" data-ordem="pct" class="active">Variação (%)</button>
+            <button type="button" data-ordem="rs">Diferença (R$ por ano)</button>
+        </div>
+        <label class="check"><input type="checkbox" id="rankPeq"> Incluir municípios com menos de 10 mil habitantes</label>
+    </div>
+    <div class="contexto" id="rankResumo" hidden></div>
+    <p class="aviso-geral" id="rankVazio">Escolha um estado para ver os municípios que mais perdem e que mais ganham. A tabela abaixo compara os estados.</p>
+    <div id="rankBloco" hidden>
+        <div class="grid2">
+            <div class="panel">
+                <h3>Maiores perdas</h3>
+                <p class="panel-sub" id="rankCritPerdas"></p>
+                <div class="table-wrap"><table class="dados" id="tabPerdas"><thead><tr><th>#</th><th class="nome">Município</th><th class="col-pop">População</th><th>Diferença por ano</th><th>Variação</th></tr></thead><tbody></tbody></table></div>
+                <button type="button" class="link-btn rank-mais" id="maisPerdas" hidden></button>
+            </div>
+            <div class="panel">
+                <h3>Maiores ganhos</h3>
+                <p class="panel-sub" id="rankCritGanhos"></p>
+                <div class="table-wrap"><table class="dados" id="tabGanhos"><thead><tr><th>#</th><th class="nome">Município</th><th class="col-pop">População</th><th>Diferença por ano</th><th>Variação</th></tr></thead><tbody></tbody></table></div>
+                <button type="button" class="link-btn rank-mais" id="maisGanhos" hidden></button>
+            </div>
+        </div>
     </div>
     <div class="panel">
         <h3>Estados</h3>
-        <p class="panel-sub">Variação agregada da receita de todos os municípios do estado, do maior ganho à maior perda, e a parcela de prefeituras que perdem.</p>
-        <div class="table-wrap"><table class="dados" id="tabUF"><thead><tr><th>#</th><th>Estado</th><th>Municípios</th><th>Prefeituras que perdem</th><th>Variação agregada</th></tr></thead><tbody><tr><td colspan="5" class="vazio-td">Carregando…</td></tr></tbody></table></div>
-    </div>
-    <div class="grid2">
-        <div class="panel">
-            <h3>Vinte maiores perdas</h3>
-            <p class="panel-sub" id="critRank">Municípios com dados confiáveis.</p>
-            <div class="table-wrap"><table class="dados" id="tabPerdas"><thead><tr><th>Município</th><th>Sem a reforma</th><th>Com a reforma</th><th>Variação</th></tr></thead><tbody></tbody></table></div>
-        </div>
-        <div class="panel">
-            <h3>Vinte maiores ganhos</h3>
-            <p class="panel-sub">Mesmos critérios, do maior ganho para baixo.</p>
-            <div class="table-wrap"><table class="dados" id="tabGanhos"><thead><tr><th>Município</th><th>Sem a reforma</th><th>Com a reforma</th><th>Variação</th></tr></thead><tbody></tbody></table></div>
-        </div>
+        <p class="panel-sub">Variação agregada da receita de todos os municípios do estado, do maior ganho à maior perda, e a parcela de prefeituras que perdem. Clique numa linha para ver o ranking do estado.</p>
+        <div class="table-wrap"><table class="dados" id="tabUF"><thead><tr><th>#</th><th class="nome">Estado</th><th>Municípios</th><th>Prefeituras que perdem</th><th>Variação agregada</th></tr></thead><tbody><tr><td colspan="5" class="vazio-td">Carregando…</td></tr></tbody></table></div>
     </div>
 </section>
 
