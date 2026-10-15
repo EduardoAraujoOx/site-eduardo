@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Municípios na Reforma | Vertex Advisory</title>
+<meta name="description" content="Quanto a sua prefeitura ganha ou perde com a reforma tributária? Estimativa da receita de ISS e cota-parte do ICMS de cada município na transição para o IBS, de 2029 a 2033.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://municipiosnareforma.com.br/">
+<link rel="icon" type="image/png" sizes="48x48" href="images/favicon-48.png">
+<link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
+<meta name="theme-color" content="#1f2a55">
+
+<meta property="og:title" content="Municípios na Reforma | Vertex Advisory">
+<meta property="og:description" content="Descubra quanto a sua prefeitura ganha ou perde de receita com o IBS, município por município, de 2029 a 2033.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://municipiosnareforma.com.br/">
+<meta property="og:image" content="https://municipiosnareforma.com.br/images/vertex/og-municipios.png">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Municípios na Reforma">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#conteudo">Ir para o conteúdo</a>
+
+<header class="site-head">
+    <div class="wrap head-in">
+        <a class="brand" href="./" aria-label="Municípios na Reforma, uma iniciativa da Vertex Advisory">
+            <img src="images/vertex-simbolo.png" alt="" width="58" height="46">
+            <span class="brand-txt"><b>VERTEX</b><span>ADVISORY</span></span>
+        </a>
+        <nav class="nav" aria-label="Principal">
+            <a href="#consulta">Consulte seu município</a>
+            <a href="#panorama">Panorama</a>
+            <a href="#servicos">Serviços</a>
+            <a href="#metodo">Metodologia</a>
+            <a class="btn btn-gold btn-sm" href="#contato" data-contato="cabecalho">Fale com a Vertex</a>
+        </nav>
+    </div>
+</header>
+
+<main id="conteudo">
+
+<!-- ============ HERO + BUSCA ============ -->
+<div class="hero" id="consulta">
+    <div class="hero-art" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
+    <div class="wrap">
+        <span class="kicker">Municípios na Reforma</span>
+        <h1>A reforma tributária vai mexer no caixa da sua prefeitura. <em>Descubra em quanto.</em></h1>
+        <p class="lead">Estimativa da receita de ISS e da cota-parte do ICMS de cada município brasileiro durante a transição para o IBS, de 2029 a 2033, com a comparação entre o que a prefeitura arrecadaria com e sem a reforma.</p>
+
+        <form class="search" id="formBusca" role="search" autocomplete="off">
+            <label for="busca">Digite o nome do seu município</label>
+            <div class="search-box">
+                <input id="busca" type="text" inputmode="search" placeholder="Ex.: Serra, Sobral" role="combobox" aria-expanded="false" aria-controls="sugestoes" aria-autocomplete="list" disabled>
+                <button type="submit">Ver estimativa</button>
+            </div>
+            <ul class="suggest" id="sugestoes" role="listbox" aria-label="Municípios encontrados" hidden></ul>
+            <p class="search-hint" id="dicaBusca">Carregando a base de municípios…</p>
+        </form>
+    </div>
+</div>
+
+<div class="stats">
+    <div class="wrap">
+        <div class="stats-grid" id="faixaNumeros" aria-live="polite">
+            <div class="stat"><b id="stPerdem">—</b><span>dos municípios têm, em 2033, receita projetada abaixo da que teriam sem a reforma.</span></div>
+            <div class="stat"><b id="stMediana">—</b><span>é a variação mediana da receita municipal em 2033, frente ao cenário sem a reforma.</span></div>
+            <div class="stat"><b id="stTotal">—</b><span>municípios analisados, com dados do SICONFI/STN, do IBGE e do Censo 2022.</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ FICHA DO MUNICÍPIO ============ -->
+<section id="ficha" hidden aria-labelledby="fichaTitulo">
+    <div class="wrap" id="fichaCorpo"></div>
+</section>
+
+<!-- ============ O QUE ESTÁ EM JOGO ============ -->
+<section id="porque">
+    <div class="wrap">
+        <div class="sec-head">
+            <span class="eyebrow">O que está em jogo</span>
+            <h2>O ISS e a cota-parte do ICMS saem de cena. O que entra no lugar depende de onde se consome.</h2>
+            <p>Para boa parte das prefeituras, ISS e cota-parte do ICMS sustentam o caixa. Entre 2029 e 2033, os dois são substituídos pelo IBS, e a receita de cada município passa a seguir uma nova lógica de partilha.</p>
+        </div>
+        <div class="cards c3">
+            <article class="card">
+                <span class="num">01</span>
+                <h3>Os tributos atuais são extintos</h3>
+                <p>A alíquota do ISS e a do ICMS caem a cada ano de 2029 a 2032, e os dois deixam de existir em 2033. A partir daí, toda a arrecadação compartilhada é IBS.</p>
+            </article>
+            <article class="card">
+                <span class="num">02</span>
+                <h3>A partilha migra da origem para o destino</h3>
+                <p>A participação de cada município deixa de depender do histórico de arrecadação e passa a acompanhar o local de consumo, aos poucos, até 2078. Quem consome menos do que arrecada perde fatia.</p>
+            </article>
+            <article class="card">
+                <span class="num">03</span>
+                <h3>Há proteção, mas com regras</h3>
+                <p>O Seguro-Receita reserva parte do IBS de destino para repor municípios cuja receita ficar abaixo de um nível de referência. Quem tem direito, e quanto, só se vê com o cálculo ente por ente.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- ============ PANORAMA POR UF ============ -->
+<section id="panorama" class="bg-paper">
+    <div class="wrap">
+        <div class="sec-head">
+            <span class="eyebrow">Panorama</span>
+            <h2>Em cada estado, quantas prefeituras perdem receita em 2033</h2>
+            <p>Parcela dos municípios com dados confiáveis cuja receita projetada para 2033 fica abaixo do cenário sem a reforma.</p>
+        </div>
+        <div class="uf-grid" id="ufGrid" role="list"></div>
+        <p class="nota">Municípios sinalizados como estimativa aproximada ou dado a conferir ficam fora desta conta. A diferença é sempre medida contra o cenário sem reforma no mesmo ano, e não contra a receita de 2025.</p>
+    </div>
+</section>
+
+<!-- ============ SERVIÇOS ============ -->
+<section id="servicos" class="bg-navy">
+    <div class="wrap">
+        <div class="sec-head">
+            <span class="eyebrow">Como a Vertex ajuda a sua prefeitura</span>
+            <h2>Da estimativa ao plano de ação</h2>
+            <p>O portal mostra a ordem de grandeza. A Vertex Advisory transforma esse número em decisões de orçamento, de legislação local e de preparo das equipes.</p>
+        </div>
+        <div class="cards c4">
+            <article class="card">
+                <span class="num">DIAGNÓSTICO</span>
+                <h3>Diagnóstico da reforma para o município</h3>
+                <p>Relatório individual com a projeção da receita por cenário, a composição por componente do IBS, os riscos e os pontos de atenção para 2029–2033.</p>
+            </article>
+            <article class="card">
+                <span class="num">PLANEJAMENTO</span>
+                <h3>Planejamento fiscal e orçamentário</h3>
+                <p>Reflexo da transição no PPA, na LDO e na LOA, com cenários de receita e metas fiscais construídos junto com Fazenda e Planejamento.</p>
+            </article>
+            <article class="card">
+                <span class="num">CAPACITAÇÃO</span>
+                <h3>Capacitação das equipes</h3>
+                <p>Cursos e oficinas para secretários, contadores, procuradores e fiscais sobre IBS, CBS, Comitê Gestor, partilha e Seguro-Receita.</p>
+            </article>
+            <article class="card">
+                <span class="num">ACOMPANHAMENTO</span>
+                <h3>Acompanhamento contínuo</h3>
+                <p>Monitoramento da regulamentação e atualização das projeções do município a cada mudança de regra ou de base de dados.</p>
+            </article>
+        </div>
+        <div class="passos">
+            <div class="passo"><h3>Entender o número</h3><p>Partimos da estimativa do portal e a conferimos com os dados da própria prefeitura.</p></div>
+            <div class="passo"><h3>Montar o plano</h3><p>Traduzimos o cenário em medidas de orçamento, de arrecadação própria e de legislação local.</p></div>
+            <div class="passo"><h3>Preparar a equipe</h3><p>Capacitamos quem vai executar, para que a prefeitura chegue a 2029 sem improviso.</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ AUTORIA ============ -->
+<section id="autoria">
+    <div class="wrap autor">
+        <div>
+            <span class="eyebrow">Quem assina o modelo</span>
+            <h2>Metodologia aberta, feita por economista, com dados públicos</h2>
+            <p>As estimativas do portal vêm do modelo e da base de dados de Eduardo Araújo, economista (Corecon nº 1401), Mestre em Políticas Públicas pela Universidade de Oxford e professor da Fucape Business School. Eduardo é parceiro da Vertex Advisory.</p>
+            <p>Cada número do portal pode ser conferido: as fontes são públicas e a conta é replicável.</p>
+        </div>
+        <div class="autor-logo"><img src="images/logo-vertex-advisory.png" alt="Vertex Advisory" width="300" height="254" loading="lazy"></div>
+    </div>
+</section>
+
+<!-- ============ METODOLOGIA ============ -->
+<section id="metodo" class="bg-paper">
+    <div class="wrap">
+        <div class="sec-head">
+            <span class="eyebrow">Metodologia</span>
+            <h2>Como chegamos aos números</h2>
+        </div>
+        <div class="metodo">
+            <h3>Fontes</h3>
+            <p>Arrecadação de ISS e cota-parte do ICMS de 2019 a 2025 no SICONFI/STN (DCA e RREO), população do IBGE, renda domiciliar per capita do Censo 2022, elasticidade-renda do consumo da POF 2017–2018 e compras governamentais da DCA. As regras de transição seguem a EC 132/2023, a LC 214/2025 e a LC 227/2026.</p>
+            <h3>O que significa a variação</h3>
+            <p>A variação compara, no mesmo ano, a receita projetada com a reforma e o contrafactual: o que o município arrecadaria se as regras antigas continuassem valendo e a sua fatia do total nacional permanecesse a de 2025. Ela mede o efeito da reforma, e não o crescimento da economia.</p>
+            <h3>Valores em reais de 2025</h3>
+            <p>Os valores são reais, a preços de 2025. A projeção nacional usa as medianas do Boletim Focus para o crescimento do PIB, e a série histórica é deflacionada para o mesmo ano-base.</p>
+            <h3>Limites</h3>
+            <p>São estimativas próprias e independentes. Não substituem o cálculo oficial do Comitê Gestor do IBS nem da União. Municípios sem registro individualizado em 2025 ou com dado incompatível com a própria série aparecem com ressalva e ficam fora dos rankings.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ============ CONTATO ============ -->
+<section id="contato" class="bg-navy contato">
+    <div class="wrap">
+        <div class="sec-head">
+            <span class="eyebrow">Próximo passo</span>
+            <h2>Vamos conversar sobre a sua prefeitura</h2>
+            <p>Conte qual município e qual cargo você ocupa. A Vertex retorna com uma proposta de diagnóstico e de capacitação para a sua equipe.</p>
+        </div>
+        <div class="botoes" id="botoesContato"></div>
+        <p class="canais" id="canaisContato"></p>
+    </div>
+</section>
+
+</main>
+
+<footer class="site-foot">
+    <div class="wrap foot-in">
+        <div>
+            <img src="images/logo-vertex-advisory.png" alt="Vertex Advisory" width="76" height="64" loading="lazy">
+            <p><strong>Municípios na Reforma</strong> é uma iniciativa da Vertex Advisory.</p>
+            <p>Estimativas próprias e independentes, construídas com dados públicos (SICONFI/STN, IBGE, Censo e POF). Não substituem projeções oficiais do Comitê Gestor do IBS ou da União.</p>
+        </div>
+        <div>
+            <p>Dados de referência: exercício DCA/SICONFI 2025.</p>
+            <p>Os números são lidos direto da base de dados do modelo e se atualizam sempre que a metodologia é aprimorada.</p>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
