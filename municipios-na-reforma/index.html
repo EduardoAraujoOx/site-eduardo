@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Municípios na Reforma | Painel da reforma tributária para prefeituras</title>
+<meta name="description" content="Para onde vai a arrecadação de cada município brasileiro na transição do ISS e do ICMS para o IBS: mapa, ficha de cada prefeitura, projeção 2029–2033 e rankings, com a metodologia aberta.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://municipiosnareforma.com.br/">
+<link rel="icon" type="image/png" sizes="48x48" href="images/favicon-48.png">
+<link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
+<meta name="theme-color" content="#1f2a55">
+
+<meta property="og:title" content="Municípios na Reforma | Painel da reforma tributária">
+<meta property="og:description" content="Para onde vai a arrecadação de cada município brasileiro na transição para o IBS: mapa, ficha e projeção 2029–2033 de cada prefeitura.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://municipiosnareforma.com.br/">
+<meta property="og:image" content="https://municipiosnareforma.com.br/images/og-municipios.png">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Municípios na Reforma">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
+<script src="memoria.js" defer></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+<div class="utility-bar"><div class="wrap">municipiosnareforma.com.br · EC 132/2023, LC 214/2024, LC 227/2026</div></div>
+
+<header class="masthead">
+    <div class="wrap masthead-in">
+        <div>
+            <h1>Municípios na Reforma</h1>
+            <p class="sub">Painel da reforma tributária: para onde vai a arrecadação de cada município</p>
+        </div>
+        <a class="credito" href="#" data-ir="vertex" aria-label="Uma iniciativa da Vertex Advisory. Saiba mais">
+            <span class="credito-txt">Uma iniciativa de</span>
+            <span class="lockup-branco"><img src="images/vertex-simbolo-branco.png" alt="" width="44" height="35"><span class="lockup"><b>VERTEX</b><em>ADVISORY</em></span></span>
+        </a>
+    </div>
+</header>
+
+<nav class="tabnav" aria-label="Navegação do painel">
+    <div class="wrap tabnav-in">
+        <button class="tab-btn active" data-view="visao-geral" type="button">Visão geral</button>
+        <button class="tab-btn" data-view="municipio" type="button">Município</button>
+        <button class="tab-btn" data-view="rankings" type="button">Rankings</button>
+        <button class="tab-btn" data-view="memoria" type="button">Memória de cálculo</button>
+        <button class="tab-btn" data-view="metodologia" type="button">Metodologia</button>
+        <button class="tab-btn" data-view="vertex" type="button">Para a sua prefeitura</button>
+        <a class="tab-link" href="#" data-ir="vertex">Fale com a Vertex →</a>
+    </div>
+</nav>
+
+<main id="conteudo" class="wrap">
+
+<!-- ============ VISÃO GERAL ============ -->
+<section class="view active" id="view-visao-geral">
+    <div class="view-head center">
+        <h2>Consulte os indicadores do seu município</h2>
+        <p class="sub" id="manchete">Busque a prefeitura para ver o histórico, a projeção 2029–2033 e o que explica o resultado, ou explore o mapa.</p>
+    </div>
+    <form class="search" id="formBusca" role="search" autocomplete="off">
+        <label class="sr-only" for="busca">Nome do município</label>
+        <input id="busca" type="text" inputmode="search" placeholder="Digite o nome do município… (ex.: Serra, Campinas, Sobral)" role="combobox" aria-expanded="false" aria-controls="sugestoes" aria-autocomplete="list" disabled>
+        <ul class="suggest" id="sugestoes" role="listbox" aria-label="Municípios encontrados" hidden></ul>
+        <p class="search-hint" id="dicaBusca">Carregando a base de municípios…</p>
+        <p class="search-hint"><button type="button" class="link-btn" id="btnLocal"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg> Usar a minha localização</button> <span id="localMsg" role="status"></span></p>
+    </form>
+
+    <div class="local-card" id="localCard" hidden aria-live="polite">
+        <div class="local-id">
+            <span class="local-rotulo" id="localRotulo"></span>
+            <strong class="local-nome" id="localNome"></strong>
+            <small class="local-aviso" id="localAviso"></small>
+        </div>
+        <div class="local-num" id="localNum"></div>
+        <div class="local-acoes">
+            <button type="button" class="btn btn-gold btn-sm" id="localAbrir">Ver a ficha</button>
+            <button type="button" class="link-btn" id="localNao">Não é o meu município</button>
+        </div>
+    </div>
+
+    <div class="panel accent">
+        <div class="panel-head">
+            <div>
+                <h3 id="tituloMapa">Variação da receita municipal por estado em 2033</h3>
+                <p class="panel-sub" id="subMapa"></p>
+            </div>
+            <div class="controles">
+                <label class="sr-only" for="mapaUF">Estado</label>
+                <select id="mapaUF" aria-label="Estado"><option value="BR">Brasil</option></select>
+                <div class="toggle" id="toggleNivel" role="group" aria-label="Nível do mapa">
+                    <button type="button" data-nivel="uf" class="active">Estados</button>
+                    <button type="button" data-nivel="muni">Municípios</button>
+                </div>
+                <div class="toggle" id="toggleViz" role="group" aria-label="Forma de visualização">
+                    <button type="button" data-viz="mapa" class="active">Mapa</button>
+                    <button type="button" data-viz="tabela">Tabela</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mapa-layout">
+            <div>
+                <div class="map-wrapper" id="mapaWrap">
+                    <p class="nota" id="mapaCarregando" role="status">Carregando o mapa…</p>
+                    <svg id="mapaSvg" hidden role="img" aria-label="Mapa do Brasil colorido pela variação da receita municipal em 2033 contra o cenário sem a reforma. Os mesmos dados estão na lista ao lado e na aba Tabela."></svg>
+                    <div class="map-tip" id="mapaTip" role="tooltip"></div>
+                </div>
+                <div id="mapaLegenda"></div>
+                <div class="table-wrap" id="mapaTabela" hidden></div>
+            </div>
+            <aside class="trilho" aria-label="Lista ordenada por variação">
+                <div class="trilho-head" id="trilhoHead"></div>
+                <div class="trilho-lista" id="trilhoLista"></div>
+            </aside>
+        </div>
+    </div>
+
+    <div class="contexto" id="contexto" aria-live="polite"></div>
+</section>
+
+<!-- ============ MUNICÍPIO ============ -->
+<section class="view" id="view-municipio">
+    <div class="view-head">
+        <h2>Município</h2>
+        <p class="sub">Histórico, projeção e composição da receita de cada um dos municípios. Busque pelo nome ou clique no mapa da visão geral.</p>
+    </div>
+    <form class="search" id="formBuscaMuni" role="search" autocomplete="off">
+        <label class="sr-only" for="buscaMuni">Nome do município</label>
+        <input id="buscaMuni" type="text" inputmode="search" placeholder="Digite o nome do município…" role="combobox" aria-expanded="false" aria-controls="sugestoesMuni" aria-autocomplete="list" disabled>
+        <ul class="suggest" id="sugestoesMuni" role="listbox" aria-label="Municípios encontrados" hidden></ul>
+    </form>
+    <div id="fichaCorpo">
+        <div class="vazio">
+            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+            <p>Busque um município acima, ou clique no mapa da visão geral, para ver a ficha completa.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ============ RANKINGS ============ -->
+<section class="view" id="view-rankings">
+    <div class="view-head">
+        <h2>Rankings de 2033</h2>
+        <p class="sub">Como cada estado e município se posiciona na variação da receita projetada para 2033, contra o cenário sem a reforma. Clique numa linha para abrir.</p>
+    </div>
+    <div class="panel">
+        <h3>Estados</h3>
+        <p class="panel-sub">Variação agregada da receita de todos os municípios do estado, do maior ganho à maior perda, e a parcela de prefeituras que perdem.</p>
+        <div class="table-wrap"><table class="dados" id="tabUF"><thead><tr><th>#</th><th>Estado</th><th>Municípios</th><th>Prefeituras que perdem</th><th>Variação agregada</th></tr></thead><tbody><tr><td colspan="5" class="vazio-td">Carregando…</td></tr></tbody></table></div>
+    </div>
+    <div class="grid2">
+        <div class="panel">
+            <h3>Vinte maiores perdas</h3>
+            <p class="panel-sub" id="critRank">Municípios com dados confiáveis.</p>
+            <div class="table-wrap"><table class="dados" id="tabPerdas"><thead><tr><th>Município</th><th>Sem a reforma</th><th>Com a reforma</th><th>Variação</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <div class="panel">
+            <h3>Vinte maiores ganhos</h3>
+            <p class="panel-sub">Mesmos critérios, do maior ganho para baixo.</p>
+            <div class="table-wrap"><table class="dados" id="tabGanhos"><thead><tr><th>Município</th><th>Sem a reforma</th><th>Com a reforma</th><th>Variação</th></tr></thead><tbody></tbody></table></div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ MEMÓRIA DE CÁLCULO ============ -->
+<section class="view" id="view-memoria">
+    <div class="view-head">
+        <h2>Memória de cálculo</h2>
+        <p class="sub">Como cada coeficiente do município foi obtido, passo a passo e com os números intermediários, para que a conta possa ser refeita fora do painel e conferida.</p>
+    </div>
+    <form class="search" id="formBuscaMemo" role="search" autocomplete="off">
+        <label class="sr-only" for="buscaMemo">Nome do município</label>
+        <input id="buscaMemo" type="text" inputmode="search" placeholder="Digite o nome do município…" role="combobox" aria-expanded="false" aria-controls="sugestoesMemo" aria-autocomplete="list" disabled>
+        <ul class="suggest" id="sugestoesMemo" role="listbox" aria-label="Municípios encontrados" hidden></ul>
+    </form>
+    <div class="memo-abas" id="memoAbas">
+        <button type="button" data-secao="historico" class="active">Coeficiente histórico</button>
+        <button type="button" data-secao="destino">Coeficiente de destino</button>
+        <button type="button" data-secao="seguro">Seguro-Receita</button>
+    </div>
+    <div id="memoConteudo"><div class="vazio"><p>Busque um município acima, ou abra a ficha de um município e siga o link para a memória de cálculo.</p></div></div>
+</section>
+
+<!-- ============ METODOLOGIA ============ -->
+<section class="view" id="view-metodologia">
+    <div class="view-head">
+        <h2>Metodologia</h2>
+        <p class="sub">Como o modelo funciona, de onde vêm os dados e quais são os limites das estimativas.</p>
+    </div>
+    <div class="aviso-geral">Estimativas próprias e independentes, construídas com dados públicos (SICONFI/STN, IBGE, Censo e POF) e descritas abaixo para que possam ser conferidas e replicadas. Não são o cálculo oficial do Comitê Gestor do IBS nem da União.</div>
+    <div class="prose panel">
+        <h3>O que muda na receita municipal</h3>
+        <p>O ISS e a cota-parte do ICMS, que sustentam o caixa de boa parte das prefeituras, são substituídos pelo IBS. A alíquota do ISS e a do ICMS caem a cada ano de 2029 a 2032, e os dois deixam de existir em 2033. A partir daí, toda a arrecadação compartilhada é IBS.</p>
+        <p>A partilha migra do critério histórico (origem) para o de destino (local de consumo), aos poucos, até 2078. Quem consome menos do que arrecada perde fatia, e quem consome mais ganha. O Seguro-Receita reserva parte do IBS de destino para repor os entes cuja receita, por esse critério, ficar abaixo de um nível de referência.</p>
+
+        <h3>O que significa a variação</h3>
+        <p>A variação compara, no mesmo ano, a receita projetada com a reforma e o contrafactual: o que o município arrecadaria se as regras antigas continuassem valendo e a sua fatia do total nacional permanecesse a de 2025. Comparar 2033 com 2025 mediria sobretudo o crescimento da economia no intervalo. A comparação entre cenários do mesmo ano mede apenas o efeito da reforma.</p>
+
+        <h3>Fontes</h3>
+        <p>Arrecadação de ISS e cota-parte do ICMS de 2019 a 2025 no SICONFI/STN (DCA e RREO). População do IBGE, média de 2019 a 2026. Renda domiciliar per capita do Censo 2022, usada com a elasticidade-renda do consumo da POF 2017–2018 para estimar o consumo de cada município. Compras governamentais da DCA. Crescimento real do PIB pelas medianas do Boletim Focus. As regras de transição seguem a EC 132/2023, a LC 214/2025 e a LC 227/2026.</p>
+
+        <h3>Valores em reais de 2025</h3>
+        <p>A série histórica é deflacionada para R$ de 2025 e a projeção incorpora apenas crescimento real, de modo que todos os valores são comparáveis entre si.</p>
+
+        <h3>Ressalvas de qualidade</h3>
+        <p>Municípios sinalizados como estimativa aproximada não têm registro individualizado de ISS e cota-parte do ICMS para 2025 no SICONFI, e a participação de 2025 é aproximada pela média de sete anos. Municípios sinalizados como dado a conferir têm um valor declarado para 2025 incompatível com a própria série histórica, o que sugere falha de preenchimento na fonte. Nos dois casos o valor é exibido, mas fica fora dos rankings. Os rankings consideram ainda apenas municípios com ao menos 5 anos de dados e 10 mil habitantes.</p>
+
+        <h3>Atualização</h3>
+        <p>Os números são lidos diretamente da base de dados do modelo, calculada antes da publicação. Sempre que a metodologia é aprimorada, o portal passa a exibir o resultado novo.</p>
+    </div>
+</section>
+
+<!-- ============ VERTEX ============ -->
+<section class="view" id="view-vertex">
+    <div class="view-head">
+        <h2>Para a sua prefeitura</h2>
+        <p class="sub">O painel mostra a ordem de grandeza. A Vertex Advisory ajuda a transformar esse número em decisões de orçamento, de legislação local e de preparo das equipes.</p>
+    </div>
+    <div class="cards">
+        <article class="card"><h3>Diagnóstico da reforma para o município</h3><p>Relatório individual com a projeção da receita por cenário, a composição por componente do IBS, os riscos e os pontos de atenção para 2029–2033.</p></article>
+        <article class="card"><h3>Planejamento fiscal e orçamentário</h3><p>Reflexo da transição no PPA, na LDO e na LOA, com cenários de receita e metas fiscais construídos junto com Fazenda e Planejamento.</p></article>
+        <article class="card"><h3>Capacitação das equipes</h3><p>Cursos e oficinas para secretários, contadores, procuradores e fiscais sobre IBS, CBS, Comitê Gestor, partilha e Seguro-Receita.</p></article>
+        <article class="card"><h3>Acompanhamento contínuo</h3><p>Monitoramento da regulamentação e atualização das projeções do município a cada mudança de regra ou de base de dados.</p></article>
+    </div>
+    <div class="panel autoria">
+        <div>
+            <h3>Quem assina o modelo</h3>
+            <p>As estimativas do painel vêm do modelo e da base de dados de Eduardo Araújo, economista (Corecon nº 1401), Mestre em Políticas Públicas pela Universidade de Oxford e professor da Fucape Business School. Eduardo é parceiro da Vertex Advisory.</p>
+            <p>Para pedir o diagnóstico da sua prefeitura ou conversar sobre capacitação, escolha um canal abaixo e informe o município e o seu cargo.</p>
+            <div class="botoes" id="botoesContato"></div>
+        </div>
+        <img src="images/logo-vertex-advisory.png" alt="Vertex Advisory" width="220" height="186" loading="lazy">
+    </div>
+</section>
+
+</main>
+
+<footer class="site-foot">
+    <div class="wrap foot-in">
+        <img src="images/logo-vertex-branco.png" alt="Vertex Advisory" width="86" height="74" loading="lazy">
+        <p><strong>Municípios na Reforma</strong> é uma iniciativa da Vertex Advisory. Estimativas próprias e independentes, com dados públicos (SICONFI/STN, IBGE, Censo e POF); não substituem projeções oficiais do Comitê Gestor do IBS ou da União. Dados de referência: exercício DCA/SICONFI 2025.</p>
+    </div>
+</footer>
+
+</body>
+</html>
