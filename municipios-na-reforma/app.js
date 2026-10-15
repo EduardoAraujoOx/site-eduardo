@@ -79,6 +79,8 @@ if (CONFIG.gaId) {
 let LISTA = [], POR_COD = {}, RESULT = null, NAC = null, AGG = {};
 let ESCOPO = 'BR', NIVEL = 'uf', ATUAL = null, MAPA = null, MINI = null, graficos = [];
 const MEMO = {cod: null, secao: 'historico'};
+const RANK = {}, DADOS_UF = {};
+let LOCAL = null, MAPA_DESTAQUE = null;
 const CACHE_UF = new Map(), CACHE_MEMO = new Map();
 let MEMO_NAC = null;
 const GEO = {muni: null, uf: null, promessa: null};
@@ -111,6 +113,7 @@ function iniciar(idx, res, nac) {
     LISTA = Object.entries(idx.municipios).map(([cod, m]) => ({cod, nome: m.nome, uf: m.uf, v: m.v, r: !!m.r, chave: norm(m.nome)}));
     LISTA.forEach(m => { POR_COD[m.cod] = m; });
     RESULT = res; NAC = nac;
+    calcularRanks();
     AGG = (res && res.variacao_municipal_por_uf_2033) || {};
 
     $('mapaUF').innerHTML = '<option value="BR">Brasil</option>' + Object.keys(NOMES_UF)
@@ -137,11 +140,12 @@ function iniciar(idx, res, nac) {
     carregarMalha().then(() => {
         MAPA = criarMapa($('mapaSvg'), $('mapaWrap'), $('mapaTip'), {camadaUF: true, todos: true, uf: ESCOPO, nivel: NIVEL, aoClicar: cod => abrirMunicipio(cod), aoClicarUF: uf => definirEscopo(uf, 'muni')});
         $('mapaCarregando').hidden = true; $('mapaSvg').removeAttribute('hidden');   // SVGElement não tem a propriedade hidden
-        if (ATUAL) MAPA.destacar(ATUAL);
+        if (ATUAL || MAPA_DESTAQUE) MAPA.destacar(ATUAL || MAPA_DESTAQUE);
     }).catch(e => { console.error(e); $('mapaCarregando').textContent = 'O mapa não pôde ser carregado agora. Use a busca por município ou a lista ao lado.'; });
 
     const cod = new URLSearchParams(location.search).get('m');
-    if (cod && POR_COD[cod]) abrirMunicipio(cod, {semUrl: true});
+    if (cod && POR_COD[cod]) abrirMunicipio(cod, {semUrl: true}); else iniciarLocalizacao();
+    $('btnLocal').addEventListener('click', () => localizarGPS(false));
 }
 
 function renderManchete() {
@@ -160,6 +164,7 @@ function definirEscopo(uf, nivel) {
     $('toggleNivel').hidden = uf !== 'BR';
     document.querySelectorAll('#toggleNivel button').forEach(b => b.classList.toggle('active', b.dataset.nivel === NIVEL));
     if (MAPA) MAPA.definir(ESCOPO, NIVEL);
+    if (uf !== 'BR') municipiosDaUF(uf).catch(() => CACHE_UF.delete(uf));   // alimenta a dica do mapa com R$ e população
     renderCabecalhoMapa(); renderLegenda(); renderTabelaMapa(); renderTrilho(); renderContexto();
 }
 
@@ -324,6 +329,111 @@ function ativarBusca(inp, ul, form, aoEscolher) {
     });
 }
 
+/* ── dica do município: mesmo molde da dica do estado (nome, número, contexto, posição, convite) ── */
+function calcularRanks() {
+    const porUF = {};
+    LISTA.filter(m => !m.r).forEach(m => (porUF[m.uf] = porUF[m.uf] || []).push(m));
+    Object.values(porUF).forEach(arr => { arr.sort((a, b) => b.v - a.v); arr.forEach((m, i) => { RANK[m.cod] = {pos: i + 1, n: arr.length}; }); });
+}
+
+function tipMunicipio(m) {
+    if (m.r) return `<b>${esc(m.nome)} · ${m.uf}</b><small>Sem dado confiável: a participação de 2025 tem ressalva na fonte.</small><em>Clique para ver a ficha →</em>`;
+    const d = DADOS_UF[m.uf] && DADOS_UF[m.uf][m.cod];
+    const dif = d ? d.pos_por_ano['2033'] - d.contrafactual_por_ano['2033'] : null;
+    const rk = RANK[m.cod];
+    return `<b>${esc(m.nome)} · ${m.uf}</b><span class="v ${clsSinal(m.v)}">${fmtPct(m.v)}</span><small>da receita em 2033, contra o cenário sem a reforma</small>`
+        + (d ? `<small>${fmtMoney(Math.abs(dif))} por ano ${dif < 0 ? 'a menos' : 'a mais'} · ${fmtInt(d.pop_media)} habitantes</small>` : '')
+        + (rk ? `<small>${fmtInt(rk.pos)}º entre ${fmtInt(rk.n)} municípios de ${m.uf}</small>` : '')
+        + '<em>Clique para ver a ficha →</em>';
+}
+
+/* ── abertura no município de quem chega ──
+   Três fontes, da mais à menos precisa: localização do navegador (já autorizada, ou pedida
+   no botão), e estimativa pela conexão (/api/geo, só na Vercel). A localização do navegador
+   é resolvida aqui mesmo, contra a malha municipal, sem enviar coordenadas a ninguém.
+   A sugestão nunca abre a ficha sozinha: leva o mapa à UF, contorna o município e oferece. */
+const chaveDispensa = 'mnr-local-dispensado';
+function dispensado() { try { return sessionStorage.getItem(chaveDispensa) === '1'; } catch (e) { return false; } }
+function lembrarDispensa() { try { sessionStorage.setItem(chaveDispensa, '1'); } catch (e) { /* sem armazenamento, sem problema */ } }
+
+function iniciarLocalizacao() {
+    if (dispensado()) return;
+    const viaConexao = () => getJSON('/api/geo').then(g => {
+        if (!g || g.country !== 'BR' || !g.city) return;
+        const alvo = norm(g.city), achados = LISTA.filter(m => m.uf === g.uf && m.chave === alvo);
+        if (achados.length === 1) sugerirLocal(achados[0].cod, 'conexao');
+    }).catch(() => { /* fora da Vercel não há estimativa: tudo certo */ });
+    try {
+        if (navigator.permissions && navigator.geolocation) {
+            navigator.permissions.query({name: 'geolocation'}).then(r => { if (r.state === 'granted') localizarGPS(true); else viaConexao(); }).catch(viaConexao);
+        } else viaConexao();
+    } catch (e) { viaConexao(); }
+}
+
+function localizarGPS(silencioso) {
+    const msg = t => { if (!silencioso) $('localMsg').textContent = t; };
+    if (!navigator.geolocation) { msg('Seu navegador não informa a localização. Busque pelo nome.'); return; }
+    msg('Localizando…');
+    navigator.geolocation.getCurrentPosition(pos => {
+        carregarMalha().then(() => {
+            const cod = municipioNaCoordenada(pos.coords.longitude, pos.coords.latitude);
+            if (cod && POR_COD[cod]) { $('localMsg').textContent = ''; sugerirLocal(cod, 'gps'); }
+            else msg('Não encontramos um município brasileiro nesse ponto. Busque pelo nome.');
+        }).catch(() => msg('O mapa não pôde ser carregado agora. Busque pelo nome.'));
+    }, () => msg('Não foi possível obter a localização. Busque pelo nome.'), {timeout: 10000, maximumAge: silencioso ? 600000 : 0});   // clique do usuário pede a posição atual
+}
+
+let CAIXAS = null;
+function municipioNaCoordenada(lon, lat) {
+    if (!CAIXAS) CAIXAS = GEO.muni.features.map(f => {                       // caixa envolvente de cada município, calculada uma vez
+        let x0 = 181, x1 = -181, y0 = 91, y1 = -91;
+        const varre = c => { if (typeof c[0] === 'number') { if (c[0] < x0) x0 = c[0]; if (c[0] > x1) x1 = c[0]; if (c[1] < y0) y0 = c[1]; if (c[1] > y1) y1 = c[1]; } else c.forEach(varre); };
+        varre(f.geometry.coordinates);
+        return [x0, y0, x1, y1];
+    });
+    const feats = GEO.muni.features;
+    for (let i = 0; i < feats.length; i++) {
+        const b = CAIXAS[i];
+        if (lon < b[0] || lon > b[2] || lat < b[1] || lat > b[3]) continue;
+        if (d3.geoContains(feats[i], [lon, lat])) return feats[i].properties.cod;
+    }
+    return null;
+}
+
+function sugerirLocal(cod, origem) {
+    if (ATUAL || (LOCAL && LOCAL.origem === 'gps' && origem !== 'gps')) return;      // quem já escolheu um município, ou já tem posição precisa, não é atropelado
+    const m = POR_COD[cod];
+    LOCAL = {cod, origem};
+    MAPA_DESTAQUE = cod;
+    if (ESCOPO !== m.uf) definirEscopo(m.uf, 'muni');
+    if (MAPA) MAPA.destacar(cod);
+    track('local_sugerido', {origem, municipio: m.nome, uf: m.uf});
+    $('localRotulo').textContent = origem === 'gps' ? 'Sua localização' : 'Você parece estar em';
+    $('localNome').textContent = m.nome + ' (' + m.uf + ')';
+    $('localAviso').textContent = origem === 'gps' ? 'Localização lida só no seu navegador, sem envio ao servidor.' : 'Estimativa pela sua conexão; pode não ser o seu município.';
+    const num = $('localNum');
+    num.innerHTML = m.r
+        ? '<small>Este município tem ressalva de dados. Abra a ficha para ver os detalhes.</small>'
+        : `<b class="${clsSinal(m.v)}">${fmtPct(m.v)}</b><small>variação da receita em 2033, contra o cenário sem a reforma</small>`;
+    $('localAbrir').textContent = 'Ver a ficha de ' + m.nome;
+    $('localCard').hidden = false;
+    municipiosDaUF(m.uf).then(munis => {                                          // acrescenta o valor em reais assim que a UF chega
+        const d = munis[cod]; if (!d || m.r || !LOCAL || LOCAL.cod !== cod) return;
+        const dif = d.pos_por_ano['2033'] - d.contrafactual_por_ano['2033'];
+        num.querySelector('small').textContent = `${fmtMoney(Math.abs(dif))} por ano ${dif < 0 ? 'a menos' : 'a mais'} em 2033, contra o cenário sem a reforma`;
+    }).catch(() => CACHE_UF.delete(m.uf));
+}
+
+$('localAbrir').addEventListener('click', () => { if (LOCAL) { track('local_aceito', {origem: LOCAL.origem, municipio: POR_COD[LOCAL.cod].nome}); abrirMunicipio(LOCAL.cod); } });
+$('localNao').addEventListener('click', () => {
+    track('local_recusado', {origem: LOCAL ? LOCAL.origem : ''});
+    lembrarDispensa(); LOCAL = null; MAPA_DESTAQUE = null;
+    $('localCard').hidden = true;
+    if (MAPA) MAPA.destacar(null);
+    definirEscopo('BR', 'uf');
+    $('busca').focus();
+});
+
 /* ── mapa ── */
 function carregarMalha() {
     if (GEO.promessa) return GEO.promessa;
@@ -386,7 +496,7 @@ function criarMapa(svgEl, wrapEl, tipEl, opt) {
     ctl.destacar = cod => {
         ctl.cod = cod;
         paths.classed('sel', false);
-        paths.filter(d => d.properties.cod === cod).classed('sel', true).raise();
+        if (cod) paths.filter(d => d.properties.cod === cod).classed('sel', true).raise();
     };
 
     const toque = window.matchMedia && matchMedia('(pointer: coarse)').matches;
@@ -403,11 +513,7 @@ function criarMapa(svgEl, wrapEl, tipEl, opt) {
                     : `<b>${esc(NOMES_UF[uf])}</b><span class="v ${clsSinal(AGG[uf])}">${fmtPct(AGG[uf])}</span><small>receita das prefeituras somada, em 2033, contra o cenário sem a reforma</small><small>${fmtInt(perdem)} de ${fmtInt(ok.length)} prefeituras perdem</small><em>Clique para ver os municípios →</em>`;
             } else {
                 const m = POR_COD[cod];
-                tipEl.innerHTML = !m
-                    ? '<b>Sem esfera municipal própria</b><small>Este território não entra na projeção municipal.</small>'
-                    : `<b>${esc(m.nome)} · ${m.uf}</b>` + (m.r
-                        ? '<small>Sem dado confiável: a participação de 2025 tem ressalva na fonte.</small><em>Clique para ver a ficha →</em>'
-                        : `<span class="v ${clsSinal(m.v)}">${fmtPct(m.v)}</span><small>em 2033, contra o cenário sem a reforma</small><em>Clique para ver a ficha →</em>`);
+                tipEl.innerHTML = m ? tipMunicipio(m) : '<b>Sem esfera municipal própria</b><small>Este território não entra na projeção municipal.</small>';
             }
             const r = wrapEl.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
             const w = tipEl.offsetWidth, h = tipEl.offsetHeight;
@@ -450,7 +556,7 @@ async function abrirMunicipio(cod, opt) {
 }
 
 function municipiosDaUF(uf) {
-    if (!CACHE_UF.has(uf)) CACHE_UF.set(uf, getJSON('/data/painel-municipios/' + uf + '.json').then(j => j.municipios));
+    if (!CACHE_UF.has(uf)) CACHE_UF.set(uf, getJSON('/data/painel-municipios/' + uf + '.json').then(j => { DADOS_UF[uf] = j.municipios; return j.municipios; }));
     return CACHE_UF.get(uf);
 }
 

@@ -72,7 +72,21 @@
         <input id="busca" type="text" inputmode="search" placeholder="Digite o nome do município… (ex.: Serra, Campinas, Sobral)" role="combobox" aria-expanded="false" aria-controls="sugestoes" aria-autocomplete="list" disabled>
         <ul class="suggest" id="sugestoes" role="listbox" aria-label="Municípios encontrados" hidden></ul>
         <p class="search-hint" id="dicaBusca">Carregando a base de municípios…</p>
+        <p class="search-hint"><button type="button" class="link-btn" id="btnLocal"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg> Usar a minha localização</button> <span id="localMsg" role="status"></span></p>
     </form>
+
+    <div class="local-card" id="localCard" hidden aria-live="polite">
+        <div class="local-id">
+            <span class="local-rotulo" id="localRotulo"></span>
+            <strong class="local-nome" id="localNome"></strong>
+            <small class="local-aviso" id="localAviso"></small>
+        </div>
+        <div class="local-num" id="localNum"></div>
+        <div class="local-acoes">
+            <button type="button" class="btn btn-gold btn-sm" id="localAbrir">Ver a ficha</button>
+            <button type="button" class="link-btn" id="localNao">Não é o meu município</button>
+        </div>
+    </div>
 
     <div class="panel accent">
         <div class="panel-head">
