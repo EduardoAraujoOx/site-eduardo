@@ -26,6 +26,7 @@
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
+<script src="memoria.js" defer></script>
 <script src="app.js" defer></script>
 </head>
 <body>
@@ -41,7 +42,7 @@
         </div>
         <a class="credito" href="#" data-ir="vertex" aria-label="Uma iniciativa da Vertex Advisory. Saiba mais">
             <span class="credito-txt">Uma iniciativa de</span>
-            <span class="chip"><img src="images/vertex-simbolo.png" alt="" width="38" height="30"><span class="lockup"><b>VERTEX</b><em>ADVISORY</em></span></span>
+            <span class="lockup-branco"><img src="images/vertex-simbolo-branco.png" alt="" width="44" height="35"><span class="lockup"><b>VERTEX</b><em>ADVISORY</em></span></span>
         </a>
     </div>
 </header>
@@ -51,6 +52,7 @@
         <button class="tab-btn active" data-view="visao-geral" type="button">Visão geral</button>
         <button class="tab-btn" data-view="municipio" type="button">Município</button>
         <button class="tab-btn" data-view="rankings" type="button">Rankings</button>
+        <button class="tab-btn" data-view="memoria" type="button">Memória de cálculo</button>
         <button class="tab-btn" data-view="metodologia" type="button">Metodologia</button>
         <button class="tab-btn" data-view="vertex" type="button">Para a sua prefeitura</button>
         <a class="tab-link" href="#" data-ir="vertex">Fale com a Vertex →</a>
@@ -62,7 +64,7 @@
 <!-- ============ VISÃO GERAL ============ -->
 <section class="view active" id="view-visao-geral">
     <div class="view-head center">
-        <h2>Consulte o seu município</h2>
+        <h2>Consulte os indicadores do seu município</h2>
         <p class="sub" id="manchete">Busque a prefeitura para ver o histórico, a projeção 2029–2033 e o que explica o resultado, ou explore o mapa.</p>
     </div>
     <form class="search" id="formBusca" role="search" autocomplete="off">
@@ -75,15 +77,19 @@
     <div class="panel accent">
         <div class="panel-head">
             <div>
-                <h3>Variação da receita municipal em 2033</h3>
-                <p class="panel-sub">Cada município colorido pela variação da própria receita (ISS mais cota-parte do ICMS) contra o cenário sem a reforma. Clique para abrir a ficha.</p>
+                <h3 id="tituloMapa">Variação da receita municipal por estado em 2033</h3>
+                <p class="panel-sub" id="subMapa"></p>
             </div>
             <div class="controles">
                 <label class="sr-only" for="mapaUF">Estado</label>
                 <select id="mapaUF" aria-label="Estado"><option value="BR">Brasil</option></select>
+                <div class="toggle" id="toggleNivel" role="group" aria-label="Nível do mapa">
+                    <button type="button" data-nivel="uf" class="active">Estados</button>
+                    <button type="button" data-nivel="muni">Municípios</button>
+                </div>
                 <div class="toggle" id="toggleViz" role="group" aria-label="Forma de visualização">
                     <button type="button" data-viz="mapa" class="active">Mapa</button>
-                    <button type="button" data-viz="tabela">Distribuição</button>
+                    <button type="button" data-viz="tabela">Tabela</button>
                 </div>
             </div>
         </div>
@@ -91,11 +97,11 @@
         <div class="mapa-layout">
             <div>
                 <div class="map-wrapper" id="mapaWrap">
-                    <p class="nota" id="mapaCarregando" role="status">Carregando o mapa dos municípios…</p>
-                    <svg id="mapaSvg" hidden role="img" aria-label="Mapa dos municípios brasileiros coloridos pela variação da receita em 2033 contra o cenário sem a reforma. Os mesmos dados estão na lista ao lado e na aba Distribuição."></svg>
+                    <p class="nota" id="mapaCarregando" role="status">Carregando o mapa…</p>
+                    <svg id="mapaSvg" hidden role="img" aria-label="Mapa do Brasil colorido pela variação da receita municipal em 2033 contra o cenário sem a reforma. Os mesmos dados estão na lista ao lado e na aba Tabela."></svg>
                     <div class="map-tip" id="mapaTip" role="tooltip"></div>
                 </div>
-                <ul class="legenda" id="mapaLegenda"></ul>
+                <div id="mapaLegenda"></div>
                 <div class="table-wrap" id="mapaTabela" hidden></div>
             </div>
             <aside class="trilho" aria-label="Lista ordenada por variação">
@@ -150,6 +156,25 @@
             <div class="table-wrap"><table class="dados" id="tabGanhos"><thead><tr><th>Município</th><th>Sem a reforma</th><th>Com a reforma</th><th>Variação</th></tr></thead><tbody></tbody></table></div>
         </div>
     </div>
+</section>
+
+<!-- ============ MEMÓRIA DE CÁLCULO ============ -->
+<section class="view" id="view-memoria">
+    <div class="view-head">
+        <h2>Memória de cálculo</h2>
+        <p class="sub">Como cada coeficiente do município foi obtido, passo a passo e com os números intermediários, para que a conta possa ser refeita fora do painel e conferida.</p>
+    </div>
+    <form class="search" id="formBuscaMemo" role="search" autocomplete="off">
+        <label class="sr-only" for="buscaMemo">Nome do município</label>
+        <input id="buscaMemo" type="text" inputmode="search" placeholder="Digite o nome do município…" role="combobox" aria-expanded="false" aria-controls="sugestoesMemo" aria-autocomplete="list" disabled>
+        <ul class="suggest" id="sugestoesMemo" role="listbox" aria-label="Municípios encontrados" hidden></ul>
+    </form>
+    <div class="memo-abas" id="memoAbas">
+        <button type="button" data-secao="historico" class="active">Coeficiente histórico</button>
+        <button type="button" data-secao="destino">Coeficiente de destino</button>
+        <button type="button" data-secao="seguro">Seguro-Receita</button>
+    </div>
+    <div id="memoConteudo"><div class="vazio"><p>Busque um município acima, ou abra a ficha de um município e siga o link para a memória de cálculo.</p></div></div>
 </section>
 
 <!-- ============ METODOLOGIA ============ -->
@@ -207,7 +232,8 @@
 </main>
 
 <footer class="site-foot">
-    <div class="wrap">
+    <div class="wrap foot-in">
+        <img src="images/logo-vertex-branco.png" alt="Vertex Advisory" width="86" height="74" loading="lazy">
         <p><strong>Municípios na Reforma</strong> é uma iniciativa da Vertex Advisory. Estimativas próprias e independentes, com dados públicos (SICONFI/STN, IBGE, Censo e POF); não substituem projeções oficiais do Comitê Gestor do IBS ou da União. Dados de referência: exercício DCA/SICONFI 2025.</p>
     </div>
 </footer>

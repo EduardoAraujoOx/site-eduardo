@@ -17,7 +17,7 @@ const ANOS_HIST = ['2019', '2020', '2021', '2022', '2023', '2024', '2025'];
 const NOMES_UF = {AC:'Acre',AL:'Alagoas',AM:'Amazonas',AP:'Amapá',BA:'Bahia',CE:'Ceará',DF:'Distrito Federal',ES:'Espírito Santo',GO:'Goiás',MA:'Maranhão',MG:'Minas Gerais',MS:'Mato Grosso do Sul',MT:'Mato Grosso',PA:'Pará',PB:'Paraíba',PE:'Pernambuco',PI:'Piauí',PR:'Paraná',RJ:'Rio de Janeiro',RN:'Rio Grande do Norte',RO:'Rondônia',RR:'Roraima',RS:'Rio Grande do Sul',SC:'Santa Catarina',SE:'Sergipe',SP:'São Paulo',TO:'Tocantins'};
 const UF_POR_PREFIXO = {'11':'RO','12':'AC','13':'AM','14':'RR','15':'PA','16':'AP','17':'TO','21':'MA','22':'PI','23':'CE','24':'RN','25':'PB','26':'PE','27':'AL','28':'SE','29':'BA','31':'MG','32':'ES','33':'RJ','35':'SP','41':'PR','42':'SC','43':'RS','50':'MS','51':'MT','52':'GO','53':'DF'};
 
-/* Sete faixas fixas, as mesmas do painel: a variação vai de −74% a +265%, e num
+/* Municípios: sete faixas fixas, as mesmas do painel. A variação vai de −74% a +265%, e num
    degradê contínuo a cauda achataria a cor de quase todos perto do meio. */
 const CLASSES = [
     {ate: -30, cor: '#9c2222', rotulo: '−30% ou menos'},
@@ -29,6 +29,8 @@ const CLASSES = [
     {ate: Infinity, cor: '#1c5cab', rotulo: '+30% ou mais'}
 ];
 const COR_RESSALVA = '#b9bec2', COR_SEM_ESFERA = '#e8ecef', ROTULO_RESSALVA = 'Sem dado confiável';
+/* Estados: escala contínua divergente, vermelho ↔ cinza ↔ azul, centrada em zero. */
+const COR_NEG = '#a02525', COR_MEIO = '#f0efec', COR_POS = '#1c5cab';
 
 /* ── formatação (mesmas regras do painel) ── */
 const fmtPct = v => {
@@ -37,6 +39,7 @@ const fmtPct = v => {
     return (p > 0 ? '+' : p < 0 ? '−' : '') + Math.abs(p).toLocaleString('pt-BR', {minimumFractionDigits: 1, maximumFractionDigits: 1}) + '%';
 };
 const fmtPctSimples = v => Math.round(v * 100).toLocaleString('pt-BR') + '%';
+const fmtPctPlain = (v, dec) => v == null ? '—' : v.toLocaleString('pt-BR', {maximumFractionDigits: dec == null ? 4 : dec}) + '%';
 const clsSinal = v => v == null ? '' : v < -0.0005 ? 'neg' : v > 0.0005 ? 'pos' : '';
 function fmtMoney(v) {
     if (v == null || !isFinite(v)) return '—';
@@ -73,10 +76,12 @@ if (CONFIG.gaId) {
 }
 
 /* ── estado ── */
-let LISTA = [], POR_COD = {}, RESULT = null;
-let ESCOPO = 'BR', ATUAL = null, MAPA = null, MINI = null, graficos = [];
-const CACHE_UF = new Map();
-const GEO = {dados: null, promessa: null};
+let LISTA = [], POR_COD = {}, RESULT = null, NAC = null, AGG = {};
+let ESCOPO = 'BR', NIVEL = 'uf', ATUAL = null, MAPA = null, MINI = null, graficos = [];
+const MEMO = {cod: null, secao: 'historico'};
+const CACHE_UF = new Map(), CACHE_MEMO = new Map();
+let MEMO_NAC = null;
+const GEO = {muni: null, uf: null, promessa: null};
 
 /* ── abas ── */
 function mostrarVisao(v) {
@@ -88,62 +93,122 @@ function mostrarVisao(v) {
     });
     window.scrollTo({top: 0});
 }
-document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => { mostrarVisao(b.dataset.view); track('aba', {aba: b.dataset.view}); }));
+document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => {
+    mostrarVisao(b.dataset.view); track('aba', {aba: b.dataset.view});
+    if (b.dataset.view === 'memoria') renderMemoria();
+}));
 document.querySelectorAll('[data-ir]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); mostrarVisao(a.dataset.ir); }));
 
 /* ── carga ── */
-Promise.all([getJSON('/data/painel-municipios/index.json'), getJSON('/data/resultados-consolidados-ibs.json').catch(() => null)])
-    .then(([idx, res]) => iniciar(idx, res))
-    .catch(e => { console.error(e); $('dicaBusca').textContent = 'Não foi possível carregar a base de municípios. Atualize a página em instantes.'; });
+Promise.all([
+    getJSON('/data/painel-municipios/index.json'),
+    getJSON('/data/resultados-consolidados-ibs.json').catch(() => null),
+    getJSON('/data/ibs-projecao-nacional.json').catch(() => null)
+]).then(([idx, res, nac]) => iniciar(idx, res, nac))
+  .catch(e => { console.error(e); $('dicaBusca').textContent = 'Não foi possível carregar a base de municípios. Atualize a página em instantes.'; });
 
-function iniciar(idx, res) {
+function iniciar(idx, res, nac) {
     LISTA = Object.entries(idx.municipios).map(([cod, m]) => ({cod, nome: m.nome, uf: m.uf, v: m.v, r: !!m.r, chave: norm(m.nome)}));
     LISTA.forEach(m => { POR_COD[m.cod] = m; });
-    RESULT = res;
+    RESULT = res; NAC = nac;
+    AGG = (res && res.variacao_municipal_por_uf_2033) || {};
 
     $('mapaUF').innerHTML = '<option value="BR">Brasil</option>' + Object.keys(NOMES_UF)
+        .filter(u => LISTA.some(m => m.uf === u))
         .sort((a, b) => NOMES_UF[a].localeCompare(NOMES_UF[b], 'pt-BR'))
         .map(u => `<option value="${u}">${NOMES_UF[u]}</option>`).join('');
     $('mapaUF').addEventListener('change', e => { definirEscopo(e.target.value); track('mapa_uf', {uf: e.target.value}); });
+    document.querySelectorAll('#toggleNivel button').forEach(b => b.addEventListener('click', () => definirEscopo('BR', b.dataset.nivel)));
     document.querySelectorAll('#toggleViz button').forEach(b => b.addEventListener('click', () => {
         const tabela = b.dataset.viz === 'tabela';
         document.querySelectorAll('#toggleViz button').forEach(x => x.classList.toggle('active', x === b));
         $('mapaWrap').hidden = tabela; $('mapaLegenda').hidden = tabela; $('mapaTabela').hidden = !tabela;
     }));
 
-    ativarBusca($('busca'), $('sugestoes'), $('formBusca'));
-    ativarBusca($('buscaMuni'), $('sugestoesMuni'), $('formBuscaMuni'));
+    ativarBusca($('busca'), $('sugestoes'), $('formBusca'), cod => abrirMunicipio(cod));
+    ativarBusca($('buscaMuni'), $('sugestoesMuni'), $('formBuscaMuni'), cod => abrirMunicipio(cod));
+    ativarBusca($('buscaMemo'), $('sugestoesMemo'), $('formBuscaMemo'), cod => abrirMemoria(cod));
     $('dicaBusca').textContent = 'Base com ' + fmtInt(LISTA.length) + ' municípios. Comece a digitar e escolha na lista.';
     renderManchete();
-    definirEscopo('BR');
+    definirEscopo('BR', 'uf');
     montarRankings();
+    document.querySelectorAll('#memoAbas button').forEach(b => b.addEventListener('click', () => { MEMO.secao = b.dataset.secao; renderMemoria(); }));
 
     carregarMalha().then(() => {
-        MAPA = criarMapa($('mapaSvg'), $('mapaWrap'), $('mapaTip'), {todos: true, uf: ESCOPO, aoClicar: cod => abrirMunicipio(cod)});
+        MAPA = criarMapa($('mapaSvg'), $('mapaWrap'), $('mapaTip'), {camadaUF: true, todos: true, uf: ESCOPO, nivel: NIVEL, aoClicar: cod => abrirMunicipio(cod), aoClicarUF: uf => definirEscopo(uf, 'muni')});
         $('mapaCarregando').hidden = true; $('mapaSvg').removeAttribute('hidden');   // SVGElement não tem a propriedade hidden
         if (ATUAL) MAPA.destacar(ATUAL);
-    }).catch(() => { $('mapaCarregando').textContent = 'O mapa não pôde ser carregado agora. Use a busca por município ou a lista ao lado.'; });
+    }).catch(e => { console.error(e); $('mapaCarregando').textContent = 'O mapa não pôde ser carregado agora. Use a busca por município ou a lista ao lado.'; });
 
     const cod = new URLSearchParams(location.search).get('m');
     if (cod && POR_COD[cod]) abrirMunicipio(cod, {semUrl: true});
 }
 
-/* ── escopo (Brasil ou UF) ── */
-function definirEscopo(uf) {
-    ESCOPO = uf;
-    $('mapaUF').value = uf;
-    if (MAPA) MAPA.definirUF(uf);
-    renderLegenda(); renderTrilho(); renderContexto();
+function renderManchete() {
+    const ok = LISTA.filter(m => !m.r), perdem = ok.filter(m => m.v < 0).length;
+    $('manchete').innerHTML = `Em 2033, <b>${fmtInt(perdem)} de ${fmtInt(ok.length)}</b> prefeituras com dados confiáveis arrecadam menos do que arrecadariam sem a reforma. Descubra a situação da sua.`;
 }
 
-function noEscopo() { return LISTA.filter(m => ESCOPO === 'BR' || m.uf === ESCOPO); }
+/* ── escopo e nível do mapa ── */
+const nivelAtual = () => ESCOPO === 'BR' ? NIVEL : 'muni';
+const noEscopo = () => LISTA.filter(m => ESCOPO === 'BR' || m.uf === ESCOPO);
+
+function definirEscopo(uf, nivel) {
+    ESCOPO = uf;
+    if (nivel) NIVEL = nivel;
+    $('mapaUF').value = uf;
+    $('toggleNivel').hidden = uf !== 'BR';
+    document.querySelectorAll('#toggleNivel button').forEach(b => b.classList.toggle('active', b.dataset.nivel === NIVEL));
+    if (MAPA) MAPA.definir(ESCOPO, NIVEL);
+    renderCabecalhoMapa(); renderLegenda(); renderTabelaMapa(); renderTrilho(); renderContexto();
+}
+
+function renderCabecalhoMapa() {
+    if (nivelAtual() === 'uf') {
+        $('tituloMapa').textContent = 'Variação da receita municipal por estado em 2033';
+        $('subMapa').textContent = 'Receita de todas as prefeituras do estado (ISS mais cota-parte do ICMS), somada, contra o cenário sem a reforma. Clique num estado para ver os municípios.';
+    } else {
+        $('tituloMapa').textContent = ESCOPO === 'BR' ? 'Variação da receita municipal em 2033' : 'Variação da receita municipal em 2033, ' + NOMES_UF[ESCOPO];
+        $('subMapa').textContent = 'Cada município colorido pela variação da própria receita (ISS mais cota-parte do ICMS) contra o cenário sem a reforma. Clique para abrir a ficha.';
+    }
+}
+
+function limiteEscala() { return Math.max(0.01, ...Object.values(AGG).filter(v => v != null).map(Math.abs)); }
 
 function renderLegenda() {
+    const alvo = $('mapaLegenda');
+    if (nivelAtual() === 'uf') {
+        const m = limiteEscala();
+        alvo.innerHTML = `<div class="escala"><div class="escala-barra" aria-hidden="true"></div>
+            <div class="escala-ticks" aria-hidden="true"><span>${fmtPct(-m)}</span><span>0</span><span>${fmtPct(m)}</span></div>
+            <p class="nota">Vermelho: as prefeituras do estado, somadas, arrecadam menos do que arrecadariam sem a reforma. Azul: arrecadam mais. O valor de cada estado aparece ao passar o cursor e na lista ao lado.</p></div>`;
+        return;
+    }
     const escopo = noEscopo(), cont = {};
-    escopo.forEach(m => { const c = classeDe(m); cont[c.rotulo] = (cont[c.rotulo] || 0) + 1; });
+    escopo.forEach(x => { const c = classeDe(x); cont[c.rotulo] = (cont[c.rotulo] || 0) + 1; });
     const itens = CLASSES.map(c => [c.cor, c.rotulo]).concat([[COR_RESSALVA, ROTULO_RESSALVA]]);
-    $('mapaLegenda').innerHTML = itens.map(([cor, rot]) => `<li><i style="background:${cor}"></i>${rot} <b>${fmtInt(cont[rot] || 0)}</b></li>`).join('');
-    $('mapaTabela').innerHTML = `<table class="dados"><thead><tr><th>Faixa de variação em 2033</th><th>Municípios</th><th>Do total</th></tr></thead><tbody>`
+    alvo.innerHTML = '<ul class="legenda">' + itens.map(([cor, rot]) => `<li><i style="background:${cor}"></i>${rot} <b>${fmtInt(cont[rot] || 0)}</b></li>`).join('') + '</ul>';
+}
+
+function linhasUF() {
+    return Object.keys(NOMES_UF).filter(u => LISTA.some(m => m.uf === u)).map(u => {
+        const ok = LISTA.filter(m => m.uf === u && !m.r), perdem = ok.filter(m => m.v < 0).length;
+        return {uf: u, v: AGG[u] != null ? AGG[u] : null, perdem, n: ok.length, total: LISTA.filter(m => m.uf === u).length};
+    }).sort((a, b) => (b.v != null && a.v != null) ? b.v - a.v : (b.perdem / b.n) - (a.perdem / a.n));
+}
+
+function renderTabelaMapa() {
+    const alvo = $('mapaTabela');
+    if (nivelAtual() === 'uf') {
+        alvo.innerHTML = `<table class="dados"><thead><tr><th>Estado</th><th>Prefeituras</th><th>Que perdem</th><th>Variação agregada</th></tr></thead><tbody>`
+            + linhasUF().map(l => `<tr class="clicavel" data-uf="${l.uf}"><td class="nome">${NOMES_UF[l.uf]}</td><td>${fmtInt(l.total)}</td><td>${fmtInt(l.perdem)} de ${fmtInt(l.n)} (${fmtPctSimples(l.perdem / l.n)})</td><td class="${clsSinal(l.v)}">${fmtPct(l.v)}</td></tr>`).join('') + '</tbody></table>';
+        alvo.querySelectorAll('tr[data-uf]').forEach(tr => tr.addEventListener('click', () => definirEscopo(tr.dataset.uf, 'muni')));
+        return;
+    }
+    const escopo = noEscopo(), cont = {};
+    escopo.forEach(x => { const c = classeDe(x); cont[c.rotulo] = (cont[c.rotulo] || 0) + 1; });
+    const itens = CLASSES.map(c => [c.cor, c.rotulo]).concat([[COR_RESSALVA, ROTULO_RESSALVA]]);
+    alvo.innerHTML = `<table class="dados"><thead><tr><th>Faixa de variação em 2033</th><th>Municípios</th><th>Do total</th></tr></thead><tbody>`
         + itens.map(([cor, rot]) => `<tr><td class="nome"><i style="background:${cor};display:inline-block;width:.9rem;height:.7rem;border:1px solid rgba(0,0,0,.12);margin-right:.5rem"></i>${rot}</td><td>${fmtInt(cont[rot] || 0)}</td><td>${fmtPctSimples((cont[rot] || 0) / escopo.length)}</td></tr>`).join('') + '</tbody></table>';
 }
 
@@ -152,19 +217,15 @@ function renderTrilho() {
     const head = $('trilhoHead'), lista = $('trilhoLista');
     if (ESCOPO === 'BR') {
         head.textContent = 'Estados, do maior ganho à maior perda';
-        const agg = RESULT && RESULT.variacao_municipal_por_uf_2033;
-        const linhas = Object.keys(NOMES_UF).filter(u => LISTA.some(m => m.uf === u)).map(u => {
-            const ok = LISTA.filter(m => m.uf === u && !m.r), perdem = ok.filter(m => m.v < 0).length;
-            return {uf: u, v: agg && agg[u] != null ? agg[u] : null, perdem, n: ok.length};
-        }).sort((a, b) => agg ? b.v - a.v : (b.perdem / b.n) - (a.perdem / a.n));
+        const linhas = linhasUF();
         const max = Math.max(...linhas.map(l => Math.abs(l.v || 0)), 0.01);
         lista.innerHTML = linhas.map((l, i) => `<button type="button" class="rail-row" data-uf="${l.uf}">
             <span class="rk">${i + 1}</span><span class="nm">${NOMES_UF[l.uf]}<small>${fmtInt(l.perdem)} de ${fmtInt(l.n)} prefeituras perdem</small></span>
             <span class="vl ${clsSinal(l.v)}">${fmtPct(l.v)}</span>${l.v != null ? `<i class="bar ${clsSinal(l.v)}" style="width:${Math.max(2, Math.abs(l.v) / max * 62)}%"></i>` : ''}</button>`).join('');
-        lista.querySelectorAll('[data-uf]').forEach(b => b.addEventListener('click', () => { definirEscopo(b.dataset.uf); track('trilho_uf', {uf: b.dataset.uf}); }));
+        lista.querySelectorAll('[data-uf]').forEach(b => b.addEventListener('click', () => { definirEscopo(b.dataset.uf, 'muni'); track('trilho_uf', {uf: b.dataset.uf}); }));
     } else {
         head.innerHTML = `<button type="button" id="voltaBR">← Brasil</button>${esc(NOMES_UF[ESCOPO])}: municípios, do maior ganho à maior perda`;
-        $('voltaBR').addEventListener('click', () => definirEscopo('BR'));
+        $('voltaBR').addEventListener('click', () => definirEscopo('BR', 'uf'));
         const ok = noEscopo().filter(m => !m.r).sort((a, b) => b.v - a.v);
         const sem = noEscopo().filter(m => m.r).sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
         const linha = (m, i) => `<button type="button" class="rail-row${m.r ? ' semdado' : ''}" data-cod="${m.cod}">
@@ -176,35 +237,29 @@ function renderTrilho() {
     }
 }
 
-function renderManchete() {
-    const ok = LISTA.filter(m => !m.r), perdem = ok.filter(m => m.v < 0).length;
-    $('manchete').innerHTML = `Em 2033, <b>${fmtInt(perdem)} de ${fmtInt(ok.length)}</b> prefeituras com dados confiáveis arrecadam menos do que arrecadariam sem a reforma. Descubra a situação da sua.`;
-}
-
 function renderContexto() {
     const escopo = noEscopo(), ok = escopo.filter(m => !m.r), perdem = ok.filter(m => m.v < 0).length;
     const ord = ok.map(m => m.v).sort((a, b) => a - b);
     const mediana = ord.length % 2 ? ord[(ord.length - 1) / 2] : (ord[ord.length / 2 - 1] + ord[ord.length / 2]) / 2;
-    const agg = RESULT && RESULT.variacao_municipal_por_uf_2033;
     const nome = ESCOPO === 'BR' ? 'No Brasil' : 'Em ' + NOMES_UF[ESCOPO];
-    const partes = [
-        `<span>${nome}: <b>${fmtInt(escopo.length)}</b> municípios analisados</span>`,
+    const partes = [];
+    if (ESCOPO === 'BR' && NAC && NAC.historico && NAC.projecao) {
+        const h = NAC.historico[NAC.historico.length - 1], p = NAC.projecao[NAC.projecao.length - 1];
+        partes.push(`<span>Bolo tributário 2025: <b>${fmtMoney(h.bolo_nominal)}</b></span>`,
+            `<span>Projetado 2033: <b>${fmtMoney(p.icms_iss_residual + p.ibs_bruto)}</b></span>`,
+            `<span>IBS já por destino em 2033: <b>${fmtPctPlain(p.ibs_destino_liquido / p.ibs_bruto * 100, 0)}</b> (pleno só em 2078)</span>`);
+    }
+    partes.push(`<span>${nome}: <b>${fmtInt(escopo.length)}</b> municípios analisados</span>`,
         `<span><b class="neg">${fmtInt(perdem)}</b> de ${fmtInt(ok.length)} com dados confiáveis (<b>${fmtPctSimples(perdem / ok.length)}</b>) arrecadam menos em 2033 do que arrecadariam sem a reforma</span>`,
-        `<span>Variação mediana: <b class="${clsSinal(mediana)}">${fmtPct(mediana)}</b></span>`
-    ];
-    if (ESCOPO !== 'BR' && agg && agg[ESCOPO] != null) partes.push(`<span>Receita municipal agregada de ${esc(NOMES_UF[ESCOPO])}: <b class="${clsSinal(agg[ESCOPO])}">${fmtPct(agg[ESCOPO])}</b></span>`);
+        `<span>Variação mediana: <b class="${clsSinal(mediana)}">${fmtPct(mediana)}</b></span>`);
+    if (ESCOPO !== 'BR' && AGG[ESCOPO] != null) partes.push(`<span>Receita municipal agregada de ${esc(NOMES_UF[ESCOPO])}: <b class="${clsSinal(AGG[ESCOPO])}">${fmtPct(AGG[ESCOPO])}</b></span>`);
     $('contexto').innerHTML = partes.join('');
 }
 
 /* ── rankings ── */
 function montarRankings() {
-    const agg = RESULT && RESULT.variacao_municipal_por_uf_2033;
-    const linhas = Object.keys(NOMES_UF).filter(u => LISTA.some(m => m.uf === u)).map(u => {
-        const ok = LISTA.filter(m => m.uf === u && !m.r), perdem = ok.filter(m => m.v < 0).length;
-        return {uf: u, v: agg && agg[u] != null ? agg[u] : null, perdem, n: ok.length, total: LISTA.filter(m => m.uf === u).length};
-    }).sort((a, b) => agg ? b.v - a.v : (b.perdem / b.n) - (a.perdem / a.n));
-    $('tabUF').querySelector('tbody').innerHTML = linhas.map((l, i) => `<tr class="clicavel" data-uf="${l.uf}"><td>${i + 1}</td><td class="nome">${NOMES_UF[l.uf]}</td><td>${fmtInt(l.total)}</td><td>${fmtInt(l.perdem)} de ${fmtInt(l.n)} (${fmtPctSimples(l.perdem / l.n)})</td><td class="${clsSinal(l.v)}">${fmtPct(l.v)}</td></tr>`).join('');
-    $('tabUF').querySelectorAll('tr[data-uf]').forEach(tr => tr.addEventListener('click', () => { definirEscopo(tr.dataset.uf); mostrarVisao('visao-geral'); }));
+    $('tabUF').querySelector('tbody').innerHTML = linhasUF().map((l, i) => `<tr class="clicavel" data-uf="${l.uf}"><td>${i + 1}</td><td class="nome">${NOMES_UF[l.uf]}</td><td>${fmtInt(l.total)}</td><td>${fmtInt(l.perdem)} de ${fmtInt(l.n)} (${fmtPctSimples(l.perdem / l.n)})</td><td class="${clsSinal(l.v)}">${fmtPct(l.v)}</td></tr>`).join('');
+    $('tabUF').querySelectorAll('tr[data-uf]').forEach(tr => tr.addEventListener('click', () => { definirEscopo(tr.dataset.uf, 'muni'); mostrarVisao('visao-geral'); }));
 
     const d = RESULT && RESULT.destaques_municipios_2033;
     const cr = RESULT && RESULT.criterios_destaque_municipal;
@@ -216,8 +271,8 @@ function montarRankings() {
     ['tabPerdas', 'tabGanhos'].forEach(id => $(id).querySelectorAll('tr[data-cod]').forEach(tr => tr.addEventListener('click', () => abrirMunicipio(tr.dataset.cod))));
 }
 
-/* ── busca (padrão combobox), reaproveitada nas duas abas ── */
-function ativarBusca(inp, ul, form) {
+/* ── busca (padrão combobox), reaproveitada nas abas ── */
+function ativarBusca(inp, ul, form, aoEscolher) {
     inp.disabled = false;
     let sugestoes = [], ativo = -1;
     const fechar = () => { ul.hidden = true; inp.setAttribute('aria-expanded', 'false'); inp.removeAttribute('aria-activedescendant'); ativo = -1; };
@@ -247,7 +302,7 @@ function ativarBusca(inp, ul, form) {
     const escolher = cod => {
         fechar();
         track('busca_municipio', {municipio: POR_COD[cod].nome, uf: POR_COD[cod].uf});
-        abrirMunicipio(cod);
+        aoEscolher(cod);
     };
     inp.addEventListener('input', buscar);
     inp.addEventListener('keydown', e => {
@@ -273,33 +328,59 @@ function ativarBusca(inp, ul, form) {
 function carregarMalha() {
     if (GEO.promessa) return GEO.promessa;
     if (typeof d3 === 'undefined') return Promise.reject(new Error('d3 indisponível'));
-    GEO.promessa = getJSON('/data/malha-municipios.json').then(geo => {
-        geo.features.forEach(f => { f.properties.uf = UF_POR_PREFIXO[f.properties.cod.slice(0, 2)]; });
-        GEO.dados = geo; return geo;
+    GEO.promessa = Promise.all([getJSON('/data/malha-municipios.json'), getJSON('/data/malha-uf.json').catch(() => null)]).then(([muni, uf]) => {
+        muni.features.forEach(f => { f.properties.uf = UF_POR_PREFIXO[f.properties.cod.slice(0, 2)]; });
+        GEO.muni = muni; GEO.uf = uf;
     });
     GEO.promessa.catch(() => { GEO.promessa = null; });
     return GEO.promessa;
 }
 
-/* Um mapa independente por instância: o principal (Brasil inteiro) e o minimapa da ficha (só a UF). */
+function luminancia(hex) {
+    const c = d3.color(hex); const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+    return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b);
+}
+
+/* Um mapa independente por instância: o principal (estados e municípios) e o minimapa da ficha (só a UF). */
 function criarMapa(svgEl, wrapEl, tipEl, opt) {
-    const feats = opt.todos ? GEO.dados.features : GEO.dados.features.filter(f => f.properties.uf === opt.uf);
     const W = 900;
-    const ctl = {uf: null, cod: null};
-    d3.select(svgEl).selectAll('*').remove();
-    const paths = d3.select(svgEl).append('g').selectAll('path').data(feats).enter().append('path')
+    const feats = opt.todos ? GEO.muni.features : GEO.muni.features.filter(f => f.properties.uf === opt.uf);
+    const ctl = {uf: null, nivel: null, cod: null};
+    const svg = d3.select(svgEl); svg.selectAll('*').remove();
+    const gMuni = svg.append('g');
+    const paths = gMuni.selectAll('path').data(feats).enter().append('path')
         .attr('data-cod', d => d.properties.cod)
         .attr('fill', d => { const c = classeDe(POR_COD[d.properties.cod]); return c ? c.cor : COR_SEM_ESFERA; });
 
-    ctl.definirUF = uf => {
-        ctl.uf = uf;
+    let gUF = null, pathsUF = null, rotulos = null, escalaUF = null;
+    if (opt.camadaUF && GEO.uf) {
+        const m = limiteEscala();
+        escalaUF = d3.scaleLinear().domain([-m, 0, m]).range([COR_NEG, COR_MEIO, COR_POS]).interpolate(d3.interpolateRgb).clamp(true);
+        const corUF = uf => AGG[uf] != null ? escalaUF(AGG[uf]) : COR_SEM_ESFERA;
+        gUF = svg.append('g');
+        pathsUF = gUF.selectAll('path').data(GEO.uf.features).enter().append('path').attr('class', 'uf')
+            .attr('data-uf', d => d.properties.uf).attr('fill', d => corUF(d.properties.uf));
+        rotulos = gUF.selectAll('text').data(GEO.uf.features).enter().append('text').attr('class', 'uf-rotulo')
+            .text(d => d.properties.uf)
+            .attr('fill', d => luminancia(corUF(d.properties.uf)) > 0.32 ? '#1f2a55' : '#fff');
+    }
+
+    ctl.definir = (uf, nivel) => {
+        const nv = uf === 'BR' ? (gUF ? nivel : 'muni') : 'muni';
+        ctl.uf = uf; ctl.nivel = nv;
         const visivel = d => uf === 'BR' || d.properties.uf === uf;
-        const alvo = feats.filter(visivel);
-        const H = Math.round(W * (uf === 'BR' ? 0.92 : 0.8));
+        const H = Math.round(W * (nv === 'uf' || uf === 'BR' ? 0.92 : 0.8));
+        const alvo = nv === 'uf' ? GEO.uf.features : feats.filter(visivel);
         const proj = d3.geoMercator().fitSize([W, H], {type: 'FeatureCollection', features: alvo});
         const gen = d3.geoPath().projection(proj);
-        d3.select(svgEl).attr('viewBox', '0 0 ' + W + ' ' + H);
-        paths.style('display', d => visivel(d) ? null : 'none').attr('d', d => visivel(d) ? gen(d) : null);
+        svg.attr('viewBox', '0 0 ' + W + ' ' + H);
+        gMuni.style('display', nv === 'muni' ? null : 'none');
+        if (gUF) gUF.style('display', nv === 'uf' ? null : 'none');
+        if (nv === 'muni') paths.style('display', d => visivel(d) ? null : 'none').attr('d', d => visivel(d) ? gen(d) : null);
+        else {
+            pathsUF.attr('d', gen);
+            rotulos.attr('x', d => gen.centroid(d)[0]).attr('y', d => gen.centroid(d)[1]);
+        }
         if (ctl.cod) ctl.destacar(ctl.cod);
     };
     ctl.destacar = cod => {
@@ -309,17 +390,25 @@ function criarMapa(svgEl, wrapEl, tipEl, opt) {
     };
 
     const toque = window.matchMedia && matchMedia('(pointer: coarse)').matches;
-    const codDe = alvo => alvo && alvo.tagName === 'path' ? alvo.getAttribute('data-cod') : null;
+    const alvoDe = el => el && el.tagName === 'path' ? el : null;
     if (!toque) {
         svgEl.addEventListener('mousemove', e => {
-            const cod = codDe(e.target);
-            if (!cod) { tipEl.classList.remove('on'); return; }
-            const m = POR_COD[cod];
-            tipEl.innerHTML = !m
-                ? '<b>Sem esfera municipal própria</b><small>Este território não entra na projeção municipal.</small>'
-                : `<b>${esc(m.nome)} · ${m.uf}</b>` + (m.r
-                    ? '<small>Sem dado confiável: a participação de 2025 tem ressalva na fonte.</small><em>Clique para ver a ficha →</em>'
-                    : `<span class="v ${clsSinal(m.v)}">${fmtPct(m.v)}</span><small>em 2033, contra o cenário sem a reforma</small><em>Clique para ver a ficha →</em>`);
+            const p = alvoDe(e.target);
+            if (!p) { tipEl.classList.remove('on'); return; }
+            const cod = p.getAttribute('data-cod'), uf = p.getAttribute('data-uf');
+            if (uf) {
+                const ok = LISTA.filter(m => m.uf === uf && !m.r), perdem = ok.filter(m => m.v < 0).length;
+                tipEl.innerHTML = AGG[uf] == null
+                    ? `<b>${esc(NOMES_UF[uf])}</b><small>Sem esfera municipal própria: o Distrito Federal não entra na projeção municipal.</small>`
+                    : `<b>${esc(NOMES_UF[uf])}</b><span class="v ${clsSinal(AGG[uf])}">${fmtPct(AGG[uf])}</span><small>receita das prefeituras somada, em 2033, contra o cenário sem a reforma</small><small>${fmtInt(perdem)} de ${fmtInt(ok.length)} prefeituras perdem</small><em>Clique para ver os municípios →</em>`;
+            } else {
+                const m = POR_COD[cod];
+                tipEl.innerHTML = !m
+                    ? '<b>Sem esfera municipal própria</b><small>Este território não entra na projeção municipal.</small>'
+                    : `<b>${esc(m.nome)} · ${m.uf}</b>` + (m.r
+                        ? '<small>Sem dado confiável: a participação de 2025 tem ressalva na fonte.</small><em>Clique para ver a ficha →</em>'
+                        : `<span class="v ${clsSinal(m.v)}">${fmtPct(m.v)}</span><small>em 2033, contra o cenário sem a reforma</small><em>Clique para ver a ficha →</em>`);
+            }
             const r = wrapEl.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
             const w = tipEl.offsetWidth, h = tipEl.offsetHeight;
             tipEl.style.left = Math.max(6, x + 16 + w > r.width ? x - w - 16 : x + 16) + 'px';
@@ -329,12 +418,14 @@ function criarMapa(svgEl, wrapEl, tipEl, opt) {
         svgEl.addEventListener('mouseleave', () => tipEl.classList.remove('on'));
     }
     svgEl.addEventListener('click', e => {
-        const cod = codDe(e.target);
+        const p = alvoDe(e.target); if (!p) return;
+        const cod = p.getAttribute('data-cod'), uf = p.getAttribute('data-uf');
+        if (uf) { if (AGG[uf] != null && opt.aoClicarUF) { track('clique_mapa_uf', {uf}); opt.aoClicarUF(uf); } return; }
         if (!cod || !POR_COD[cod]) return;
         track('clique_mapa', {municipio: POR_COD[cod].nome, uf: POR_COD[cod].uf});
         opt.aoClicar(cod);
     });
-    ctl.definirUF(opt.uf);
+    ctl.definir(opt.uf, opt.nivel || 'muni');
     return ctl;
 }
 
@@ -347,18 +438,51 @@ async function abrirMunicipio(cod, opt) {
     const rotulo = base.nome + ' (' + base.uf + ')';
     $('busca').value = rotulo; $('buscaMuni').value = rotulo;
     if (!opt.semUrl) { const u = new URL(location.href); u.searchParams.set('m', cod); history.replaceState(null, '', u); }
-    if (ESCOPO !== base.uf) definirEscopo(base.uf);
+    if (ESCOPO !== base.uf) definirEscopo(base.uf, 'muni');
     if (MAPA) MAPA.destacar(cod);
     const corpo = $('fichaCorpo');
     corpo.innerHTML = '<p class="nota" role="status">Carregando a ficha de ' + esc(base.nome) + '…</p>';
     let m;
-    try {
-        if (!CACHE_UF.has(base.uf)) CACHE_UF.set(base.uf, getJSON('/data/painel-municipios/' + base.uf + '.json').then(j => j.municipios));
-        m = (await CACHE_UF.get(base.uf))[cod];
-    } catch (e) { CACHE_UF.delete(base.uf); m = null; }
+    try { m = (await municipiosDaUF(base.uf))[cod]; } catch (e) { CACHE_UF.delete(base.uf); m = null; }
     if (ATUAL !== cod) return;                              // o usuário já escolheu outro município
     if (!m) { corpo.innerHTML = '<p class="aviso">Não foi possível carregar os dados deste município. Tente novamente em instantes.</p>'; return; }
     renderFicha(cod, base, m);
+}
+
+function municipiosDaUF(uf) {
+    if (!CACHE_UF.has(uf)) CACHE_UF.set(uf, getJSON('/data/painel-municipios/' + uf + '.json').then(j => j.municipios));
+    return CACHE_UF.get(uf);
+}
+
+function coefTilesHtml(m) {
+    return `<div class="coef-grid">
+        <div class="coef"><span>Participação neutra, 2025</span><b>${fmtPctPlain(m.coef_neutro_pct)}</b><small>A fatia deste ente hoje, sem a reforma: o ponto de partida da comparação.</small></div>
+        <div class="coef"><span>Coeficiente histórico (φ<sup>CPT</sup>)</span><b>${fmtPctPlain(m.coef_cpt_pct)}</b><small>Média de 7 anos (2019–2025) da receita de referência. É o critério que ainda pesa mais até 2033.</small></div>
+        <div class="coef"><span>Coeficiente de destino (φ<sup>dest</sup>)</span><b>${fmtPctPlain(m.coef_pleno_pct)}</b><small>Baseado em consumo (renda × POF) e compras públicas. Pesa cerca de 10% em 2033; por inteiro, só em 2078.</small></div>
+    </div>`;
+}
+
+function seguroCardHtml(repasse, posByYear) {
+    const v2033 = (repasse && repasse['2033']) || 0;
+    const recebeAlgumAno = ANOS.some(a => ((repasse && repasse[a]) || 0) > 1);
+    if (!recebeAlgumAno) {
+        return `<div class="seguro-card"><div class="seguro-label">Seguro-Receita (ADCT art. 132)</div><div class="seguro-value muted">Não recebe</div>
+            <div class="seguro-note">Em 2029–2033, a receita deste ente pelo critério de destino fica acima do nível de nivelamento em todos os anos do período; não há repasse.</div></div>`;
+    }
+    if (v2033 <= 1) {
+        return `<div class="seguro-card recebe"><div class="seguro-label">Seguro-Receita (ADCT art. 132)</div><div class="seguro-value muted">Não recebe em 2033</div>
+            <div class="seguro-note">Recebeu repasse em anos anteriores da transição, mas deixa de receber a partir de 2033: a receita própria pelo critério de destino alcançou o nível de nivelamento daquele ano.</div></div>`;
+    }
+    const total2033 = posByYear && posByYear['2033'];
+    const share = total2033 ? v2033 / total2033 * 100 : null;
+    const anos = ANOS.filter(a => (repasse[a] || 0) > 1).map(a => a + ': ' + fmtMoney(repasse[a])).join(' · ');
+    return `<div class="seguro-card recebe"><div class="seguro-label">Seguro-Receita (ADCT art. 132)</div><div class="seguro-value">${fmtMoney(v2033)}</div>
+        <div class="seguro-note">Repasse bruto em 2033${share != null ? ' (' + share.toLocaleString('pt-BR', {maximumFractionDigits: 1}) + '% da receita projetada do município naquele ano)' : ''}. Série: ${anos}. Veja a memória de cálculo para o nível de nivelamento de cada ano.</div></div>`;
+}
+
+function historicoTableHtml(historico) {
+    const rows = ANOS_HIST.map(a => { const h = historico ? historico[a] : null; return `<tr><td>${a}</td><td class="num">${h ? fmtMoney(h.total_reais_2025) : '—'}</td></tr>`; }).join('');
+    return `<table class="dados" style="font-size:.88rem"><thead><tr><th>Ano</th><th class="num">Receita (R$ de 2025)</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 function renderFicha(cod, base, m) {
@@ -371,8 +495,6 @@ function renderFicha(cod, base, m) {
     const pos33 = m.pos_por_ano['2033'], cf33 = m.contrafactual_por_ano['2033'];
     const dif33 = pos33 - cf33, v33 = m.variacao_por_ano['2033'];
     const sinal = clsSinal(v33);
-    const seg = ANOS.map(a => m.repasse_seguro_receita_por_ano[a] || 0);
-    const temSeguro = seg.some(x => x > 0);
 
     let aviso = '';
     if (m.neutro_suspeito) aviso = '<strong>Dado a conferir.</strong> O valor declarado ao SICONFI para 2025 diverge de forma incompatível da série histórica deste município, o que sugere falha de preenchimento na fonte. Os números são exibidos com cautela e não entram nos rankings.';
@@ -386,7 +508,6 @@ function renderFicha(cod, base, m) {
     const nota = v33 < -0.0005
         ? 'Perda estimada não é destino: ela depende de decisões de orçamento, de arrecadação própria e de legislação local que ainda podem ser tomadas.'
         : 'Ganho estimado também exige planejamento: a receita de destino depende de consumo e de compras públicas que variam, e a projeção precisa ser acompanhada.';
-
     const resumo = Math.abs(v33) > 0.0005 ? `${fmtPct(v33)} (${fmtMoney(Math.abs(dif33))} por ano ${lado})` : 'praticamente igual ao cenário sem a reforma';
     const nomeSeg = esc(base.nome);
     const convite = v33 < -0.0005
@@ -395,9 +516,9 @@ function renderFicha(cod, base, m) {
         ? `<strong>Um ganho também precisa de plano.</strong> O diagnóstico de ${nomeSeg} mostra o que sustenta os ${fmtMoney(Math.abs(dif33))} por ano a mais em 2033 e onde a projeção é mais frágil.`
         : `<strong>Receita estável não é receita garantida.</strong> O diagnóstico de ${nomeSeg} testa a projeção com os dados da própria prefeitura.`;
 
-    const linhas = ANOS.map((a, i) => {
+    const linhas = ANOS.map(a => {
         const v = m.variacao_por_ano[a], d = m.pos_por_ano[a] - m.contrafactual_por_ano[a];
-        return `<tr><td>${a}</td><td>${fmtMoney(m.contrafactual_por_ano[a])}</td><td>${fmtMoney(m.pos_por_ano[a])}</td><td class="${clsSinal(v)}">${fmtMoney(d)}</td><td class="${clsSinal(v)}">${fmtPct(v)}</td>${temSeguro ? `<td>${seg[i] > 0 ? fmtMoney(seg[i]) : '—'}</td>` : ''}</tr>`;
+        return `<tr><td>${a}</td><td>${fmtMoney(m.contrafactual_por_ano[a])}</td><td>${fmtMoney(m.pos_por_ano[a])}</td><td class="${clsSinal(v)}">${fmtMoney(d)}</td><td class="${clsSinal(v)}">${fmtPct(v)}</td></tr>`;
     }).join('');
 
     $('fichaCorpo').innerHTML = `
@@ -427,20 +548,31 @@ function renderFicha(cod, base, m) {
             <div class="kpi"><span>Com a reforma, 2033</span><b>${fmtMoney(pos33)}</b><small>Com o cronograma do ADCT aplicado</small></div>
             <div class="kpi"><span>Diferença por ano, 2033</span><b class="${sinal}">${fmtMoney(dif33)}</b><small>Projeção menos cenário sem reforma</small></div>
         </div>
-        ${temSeguro ? `<div class="seguro" role="note"><strong>Seguro-Receita.</strong> No cenário do modelo, o município recebe repasse do Seguro-Receita, de ${fmtMoney(Math.min(...seg.filter(x => x > 0)))} no primeiro ano com repasse a ${fmtMoney(Math.max(...seg))} no maior ano. O valor já está incluído na projeção acima.</div>` : ''}
-        <div class="ficha-grid">
-            <div class="panel"><h3>Receita ao longo do tempo</h3><p class="panel-sub">Histórico declarado e projeção com e sem a reforma, em R$ de 2025.</p>
-                <div class="canvas-box"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ao lado."></canvas></div></div>
-            <div class="panel"><h3>De onde vem a receita com a reforma</h3><p class="panel-sub">Composição da projeção, por componente, em R$ de 2025.</p>
-                <div class="canvas-box"><canvas id="gComp" role="img" aria-label="Gráfico de barras empilhadas com a composição da receita projetada de 2029 a 2033: tributos atuais residuais, IBS pelo critério histórico, IBS por destino e Seguro-Receita."></canvas></div></div>
+        <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Receita realizada de 2019 a 2025 e projeção de 2029 a 2033, contra o cenário sem a reforma, em R$ de 2025. A área preenchida é a diferença entre os dois cenários.</p>
+            <div class="canvas-box" style="height:320px"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano."></canvas></div></div>
+        <div class="panel accent">
+            <div class="panel-head"><div><h3>Como fica o ICMS/ISS na transição</h3><p class="panel-sub">Composição da receita projetada: quanto ainda vem do ICMS/ISS residual, quanto já é IBS pelos dois critérios, e quanto é Seguro-Receita.</p></div>
+                <div class="comp-controles">
+                    <div class="toggle" id="compModo" role="group" aria-label="Unidade"><button type="button" data-modo="pct" class="active">%</button><button type="button" data-modo="rs">R$</button></div>
+                    <div class="toggle" id="compViz" role="group" aria-label="Forma"><button type="button" data-viz="grafico" class="active">Gráfico</button><button type="button" data-viz="tabela">Tabela</button></div>
+                </div></div>
+            <div class="canvas-box" id="compBox"><canvas id="gComp" role="img" aria-label="Gráfico de barras empilhadas com a composição da receita projetada de 2029 a 2033: ICMS e ISS residuais, IBS pelo critério histórico, IBS por destino e Seguro-Receita. Os mesmos valores estão na aba Tabela."></canvas></div>
+            <div class="table-wrap" id="compTabela" hidden></div>
         </div>
         <div class="ficha-grid">
-            <div class="panel"><h3>${esc(base.nome)} entre os municípios de ${esc(NOMES_UF[base.uf])}</h3><p class="panel-sub">Variação da receita em 2033. O município está contornado; passe o cursor sobre os vizinhos.</p>
-                <div class="map-wrapper" id="miniWrap"><svg id="miniSvg" role="img" aria-label="Mapa dos municípios de ${esc(NOMES_UF[base.uf])} com ${esc(base.nome)} contornado."></svg><div class="map-tip" id="miniTip" role="tooltip"></div></div></div>
+            <div class="panel"><h3>${nomeSeg} entre os municípios de ${esc(NOMES_UF[base.uf])}</h3><p class="panel-sub">Variação da receita em 2033. O município está contornado; passe o cursor sobre os vizinhos.</p>
+                <div class="map-wrapper" id="miniWrap"><svg id="miniSvg" role="img" aria-label="Mapa dos municípios de ${esc(NOMES_UF[base.uf])} com ${nomeSeg} contornado."></svg><div class="map-tip" id="miniTip" role="tooltip"></div></div></div>
             <div class="panel"><h3>Ano a ano, 2029–2033</h3><p class="panel-sub">Receita estimada com e sem a reforma, e a diferença entre as duas.</p>
                 <div class="table-wrap"><table class="dados">
-                    <thead><tr><th>Ano</th><th>Sem a reforma</th><th>Com a reforma</th><th>Diferença</th><th>Variação</th>${temSeguro ? '<th>Seguro-Receita</th>' : ''}</tr></thead>
+                    <thead><tr><th>Ano</th><th>Sem a reforma</th><th>Com a reforma</th><th>Diferença</th><th>Variação</th></tr></thead>
                     <tbody>${linhas}</tbody></table></div></div>
+        </div>
+        <div class="panel"><h3>Coeficientes de participação</h3><p class="panel-sub">Os critérios que, ponderados pelo cronograma do ADCT, definem a fatia deste município no IBS.</p>
+            ${coefTilesHtml(m)}
+            <button type="button" class="memo-link" id="btnMemoria">Ver a memória de cálculo deste município →</button></div>
+        <div class="ficha-grid">
+            <div class="panel"><h3>Seguro-Receita</h3><p class="panel-sub">Repasse compensatório para entes cuja receita pelo critério de destino fica abaixo do nível de nivelamento.</p>${seguroCardHtml(m.repasse_seguro_receita_por_ano, m.pos_por_ano)}</div>
+            <div class="panel"><h3>Dados históricos usados no cálculo</h3><p class="panel-sub">Receita real declarada ao SICONFI, deflacionada a R$ de 2025.</p>${historicoTableHtml(m.historico_por_ano)}</div>
         </div>
         <div class="posicao">
             ${m.neutro_aproximado || m.neutro_suspeito ? '<span>Posição nos rankings indisponível para municípios com ressalva de dados.</span>' : `
@@ -452,8 +584,8 @@ function renderFicha(cod, base, m) {
             <div class="ladder-cols">
                 <div class="ladder-col"><h4>No painel, com dados públicos</h4><ul>
                     <li>Variação estimada da receita até 2033</li>
-                    <li>Composição por componente do IBS</li>
-                    <li>Série histórica declarada ao SICONFI</li>
+                    <li>Composição por componente do IBS e Seguro-Receita</li>
+                    <li>Coeficientes e memória de cálculo, passo a passo</li>
                     <li>Posição entre os municípios do país e do estado</li></ul></div>
                 <div class="ladder-col mais"><h4>No diagnóstico, feito pela Vertex</h4><ul>
                     <li>Premissas ajustadas com os dados da própria prefeitura</li>
@@ -466,6 +598,7 @@ function renderFicha(cod, base, m) {
         <p class="print-credito">Municípios na Reforma, iniciativa da Vertex Advisory · municipiosnareforma.com.br${CONFIG.email ? ' · ' + CONFIG.email : ''}</p>`;
 
     $('btnVoltar').addEventListener('click', () => mostrarVisao('visao-geral'));
+    $('btnMemoria').addEventListener('click', () => { track('abrir_memoria', {municipio: base.nome}); abrirMemoria(cod); });
     $('btnCopiar').addEventListener('click', e => {
         const url = location.origin + location.pathname + '?m=' + cod;
         (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(() => { e.target.textContent = 'Link copiado'; }, () => { prompt('Copie o link:', url); });
@@ -477,17 +610,39 @@ function renderFicha(cod, base, m) {
     desenharGraficos(m);
     carregarMalha().then(() => {
         if (ATUAL !== cod || !$('miniSvg')) return;
-        MINI = criarMapa($('miniSvg'), $('miniWrap'), $('miniTip'), {todos: false, uf: base.uf, aoClicar: c => abrirMunicipio(c)});
+        MINI = criarMapa($('miniSvg'), $('miniWrap'), $('miniTip'), {camadaUF: false, todos: false, uf: base.uf, nivel: 'muni', aoClicar: c => abrirMunicipio(c)});
         MINI.destacar(cod);
     }).catch(() => { const w = $('miniWrap'); if (w) w.innerHTML = '<p class="nota">O mapa não pôde ser carregado agora.</p>'; });
     $('fichaTitulo').focus({preventScroll: true});
 }
 
+const COMP_ROTULOS = [['origem', 'ISS e ICMS residuais', '#858384'], ['cpt', 'IBS pelo critério histórico', '#1f2a55'], ['destino', 'IBS por destino', '#cfad56'], ['seguro', 'Seguro-Receita', '#2f7f7a']];
+
 function desenharGraficos(m) {
-    if (typeof Chart === 'undefined') { document.querySelectorAll('.canvas-box').forEach(b => { b.innerHTML = '<p class="nota">O gráfico não pôde ser carregado. Os valores estão na tabela.</p>'; }); return; }
+    const tabelaComp = pct => {
+        const cab = ANOS.map(a => `<th>${a}</th>`).join('');
+        const corpo = COMP_ROTULOS.map(([k, rot]) => `<tr><td>${rot}</td>${ANOS.map(a => {
+            const r = m.componentes_por_ano[a] || {}, tot = (r.origem || 0) + (r.cpt || 0) + (r.destino || 0) + (r.seguro || 0), v = r[k] || 0;
+            return `<td>${pct ? (tot ? (v / tot * 100).toLocaleString('pt-BR', {maximumFractionDigits: 1}) + '%' : '—') : fmtMoney(v)}</td>`;
+        }).join('')}</tr>`).join('');
+        return `<table class="dados"><thead><tr><th>Categoria</th>${cab}</tr></thead><tbody>${corpo}</tbody></table>`;
+    };
+    let modo = 'pct';
+    $('compTabela').innerHTML = tabelaComp(true);
+    document.querySelectorAll('#compViz button').forEach(b => b.addEventListener('click', () => {
+        const tab = b.dataset.viz === 'tabela';
+        document.querySelectorAll('#compViz button').forEach(x => x.classList.toggle('active', x === b));
+        $('compBox').hidden = tab; $('compTabela').hidden = !tab;
+    }));
+
+    if (typeof Chart === 'undefined') {
+        document.querySelectorAll('.canvas-box').forEach(b => { b.innerHTML = '<p class="nota">O gráfico não pôde ser carregado. Os valores estão nas tabelas.</p>'; });
+        document.querySelectorAll('#compViz button')[1] && document.querySelectorAll('#compViz button')[1].click();
+        return;
+    }
     const mi = v => v == null ? null : v / 1e6;
     const eixoR$ = {ticks: {callback: v => 'R$ ' + v.toLocaleString('pt-BR') + ' mi', color: '#55576a'}, grid: {color: '#ecebe5'}, beginAtZero: true};
-    const tip = {callbacks: {label: c => ' ' + c.dataset.label + ': ' + fmtMoney(c.parsed.y * 1e6)}};
+    const tip = {callbacks: {label: c => c.parsed.y == null ? null : ' ' + c.dataset.label + ': ' + fmtMoney(c.parsed.y * 1e6)}};
     Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
     const rotulos = ANOS_HIST.concat(['2026', '2027', '2028'], ANOS);
     const hist = rotulos.map(a => m.historico_por_ano[a] ? mi(m.historico_por_ano[a].total_reais_2025) : null);
@@ -496,25 +651,83 @@ function desenharGraficos(m) {
     graficos.push(new Chart($('gSerie'), {
         type: 'line',
         data: {labels: rotulos, datasets: [
-            {label: 'Histórico declarado', data: hist, borderColor: '#1f2a55', backgroundColor: '#1f2a55', borderWidth: 3, pointRadius: 3, spanGaps: false},
-            {label: 'Sem a reforma', data: cf, borderColor: '#858384', backgroundColor: '#858384', borderDash: [6, 5], borderWidth: 3, pointRadius: 3, spanGaps: false},
-            {label: 'Com a reforma', data: pos, borderColor: '#b8922f', backgroundColor: '#b8922f', borderWidth: 4, pointRadius: 4, spanGaps: false}
+            {label: 'Realizado (2019–2025)', data: hist, borderColor: '#1f2a55', backgroundColor: '#1f2a55', borderWidth: 3, pointRadius: 3, spanGaps: false},
+            {label: 'Projeção com a reforma', data: pos, borderColor: '#b8922f', backgroundColor: 'rgba(207,173,86,.22)', borderWidth: 4, pointRadius: 4, spanGaps: false, fill: '+1'},
+            {label: 'Cenário sem a reforma', data: cf, borderColor: '#858384', backgroundColor: '#858384', borderDash: [6, 5], borderWidth: 3, pointRadius: 3, spanGaps: false}
         ]},
         options: {responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false},
             plugins: {legend: {position: 'bottom', labels: {usePointStyle: true, boxWidth: 8}}, tooltip: tip}, scales: {y: eixoR$, x: {grid: {display: false}}}}
     }));
-    const comp = k => ANOS.map(a => mi(m.componentes_por_ano[a][k]));
-    graficos.push(new Chart($('gComp'), {
-        type: 'bar',
-        data: {labels: ANOS, datasets: [
-            {label: 'ISS e ICMS residuais', data: comp('origem'), backgroundColor: '#858384'},
-            {label: 'IBS pelo critério histórico', data: comp('cpt'), backgroundColor: '#1f2a55'},
-            {label: 'IBS por destino', data: comp('destino'), backgroundColor: '#cfad56'},
-            {label: 'Seguro-Receita', data: comp('seguro'), backgroundColor: '#2f7f7a'}
-        ]},
-        options: {responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false},
-            plugins: {legend: {position: 'bottom', labels: {boxWidth: 12}}, tooltip: tip}, scales: {x: {stacked: true, grid: {display: false}}, y: Object.assign({stacked: true}, eixoR$)}}
+    const desenhaComp = () => {
+        const pct = modo === 'pct';
+        const tot = ANOS.map(a => { const r = m.componentes_por_ano[a]; return r.origem + r.cpt + r.destino + r.seguro; });
+        const serie = k => ANOS.map((a, i) => pct ? (tot[i] ? m.componentes_por_ano[a][k] / tot[i] * 100 : 0) : mi(m.componentes_por_ano[a][k]));
+        if (graficos[1]) { graficos[1].destroy(); graficos.pop(); }
+        graficos.push(new Chart($('gComp'), {
+            type: 'bar',
+            data: {labels: ANOS, datasets: COMP_ROTULOS.map(([k, rot, cor]) => ({label: rot, data: serie(k), backgroundColor: cor}))},
+            options: {responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false},
+                plugins: {legend: {position: 'bottom', labels: {boxWidth: 12}},
+                    tooltip: {callbacks: {label: c => ' ' + c.dataset.label + ': ' + (pct ? c.parsed.y.toLocaleString('pt-BR', {maximumFractionDigits: 1}) + '%' : fmtMoney(c.parsed.y * 1e6))}}},
+                scales: {x: {stacked: true, grid: {display: false}},
+                    y: pct ? {stacked: true, max: 100, ticks: {callback: v => v + '%', color: '#55576a'}, grid: {color: '#ecebe5'}} : Object.assign({stacked: true}, eixoR$)}}
+        }));
+    };
+    desenhaComp();
+    document.querySelectorAll('#compModo button').forEach(b => b.addEventListener('click', () => {
+        modo = b.dataset.modo;
+        document.querySelectorAll('#compModo button').forEach(x => x.classList.toggle('active', x === b));
+        $('compTabela').innerHTML = tabelaComp(modo === 'pct');
+        desenhaComp();
     }));
+}
+
+/* ── memória de cálculo (portada do painel) ── */
+function abrirMemoria(cod, secao) {
+    MEMO.cod = cod;
+    if (secao) MEMO.secao = secao;
+    $('buscaMemo').value = POR_COD[cod].nome + ' (' + POR_COD[cod].uf + ')';
+    mostrarVisao('memoria');
+    renderMemoria();
+}
+
+function dadosMemoria(uf) {
+    if (!CACHE_MEMO.has(uf)) {
+        const p = Promise.all([
+            MEMO_NAC ? Promise.resolve(MEMO_NAC) : getJSON('/data/memoria-calculo/nacional.json'),
+            getJSON('/data/memoria-calculo/' + uf + '.json')
+        ]).then(([nac, memo]) => { MEMO_NAC = nac; window.MemoriaCalculo.definirNacional(nac); return memo; });
+        p.catch(() => CACHE_MEMO.delete(uf));
+        CACHE_MEMO.set(uf, p);
+    }
+    return CACHE_MEMO.get(uf);
+}
+
+function renderMemoria() {
+    document.querySelectorAll('#memoAbas button').forEach(b => b.classList.toggle('active', b.dataset.secao === MEMO.secao));
+    const alvo = $('memoConteudo');
+    if (!MEMO.cod) return;
+    const cod = MEMO.cod, base = POR_COD[cod];
+    alvo.innerHTML = '<div class="panel"><p class="nota" role="status">Carregando os dados do município…</p></div>';
+    Promise.all([dadosMemoria(base.uf), municipiosDaUF(base.uf)]).then(([memo, munis]) => {
+        if (MEMO.cod !== cod || !$('view-memoria').classList.contains('active')) return;
+        const m = munis[cod];
+        if (!m) throw new Error('município ausente');
+        let corpo;
+        if (MEMO.secao === 'historico') {
+            corpo = window.MemoriaCalculo.historico({
+                historico: m.historico_por_ano, campoTotal: 'total_reais_2025', coefPublicado: m.coef_cpt_pct,
+                descricaoReferencia: 'Para o município, a receita de referência é o ISS bruto declarado ao SICONFI mais a cota-parte de ICMS recebida do estado.',
+                colunas: [{rotulo: 'ISS bruto', campo: 'iss_reais_2025'}, {rotulo: '+ Cota-parte de ICMS', campo: 'cota_parte_reais_2025'}, {rotulo: '= Referência', campo: 'total_reais_2025', total: true}]
+            });
+        } else if (MEMO.secao === 'destino') {
+            corpo = window.MemoriaCalculo.destinoMuni(memo.refs, m, cod);
+        } else {
+            corpo = window.MemoriaCalculo.seguro(memo.seguro_municipios[cod] || null, m.receita_media_referencia_7anos, 'municipal');
+        }
+        alvo.innerHTML = `<p class="memo-ente">Memória de cálculo de<b>${esc(base.nome)} (${base.uf})</b></p>` + corpo +
+            '<p class="nota" style="margin-top:.9rem">Os valores desta página vêm da mesma execução que alimenta as demais abas. Para a descrição das fontes e das fórmulas, veja a aba Metodologia.</p>';
+    }).catch(e => { console.error(e); alvo.innerHTML = '<div class="panel"><p class="aviso">Não foi possível carregar a memória de cálculo deste município. Tente novamente em instantes.</p></div>'; });
 }
 
 /* ── contato ──
