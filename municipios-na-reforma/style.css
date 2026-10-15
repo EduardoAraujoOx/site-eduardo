@@ -308,15 +308,70 @@ table.dados td.nome { text-align: left; } table.dados td.nome small { color: #6b
 .link-btn:hover { color: var(--gold-deep); }
 .search-hint + .search-hint { margin-top: .2rem; }
 #localMsg { color: var(--ink-soft); }
-.local-card { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: .8rem 1.8rem; background: #fff; border: 1px solid var(--line); border-left: 6px solid var(--gold); border-radius: var(--radius); padding: 1rem 1.4rem; margin: 0 0 1.2rem; box-shadow: var(--shadow); }
+.local-card { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem 1.4rem; background: var(--gold-pale); border: 1px solid #eadfb8; border-left: 4px solid var(--gold); border-radius: var(--radius); padding: .6rem 1rem; margin: 0 0 1rem; }
 .local-card[hidden] { display: none; }
-.local-id { display: flex; flex-direction: column; gap: .15rem; min-width: 0; }
-.local-rotulo { font: 700 .7rem var(--font-head); letter-spacing: .1em; text-transform: uppercase; color: var(--gold-deep); }
-.local-nome { font: 800 1.45rem/1.15 var(--font-head); color: var(--navy); }
-.local-aviso { color: var(--ink-soft); font-size: .8rem; }
-.local-num { text-align: right; }
-.local-num b { display: block; font: 800 2rem/1 var(--font-head); font-variant-numeric: tabular-nums; }
+.local-id { display: flex; flex-direction: column; gap: .05rem; min-width: 0; flex: 1 1 14rem; }
+.local-rotulo { font: 700 .66rem var(--font-head); letter-spacing: .1em; text-transform: uppercase; color: var(--gold-deep); }
+.local-nome { font: 800 1.1rem/1.15 var(--font-head); color: var(--navy); }
+.local-aviso { color: var(--ink-soft); font-size: .76rem; }
+.local-num { display: flex; align-items: baseline; gap: .6rem; flex: 1 1 16rem; }
+.local-num b { font: 800 1.5rem/1 var(--font-head); font-variant-numeric: tabular-nums; }
 .local-num b.neg { color: var(--neg); } .local-num b.pos { color: var(--pos); }
-.local-num small { display: block; color: var(--ink-soft); font-size: .8rem; margin-top: .25rem; max-width: 16rem; margin-left: auto; }
-.local-acoes { display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; }
-@media (max-width: 760px) { .local-card { grid-template-columns: 1fr; } .local-num { text-align: left; } .local-num small { margin-left: 0; } }
+.local-num small { color: var(--ink-soft); font-size: .78rem; line-height: 1.35; }
+.local-acoes { display: flex; align-items: center; gap: .5rem 1rem; flex-wrap: wrap; }
+@media (max-width: 760px) { .local-num { flex-basis: 100%; } }
+
+/* ── abertura: o mapa vem primeiro, com a busca numa barra compacta ── */
+.painel-mapa { padding-top: 1.1rem; }
+.mapa-barra { display: flex; align-items: center; justify-content: space-between; gap: .7rem 1.2rem; flex-wrap: wrap; padding-bottom: 1rem; margin-bottom: .9rem; border-bottom: 1px solid var(--line); }
+.search-barra { flex: 1 1 300px; max-width: 520px; margin: 0; }
+.search-barra input { font: 500 1rem var(--font-body); padding: .62rem 1rem .62rem 2.5rem; border: 1px solid #b9bdd0; }
+.search-barra .search-icon { position: absolute; left: .85rem; top: 50%; transform: translateY(-50%); color: var(--ink-soft); pointer-events: none; }
+.search-barra .suggest { top: calc(100% + .15rem); }
+.ctl-btn { display: inline-flex; align-items: center; gap: .4rem; font: 600 .85rem var(--font-body); padding: .5rem .8rem; background: #fff; color: var(--navy); border: 1px solid #b9bdd0; border-radius: var(--radius); cursor: pointer; }
+.ctl-btn:hover { background: var(--gold-pale); }
+.search-hint:empty { display: none; }
+.painel-mapa .search-hint { text-align: left; margin: -.3rem 0 .8rem; }
+.titulo-mapa { margin-bottom: .2rem; }
+.titulo-mapa h3 { font-size: 1.05rem; margin-bottom: .1rem; }
+.titulo-mapa .panel-sub { margin-bottom: .7rem; }
+@media (pointer: coarse) { .ctl-btn { min-height: 44px; } }
+@media (max-width: 700px) { .search-barra { max-width: none; flex-basis: 100%; } }
+.nota-grafico { margin-top: .7rem; font-size: .82rem; }
+
+/* ── cadastro para abrir a memória de cálculo ── */
+.memo-abas[hidden] { display: none; }
+.site-foot a { color: #ecd28a; }
+.form-cad { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem 1.1rem; max-width: 46rem; }
+.campo { display: flex; flex-direction: column; gap: .3rem; min-width: 0; }
+.campo-largo { grid-column: 1 / -1; }
+.campo label { font: 600 .82rem var(--font-body); color: var(--ink); }
+.campo input, .campo select { font: 400 1rem var(--font-body); padding: .65rem .8rem; border: 1px solid #b9bdd0; border-radius: var(--radius); background: #fff; color: var(--ink); width: 100%; }
+.campo input:focus, .campo select:focus { border-color: var(--navy); outline: none; box-shadow: 0 0 0 3px rgba(207,173,86,.55); }
+.campo input[aria-invalid="true"] { border-color: var(--neg); }
+.isca { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.aceite { grid-column: 1 / -1; display: flex; align-items: flex-start; gap: .6rem; font-size: .88rem; color: var(--ink-soft); line-height: 1.5; cursor: pointer; }
+.aceite input { margin-top: .25rem; width: 1.05rem; height: 1.05rem; flex: none; accent-color: var(--navy); }
+.form-acoes { grid-column: 1 / -1; display: flex; align-items: center; gap: .8rem 1.2rem; flex-wrap: wrap; margin-top: .3rem; }
+.form-acoes .nota[data-erro="1"] { color: var(--neg); }
+@media (max-width: 640px) { .form-cad { grid-template-columns: 1fr; } }
+
+@media (max-width: 700px) {
+    .utility-bar { display: none; }
+    .masthead-in { padding: .8rem 0; gap: .5rem; }
+    .masthead .sub { font-size: .85rem; margin-top: .25rem; }
+    main { padding-top: 1rem; }
+    .painel-mapa { padding: .8rem .8rem 1rem; }
+    .mapa-barra { gap: .5rem; padding-bottom: .7rem; margin-bottom: .6rem; }
+    .controles { width: 100%; gap: .5rem; }
+    .controles select { order: 1; flex: 1 1 calc(100% - 3.6rem); min-width: 0; }
+    #btnLocal { order: 2; flex: none; padding-inline: .7rem; }
+    .ctl-txt { display: none; }
+    #toggleNivel { order: 3; } #toggleViz { order: 4; }
+    .controles .toggle { flex: 1 1 calc(50% - .25rem); }
+    .controles .toggle button { flex: 1; padding-inline: .4rem; }
+    .titulo-mapa .panel-sub { display: none; }
+    .titulo-mapa h3 { font-size: 1rem; margin-bottom: .5rem; }
+    .local-card { padding: .55rem .75rem; }
+    .local-aviso { display: none; }
+}

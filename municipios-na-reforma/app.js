@@ -9,7 +9,9 @@
 const CONFIG = {
     whatsapp: '',   // somente dígitos com DDI e DDD, ex.: '5527999999999'
     email: '',      // ex.: 'fale@municipiosnareforma.com.br'
-    gaId: ''        // ex.: 'G-XXXXXXXXXX' (Google Analytics 4), opcional
+    gaId: '',       // ex.: 'G-XXXXXXXXXX' (Google Analytics 4), opcional
+    razaoSocial: '', // ex.: 'Vertex Advisory Ltda.', aparece na política de privacidade
+    cnpj: ''         // ex.: '00.000.000/0001-00'
 };
 
 const ANOS = ['2029', '2030', '2031', '2032', '2033'];
@@ -131,8 +133,7 @@ function iniciar(idx, res, nac) {
     ativarBusca($('busca'), $('sugestoes'), $('formBusca'), cod => abrirMunicipio(cod));
     ativarBusca($('buscaMuni'), $('sugestoesMuni'), $('formBuscaMuni'), cod => abrirMunicipio(cod));
     ativarBusca($('buscaMemo'), $('sugestoesMemo'), $('formBuscaMemo'), cod => abrirMemoria(cod));
-    $('dicaBusca').textContent = 'Base com ' + fmtInt(LISTA.length) + ' municípios. Comece a digitar e escolha na lista.';
-    renderManchete();
+    $('dicaBusca').textContent = '';
     definirEscopo('BR', 'uf');
     montarRankings();
     document.querySelectorAll('#memoAbas button').forEach(b => b.addEventListener('click', () => { MEMO.secao = b.dataset.secao; renderMemoria(); }));
@@ -146,11 +147,6 @@ function iniciar(idx, res, nac) {
     const cod = new URLSearchParams(location.search).get('m');
     if (cod && POR_COD[cod]) abrirMunicipio(cod, {semUrl: true}); else iniciarLocalizacao();
     $('btnLocal').addEventListener('click', () => localizarGPS(false));
-}
-
-function renderManchete() {
-    const ok = LISTA.filter(m => !m.r), perdem = ok.filter(m => m.v < 0).length;
-    $('manchete').innerHTML = `Em 2033, <b>${fmtInt(perdem)} de ${fmtInt(ok.length)}</b> prefeituras com dados confiáveis arrecadam menos do que arrecadariam sem a reforma. Descubra a situação da sua.`;
 }
 
 /* ── escopo e nível do mapa ── */
@@ -171,10 +167,10 @@ function definirEscopo(uf, nivel) {
 function renderCabecalhoMapa() {
     if (nivelAtual() === 'uf') {
         $('tituloMapa').textContent = 'Variação da receita municipal por estado em 2033';
-        $('subMapa').textContent = 'Receita de todas as prefeituras do estado (ISS mais cota-parte do ICMS), somada, contra o cenário sem a reforma. Clique num estado para ver os municípios.';
+        $('subMapa').textContent = 'Receita das prefeituras de cada estado (ISS mais cota-parte do ICMS), somada, contra o cenário sem a reforma. Clique num estado para ver os municípios.';
     } else {
         $('tituloMapa').textContent = ESCOPO === 'BR' ? 'Variação da receita municipal em 2033' : 'Variação da receita municipal em 2033, ' + NOMES_UF[ESCOPO];
-        $('subMapa').textContent = 'Cada município colorido pela variação da própria receita (ISS mais cota-parte do ICMS) contra o cenário sem a reforma. Clique para abrir a ficha.';
+        $('subMapa').textContent = 'Cada município colorido pela variação da própria receita contra o cenário sem a reforma. Clique para abrir a ficha, ou busque pelo nome.';
     }
 }
 
@@ -362,6 +358,7 @@ function iniciarLocalizacao() {
         if (!g || g.country !== 'BR' || !g.city) return;
         const alvo = norm(g.city), achados = LISTA.filter(m => m.uf === g.uf && m.chave === alvo);
         if (achados.length === 1) sugerirLocal(achados[0].cod, 'conexao');
+        else if (NOMES_UF[g.uf] && !ATUAL && ESCOPO === 'BR') definirEscopo(g.uf, 'muni');   // cidade não identificada: ao menos abre no estado
     }).catch(() => { /* fora da Vercel não há estimativa: tudo certo */ });
     try {
         if (navigator.permissions && navigator.geolocation) {
@@ -415,7 +412,7 @@ function sugerirLocal(cod, origem) {
     num.innerHTML = m.r
         ? '<small>Este município tem ressalva de dados. Abra a ficha para ver os detalhes.</small>'
         : `<b class="${clsSinal(m.v)}">${fmtPct(m.v)}</b><small>variação da receita em 2033, contra o cenário sem a reforma</small>`;
-    $('localAbrir').textContent = 'Ver a ficha de ' + m.nome;
+    $('localAbrir').textContent = 'Ver a ficha';
     $('localCard').hidden = false;
     municipiosDaUF(m.uf).then(munis => {                                          // acrescenta o valor em reais assim que a UF chega
         const d = munis[cod]; if (!d || m.r || !LOCAL || LOCAL.cod !== cod) return;
@@ -563,7 +560,7 @@ function municipiosDaUF(uf) {
 function coefTilesHtml(m) {
     return `<div class="coef-grid">
         <div class="coef"><span>Participação neutra, 2025</span><b>${fmtPctPlain(m.coef_neutro_pct)}</b><small>A fatia deste ente hoje, sem a reforma: o ponto de partida da comparação.</small></div>
-        <div class="coef"><span>Coeficiente histórico (φ<sup>CPT</sup>)</span><b>${fmtPctPlain(m.coef_cpt_pct)}</b><small>Média de 7 anos (2019–2025) da receita de referência. É o critério que ainda pesa mais até 2033.</small></div>
+        <div class="coef"><span>Coeficiente histórico (φ<sup>CPT</sup>)</span><b>${fmtPctPlain(m.coef_cpt_pct)}</b><small>Média de 8 anos (2019–2026, com 2026 estimado) da receita de referência. É o critério que ainda pesa mais até 2033.</small></div>
         <div class="coef"><span>Coeficiente de destino (φ<sup>dest</sup>)</span><b>${fmtPctPlain(m.coef_pleno_pct)}</b><small>Baseado em consumo (renda × POF) e compras públicas. Pesa cerca de 10% em 2033; por inteiro, só em 2078.</small></div>
     </div>`;
 }
@@ -644,18 +641,19 @@ function renderFicha(cod, base, m) {
             <div class="grande">${fmtPct(v33)}<small>variação da receita em 2033</small></div>
             <div><p>${leitura}</p><p>${nota}</p></div>
         </div>
-        <div class="cta-inline">
-            <p>${convite}</p>
-            <div class="botoes" id="ctaInlineBotoes" style="margin:0"></div>
-        </div>
         <div class="kpis">
             <div class="kpi"><span>Receita de referência 2025</span><b>${fmtMoney(m.pre_2025)}</b><small>ISS mais cota-parte do ICMS, em R$ de 2025</small></div>
             <div class="kpi"><span>Sem a reforma, 2033</span><b>${fmtMoney(cf33)}</b><small>Regras antigas e fatia de 2025</small></div>
             <div class="kpi"><span>Com a reforma, 2033</span><b>${fmtMoney(pos33)}</b><small>Com o cronograma do ADCT aplicado</small></div>
             <div class="kpi"><span>Diferença por ano, 2033</span><b class="${sinal}">${fmtMoney(dif33)}</b><small>Projeção menos cenário sem reforma</small></div>
         </div>
-        <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Receita realizada de 2019 a 2025 e projeção de 2029 a 2033, contra o cenário sem a reforma, em R$ de 2025. A área preenchida é a diferença entre os dois cenários. O traço pontilhado liga 2025 a 2029: a redução do ICMS e do ISS só começa em 2029 (ADCT, art. 128), e o painel projeta de 2029 a 2033, sem os anos intermediários. O eixo vertical não parte de zero, para que a diferença entre os cenários fique visível.</p>
-            <div class="canvas-box" style="height:320px"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano."></canvas></div></div>
+        <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Receita realizada de 2019 a 2025 e projeção de 2029 a 2033, com e sem a reforma, em R$ de 2025. A área preenchida é a diferença entre os dois cenários.</p>
+            <div class="canvas-box" style="height:320px"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano."></canvas></div>
+            <p class="nota nota-grafico">O eixo salta de 2025 para 2029: a redução do ICMS e do ISS só começa em 2029 (ADCT, art. 128) e o modelo não projeta 2026–2028. Os dois cenários partem do valor de 2025. O eixo vertical não parte de zero, para que a diferença entre eles fique visível.</p></div>
+        <div class="cta-inline">
+            <p>${convite}</p>
+            <div class="botoes" id="ctaInlineBotoes" style="margin:0"></div>
+        </div>
         <div class="panel accent">
             <div class="panel-head"><div><h3>Como fica o ICMS/ISS na transição</h3><p class="panel-sub">Composição da receita projetada: quanto ainda vem do ICMS/ISS residual, quanto já é IBS pelos dois critérios, e quanto é Seguro-Receita.</p></div>
                 <div class="comp-controles">
@@ -750,38 +748,22 @@ function desenharGraficos(m) {
     const eixoR$ = {ticks: {callback: v => 'R$ ' + v.toLocaleString('pt-BR') + ' mi', color: '#55576a'}, grid: {color: '#ecebe5'}, beginAtZero: true};
     const tip = {callbacks: {label: c => c.parsed.y == null ? null : ' ' + c.dataset.label + ': ' + fmtMoney(c.parsed.y * 1e6)}};
     Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
-    const rotulos = ANOS_HIST.concat(['2026', '2027', '2028'], ANOS);
-    const i25 = ANOS_HIST.length - 1, i29 = ANOS_HIST.length + 3;      // posições de 2025 e de 2029 no eixo
-    const hist = rotulos.map(a => m.historico_por_ano[a] ? mi(m.historico_por_ano[a].total_reais_2025) : null);
-    // O modelo projeta 2029–2033 e não os anos intermediários. Os dois cenários partem do valor de 2025 (a referência
-    // da qual o contrafactual é construído, como no painel original), por duas séries auxiliares de traço fino
-    // pontilhado, e uma faixa cinza avisa que não há projeção em 2026–2028. Sem isso a linha parece três séries soltas.
-    const so2029 = serie => rotulos.map(a => ANOS.includes(a) && serie[a] != null ? mi(serie[a]) : null);
-    const ponte = serie => rotulos.map((a, i) => i === i25 ? mi(m.pre_2025) : (i === i29 ? mi(serie[a]) : null));
-    const faixaSemProjecao = {id: 'faixaSemProjecao', beforeDatasetsDraw(chart) {
-        const {ctx, chartArea, scales} = chart, x0 = scales.x.getPixelForValue(i25), x1 = scales.x.getPixelForValue(i29);
-        ctx.save();
-        ctx.fillStyle = 'rgba(133,131,132,.10)'; ctx.fillRect(x0, chartArea.top, x1 - x0, chartArea.bottom - chartArea.top);
-        ctx.fillStyle = '#6b6a6c'; ctx.font = '600 11px Inter, sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText('2026–2028', (x0 + x1) / 2, chartArea.top + 16); ctx.fillText('sem projeção', (x0 + x1) / 2, chartArea.top + 30);
-        ctx.restore();
-    }};
-    const estreito = $('gSerie').parentElement.clientWidth < 520;           // no celular, só 2019, 2025, 2029 e 2033
-    const auxiliar = (dados, cor) => ({label: 'ligação', data: dados, borderColor: cor, backgroundColor: cor, borderDash: [3, 5], borderWidth: 2, pointRadius: 0, pointHoverRadius: 0, spanGaps: true});
+    // Mesma solução do painel original: o eixo vai de 2019 a 2025 e segue direto para 2029–2033, sem espaço para 2026–2028
+    // (o modelo não projeta esses anos), e os dois cenários partem do valor de 2025, de onde o contrafactual é construído.
+    const rotulos = ANOS_HIST.concat(ANOS);
+    const estreito = $('gSerie').parentElement.clientWidth < 520;      // no celular, um rótulo de ano sim, outro não
+    const hist = rotulos.map(a => ANOS_HIST.includes(a) && m.historico_por_ano[a] ? mi(m.historico_por_ano[a].total_reais_2025) : null);
+    const cenario = serie => rotulos.map(a => a === '2025' ? mi(m.pre_2025) : (ANOS.includes(a) && serie[a] != null ? mi(serie[a]) : null));
     graficos.push(new Chart($('gSerie'), {
         type: 'line',
-        plugins: [faixaSemProjecao],
         data: {labels: rotulos, datasets: [
             {label: 'Realizado (2019–2025)', data: hist, borderColor: '#1f2a55', backgroundColor: '#1f2a55', borderWidth: 3, pointRadius: 3, spanGaps: false},
-            {label: 'Projeção com a reforma', data: so2029(m.pos_por_ano), borderColor: '#b8922f', backgroundColor: 'rgba(207,173,86,.22)', borderWidth: 4, pointRadius: 4, spanGaps: false, fill: '+1'},
-            {label: 'Cenário sem a reforma', data: so2029(m.contrafactual_por_ano), borderColor: '#858384', backgroundColor: '#858384', borderDash: [6, 5], borderWidth: 3, pointRadius: 3, spanGaps: false},
-            auxiliar(ponte(m.pos_por_ano), '#b8922f'),
-            auxiliar(ponte(m.contrafactual_por_ano), '#858384')
+            {label: 'Projeção com a reforma', data: cenario(m.pos_por_ano), borderColor: '#b8922f', backgroundColor: 'rgba(207,173,86,.22)', borderWidth: 4, pointRadius: 4, spanGaps: false, fill: '+1'},
+            {label: 'Cenário sem a reforma', data: cenario(m.contrafactual_por_ano), borderColor: '#858384', backgroundColor: '#858384', borderDash: [6, 5], borderWidth: 3, pointRadius: 3, spanGaps: false}
         ]},
         options: {responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false},
-            plugins: {legend: {position: 'bottom', labels: {usePointStyle: false, boxWidth: 26, boxHeight: 2, padding: 14, filter: it => it.datasetIndex < 3}},
-                tooltip: Object.assign({}, tip, {filter: it => it.datasetIndex < 3})},
-            scales: {y: {grid: {color: '#ecebe5'}, beginAtZero: false, grace: '8%', ticks: {callback: v => fmtMoney(v * 1e6), color: '#55576a'}}, x: {grid: {display: false}, ticks: {maxRotation: 0, autoSkip: false, callback: (v, i) => (estreito && ![0, i25, i29, rotulos.length - 1].includes(i)) ? '' : rotulos[i]}}}}
+            plugins: {legend: {position: 'bottom', labels: {usePointStyle: false, boxWidth: 26, boxHeight: 2, padding: 14}}, tooltip: tip},
+            scales: {y: {grid: {color: '#ecebe5'}, beginAtZero: false, grace: '8%', ticks: {callback: v => fmtMoney(v * 1e6), color: '#55576a'}}, x: {grid: {display: false}, ticks: {maxRotation: 0, autoSkip: false, font: {size: estreito ? 10 : 12}, padding: 6, callback: (v, i) => (estreito && ['2020', '2022', '2024', '2030', '2032'].includes(rotulos[i])) ? '' : (estreito ? '’' + rotulos[i].slice(2) : rotulos[i])}}}}
     }));
     const desenhaComp = () => {
         const pct = modo === 'pct';
@@ -828,9 +810,76 @@ function dadosMemoria(uf) {
     return CACHE_MEMO.get(uf);
 }
 
+/* ── cadastro: abre a memória de cálculo ──
+   Só entra em cena quando /api/lead informa que o armazenamento está configurado na Vercel.
+   Sem isso (prévia, outro servidor, variáveis ausentes) a memória fica aberta a todos, de modo
+   que o cadastro nunca vira uma porta fechada por falha técnica. */
+const CHAVE_CADASTRO = 'mnr-cadastro-v1', VERSAO_TERMOS = '2026-10';
+let CADASTRO_ATIVO = false, CADASTRO_PULADO = false;
+getJSON('/api/lead').then(r => { CADASTRO_ATIVO = !!(r && r.ativo); }).catch(() => { /* sem função: memória aberta */ });
+function jaCadastrado() { try { return !!localStorage.getItem(CHAVE_CADASTRO); } catch (e) { return false; } }
+function lembrarCadastro() { try { localStorage.setItem(CHAVE_CADASTRO, String(Date.now())); } catch (e) { /* sem armazenamento, pede de novo na próxima vez */ } }
+const precisaCadastro = () => CADASTRO_ATIVO && !CADASTRO_PULADO && !jaCadastrado();
+const EMAIL_OK = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+function renderCadastro() {
+    const base = MEMO.cod ? POR_COD[MEMO.cod] : null;
+    $('memoConteudo').innerHTML = `<div class="panel accent cadastro">
+        <h3>Cadastro gratuito para abrir a memória de cálculo</h3>
+        <p class="panel-sub">A memória mostra, com os números intermediários, como cada coeficiente foi obtido, para que a conta possa ser refeita e conferida. O acesso é livre; o cadastro nos ajuda a saber quem usa o painel e a avisar quando o modelo for atualizado.</p>
+        <form id="formCadastro" class="form-cad" novalidate>
+            <div class="campo"><label for="cadNome">Nome completo</label><input id="cadNome" name="nome" autocomplete="name" required></div>
+            <div class="campo"><label for="cadEmail">E-mail</label><input id="cadEmail" name="email" type="email" autocomplete="email" required></div>
+            <div class="campo"><label for="cadCargo">Cargo ou função</label><input id="cadCargo" name="cargo" autocomplete="organization-title" required></div>
+            <div class="campo"><label for="cadVinculo">Vínculo</label><select id="cadVinculo" name="vinculo"><option>Prefeitura</option><option>Câmara municipal</option><option>Governo estadual</option><option>Consultoria ou empresa</option><option>Imprensa ou academia</option><option>Outro</option></select></div>
+            <div class="campo campo-largo"><label for="cadMunicipio">Município ou órgão</label><input id="cadMunicipio" name="municipio" autocomplete="off" value="${base ? esc(base.nome + ' (' + base.uf + ')') : ''}"></div>
+            <input class="isca" type="text" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <label class="aceite"><input type="checkbox" name="aceite_privacidade" required><span>Li e aceito a <a href="#" data-ir-priv>política de privacidade</a>.</span></label>
+            <label class="aceite"><input type="checkbox" name="aceite_contato"><span>Aceito receber contato da Vertex Advisory sobre a reforma tributária e os serviços para prefeituras (opcional).</span></label>
+            <div class="form-acoes"><button class="btn btn-gold" type="submit">Abrir a memória de cálculo</button><span class="nota" id="cadMsg" role="status"></span></div>
+        </form></div>`;
+    const f = $('formCadastro'), msg = $('cadMsg');
+    f.querySelector('[data-ir-priv]').addEventListener('click', e => { e.preventDefault(); mostrarVisao('privacidade'); });
+    f.addEventListener('submit', async e => {
+        e.preventDefault();
+        const d = Object.fromEntries(new FormData(f).entries());
+        const erros = [];
+        const marca = (campo, ok) => { const el = f.elements[campo]; if (el) el.setAttribute('aria-invalid', ok ? 'false' : 'true'); if (!ok) erros.push(campo); };
+        marca('nome', (d.nome || '').trim().length >= 3);
+        marca('email', EMAIL_OK.test((d.email || '').trim()));
+        marca('cargo', (d.cargo || '').trim().length >= 2);
+        msg.dataset.erro = '1';
+        if (erros.length) { msg.textContent = 'Confira os campos marcados.'; f.elements[erros[0]].focus(); return; }
+        if (!f.elements.aceite_privacidade.checked) { msg.textContent = 'Para continuar, aceite a política de privacidade.'; f.elements.aceite_privacidade.focus(); return; }
+        const botao = f.querySelector('button[type=submit]');
+        botao.disabled = true; msg.dataset.erro = '0'; msg.textContent = 'Enviando…';
+        try {
+            const r = await fetch('/api/lead', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({
+                nome: d.nome, email: d.email, cargo: d.cargo, vinculo: d.vinculo, municipio: d.municipio, site: d.site || '',
+                municipio_cod: base ? MEMO.cod : '', uf: base ? base.uf : '',
+                origem: 'memoria:' + MEMO.secao,
+                utm: [...new URLSearchParams(location.search)].filter(([k]) => k.indexOf('utm_') === 0).map(([k, v]) => k + '=' + v).join('&'),
+                aceite_privacidade: true, aceite_contato: !!f.elements.aceite_contato.checked, versao_termos: VERSAO_TERMOS
+            })});
+            if (!r.ok) throw new Error('lead ' + r.status);
+            lembrarCadastro();
+            track('cadastro', {origem: 'memoria', municipio: base ? base.nome : '', vinculo: d.vinculo, contato: !!f.elements.aceite_contato.checked});
+            renderMemoria();
+        } catch (err) {
+            console.error(err);
+            botao.disabled = false; msg.dataset.erro = '1';
+            msg.innerHTML = 'Não foi possível enviar agora. Tente de novo, ou <button type="button" class="link-btn" id="cadPular">abra a memória mesmo assim</button>.';
+            $('cadPular').addEventListener('click', () => { CADASTRO_PULADO = true; renderMemoria(); });
+        }
+    });
+}
+
 function renderMemoria() {
     document.querySelectorAll('#memoAbas button').forEach(b => b.classList.toggle('active', b.dataset.secao === MEMO.secao));
     const alvo = $('memoConteudo');
+    const barrada = precisaCadastro();
+    $('memoAbas').hidden = barrada;
+    if (barrada) { renderCadastro(); return; }
     if (!MEMO.cod) return;
     const cod = MEMO.cod, base = POR_COD[cod];
     alvo.innerHTML = '<div class="panel"><p class="nota" role="status">Carregando os dados do município…</p></div>';
@@ -873,4 +922,7 @@ function contatoBotoes(alvo, base, resumo, local) {
     alvo.querySelectorAll('[data-ir]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); track('clique_contato', {canal: 'aba_vertex', municipio: base ? base.nome : 'geral', local: local || 'aba'}); mostrarVisao(a.dataset.ir); }));
 }
 contatoBotoes($('botoesContato'), null);
+if (CONFIG.razaoSocial) $('privControlador').textContent = CONFIG.razaoSocial + (CONFIG.cnpj ? ' (CNPJ ' + CONFIG.cnpj + ')' : '');
+if (CONFIG.email) $('privContato').textContent = CONFIG.email;
+if (CONFIG.gaId) $('privAnalytics').textContent = 'Este portal usa o Google Analytics 4 para medir audiência de forma agregada (páginas vistas, cliques nos botões de contato, uso do mapa). O Google define cookies para isso; você pode bloqueá-los no navegador sem perder nenhuma função do portal.';
 })();
