@@ -625,7 +625,6 @@ function renderFicha(cod, base, m) {
     }).join('');
 
     $('fichaCorpo').innerHTML = `
-        <button type="button" class="voltar" id="btnVoltar">← Voltar ao mapa</button>
         <div class="ficha-top">
             <div>
                 <h2 id="fichaTitulo" tabindex="-1">${esc(base.nome)}<small>${base.uf}</small></h2>
@@ -637,19 +636,16 @@ function renderFicha(cod, base, m) {
             </div>
         </div>
         ${aviso ? `<div class="aviso" role="note">${aviso}</div>` : ''}
-        <div class="veredito ${sinal}">
-            <div class="grande">${fmtPct(v33)}<small>variação da receita em 2033</small></div>
-            <div><p>${leitura}</p><p>${nota}</p></div>
-        </div>
-        <div class="kpis">
-            <div class="kpi"><span>Receita de referência 2025</span><b>${fmtMoney(m.pre_2025)}</b><small>ISS mais cota-parte do ICMS, em R$ de 2025</small></div>
-            <div class="kpi"><span>Sem a reforma, 2033</span><b>${fmtMoney(cf33)}</b><small>Regras antigas e fatia de 2025</small></div>
-            <div class="kpi"><span>Com a reforma, 2033</span><b>${fmtMoney(pos33)}</b><small>Com o cronograma do ADCT aplicado</small></div>
-            <div class="kpi"><span>Diferença por ano, 2033</span><b class="${sinal}">${fmtMoney(dif33)}</b><small>Projeção menos cenário sem reforma</small></div>
+        <div class="faixa">
+            <div class="faixa-main ${sinal}"><span>Variação da receita em 2033</span><b>${fmtPct(v33)}</b><small>${Math.abs(v33) > 0.0005 ? fmtMoney(Math.abs(dif33)) + ' por ano ' + lado : 'Praticamente igual ao cenário sem a reforma'}</small></div>
+            <div class="kpi"><span>Referência 2025</span><b>${fmtMoney(m.pre_2025)}</b></div>
+            <div class="kpi"><span>Sem a reforma 2033</span><b>${fmtMoney(cf33)}</b></div>
+            <div class="kpi"><span>Com a reforma 2033</span><b>${fmtMoney(pos33)}</b></div>
         </div>
         <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Receita realizada de 2019 a 2025 e projeção de 2029 a 2033, com e sem a reforma, em R$ de 2025. A área preenchida é a diferença entre os dois cenários.</p>
             <div class="canvas-box" style="height:320px"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano."></canvas></div>
             <p class="nota nota-grafico">O eixo salta de 2025 para 2029: a redução do ICMS e do ISS só começa em 2029 (ADCT, art. 128) e o modelo não projeta 2026–2028. Os dois cenários partem do valor de 2025. O eixo vertical não parte de zero, para que a diferença entre eles fique visível.</p></div>
+        <div class="leitura"><p>${leitura}</p><p>${nota} Receita de referência: ISS mais cota-parte do ICMS, em R$ de 2025.</p></div>
         <div class="cta-inline">
             <p>${convite}</p>
             <div class="botoes" id="ctaInlineBotoes" style="margin:0"></div>
@@ -701,7 +697,6 @@ function renderFicha(cod, base, m) {
         </div>
         <p class="print-credito">Municípios na Reforma, iniciativa da Vertex Advisory · municipiosnareforma.com.br${CONFIG.email ? ' · ' + CONFIG.email : ''}</p>`;
 
-    $('btnVoltar').addEventListener('click', () => mostrarVisao('visao-geral'));
     $('btnMemoria').addEventListener('click', () => { track('abrir_memoria', {municipio: base.nome}); abrirMemoria(cod); });
     $('btnCopiar').addEventListener('click', e => {
         const url = location.origin + location.pathname + '?m=' + cod;
@@ -922,6 +917,7 @@ function contatoBotoes(alvo, base, resumo, local) {
     alvo.querySelectorAll('[data-ir]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); track('clique_contato', {canal: 'aba_vertex', municipio: base ? base.nome : 'geral', local: local || 'aba'}); mostrarVisao(a.dataset.ir); }));
 }
 contatoBotoes($('botoesContato'), null);
+$('btnVoltar').addEventListener('click', () => mostrarVisao('visao-geral'));
 if (CONFIG.razaoSocial) $('privControlador').textContent = CONFIG.razaoSocial + (CONFIG.cnpj ? ' (CNPJ ' + CONFIG.cnpj + ')' : '');
 if (CONFIG.email) $('privContato').textContent = CONFIG.email;
 if (CONFIG.gaId) $('privAnalytics').textContent = 'Este portal usa o Google Analytics 4 para medir audiência de forma agregada (páginas vistas, cliques nos botões de contato, uso do mapa). O Google define cookies para isso; você pode bloqueá-los no navegador sem perder nenhuma função do portal.';
