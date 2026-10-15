@@ -654,7 +654,7 @@ function renderFicha(cod, base, m) {
             <div class="kpi"><span>Com a reforma, 2033</span><b>${fmtMoney(pos33)}</b><small>Com o cronograma do ADCT aplicado</small></div>
             <div class="kpi"><span>Diferença por ano, 2033</span><b class="${sinal}">${fmtMoney(dif33)}</b><small>Projeção menos cenário sem reforma</small></div>
         </div>
-        <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Receita realizada de 2019 a 2025 e projeção de 2029 a 2033, contra o cenário sem a reforma, em R$ de 2025. A área preenchida é a diferença entre os dois cenários. O traço pontilhado liga 2025 a 2029: a redução do ICMS e do ISS só começa em 2029 (ADCT, art. 128), e o painel projeta de 2029 a 2033, sem os anos intermediários.</p>
+        <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Receita realizada de 2019 a 2025 e projeção de 2029 a 2033, contra o cenário sem a reforma, em R$ de 2025. A área preenchida é a diferença entre os dois cenários. O traço pontilhado liga 2025 a 2029: a redução do ICMS e do ISS só começa em 2029 (ADCT, art. 128), e o painel projeta de 2029 a 2033, sem os anos intermediários. O eixo vertical não parte de zero, para que a diferença entre os cenários fique visível.</p>
             <div class="canvas-box" style="height:320px"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano."></canvas></div></div>
         <div class="panel accent">
             <div class="panel-head"><div><h3>Como fica o ICMS/ISS na transição</h3><p class="panel-sub">Composição da receita projetada: quanto ainda vem do ICMS/ISS residual, quanto já é IBS pelos dois critérios, e quanto é Seguro-Receita.</p></div>
@@ -781,7 +781,7 @@ function desenharGraficos(m) {
         options: {responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false},
             plugins: {legend: {position: 'bottom', labels: {usePointStyle: false, boxWidth: 26, boxHeight: 2, padding: 14, filter: it => it.datasetIndex < 3}},
                 tooltip: Object.assign({}, tip, {filter: it => it.datasetIndex < 3})},
-            scales: {y: eixoR$, x: {grid: {display: false}, ticks: {maxRotation: 0, autoSkip: false, callback: (v, i) => (estreito && ![0, i25, i29, rotulos.length - 1].includes(i)) ? '' : rotulos[i]}}}}
+            scales: {y: {grid: {color: '#ecebe5'}, beginAtZero: false, grace: '8%', ticks: {callback: v => fmtMoney(v * 1e6), color: '#55576a'}}, x: {grid: {display: false}, ticks: {maxRotation: 0, autoSkip: false, callback: (v, i) => (estreito && ![0, i25, i29, rotulos.length - 1].includes(i)) ? '' : rotulos[i]}}}}
     }));
     const desenhaComp = () => {
         const pct = modo === 'pct';
