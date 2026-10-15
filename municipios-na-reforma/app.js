@@ -62,7 +62,7 @@ fetch('/data/painel-municipios/index.json')
     .then(j => {
         LISTA = Object.entries(j.municipios).map(([cod, m]) => ({cod, nome: m.nome, uf: m.uf, v: m.v, r: !!m.r, chave: norm(m.nome)}));
         LISTA.forEach(m => { POR_COD[m.cod] = m; });
-        montarNumeros(); montarPanorama(); ativarBusca();
+        montarNumeros(); montarPanorama(); ativarBusca(); montarMapa();
         const cod = new URLSearchParams(location.search).get('m');
         if (cod && POR_COD[cod]) abrirMunicipio(cod, {rolar: true, semUrl: true});
     })
@@ -158,6 +158,7 @@ async function abrirMunicipio(cod, opt) {
     opt = opt || {};
     const base = POR_COD[cod];
     const secao = $('ficha'), corpo = $('fichaCorpo');
+    sincronizarMapa(cod);
     secao.hidden = false;
     corpo.innerHTML = '<p class="nota" role="status">Carregando a ficha de ' + esc(base.nome) + '…</p>';
     if (opt.rolar) secao.scrollIntoView({behavior: 'smooth', block: 'start'});
@@ -289,6 +290,132 @@ function desenharGraficos(m, base) {
         options: {responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false},
             plugins: {legend: {position: 'bottom', labels: {boxWidth: 12}}, tooltip: tip}, scales: {x: {stacked: true, grid: {display: false}}, y: Object.assign({stacked: true}, eixoR$)}}
     }));
+}
+
+
+/* ── mapa municipal ──
+   Sete faixas fixas, as mesmas do painel: a variação vai de −74% a +265%, e num
+   degradê contínuo a cauda achataria a cor de quase todos perto do meio. */
+const CLASSES = [
+    {ate: -30, cor: '#9c2222', rotulo: '−30% ou menos'},
+    {ate: -15, cor: '#c9524f', rotulo: '−30% a −15%'},
+    {ate: -5, cor: '#e08a88', rotulo: '−15% a −5%'},
+    {ate: 5, cor: '#f0efec', rotulo: '−5% a +5%'},
+    {ate: 15, cor: '#7cafec', rotulo: '+5% a +15%'},
+    {ate: 30, cor: '#4a8ce0', rotulo: '+15% a +30%'},
+    {ate: Infinity, cor: '#1c5cab', rotulo: '+30% ou mais'}
+];
+const COR_RESSALVA = '#b9bec2', COR_SEM_ESFERA = '#e8ecef';
+const UF_POR_PREFIXO = {'11':'RO','12':'AC','13':'AM','14':'RR','15':'PA','16':'AP','17':'TO','21':'MA','22':'PI','23':'CE','24':'RN','25':'PB','26':'PE','27':'AL','28':'SE','29':'BA','31':'MG','32':'ES','33':'RJ','35':'SP','41':'PR','42':'SC','43':'RS','50':'MS','51':'MT','52':'GO','53':'DF'};
+const MAPA = {geo: null, paths: null, uf: 'BR', cod: null, pendente: null};
+const W_MAPA = 900;
+
+function classeDe(m) {
+    if (!m) return null;
+    if (m.r) return {cor: COR_RESSALVA, rotulo: 'Sem dado confiável'};
+    const p = m.v * 100;
+    return CLASSES.find(c => p < c.ate) || CLASSES[CLASSES.length - 1];
+}
+
+function montarMapa() {
+    const sel = $('mapaUF');
+    sel.innerHTML = '<option value="BR">Brasil</option>' + Object.keys(NOMES_UF)
+        .sort((a, b) => NOMES_UF[a].localeCompare(NOMES_UF[b], 'pt-BR'))
+        .map(u => `<option value="${u}">${NOMES_UF[u]}</option>`).join('');
+    sel.addEventListener('change', () => { definirUFMapa(sel.value); track('mapa_uf', {uf: sel.value}); });
+    atualizarLegenda();
+    if (typeof d3 === 'undefined') { $('mapaCarregando').textContent = 'O mapa não pôde ser carregado. Use a busca por município acima.'; return; }
+    fetch('/data/malha-municipios.json')
+        .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(geo => {
+            geo.features.forEach(f => { f.properties.uf = UF_POR_PREFIXO[f.properties.cod.slice(0, 2)]; });
+            MAPA.geo = geo;
+            const svgEl = $('mapaSvg');
+            MAPA.paths = d3.select(svgEl).append('g').selectAll('path').data(geo.features).enter().append('path')
+                .attr('data-cod', d => d.properties.cod)
+                .attr('fill', d => { const c = classeDe(POR_COD[d.properties.cod]); return c ? c.cor : COR_SEM_ESFERA; });
+            $('mapaCarregando').hidden = true; svgEl.removeAttribute('hidden');   // SVGElement não tem a propriedade hidden
+            definirUFMapa(MAPA.pendente || 'BR');
+            if (MAPA.cod) destacarNoMapa(MAPA.cod);
+            ligarEventosMapa(svgEl);
+        })
+        .catch(() => { $('mapaCarregando').textContent = 'O mapa não pôde ser carregado agora. Use a busca por município acima.'; });
+}
+
+function definirUFMapa(uf) {
+    MAPA.uf = uf; MAPA.pendente = uf;
+    $('mapaUF').value = uf;
+    atualizarLegenda();
+    if (!MAPA.geo) return;
+    const visivel = d => uf === 'BR' || d.properties.uf === uf;
+    const feats = MAPA.geo.features.filter(visivel);
+    const H = Math.round(W_MAPA * (uf === 'BR' ? 0.92 : 0.8));
+    const proj = d3.geoMercator().fitSize([W_MAPA, H], {type: 'FeatureCollection', features: feats});
+    const gen = d3.geoPath().projection(proj);
+    d3.select('#mapaSvg').attr('viewBox', '0 0 ' + W_MAPA + ' ' + H);
+    MAPA.paths.style('display', d => visivel(d) ? null : 'none').attr('d', d => visivel(d) ? gen(d) : null);
+    if (MAPA.cod) destacarNoMapa(MAPA.cod);
+}
+
+function destacarNoMapa(cod) {
+    MAPA.cod = cod;
+    if (!MAPA.paths) return;
+    MAPA.paths.classed('sel', false);
+    MAPA.paths.filter(d => d.properties.cod === cod).classed('sel', true).raise();
+}
+
+function sincronizarMapa(cod) {
+    MAPA.cod = cod;
+    const uf = POR_COD[cod].uf;
+    if (MAPA.geo) { if (MAPA.uf !== uf) definirUFMapa(uf); destacarNoMapa(cod); }
+    else { MAPA.pendente = uf; $('mapaUF').value = uf; atualizarLegenda(); }
+}
+
+function atualizarLegenda() {
+    const uf = MAPA.pendente || MAPA.uf;
+    const escopo = LISTA.filter(m => uf === 'BR' || m.uf === uf);
+    const cont = {};
+    escopo.forEach(m => { const c = classeDe(m); cont[c.rotulo] = (cont[c.rotulo] || 0) + 1; });
+    const itens = CLASSES.map(c => [c.cor, c.rotulo]).concat([[COR_RESSALVA, 'Sem dado confiável']]);
+    $('mapaLegenda').innerHTML = itens.map(([cor, rot]) => `<li><i style="background:${cor}"></i>${rot}<b>${fmtInt(cont[rot] || 0)}</b></li>`).join('');
+    $('mapaTabela').innerHTML = `<table class="dados"><thead><tr><th>Faixa em 2033</th><th>Municípios</th><th>Do total</th></tr></thead><tbody>`
+        + itens.map(([cor, rot]) => `<tr><td>${rot}</td><td>${fmtInt(cont[rot] || 0)}</td><td>${fmtPctSimples((cont[rot] || 0) / escopo.length)}</td></tr>`).join('') + '</tbody></table>';
+    const ok = escopo.filter(m => !m.r), perdem = ok.filter(m => m.v < 0).length;
+    const nome = uf === 'BR' ? 'No Brasil' : 'Em ' + (NOMES_UF[uf] || uf);
+    $('mapaResumo').innerHTML = ok.length
+        ? `${nome}, <strong>${fmtInt(perdem)} de ${fmtInt(ok.length)} municípios</strong> (${fmtPctSimples(perdem / ok.length)}) com dados confiáveis têm receita projetada para 2033 abaixo do cenário sem a reforma.`
+        : '';
+}
+
+function ligarEventosMapa(svgEl) {
+    const wrap = $('mapaWrap'), tip = $('mapaTip');
+    const toque = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+    const codDe = alvo => alvo && alvo.tagName === 'path' ? alvo.getAttribute('data-cod') : null;
+    if (!toque) {
+        svgEl.addEventListener('mousemove', e => {
+            const cod = codDe(e.target);
+            if (!cod) { tip.classList.remove('on'); return; }
+            const m = POR_COD[cod];
+            tip.innerHTML = !m
+                ? '<b>Sem esfera municipal própria</b><small>Este território não entra na projeção municipal.</small>'
+                : `<b>${esc(m.nome)} · ${m.uf}</b>` + (m.r
+                    ? '<small>Sem dado confiável: a participação de 2025 tem ressalva na fonte.</small><em>Clique para ver a ficha →</em>'
+                    : `<span class="v ${clsSinal(m.v)}">${fmtPct(m.v)}</span><small>em 2033, contra o cenário sem a reforma</small><em>Clique para ver a ficha →</em>`);
+            const r = wrap.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+            const w = tip.offsetWidth, h = tip.offsetHeight;
+            tip.style.left = Math.max(6, x + 16 + w > r.width ? x - w - 16 : x + 16) + 'px';
+            tip.style.top = Math.min(Math.max(6, y - h / 2), r.height - h - 6) + 'px';
+            tip.classList.add('on');
+        });
+        svgEl.addEventListener('mouseleave', () => tip.classList.remove('on'));
+    }
+    svgEl.addEventListener('click', e => {
+        const cod = codDe(e.target);
+        if (!cod || !POR_COD[cod]) return;
+        $('busca').value = POR_COD[cod].nome + ' (' + POR_COD[cod].uf + ')';
+        track('clique_mapa', {municipio: POR_COD[cod].nome, uf: POR_COD[cod].uf});
+        abrirMunicipio(cod, {rolar: true});
+    });
 }
 
 /* ── contato ──

@@ -25,6 +25,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
 <script src="app.js" defer></script>
 </head>
 <body>
@@ -38,6 +39,7 @@
         </a>
         <nav class="nav" aria-label="Principal">
             <a href="#consulta">Consulte seu município</a>
+            <a href="#mapa">Mapa</a>
             <a href="#panorama">Panorama</a>
             <a href="#servicos">Serviços</a>
             <a href="#metodo">Metodologia</a>
@@ -77,6 +79,32 @@
         </div>
     </div>
 </div>
+
+<!-- ============ MAPA ============ -->
+<section id="mapa" class="bg-paper" aria-labelledby="mapaTitulo">
+    <div class="wrap">
+        <div class="sec-head">
+            <span class="eyebrow">O mapa da reforma</span>
+            <h2 id="mapaTitulo">Veja onde a sua prefeitura está no mapa</h2>
+            <p>Cada município está colorido pela variação da sua receita em 2033, frente ao cenário sem a reforma. Escolha o estado para ampliar e clique no seu município para abrir a ficha.</p>
+        </div>
+        <div class="mapa-grid">
+            <div class="mapa-wrap" id="mapaWrap">
+                <p class="nota" id="mapaCarregando" role="status">Carregando o mapa dos municípios…</p>
+                <svg id="mapaSvg" hidden role="img" aria-label="Mapa dos municípios brasileiros coloridos pela variação da receita em 2033 contra o cenário sem a reforma. Os mesmos dados estão na tabela ao lado e na busca por município."></svg>
+                <div class="mapa-tip" id="mapaTip" role="tooltip"></div>
+            </div>
+            <aside class="mapa-lateral">
+                <label for="mapaUF">Estado</label>
+                <select id="mapaUF"><option value="BR">Brasil</option></select>
+                <p class="mapa-resumo" id="mapaResumo" aria-live="polite"></p>
+                <h3>Variação da receita em 2033</h3>
+                <ul class="legenda" id="mapaLegenda"></ul>
+                <details class="mapa-tabela"><summary>Ver os números em tabela</summary><div id="mapaTabela"></div></details>
+            </aside>
+        </div>
+    </div>
+</section>
 
 <!-- ============ FICHA DO MUNICÍPIO ============ -->
 <section id="ficha" hidden aria-labelledby="fichaTitulo">

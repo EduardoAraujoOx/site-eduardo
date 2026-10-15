@@ -196,6 +196,35 @@ table.dados tr:last-child td { border-bottom: 0; }
 .cta-ficha p { margin: 0; color: #cfd4ea; max-width: 38rem; font-size: 1rem; }
 .cta-ficha .botoes { display: flex; gap: .7rem; flex-wrap: wrap; position: relative; z-index: 1; }
 
+
+/* ── mapa ── */
+.mapa-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(270px, 1fr); gap: 1.6rem; align-items: start; }
+@media (max-width: 900px) { .mapa-grid { grid-template-columns: 1fr; } }
+.mapa-wrap { position: relative; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: .6rem; min-height: 280px; }
+#mapaSvg { display: block; width: 100%; height: auto; }
+#mapaSvg[hidden] { display: none; }
+#mapaSvg path { stroke: #fff; stroke-width: .35; cursor: pointer; }
+#mapaSvg path:hover { stroke: var(--navy); stroke-width: 1.4; }
+#mapaSvg path.sel { stroke: var(--navy-deep); stroke-width: 2.6; }
+.mapa-tip { position: absolute; z-index: 5; pointer-events: none; opacity: 0; transition: opacity .1s; background: var(--navy-deep); color: #fff; padding: .75rem .95rem; border-radius: var(--radius); font-size: .88rem; line-height: 1.4; width: max-content; max-width: 250px; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+.mapa-tip.on { opacity: 1; }
+.mapa-tip b { display: block; font: 700 .95rem var(--font-head); }
+.mapa-tip .v { display: block; font: 800 1.5rem/1.1 var(--font-head); margin: .3rem 0 .15rem; font-variant-numeric: tabular-nums; }
+.mapa-tip .v.neg { color: #ff9a96; } .mapa-tip .v.pos { color: #9cc4f5; }
+.mapa-tip small { display: block; color: #b9bfdb; }
+.mapa-tip em { display: block; font-style: normal; color: var(--gold); margin-top: .4rem; font-weight: 600; }
+.mapa-lateral label { display: block; font: 700 .76rem var(--font-head); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: .4rem; }
+.mapa-lateral select { width: 100%; font: 500 1.05rem var(--font-body); padding: .8rem .9rem; border: 2px solid var(--navy); border-radius: var(--radius); background: #fff; color: var(--ink); }
+.mapa-resumo { margin: 1.1rem 0 1.4rem; font-size: 1.02rem; padding-left: 1rem; border-left: 4px solid var(--gold); }
+.mapa-resumo strong { color: var(--navy); font-family: var(--font-head); }
+.mapa-lateral h3 { font-size: .95rem; font-weight: 700; margin-bottom: .6rem; }
+.legenda { list-style: none; margin: 0 0 1rem; padding: 0; }
+.legenda li { display: grid; grid-template-columns: 1.3rem 1fr auto; gap: .6rem; align-items: center; padding: .32rem 0; border-bottom: 1px solid var(--line); font-size: .93rem; }
+.legenda i { width: 1.3rem; height: .85rem; border-radius: 2px; border: 1px solid rgba(0,0,0,.12); }
+.legenda b { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink-soft); }
+.mapa-tabela summary { cursor: pointer; font: 600 .9rem var(--font-head); color: var(--navy); padding: .4rem 0; }
+.mapa-tabela table.dados { margin-top: .5rem; font-size: .88rem; }
+
 /* ── panorama por UF ── */
 .uf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .5rem 2.4rem; }
 .uf-row { display: grid; grid-template-columns: 2.2rem 1fr 3.6rem; gap: .8rem; align-items: center; padding: .45rem 0; border-bottom: 1px solid var(--line); font-size: .95rem; }
