@@ -31,11 +31,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=27">
+<link rel="stylesheet" href="style.css?v=28">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
-<script src="memoria.js?v=27" defer></script>
-<script src="app.js?v=27" defer></script>
+<script src="memoria.js?v=28" defer></script>
+<script src="app.js?v=28" defer></script>
 </head>
 <body>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -187,7 +187,7 @@
     <div class="panel">
         <h3>Estados</h3>
         <p class="panel-sub">Variação agregada da receita de todos os municípios do estado, do maior ganho à maior perda, e a parcela de prefeituras que perdem. Toque num estado para comparar os municípios dele.</p>
-        <div class="table-wrap"><table class="dados" id="tabUF"><thead><tr><th>#</th><th class="nome">Estado</th><th>Municípios</th><th>Perdem, entre as com dado confiável</th><th>Variação agregada</th></tr></thead><tbody><tr><td colspan="5" class="vazio-td">Carregando…</td></tr></tbody></table></div>
+        <div class="table-wrap"><table class="dados" id="tabUF"><thead><tr><th>#</th><th class="nome">Estado</th><th>Municípios</th><th>Perdem em 2033</th><th>Variação agregada</th></tr></thead><tbody><tr><td colspan="5" class="vazio-td">Carregando…</td></tr></tbody></table></div>
     </div>
 </section>
 
@@ -286,7 +286,7 @@
         <h3><span class="metodo-n">6</span>Quais são as limitações das estimativas?</h3>
         <p>As projeções estão sujeitas a incertezas relacionadas à qualidade dos dados fiscais, às hipóteses de crescimento econômico e à necessidade de estimar a distribuição territorial do consumo.</p>
         <p>Os resultados também dependem da aproximação de indicadores utilizados na repartição de receitas, da simulação dos mecanismos de proteção e da manutenção das regras atualmente previstas. Não representam uma previsão exata dos repasses futuros, nem incorporam integralmente possíveis mudanças de comportamento econômico, alterações legislativas e decisões futuras de política tributária.</p>
-        <p>O painel usa os dados oficiais declarados pelos municípios ao SICONFI (DCA e RREO), sem correções. Em alguns casos o valor declarado traz inconsistência de lançamento, como um valor repetido ou fora de escala em determinado ano da série, e isso pode afetar a participação histórica e a projeção do município. Esses casos não são ajustados no painel: o tratamento das discrepâncias entre o que o ente declara e a sua realidade fiscal é tarefa para o Comitê Gestor do IBS, em conjunto com os próprios entes, que podem retificar suas declarações. Quando a inconsistência é detectada pelos critérios de qualidade do painel, o município recebe a sinalização "sem dado confiável".</p>
+        <p>O painel usa os dados oficiais declarados pelos municípios ao SICONFI (DCA e RREO), sem correções. Em alguns casos o valor declarado traz inconsistência de lançamento, como um valor repetido ou fora de escala em determinado ano da série, e isso pode afetar a participação histórica e a projeção do município. Esses casos não são ajustados no painel: o tratamento das discrepâncias entre o que o ente declara e a sua realidade fiscal é tarefa para o Comitê Gestor do IBS, em conjunto com os próprios entes, que podem retificar suas declarações. Há ainda cerca de 2% dos municípios para os quais o SICONFI não traz uma base utilizável de 2025 (ISS e cota-parte do ICMS declarados): neles, a base é reconstruída a partir do coeficiente histórico, o mapa os mostra em cinza ("Sem base de 2025") e eles ficam fora das contagens de posição e dos rankings, para que o resultado não dependa de um dado que não existe.</p>
         <p class="metodo-nota">Municípios com informações fiscais incompletas ou inconsistentes recebem sinalizações específicas. Para os rankings, são aplicados critérios mínimos de qualidade e disponibilidade de dados, de modo a reduzir o risco de comparações inadequadas.</p>
     </article>
 
