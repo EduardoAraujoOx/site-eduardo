@@ -67,6 +67,21 @@ def fatores_uf(d, uf):
     return fi, fr, n_anos()
 
 
+def est26_municipios_uf(d, uf, r25):
+    """Termo estimado de 2026 de séries municipais próprias de uma UF (ex.: Paraná auditado).
+    r25: {cod: (iss_2025, cota_2025)} no mesmo valor com que o município entra no cálculo. Devolve ({cod: (iss26, cota26)}, n_anos).
+    Em "rreo" a distribuição entre os municípios segue o RREO (distribuir_2026); nos demais tratamentos, os fatores únicos da UF."""
+    fat, _ = fatores(componentes_2025(d))
+    n = n_anos()
+    if n == len(ANOS_OBS):
+        return {c: (0.0, 0.0) for c in r25}, n
+    if tratamento() == "rreo":
+        dist = distribuir_2026({uf: r25}, fat)
+        return {c: (dist[c]["iss"], dist[c]["cota"]) for c in r25}, n
+    fi, fr = fat[uf]
+    return {c: (v[0] * fr, v[1] * fi) for c, v in r25.items()}, n
+
+
 # ── RREO municipal: distribuição do 2026 dentro de cada UF ──────────────────────────────────────────────
 RREO_DIR = HERE / "rreo-municipios"
 

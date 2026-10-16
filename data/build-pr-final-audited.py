@@ -277,7 +277,8 @@ def main():
     deflator = {ano: (1.0 if ano == 2025 else total_2025 / total_nat[ano]) for ano in ANOS_HIST}
 
     # Base 2025 e CPT auditados. 2026 estimado (cpt2026.py): cota-parte segue a UF, ISS repete 2025.
-    fi26, fr26, n_anos = cpt2026.fatores_uf(ref, "PR")
+    est26_pr, n_anos = cpt2026.est26_municipios_uf(ref, "PR", {c: (final_iss[c][2025], cota_final[c][2025]) for c in names
+                                                           if final_iss[c].get(2025) is not None and cota_final[c].get(2025) is not None})
     municipal = {}
     for cod,nome in names.items():
         real_series = []
@@ -290,7 +291,7 @@ def main():
                 real_series.append((i + cp) * deflator[ano])
         if any(v is None for v in real_series):
             continue
-        est26 = 0.0 if n_anos == len(ANOS_HIST) else final_iss[cod][2025] * fr26 + cota_final[cod][2025] * fi26
+        est26 = sum(est26_pr[cod]) if cod in est26_pr else 0.0
         hist_mean = (sum(real_series) + est26) / n_anos
         cpt = hist_mean / total_2025
         r0 = final_iss[cod][2025] + cota_final[cod][2025]
