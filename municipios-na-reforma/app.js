@@ -11,7 +11,8 @@ const CONFIG = {
     email: '',      // ex.: 'fale@municipiosnareforma.com.br'
     gaId: '',       // ex.: 'G-XXXXXXXXXX' (Google Analytics 4), opcional
     razaoSocial: '', // ex.: 'Vertex Advisory Ltda.', aparece na política de privacidade
-    cnpj: ''         // ex.: '00.000.000/0001-00'
+    cnpj: '',        // ex.: '00.000.000/0001-00'
+    sensibilidade: false   // painel "Quanto este resultado depende das hipóteses?" na ficha; adiado, mude para true para reativar
 };
 
 const ANOS = ['2029', '2030', '2031', '2032', '2033'];
@@ -855,7 +856,7 @@ function sensVirada(P, ano) {
 
 function iniciarSens(cod, base, m) {
     const caixa = $('painelSens');
-    if (!caixa || !NAC || !NAC.projecao || typeof Chart === 'undefined') return;
+    if (!CONFIG.sensibilidade || !caixa || !NAC || !NAC.projecao || typeof Chart === 'undefined') return;
     const ref = sensRefs(m);
     if (!ref['2025'] || !(m.coef_neutro_pct > 0)) return;
     SENS_UF = SENS_UF || getJSON('/data/sensibilidade-uf.json').catch(() => null);
