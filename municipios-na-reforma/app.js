@@ -234,10 +234,18 @@ function linhasUF() {
     }).sort((a, b) => (b.v != null && a.v != null) ? b.v - a.v : (b.perdem / b.n) - (a.perdem / a.n));
 }
 
+/* Contagens: o total é o de municípios do estado; "com dado confiável" é o subconjunto que entra nas posições e na contagem de quem perde. */
+const totalUF = uf => LISTA.filter(m => m.uf === uf).length;
+function txtPerdem(l) {
+    const sem = l.total - l.n;
+    return sem > 0 ? `${fmtInt(l.perdem)} de ${fmtInt(l.n)} perdem (${fmtInt(l.total)} prefeituras; ${fmtInt(sem)} sem dado confiável)`
+        : `${fmtInt(l.perdem)} de ${fmtInt(l.n)} prefeituras perdem`;
+}
+
 function renderTabelaMapa() {
     const alvo = $('mapaTabela');
     if (nivelAtual() === 'uf') {
-        alvo.innerHTML = `<table class="dados"><thead><tr><th>Estado</th><th>Prefeituras</th><th>Que perdem</th><th>Variação agregada</th></tr></thead><tbody>`
+        alvo.innerHTML = `<table class="dados"><thead><tr><th>Estado</th><th>Prefeituras</th><th>Perdem, entre as com dado confiável</th><th>Variação agregada</th></tr></thead><tbody>`
             + linhasUF().map(l => `<tr class="clicavel" data-uf="${l.uf}"><td class="nome">${NOMES_UF[l.uf]}</td><td>${fmtInt(l.total)}</td><td>${fmtInt(l.perdem)} de ${fmtInt(l.n)} (${fmtPctSimples(l.perdem / l.n)})</td><td class="${clsSinal(l.v)}">${fmtPct(l.v)}</td></tr>`).join('') + '</tbody></table>';
         alvo.querySelectorAll('tr[data-uf]').forEach(tr => tr.addEventListener('click', () => definirEscopo(tr.dataset.uf, 'muni')));
         return;
@@ -257,7 +265,7 @@ function renderTrilho() {
         const linhas = linhasUF();
         const max = Math.max(...linhas.map(l => Math.abs(l.v || 0)), 0.01);
         lista.innerHTML = linhas.map((l, i) => `<button type="button" class="rail-row" data-uf="${l.uf}">
-            <span class="rk">${i + 1}</span><span class="nm">${NOMES_UF[l.uf]}<small>${fmtInt(l.perdem)} de ${fmtInt(l.n)} prefeituras perdem</small></span>
+            <span class="rk">${i + 1}</span><span class="nm">${NOMES_UF[l.uf]}<small>${txtPerdem(l)}</small></span>
             <span class="vl ${clsSinal(l.v)}">${fmtPct(l.v)}</span>${l.v != null ? `<i class="bar ${clsSinal(l.v)}" style="width:${Math.max(2, Math.abs(l.v) / max * 62)}%"></i>` : ''}</button>`).join('');
         lista.querySelectorAll('[data-uf]').forEach(b => b.addEventListener('click', () => { definirEscopo(b.dataset.uf, 'muni'); track('trilho_uf', {uf: b.dataset.uf}); }));
     } else {
@@ -448,7 +456,7 @@ function tipMunicipio(m) {
     const rk = RANK[m.cod];
     return `<b>${esc(m.nome)} · ${m.uf}</b><span class="v ${clsSinal(m.v)}">${fmtPct(m.v)}</span><small>da receita em 2033, contra o cenário sem a reforma</small>`
         + (d ? `<small>${fmtMoney(Math.abs(dif))} por ano ${dif < 0 ? 'a menos' : 'a mais'} · ${fmtInt(d.pop_media)} habitantes</small>` : '')
-        + (rk ? `<small>${fmtInt(rk.pos)}º entre ${fmtInt(rk.n)} municípios de ${m.uf}</small>` : '')
+        + (rk ? `<small>${fmtInt(rk.pos)}º entre ${fmtInt(rk.n)} municípios de ${m.uf} com dado confiável${totalUF(m.uf) > rk.n ? ' (de ' + fmtInt(totalUF(m.uf)) + ')' : ''}</small>` : '')
         + '<em>Clique para ver a ficha →</em>';
 }
 
@@ -608,7 +616,7 @@ function criarMapa(svgEl, wrapEl, tipEl, opt) {
                 const ok = LISTA.filter(m => m.uf === uf && !m.r), perdem = ok.filter(m => m.v < 0).length;
                 tipEl.innerHTML = AGG[uf] == null
                     ? `<b>${esc(NOMES_UF[uf])}</b><small>Sem esfera municipal própria: o Distrito Federal não entra na projeção municipal.</small>`
-                    : `<b>${esc(NOMES_UF[uf])}</b><span class="v ${clsSinal(AGG[uf])}">${fmtPct(AGG[uf])}</span><small>receita das prefeituras somada, em 2033, contra o cenário sem a reforma</small><small>${fmtInt(perdem)} de ${fmtInt(ok.length)} prefeituras perdem</small><em>Clique para ver os municípios →</em>`;
+                    : `<b>${esc(NOMES_UF[uf])}</b><span class="v ${clsSinal(AGG[uf])}">${fmtPct(AGG[uf])}</span><small>receita das prefeituras somada, em 2033, contra o cenário sem a reforma</small><small>${txtPerdem({perdem, n: ok.length, total: totalUF(uf)})}</small><em>Clique para ver os municípios →</em>`;
             } else {
                 const m = POR_COD[cod];
                 tipEl.innerHTML = m ? tipMunicipio(m) : '<b>Sem esfera municipal própria</b><small>Este território não entra na projeção municipal.</small>';
@@ -736,8 +744,8 @@ function renderFicha(cod, base, m) {
     const posicao = m.neutro_aproximado || m.neutro_suspeito
         ? '<p class="nota">Posição nos rankings indisponível para municípios com ressalva de dados.</p>'
         : `<div class="pos-grid">
-            <div class="pos-item"><b>${fmtInt(posUF)}º</b><span>entre ${fmtInt(naUF.length)} municípios ${DE_UF[base.uf]}</span></div>
-            <div class="pos-item"><b>${fmtInt(posBR)}º</b><span>entre ${fmtInt(ok.length)} municípios do Brasil</span></div>
+            <div class="pos-item"><b>${fmtInt(posUF)}º</b><span>entre ${fmtInt(naUF.length)} municípios ${DE_UF[base.uf]} com dado confiável${totalUF(base.uf) > naUF.length ? ' (de ' + fmtInt(totalUF(base.uf)) + ')' : ''}</span></div>
+            <div class="pos-item"><b>${fmtInt(posBR)}º</b><span>entre ${fmtInt(ok.length)} municípios do Brasil com dado confiável${LISTA.length > ok.length ? ' (de ' + fmtInt(LISTA.length) + ')' : ''}</span></div>
         </div><p class="nota">Do maior ganho (1º) à maior perda, na variação da receita em 2033.</p>`;
 
     $('fichaCorpo').innerHTML = `
