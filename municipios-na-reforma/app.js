@@ -91,7 +91,7 @@ const GEO = {muni: null, uf: null, promessa: null};
 
 /* ── abas ── */
 function mostrarVisao(v) {
-    if (v === 'vertex') preencherMunicipioForms();
+    if (v === 'vertex') { preencherMunicipioForms(); renderContextoVertex(); }
     document.querySelectorAll('.view').forEach(s => s.classList.toggle('active', s.id === 'view-' + v));
     document.querySelectorAll('.tab-btn').forEach(b => {
         const on = b.dataset.view === v;
@@ -985,17 +985,18 @@ function contatoBotoes(alvo, base, resumo, local) {
     if (CONFIG.whatsapp) html.push(`<a class="btn btn-gold btn-sm" data-contato="whatsapp" href="https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(texto)}" rel="noopener" target="_blank">${rotulo ? esc(rotulo) + ' pelo WhatsApp' : 'Falar pelo WhatsApp'}</a>`);
     if (CONFIG.email) html.push(`<a class="btn ${CONFIG.whatsapp ? 'btn-ghost' : 'btn-gold'} btn-sm" data-contato="email" href="mailto:${CONFIG.email}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(texto)}">${rotulo && !CONFIG.whatsapp ? esc(rotulo) : 'Enviar e-mail'}</a>`);
     if (!html.length && base) html.push('<a class="btn btn-gold btn-sm" href="#" data-ir="vertex">Falar com a Vertex</a>');
-    alvo.innerHTML = html.join('') || '<span class="nota">Canal de contato em configuração.</span>';
+    alvo.innerHTML = html.join('');
     alvo.querySelectorAll('[data-contato]').forEach(a => a.addEventListener('click', () => track('clique_contato', {canal: a.dataset.contato, municipio: base ? base.nome : 'geral', local: local || 'aba'})));
     alvo.querySelectorAll('[data-ir]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); track('clique_contato', {canal: 'aba_vertex', municipio: base ? base.nome : 'geral', local: local || 'aba'}); if (a.dataset.ir === 'vertex') irParaContato(base, resumo); else mostrarVisao(a.dataset.ir); }));
 }
 contatoBotoes($('botoesContato'), null);
 
-/* ── formulários: contato com a Vertex e cadastro do livro ──
+/* ── formulários: pedido de informações sobre os serviços e cadastro do livro ──
    Mandam um e-mail de texto por /api/contato. Só aparecem quando a função informa que o envio está
    configurado na Vercel (RESEND_API_KEY e CONTATO_PARA); antes disso o portal não promete nada. */
 let CONTATO_ATIVO = false;
 const T_FORM = {contato: Date.now(), livro: Date.now()};   // tempo desde o carregamento da página, para a armadilha de robôs (nunca reiniciado, para não descartar quem usa preenchimento automático)
+const MSG_PADRAO = 'Gostaria de receber informações sobre os serviços da Vertex Advisory para a minha prefeitura.';
 let MSG_AUTO = '';
 
 const municipioEmFoco = () => {
@@ -1007,20 +1008,39 @@ function preencherMunicipioForms() {
     if (!m) return;
     ['ctMunicipio', 'livMunicipio'].forEach(id => { const el = $(id); if (el && !el.value) el.value = m.nome + ' (' + m.uf + ')'; });
 }
+/* Uma linha com o número do município em foco abre a seção de serviços: o dado vem antes da oferta. */
+function renderContextoVertex() {
+    const el = $('contextoVertex'), m = municipioEmFoco();
+    if (!m || m.r) { el.hidden = true; el.innerHTML = ''; return; }
+    el.innerHTML = `<span><b>${esc(m.nome)} (${m.uf})</b>: variação estimada de <b class="${clsSinal(m.v)}">${fmtPct(m.v)}</b> da receita em 2033, contra o cenário sem a reforma.</span> <button type="button" class="link-btn" id="verFichaVertex">Ver a ficha →</button>`;
+    el.hidden = false;
+    $('verFichaVertex').addEventListener('click', () => abrirMunicipio(m.cod));
+}
+
+function abrirContato(opcoes) {
+    const f = $('formContato');
+    f.hidden = false; $('btnServico').setAttribute('aria-expanded', 'true');
+    if (!$('ctMsg').value) { $('ctMsg').value = MSG_PADRAO; MSG_AUTO = MSG_PADRAO; }
+    preencherMunicipioForms();
+    if (opcoes && opcoes.rolar) f.scrollIntoView({behavior: 'smooth', block: 'center'});
+    if (!(opcoes && opcoes.semFoco)) $('ctNome').focus({preventScroll: true});
+}
+/* O botão "Pedir diagnóstico" da ficha chega aqui: município e variação já vão na mensagem. */
 function irParaContato(base, resumo) {
     mostrarVisao('vertex');
-    if (base && $('ctMsg')) {
+    if (!CONTATO_ATIVO) return;
+    if (base) {
         $('ctMunicipio').value = base.nome + ' (' + base.uf + ')';
         const msg = 'Olá! Escrevo da Prefeitura de ' + base.nome + '/' + base.uf + '. Vi no Municípios na Reforma que a variação estimada da receita em 2033 é ' + resumo + ', frente ao cenário sem a reforma, e gostaria de conversar sobre o diagnóstico da reforma tributária para o município.';
         if (!$('ctMsg').value || $('ctMsg').value === MSG_AUTO) { $('ctMsg').value = msg; MSG_AUTO = msg; }
     }
-    if (!$('painelContato').hidden) $('painelContato').scrollIntoView({behavior: 'smooth', block: 'start'});
+    abrirContato({rolar: true, semFoco: false});
 }
-
 function mostrarFormularios() {
-    $('btnLivro').hidden = !CONTATO_ATIVO;
+    $('btnServico').hidden = !CONTATO_ATIVO;
+    $('servicoEmBreve').hidden = CONTATO_ATIVO || !!(CONFIG.whatsapp || CONFIG.email);
+    $('formLivro').hidden = !CONTATO_ATIVO;                  // o cadastro do livro já nasce aberto: sem clique extra
     $('livroEmBreve').hidden = CONTATO_ATIVO;
-    $('painelContato').hidden = !CONTATO_ATIVO;
 }
 
 function ligarFormulario(form, msgEl, tipo, aoEnviar) {
@@ -1040,12 +1060,12 @@ function ligarFormulario(form, msgEl, tipo, aoEnviar) {
         try {
             const r = await fetch('/api/contato', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({
                 tipo, nome: d.nome, email: d.email, cargo: d.cargo || '', telefone: d.telefone || '', municipio: d.municipio || '', mensagem: d.mensagem || '',
-                site: d.site || '', t: Date.now() - T_FORM[tipo], origem: tipo === 'livro' ? 'livro' : 'aba_vertex',
+                interesse: d.interesse || '', site: d.site || '', t: Date.now() - T_FORM[tipo], origem: tipo === 'livro' ? 'livro' : 'aba_vertex',
                 utm: [...new URLSearchParams(location.search)].filter(([k]) => k.indexOf('utm_') === 0).map(([k, v]) => k + '=' + v).join('&'),
                 aceite_privacidade: true
             })});
             if (!r.ok) throw new Error('contato ' + r.status);
-            track(tipo === 'livro' ? 'livro_cadastro' : 'contato_enviado', {municipio: d.municipio || ''});
+            track(tipo === 'livro' ? 'livro_cadastro' : 'contato_enviado', {municipio: d.municipio || '', interesse: d.interesse || ''});
             aoEnviar(d);
         } catch (err) {
             console.error(err);
@@ -1060,12 +1080,11 @@ function iniciarFormularios() {
         $('formLivro').innerHTML = '<p class="form-ok" role="status"><strong>Cadastro recebido.</strong> Você vai receber o sumário do livro e as informações do lançamento em ' + esc(d.email) + '.</p>';
     });
     ligarFormulario($('formContato'), $('ctMsgStatus'), 'contato', d => {
-        $('formContato').innerHTML = '<p class="form-ok" role="status"><strong>Mensagem enviada.</strong> A resposta vai para ' + esc(d.email) + '.</p>';
+        $('formContato').innerHTML = '<p class="form-ok" role="status"><strong>Solicitação enviada.</strong> A Vertex responde no e-mail ' + esc(d.email) + '.</p>';
     });
-    $('btnLivro').addEventListener('click', () => {
-        const f = $('formLivro'), abrir = f.hidden;
-        f.hidden = !abrir; $('btnLivro').setAttribute('aria-expanded', String(abrir));
-        if (abrir) { preencherMunicipioForms(); track('livro_abrir', {}); $('livNome').focus(); }
+    $('btnServico').addEventListener('click', () => {
+        if ($('formContato').hidden) { track('servico_abrir', {}); abrirContato({}); }
+        else { $('formContato').hidden = true; $('btnServico').setAttribute('aria-expanded', 'false'); }
     });
     getJSON('/api/contato').then(r => { CONTATO_ATIVO = !!(r && r.ativo); }).catch(() => { /* sem função: formulários ficam fora */ }).then(mostrarFormularios);
 }

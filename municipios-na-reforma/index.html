@@ -31,11 +31,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=8">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
-<script src="memoria.js?v=6" defer></script>
-<script src="app.js?v=6" defer></script>
+<script src="memoria.js?v=8" defer></script>
+<script src="app.js?v=8" defer></script>
 </head>
 <body>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -247,63 +247,59 @@
 
 <!-- ============ VERTEX ============ -->
 <section class="view" id="view-vertex">
-    <div class="view-head">
-        <h2>Para a sua prefeitura</h2>
-        <p class="sub">O painel mostra a ordem de grandeza. A Vertex Advisory ajuda a transformar esse número em decisões de orçamento, de legislação local e de preparo das equipes.</p>
-    </div>
+    <h2 class="sr-only">Para a sua prefeitura</h2>
 
-    <div class="panel accent livro" id="livro">
-        <div class="livro-capa"><img src="images/livro-modernizacao-tributaria.jpg" alt="Capa do livro Modernização Tributária Municipal no Brasil: guia para adequação à reforma da tributação do consumo (EC 132/23), com coordenação técnica de Adson Thiago Oliveira Silva e Silas Marcos de Santana Lopes, da Lumen Juris com a Vertex Advisory" width="680" height="853" loading="lazy"></div>
+    <div class="panel accent livro livro-topo" id="livro">
+        <div class="livro-capa"><img src="images/livro-modernizacao-tributaria.jpg" alt="Capa do livro Modernização Tributária Municipal no Brasil: guia para adequação à reforma da tributação do consumo (EC 132/23), com coordenação técnica de Adson Thiago Oliveira Silva e Silas Marcos de Santana Lopes, da Lumen Juris com a Vertex Advisory" width="680" height="853"></div>
         <div class="livro-txt">
-            <p class="livro-kicker">Pré-lançamento | Editora Lumen Juris</p>
-            <h3>A reforma vai além da arrecadação. Sua prefeitura está preparada?</h3>
-            <p>Conheça <strong>Modernização Tributária Municipal no Brasil</strong>, um guia sobre os desafios da reforma tributária para os municípios. A obra reúne orientações sobre adequação da legislação, modernização da gestão tributária, capacitação das equipes e planejamento da transição para o IBS.</p>
-            <p>Cadastre-se para receber informações sobre o lançamento e saber como adquirir seu exemplar.</p>
-            <button type="button" class="btn btn-gold" id="btnLivro" hidden aria-expanded="false" aria-controls="formLivro">Quero ser avisado →</button>
+            <p class="livro-kicker">Publicação em pré-lançamento</p>
+            <h3>Modernização Tributária Municipal no Brasil</h3>
+            <p>Para gestores e profissionais que desejam aprofundar seus conhecimentos sobre a reforma, a Vertex apresenta o livro <strong>Modernização Tributária Municipal no Brasil</strong>, publicado pela Editora Lumen Juris.</p>
+            <p>A obra reúne análises e orientações práticas sobre os desafios fiscais, legislativos e administrativos da transição, além de instrumentos de diagnóstico e modernização das administrações tributárias municipais.</p>
             <p class="nota" id="livroEmBreve" hidden>O cadastro abre em breve. Volte nesta página para receber o sumário e as informações do lançamento.</p>
             <form id="formLivro" class="form-cad form-livro" novalidate hidden>
-                <p class="form-nota">Você recebe o sumário do livro e as informações do lançamento, e só usamos o seu contato para isso.</p>
                 <div class="campo"><label for="livNome">Nome completo</label><input id="livNome" name="nome" autocomplete="name" required></div>
                 <div class="campo"><label for="livEmail">E-mail</label><input id="livEmail" name="email" type="email" autocomplete="email" required></div>
                 <div class="campo"><label for="livCargo">Cargo ou função</label><input id="livCargo" name="cargo" autocomplete="organization-title"></div>
                 <div class="campo"><label for="livMunicipio">Município ou órgão</label><input id="livMunicipio" name="municipio" autocomplete="off"></div>
                 <input class="isca" type="text" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
-                <label class="aceite"><input type="checkbox" name="aceite_privacidade" required><span>Concordo em receber o sumário e as informações sobre o lançamento e aceito a <a href="#" data-ir="privacidade">política de privacidade</a>.</span></label>
-                <div class="form-acoes"><button class="btn btn-gold" type="submit">Quero receber</button><span class="nota" id="livMsg" role="status"></span></div>
+                <input type="hidden" name="interesse" value="lancamento">
+                <label class="aceite"><input type="checkbox" name="aceite_privacidade" required><span>Concordo em receber o sumário e as informações sobre o lançamento, e só usarem o meu contato para isso. Aceito a <a href="#" data-ir="privacidade">política de privacidade</a>.</span></label>
+                <div class="form-acoes"><button class="btn btn-gold" type="submit">Quero receber o sumário e o lançamento →</button><span class="nota" id="livMsg" role="status"></span></div>
             </form>
         </div>
     </div>
 
-    <div class="cards">
-        <article class="card"><h3>Diagnóstico da reforma para o município</h3><p>Relatório individual com a projeção da receita por cenário, a composição por componente do IBS, os riscos e os pontos de atenção para 2029–2033.</p></article>
-        <article class="card"><h3>Planejamento fiscal e orçamentário</h3><p>Reflexo da transição no PPA, na LDO e na LOA, com cenários de receita e metas fiscais construídos junto com Fazenda e Planejamento.</p></article>
-        <article class="card"><h3>Capacitação das equipes</h3><p>Cursos e oficinas para secretários, contadores, procuradores e fiscais sobre IBS, CBS, Comitê Gestor, partilha e Seguro-Receita.</p></article>
-        <article class="card"><h3>Acompanhamento contínuo</h3><p>Monitoramento da regulamentação e atualização das projeções do município a cada mudança de regra ou de base de dados.</p></article>
-    </div>
-
-    <div class="panel autoria">
-        <div>
-            <h3>Sobre a Vertex Advisory</h3>
-            <p>O Municípios na Reforma é uma iniciativa da Vertex Advisory. As estimativas do painel vêm do modelo e da base de dados da Vertex, construídos com dados públicos e descritos, passo a passo, nas abas Metodologia e Memória de cálculo.</p>
-            <p>Para pedir o diagnóstico da sua prefeitura ou conversar sobre capacitação, escreva pelo formulário abaixo e informe o município e o seu cargo.</p>
-            <div class="botoes" id="botoesContato"></div>
+    <div class="panel servico" id="servico">
+        <div class="vertex-contexto" id="contextoVertex" hidden></div>
+        <div class="servico-grade">
+            <div class="servico-txt">
+                <h3 class="servico-titulo">Para a sua prefeitura</h3>
+                <p class="lide">Conhecer os impactos da reforma é o primeiro passo. Preparar o município é o próximo.</p>
+                <p>A reforma tributária vai além das mudanças na arrecadação. Ela exigirá das prefeituras adaptações na legislação, nos processos administrativos, nos sistemas de informação e na gestão fiscal.</p>
+                <p>A Vertex Advisory oferece apoio técnico para que os municípios compreendam esses desafios, identifiquem suas prioridades e construam estratégias de adequação ao novo sistema tributário.</p>
+            </div>
+            <div class="servico-txt">
+                <h3>Diagnóstico e preparação municipal</h3>
+                <p>Nosso trabalho começa pela avaliação dos impactos fiscais e das condições institucionais de cada município. A partir desse diagnóstico, são identificados riscos, oportunidades e medidas prioritárias para a transição, com a elaboração de um plano de ação adequado à realidade local.</p>
+                <p>A Vertex também oferece serviços especializados de consultoria, capacitação e apoio à implementação de projetos de modernização tributária municipal.</p>
+                <div class="servico-acoes">
+                    <button type="button" class="btn btn-gold" id="btnServico" hidden aria-expanded="false" aria-controls="formContato">Solicitar informações sobre nossos serviços →</button>
+                    <div class="botoes" id="botoesContato"></div>
+                </div>
+                <p class="nota" id="servicoEmBreve" hidden>O canal para solicitar informações abre em breve.</p>
+            </div>
         </div>
-        <img src="images/logo-vertex-advisory.png" alt="Vertex Advisory" width="220" height="186" loading="lazy">
-    </div>
-
-    <div class="panel" id="painelContato" hidden>
-        <h3>Fale com a Vertex</h3>
-        <p class="panel-sub">Conte o que a sua prefeitura precisa. A resposta vai para o e-mail que você informar.</p>
-        <form id="formContato" class="form-cad" novalidate>
+        <form id="formContato" class="form-cad" novalidate hidden>
             <div class="campo"><label for="ctNome">Nome completo</label><input id="ctNome" name="nome" autocomplete="name" required></div>
             <div class="campo"><label for="ctEmail">E-mail</label><input id="ctEmail" name="email" type="email" autocomplete="email" required></div>
             <div class="campo"><label for="ctCargo">Cargo ou função</label><input id="ctCargo" name="cargo" autocomplete="organization-title"></div>
             <div class="campo"><label for="ctTel">Telefone ou WhatsApp (opcional)</label><input id="ctTel" name="telefone" type="tel" autocomplete="tel"></div>
             <div class="campo campo-largo"><label for="ctMunicipio">Município ou órgão</label><input id="ctMunicipio" name="municipio" autocomplete="off"></div>
-            <div class="campo campo-largo"><label for="ctMsg">Mensagem</label><textarea id="ctMsg" name="mensagem" rows="5" required></textarea></div>
+            <div class="campo campo-largo"><label for="ctMsg">Mensagem</label><textarea id="ctMsg" name="mensagem" rows="4" required></textarea></div>
             <input class="isca" type="text" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
             <label class="aceite"><input type="checkbox" name="aceite_privacidade" required><span>Concordo que a Vertex Advisory use estes dados para responder ao meu contato e aceito a <a href="#" data-ir="privacidade">política de privacidade</a>.</span></label>
-            <div class="form-acoes"><button class="btn btn-gold" type="submit">Enviar mensagem</button><span class="nota" id="ctMsgStatus" role="status"></span></div>
+            <div class="form-acoes"><button class="btn btn-gold" type="submit">Enviar solicitação</button><span class="nota" id="ctMsgStatus" role="status"></span></div>
         </form>
     </div>
 </section>
