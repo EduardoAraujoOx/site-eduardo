@@ -471,12 +471,14 @@ table.dados th.nome { text-align: left; }
     .masthead h1 { font-size: 1.3rem; }
 }
 
-/* ── WhatsApp flutuante ── */
-.zap { position: fixed; right: 1rem; bottom: 1rem; z-index: 50; display: inline-flex; align-items: center; gap: .55rem; background: #1fa855; color: #fff; text-decoration: none; font: 700 .9rem var(--font-head); padding: .75rem 1.05rem .75rem .85rem; border-radius: 999px; box-shadow: 0 6px 18px rgba(0,0,0,.28); }
+/* ── WhatsApp flutuante: botão em pílula, com texto também no celular e um pulso discreto que chama a atenção ── */
+.zap { position: fixed; right: 1rem; bottom: 1rem; z-index: 50; display: inline-flex; align-items: center; gap: .6rem; background: #1fa855; color: #fff; text-decoration: none; font: 700 1.02rem var(--font-head); padding: .85rem 1.35rem .85rem 1.05rem; border-radius: 999px; box-shadow: 0 8px 22px rgba(0,0,0,.32); animation: zapPulso 2.4s ease-out 2.5s 3; }
 .zap[hidden] { display: none; }
 .zap:hover { background: #178f49; }
 .zap:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
-@media (max-width: 700px) { .zap { padding: .8rem; } .zap-txt { display: none; } }
+@keyframes zapPulso { 0% { box-shadow: 0 8px 22px rgba(0,0,0,.32), 0 0 0 0 rgba(31,168,85,.55); } 70%, 100% { box-shadow: 0 8px 22px rgba(0,0,0,.32), 0 0 0 16px rgba(31,168,85,0); } }
+@media (prefers-reduced-motion: reduce) { .zap { animation: none; } }
+@media (max-width: 700px) { .zap { right: .8rem; bottom: .8rem; font-size: .98rem; padding: .8rem 1.15rem .8rem .9rem; } .site-foot { padding-bottom: 5.2rem; } }
 @media print { .zap { display: none !important; } }
 
 /* ── texto corrido no celular: menos margem lateral e corpo um pouco menor ── */
