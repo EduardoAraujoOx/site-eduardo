@@ -40,6 +40,7 @@ export default async function handler(request) {
         cargo: umaLinha(b.cargo, 120),
         municipio: umaLinha(b.municipio, 120),
         mensagem: texto(b.mensagem, 2000),
+        interesse: b.interesse === 'sumario' ? 'sumario' : 'lancamento',
         aceite: b.aceite_privacidade === true,
         pagina: umaLinha(b.origem, 80),
         utm: umaLinha(b.utm, 300)
@@ -55,7 +56,7 @@ export default async function handler(request) {
         d.telefone ? 'Telefone: ' + d.telefone : null,
         d.cargo ? 'Cargo: ' + d.cargo : null,
         d.municipio ? 'Município ou órgão: ' + d.municipio : null,
-        tipo === 'livro' ? 'Pediu: sumário do livro e informações do lançamento' : null,
+        tipo === 'livro' ? 'Interesse: ' + (d.interesse === 'sumario' ? 'conhecer o sumário do livro' : 'informações sobre o lançamento') + ' (quer receber o sumário e os avisos do lançamento)' : null,
         d.mensagem ? '\nMensagem:\n' + d.mensagem : null,
         '', 'Aceitou a política de privacidade: sim',
         d.pagina ? 'Origem: ' + d.pagina : null,
@@ -80,7 +81,7 @@ export default async function handler(request) {
         await fetch(url.replace(/\/$/, '') + '/rest/v1/leads', {
             method: 'POST',
             headers: { apikey: anon, authorization: 'Bearer ' + anon, 'content-type': 'application/json', prefer: 'return=minimal' },
-            body: JSON.stringify({ nome: d.nome, email: d.email, cargo: d.cargo, municipio: d.municipio, origem: 'form:' + tipo, tipo, telefone: d.telefone, mensagem: d.mensagem, utm: d.utm, aceite_privacidade: true, aceite_contato: tipo === 'livro', versao_termos: '2026-10' })
+            body: JSON.stringify({ nome: d.nome, email: d.email, cargo: d.cargo, municipio: d.municipio, origem: 'form:' + tipo + (tipo === 'livro' ? ':' + d.interesse : ''), tipo, telefone: d.telefone, mensagem: d.mensagem, utm: d.utm, aceite_privacidade: true, aceite_contato: tipo === 'livro', versao_termos: '2026-10' })
         }).catch(() => null);
     }
     return resposta({ ok: true });
