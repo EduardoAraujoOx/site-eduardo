@@ -31,11 +31,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=10">
+<link rel="stylesheet" href="style.css?v=11">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
-<script src="memoria.js?v=10" defer></script>
-<script src="app.js?v=10" defer></script>
+<script src="memoria.js?v=11" defer></script>
+<script src="app.js?v=11" defer></script>
 </head>
 <body>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -212,28 +212,49 @@
 <section class="view" id="view-metodologia">
     <div class="view-head">
         <h2>Metodologia</h2>
-        <p class="sub">Como o modelo funciona, de onde vêm os dados e quais são os limites das estimativas.</p>
+        <p class="sub">Como são feitas as projeções de receita dos municípios brasileiros</p>
     </div>
-    <div class="aviso-geral">Estimativas próprias e independentes, construídas com dados públicos (SICONFI/STN, IBGE, Censo e POF) e descritas abaixo para que possam ser conferidas e replicadas. Não são o cálculo oficial do Comitê Gestor do IBS nem da União.</div>
+    <div class="aviso-geral">O modelo foi desenvolvido de forma independente, com utilização de dados públicos e premissas explicitadas na metodologia. Seus resultados são estimativas, não constituindo projeções oficiais do Comitê Gestor do IBS ou do Governo Federal.</div>
     <div class="prose panel">
-        <h3>O que muda na receita municipal</h3>
-        <p>O ISS e a cota-parte do ICMS, que sustentam o caixa de boa parte das prefeituras, são substituídos pelo IBS. A alíquota do ISS e a do ICMS caem a cada ano de 2029 a 2032, e os dois deixam de existir em 2033. A partir daí, toda a arrecadação compartilhada é IBS.</p>
-        <p>A partilha migra do critério histórico (origem) para o de destino (local de consumo), aos poucos, até 2078. Quem consome menos do que arrecada perde fatia, e quem consome mais ganha. O Seguro-Receita reserva parte do IBS de destino para repor os entes cuja receita, por esse critério, ficar abaixo de um nível de referência.</p>
+        <p>O painel Municípios na Reforma apresenta estimativas dos efeitos da reforma tributária sobre as receitas municipais provenientes da tributação do consumo. As projeções combinam dados fiscais, informações socioeconômicas e as regras de transição estabelecidas pela Emenda Constitucional nº 132/2023 e pelas Leis Complementares nº 214/2025 e nº 227/2026.</p>
 
-        <h3>O que significa a variação</h3>
-        <p>A variação compara, no mesmo ano, a receita projetada com a reforma e o contrafactual: o que o município arrecadaria se as regras antigas continuassem valendo e a sua fatia do total nacional permanecesse a de 2025. Comparar 2033 com 2025 mediria sobretudo o crescimento da economia no intervalo. A comparação entre cenários do mesmo ano mede apenas o efeito da reforma.</p>
+        <h3>1. Quais receitas são consideradas?</h3>
+        <p>A análise considera duas fontes de receita relevantes para os municípios: a arrecadação própria do Imposto sobre Serviços (ISS) e a parcela do ICMS transferida pelos estados às prefeituras.</p>
+        <p>As informações foram obtidas principalmente nas Declarações de Contas Anuais (DCA), disponíveis no SICONFI, da Secretaria do Tesouro Nacional, para o período de 2019 a 2025. Os registros passaram por procedimentos de tratamento e verificação de consistência. Como os dados de 2026 ainda não estão consolidados, foram utilizadas estimativas para completar o período histórico exigido pela legislação.</p>
+        <p>O painel não projeta a totalidade das receitas municipais, como IPTU, ITBI, FPM e demais transferências. Seu objeto é a receita diretamente relacionada à substituição do ISS e do ICMS pelo IBS.</p>
 
-        <h3>Fontes</h3>
-        <p>Arrecadação de ISS e cota-parte do ICMS de 2019 a 2025 no SICONFI/STN (DCA e RREO). População do IBGE, média de 2019 a 2026. Renda domiciliar per capita do Censo 2022, usada com a elasticidade-renda do consumo da POF 2017–2018 para estimar o consumo de cada município. Compras governamentais da DCA. Crescimento real do PIB pelas medianas do Boletim Focus. As regras de transição seguem a EC 132/2023, a LC 214/2025 e a LC 227/2026.</p>
+        <h3>2. Como é projetada a arrecadação do IBS?</h3>
+        <p>O modelo parte de uma estimativa nacional da arrecadação dos tributos substituídos pela reforma. A projeção considera a relação entre a arrecadação tributária e o Produto Interno Bruto (PIB) no período de referência, combinada com hipóteses de crescimento da economia brasileira.</p>
+        <p>A partir desse montante, são aplicadas as regras constitucionais de transição para estimar a receita atribuída aos estados e municípios. O cálculo considera a preservação de parte da distribuição histórica, a introdução gradual do princípio do destino e os mecanismos de proteção de receita.</p>
+        <p>Os resultados monetários são apresentados em reais de 2025, permitindo comparações entre períodos sem os efeitos da inflação.</p>
 
-        <h3>Valores em reais de 2025</h3>
-        <p>A série histórica é deflacionada para R$ de 2025 e a projeção incorpora apenas crescimento real, de modo que todos os valores são comparáveis entre si.</p>
+        <h3>3. Como é calculada a participação de cada município?</h3>
+        <p>A distribuição do IBS durante a transição depende de dois componentes principais.</p>
+        <p><strong>Participação histórica.</strong> É calculada a partir da receita média de referência de cada município, considerando sua arrecadação de ISS e sua parcela do ICMS no período de 2019 a 2026, conforme os critérios previstos na legislação. Esse componente preserva parte significativa da distribuição anterior de receitas, especialmente nos primeiros anos da reforma.</p>
+        <p><strong>Participação pelo destino.</strong> Reflete o novo modelo, no qual a arrecadação passa a ser atribuída ao local de consumo. Como ainda não existem dados observados de arrecadação do IBS por município, o modelo estima a distribuição territorial do consumo utilizando informações da Pesquisa de Orçamentos Familiares (POF 2017–2018), do Censo Demográfico de 2022, da PNAD, da população, da renda domiciliar e das compras governamentais.</p>
+        <p>A receita municipal também incorpora a participação dos municípios na parcela estadual do IBS, distribuída segundo os critérios constitucionais de população, educação, meio ambiente e repartição igualitária. Para os componentes sem indicadores específicos disponíveis, são utilizadas aproximações explicitadas na modelagem.</p>
 
-        <h3>Ressalvas de qualidade</h3>
-        <p>Municípios sinalizados como estimativa aproximada não têm registro individualizado de ISS e cota-parte do ICMS para 2025 no SICONFI, e a participação de 2025 é aproximada pela média de sete anos. Municípios sinalizados como dado a conferir têm um valor declarado para 2025 incompatível com a própria série histórica, o que sugere falha de preenchimento na fonte. Nos dois casos o valor é exibido, mas fica fora dos rankings. Os rankings consideram ainda apenas municípios com ao menos 5 anos de dados e 10 mil habitantes.</p>
+        <h3>4. Como funciona o Seguro-Receita?</h3>
+        <p>A legislação estabelece um mecanismo adicional de proteção para os entes federativos relativamente mais afetados pela nova distribuição. Parte da arrecadação remanescente após a retenção histórica é destinada ao chamado Seguro-Receita.</p>
+        <p>O modelo simula essa redistribuição a partir das receitas estimadas dos entes federativos e de suas respectivas receitas médias de referência. Os valores eventualmente recebidos são incorporados às projeções municipais.</p>
+        <p>O resultado final considera, portanto, os diferentes componentes da receita do IBS e os ajustes aplicáveis à sua distribuição.</p>
 
-        <h3>Atualização</h3>
-        <p>Os números são lidos diretamente da base de dados do modelo, calculada antes da publicação. Sempre que a metodologia é aprimorada, o portal passa a exibir o resultado novo.</p>
+        <h3>5. O que significa ganhar ou perder receita?</h3>
+        <p>Os percentuais apresentados no painel comparam dois cenários para o mesmo ano:</p>
+        <p><strong>Com reforma:</strong> receita estimada com a substituição do ISS e do ICMS pelo IBS e a aplicação das novas regras de distribuição.</p>
+        <p><strong>Sem reforma:</strong> receita hipotética que o município obteria caso permanecesse com sua participação de 2025 na arrecadação nacional projetada.</p>
+        <p>A diferença percentual entre os cenários representa o efeito estimado da reforma sobre a receita considerada pelo modelo.</p>
+        <p>Por exemplo, uma variação de −8% em 2033 significa que a receita projetada para o município, com a reforma, é 8% inferior àquela estimada para o mesmo ano no cenário sem reforma. Não significa que sua arrecadação será 8% menor do que a registrada em 2025.</p>
+
+        <h3>6. Quais são as limitações das estimativas?</h3>
+        <p>As projeções estão sujeitas a incertezas relacionadas à qualidade dos dados fiscais, às hipóteses de crescimento econômico e à necessidade de estimar a distribuição territorial do consumo.</p>
+        <p>Os resultados também dependem da aproximação de indicadores utilizados na repartição de receitas, da simulação dos mecanismos de proteção e da manutenção das regras atualmente previstas. Não representam uma previsão exata dos repasses futuros, nem incorporam integralmente possíveis mudanças de comportamento econômico, alterações legislativas e decisões futuras de política tributária.</p>
+        <p>Municípios com informações fiscais incompletas ou inconsistentes recebem sinalizações específicas. Para os rankings, são aplicados critérios mínimos de qualidade e disponibilidade de dados, de modo a reduzir o risco de comparações inadequadas.</p>
+
+        <h3>7. Transparência e atualização</h3>
+        <p>As projeções são atualizadas conforme o aprimoramento das bases de dados, das hipóteses e dos procedimentos de cálculo.</p>
+        <p>Para permitir a verificação dos resultados, o painel disponibiliza uma seção de <a href="#" data-tab="memoria">Memória de Cálculo</a>, na qual podem ser consultados os coeficientes e os valores intermediários utilizados nas estimativas de cada município.</p>
+        <p>As projeções devem ser interpretadas como instrumentos de análise e planejamento fiscal, e não como valores definitivos de arrecadação futura.</p>
     </div>
 </section>
 
