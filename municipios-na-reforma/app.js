@@ -134,7 +134,7 @@ function iniciar(idx, res, nac) {
         $('mapaWrap').hidden = tabela; $('mapaLegenda').hidden = tabela; $('mapaTabela').hidden = !tabela;
     }));
 
-    ativarBusca($('busca'), $('sugestoes'), $('formBusca'), cod => abrirMunicipio(cod));
+    ativarBusca($('busca'), $('sugestoes'), $('formBusca'), cod => abrirMunicipio(cod), v => LOCAL && v === LOCAL.rotulo ? LOCAL.cod : null);
     ativarBusca($('buscaMuni'), $('sugestoesMuni'), $('formBuscaMuni'), cod => abrirMunicipio(cod));
     ativarBusca($('buscaMemo'), $('sugestoesMemo'), $('formBuscaMemo'), cod => abrirMemoria(cod));
     $('dicaBusca').textContent = '';
@@ -336,7 +336,7 @@ async function renderRankUF() {
 }
 
 /* ── busca (padrão combobox), reaproveitada nas abas ── */
-function ativarBusca(inp, ul, form, aoEscolher) {
+function ativarBusca(inp, ul, form, aoEscolher, padrao) {
     inp.disabled = false;
     let sugestoes = [], ativo = -1;
     const fechar = () => { ul.hidden = true; inp.setAttribute('aria-expanded', 'false'); inp.removeAttribute('aria-activedescendant'); ativo = -1; };
@@ -382,6 +382,8 @@ function ativarBusca(inp, ul, form, aoEscolher) {
     inp.addEventListener('blur', () => setTimeout(fechar, 120));
     form.addEventListener('submit', e => {
         e.preventDefault();
+        const cod = padrao && ativo < 0 && padrao(inp.value);       // campo ainda com o município localizado: é esse mesmo
+        if (cod) { escolher(cod); return; }
         if (!sugestoes.length) buscar();
         const alvo = sugestoes[ativo >= 0 ? ativo : 0];
         if (alvo) escolher(alvo.cod);
@@ -410,21 +412,13 @@ function tipMunicipio(m) {
    Três fontes, da mais à menos precisa: localização do navegador (já autorizada, ou pedida
    no botão), e estimativa pela conexão (/api/geo, só na Vercel). A localização do navegador
    é resolvida aqui mesmo, contra a malha municipal, sem enviar coordenadas a ninguém.
-   A sugestão nunca abre a ficha sozinha: leva o mapa à UF, contorna o município e oferece. */
-const chaveDispensa = 'mnr-local-dispensado';
-function dispensado() { try { return sessionStorage.getItem(chaveDispensa) === '1'; } catch (e) { return false; } }
-function lembrarDispensa() { try { sessionStorage.setItem(chaveDispensa, '1'); } catch (e) { /* sem armazenamento, sem problema */ } }
-
+   A sugestão nunca abre a ficha sozinha: leva o mapa à UF, contorna o município e deixa o nome dele no campo de busca. */
 function definirUFVisitante(uf) {
     UF_VISITANTE = uf;
     if (!RANK_UF && $('view-rankings').classList.contains('active')) renderRankUF();
 }
 
 function iniciarLocalizacao() {
-    if (dispensado()) {                                       // quem recusou a sugestão ainda tem o estado estimado para os rankings
-        getJSON('/api/geo').then(g => { if (g && g.country === 'BR' && NOMES_UF[g.uf]) definirUFVisitante(g.uf); }).catch(() => {});
-        return;
-    }
     const viaConexao = () => getJSON('/api/geo').then(g => {
         if (!g || g.country !== 'BR' || !g.city) return;
         const alvo = norm(g.city), achados = LISTA.filter(m => m.uf === g.uf && m.chave === alvo);
@@ -473,36 +467,18 @@ function sugerirLocal(cod, origem) {
     if (ATUAL || (LOCAL && LOCAL.origem === 'gps' && origem !== 'gps')) return;      // quem já escolheu um município, ou já tem posição precisa, não é atropelado
     const m = POR_COD[cod];
     definirUFVisitante(m.uf);
+    const anterior = LOCAL && LOCAL.rotulo;                                        // a posição precisa do GPS substitui a estimativa pela conexão
     LOCAL = {cod, origem};
     MAPA_DESTAQUE = cod;
     if (ESCOPO !== m.uf) definirEscopo(m.uf, 'muni');
     if (MAPA) MAPA.destacar(cod);
     track('local_sugerido', {origem, municipio: m.nome, uf: m.uf});
-    $('localRotulo').textContent = origem === 'gps' ? 'Sua localização' : 'Você parece estar em';
-    $('localNome').textContent = m.nome + ' (' + m.uf + ')';
-    $('localAviso').textContent = origem === 'gps' ? 'Localização lida só no seu navegador, sem envio ao servidor.' : 'Estimativa pela sua conexão; pode não ser o seu município.';
-    const num = $('localNum');
-    num.innerHTML = m.r
-        ? '<small>Este município tem ressalva de dados. Abra a ficha para ver os detalhes.</small>'
-        : `<b class="${clsSinal(m.v)}">${fmtPct(m.v)}</b><small>variação da receita em 2033, contra o cenário sem a reforma</small>`;
-    $('localAbrir').textContent = 'Ver a ficha';
-    $('localCard').hidden = false;
-    municipiosDaUF(m.uf).then(munis => {                                          // acrescenta o valor em reais assim que a UF chega
-        const d = munis[cod]; if (!d || m.r || !LOCAL || LOCAL.cod !== cod) return;
-        const dif = d.pos_por_ano['2033'] - d.contrafactual_por_ano['2033'];
-        num.querySelector('small').textContent = `${fmtMoney(Math.abs(dif))} por ano ${dif < 0 ? 'a menos' : 'a mais'} em 2033, contra o cenário sem a reforma`;
-    }).catch(() => CACHE_UF.delete(m.uf));
+    LOCAL.rotulo = m.nome;                                                         // o campo de busca já abre com o município; quem mora em outro digita por cima
+    const campo = $('busca');
+    if (!campo.value || campo.value === anterior) campo.value = m.nome;
 }
 
-$('localAbrir').addEventListener('click', () => { if (LOCAL) { track('local_aceito', {origem: LOCAL.origem, municipio: POR_COD[LOCAL.cod].nome}); abrirMunicipio(LOCAL.cod); } });
-$('localNao').addEventListener('click', () => {
-    track('local_recusado', {origem: LOCAL ? LOCAL.origem : ''});
-    lembrarDispensa(); LOCAL = null; MAPA_DESTAQUE = null;
-    $('localCard').hidden = true;
-    if (MAPA) MAPA.destacar(null);
-    definirEscopo('BR', 'uf');
-    $('busca').focus();
-});
+$('busca').addEventListener('focus', e => { if (LOCAL && e.target.value === LOCAL.rotulo) e.target.select(); });
 
 /* ── mapa ── */
 function carregarMalha() {

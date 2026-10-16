@@ -51,12 +51,20 @@ p { margin: 0 0 1em; }
 .credito { display: flex; align-items: center; gap: .7rem; text-decoration: none; }
 .credito-txt { font-size: .72rem; color: #b6bddb; text-transform: uppercase; letter-spacing: .1em; }
 .lockup-branco { display: flex; align-items: center; gap: .65rem; }
-.lockup-branco img { height: 35px; width: auto; }
+.lockup-branco img { height: 30px; width: auto; }
 .lockup { display: flex; flex-direction: column; line-height: 1; }
 .lockup b { font: 800 1.15rem/1 var(--font-head); letter-spacing: .1em; color: #fff; }
 .lockup em { font: 500 .56rem/1 var(--font-head); letter-spacing: .36em; color: #fff; opacity: .85; margin-top: .25rem; font-style: normal; }
 .credito:hover .lockup-branco { opacity: .85; }
-@media (max-width: 640px) { .credito-txt { display: none; } }
+@media (max-width: 640px) {
+    .credito-txt { display: none; }
+    .masthead-in { flex-wrap: nowrap; align-items: flex-start; }
+    .credito { flex: none; margin-top: .15rem; }
+    .lockup-branco { gap: .4rem; }
+    .lockup-branco img { height: 20px; }
+    .lockup b { font-size: .72rem; }
+    .lockup em { font-size: .38rem; margin-top: .18rem; }
+}
 
 .tabnav { background: var(--navy-soft); position: sticky; top: 0; z-index: 40; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
 .tabnav-in { display: flex; gap: .15rem; overflow-x: auto; scrollbar-width: none; }
@@ -309,18 +317,6 @@ table.dados td.nome { text-align: left; } table.dados td.nome small { color: #6b
 .link-btn:hover { color: var(--gold-deep); }
 .search-hint + .search-hint { margin-top: .2rem; }
 #localMsg { color: var(--ink-soft); }
-.local-card { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem 1.4rem; background: var(--gold-pale); border: 1px solid #eadfb8; border-left: 4px solid var(--gold); border-radius: var(--radius); padding: .6rem 1rem; margin: 0 0 1rem; }
-.local-card[hidden] { display: none; }
-.local-id { display: flex; flex-direction: column; gap: .05rem; min-width: 0; flex: 1 1 14rem; }
-.local-rotulo { font: 700 .66rem var(--font-head); letter-spacing: .1em; text-transform: uppercase; color: var(--gold-deep); }
-.local-nome { font: 800 1.1rem/1.15 var(--font-head); color: var(--navy); }
-.local-aviso { color: var(--ink-soft); font-size: .76rem; }
-.local-num { display: flex; align-items: baseline; gap: .6rem; flex: 1 1 16rem; }
-.local-num b { font: 800 1.5rem/1 var(--font-head); font-variant-numeric: tabular-nums; }
-.local-num b.neg { color: var(--neg); } .local-num b.pos { color: var(--pos); }
-.local-num small { color: var(--ink-soft); font-size: .78rem; line-height: 1.35; }
-.local-acoes { display: flex; align-items: center; gap: .5rem 1rem; flex-wrap: wrap; }
-@media (max-width: 760px) { .local-num { flex-basis: 100%; } }
 
 /* ── abertura: o mapa vem primeiro, com a busca numa barra compacta ── */
 .painel-mapa { padding-top: 1.1rem; }
@@ -373,8 +369,6 @@ table.dados td.nome { text-align: left; } table.dados td.nome small { color: #6b
     .controles .toggle button { flex: 1; padding-inline: .4rem; }
     .titulo-mapa .panel-sub { display: none; }
     .titulo-mapa h3 { font-size: 1rem; margin-bottom: .5rem; }
-    .local-card { padding: .55rem .75rem; }
-    .local-aviso { display: none; }
 }
 
 /* ── ficha enxuta: barra fina, nome, uma faixa de números e o gráfico ── */
