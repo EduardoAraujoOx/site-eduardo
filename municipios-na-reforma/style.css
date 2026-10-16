@@ -635,3 +635,12 @@ table.dados.tab-hist tr.est td { color: var(--ink-soft); font-style: italic; }
 table.dados.tab-hist tr.media td { font-weight: 800; color: var(--navy); border-top: 2px solid var(--navy); }
 .detalhes details a[data-abrir] { white-space: nowrap; font-weight: 700; }
 @media (max-width: 560px) { .tab-hist { font-size: .84rem; } table.dados.tab-hist th { font-size: .62rem; letter-spacing: .03em; } table.dados.tab-hist th, table.dados.tab-hist td { padding-inline: .3rem; } }
+
+/* chamada da busca na abertura e setas nas linhas que abrem uma ficha */
+.busca-chamada { margin: 0 0 .55rem; font: 600 .95rem var(--font-body); color: var(--navy); }
+table.dados tr.clicavel td.nome::after { content: '\203A'; margin-left: .4rem; font-weight: 800; color: var(--gold-deep); }
+@media (max-width: 560px) { .table-wrap table.dados th, .table-wrap table.dados td { padding-inline: .45rem; } #tabPerdas, #tabGanhos, #tabUF { font-size: .86rem; } #tabPerdas th, #tabGanhos th, #tabUF th { white-space: normal; line-height: 1.2; vertical-align: bottom; padding-inline: .35rem; } #tabPerdas td, #tabGanhos td, #tabUF td { padding-inline: .35rem; } }
+.rail-row:not(.semdado) .vl::after { content: '\203A'; margin-left: .45rem; font-weight: 800; color: var(--gold-deep); }
+@media (max-width: 560px) { .busca-chamada { font-size: .9rem; } }
+@media (max-width: 560px) { .search-barra .busca-ir { font-size: .82rem; padding: .45rem .7rem; } }
+@media (max-width: 560px) { #tabPerdas td.nome, #tabGanhos td.nome { min-width: 5.2rem; } }
