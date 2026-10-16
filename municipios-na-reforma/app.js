@@ -766,7 +766,7 @@ function renderFicha(cod, base, m) {
                     <li>Reflexo no PPA, na LDO e na LOA</li>
                     <li>Plano de ação e capacitação da equipe</li></ul></div>
             </div>
-            <div class="ladder-fim"><div class="botoes" id="ctaFichaBotoes" style="margin:0"></div><small>Modelo e metodologia de Eduardo Araújo, economista (Corecon nº 1401).</small></div>
+            <div class="ladder-fim"><div class="botoes" id="ctaFichaBotoes" style="margin:0"></div><small>Modelo e metodologia da Vertex Advisory.</small></div>
         </div>
         <p class="print-credito">Municípios na Reforma, iniciativa da Vertex Advisory · municipiosnareforma.com.br${CONFIG.email ? ' · ' + CONFIG.email : ''}</p>`;
 
