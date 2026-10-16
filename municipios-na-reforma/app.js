@@ -125,6 +125,13 @@ document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', (
 }));
 document.querySelectorAll('[data-ir]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); mostrarVisao(a.dataset.ir); }));
 document.querySelectorAll('[data-ancora]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const el = $(a.dataset.ancora); if (el) el.scrollIntoView({behavior: 'smooth', block: 'start'}); }));
+document.addEventListener('click', e => {   // link que abre um item recolhido da ficha e rola até ele
+    const a = e.target.closest('[data-abrir]'); if (!a) return;
+    e.preventDefault();
+    const d = $(a.dataset.abrir); if (!d) return;
+    d.open = true;
+    d.scrollIntoView({behavior: 'smooth', block: 'start'});
+});
 document.addEventListener('click', e => {   // link de texto que age como a aba (e, se pedido, rola até a seção)
     const a = e.target.closest('[data-tab]'); if (!a) return;
     e.preventDefault();
@@ -654,7 +661,7 @@ function municipiosDaUF(uf) {
 function coefTilesHtml(m) {
     return `<div class="coef-grid">
         <div class="coef"><span>Participação neutra, 2025</span><b>${fmtPctPlain(m.coef_neutro_pct)}</b><small>A fatia deste ente hoje, sem a reforma: o ponto de partida da comparação.</small></div>
-        <div class="coef"><span>Coeficiente histórico (φ<sup>CPT</sup>)</span><b>${fmtPctPlain(m.coef_cpt_pct)}</b><small>Média de 8 anos (2019–2026, com 2026 estimado) da receita de referência. É o critério que ainda pesa mais até 2033.</small></div>
+        <div class="coef"><span>Coeficiente histórico (φ<sup>CPT</sup>)</span><b>${fmtPctPlain(m.coef_cpt_pct)}</b><small>Média de 8 anos (2019–2026, com 2026 estimado) de ISS e cota-parte do ICMS do próprio ente. É o critério que ainda pesa mais até 2033. <a href="#" data-abrir="detHist">Ver a receita usada →</a></small></div>
         <div class="coef"><span>Coeficiente de destino (φ<sup>dest</sup>)</span><b>${fmtPctPlain(m.coef_pleno_pct)}</b><small>Baseado em consumo (renda × POF) e compras públicas. Pesa cerca de 10% em 2033; por inteiro, só em 2078.</small></div>
     </div>`;
 }
@@ -677,9 +684,23 @@ function seguroCardHtml(repasse, posByYear) {
         <div class="seguro-note">Repasse bruto em 2033${share != null ? ' (' + share.toLocaleString('pt-BR', {maximumFractionDigits: 1}) + '% da receita projetada do município naquele ano)' : ''}. Série: ${anos}. Veja a memória de cálculo para o nível de nivelamento de cada ano.</div></div>`;
 }
 
-function historicoTableHtml(historico) {
-    const rows = ANOS_HIST.map(a => { const h = historico ? historico[a] : null; return `<tr><td>${a}</td><td class="num">${h ? fmtMoney(h.total_reais_2025) : '—'}</td></tr>`; }).join('');
-    return `<table class="dados" style="font-size:.88rem"><thead><tr><th>Ano</th><th class="num">Receita (R$ de 2025)</th></tr></thead><tbody>${rows}</tbody></table>`;
+function historicoTableHtml(historico, est26) {
+    // Valores sem "R$" em cada célula, na unidade que cabe ao porte do município (milhões ou milhares), para as quatro colunas caberem no celular.
+    const todos = ANOS_HIST.map(a => historico && historico[a]).concat([est26]).filter(Boolean);
+    const maior = Math.max(0, ...todos.map(h => h.total_reais_2025 || 0));
+    const mi = maior >= 5e6, div = mi ? 1e6 : 1e3, dec = mi ? 1 : 0;
+    const f = v => (v / div).toLocaleString('pt-BR', {minimumFractionDigits: dec, maximumFractionDigits: dec});
+    let soma = {iss: 0, cota: 0}, faltou = false;
+    const linha = (rot, h, cls) => {
+        if (h) { soma.iss += h.iss_reais_2025 || 0; soma.cota += h.cota_parte_reais_2025 || 0; } else faltou = true;
+        const c = k => `<td class="num">${h ? f(h[k]) : '—'}</td>`;
+        return `<tr${cls ? ' class="' + cls + '"' : ''}><td>${rot}</td>${c('iss_reais_2025')}${c('cota_parte_reais_2025')}${c('total_reais_2025')}</tr>`;
+    };
+    const rows = ANOS_HIST.map(a => linha(a, historico ? historico[a] : null)).join('') + linha('2026 (est.)', est26, 'est');
+    const n = ANOS_HIST.length + 1;
+    return `<div class="table-wrap"><table class="dados tab-hist"><thead><tr><th>Ano</th><th class="num">ISS</th><th class="num">Cota-parte do ICMS</th><th class="num">Total</th></tr></thead><tbody>${rows}
+        <tr class="media"><td>Média 2019–2026</td><td class="num">${f(soma.iss / n)}</td><td class="num">${f(soma.cota / n)}</td><td class="num">${f((soma.iss + soma.cota) / n)}</td></tr></tbody></table></div>
+        <p class="nota">Valores em R$ ${mi ? 'milhões' : 'mil'} de 2025.${faltou ? ' Ano sem dado entra como zero na média.' : ''}</p>`;
 }
 
 function renderFicha(cod, base, m) {
@@ -706,11 +727,6 @@ function renderFicha(cod, base, m) {
     const frase = neutra
         ? `Em 2033, a receita de <b>${nomeSeg}</b> fica praticamente igual à que teria sem a reforma.`
         : `Em 2033, <b>${nomeSeg}</b> deve arrecadar <b>${fmtMoney(Math.abs(dif33))} ${lado} por ano</b> do que arrecadaria sem a reforma.`;
-    const leitura = neutra
-        ? 'Receita estável não é receita garantida: a projeção precisa ser acompanhada.'
-        : v33 < 0
-        ? 'Uma perda estimada não é destino: depende de decisões de orçamento, de arrecadação própria e de legislação local.'
-        : 'Um ganho estimado também exige planejamento: o consumo e as compras públicas que o sustentam variam.';
 
     const linhas = ANOS.map(a => {
         const v = m.variacao_por_ano[a], d = m.pos_por_ano[a] - m.contrafactual_por_ano[a];
@@ -748,15 +764,16 @@ function renderFicha(cod, base, m) {
         </div>
         <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Receita realizada até 2025 e projetada de 2029 a 2033, com e sem a reforma, em R$ de 2025.</p>
             <div class="canvas-box canvas-serie"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano, em Detalhes do cálculo."></canvas></div>
-            <p class="leitura">${leitura}</p></div>
+</div>
         <div class="panel accent">
-            <div class="panel-head"><div><h3>De onde vem a receita</h3><p class="panel-sub">Quanto ainda vem do ICMS e do ISS e quanto já vem do IBS, de 2029 a 2033.</p></div>
+            <div class="panel-head"><div><h3>De onde vem a receita</h3><p class="panel-sub">Quanto ainda vem do ISS e da cota-parte do ICMS e quanto já vem do IBS, de 2029 a 2033.</p></div>
                 <div class="comp-controles">
                     <div class="toggle" id="compModo" role="group" aria-label="Unidade"><button type="button" data-modo="pct" class="active">%</button><button type="button" data-modo="rs">R$</button></div>
                     <div class="toggle" id="compViz" role="group" aria-label="Forma"><button type="button" data-viz="grafico" class="active">Gráfico</button><button type="button" data-viz="tabela">Tabela</button></div>
                 </div></div>
-            <div class="canvas-box" id="compBox"><canvas id="gComp" role="img" aria-label="Gráfico de barras empilhadas com a composição da receita projetada de 2029 a 2033: ICMS e ISS residuais, IBS pelo critério histórico, IBS por destino e Seguro-Receita. Os mesmos valores estão na aba Tabela."></canvas></div>
+            <div class="canvas-box" id="compBox"><canvas id="gComp" role="img" aria-label="Gráfico de barras empilhadas com a composição da receita projetada de 2029 a 2033: ISS e cota-parte do ICMS residuais, IBS pelo critério histórico, IBS por destino e Seguro-Receita. Os mesmos valores estão na aba Tabela."></canvas></div>
             <div class="table-wrap" id="compTabela" hidden></div>
+            <p class="nota nota-grafico">* Inclui a cota-parte dos municípios: na parte histórica, a cota-parte do ICMS que o município já recebia; no destino, os 25% do IBS do estado repassados às prefeituras. <a href="#" data-tab="metodologia" data-depois="met-3">Entenda →</a></p>
         </div>
         <div class="panel accent" id="painelSens" hidden>
             <h3>Quanto este resultado depende das hipóteses?</h3>
@@ -782,12 +799,12 @@ function renderFicha(cod, base, m) {
             <h3 class="detalhes-tit">Detalhes do cálculo</h3>
             <details><summary>Ano a ano, 2029–2033</summary>
                 <div class="table-wrap"><table class="dados"><thead><tr><th>Ano</th><th>Sem a reforma</th><th>Com a reforma</th><th>Diferença</th><th>Variação</th></tr></thead><tbody>${linhas}</tbody></table></div></details>
-            <details><summary>Coeficientes de participação</summary>
+            <details id="detCoef"><summary>Coeficientes de participação</summary>
                 <p class="panel-sub">Os critérios que, ponderados pelo cronograma do ADCT, definem a fatia deste município no IBS.</p>${coefTilesHtml(m)}</details>
             <details><summary>Seguro-Receita</summary>
                 <p class="panel-sub">Repasse compensatório para entes cuja receita pelo critério de destino fica abaixo do nível de nivelamento.</p>${seguroCardHtml(m.repasse_seguro_receita_por_ano, m.pos_por_ano)}</details>
-            <details><summary>Receita histórica usada no cálculo</summary>
-                <p class="panel-sub">Receita real declarada ao SICONFI, deflacionada a R$ de 2025.</p>${historicoTableHtml(m.historico_por_ano)}</details>
+            <details id="detHist"><summary>Receita histórica: ISS e cota-parte do ICMS</summary>
+                <p class="panel-sub">São as receitas do próprio município usadas no cálculo: o ISS que ele arrecada e a cota-parte do ICMS que recebe do estado (SICONFI, DCA). A média dos oito anos, com 2026 estimado, é a base do coeficiente histórico. <a href="#" data-abrir="detCoef">Ver o coeficiente histórico →</a></p>${historicoTableHtml(m.historico_por_ano, m.estimativa_2026)}</details>
             <button type="button" class="memo-link" id="btnMemoria">Ver a memória de cálculo deste município →</button>
         </div>
         <p class="print-credito">Municípios na Reforma, iniciativa da Vertex Advisory · municipiosnareforma.com.br${CONFIG.email ? ' · ' + CONFIG.email : ''}</p>`;
@@ -931,7 +948,7 @@ function desenharSens() {
     });
 }
 
-const COMP_ROTULOS = [['origem', 'ISS e ICMS residuais', '#858384'], ['cpt', 'IBS pelo critério histórico', '#1f2a55'], ['destino', 'IBS por destino', '#cfad56'], ['seguro', 'Seguro-Receita', '#2f7f7a']];
+const COMP_ROTULOS = [['origem', 'ISS e cota-parte do ICMS residuais', '#858384'], ['cpt', 'IBS pelo critério histórico*', '#1f2a55'], ['destino', 'IBS por destino*', '#cfad56'], ['seguro', 'Seguro-Receita', '#2f7f7a']];
 
 function desenharGraficos(m) {
     const tabelaComp = pct => {

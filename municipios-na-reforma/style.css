@@ -624,3 +624,14 @@ html, body { overflow-x: clip; }
 .sens-slider span { font: 700 .9rem var(--font-body); min-width: 3.4rem; }
 @media (pointer: coarse) { .sens-chip { min-height: 40px; } }
 @media print { .sens-ajuste > :not(summary) { display: block !important; } }
+
+/* receita histórica (ISS e cota-parte do ICMS) */
+.tab-hist { font-size: .88rem; }
+table.dados.tab-hist td { white-space: nowrap; }
+table.dados.tab-hist td:first-child { white-space: normal; }
+.tab-hist + p, .table-wrap + .nota { margin-top: .5rem; }
+table.dados.tab-hist th { white-space: normal; line-height: 1.25; vertical-align: bottom; }
+table.dados.tab-hist tr.est td { color: var(--ink-soft); font-style: italic; }
+table.dados.tab-hist tr.media td { font-weight: 800; color: var(--navy); border-top: 2px solid var(--navy); }
+.detalhes details a[data-abrir] { white-space: nowrap; font-weight: 700; }
+@media (max-width: 560px) { .tab-hist { font-size: .84rem; } table.dados.tab-hist th { font-size: .62rem; letter-spacing: .03em; } table.dados.tab-hist th, table.dados.tab-hist td { padding-inline: .3rem; } }
