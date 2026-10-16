@@ -38,6 +38,11 @@ brc = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(brc)
 
 
+# Nomes oficiais do IBGE onde diferem do nome declarado ao SICONFI (data/nomes-ibge-municipios.json): o painel mostra o
+# oficial e guarda o anterior ("an", só no índice) para que a busca continue achando quem procura pelo nome antigo.
+NOMES_IBGE = json.load(open(Path(__file__).resolve().parent / "nomes-ibge-municipios.json", encoding="utf-8"))["municipios"]
+
+
 def main():
     ref_data = fold(brc.load("reforma-tributaria.json"))
     coef_uf = brc.load("coeficientes-uf.json")
@@ -177,7 +182,7 @@ def main():
             }
 
         municipios[cod] = {
-            "nome": cm["nome"],
+            "nome": NOMES_IBGE.get(cod, {}).get("nome", cm["nome"]),
             "uf": uf,
             "cobertura_anos": cm.get("cobertura_anos", 0),
             "neutro_aproximado": neutro_aproximado,
@@ -254,6 +259,7 @@ def main():
         cod: {
             "nome": m["nome"],
             "uf": m["uf"],
+            **({"an": NOMES_IBGE[cod]["antigo"]} if cod in NOMES_IBGE else {}),
             # Cinco casas dão precisão de 0,001 ponto percentual, bem além do
             # que o mapa pinta e do que a tela mostra. A ficha continua lendo
             # o valor cheio do fragmento da UF.
