@@ -31,7 +31,7 @@ const CLASSES = [
     {ate: 30, cor: '#4a8ce0', rotulo: '+15% a +30%'},
     {ate: Infinity, cor: '#1c5cab', rotulo: '+30% ou mais'}
 ];
-const COR_RESSALVA = '#b9bec2', COR_SEM_ESFERA = '#e8ecef', ROTULO_RESSALVA = 'Sem dado confiável';
+const COR_RESSALVA = '#b9bec2', COR_SEM_ESFERA = '#e8ecef', ROTULO_RESSALVA = 'Sem base de 2025';
 /* Estados: escala contínua divergente, vermelho ↔ cinza ↔ azul, centrada em zero. */
 const COR_NEG = '#a02525', COR_MEIO = '#f0efec', COR_POS = '#1c5cab';
 
@@ -205,7 +205,7 @@ function renderCabecalhoMapa() {
         $('tituloMapa').textContent = 'Variação da receita municipal por estado em 2033';
         $('subMapa').textContent = 'Receita das prefeituras de cada estado (ISS mais cota-parte do ICMS), somada, contra o cenário sem a reforma. Clique num estado para ver os municípios.';
     } else {
-        $('tituloMapa').textContent = ESCOPO === 'BR' ? 'Variação da receita municipal em 2033' : 'Variação da receita municipal em 2033, ' + NOMES_UF[ESCOPO];
+        $('tituloMapa').textContent = ESCOPO === 'BR' ? 'Variação da receita municipal em 2033' : 'Variação da receita municipal em 2033, ' + emUF(ESCOPO);
         $('subMapa').textContent = 'Cada município colorido pela variação da própria receita contra o cenário sem a reforma. Clique para abrir a ficha, ou busque pelo nome.';
     }
 }
@@ -234,18 +234,16 @@ function linhasUF() {
     }).sort((a, b) => (b.v != null && a.v != null) ? b.v - a.v : (b.perdem / b.n) - (a.perdem / a.n));
 }
 
-/* Contagens: o total é o de municípios do estado; "com dado confiável" é o subconjunto que entra nas posições e na contagem de quem perde. */
+/* Contagens: o total é o de municípios do estado; as posições e a contagem de quem perde usam os que têm base de 2025 (ver a metodologia). */
 const totalUF = uf => LISTA.filter(m => m.uf === uf).length;
 function txtPerdem(l) {
-    const sem = l.total - l.n;
-    return sem > 0 ? `${fmtInt(l.perdem)} de ${fmtInt(l.n)} perdem (${fmtInt(l.total)} prefeituras; ${fmtInt(sem)} sem dado confiável)`
-        : `${fmtInt(l.perdem)} de ${fmtInt(l.n)} prefeituras perdem`;
+    return `${fmtInt(l.perdem)} de ${fmtInt(l.n)} prefeituras perdem`;
 }
 
 function renderTabelaMapa() {
     const alvo = $('mapaTabela');
     if (nivelAtual() === 'uf') {
-        alvo.innerHTML = `<table class="dados"><thead><tr><th>Estado</th><th>Prefeituras</th><th>Perdem, entre as com dado confiável</th><th>Variação agregada</th></tr></thead><tbody>`
+        alvo.innerHTML = `<table class="dados"><thead><tr><th>Estado</th><th>Prefeituras</th><th>Perdem em 2033</th><th>Variação agregada</th></tr></thead><tbody>`
             + linhasUF().map(l => `<tr class="clicavel" data-uf="${l.uf}"><td class="nome">${NOMES_UF[l.uf]}</td><td>${fmtInt(l.total)}</td><td>${fmtInt(l.perdem)} de ${fmtInt(l.n)} (${fmtPctSimples(l.perdem / l.n)})</td><td class="${clsSinal(l.v)}">${fmtPct(l.v)}</td></tr>`).join('') + '</tbody></table>';
         alvo.querySelectorAll('tr[data-uf]').forEach(tr => tr.addEventListener('click', () => definirEscopo(tr.dataset.uf, 'muni')));
         return;
@@ -272,11 +270,10 @@ function renderTrilho() {
         head.innerHTML = `<button type="button" id="voltaBR">← Brasil</button>${esc(NOMES_UF[ESCOPO])}: municípios, do maior ganho à maior perda`;
         $('voltaBR').addEventListener('click', () => definirEscopo('BR', 'uf'));
         const ok = noEscopo().filter(m => !m.r).sort((a, b) => b.v - a.v);
-        const sem = noEscopo().filter(m => m.r).sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
-        const linha = (m, i) => `<button type="button" class="rail-row${m.r ? ' semdado' : ''}" data-cod="${m.cod}">
-            <span class="rk">${m.r ? '' : i + 1}</span><span class="nm">${esc(m.nome)}${m.r ? '<small>sem dado confiável</small>' : ''}</span>
-            <span class="vl ${m.r ? '' : clsSinal(m.v)}">${m.r ? '—' : fmtPct(m.v)}</span>${m.r ? '' : `<i class="bar ${clsSinal(m.v)}" style="width:${Math.max(2, Math.min(Math.abs(m.v) / 0.6, 1) * 62)}%"></i>`}</button>`;
-        lista.innerHTML = ok.map(linha).join('') + sem.map(linha).join('');
+        const linha = (m, i) => `<button type="button" class="rail-row" data-cod="${m.cod}">
+            <span class="rk">${i + 1}</span><span class="nm">${esc(m.nome)}</span>
+            <span class="vl ${clsSinal(m.v)}">${fmtPct(m.v)}</span><i class="bar ${clsSinal(m.v)}" style="width:${Math.max(2, Math.min(Math.abs(m.v) / 0.6, 1) * 62)}%"></i></button>`;
+        lista.innerHTML = ok.map(linha).join('');
         lista.scrollTop = 0;
         lista.querySelectorAll('[data-cod]').forEach(b => b.addEventListener('click', () => { track('trilho_municipio', {municipio: POR_COD[b.dataset.cod].nome}); abrirMunicipio(b.dataset.cod); }));
     }
@@ -286,7 +283,7 @@ function renderContexto() {
     const escopo = noEscopo(), ok = escopo.filter(m => !m.r), perdem = ok.filter(m => m.v < 0).length;
     const ord = ok.map(m => m.v).sort((a, b) => a - b);
     const mediana = ord.length % 2 ? ord[(ord.length - 1) / 2] : (ord[ord.length / 2 - 1] + ord[ord.length / 2]) / 2;
-    const nome = ESCOPO === 'BR' ? 'No Brasil' : 'Em ' + NOMES_UF[ESCOPO];
+    const nome = ESCOPO === 'BR' ? 'No Brasil' : emUF(ESCOPO).replace(/^./, c => c.toUpperCase());
     const partes = [];
     if (ESCOPO === 'BR' && NAC && NAC.historico && NAC.projecao) {
         const h = NAC.historico[NAC.historico.length - 1], p = NAC.projecao[NAC.projecao.length - 1];
@@ -295,9 +292,9 @@ function renderContexto() {
             `<span>IBS já por destino em 2033: <b>${fmtPctPlain(p.ibs_destino_liquido / p.ibs_bruto * 100, 0)}</b> (pleno só em 2078)</span>`);
     }
     partes.push(`<span>${nome}: <b>${fmtInt(escopo.length)}</b> municípios analisados</span>`,
-        `<span><b class="neg">${fmtInt(perdem)}</b> de ${fmtInt(ok.length)} com dados confiáveis (<b>${fmtPctSimples(perdem / ok.length)}</b>) arrecadam menos em 2033 do que arrecadariam sem a reforma</span>`,
+        `<span><b class="neg">${fmtInt(perdem)}</b> de ${fmtInt(ok.length)} municípios (<b>${fmtPctSimples(perdem / ok.length)}</b>) arrecadam menos em 2033 do que arrecadariam sem a reforma</span>`,
         `<span>Variação mediana: <b class="${clsSinal(mediana)}">${fmtPct(mediana)}</b></span>`);
-    if (ESCOPO !== 'BR' && AGG[ESCOPO] != null) partes.push(`<span>Receita municipal agregada de ${esc(NOMES_UF[ESCOPO])}: <b class="${clsSinal(AGG[ESCOPO])}">${fmtPct(AGG[ESCOPO])}</b></span>`);
+    if (ESCOPO !== 'BR' && AGG[ESCOPO] != null) partes.push(`<span>Receita municipal agregada ${esc(DE_UF[ESCOPO])}: <b class="${clsSinal(AGG[ESCOPO])}">${fmtPct(AGG[ESCOPO])}</b></span>`);
     $('contexto').innerHTML = partes.join('');
 }
 
@@ -331,7 +328,7 @@ function selecionarRankUF(uf) {
 async function renderRankUF() {
     const uf = ufDoRanking();
     $('rankUF').value = uf || '';
-    $('rankTitulo').textContent = uf ? 'Comparar municípios em 2033, ' + NOMES_UF[uf] : 'Comparar municípios em 2033';
+    $('rankTitulo').textContent = uf ? 'Comparar municípios em 2033, ' + emUF(uf) : 'Comparar municípios em 2033';
     $('rankVazio').hidden = !!uf; $('rankBloco').hidden = !uf; $('rankResumo').hidden = !uf;
     if (!uf) return;
     let munis;
@@ -351,13 +348,13 @@ async function renderRankUF() {
     const ord = confiaveis.map(m => m.v).sort((x, y) => x - y);
     const mediana = ord.length ? (ord.length % 2 ? ord[(ord.length - 1) / 2] : (ord[ord.length / 2 - 1] + ord[ord.length / 2]) / 2) : null;
     $('rankResumo').innerHTML = [
-        `<span><b>${fmtInt(noEstado.length)}</b> municípios em ${esc(NOMES_UF[uf])}</span>`,
-        `<span><b class="neg">${fmtInt(perdem)}</b> de ${fmtInt(confiaveis.length)} com dados confiáveis (<b>${fmtPctSimples(perdem / Math.max(confiaveis.length, 1))}</b>) arrecadam menos em 2033</span>`,
+        `<span><b>${fmtInt(noEstado.length)}</b> municípios ${esc(emUF(uf))}</span>`,
+        `<span><b class="neg">${fmtInt(perdem)}</b> de ${fmtInt(confiaveis.length)} municípios (<b>${fmtPctSimples(perdem / Math.max(confiaveis.length, 1))}</b>) arrecadam menos em 2033</span>`,
         mediana != null ? `<span>Variação mediana: <b class="${clsSinal(mediana)}">${fmtPct(mediana)}</b></span>` : '',
         AGG[uf] != null ? `<span>Receita municipal agregada: <b class="${clsSinal(AGG[uf])}">${fmtPct(AGG[uf])}</b></span>` : ''
     ].join('');
 
-    const crit = (RANK_PEQ ? 'Municípios com ao menos 5 anos de dados e sem ressalva de qualidade' : 'Municípios com ao menos 10 mil habitantes, 5 anos de dados e sem ressalva de qualidade')
+    const crit = (RANK_PEQ ? 'Municípios com ao menos 5 anos de dados e base de 2025' : 'Municípios com ao menos 10 mil habitantes, 5 anos de dados e base de 2025')
         + `, ordenados por ${RANK_ORDEM === 'rs' ? 'diferença em reais por ano' : 'variação percentual'}. ${fmtInt(base.length)} de ${fmtInt(todos.length)} entram no ranking.`;
     $('rankCritPerdas').textContent = crit; $('rankCritGanhos').textContent = 'Mesmos critérios, do maior ganho para baixo.';
 
@@ -377,6 +374,7 @@ async function renderRankUF() {
 
 /* ── busca (padrão combobox), reaproveitada nas abas ── */
 /* Município que o campo de busca da visão geral já traz escrito: o que está aberto na ficha ou o localizado. */
+const emUF = uf => DE_UF[uf].replace(/^do /, 'no ').replace(/^da /, 'na ').replace(/^de /, 'em ');
 const DE_UF = {AC:'do Acre',AL:'de Alagoas',AM:'do Amazonas',AP:'do Amapá',BA:'da Bahia',CE:'do Ceará',DF:'do Distrito Federal',ES:'do Espírito Santo',GO:'de Goiás',MA:'do Maranhão',MG:'de Minas Gerais',MS:'de Mato Grosso do Sul',MT:'de Mato Grosso',PA:'do Pará',PB:'da Paraíba',PE:'de Pernambuco',PI:'do Piauí',PR:'do Paraná',RJ:'do Rio de Janeiro',RN:'do Rio Grande do Norte',RO:'de Rondônia',RR:'de Roraima',RS:'do Rio Grande do Sul',SC:'de Santa Catarina',SE:'de Sergipe',SP:'de São Paulo',TO:'do Tocantins'};
 const rotuloMuni = cod => POR_COD[cod].nome + ' (' + POR_COD[cod].uf + ')';
 function codDoCampo(v) {
@@ -450,13 +448,13 @@ function calcularRanks() {
 }
 
 function tipMunicipio(m) {
-    if (m.r) return `<b>${esc(m.nome)} · ${m.uf}</b><small>Sem dado confiável: a participação de 2025 tem ressalva na fonte.</small><em>Clique para ver a ficha →</em>`;
+    if (m.r) return `<b>${esc(m.nome)} · ${m.uf}</b><small>Sem estimativa: não há base de 2025 utilizável (ver a metodologia).</small><em>Clique para ver a ficha →</em>`;
     const d = DADOS_UF[m.uf] && DADOS_UF[m.uf][m.cod];
     const dif = d ? d.pos_por_ano['2033'] - d.contrafactual_por_ano['2033'] : null;
     const rk = RANK[m.cod];
     return `<b>${esc(m.nome)} · ${m.uf}</b><span class="v ${clsSinal(m.v)}">${fmtPct(m.v)}</span><small>da receita em 2033, contra o cenário sem a reforma</small>`
         + (d ? `<small>${fmtMoney(Math.abs(dif))} por ano ${dif < 0 ? 'a menos' : 'a mais'} · ${fmtInt(d.pop_media)} habitantes</small>` : '')
-        + (rk ? `<small>${fmtInt(rk.pos)}º entre ${fmtInt(rk.n)} municípios de ${m.uf} com dado confiável${totalUF(m.uf) > rk.n ? ' (de ' + fmtInt(totalUF(m.uf)) + ')' : ''}</small>` : '')
+        + (rk ? `<small>${fmtInt(rk.pos)}º entre ${fmtInt(rk.n)} municípios de ${m.uf} com base de 2025${totalUF(m.uf) > rk.n ? ' (de ' + fmtInt(totalUF(m.uf)) + ')' : ''}</small>` : '')
         + '<em>Clique para ver a ficha →</em>';
 }
 
@@ -744,8 +742,8 @@ function renderFicha(cod, base, m) {
     const posicao = m.neutro_aproximado || m.neutro_suspeito
         ? '<p class="nota">Posição nos rankings indisponível para municípios com ressalva de dados.</p>'
         : `<div class="pos-grid">
-            <div class="pos-item"><b>${fmtInt(posUF)}º</b><span>entre ${fmtInt(naUF.length)} municípios ${DE_UF[base.uf]} com dado confiável${totalUF(base.uf) > naUF.length ? ' (de ' + fmtInt(totalUF(base.uf)) + ')' : ''}</span></div>
-            <div class="pos-item"><b>${fmtInt(posBR)}º</b><span>entre ${fmtInt(ok.length)} municípios do Brasil com dado confiável${LISTA.length > ok.length ? ' (de ' + fmtInt(LISTA.length) + ')' : ''}</span></div>
+            <div class="pos-item"><b>${fmtInt(posUF)}º</b><span>entre ${fmtInt(naUF.length)} municípios ${DE_UF[base.uf]} com base de 2025${totalUF(base.uf) > naUF.length ? ' (de ' + fmtInt(totalUF(base.uf)) + ')' : ''}</span></div>
+            <div class="pos-item"><b>${fmtInt(posBR)}º</b><span>entre ${fmtInt(ok.length)} municípios do Brasil com base de 2025${LISTA.length > ok.length ? ' (de ' + fmtInt(LISTA.length) + ')' : ''}</span></div>
         </div><p class="nota">Do maior ganho (1º) à maior perda, na variação da receita em 2033.</p>`;
 
     $('fichaCorpo').innerHTML = `
