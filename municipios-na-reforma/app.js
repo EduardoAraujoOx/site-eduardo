@@ -148,7 +148,7 @@ Promise.all([
   .catch(e => { console.error(e); $('dicaBusca').textContent = 'Não foi possível carregar a base de municípios. Atualize a página em instantes.'; });
 
 function iniciar(idx, res, nac) {
-    LISTA = Object.entries(idx.municipios).map(([cod, m]) => ({cod, nome: m.nome, uf: m.uf, v: m.v, r: !!m.r, chave: norm(m.nome)}));
+    LISTA = Object.entries(idx.municipios).map(([cod, m]) => ({cod, nome: m.nome, uf: m.uf, v: m.v, r: !!m.r, chave: norm(m.nome), alt: m.an ? norm(m.an) : ''}));
     LISTA.forEach(m => { POR_COD[m.cod] = m; });
     RESULT = res; NAC = nac;
     calcularRanks();
@@ -403,9 +403,9 @@ function ativarBusca(inp, ul, form, aoEscolher, padrao) {
         sugestoes = LISTA
             .filter(m => !ufFiltro || m.uf === ufFiltro)
             .map(m => {
-                const alvo = m.chave + ' ' + m.uf.toLowerCase();
-                if (!comp.every(c => alvo.includes(c))) return null;
-                return {m, ordem: m.chave === q ? 0 : m.chave.startsWith(q) ? 1 : m.chave.split(' ').some(w => w.startsWith(comp[0])) ? 2 : 3};
+                const alvo = m.chave + ' ' + m.uf.toLowerCase(), alvoAlt = m.alt ? m.alt + ' ' + m.uf.toLowerCase() : '';      // o nome anterior (SICONFI) também acha o município
+                if (!comp.every(c => alvo.includes(c)) && !(alvoAlt && comp.every(c => alvoAlt.includes(c)))) return null;
+                return {m, ordem: m.chave === q ? 0 : m.chave.startsWith(q) ? 1 : m.chave.split(' ').some(w => w.startsWith(comp[0])) ? 2 : m.alt && (m.alt === q || m.alt.startsWith(q)) ? 2 : 3};
             })
             .filter(Boolean)
             .sort((a, b) => a.ordem - b.ordem || (b.m.uf === ufPreferida) - (a.m.uf === ufPreferida) || a.m.nome.localeCompare(b.m.nome, 'pt-BR'))
@@ -473,7 +473,7 @@ function definirUFVisitante(uf) {
 function iniciarLocalizacao() {
     const viaConexao = () => getJSON('/api/geo').then(g => {
         if (!g || g.country !== 'BR' || !g.city) return;
-        const alvo = norm(g.city), achados = LISTA.filter(m => m.uf === g.uf && m.chave === alvo);
+        const alvo = norm(g.city), achados = LISTA.filter(m => m.uf === g.uf && (m.chave === alvo || m.alt === alvo));
         if (NOMES_UF[g.uf]) definirUFVisitante(g.uf);
         if (achados.length === 1) sugerirLocal(achados[0].cod, 'conexao');
         else if (NOMES_UF[g.uf] && !ATUAL && ESCOPO === 'BR') definirEscopo(g.uf, 'muni');   // cidade não identificada: ao menos abre no estado
