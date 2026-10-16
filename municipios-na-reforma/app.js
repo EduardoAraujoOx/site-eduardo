@@ -692,16 +692,20 @@ function seguroCardHtml(repasse, posByYear) {
 
 /* Anos preenchidos fora da DCA (RREO anual ou estimativa a partir do ano anterior): uma frase que diz de onde veio cada componente. */
 function origemAnosTxt(historico) {
-    const como = {rreo: 'pelo RREO do ano', estimativa_ano_anterior: 'por estimativa a partir do ano anterior e do crescimento do estado'};
+    const como = {rreo: 'pelo RREO do ano', estimativa_serie: 'por estimativa pela série do município (anos vizinhos, com o crescimento do estado)'};
     const frases = [];
     ANOS_HIST.forEach(a => {
         const o = historico && historico[a] && historico[a].origem; if (!o) return;
         const porFonte = {};
-        [['ISS', o.iss], ['cota-parte', o.cota]].forEach(([nome, f]) => { if (f && f !== 'dca') (porFonte[f] = porFonte[f] || []).push(nome); });
+        [['ISS', o.iss, o.descartado && o.descartado.iss], ['cota-parte', o.cota, o.descartado && o.descartado.cota]].forEach(([nome, f, desc]) => {
+            if (f && f !== 'dca') (porFonte[f] = porFonte[f] || []).push(nome + (desc ? '*' : ''));
+        });
         const partes = Object.keys(porFonte).map(f => `${porFonte[f].join(' e ')} ${como[f]}`);
-        if (partes.length) frases.push(`${a}: ${partes.join('; ')} (a DCA do município não traz o dado)`);
+        if (partes.length) frases.push(`${a}: ${partes.join('; ')}`);
     });
-    return frases.length ? ' ' + frases.join('. ') + '.' : '';
+    if (!frases.length) return '';
+    const algumDesc = ANOS_HIST.some(a => historico[a] && historico[a].origem && historico[a].origem.descartado && (historico[a].origem.descartado.iss || historico[a].origem.descartado.cota));
+    return ' Anos preenchidos fora da DCA do município, que não traz o dado: ' + frases.join('. ') + '.' + (algumDesc ? ' * O valor da fonte oficial destoava da série do próprio município e foi descartado.' : '');
 }
 
 function historicoTableHtml(historico, est26) {

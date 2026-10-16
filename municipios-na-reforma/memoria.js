@@ -43,7 +43,7 @@ function memoHistoricoHtml(ctx){
     const seloOrigem = a => {
         const o = ctx.historico[String(a)] && ctx.historico[String(a)].origem; if (!o) return '';
         const f = [o.iss, o.cota].filter(x => x && x !== 'dca');
-        return f.length ? (f.every(x => x === 'rreo') ? ' (RREO)' : f.some(x => x === 'estimativa_ano_anterior') ? ' (est.)' : '') : '';
+        return f.length ? (f.every(x => x === 'rreo') ? ' (RREO)' : f.some(x => x === 'estimativa_serie') ? ' (est.)' : '') : '';
     };
     const rotuloAno = a => a === MEMO_NAC.ano_estimado_na_media ? a + (ctx.origem2026 === 'rreo' ? ' (RREO)' : ' (est.)') : a + seloOrigem(a);
     const totalBr = MEMO_NAC.total_br_2025;
