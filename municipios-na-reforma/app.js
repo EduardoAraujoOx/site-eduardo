@@ -323,7 +323,7 @@ function selecionarRankUF(uf) {
 async function renderRankUF() {
     const uf = ufDoRanking();
     $('rankUF').value = uf || '';
-    $('rankTitulo').textContent = uf ? 'Rankings de 2033, ' + NOMES_UF[uf] : 'Rankings de 2033';
+    $('rankTitulo').textContent = uf ? 'Comparar municípios em 2033, ' + NOMES_UF[uf] : 'Comparar municípios em 2033';
     $('rankVazio').hidden = !!uf; $('rankBloco').hidden = !uf; $('rankResumo').hidden = !uf;
     if (!uf) return;
     let munis;

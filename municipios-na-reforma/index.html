@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Municípios na Reforma | Painel da reforma tributária para prefeituras</title>
-<meta name="description" content="Para onde vai a arrecadação de cada município brasileiro na transição do ISS e do ICMS para o IBS: mapa, ficha de cada prefeitura, projeção 2029–2033 e rankings, com a metodologia aberta.">
+<meta name="description" content="Para onde vai a arrecadação de cada município brasileiro na transição do ISS e do ICMS para o IBS: mapa, ficha de cada prefeitura, projeção 2029–2033 e comparação entre municípios, com a metodologia aberta.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://municipiosnareforma.com.br/">
 <link rel="icon" type="image/png" sizes="48x48" href="images/favicon-48.png">
@@ -31,11 +31,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=23">
+<link rel="stylesheet" href="style.css?v=24">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
-<script src="memoria.js?v=23" defer></script>
-<script src="app.js?v=23" defer></script>
+<script src="memoria.js?v=24" defer></script>
+<script src="app.js?v=24" defer></script>
 </head>
 <body>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -59,7 +59,7 @@
     <div class="wrap tabnav-in">
         <button class="tab-btn active" data-view="visao-geral" type="button">Visão geral</button>
         <button class="tab-btn" data-view="municipio" type="button">Município</button>
-        <button class="tab-btn" data-view="rankings" type="button">Rankings</button>
+        <button class="tab-btn" data-view="rankings" type="button">Comparar</button>
         <div class="tab-mais" id="tabMaisBox">
             <button class="tab-mais-btn" id="tabMais" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="tabMaisLista">Mais <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
             <div class="tab-mais-lista" id="tabMaisLista">
@@ -77,13 +77,14 @@
 <section class="view active" id="view-visao-geral">
     <h2 class="sr-only">Visão geral: mapa da variação da receita municipal em 2033</h2>
     <div class="panel accent painel-mapa">
+        <p class="busca-chamada">Escolha a sua cidade e veja o efeito da reforma na receita dela.</p>
         <div class="mapa-barra">
             <form class="search search-barra" id="formBusca" role="search" autocomplete="off">
                 <label class="sr-only" for="busca">Nome do município</label>
                 <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
-                <input id="busca" type="text" inputmode="search" placeholder="Buscar município (ex.: Serra)" role="combobox" aria-expanded="false" aria-controls="sugestoes" aria-autocomplete="list" disabled>
+                <input id="busca" type="text" inputmode="search" placeholder="Sua cidade" role="combobox" aria-expanded="false" aria-controls="sugestoes" aria-autocomplete="list" disabled>
                 <ul class="suggest" id="sugestoes" role="listbox" aria-label="Municípios encontrados" hidden></ul>
-                <button type="submit" class="btn btn-gold btn-sm busca-ir" id="btnVerFicha">Ver ficha</button>
+                <button type="submit" class="btn btn-gold btn-sm busca-ir" id="btnVerFicha">Ver a minha cidade</button>
             </form>
             <div class="controles">
                 <label class="sr-only" for="mapaUF">Estado</label>
@@ -153,8 +154,8 @@
 <!-- ============ RANKINGS ============ -->
 <section class="view" id="view-rankings">
     <div class="view-head">
-        <h2 id="rankTitulo">Rankings de 2033</h2>
-        <p class="sub">Os municípios do estado que mais perdem e mais ganham receita em 2033, contra o cenário sem a reforma. Clique numa linha para abrir a ficha.</p>
+        <h2 id="rankTitulo">Comparar municípios em 2033</h2>
+        <p class="sub">Os municípios do estado que mais perdem e mais ganham receita em 2033, contra o cenário sem a reforma. Toque num município para abrir a ficha dele.</p>
     </div>
     <div class="rank-barra">
         <label class="sr-only" for="rankUF">Estado</label>
@@ -185,7 +186,7 @@
     </div>
     <div class="panel">
         <h3>Estados</h3>
-        <p class="panel-sub">Variação agregada da receita de todos os municípios do estado, do maior ganho à maior perda, e a parcela de prefeituras que perdem. Clique numa linha para ver o ranking do estado.</p>
+        <p class="panel-sub">Variação agregada da receita de todos os municípios do estado, do maior ganho à maior perda, e a parcela de prefeituras que perdem. Toque num estado para comparar os municípios dele.</p>
         <div class="table-wrap"><table class="dados" id="tabUF"><thead><tr><th>#</th><th class="nome">Estado</th><th>Municípios</th><th>Prefeituras que perdem</th><th>Variação agregada</th></tr></thead><tbody><tr><td colspan="5" class="vazio-td">Carregando…</td></tr></tbody></table></div>
     </div>
 </section>
