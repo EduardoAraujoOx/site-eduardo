@@ -1031,7 +1031,6 @@ function abrirContato(opcoes) {
 /* O botão "Pedir diagnóstico" da ficha chega aqui: município e variação já vão na mensagem. */
 function irParaContato(base, resumo) {
     mostrarVisao('vertex');
-    if (!CONTATO_ATIVO) return;
     if (base) {
         $('ctMunicipio').value = base.nome + ' (' + base.uf + ')';
         const msg = 'Olá! Escrevo da Prefeitura de ' + base.nome + '/' + base.uf + '. Vi no Municípios na Reforma que a variação estimada da receita em 2033 é ' + resumo + ', frente ao cenário sem a reforma, e gostaria de conversar sobre o diagnóstico da reforma tributária para o município.';
@@ -1040,10 +1039,7 @@ function irParaContato(base, resumo) {
     abrirContato({rolar: true, semFoco: false});
 }
 function mostrarFormularios() {
-    $('btnServico').hidden = !CONTATO_ATIVO;
-    $('servicoEmBreve').hidden = CONTATO_ATIVO || !!(CONFIG.whatsapp || CONFIG.email);
-    $('formLivro').hidden = !CONTATO_ATIVO;                  // o cadastro do livro já nasce aberto: sem clique extra
-    $('livroEmBreve').hidden = CONTATO_ATIVO;
+    $('livroEmBreve').hidden = true; $('servicoEmBreve').hidden = true;    // os formulários estão sempre abertos; sem o e-mail ativo, o envio sai pelo WhatsApp
 }
 
 function ligarFormulario(form, msgEl, tipo, aoEnviar) {
@@ -1058,6 +1054,20 @@ function ligarFormulario(form, msgEl, tipo, aoEnviar) {
         msgEl.dataset.erro = '1';
         if (erros.length) { msgEl.textContent = 'Confira os campos marcados.'; form.elements[erros[0]].focus(); return; }
         if (!form.elements.aceite_privacidade.checked) { msgEl.textContent = 'Para continuar, aceite a política de privacidade.'; form.elements.aceite_privacidade.focus(); return; }
+        if (!CONTATO_ATIVO && CONFIG.whatsapp) {                   // canal de e-mail ainda não ativo: a mensagem sai pelo WhatsApp, já escrita
+            const linhas = tipo === 'livro'
+                ? ['Olá! Quero receber o sumário e as informações de lançamento do livro "Modernização Tributária Municipal no Brasil".']
+                : ['Olá! ' + (d.mensagem || '').trim()];
+            linhas.push('Nome: ' + d.nome.trim(), 'E-mail: ' + d.email.trim());
+            if (d.telefone) linhas.push('Telefone: ' + d.telefone.trim());
+            if (d.cargo) linhas.push('Cargo: ' + d.cargo.trim());
+            if (d.municipio) linhas.push('Município ou órgão: ' + d.municipio.trim());
+            const url = 'https://wa.me/' + CONFIG.whatsapp + '?text=' + encodeURIComponent(linhas.join('\n'));
+            track(tipo === 'livro' ? 'livro_cadastro' : 'contato_enviado', {municipio: d.municipio || '', canal: 'whatsapp'});
+            window.open(url, '_blank', 'noopener');
+            form.innerHTML = '<p class="form-ok" role="status"><strong>Quase lá.</strong> Abrimos o WhatsApp com os seus dados já escritos: é só tocar em enviar. Se a conversa não abriu, <a href="' + url + '" target="_blank" rel="noopener">toque aqui para abri-la</a>.</p>';
+            return;
+        }
         const botao = form.querySelector('button[type=submit]');
         botao.disabled = true; msgEl.dataset.erro = '0'; msgEl.textContent = 'Enviando…';
         try {
