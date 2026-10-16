@@ -150,6 +150,8 @@ def main():
                 "cota_parte_reais_2025": cota_v * defl,
                 "total_reais_2025": (iss_v + cota_v) * defl,
             }
+            if det.get("origem"):    # preenchido por data/atualiza-dca-pendentes.py (RREO ou estimativa do ano anterior), não pela DCA do ano
+                historico_por_ano[ano]["origem"] = {"iss": det["origem"].get("valor"), "cota": det["origem"].get("cota_parte_icms")}
 
         # 2026 estimado (cpt2026.py): a cota-parte segue o fator da UF; o ISS repete 2025
         estimativa_2026 = None

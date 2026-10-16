@@ -39,7 +39,13 @@ function memoHistoricoHtml(ctx){
     // a média da lei é de 2019 a 2026: o ano estimado (2026) entra na tabela quando o painel o traz
     const anos = MEMO_NAC.anos_historicos.concat(MEMO_NAC.ano_estimado_na_media && ctx.historico[String(MEMO_NAC.ano_estimado_na_media)] ? [MEMO_NAC.ano_estimado_na_media] : []);
     const nAnosTxt = anos.length === 8 ? 'oito' : 'sete';
-    const rotuloAno = a => a === MEMO_NAC.ano_estimado_na_media ? a + (ctx.origem2026 === 'rreo' ? ' (RREO)' : ' (est.)') : a;
+    // anos preenchidos fora da DCA (RREO anual ou estimativa a partir do ano anterior) levam o selo da fonte
+    const seloOrigem = a => {
+        const o = ctx.historico[String(a)] && ctx.historico[String(a)].origem; if (!o) return '';
+        const f = [o.iss, o.cota].filter(x => x && x !== 'dca');
+        return f.length ? (f.every(x => x === 'rreo') ? ' (RREO)' : f.some(x => x === 'estimativa_ano_anterior') ? ' (est.)' : '') : '';
+    };
+    const rotuloAno = a => a === MEMO_NAC.ano_estimado_na_media ? a + (ctx.origem2026 === 'rreo' ? ' (RREO)' : ' (est.)') : a + seloOrigem(a);
     const totalBr = MEMO_NAC.total_br_2025;
     const serie = anos.map(a => ctx.historico[String(a)] || null);
     const valores = serie.map(h => h ? h[ctx.campoTotal] : null);

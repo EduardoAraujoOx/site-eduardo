@@ -690,6 +690,20 @@ function seguroCardHtml(repasse, posByYear) {
         <div class="seguro-note">Repasse bruto em 2033${share != null ? ' (' + share.toLocaleString('pt-BR', {maximumFractionDigits: 1}) + '% da receita projetada do município naquele ano)' : ''}. Série: ${anos}. Veja a memória de cálculo para o nível de nivelamento de cada ano.</div></div>`;
 }
 
+/* Anos preenchidos fora da DCA (RREO anual ou estimativa a partir do ano anterior): uma frase que diz de onde veio cada componente. */
+function origemAnosTxt(historico) {
+    const como = {rreo: 'pelo RREO do ano', estimativa_ano_anterior: 'por estimativa a partir do ano anterior e do crescimento do estado'};
+    const frases = [];
+    ANOS_HIST.forEach(a => {
+        const o = historico && historico[a] && historico[a].origem; if (!o) return;
+        const porFonte = {};
+        [['ISS', o.iss], ['cota-parte', o.cota]].forEach(([nome, f]) => { if (f && f !== 'dca') (porFonte[f] = porFonte[f] || []).push(nome); });
+        const partes = Object.keys(porFonte).map(f => `${porFonte[f].join(' e ')} ${como[f]}`);
+        if (partes.length) frases.push(`${a}: ${partes.join('; ')} (a DCA do município não traz o dado)`);
+    });
+    return frases.length ? ' ' + frases.join('. ') + '.' : '';
+}
+
 function historicoTableHtml(historico, est26) {
     // Valores sem "R$" em cada célula, na unidade que cabe ao porte do município (milhões ou milhares), para as quatro colunas caberem no celular.
     const todos = ANOS_HIST.map(a => historico && historico[a]).concat([est26]).filter(Boolean);
@@ -706,7 +720,7 @@ function historicoTableHtml(historico, est26) {
     const n = ANOS_HIST.length + 1;
     return `<div class="table-wrap"><table class="dados tab-hist"><thead><tr><th>Ano</th><th class="num">ISS</th><th class="num">Cota-parte do ICMS</th><th class="num">Total</th></tr></thead><tbody>${rows}
         <tr class="media"><td>Média 2019–2026</td><td class="num">${f(soma.iss / n)}</td><td class="num">${f(soma.cota / n)}</td><td class="num">${f((soma.iss + soma.cota) / n)}</td></tr></tbody></table></div>
-        <p class="nota">Valores em R$ ${mi ? 'milhões' : 'mil'} de 2025.${faltou ? ' Ano sem dado entra como zero na média.' : ''}${est26 ? (est26.origem === 'rreo' ? ' 2026: ISS observado no RREO de setembro de 2025 a agosto de 2026; cota-parte de 2025 ajustada pelo crescimento de janeiro a agosto, também do RREO.' : ' 2026: este município não publica o Anexo 3 do RREO; mantém a posição relativa de 2025 no estado.') : ''}</p>`;
+        <p class="nota">Valores em R$ ${mi ? 'milhões' : 'mil'} de 2025.${faltou ? ' Ano sem dado entra como zero na média.' : ''}${origemAnosTxt(historico)}${est26 ? (est26.origem === 'rreo' ? ' 2026: ISS observado no RREO de setembro de 2025 a agosto de 2026; cota-parte de 2025 ajustada pelo crescimento de janeiro a agosto, também do RREO.' : ' 2026: este município não publica o Anexo 3 do RREO; mantém a posição relativa de 2025 no estado.') : ''}</p>`;
 }
 
 function renderFicha(cod, base, m) {
