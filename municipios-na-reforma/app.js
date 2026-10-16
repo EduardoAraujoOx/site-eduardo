@@ -51,6 +51,11 @@ function fmtMoney(v) {
     if (a >= 1e3) return s + 'R$ ' + Math.round(a / 1e3).toLocaleString('pt-BR') + ' mil';
     return s + 'R$ ' + Math.round(a).toLocaleString('pt-BR');
 }
+/* Valores lado a lado (2025, 2033 sem e com a reforma): duas casas em bilhões, para que 1,96 e 2,04 não virem "2,0" e "2,0". */
+function fmtMoneyFino(v) {
+    if (v != null && isFinite(v) && Math.abs(v) >= 1e9) return (v < 0 ? '−' : '') + 'R$ ' + (Math.abs(v) / 1e9).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' bi';
+    return fmtMoney(v);
+}
 const fmtInt = v => Math.round(v).toLocaleString('pt-BR');
 const norm = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
 const $ = id => document.getElementById(id);
@@ -119,7 +124,12 @@ document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', (
 }));
 document.querySelectorAll('[data-ir]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); mostrarVisao(a.dataset.ir); }));
 document.querySelectorAll('[data-ancora]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const el = $(a.dataset.ancora); if (el) el.scrollIntoView({behavior: 'smooth', block: 'start'}); }));
-document.querySelectorAll('[data-tab]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const b = document.querySelector('.tab-btn[data-view="' + a.dataset.tab + '"]'); if (b) b.click(); }));   // link de texto que age como a aba
+document.addEventListener('click', e => {   // link de texto que age como a aba (e, se pedido, rola até a seção)
+    const a = e.target.closest('[data-tab]'); if (!a) return;
+    e.preventDefault();
+    const b = document.querySelector('.tab-btn[data-view="' + a.dataset.tab + '"]'); if (b) b.click();
+    if (a.dataset.depois) setTimeout(() => { const el = $(a.dataset.depois); if (el) el.scrollIntoView({behavior: 'smooth', block: 'start'}); }, 80);
+});
 
 /* ── carga ── */
 Promise.all([
@@ -351,6 +361,7 @@ async function renderRankUF() {
 
 /* ── busca (padrão combobox), reaproveitada nas abas ── */
 /* Município que o campo de busca da visão geral já traz escrito: o que está aberto na ficha ou o localizado. */
+const DE_UF = {AC:'do Acre',AL:'de Alagoas',AM:'do Amazonas',AP:'do Amapá',BA:'da Bahia',CE:'do Ceará',DF:'do Distrito Federal',ES:'do Espírito Santo',GO:'de Goiás',MA:'do Maranhão',MG:'de Minas Gerais',MS:'de Mato Grosso do Sul',MT:'de Mato Grosso',PA:'do Pará',PB:'da Paraíba',PE:'de Pernambuco',PI:'do Piauí',PR:'do Paraná',RJ:'do Rio de Janeiro',RN:'do Rio Grande do Norte',RO:'de Rondônia',RR:'de Roraima',RS:'do Rio Grande do Sul',SC:'de Santa Catarina',SE:'de Sergipe',SP:'de São Paulo',TO:'do Tocantins'};
 const rotuloMuni = cod => POR_COD[cod].nome + ' (' + POR_COD[cod].uf + ')';
 function codDoCampo(v) {
     const t = v.trim();
@@ -372,16 +383,16 @@ function ativarBusca(inp, ul, form, aoEscolher, padrao) {
         const ufFiltro = mUF && NOMES_UF[mUF[1].toUpperCase()] ? mUF[1].toUpperCase() : null;
         const q = norm(ufFiltro ? inp.value.replace(mUF[0], '') : inp.value);
         if (q.length < 2) { fechar(); return; }
-        const comp = q.split(/\s+/);
+        const comp = q.split(/\s+/), ufPreferida = ufFiltro || (ESCOPO !== 'BR' ? ESCOPO : UF_VISITANTE);   // entre homônimos, o do estado de quem busca vem primeiro
         sugestoes = LISTA
             .filter(m => !ufFiltro || m.uf === ufFiltro)
             .map(m => {
                 const alvo = m.chave + ' ' + m.uf.toLowerCase();
                 if (!comp.every(c => alvo.includes(c))) return null;
-                return {m, ordem: m.chave.startsWith(q) ? 0 : m.chave.split(' ').some(w => w.startsWith(comp[0])) ? 1 : 2};
+                return {m, ordem: m.chave === q ? 0 : m.chave.startsWith(q) ? 1 : m.chave.split(' ').some(w => w.startsWith(comp[0])) ? 2 : 3};
             })
             .filter(Boolean)
-            .sort((a, b) => a.ordem - b.ordem || a.m.nome.localeCompare(b.m.nome, 'pt-BR'))
+            .sort((a, b) => a.ordem - b.ordem || (b.m.uf === ufPreferida) - (a.m.uf === ufPreferida) || a.m.nome.localeCompare(b.m.nome, 'pt-BR'))
             .slice(0, 8).map(x => x.m);
         ul.innerHTML = sugestoes.length
             ? sugestoes.map((m, i) => `<li role="option" id="${ul.id}-${i}" data-cod="${m.cod}" aria-selected="false">${esc(m.nome)}<small>${m.uf}</small></li>`).join('')
@@ -672,6 +683,7 @@ function historicoTableHtml(historico) {
 
 function renderFicha(cod, base, m) {
     graficos.forEach(g => g.destroy()); graficos = [];
+    if (GSENS) { GSENS.destroy(); GSENS = null; }
     const ok = LISTA.filter(x => !x.r).sort((a, b) => b.v - a.v);
     const posBR = ok.findIndex(x => x.cod === cod) + 1;
     const naUF = ok.filter(x => x.uf === base.uf);
@@ -686,25 +698,36 @@ function renderFicha(cod, base, m) {
     else if (m.neutro_aproximado) aviso = '<strong>Estimativa aproximada.</strong> Este município não tem registro individualizado de ISS e cota-parte do ICMS para 2025 no SICONFI, e a participação de 2025 foi aproximada pela média de sete anos. Leia os números como ordem de grandeza.';
     else if (m.cobertura_anos < 5) aviso = '<strong>Série curta.</strong> Há apenas ' + m.cobertura_anos + ' anos de dados históricos para este município, abaixo do mínimo recomendado de 5. Os números são menos estáveis.';
 
-    const lado = v33 < -0.0005 ? 'a menos' : 'a mais';
-    const leitura = Math.abs(v33) > 0.0005
-        ? `Em 2033, a receita de ${esc(base.nome)} proveniente de ISS e cota-parte do ICMS (já substituídos pelo IBS) é estimada em <strong>${fmtMoney(pos33)}</strong>, contra <strong>${fmtMoney(cf33)}</strong> que a prefeitura teria sem a reforma: <strong>${fmtMoney(Math.abs(dif33))} por ano</strong> ${lado}.`
-        : `Em 2033, a receita de ${esc(base.nome)} é estimada em <strong>${fmtMoney(pos33)}</strong>, praticamente igual ao cenário sem a reforma.`;
-    const nota = v33 < -0.0005
-        ? 'Perda estimada não é destino: ela depende de decisões de orçamento, de arrecadação própria e de legislação local que ainda podem ser tomadas.'
-        : 'Ganho estimado também exige planejamento: a receita de destino depende de consumo e de compras públicas que variam, e a projeção precisa ser acompanhada.';
+    const neutra = Math.abs(v33) <= 0.0005;
+    const lado = v33 < 0 ? 'a menos' : 'a mais';
     const nomeSeg = esc(base.nome);
+    const selo = neutra ? 'Receita estável' : v33 < 0 ? 'Perda estimada' : 'Ganho estimado';
+    const frase = neutra
+        ? `Em 2033, a receita de <b>${nomeSeg}</b> fica praticamente igual à que teria sem a reforma.`
+        : `Em 2033, <b>${nomeSeg}</b> deve arrecadar <b>${fmtMoney(Math.abs(dif33))} ${lado} por ano</b> do que arrecadaria sem a reforma.`;
+    const leitura = neutra
+        ? 'Receita estável não é receita garantida: a projeção precisa ser acompanhada.'
+        : v33 < 0
+        ? 'Uma perda estimada não é destino: depende de decisões de orçamento, de arrecadação própria e de legislação local.'
+        : 'Um ganho estimado também exige planejamento: o consumo e as compras públicas que o sustentam variam.';
 
     const linhas = ANOS.map(a => {
         const v = m.variacao_por_ano[a], d = m.pos_por_ano[a] - m.contrafactual_por_ano[a];
-        return `<tr><td>${a}</td><td>${fmtMoney(m.contrafactual_por_ano[a])}</td><td>${fmtMoney(m.pos_por_ano[a])}</td><td class="${clsSinal(v)}">${fmtMoney(d)}</td><td class="${clsSinal(v)}">${fmtPct(v)}</td></tr>`;
+        return `<tr><td>${a}</td><td>${fmtMoneyFino(m.contrafactual_por_ano[a])}</td><td>${fmtMoneyFino(m.pos_por_ano[a])}</td><td class="${clsSinal(v)}">${fmtMoney(d)}</td><td class="${clsSinal(v)}">${fmtPct(v)}</td></tr>`;
     }).join('');
+
+    const posicao = m.neutro_aproximado || m.neutro_suspeito
+        ? '<p class="nota">Posição nos rankings indisponível para municípios com ressalva de dados.</p>'
+        : `<div class="pos-grid">
+            <div class="pos-item"><b>${fmtInt(posUF)}º</b><span>entre ${fmtInt(naUF.length)} municípios ${DE_UF[base.uf]}</span></div>
+            <div class="pos-item"><b>${fmtInt(posBR)}º</b><span>entre ${fmtInt(ok.length)} municípios do Brasil</span></div>
+        </div><p class="nota">Do maior ganho (1º) à maior perda, na variação da receita em 2033.</p>`;
 
     $('fichaCorpo').innerHTML = `
         <div class="ficha-top">
             <div>
-                <h2 id="fichaTitulo" tabindex="-1">${esc(base.nome)}<small>${base.uf}</small></h2>
-                <p class="ficha-meta">${esc(NOMES_UF[base.uf])} · população média de ${fmtInt(m.pop_media)} habitantes<span class="meta-fonte"> (IBGE, 2019–2026)</span></p>
+                <h2 id="fichaTitulo" tabindex="-1">${nomeSeg}<small>${base.uf}</small></h2>
+                <p class="ficha-meta">${esc(NOMES_UF[base.uf])} · ${fmtInt(m.pop_media)} habitantes<span class="meta-fonte"> (média 2019–2026, IBGE)</span></p>
             </div>
             <div class="ficha-acoes">
                 <button class="btn btn-ghost btn-sm" type="button" id="btnCopiar">Copiar link</button>
@@ -713,17 +736,20 @@ function renderFicha(cod, base, m) {
         </div>
         ${aviso ? `<div class="aviso" role="note">${aviso}</div>` : ''}
         <div class="faixa">
-            <div class="faixa-main ${sinal}"><span>Variação da receita em 2033</span><b>${fmtPct(v33)}</b><small>${Math.abs(v33) > 0.0005 ? fmtMoney(Math.abs(dif33)) + ' por ano ' + lado : 'Praticamente igual ao cenário sem a reforma'}</small></div>
-            <div class="kpi"><span>Referência 2025</span><b>${fmtMoney(m.pre_2025)}</b></div>
-            <div class="kpi"><span>Sem a reforma 2033</span><b>${fmtMoney(cf33)}</b></div>
-            <div class="kpi"><span>Com a reforma 2033</span><b>${fmtMoney(pos33)}</b></div>
+            <div class="faixa-main ${sinal}">
+                <div class="fm-num"><em class="selo">${selo}</em><span>Efeito da reforma na receita em 2033</span><b>${fmtPct(v33)}</b></div>
+                <div class="fm-txt"><p class="frase">${frase}</p>
+                <small>Compara os dois cenários do mesmo ano. <a href="#" data-tab="metodologia" data-depois="met-5">Como ler →</a></small></div>
+            </div>
+            <div class="kpi"><span>Receita em 2025</span><b>${fmtMoneyFino(m.pre_2025)}</b></div>
+            <div class="kpi"><span>2033 sem a reforma</span><b>${fmtMoneyFino(cf33)}</b></div>
+            <div class="kpi destaque"><span>2033 com a reforma</span><b>${fmtMoneyFino(pos33)}</b></div>
         </div>
-        <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Receita realizada de 2019 a 2025 e projeção de 2029 a 2033, com e sem a reforma, em R$ de 2025. A área preenchida é a diferença entre os dois cenários.</p>
-            <div class="canvas-box canvas-serie"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano."></canvas></div>
-            <p class="nota nota-grafico">O eixo salta de 2025 para 2029: a redução do ICMS e do ISS só começa em 2029 (ADCT, art. 128) e o modelo não projeta 2026–2028. Os dois cenários partem do valor de 2025. O eixo vertical não parte de zero, para que a diferença entre eles fique visível.</p></div>
-        <div class="leitura"><p>${leitura}</p><p>${nota} Receita de referência: ISS mais cota-parte do ICMS, em R$ de 2025.</p></div>
+        <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Receita realizada até 2025 e projetada de 2029 a 2033, com e sem a reforma, em R$ de 2025.</p>
+            <div class="canvas-box canvas-serie"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano, em Detalhes do cálculo."></canvas></div>
+            <p class="leitura">${leitura}</p></div>
         <div class="panel accent">
-            <div class="panel-head"><div><h3>Como fica o ICMS/ISS na transição</h3><p class="panel-sub">Composição da receita projetada: quanto ainda vem do ICMS/ISS residual, quanto já é IBS pelos dois critérios, e quanto é Seguro-Receita.</p></div>
+            <div class="panel-head"><div><h3>De onde vem a receita</h3><p class="panel-sub">Quanto ainda vem do ICMS e do ISS e quanto já vem do IBS, de 2029 a 2033.</p></div>
                 <div class="comp-controles">
                     <div class="toggle" id="compModo" role="group" aria-label="Unidade"><button type="button" data-modo="pct" class="active">%</button><button type="button" data-modo="rs">R$</button></div>
                     <div class="toggle" id="compViz" role="group" aria-label="Forma"><button type="button" data-viz="grafico" class="active">Gráfico</button><button type="button" data-viz="tabela">Tabela</button></div>
@@ -731,25 +757,37 @@ function renderFicha(cod, base, m) {
             <div class="canvas-box" id="compBox"><canvas id="gComp" role="img" aria-label="Gráfico de barras empilhadas com a composição da receita projetada de 2029 a 2033: ICMS e ISS residuais, IBS pelo critério histórico, IBS por destino e Seguro-Receita. Os mesmos valores estão na aba Tabela."></canvas></div>
             <div class="table-wrap" id="compTabela" hidden></div>
         </div>
-        <div class="ficha-grid">
-            <div class="panel"><h3>${nomeSeg} entre os municípios de ${esc(NOMES_UF[base.uf])}</h3><p class="panel-sub">Variação da receita em 2033. O município está contornado; passe o cursor sobre os vizinhos.</p>
-                <div class="map-wrapper" id="miniWrap"><svg id="miniSvg" role="img" aria-label="Mapa dos municípios de ${esc(NOMES_UF[base.uf])} com ${nomeSeg} contornado."></svg><div class="map-tip" id="miniTip" role="tooltip"></div></div></div>
-            <div class="panel"><h3>Ano a ano, 2029–2033</h3><p class="panel-sub">Receita estimada com e sem a reforma, e a diferença entre as duas.</p>
-                <div class="table-wrap"><table class="dados">
-                    <thead><tr><th>Ano</th><th>Sem a reforma</th><th>Com a reforma</th><th>Diferença</th><th>Variação</th></tr></thead>
-                    <tbody>${linhas}</tbody></table></div></div>
+        <div class="panel accent" id="painelSens" hidden>
+            <h3>Quanto este resultado depende das hipóteses?</h3>
+            <p class="panel-sub">O modelo faz duas escolhas: qual ano define a fatia do município no cenário sem reforma e quanto de IBS ele recebe pelo consumo no destino. Aqui as duas variam.</p>
+            <p class="leitura" id="sensTexto"></p>
+            <div class="canvas-box canvas-sens"><canvas id="gSens" role="img" aria-label="Gráfico de linhas com a variação projetada da receita de 2029 a 2033 em diferentes anos-base, com a faixa entre o menor e o maior resultado."></canvas></div>
+            <details class="sens-ajuste">
+                <summary>Ajustar as hipóteses e ver como ler</summary>
+                <div class="sens-ctl"><span class="sens-lab" id="sensChipsLab">O cenário sem reforma mantém a fatia do município em:</span>
+                    <div class="sens-chips" id="sensChips" role="group" aria-labelledby="sensChipsLab"></div>
+                    <p class="nota">2025 é a referência central e fica sempre ligada; 2026 é estimado.</p></div>
+                <div class="sens-ctl"><label for="sensErro">Margem de erro do consumo no destino</label>
+                    <div class="sens-slider"><input type="range" id="sensErro" min="0" max="30" step="0.5" value="10"><span id="sensErroValor"></span><button type="button" class="btn btn-ghost btn-sm" id="sensErroReset">Margem medida</button></div></div>
+                <p class="nota">Cada linha usa um ano-base com o destino no valor central; a faixa sombreada vai do menor ao maior resultado entre todos os cenários, incluindo o destino reduzido e aumentado pela margem de erro. Não é um intervalo de confiança. A margem é a medida para o estado, aplicada ao destino do município; o Seguro-Receita fica no valor central.</p>
+            </details>
         </div>
-        <div class="panel"><h3>Coeficientes de participação</h3><p class="panel-sub">Os critérios que, ponderados pelo cronograma do ADCT, definem a fatia deste município no IBS.</p>
-            ${coefTilesHtml(m)}
-            <button type="button" class="memo-link" id="btnMemoria">Ver a memória de cálculo deste município →</button></div>
-        <div class="ficha-grid">
-            <div class="panel"><h3>Seguro-Receita</h3><p class="panel-sub">Repasse compensatório para entes cuja receita pelo critério de destino fica abaixo do nível de nivelamento.</p>${seguroCardHtml(m.repasse_seguro_receita_por_ano, m.pos_por_ano)}</div>
-            <div class="panel"><h3>Dados históricos usados no cálculo</h3><p class="panel-sub">Receita real declarada ao SICONFI, deflacionada a R$ de 2025.</p>${historicoTableHtml(m.historico_por_ano)}</div>
+        <div class="ficha-grid ficha-contexto">
+            <div class="panel"><h3>Como ${nomeSeg} se compara</h3><p class="panel-sub">Posição na variação da receita em 2033.</p>${posicao}</div>
+            <div class="panel"><h3>${nomeSeg} no mapa ${DE_UF[base.uf]}</h3><p class="panel-sub">Contornado; a cor mostra a variação em 2033.</p>
+                <div class="map-wrapper" id="miniWrap"><svg id="miniSvg" role="img" aria-label="Mapa dos municípios ${DE_UF[base.uf]} com ${nomeSeg} contornado."></svg><div class="map-tip" id="miniTip" role="tooltip"></div></div></div>
         </div>
-        <div class="posicao">
-            ${m.neutro_aproximado || m.neutro_suspeito ? '<span>Posição nos rankings indisponível para municípios com ressalva de dados.</span>' : `
-            <span>Variação em 2033: <b>${fmtInt(posBR)}º</b> entre os ${fmtInt(ok.length)} municípios do país com dados confiáveis, do maior ganho à maior perda.</span>
-            <span>Em ${base.uf}: <b>${fmtInt(posUF)}º</b> entre ${fmtInt(naUF.length)}.</span>`}
+        <div class="detalhes">
+            <h3 class="detalhes-tit">Detalhes do cálculo</h3>
+            <details><summary>Ano a ano, 2029–2033</summary>
+                <div class="table-wrap"><table class="dados"><thead><tr><th>Ano</th><th>Sem a reforma</th><th>Com a reforma</th><th>Diferença</th><th>Variação</th></tr></thead><tbody>${linhas}</tbody></table></div></details>
+            <details><summary>Coeficientes de participação</summary>
+                <p class="panel-sub">Os critérios que, ponderados pelo cronograma do ADCT, definem a fatia deste município no IBS.</p>${coefTilesHtml(m)}</details>
+            <details><summary>Seguro-Receita</summary>
+                <p class="panel-sub">Repasse compensatório para entes cuja receita pelo critério de destino fica abaixo do nível de nivelamento.</p>${seguroCardHtml(m.repasse_seguro_receita_por_ano, m.pos_por_ano)}</details>
+            <details><summary>Receita histórica usada no cálculo</summary>
+                <p class="panel-sub">Receita real declarada ao SICONFI, deflacionada a R$ de 2025.</p>${historicoTableHtml(m.historico_por_ano)}</details>
+            <button type="button" class="memo-link" id="btnMemoria">Ver a memória de cálculo deste município →</button>
         </div>
         <p class="print-credito">Municípios na Reforma, iniciativa da Vertex Advisory · municipiosnareforma.com.br${CONFIG.email ? ' · ' + CONFIG.email : ''}</p>`;
 
@@ -761,12 +799,135 @@ function renderFicha(cod, base, m) {
     });
     $('btnImprimir').addEventListener('click', () => { track('imprimir_ficha', {municipio: base.nome}); window.print(); });
     desenharGraficos(m);
+    iniciarSens(cod, base, m);
     carregarMalha().then(() => {
         if (ATUAL !== cod || !$('miniSvg')) return;
         MINI = criarMapa($('miniSvg'), $('miniWrap'), $('miniTip'), {camadaUF: false, todos: false, uf: base.uf, nivel: 'muni', aoClicar: c => abrirMunicipio(c)});
         MINI.destacar(cod);
     }).catch(() => { const w = $('miniWrap'); if (w) w.innerHTML = '<p class="nota">O mapa não pôde ser carregado agora.</p>'; });
     $('fichaTitulo').focus({preventScroll: true});
+}
+
+/* ── sensibilidade: o mesmo teste do painel dos estados, agora por município ──
+   Com a reforma = residual×ref + histórico×φCPT×(1−ca) + destino×φdest×(1±erro) + repasse×(1−ca);
+   sem a reforma = ref × bolo projetado, em que ref é a fatia do município no ano-base escolhido. Com ref de 2025 e destino
+   central, reproduz a variação publicada. A fatia de cada ano é a de 2025 (coef_neutro) escalada pela receita real do
+   município naquele ano em relação a 2025 (série deflacionada da ficha; 2026 é a estimativa). A margem de erro do destino
+   é a medida para a UF (sensibilidade-uf.json). */
+let GSENS = null, SENS_UF = null, SENS_P = null;
+const SENSM = {refs: ['2019', '2025', '2026'], erro: null};
+const SENS_ESTILO = {'2019': ['#9c3d3d', [2, 4]], '2020': ['#8a6d3b', [10, 3, 2, 3]], '2021': ['#6b4c9a', [6, 3]], '2022': ['#00799a', [3, 3]],
+    '2023': ['#b5651d', [12, 4]], '2024': ['#7a7a7a', [1, 3]], '2026': ['#2e7d32', [8, 4]]};
+const fmtV = v => {
+    if (v == null || !isFinite(v)) return '—';
+    const p = Math.round(v * 10000) / 100;
+    return (p > 0 ? '+' : p < 0 ? '−' : '') + Math.abs(p).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '%';
+};
+const fmtErro = e => (e * 100).toLocaleString('pt-BR', {minimumFractionDigits: 1, maximumFractionDigits: 1}) + '%';
+
+function sensRefs(m) {
+    const h = m.historico_por_ano || {}, h25 = h['2025'] && h['2025'].total_reais_2025, out = {};
+    if (!h25) return out;
+    const c0 = m.coef_neutro_pct / 100;
+    ANOS_HIST.forEach(a => { if (h[a] && h[a].total_reais_2025 > 0) out[a] = c0 * h[a].total_reais_2025 / h25; });
+    if (m.estimativa_2026 && m.estimativa_2026.total_reais_2025 > 0) out['2026'] = c0 * m.estimativa_2026.total_reais_2025 / h25;
+    out['2025'] = c0;
+    return out;
+}
+function sensVar(P, refKey, mult, ano) {
+    const s = P.nac[ano], ref = P.ref[refKey];
+    const pos = s.icms_iss_residual * ref + s.ibs_historico * P.cpt * (1 - s.ca) + s.ibs_destino_liquido * P.pleno * (1 + mult) + (P.rep[ano] || 0) * (1 - s.ca);
+    return pos / (ref * s.bolo_projetado) - 1;
+}
+function sensCalc(P, refs, erro) {
+    const linhas = {};
+    refs.forEach(r => { linhas[r] = ANOS.map(a => ({lo: sensVar(P, r, -erro, a), c: sensVar(P, r, 0, a), hi: sensVar(P, r, erro, a)})); });
+    const banda = ANOS.map((a, i) => { const vs = refs.flatMap(r => [linhas[r][i].lo, linhas[r][i].c, linhas[r][i].hi]); return {min: Math.min(...vs), max: Math.max(...vs)}; });
+    return {linhas, banda};
+}
+/* Quanto o destino teria de diferir do estimado para a variação central (ref. 2025) ser zero; negativo = menor. */
+function sensVirada(P, ano) {
+    const s = P.nac[ano], ref = P.ref['2025'];
+    const alvo = ref * s.bolo_projetado - s.icms_iss_residual * ref - s.ibs_historico * P.cpt * (1 - s.ca) - (P.rep[ano] || 0) * (1 - s.ca);
+    const dest = s.ibs_destino_liquido * P.pleno;
+    return dest > 0 ? alvo / dest - 1 : null;
+}
+
+function iniciarSens(cod, base, m) {
+    const caixa = $('painelSens');
+    if (!caixa || !NAC || !NAC.projecao || typeof Chart === 'undefined') return;
+    const ref = sensRefs(m);
+    if (!ref['2025'] || !(m.coef_neutro_pct > 0)) return;
+    SENS_UF = SENS_UF || getJSON('/data/sensibilidade-uf.json').catch(() => null);
+    SENS_UF.then(d => {
+        if (ATUAL !== cod || !$('painelSens')) return;
+        const u = d && d.por_uf && d.por_uf[base.uf];
+        if (!u) return;
+        const nac = {}; NAC.projecao.forEach(r => { nac[String(r.ano)] = r; });
+        if (!ANOS.every(a => nac[a])) return;
+        SENS_P = {nac, ref, cpt: m.coef_cpt_pct / 100, pleno: m.coef_pleno_pct / 100, rep: m.repasse_seguro_receita_por_ano || {}, medido: u.incerteza_rel, nome: base.nome};
+        SENSM.erro = null;
+        SENSM.refs = ['2019', '2025', '2026'].filter(r => ref[r]);
+        $('sensChips').innerHTML = Object.keys(ref).sort().map(r =>
+            `<button type="button" class="sens-chip" data-ref="${r}" aria-pressed="false">${r}${r === '2026' ? ' (est.)' : ''}</button>`).join('');
+        document.querySelectorAll('#sensChips .sens-chip').forEach(b => b.addEventListener('click', () => {
+            const r = b.dataset.ref; if (r === '2025') return;
+            SENSM.refs = SENSM.refs.includes(r) ? SENSM.refs.filter(x => x !== r) : SENSM.refs.concat(r);
+            track('sens_ano_base', {municipio: base.nome, ano: r}); desenharSens();
+        }));
+        $('sensErro').addEventListener('input', e => { SENSM.erro = Number(e.target.value) / 100; desenharSens(); });
+        $('sensErroReset').addEventListener('click', () => { SENSM.erro = null; desenharSens(); });
+        $('painelSens').hidden = false;
+        desenharSens();
+    });
+}
+
+function desenharSens() {
+    const P = SENS_P; if (!P || !$('gSens')) return;
+    if (!SENSM.refs.includes('2025')) SENSM.refs = SENSM.refs.concat('2025');
+    const refs = SENSM.refs.slice().sort(), erro = SENSM.erro == null ? P.medido : SENSM.erro;
+    const calc = sensCalc(P, refs, erro), i = ANOS.length - 1, a = ANOS[i];
+    const c = calc.linhas['2025'][i].c, b = calc.banda[i], eps = 0.00005;
+    document.querySelectorAll('#sensChips .sens-chip').forEach(x => x.setAttribute('aria-pressed', refs.includes(x.dataset.ref) ? 'true' : 'false'));
+    $('sensErro').value = String(Math.round(erro * 1000) / 10);
+    $('sensErroValor').textContent = '±' + fmtErro(erro);
+    $('sensErroReset').disabled = SENSM.erro == null;
+
+    const nome = esc(P.nome), cruza = b.min <= eps && b.max >= -eps;
+    const v = sensVirada(P, a);
+    let frase = b.min > eps ? `Em ${a}, mesmo com outros anos-base e outro consumo no destino, <b>${nome} segue com ganho</b>: de ${fmtV(b.min)} a ${fmtV(b.max)}.`
+        : b.max < -eps ? `Em ${a}, mesmo com outros anos-base e outro consumo no destino, <b>${nome} segue com perda</b>: de ${fmtV(b.min)} a ${fmtV(b.max)}.`
+        : `Em ${a}, o resultado de ${nome} vai de <b>${fmtV(b.min)} a ${fmtV(b.max)}</b> conforme as hipóteses: <b>o sinal depende delas</b>.`;
+    frase += ` Variação central: ${fmtV(c)}.`;
+    if (v != null && v > -1) {
+        const q = Math.abs(v) * 100;
+        frase += ` Para zerar a variação, o consumo no destino teria de ser ${q > 100 ? 'maior que o dobro do' : q.toLocaleString('pt-BR', {maximumFractionDigits: 0}) + '% ' + (v > 0 ? 'maior' : 'menor') + ' que o'} estimado (margem medida: ±${fmtErro(P.medido)}).`;
+    }
+    $('sensTexto').innerHTML = frase;
+
+    const pc = x => Math.round(x * 10000) / 100;
+    const linha = {borderWidth: 2, tension: 0.1, pointRadius: 0, pointHoverRadius: 5, pointBorderWidth: 2, pointBorderColor: '#fff', hitRadius: 14};
+    const ds = [
+        {label: 'Faixa entre os cenários', data: calc.banda.map(x => pc(x.max)), borderWidth: 0, pointRadius: 0, pointHoverRadius: 0, hitRadius: 0, backgroundColor: 'rgba(31,42,85,.14)', fill: '+1', tension: 0.1},
+        {label: 'min', data: calc.banda.map(x => pc(x.min)), borderWidth: 0, pointRadius: 0, pointHoverRadius: 0, hitRadius: 0, fill: false, tension: 0.1}
+    ];
+    refs.filter(r => r !== '2025').forEach(r => {
+        const e = SENS_ESTILO[r] || ['#7a7a7a', [3, 3]];
+        ds.push(Object.assign({label: 'Base ' + r + (r === '2026' ? ' (est.)' : ''), data: calc.linhas[r].map(x => pc(x.c)), borderColor: e[0], backgroundColor: e[0], borderDash: e[1]}, linha, {borderWidth: 1.8}));
+    });
+    ds.push(Object.assign({label: 'Base 2025 (a do painel)', data: calc.linhas['2025'].map(x => pc(x.c)), borderColor: '#1f2a55', backgroundColor: '#1f2a55', pointBackgroundColor: '#1f2a55', pointRadius: 4}, linha, {pointRadius: 4, borderWidth: 3}));
+
+    const estreito = $('gSens').parentElement.clientWidth < 520;
+    if (GSENS) GSENS.destroy();
+    GSENS = new Chart($('gSens'), {
+        type: 'line', data: {labels: ANOS, datasets: ds},
+        options: {responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false},
+            plugins: {legend: {position: 'bottom', labels: {boxWidth: 26, boxHeight: 2, padding: estreito ? 10 : 16, color: '#141414', font: {size: 11}, filter: it => it.text !== 'min'}},
+                tooltip: {filter: it => it.dataset.label !== 'min' && it.dataset.label !== 'Faixa entre os cenários', callbacks: {label: c => ' ' + c.dataset.label + ': ' + fmtV(c.parsed.y / 100)}}},
+            scales: {y: {grid: {color: ctx => ctx.tick && ctx.tick.value === 0 ? '#8a98a3' : '#e9edf0', drawTicks: false}, border: {display: false}, grace: '10%',
+                    ticks: {callback: x => (x > 0 ? '+' : x < 0 ? '−' : '') + Math.abs(x).toLocaleString('pt-BR', {maximumFractionDigits: 1}) + (x === 0 ? '' : '%'), color: '#6b6b6b', font: {size: 11}, padding: 8}},
+                x: {grid: {display: false}, border: {color: '#c8d0d6'}, ticks: {font: {size: 11}, color: '#6b6b6b', padding: 6}}}}
+    });
 }
 
 const COMP_ROTULOS = [['origem', 'ISS e ICMS residuais', '#858384'], ['cpt', 'IBS pelo critério histórico', '#1f2a55'], ['destino', 'IBS por destino', '#cfad56'], ['seguro', 'Seguro-Receita', '#2f7f7a']];
@@ -803,16 +964,20 @@ function desenharGraficos(m) {
     const estreito = $('gSerie').parentElement.clientWidth < 520;      // no celular, todos os anos, na diagonal e menores (como no painel dos estados)
     const hist = rotulos.map(a => ANOS_HIST.includes(a) && m.historico_por_ano[a] ? mi(m.historico_por_ano[a].total_reais_2025) : null);
     const cenario = serie => rotulos.map(a => a === '2025' ? mi(m.pre_2025) : (ANOS.includes(a) && serie[a] != null ? mi(serie[a]) : null));
+    // Desenho do painel dos estados: linha fina, ponto de 4 px com anel de 2 px na cor da superfície (continua legível onde as séries
+    // se tocam), área de acerto folgada para o toque, grade só na horizontal e sem eixo vertical.
+    const linha = {borderWidth: 2, spanGaps: false, tension: 0.1, pointRadius: 4, pointHoverRadius: 6, pointBorderWidth: 2, pointBorderColor: '#fff', hitRadius: 14};
     graficos.push(new Chart($('gSerie'), {
         type: 'line',
         data: {labels: rotulos, datasets: [
-            {label: 'Realizado (2019–2025)', data: hist, borderColor: '#1f2a55', backgroundColor: '#1f2a55', borderWidth: 3, pointRadius: 3, spanGaps: false},
-            {label: 'Projeção com a reforma', data: cenario(m.pos_por_ano), borderColor: '#b8922f', backgroundColor: 'rgba(207,173,86,.22)', borderWidth: 4, pointRadius: 4, spanGaps: false, fill: '+1'},
-            {label: 'Cenário sem a reforma', data: cenario(m.contrafactual_por_ano), borderColor: '#858384', backgroundColor: '#858384', borderDash: [6, 5], borderWidth: 3, pointRadius: 3, spanGaps: false}
+            Object.assign({label: 'Realizado (2019–2025)', data: hist, borderColor: '#1f2a55', backgroundColor: '#1f2a55', pointBackgroundColor: '#1f2a55'}, linha),
+            Object.assign({label: 'Projeção com a reforma', data: cenario(m.pos_por_ano), borderColor: '#b8922f', backgroundColor: 'rgba(207,173,86,.18)', pointBackgroundColor: '#b8922f', fill: '+1'}, linha),
+            Object.assign({label: 'Cenário sem a reforma', data: cenario(m.contrafactual_por_ano), borderColor: '#6b6b6b', backgroundColor: '#6b6b6b', pointBackgroundColor: '#6b6b6b', borderDash: [5, 4], fill: false}, linha)
         ]},
         options: {responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false},
-            plugins: {legend: {position: 'bottom', labels: {usePointStyle: false, boxWidth: 26, boxHeight: 2, padding: 14}}, tooltip: tip},
-            scales: {y: {grid: {color: '#ecebe5'}, beginAtZero: false, grace: '8%', ticks: {callback: v => fmtMoney(v * 1e6), color: '#55576a'}}, x: {grid: {display: false}, ticks: {maxRotation: estreito ? 55 : 0, minRotation: estreito ? 55 : 0, autoSkip: false, font: {size: estreito ? 10 : 12}, padding: 6}}}}
+            plugins: {legend: {position: 'bottom', labels: {usePointStyle: false, boxWidth: 26, boxHeight: 2, padding: 16, color: '#141414', font: {size: 11}}}, tooltip: tip},
+            scales: {y: {grid: {color: '#e9edf0', drawTicks: false}, border: {display: false}, beginAtZero: false, grace: '8%', ticks: {callback: v => fmtMoney(v * 1e6), color: '#6b6b6b', font: {size: 11}, padding: 8}},
+                x: {grid: {display: false}, border: {color: '#c8d0d6'}, ticks: {maxRotation: estreito ? 55 : 0, minRotation: estreito ? 55 : 0, autoSkip: false, font: {size: estreito ? 10 : 11}, color: '#6b6b6b', padding: 6}}}}
     }));
     const desenhaComp = () => {
         const pct = modo === 'pct';
@@ -1103,6 +1268,10 @@ function iniciarFormularios() {
 }
 iniciarFormularios();
 $('btnVoltar').addEventListener('click', () => mostrarVisao('visao-geral'));
+/* Ao imprimir, os detalhes do cálculo saem abertos; depois voltam ao estado em que estavam. */
+let ABERTOS_ANTES = null;
+window.addEventListener('beforeprint', () => { const ds = [...document.querySelectorAll('.detalhes details')]; ABERTOS_ANTES = ds.map(d => d.open); ds.forEach(d => { d.open = true; }); });
+window.addEventListener('afterprint', () => { if (ABERTOS_ANTES) [...document.querySelectorAll('.detalhes details')].forEach((d, i) => { d.open = ABERTOS_ANTES[i]; }); ABERTOS_ANTES = null; });
 if (CONFIG.razaoSocial) $('privControlador').textContent = CONFIG.razaoSocial + (CONFIG.cnpj ? ' (CNPJ ' + CONFIG.cnpj + ')' : '');
 if (CONFIG.email) $('privContato').textContent = CONFIG.email;
 if (CONFIG.gaId) $('privAnalytics').textContent = 'Este portal usa o Google Analytics 4 para medir audiência de forma agregada (páginas vistas, cliques nos botões de contato, uso do mapa). O Google define cookies para isso; você pode bloqueá-los no navegador sem perder nenhuma função do portal.';
