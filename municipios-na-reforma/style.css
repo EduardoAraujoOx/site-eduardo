@@ -478,3 +478,9 @@ table.dados th.nome { text-align: left; }
 .zap:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
 @media (max-width: 700px) { .zap { padding: .8rem; } .zap-txt { display: none; } }
 @media print { .zap { display: none !important; } }
+
+/* ── texto corrido no celular: menos margem lateral e corpo um pouco menor ── */
+@media (max-width: 700px) {
+    .prose.panel { padding: 1.1rem 1rem; }
+    .prose p { font-size: .97rem; line-height: 1.55; }
+}

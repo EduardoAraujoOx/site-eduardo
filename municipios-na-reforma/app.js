@@ -118,6 +118,7 @@ document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', (
     if (b.dataset.view === 'rankings') renderRankUF();
 }));
 document.querySelectorAll('[data-ir]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); mostrarVisao(a.dataset.ir); }));
+document.querySelectorAll('[data-tab]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const b = document.querySelector('.tab-btn[data-view="' + a.dataset.tab + '"]'); if (b) b.click(); }));   // link de texto que age como a aba
 
 /* ── carga ── */
 Promise.all([
