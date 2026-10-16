@@ -114,10 +114,11 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharMais()
 document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => {
     mostrarVisao(b.dataset.view); track('aba', {aba: b.dataset.view});
     if (b.dataset.view === 'municipio') municipioInicial();
-    if (b.dataset.view === 'memoria') renderMemoria();
+    if (b.dataset.view === 'memoria') { memoriaInicial(); renderMemoria(); }
     if (b.dataset.view === 'rankings') renderRankUF();
 }));
 document.querySelectorAll('[data-ir]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); mostrarVisao(a.dataset.ir); }));
+document.querySelectorAll('[data-ancora]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const el = $(a.dataset.ancora); if (el) el.scrollIntoView({behavior: 'smooth', block: 'start'}); }));
 document.querySelectorAll('[data-tab]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const b = document.querySelector('.tab-btn[data-view="' + a.dataset.tab + '"]'); if (b) b.click(); }));   // link de texto que age como a aba
 
 /* ── carga ── */
@@ -147,7 +148,7 @@ function iniciar(idx, res, nac) {
         $('mapaWrap').hidden = tabela; $('mapaLegenda').hidden = tabela; $('mapaTabela').hidden = !tabela;
     }));
 
-    ativarBusca($('busca'), $('sugestoes'), $('formBusca'), cod => abrirMunicipio(cod), v => LOCAL && (v === LOCAL.rotulo || !v.trim()) ? LOCAL.cod : null);
+    ativarBusca($('busca'), $('sugestoes'), $('formBusca'), cod => abrirMunicipio(cod), codDoCampo);
     ativarBusca($('buscaMuni'), $('sugestoesMuni'), $('formBuscaMuni'), cod => abrirMunicipio(cod));
     ativarBusca($('buscaMemo'), $('sugestoesMemo'), $('formBuscaMemo'), cod => abrirMemoria(cod));
     $('dicaBusca').textContent = '';
@@ -349,6 +350,14 @@ async function renderRankUF() {
 }
 
 /* ── busca (padrão combobox), reaproveitada nas abas ── */
+/* Município que o campo de busca da visão geral já traz escrito: o que está aberto na ficha ou o localizado. */
+const rotuloMuni = cod => POR_COD[cod].nome + ' (' + POR_COD[cod].uf + ')';
+function codDoCampo(v) {
+    const t = v.trim();
+    if (ATUAL && t === rotuloMuni(ATUAL)) return ATUAL;
+    if (LOCAL && (t === LOCAL.rotulo || t === rotuloMuni(LOCAL.cod) || !t)) return LOCAL.cod;
+    return null;
+}
 function ativarBusca(inp, ul, form, aoEscolher, padrao) {
     inp.disabled = false;
     let sugestoes = [], ativo = -1;
@@ -359,10 +368,13 @@ function ativarBusca(inp, ul, form, aoEscolher, padrao) {
         if (i >= 0) inp.setAttribute('aria-activedescendant', ul.children[i].id); else inp.removeAttribute('aria-activedescendant');
     };
     const buscar = () => {
-        const q = norm(inp.value);
+        const mUF = /\(\s*([a-z]{2})\s*\)\s*$/i.exec(inp.value);                      // "Vitória (ES)": o estado entre parênteses filtra, não entra no nome
+        const ufFiltro = mUF && NOMES_UF[mUF[1].toUpperCase()] ? mUF[1].toUpperCase() : null;
+        const q = norm(ufFiltro ? inp.value.replace(mUF[0], '') : inp.value);
         if (q.length < 2) { fechar(); return; }
         const comp = q.split(/\s+/);
         sugestoes = LISTA
+            .filter(m => !ufFiltro || m.uf === ufFiltro)
             .map(m => {
                 const alvo = m.chave + ' ' + m.uf.toLowerCase();
                 if (!comp.every(c => alvo.includes(c))) return null;
@@ -692,7 +704,7 @@ function renderFicha(cod, base, m) {
         <div class="ficha-top">
             <div>
                 <h2 id="fichaTitulo" tabindex="-1">${esc(base.nome)}<small>${base.uf}</small></h2>
-                <p class="ficha-meta">${esc(NOMES_UF[base.uf])} · população média de ${fmtInt(m.pop_media)} habitantes (IBGE, 2019–2026)</p>
+                <p class="ficha-meta">${esc(NOMES_UF[base.uf])} · população média de ${fmtInt(m.pop_media)} habitantes<span class="meta-fonte"> (IBGE, 2019–2026)</span></p>
             </div>
             <div class="ficha-acoes">
                 <button class="btn btn-ghost btn-sm" type="button" id="btnCopiar">Copiar link</button>
@@ -707,7 +719,7 @@ function renderFicha(cod, base, m) {
             <div class="kpi"><span>Com a reforma 2033</span><b>${fmtMoney(pos33)}</b></div>
         </div>
         <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Receita realizada de 2019 a 2025 e projeção de 2029 a 2033, com e sem a reforma, em R$ de 2025. A área preenchida é a diferença entre os dois cenários.</p>
-            <div class="canvas-box" style="height:320px"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano."></canvas></div>
+            <div class="canvas-box canvas-serie"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano."></canvas></div>
             <p class="nota nota-grafico">O eixo salta de 2025 para 2029: a redução do ICMS e do ISS só começa em 2029 (ADCT, art. 128) e o modelo não projeta 2026–2028. Os dois cenários partem do valor de 2025. O eixo vertical não parte de zero, para que a diferença entre eles fique visível.</p></div>
         <div class="leitura"><p>${leitura}</p><p>${nota} Receita de referência: ISS mais cota-parte do ICMS, em R$ de 2025.</p></div>
         <div class="panel accent">
@@ -788,7 +800,7 @@ function desenharGraficos(m) {
     // Mesma solução do painel original: o eixo vai de 2019 a 2025 e segue direto para 2029–2033, sem espaço para 2026–2028
     // (o modelo não projeta esses anos), e os dois cenários partem do valor de 2025, de onde o contrafactual é construído.
     const rotulos = ANOS_HIST.concat(ANOS);
-    const estreito = $('gSerie').parentElement.clientWidth < 520;      // no celular, um rótulo de ano sim, outro não
+    const estreito = $('gSerie').parentElement.clientWidth < 520;      // no celular, todos os anos, na diagonal e menores (como no painel dos estados)
     const hist = rotulos.map(a => ANOS_HIST.includes(a) && m.historico_por_ano[a] ? mi(m.historico_por_ano[a].total_reais_2025) : null);
     const cenario = serie => rotulos.map(a => a === '2025' ? mi(m.pre_2025) : (ANOS.includes(a) && serie[a] != null ? mi(serie[a]) : null));
     graficos.push(new Chart($('gSerie'), {
@@ -800,7 +812,7 @@ function desenharGraficos(m) {
         ]},
         options: {responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false},
             plugins: {legend: {position: 'bottom', labels: {usePointStyle: false, boxWidth: 26, boxHeight: 2, padding: 14}}, tooltip: tip},
-            scales: {y: {grid: {color: '#ecebe5'}, beginAtZero: false, grace: '8%', ticks: {callback: v => fmtMoney(v * 1e6), color: '#55576a'}}, x: {grid: {display: false}, ticks: {maxRotation: 0, autoSkip: false, font: {size: estreito ? 10 : 12}, padding: 6, callback: (v, i) => (estreito && ['2020', '2022', '2024', '2030', '2032'].includes(rotulos[i])) ? '' : (estreito ? '’' + rotulos[i].slice(2) : rotulos[i])}}}}
+            scales: {y: {grid: {color: '#ecebe5'}, beginAtZero: false, grace: '8%', ticks: {callback: v => fmtMoney(v * 1e6), color: '#55576a'}}, x: {grid: {display: false}, ticks: {maxRotation: estreito ? 55 : 0, minRotation: estreito ? 55 : 0, autoSkip: false, font: {size: estreito ? 10 : 12}, padding: 6}}}}
     }));
     const desenhaComp = () => {
         const pct = modo === 'pct';
@@ -827,6 +839,11 @@ function desenharGraficos(m) {
 }
 
 /* ── memória de cálculo (portada do painel) ── */
+function memoriaInicial() {
+    if (MEMO.cod) return;
+    const cod = ATUAL || (LOCAL && LOCAL.cod) || (UF_VISITANTE && CAPITAIS[UF_VISITANTE]);
+    if (cod && POR_COD[cod]) { MEMO.cod = cod; $('buscaMemo').value = rotuloMuni(cod); }
+}
 function abrirMemoria(cod, secao) {
     MEMO.cod = cod;
     if (secao) MEMO.secao = secao;
