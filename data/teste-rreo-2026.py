@@ -9,6 +9,9 @@ Backtest do tratamento de 2026 com o RREO (Anexo 03, por município): para o ano
 O erro é medido na participação do município no total do conjunto (previsto x real), o que compensa o crescimento agregado.
 Entradas: data/rreo-municipios/2024-p6.json, 2025-p4.json e 2025-p6.json (data/collect-rreo-municipios.py). Executar a partir da raiz.
 """
+import json
+import statistics as st
+
 d24=json.load(open('data/rreo-municipios/2024-p6.json'))   # jan-dez/2024 (meses: <MR-11>=jan ... <MR>=dez)
 d25a=json.load(open('data/rreo-municipios/2025-p4.json'))  # set/24..ago/25
 d25=json.load(open('data/rreo-municipios/2025-p6.json'))   # jan-dez/2025
