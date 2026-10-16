@@ -31,3 +31,8 @@ create policy "inserir cadastro" on public.leads
     with check (aceite_privacidade = true and length(nome) >= 3 and length(email) >= 5);
 
 -- sem política de select, update ou delete para anon: a leitura fica restrita ao dono do projeto
+
+-- Formulários de contato e do livro (api/contato.js grava aqui, se as variáveis do Supabase existirem)
+alter table public.leads add column if not exists tipo text;
+alter table public.leads add column if not exists telefone text;
+alter table public.leads add column if not exists mensagem text;

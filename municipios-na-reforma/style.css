@@ -421,3 +421,19 @@ table.dados td.nome { text-align: left; } table.dados td.nome small { color: #6b
 table.dados th.nome { text-align: left; }
 #tabPerdas td, #tabPerdas th, #tabGanhos td, #tabGanhos th { padding-inline: .45rem; }
 #tabPerdas td.nome, #tabGanhos td.nome { white-space: normal; min-width: 8rem; }
+
+/* ── livro de pré-lançamento e formulário de contato ── */
+.livro { display: grid; grid-template-columns: minmax(200px, 300px) 1fr; gap: 1.6rem 2.4rem; align-items: center; padding: 1.6rem 1.8rem; }
+.livro-capa img { width: 100%; height: auto; border-radius: 3px; box-shadow: 0 14px 34px rgba(20, 28, 61, .22); }
+.livro-kicker { margin: 0 0 .5rem; font: 700 .72rem var(--font-head); letter-spacing: .12em; text-transform: uppercase; color: var(--gold-deep); }
+.livro-txt h3 { font: 800 clamp(1.3rem, 2.6vw, 1.75rem)/1.2 var(--font-head); margin: 0 0 .8rem; }
+.livro-txt p { color: var(--ink-soft); max-width: 40rem; }
+.livro-txt p.nota { margin-top: .6rem; }
+.form-livro { margin-top: 1.2rem; padding-top: 1.1rem; border-top: 1px solid var(--line); max-width: 40rem; }
+.form-nota { grid-column: 1 / -1; margin: 0; font-size: .9rem; color: var(--ink-soft); }
+.form-ok { grid-column: 1 / -1; margin: 0; padding: .9rem 1.1rem; background: #e9f0fa; border-left: 4px solid var(--pos); border-radius: 0 var(--radius) var(--radius) 0; color: var(--ink); }
+.campo textarea { font: 400 1rem var(--font-body); padding: .65rem .8rem; border: 1px solid #b9bdd0; border-radius: var(--radius); background: #fff; color: var(--ink); width: 100%; resize: vertical; min-height: 7rem; }
+.campo textarea:focus { border-color: var(--navy); outline: none; box-shadow: 0 0 0 3px rgba(207,173,86,.55); }
+.campo textarea[aria-invalid="true"] { border-color: var(--neg); }
+#painelContato .form-cad { max-width: 46rem; }
+@media (max-width: 760px) { .livro { grid-template-columns: 1fr; padding: 1.2rem; } .livro-capa { max-width: 240px; margin-inline: auto; } }
