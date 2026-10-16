@@ -683,6 +683,7 @@ function historicoTableHtml(historico) {
 
 function renderFicha(cod, base, m) {
     graficos.forEach(g => g.destroy()); graficos = [];
+    if (GSENS) { GSENS.destroy(); GSENS = null; }
     const ok = LISTA.filter(x => !x.r).sort((a, b) => b.v - a.v);
     const posBR = ok.findIndex(x => x.cod === cod) + 1;
     const naUF = ok.filter(x => x.uf === base.uf);
@@ -756,6 +757,21 @@ function renderFicha(cod, base, m) {
             <div class="canvas-box" id="compBox"><canvas id="gComp" role="img" aria-label="Gráfico de barras empilhadas com a composição da receita projetada de 2029 a 2033: ICMS e ISS residuais, IBS pelo critério histórico, IBS por destino e Seguro-Receita. Os mesmos valores estão na aba Tabela."></canvas></div>
             <div class="table-wrap" id="compTabela" hidden></div>
         </div>
+        <div class="panel accent" id="painelSens" hidden>
+            <h3>Quanto este resultado depende das hipóteses?</h3>
+            <p class="panel-sub">O modelo faz duas escolhas: qual ano define a fatia do município no cenário sem reforma e quanto de IBS ele recebe pelo consumo no destino. Aqui as duas variam.</p>
+            <p class="leitura" id="sensTexto"></p>
+            <div class="canvas-box canvas-sens"><canvas id="gSens" role="img" aria-label="Gráfico de linhas com a variação projetada da receita de 2029 a 2033 em diferentes anos-base, com a faixa entre o menor e o maior resultado."></canvas></div>
+            <details class="sens-ajuste">
+                <summary>Ajustar as hipóteses e ver como ler</summary>
+                <div class="sens-ctl"><span class="sens-lab" id="sensChipsLab">O cenário sem reforma mantém a fatia do município em:</span>
+                    <div class="sens-chips" id="sensChips" role="group" aria-labelledby="sensChipsLab"></div>
+                    <p class="nota">2025 é a referência central e fica sempre ligada; 2026 é estimado.</p></div>
+                <div class="sens-ctl"><label for="sensErro">Margem de erro do consumo no destino</label>
+                    <div class="sens-slider"><input type="range" id="sensErro" min="0" max="30" step="0.5" value="10"><span id="sensErroValor"></span><button type="button" class="btn btn-ghost btn-sm" id="sensErroReset">Margem medida</button></div></div>
+                <p class="nota">Cada linha usa um ano-base com o destino no valor central; a faixa sombreada vai do menor ao maior resultado entre todos os cenários, incluindo o destino reduzido e aumentado pela margem de erro. Não é um intervalo de confiança. A margem é a medida para o estado, aplicada ao destino do município; o Seguro-Receita fica no valor central.</p>
+            </details>
+        </div>
         <div class="ficha-grid ficha-contexto">
             <div class="panel"><h3>Como ${nomeSeg} se compara</h3><p class="panel-sub">Posição na variação da receita em 2033.</p>${posicao}</div>
             <div class="panel"><h3>${nomeSeg} no mapa ${DE_UF[base.uf]}</h3><p class="panel-sub">Contornado; a cor mostra a variação em 2033.</p>
@@ -783,12 +799,135 @@ function renderFicha(cod, base, m) {
     });
     $('btnImprimir').addEventListener('click', () => { track('imprimir_ficha', {municipio: base.nome}); window.print(); });
     desenharGraficos(m);
+    iniciarSens(cod, base, m);
     carregarMalha().then(() => {
         if (ATUAL !== cod || !$('miniSvg')) return;
         MINI = criarMapa($('miniSvg'), $('miniWrap'), $('miniTip'), {camadaUF: false, todos: false, uf: base.uf, nivel: 'muni', aoClicar: c => abrirMunicipio(c)});
         MINI.destacar(cod);
     }).catch(() => { const w = $('miniWrap'); if (w) w.innerHTML = '<p class="nota">O mapa não pôde ser carregado agora.</p>'; });
     $('fichaTitulo').focus({preventScroll: true});
+}
+
+/* ── sensibilidade: o mesmo teste do painel dos estados, agora por município ──
+   Com a reforma = residual×ref + histórico×φCPT×(1−ca) + destino×φdest×(1±erro) + repasse×(1−ca);
+   sem a reforma = ref × bolo projetado, em que ref é a fatia do município no ano-base escolhido. Com ref de 2025 e destino
+   central, reproduz a variação publicada. A fatia de cada ano é a de 2025 (coef_neutro) escalada pela receita real do
+   município naquele ano em relação a 2025 (série deflacionada da ficha; 2026 é a estimativa). A margem de erro do destino
+   é a medida para a UF (sensibilidade-uf.json). */
+let GSENS = null, SENS_UF = null, SENS_P = null;
+const SENSM = {refs: ['2019', '2025', '2026'], erro: null};
+const SENS_ESTILO = {'2019': ['#9c3d3d', [2, 4]], '2020': ['#8a6d3b', [10, 3, 2, 3]], '2021': ['#6b4c9a', [6, 3]], '2022': ['#00799a', [3, 3]],
+    '2023': ['#b5651d', [12, 4]], '2024': ['#7a7a7a', [1, 3]], '2026': ['#2e7d32', [8, 4]]};
+const fmtV = v => {
+    if (v == null || !isFinite(v)) return '—';
+    const p = Math.round(v * 10000) / 100;
+    return (p > 0 ? '+' : p < 0 ? '−' : '') + Math.abs(p).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '%';
+};
+const fmtErro = e => (e * 100).toLocaleString('pt-BR', {minimumFractionDigits: 1, maximumFractionDigits: 1}) + '%';
+
+function sensRefs(m) {
+    const h = m.historico_por_ano || {}, h25 = h['2025'] && h['2025'].total_reais_2025, out = {};
+    if (!h25) return out;
+    const c0 = m.coef_neutro_pct / 100;
+    ANOS_HIST.forEach(a => { if (h[a] && h[a].total_reais_2025 > 0) out[a] = c0 * h[a].total_reais_2025 / h25; });
+    if (m.estimativa_2026 && m.estimativa_2026.total_reais_2025 > 0) out['2026'] = c0 * m.estimativa_2026.total_reais_2025 / h25;
+    out['2025'] = c0;
+    return out;
+}
+function sensVar(P, refKey, mult, ano) {
+    const s = P.nac[ano], ref = P.ref[refKey];
+    const pos = s.icms_iss_residual * ref + s.ibs_historico * P.cpt * (1 - s.ca) + s.ibs_destino_liquido * P.pleno * (1 + mult) + (P.rep[ano] || 0) * (1 - s.ca);
+    return pos / (ref * s.bolo_projetado) - 1;
+}
+function sensCalc(P, refs, erro) {
+    const linhas = {};
+    refs.forEach(r => { linhas[r] = ANOS.map(a => ({lo: sensVar(P, r, -erro, a), c: sensVar(P, r, 0, a), hi: sensVar(P, r, erro, a)})); });
+    const banda = ANOS.map((a, i) => { const vs = refs.flatMap(r => [linhas[r][i].lo, linhas[r][i].c, linhas[r][i].hi]); return {min: Math.min(...vs), max: Math.max(...vs)}; });
+    return {linhas, banda};
+}
+/* Quanto o destino teria de diferir do estimado para a variação central (ref. 2025) ser zero; negativo = menor. */
+function sensVirada(P, ano) {
+    const s = P.nac[ano], ref = P.ref['2025'];
+    const alvo = ref * s.bolo_projetado - s.icms_iss_residual * ref - s.ibs_historico * P.cpt * (1 - s.ca) - (P.rep[ano] || 0) * (1 - s.ca);
+    const dest = s.ibs_destino_liquido * P.pleno;
+    return dest > 0 ? alvo / dest - 1 : null;
+}
+
+function iniciarSens(cod, base, m) {
+    const caixa = $('painelSens');
+    if (!caixa || !NAC || !NAC.projecao || typeof Chart === 'undefined') return;
+    const ref = sensRefs(m);
+    if (!ref['2025'] || !(m.coef_neutro_pct > 0)) return;
+    SENS_UF = SENS_UF || getJSON('/data/sensibilidade-uf.json').catch(() => null);
+    SENS_UF.then(d => {
+        if (ATUAL !== cod || !$('painelSens')) return;
+        const u = d && d.por_uf && d.por_uf[base.uf];
+        if (!u) return;
+        const nac = {}; NAC.projecao.forEach(r => { nac[String(r.ano)] = r; });
+        if (!ANOS.every(a => nac[a])) return;
+        SENS_P = {nac, ref, cpt: m.coef_cpt_pct / 100, pleno: m.coef_pleno_pct / 100, rep: m.repasse_seguro_receita_por_ano || {}, medido: u.incerteza_rel, nome: base.nome};
+        SENSM.erro = null;
+        SENSM.refs = ['2019', '2025', '2026'].filter(r => ref[r]);
+        $('sensChips').innerHTML = Object.keys(ref).sort().map(r =>
+            `<button type="button" class="sens-chip" data-ref="${r}" aria-pressed="false">${r}${r === '2026' ? ' (est.)' : ''}</button>`).join('');
+        document.querySelectorAll('#sensChips .sens-chip').forEach(b => b.addEventListener('click', () => {
+            const r = b.dataset.ref; if (r === '2025') return;
+            SENSM.refs = SENSM.refs.includes(r) ? SENSM.refs.filter(x => x !== r) : SENSM.refs.concat(r);
+            track('sens_ano_base', {municipio: base.nome, ano: r}); desenharSens();
+        }));
+        $('sensErro').addEventListener('input', e => { SENSM.erro = Number(e.target.value) / 100; desenharSens(); });
+        $('sensErroReset').addEventListener('click', () => { SENSM.erro = null; desenharSens(); });
+        $('painelSens').hidden = false;
+        desenharSens();
+    });
+}
+
+function desenharSens() {
+    const P = SENS_P; if (!P || !$('gSens')) return;
+    if (!SENSM.refs.includes('2025')) SENSM.refs = SENSM.refs.concat('2025');
+    const refs = SENSM.refs.slice().sort(), erro = SENSM.erro == null ? P.medido : SENSM.erro;
+    const calc = sensCalc(P, refs, erro), i = ANOS.length - 1, a = ANOS[i];
+    const c = calc.linhas['2025'][i].c, b = calc.banda[i], eps = 0.00005;
+    document.querySelectorAll('#sensChips .sens-chip').forEach(x => x.setAttribute('aria-pressed', refs.includes(x.dataset.ref) ? 'true' : 'false'));
+    $('sensErro').value = String(Math.round(erro * 1000) / 10);
+    $('sensErroValor').textContent = '±' + fmtErro(erro);
+    $('sensErroReset').disabled = SENSM.erro == null;
+
+    const nome = esc(P.nome), cruza = b.min <= eps && b.max >= -eps;
+    const v = sensVirada(P, a);
+    let frase = b.min > eps ? `Em ${a}, mesmo com outros anos-base e outro consumo no destino, <b>${nome} segue com ganho</b>: de ${fmtV(b.min)} a ${fmtV(b.max)}.`
+        : b.max < -eps ? `Em ${a}, mesmo com outros anos-base e outro consumo no destino, <b>${nome} segue com perda</b>: de ${fmtV(b.min)} a ${fmtV(b.max)}.`
+        : `Em ${a}, o resultado de ${nome} vai de <b>${fmtV(b.min)} a ${fmtV(b.max)}</b> conforme as hipóteses: <b>o sinal depende delas</b>.`;
+    frase += ` Variação central: ${fmtV(c)}.`;
+    if (v != null && v > -1) {
+        const q = Math.abs(v) * 100;
+        frase += ` Para zerar a variação, o consumo no destino teria de ser ${q > 100 ? 'maior que o dobro do' : q.toLocaleString('pt-BR', {maximumFractionDigits: 0}) + '% ' + (v > 0 ? 'maior' : 'menor') + ' que o'} estimado (margem medida: ±${fmtErro(P.medido)}).`;
+    }
+    $('sensTexto').innerHTML = frase;
+
+    const pc = x => Math.round(x * 10000) / 100;
+    const linha = {borderWidth: 2, tension: 0.1, pointRadius: 0, pointHoverRadius: 5, pointBorderWidth: 2, pointBorderColor: '#fff', hitRadius: 14};
+    const ds = [
+        {label: 'Faixa entre os cenários', data: calc.banda.map(x => pc(x.max)), borderWidth: 0, pointRadius: 0, pointHoverRadius: 0, hitRadius: 0, backgroundColor: 'rgba(31,42,85,.14)', fill: '+1', tension: 0.1},
+        {label: 'min', data: calc.banda.map(x => pc(x.min)), borderWidth: 0, pointRadius: 0, pointHoverRadius: 0, hitRadius: 0, fill: false, tension: 0.1}
+    ];
+    refs.filter(r => r !== '2025').forEach(r => {
+        const e = SENS_ESTILO[r] || ['#7a7a7a', [3, 3]];
+        ds.push(Object.assign({label: 'Base ' + r + (r === '2026' ? ' (est.)' : ''), data: calc.linhas[r].map(x => pc(x.c)), borderColor: e[0], backgroundColor: e[0], borderDash: e[1]}, linha, {borderWidth: 1.8}));
+    });
+    ds.push(Object.assign({label: 'Base 2025 (a do painel)', data: calc.linhas['2025'].map(x => pc(x.c)), borderColor: '#1f2a55', backgroundColor: '#1f2a55', pointBackgroundColor: '#1f2a55', pointRadius: 4}, linha, {pointRadius: 4, borderWidth: 3}));
+
+    const estreito = $('gSens').parentElement.clientWidth < 520;
+    if (GSENS) GSENS.destroy();
+    GSENS = new Chart($('gSens'), {
+        type: 'line', data: {labels: ANOS, datasets: ds},
+        options: {responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false},
+            plugins: {legend: {position: 'bottom', labels: {boxWidth: 26, boxHeight: 2, padding: estreito ? 10 : 16, color: '#141414', font: {size: 11}, filter: it => it.text !== 'min'}},
+                tooltip: {filter: it => it.dataset.label !== 'min' && it.dataset.label !== 'Faixa entre os cenários', callbacks: {label: c => ' ' + c.dataset.label + ': ' + fmtV(c.parsed.y / 100)}}},
+            scales: {y: {grid: {color: ctx => ctx.tick && ctx.tick.value === 0 ? '#8a98a3' : '#e9edf0', drawTicks: false}, border: {display: false}, grace: '10%',
+                    ticks: {callback: x => (x > 0 ? '+' : x < 0 ? '−' : '') + Math.abs(x).toLocaleString('pt-BR', {maximumFractionDigits: 1}) + (x === 0 ? '' : '%'), color: '#6b6b6b', font: {size: 11}, padding: 8}},
+                x: {grid: {display: false}, border: {color: '#c8d0d6'}, ticks: {font: {size: 11}, color: '#6b6b6b', padding: 6}}}}
+    });
 }
 
 const COMP_ROTULOS = [['origem', 'ISS e ICMS residuais', '#858384'], ['cpt', 'IBS pelo critério histórico', '#1f2a55'], ['destino', 'IBS por destino', '#cfad56'], ['seguro', 'Seguro-Receita', '#2f7f7a']];

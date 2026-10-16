@@ -600,3 +600,27 @@ html, body { overflow-x: clip; }
 #formBuscaMemo .busca-ir { padding: .55rem 1.1rem; font-size: .92rem; }
 #buscaMuni { padding-right: 4rem; }
 #buscaMemo { padding-right: 5rem; }
+
+/* sensibilidade na ficha */
+.canvas-sens { height: 340px; margin-top: 1rem; }
+@media (max-width: 560px) { .canvas-sens { height: 360px; } }
+#painelSens .leitura { margin-top: .8rem; }
+.sens-ajuste { margin-top: 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; }
+.sens-ajuste summary { list-style: none; cursor: pointer; padding: .7rem 1rem; font: 700 .9rem var(--font-head); color: var(--navy); display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.sens-ajuste summary::-webkit-details-marker { display: none; }
+.sens-ajuste summary::after { content: ''; width: .5rem; height: .5rem; border-right: 2px solid var(--navy); border-bottom: 2px solid var(--navy); transform: rotate(45deg); transition: transform .15s; flex: none; }
+.sens-ajuste[open] summary::after { transform: rotate(-135deg); }
+.sens-ajuste[open] summary { border-bottom: 1px solid var(--line); }
+.sens-ajuste > :not(summary) { margin-inline: 1rem; }
+.sens-ajuste > :last-child { margin-bottom: 1rem; }
+.sens-ctl { margin-top: .9rem; }
+.sens-ctl label, .sens-lab { display: block; font: 700 .85rem var(--font-body); color: var(--ink); margin-bottom: .45rem; }
+.sens-chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.sens-chip { font: 600 .85rem var(--font-body); padding: .4rem .8rem; border-radius: 999px; background: #fff; color: var(--ink-soft); border: 1px solid #b9bdd0; cursor: pointer; }
+.sens-chip[aria-pressed="true"] { background: var(--navy); color: #fff; border-color: var(--navy); }
+.sens-chip[data-ref="2025"] { cursor: default; }
+.sens-slider { display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; }
+.sens-slider input[type=range] { flex: 1 1 160px; min-width: 0; accent-color: var(--navy); }
+.sens-slider span { font: 700 .9rem var(--font-body); min-width: 3.4rem; }
+@media (pointer: coarse) { .sens-chip { min-height: 40px; } }
+@media print { .sens-ajuste > :not(summary) { display: block !important; } }
