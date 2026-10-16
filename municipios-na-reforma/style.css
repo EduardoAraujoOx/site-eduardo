@@ -278,28 +278,8 @@ table.dados td.nome { text-align: left; } table.dados td.nome small { color: #6b
 .foot-in img { height: 58px; width: auto; flex: none; }
 @media (max-width: 600px) { .foot-in { flex-direction: column; align-items: flex-start; } }
 
-/* ── conversão: entra depois do dado, com o número do município ── */
-.tab-link { margin-left: auto; align-self: center; flex: none; color: #ecd28a; font: 600 .85rem var(--font-head); text-decoration: none; padding: .5rem .2rem; white-space: nowrap; }
-.tab-link:hover { color: #fff; text-decoration: underline; }
-.cta-inline { display: flex; justify-content: space-between; align-items: center; gap: 1rem 1.5rem; flex-wrap: wrap; background: #fbf7ea; border: 1px solid #eadfb8; border-left: 4px solid var(--gold); border-radius: var(--radius); padding: .9rem 1.2rem; margin-bottom: 1.2rem; }
-.cta-inline p { margin: 0; font-size: .95rem; max-width: 44rem; color: var(--ink); }
-.cta-inline p strong { color: var(--navy); }
-.ladder { background: #fff; border: 1px solid var(--line); border-top: 3px solid var(--gold); border-radius: var(--radius); padding: 1.3rem 1.4rem; }
-.ladder h3 { font-size: 1.05rem; margin-bottom: 1rem; }
-.ladder-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
-@media (max-width: 760px) { .ladder-cols { grid-template-columns: 1fr; } }
-.ladder-col h4 { font: 700 .72rem var(--font-body); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 .5rem; }
-.ladder-col.mais h4 { color: var(--gold-deep); }
-.ladder-col ul { list-style: none; margin: 0; padding: 0; font-size: .93rem; }
-.ladder-col li { padding: .4rem 0 .4rem 1.4rem; border-bottom: 1px solid #efeee9; position: relative; color: var(--ink-soft); }
-.ladder-col li::before { content: '✓'; position: absolute; left: 0; color: var(--pos); font-weight: 700; }
-.ladder-col.mais li { color: var(--ink); }
-.ladder-col.mais li::before { content: '+'; color: var(--gold-deep); }
-.ladder-fim { display: flex; align-items: center; gap: .8rem 1.2rem; flex-wrap: wrap; margin-top: 1.1rem; }
-.ladder-fim small { color: var(--ink-soft); font-size: .84rem; }
 .print-credito { display: none; }
-@media (pointer: coarse) { .toggle button, .controles select, .btn-sm, .tab-btn, .tab-link { min-height: 44px; } }
-@media (max-width: 640px) { .tab-link { display: none; } }
+@media (pointer: coarse) { .toggle button, .controles select, .btn-sm, .tab-btn, .tab-mais-btn { min-height: 44px; } }
 
 /* ── impressão: a ficha vira um documento ── */
 @media print {
@@ -461,3 +441,40 @@ table.dados th.nome { text-align: left; }
 .servico-grade .servico-txt h3:not(.servico-titulo) { margin-top: 0; }
 @media (max-width: 860px) { .servico-grade { grid-template-columns: 1fr; } }
 @media (max-width: 760px) { .livro-topo { grid-template-columns: 1fr; padding: 1.1rem; } .livro-topo .livro-capa { max-width: 200px; } }
+
+
+/* ── menu: no celular, as três abas principais e um "Mais" que abre as demais ── */
+.tab-mais { display: contents; }
+.tab-mais-lista { display: contents; }
+.tab-mais-btn { display: none; }
+.tab-mais-btn svg { margin-left: .2rem; vertical-align: .05em; transition: transform .15s; }
+.tab-mais.aberto .tab-mais-btn svg { transform: rotate(180deg); }
+@media (max-width: 700px) {
+    .tabnav-in { overflow: visible; position: relative; gap: 0; justify-content: space-between; }
+    .tabnav-in > .tab-btn { padding-inline: .6rem; font-size: .88rem; }
+    .tab-mais { display: block; }
+    .tab-mais-btn { display: inline-flex; align-items: center; background: none; border: 0; border-bottom: 3px solid transparent; color: #dfe3f4; font: 600 .88rem var(--font-head); padding: .95rem .6rem .8rem; cursor: pointer; white-space: nowrap; }
+    .tab-mais-btn.active { color: #fff; background: var(--navy); border-bottom-color: var(--gold); }
+    .tab-mais-lista { display: none; position: absolute; right: 0; top: 100%; min-width: 14rem; background: var(--navy-soft); border-radius: 0 0 var(--radius) var(--radius); box-shadow: 0 10px 24px rgba(0,0,0,.35); z-index: 60; }
+    .tab-mais.aberto .tab-mais-lista { display: block; }
+    .tab-mais-lista .tab-btn { display: block; width: 100%; text-align: left; border-bottom: 1px solid rgba(255,255,255,.1); border-left: 3px solid transparent; padding: .9rem 1.1rem; font-size: .95rem; }
+    .tab-mais-lista .tab-btn.active { border-left-color: var(--gold); border-bottom-color: rgba(255,255,255,.1); }
+}
+
+/* ── botão "Ver ficha" na busca da visão geral ── */
+.search-barra .busca-ir { position: absolute; right: .35rem; top: 50%; transform: translateY(-50%); min-height: 0; }
+.search-barra #busca { padding-right: 6.2rem; }
+
+/* ── cabeçalho enxuto no celular ── */
+@media (max-width: 700px) {
+    .masthead .sub { display: none; }
+    .masthead h1 { font-size: 1.3rem; }
+}
+
+/* ── WhatsApp flutuante ── */
+.zap { position: fixed; right: 1rem; bottom: 1rem; z-index: 50; display: inline-flex; align-items: center; gap: .55rem; background: #1fa855; color: #fff; text-decoration: none; font: 700 .9rem var(--font-head); padding: .75rem 1.05rem .75rem .85rem; border-radius: 999px; box-shadow: 0 6px 18px rgba(0,0,0,.28); }
+.zap[hidden] { display: none; }
+.zap:hover { background: #178f49; }
+.zap:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+@media (max-width: 700px) { .zap { padding: .8rem; } .zap-txt { display: none; } }
+@media print { .zap { display: none !important; } }

@@ -31,11 +31,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=9">
+<link rel="stylesheet" href="style.css?v=10">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
-<script src="memoria.js?v=9" defer></script>
-<script src="app.js?v=9" defer></script>
+<script src="memoria.js?v=10" defer></script>
+<script src="app.js?v=10" defer></script>
 </head>
 <body>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -60,10 +60,14 @@
         <button class="tab-btn active" data-view="visao-geral" type="button">Visão geral</button>
         <button class="tab-btn" data-view="municipio" type="button">Município</button>
         <button class="tab-btn" data-view="rankings" type="button">Rankings</button>
-        <button class="tab-btn" data-view="memoria" type="button">Memória de cálculo</button>
-        <button class="tab-btn" data-view="metodologia" type="button">Metodologia</button>
-        <button class="tab-btn" data-view="vertex" type="button">Para a sua prefeitura</button>
-        <a class="tab-link" href="#" data-ir="vertex">Fale com a Vertex →</a>
+        <div class="tab-mais" id="tabMaisBox">
+            <button class="tab-mais-btn" id="tabMais" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="tabMaisLista">Mais <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
+            <div class="tab-mais-lista" id="tabMaisLista">
+                <button class="tab-btn" data-view="memoria" type="button">Memória de cálculo</button>
+                <button class="tab-btn" data-view="metodologia" type="button">Metodologia</button>
+                <button class="tab-btn" data-view="vertex" type="button">Para a sua prefeitura</button>
+            </div>
+        </div>
     </div>
 </nav>
 
@@ -79,6 +83,7 @@
                 <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
                 <input id="busca" type="text" inputmode="search" placeholder="Buscar município (ex.: Serra)" role="combobox" aria-expanded="false" aria-controls="sugestoes" aria-autocomplete="list" disabled>
                 <ul class="suggest" id="sugestoes" role="listbox" aria-label="Municípios encontrados" hidden></ul>
+                <button type="submit" class="btn btn-gold btn-sm busca-ir" id="btnVerFicha">Ver ficha</button>
             </form>
             <div class="controles">
                 <label class="sr-only" for="mapaUF">Estado</label>
@@ -325,6 +330,11 @@
         <p><strong>Municípios na Reforma</strong> é uma iniciativa da Vertex Advisory. Estimativas próprias e independentes, com dados públicos (SICONFI/STN, IBGE, Censo e POF); não substituem projeções oficiais do Comitê Gestor do IBS ou da União. Dados de referência: exercício DCA/SICONFI 2025. <a href="#" data-ir="privacidade">Política de privacidade</a>.</p>
     </div>
 </footer>
+
+<a class="zap" id="zap" href="#" target="_blank" rel="noopener" hidden aria-label="Falar com a Vertex pelo WhatsApp">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2a9.9 9.9 0 00-8.5 14.95L2 22l5.2-1.5A9.9 9.9 0 1012.04 2zm0 1.8a8.1 8.1 0 11-4.3 14.96l-.3-.2-3.1.9.9-3-.2-.3A8.1 8.1 0 0112.04 3.8zM8.7 7.4c-.2 0-.5.1-.7.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.2 5 4.4 2.5 1 3 .8 3.5.7.6 0 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4l-.4-.2-1.9-.9c-.3-.1-.5-.1-.7.1l-.9 1.1c-.1.2-.3.2-.6.1-.3-.2-1.2-.4-2.300-1.4-.8-.8-1.400-1.700-1.500-2-.2-.3 0-.4.1-.6l.4-.5.3-.4c.1-.2.1-.4 0-.5l-.9-2.100c-.2-.6-.5-.5-.7-.5z"/></svg>
+    <span class="zap-txt">Fale com a Vertex</span>
+</a>
 
 </body>
 </html>
