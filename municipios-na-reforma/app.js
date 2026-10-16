@@ -7,7 +7,7 @@
 
 /* ── CONFIGURAÇÃO COMERCIAL: preencher antes da campanha ─────────────────── */
 const CONFIG = {
-    whatsapp: '',   // somente dígitos com DDI e DDD, ex.: '5527999999999'
+    whatsapp: '5527988361923',   // somente dígitos com DDI e DDD, ex.: '5527999999999'
     email: '',      // ex.: 'fale@municipiosnareforma.com.br'
     gaId: '',       // ex.: 'G-XXXXXXXXXX' (Google Analytics 4), opcional
     razaoSocial: '', // ex.: 'Vertex Advisory Ltda.', aparece na política de privacidade
@@ -98,10 +98,22 @@ function mostrarVisao(v) {
         b.classList.toggle('active', on);
         if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
     });
+    const dentro = !!document.querySelector('.tab-mais-lista .tab-btn.active');         // aba aberta está no menu "Mais"
+    $('tabMais').classList.toggle('active', dentro);
+    fecharMais();
     window.scrollTo({top: 0});
 }
+function fecharMais() { $('tabMaisBox').classList.remove('aberto'); $('tabMais').setAttribute('aria-expanded', 'false'); }
+$('tabMais').addEventListener('click', e => {
+    e.stopPropagation();
+    const aberto = $('tabMaisBox').classList.toggle('aberto');
+    $('tabMais').setAttribute('aria-expanded', aberto ? 'true' : 'false');
+});
+document.addEventListener('click', e => { if (!$('tabMaisBox').contains(e.target)) fecharMais(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharMais(); });
 document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => {
     mostrarVisao(b.dataset.view); track('aba', {aba: b.dataset.view});
+    if (b.dataset.view === 'municipio') municipioInicial();
     if (b.dataset.view === 'memoria') renderMemoria();
     if (b.dataset.view === 'rankings') renderRankUF();
 }));
@@ -134,7 +146,7 @@ function iniciar(idx, res, nac) {
         $('mapaWrap').hidden = tabela; $('mapaLegenda').hidden = tabela; $('mapaTabela').hidden = !tabela;
     }));
 
-    ativarBusca($('busca'), $('sugestoes'), $('formBusca'), cod => abrirMunicipio(cod), v => LOCAL && v === LOCAL.rotulo ? LOCAL.cod : null);
+    ativarBusca($('busca'), $('sugestoes'), $('formBusca'), cod => abrirMunicipio(cod), v => LOCAL && (v === LOCAL.rotulo || !v.trim()) ? LOCAL.cod : null);
     ativarBusca($('buscaMuni'), $('sugestoesMuni'), $('formBuscaMuni'), cod => abrirMunicipio(cod));
     ativarBusca($('buscaMemo'), $('sugestoesMemo'), $('formBuscaMemo'), cod => abrirMemoria(cod));
     $('dicaBusca').textContent = '';
@@ -478,6 +490,14 @@ function sugerirLocal(cod, origem) {
     if (!campo.value || campo.value === anterior) campo.value = m.nome;
 }
 
+/* A aba Município nunca abre vazia: usa o município localizado; sem cidade, a capital do estado estimado. */
+const CAPITAIS = {AC:'1200401',AL:'2704302',AM:'1302603',AP:'1600303',BA:'2927408',CE:'2304400',ES:'3205309',GO:'5208707',MA:'2111300',MG:'3106200',MS:'5002704',MT:'5103403',PA:'1501402',PB:'2507507',PE:'2611606',PI:'2211001',PR:'4106902',RJ:'3304557',RN:'2408102',RO:'1100205',RR:'1400100',RS:'4314902',SC:'4205407',SE:'2800308',SP:'3550308',TO:'1721000'};
+function municipioInicial() {
+    if (ATUAL) return;
+    const cod = LOCAL ? LOCAL.cod : (UF_VISITANTE && CAPITAIS[UF_VISITANTE]);
+    if (cod && POR_COD[cod]) abrirMunicipio(cod, {semUrl: true});
+}
+
 $('busca').addEventListener('focus', e => { if (LOCAL && e.target.value === LOCAL.rotulo) e.target.select(); });
 
 /* ── mapa ── */
@@ -660,13 +680,7 @@ function renderFicha(cod, base, m) {
     const nota = v33 < -0.0005
         ? 'Perda estimada não é destino: ela depende de decisões de orçamento, de arrecadação própria e de legislação local que ainda podem ser tomadas.'
         : 'Ganho estimado também exige planejamento: a receita de destino depende de consumo e de compras públicas que variam, e a projeção precisa ser acompanhada.';
-    const resumo = Math.abs(v33) > 0.0005 ? `${fmtPct(v33)} (${fmtMoney(Math.abs(dif33))} por ano ${lado})` : 'praticamente igual ao cenário sem a reforma';
     const nomeSeg = esc(base.nome);
-    const convite = v33 < -0.0005
-        ? `<strong>Entenda de onde vem essa diferença.</strong> O diagnóstico de ${nomeSeg} detalha os ${fmtMoney(Math.abs(dif33))} por ano que a reforma tira do caixa em 2033 e propõe medidas de orçamento e de arrecadação.`
-        : v33 > 0.0005
-        ? `<strong>Um ganho também precisa de plano.</strong> O diagnóstico de ${nomeSeg} mostra o que sustenta os ${fmtMoney(Math.abs(dif33))} por ano a mais em 2033 e onde a projeção é mais frágil.`
-        : `<strong>Receita estável não é receita garantida.</strong> O diagnóstico de ${nomeSeg} testa a projeção com os dados da própria prefeitura.`;
 
     const linhas = ANOS.map(a => {
         const v = m.variacao_por_ano[a], d = m.pos_por_ano[a] - m.contrafactual_por_ano[a];
@@ -695,10 +709,6 @@ function renderFicha(cod, base, m) {
             <div class="canvas-box" style="height:320px"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano."></canvas></div>
             <p class="nota nota-grafico">O eixo salta de 2025 para 2029: a redução do ICMS e do ISS só começa em 2029 (ADCT, art. 128) e o modelo não projeta 2026–2028. Os dois cenários partem do valor de 2025. O eixo vertical não parte de zero, para que a diferença entre eles fique visível.</p></div>
         <div class="leitura"><p>${leitura}</p><p>${nota} Receita de referência: ISS mais cota-parte do ICMS, em R$ de 2025.</p></div>
-        <div class="cta-inline">
-            <p>${convite}</p>
-            <div class="botoes" id="ctaInlineBotoes" style="margin:0"></div>
-        </div>
         <div class="panel accent">
             <div class="panel-head"><div><h3>Como fica o ICMS/ISS na transição</h3><p class="panel-sub">Composição da receita projetada: quanto ainda vem do ICMS/ISS residual, quanto já é IBS pelos dois critérios, e quanto é Seguro-Receita.</p></div>
                 <div class="comp-controles">
@@ -728,22 +738,6 @@ function renderFicha(cod, base, m) {
             <span>Variação em 2033: <b>${fmtInt(posBR)}º</b> entre os ${fmtInt(ok.length)} municípios do país com dados confiáveis, do maior ganho à maior perda.</span>
             <span>Em ${base.uf}: <b>${fmtInt(posUF)}º</b> entre ${fmtInt(naUF.length)}.</span>`}
         </div>
-        <div class="ladder">
-            <h3>O que o painel mostra e o que o diagnóstico de ${nomeSeg} acrescenta</h3>
-            <div class="ladder-cols">
-                <div class="ladder-col"><h4>No painel, com dados públicos</h4><ul>
-                    <li>Variação estimada da receita até 2033</li>
-                    <li>Composição por componente do IBS e Seguro-Receita</li>
-                    <li>Coeficientes e memória de cálculo, passo a passo</li>
-                    <li>Posição entre os municípios do país e do estado</li></ul></div>
-                <div class="ladder-col mais"><h4>No diagnóstico, feito pela Vertex</h4><ul>
-                    <li>Premissas ajustadas com os dados da própria prefeitura</li>
-                    <li>Cenários para a legislação e a política de arrecadação local</li>
-                    <li>Reflexo no PPA, na LDO e na LOA</li>
-                    <li>Plano de ação e capacitação da equipe</li></ul></div>
-            </div>
-            <div class="ladder-fim"><div class="botoes" id="ctaFichaBotoes" style="margin:0"></div><small>Modelo e metodologia da Vertex Advisory.</small></div>
-        </div>
         <p class="print-credito">Municípios na Reforma, iniciativa da Vertex Advisory · municipiosnareforma.com.br${CONFIG.email ? ' · ' + CONFIG.email : ''}</p>`;
 
     $('btnMemoria').addEventListener('click', () => { track('abrir_memoria', {municipio: base.nome}); abrirMemoria(cod); });
@@ -753,8 +747,6 @@ function renderFicha(cod, base, m) {
         track('copiar_link', {municipio: base.nome});
     });
     $('btnImprimir').addEventListener('click', () => { track('imprimir_ficha', {municipio: base.nome}); window.print(); });
-    contatoBotoes($('ctaFichaBotoes'), base, resumo, 'fim');
-    contatoBotoes($('ctaInlineBotoes'), base, resumo, 'inline');
     desenharGraficos(m);
     carregarMalha().then(() => {
         if (ATUAL !== cod || !$('miniSvg')) return;
@@ -967,6 +959,22 @@ function contatoBotoes(alvo, base, resumo, local) {
 }
 contatoBotoes($('botoesContato'), null);
 
+/* Botão flutuante do WhatsApp: o canal comercial fica fora das fichas e dos dados. A mensagem leva o município em foco. */
+function iniciarZap() {
+    const zap = $('zap');
+    if (!CONFIG.whatsapp) return;
+    zap.hidden = false;
+    const mensagem = () => {
+        const m = municipioEmFoco();
+        return m ? 'Olá! Vim pelo painel Municípios na Reforma e gostaria de conversar sobre o diagnóstico da reforma tributária para ' + m.nome + '/' + m.uf + '.'
+                 : 'Olá! Vim pelo painel Municípios na Reforma e gostaria de conversar sobre o diagnóstico da reforma tributária para a minha prefeitura.';
+    };
+    const atualizar = () => { zap.href = 'https://wa.me/' + CONFIG.whatsapp + '?text=' + encodeURIComponent(mensagem()); };
+    atualizar();
+    ['pointerdown', 'focus', 'mouseover'].forEach(ev => zap.addEventListener(ev, atualizar));      // o link já sai atualizado no toque ou no clique
+    zap.addEventListener('click', () => { atualizar(); const m = municipioEmFoco(); track('clique_contato', {canal: 'whatsapp', municipio: m ? m.nome : 'geral', local: 'flutuante'}); });
+}
+
 /* ── formulários: pedido de informações sobre os serviços e cadastro do livro ──
    Mandam um e-mail de texto por /api/contato. Só aparecem quando a função informa que o envio está
    configurado na Vercel (RESEND_API_KEY e CONTATO_PARA); antes disso o portal não promete nada. */
@@ -979,6 +987,7 @@ const municipioEmFoco = () => {
     const cod = ATUAL || (LOCAL && LOCAL.cod);
     return cod && POR_COD[cod] ? POR_COD[cod] : null;
 };
+iniciarZap();
 function preencherMunicipioForms() {
     const m = municipioEmFoco();
     if (!m) return;
