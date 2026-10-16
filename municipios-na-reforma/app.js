@@ -745,13 +745,14 @@ function renderFicha(cod, base, m) {
             <div class="canvas-box canvas-serie"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano, em Detalhes do cálculo."></canvas></div>
 </div>
         <div class="panel accent">
-            <div class="panel-head"><div><h3>De onde vem a receita</h3><p class="panel-sub">Quanto ainda vem do ICMS e do ISS e quanto já vem do IBS, de 2029 a 2033.</p></div>
+            <div class="panel-head"><div><h3>De onde vem a receita</h3><p class="panel-sub">Quanto ainda vem do ISS e da cota-parte do ICMS e quanto já vem do IBS, de 2029 a 2033.</p></div>
                 <div class="comp-controles">
                     <div class="toggle" id="compModo" role="group" aria-label="Unidade"><button type="button" data-modo="pct" class="active">%</button><button type="button" data-modo="rs">R$</button></div>
                     <div class="toggle" id="compViz" role="group" aria-label="Forma"><button type="button" data-viz="grafico" class="active">Gráfico</button><button type="button" data-viz="tabela">Tabela</button></div>
                 </div></div>
-            <div class="canvas-box" id="compBox"><canvas id="gComp" role="img" aria-label="Gráfico de barras empilhadas com a composição da receita projetada de 2029 a 2033: ICMS e ISS residuais, IBS pelo critério histórico, IBS por destino e Seguro-Receita. Os mesmos valores estão na aba Tabela."></canvas></div>
+            <div class="canvas-box" id="compBox"><canvas id="gComp" role="img" aria-label="Gráfico de barras empilhadas com a composição da receita projetada de 2029 a 2033: ISS e cota-parte do ICMS residuais, IBS pelo critério histórico, IBS por destino e Seguro-Receita. Os mesmos valores estão na aba Tabela."></canvas></div>
             <div class="table-wrap" id="compTabela" hidden></div>
+            <p class="nota nota-grafico">* Inclui a cota-parte dos municípios: na parte histórica, a cota-parte do ICMS que o município já recebia; no destino, os 25% do IBS do estado repassados às prefeituras. <a href="#" data-tab="metodologia" data-depois="met-3">Entenda →</a></p>
         </div>
         <div class="panel accent" id="painelSens" hidden>
             <h3>Quanto este resultado depende das hipóteses?</h3>
@@ -926,7 +927,7 @@ function desenharSens() {
     });
 }
 
-const COMP_ROTULOS = [['origem', 'ISS e ICMS residuais', '#858384'], ['cpt', 'IBS pelo critério histórico', '#1f2a55'], ['destino', 'IBS por destino', '#cfad56'], ['seguro', 'Seguro-Receita', '#2f7f7a']];
+const COMP_ROTULOS = [['origem', 'ISS e cota-parte do ICMS residuais', '#858384'], ['cpt', 'IBS pelo critério histórico*', '#1f2a55'], ['destino', 'IBS por destino*', '#cfad56'], ['seguro', 'Seguro-Receita', '#2f7f7a']];
 
 function desenharGraficos(m) {
     const tabelaComp = pct => {

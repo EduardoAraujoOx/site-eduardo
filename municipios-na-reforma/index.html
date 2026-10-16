@@ -31,11 +31,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20">
+<link rel="stylesheet" href="style.css?v=21">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
-<script src="memoria.js?v=20" defer></script>
-<script src="app.js?v=20" defer></script>
+<script src="memoria.js?v=21" defer></script>
+<script src="app.js?v=21" defer></script>
 </head>
 <body>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -255,6 +255,12 @@
             <div class="metodo-cartao destino"><h4>Participação pelo destino</h4><p>Reflete o novo modelo, no qual a arrecadação passa a ser atribuída ao local de consumo. Como ainda não existem dados observados de arrecadação do IBS por município, o modelo estima a distribuição territorial do consumo utilizando informações da Pesquisa de Orçamentos Familiares (POF 2017–2018), do Censo Demográfico de 2022, da PNAD, da população, da renda domiciliar e das compras governamentais.</p></div>
         </div>
         <p>A receita municipal também incorpora a participação dos municípios na parcela estadual do IBS, distribuída segundo os critérios constitucionais de população, educação, meio ambiente e repartição igualitária. Para os componentes sem indicadores específicos disponíveis, são utilizadas aproximações explicitadas na modelagem.</p>
+        <p>Hoje, os municípios recebem 25% do ICMS arrecadado pelo estado, a cota-parte do ICMS. Na reforma, esse elemento de cota-parte permanece nas duas partes do cálculo, e é por isso que o gráfico "De onde vem a receita" o assinala com um asterisco nas duas linhas do IBS.</p>
+        <div class="metodo-duo">
+            <div class="metodo-cartao"><h4>Na parte histórica*</h4><p>A cota-parte do ICMS que o município recebia entre 2019 e 2025 já integra a sua receita de referência, somada ao ISS, e por isso entra na sua fatia do IBS. A referência do estado é calculada sem essa parcela, para que ela não seja contada duas vezes.</p></div>
+            <div class="metodo-cartao destino"><h4>Na parte do destino*</h4><p>25% do IBS que cabe ao estado pelo consumo são repassados aos municípios do mesmo estado, com base na população e em outros critérios (CF, art. 158, IV, "b"; LC 227/2026, art. 128). O restante do destino pertence diretamente ao município onde o consumo ocorre, no lugar do ISS.</p></div>
+        </div>
+        <p class="metodo-nota">* No gráfico, a cota-parte não tem uma linha própria: está dentro das duas linhas do IBS, porque cada parte segue o seu critério de repartição, a média histórica de cada ente e o consumo no território.</p>
     </article>
 
     <article class="metodo-sec" id="met-4">
