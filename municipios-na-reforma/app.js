@@ -706,11 +706,6 @@ function renderFicha(cod, base, m) {
     const frase = neutra
         ? `Em 2033, a receita de <b>${nomeSeg}</b> fica praticamente igual à que teria sem a reforma.`
         : `Em 2033, <b>${nomeSeg}</b> deve arrecadar <b>${fmtMoney(Math.abs(dif33))} ${lado} por ano</b> do que arrecadaria sem a reforma.`;
-    const leitura = neutra
-        ? 'Receita estável não é receita garantida: a projeção precisa ser acompanhada.'
-        : v33 < 0
-        ? 'Uma perda estimada não é destino: depende de decisões de orçamento, de arrecadação própria e de legislação local.'
-        : 'Um ganho estimado também exige planejamento: o consumo e as compras públicas que o sustentam variam.';
 
     const linhas = ANOS.map(a => {
         const v = m.variacao_por_ano[a], d = m.pos_por_ano[a] - m.contrafactual_por_ano[a];
@@ -748,7 +743,7 @@ function renderFicha(cod, base, m) {
         </div>
         <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Receita realizada até 2025 e projetada de 2029 a 2033, com e sem a reforma, em R$ de 2025.</p>
             <div class="canvas-box canvas-serie"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano, em Detalhes do cálculo."></canvas></div>
-            <p class="leitura">${leitura}</p></div>
+</div>
         <div class="panel accent">
             <div class="panel-head"><div><h3>De onde vem a receita</h3><p class="panel-sub">Quanto ainda vem do ICMS e do ISS e quanto já vem do IBS, de 2029 a 2033.</p></div>
                 <div class="comp-controles">
