@@ -669,7 +669,7 @@ function municipiosDaUF(uf) {
 function coefTilesHtml(m) {
     return `<div class="coef-grid">
         <div class="coef"><span>Participação neutra, 2025</span><b>${fmtPctPlain(m.coef_neutro_pct)}</b><small>A fatia deste ente hoje, sem a reforma: o ponto de partida da comparação.</small></div>
-        <div class="coef"><span>Coeficiente histórico (φ<sup>CPT</sup>)</span><b>${fmtPctPlain(m.coef_cpt_pct)}</b><small>Média de 8 anos (2019–2026, com 2026 estimado) de ISS e cota-parte do ICMS do próprio ente. É o critério que ainda pesa mais até 2033. <a href="#" data-abrir="detHist">Ver a receita usada →</a></small></div>
+        <div class="coef"><span>Coeficiente histórico (φ<sup>CPT</sup>)</span><b>${fmtPctPlain(m.coef_cpt_pct)}</b><small>Média de 8 anos (2019–2026, com 2026 pelo RREO até agosto) de ISS e cota-parte do ICMS do próprio ente. É o critério que ainda pesa mais até 2033. <a href="#" data-abrir="detHist">Ver a receita usada →</a></small></div>
         <div class="coef"><span>Coeficiente de destino (φ<sup>dest</sup>)</span><b>${fmtPctPlain(m.coef_pleno_pct)}</b><small>Baseado em consumo (renda × POF) e compras públicas. Pesa cerca de 10% em 2033; por inteiro, só em 2078.</small></div>
     </div>`;
 }
@@ -704,11 +704,11 @@ function historicoTableHtml(historico, est26) {
         const c = k => `<td class="num">${h ? f(h[k]) : '—'}</td>`;
         return `<tr${cls ? ' class="' + cls + '"' : ''}><td>${rot}</td>${c('iss_reais_2025')}${c('cota_parte_reais_2025')}${c('total_reais_2025')}</tr>`;
     };
-    const rows = ANOS_HIST.map(a => linha(a, historico ? historico[a] : null)).join('') + linha('2026 (est.)', est26, 'est');
+    const rows = ANOS_HIST.map(a => linha(a, historico ? historico[a] : null)).join('') + linha(est26 && est26.origem === 'rreo' ? '2026 (RREO)' : '2026 (est.)', est26, 'est');
     const n = ANOS_HIST.length + 1;
     return `<div class="table-wrap"><table class="dados tab-hist"><thead><tr><th>Ano</th><th class="num">ISS</th><th class="num">Cota-parte do ICMS</th><th class="num">Total</th></tr></thead><tbody>${rows}
         <tr class="media"><td>Média 2019–2026</td><td class="num">${f(soma.iss / n)}</td><td class="num">${f(soma.cota / n)}</td><td class="num">${f((soma.iss + soma.cota) / n)}</td></tr></tbody></table></div>
-        <p class="nota">Valores em R$ ${mi ? 'milhões' : 'mil'} de 2025.${faltou ? ' Ano sem dado entra como zero na média.' : ''}</p>`;
+        <p class="nota">Valores em R$ ${mi ? 'milhões' : 'mil'} de 2025.${faltou ? ' Ano sem dado entra como zero na média.' : ''}${est26 ? (est26.origem === 'rreo' ? ' 2026: ISS observado no RREO de setembro de 2025 a agosto de 2026; cota-parte de 2025 ajustada pelo crescimento de janeiro a agosto, também do RREO.' : ' 2026: este município não publica o Anexo 3 do RREO; mantém a posição relativa de 2025 no estado.') : ''}</p>`;
 }
 
 function renderFicha(cod, base, m) {
@@ -812,7 +812,7 @@ function renderFicha(cod, base, m) {
             <details><summary>Seguro-Receita</summary>
                 <p class="panel-sub">Repasse compensatório para entes cuja receita pelo critério de destino fica abaixo do nível de nivelamento.</p>${seguroCardHtml(m.repasse_seguro_receita_por_ano, m.pos_por_ano)}</details>
             <details id="detHist"><summary>Receita histórica: ISS e cota-parte do ICMS</summary>
-                <p class="panel-sub">São as receitas do próprio município usadas no cálculo: o ISS que ele arrecada e a cota-parte do ICMS que recebe do estado (SICONFI, DCA). A média dos oito anos, com 2026 estimado, é a base do coeficiente histórico. <a href="#" data-abrir="detCoef">Ver o coeficiente histórico →</a></p>${historicoTableHtml(m.historico_por_ano, m.estimativa_2026)}</details>
+                <p class="panel-sub">São as receitas do próprio município usadas no cálculo: o ISS que ele arrecada e a cota-parte do ICMS que recebe do estado (SICONFI, DCA). A média dos oito anos, com 2026 pelo RREO até agosto, é a base do coeficiente histórico. <a href="#" data-abrir="detCoef">Ver o coeficiente histórico →</a></p>${historicoTableHtml(m.historico_por_ano, m.estimativa_2026)}</details>
             <button type="button" class="memo-link" id="btnMemoria">Ver a memória de cálculo deste município →</button>
         </div>
         <p class="print-credito">Municípios na Reforma, iniciativa da Vertex Advisory · municipiosnareforma.com.br${CONFIG.email ? ' · ' + CONFIG.email : ''}</p>`;
@@ -1135,14 +1135,15 @@ function renderMemoria() {
         let corpo;
         if (MEMO.secao === 'historico') {
             corpo = window.MemoriaCalculo.historico({
-                historico: m.historico_por_ano, campoTotal: 'total_reais_2025', coefPublicado: m.coef_cpt_pct,
+                historico: Object.assign({}, m.historico_por_ano, m.estimativa_2026 ? {'2026': m.estimativa_2026} : {}), origem2026: m.estimativa_2026 ? m.estimativa_2026.origem : null,
+                campoTotal: 'total_reais_2025', coefPublicado: m.coef_cpt_pct,
                 descricaoReferencia: 'Para o município, a receita de referência é o ISS bruto declarado ao SICONFI mais a cota-parte de ICMS recebida do estado.',
                 colunas: [{rotulo: 'ISS bruto', campo: 'iss_reais_2025'}, {rotulo: '+ Cota-parte de ICMS', campo: 'cota_parte_reais_2025'}, {rotulo: '= Referência', campo: 'total_reais_2025', total: true}]
             });
         } else if (MEMO.secao === 'destino') {
             corpo = window.MemoriaCalculo.destinoMuni(memo.refs, m, cod);
         } else {
-            corpo = window.MemoriaCalculo.seguro(memo.seguro_municipios[cod] || null, m.receita_media_referencia_7anos, 'municipal');
+            corpo = window.MemoriaCalculo.seguro(memo.seguro_municipios[cod] || null, m.receita_media_referencia, 'municipal');
         }
         alvo.innerHTML = `<p class="memo-ente">Memória de cálculo de<b>${esc(base.nome)} (${base.uf})</b></p>` + corpo +
             '<p class="nota" style="margin-top:.9rem">Os valores desta página vêm da mesma execução que alimenta as demais abas. Para a descrição das fontes e das fórmulas, veja a aba Metodologia.</p>';

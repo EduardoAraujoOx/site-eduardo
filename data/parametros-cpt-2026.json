@@ -1,10 +1,11 @@
 {
-  "tratamento": "nowcast",
+  "tratamento": "rreo",
   "opcoes": {
     "omitir": "média de 2019-2025 (7 anos); reproduz a Nota Técnica nº 02/2026 da SEFAZ-ES (v22)",
     "repetir": "média de 2019-2026 com 2026 igual a 2025 (tratamento da nota técnica do COMSEFAZ)",
-    "nowcast": "média de 2019-2026 com 2026 estimado: ICMS (estado e cota-parte municipal) = 2025 x exp(mu_UF), mu_UF do nowcast do RREO de jan-ago (sensibilidade-nowcast-2026.json); ISS = 2025; participações renormalizadas para somar 100%"
+    "nowcast": "média de 2019-2026 com 2026 estimado: ICMS (estado e cota-parte municipal) = 2025 x exp(mu_UF), mu_UF do nowcast do RREO de jan-ago (sensibilidade-nowcast-2026.json); ISS = 2025; participações renormalizadas para somar 100%",
+    "rreo": "como nowcast nos totais por UF (Σ municípios = agregado da UF; painel dos estados inalterado), com o RREO municipal (Anexo 03, SICONFI) redistribuindo o 2026 dentro de cada UF: ISS = observado de set/2025 a ago/2026; cota-parte = 2025 x crescimento de jan-ago; município sem o Anexo 03 mantém a posição relativa de 2025 no estado"
   },
-  "decisao": "Adotado em 2026-10-05 após backtest (data/teste-cpt-2026.py e data/teste-cpt-2026-municipios.py): erro médio da participação de 0,90% (omitir), 0,45% (repetir) e 0,24% (nowcast); nos municípios, a cota-parte segue a UF e o ISS repete 2025, sem nowcast municipal.",
+  "decisao": "Adotado em 2026-10-05 após backtest (data/teste-cpt-2026.py e data/teste-cpt-2026-municipios.py): erro médio da participação de 0,90% (omitir), 0,45% (repetir) e 0,24% (nowcast); nos municípios, a cota-parte segue a UF e o ISS repete 2025, sem nowcast municipal. Substituído em 2026-10-16 por 'rreo' após backtest em 2024 e 2025 com o RREO municipal (data/teste-rreo-2026.py): erro mediano da participação do município cai de 6,3-7,3% (repetir o ano anterior, como no ISS) para 2,0-2,4%.",
   "variavel_de_ambiente": "CPT_2026 (omitir | repetir | nowcast) sobrepõe este arquivo"
 }

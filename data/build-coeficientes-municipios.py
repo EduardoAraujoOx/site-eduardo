@@ -21,9 +21,9 @@ Cada ano é deflacionado por Índice_t = TotalBR_2025 / TotalBR_t, onde
 TotalBR = ICMS_BR + ISS_BR + FECOP_BR (DCA), igual à Tabela 3. A receita
 média de referência divide sempre pelo número de anos da média -- anos sem declaração
 contam como zero, mesma convenção do HTML, não são excluídos do denominador. A média é
-a de 2019-2026, com 2026 estimado (data/cpt2026.py; data/parametros-cpt-2026.json): a
-cota-parte de cada município segue o fator da UF (nowcast do ICMS pelo RREO; não há
-nowcast municipal) e o ISS repete 2025. O campo coeficiente_obs_2019_2025_pct traz a
+a de 2019-2026, com 2026 pelo RREO municipal (data/cpt2026.py; data/parametros-cpt-2026.json): ISS observado de
+set/2025 a ago/2026 e cota-parte = 2025 x crescimento de jan-ago, redistribuídos dentro de cada UF com os totais do nowcast;
+quem não tem o Anexo 03 do RREO mantém a posição relativa de 2025 no estado. O campo coeficiente_obs_2019_2025_pct traz a
 média só dos sete anos observados (igual à Nota Técnica nº 02/2026 da SEFAZ-ES).
 
 Uso:
@@ -107,6 +107,21 @@ def main():
             m = municipios.setdefault(cod, {"nome": v.get("ente"), "uf": uf, "dados": {}})
             m["dados"][ano] = {"iss": v.get("valor") or 0, "cota_dca": v.get("cota_parte_icms") or 0}
 
+    # 2026 pelo RREO (tratamento "rreo"): o ISS e a cota-parte de 2025 de cada município, como entram no modelo, são redistribuídos dentro da UF
+    # conforme o Anexo 03 do RREO; os totais por UF continuam os do nowcast (cpt2026.distribuir_2026)
+    dist26 = None
+    if cpt2026.tratamento() == "rreo":
+        r25_por_uf = {}
+        for cod, m in municipios.items():
+            dado = m["dados"].get(2025)
+            if not dado:
+                continue
+            uf = m["uf"]
+            cota_total, cota_alvo = cota_total_dca_uf[2025].get(uf), cota_alvo_uf[2025].get(uf)
+            cota_muni = cota_alvo * (dado["cota_dca"] / cota_total) if (cota_alvo is not None and cota_total) else dado["cota_dca"]
+            r25_por_uf.setdefault(uf, {})[cod] = (dado["iss"], cota_muni)
+        dist26 = cpt2026.distribuir_2026(r25_por_uf, fat26)
+
     resultado = {}
     soma_cpt_por_uf = {}
     soma_cpt_obs_por_uf = {}
@@ -134,6 +149,12 @@ def main():
         receita_media_obs = soma / len(ANOS)
         fi, fr = fat26.get(uf, (0.0, 0.0))
         soma26 = (r25[0] * fr + r25[1] * fi) if (r25 and n_anos > len(ANOS)) else 0.0   # defl. de 2025 = 1; sem dado em 2025, 2026 = 0
+        est26 = None
+        if dist26 is not None and cod in dist26 and n_anos > len(ANOS):
+            d26 = dist26[cod]
+            soma26 = d26["iss"] + d26["cota"]
+            est26 = {"tratamento": "rreo", "iss_reais_2025": d26["iss"], "cota_parte_reais_2025": d26["cota"], "total_reais_2025": soma26,
+                     "origem": d26["origem_iss"]}
         receita_media = (soma + soma26) / n_anos
         cpt = (receita_media / total_b) * 100
         cpt_obs = (receita_media_obs / total_b) * 100
@@ -147,6 +168,8 @@ def main():
             "receita_media_referencia_obs_2019_2025": receita_media_obs,
             "coeficiente_obs_2019_2025_pct": cpt_obs,
         }
+        if est26 is not None:
+            resultado[cod]["estimativa_2026"] = est26
         soma_cpt_por_uf[uf] = soma_cpt_por_uf.get(uf, 0.0) + cpt
         soma_cpt_obs_por_uf[uf] = soma_cpt_obs_por_uf.get(uf, 0.0) + cpt_obs
 
