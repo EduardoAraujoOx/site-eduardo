@@ -91,6 +91,7 @@ const GEO = {muni: null, uf: null, promessa: null};
 
 /* ── abas ── */
 function mostrarVisao(v) {
+    if (v === 'vertex') preencherMunicipioForms();
     document.querySelectorAll('.view').forEach(s => s.classList.toggle('active', s.id === 'view-' + v));
     document.querySelectorAll('.tab-btn').forEach(b => {
         const on = b.dataset.view === v;
@@ -986,9 +987,89 @@ function contatoBotoes(alvo, base, resumo, local) {
     if (!html.length && base) html.push('<a class="btn btn-gold btn-sm" href="#" data-ir="vertex">Falar com a Vertex</a>');
     alvo.innerHTML = html.join('') || '<span class="nota">Canal de contato em configuração.</span>';
     alvo.querySelectorAll('[data-contato]').forEach(a => a.addEventListener('click', () => track('clique_contato', {canal: a.dataset.contato, municipio: base ? base.nome : 'geral', local: local || 'aba'})));
-    alvo.querySelectorAll('[data-ir]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); track('clique_contato', {canal: 'aba_vertex', municipio: base ? base.nome : 'geral', local: local || 'aba'}); mostrarVisao(a.dataset.ir); }));
+    alvo.querySelectorAll('[data-ir]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); track('clique_contato', {canal: 'aba_vertex', municipio: base ? base.nome : 'geral', local: local || 'aba'}); if (a.dataset.ir === 'vertex') irParaContato(base, resumo); else mostrarVisao(a.dataset.ir); }));
 }
 contatoBotoes($('botoesContato'), null);
+
+/* ── formulários: contato com a Vertex e cadastro do livro ──
+   Mandam um e-mail de texto por /api/contato. Só aparecem quando a função informa que o envio está
+   configurado na Vercel (RESEND_API_KEY e CONTATO_PARA); antes disso o portal não promete nada. */
+let CONTATO_ATIVO = false;
+const T_FORM = {contato: Date.now(), livro: Date.now()};   // tempo desde o carregamento da página, para a armadilha de robôs (nunca reiniciado, para não descartar quem usa preenchimento automático)
+let MSG_AUTO = '';
+
+const municipioEmFoco = () => {
+    const cod = ATUAL || (LOCAL && LOCAL.cod);
+    return cod && POR_COD[cod] ? POR_COD[cod] : null;
+};
+function preencherMunicipioForms() {
+    const m = municipioEmFoco();
+    if (!m) return;
+    ['ctMunicipio', 'livMunicipio'].forEach(id => { const el = $(id); if (el && !el.value) el.value = m.nome + ' (' + m.uf + ')'; });
+}
+function irParaContato(base, resumo) {
+    mostrarVisao('vertex');
+    if (base && $('ctMsg')) {
+        $('ctMunicipio').value = base.nome + ' (' + base.uf + ')';
+        const msg = 'Olá! Escrevo da Prefeitura de ' + base.nome + '/' + base.uf + '. Vi no Municípios na Reforma que a variação estimada da receita em 2033 é ' + resumo + ', frente ao cenário sem a reforma, e gostaria de conversar sobre o diagnóstico da reforma tributária para o município.';
+        if (!$('ctMsg').value || $('ctMsg').value === MSG_AUTO) { $('ctMsg').value = msg; MSG_AUTO = msg; }
+    }
+    if (!$('painelContato').hidden) $('painelContato').scrollIntoView({behavior: 'smooth', block: 'start'});
+}
+
+function mostrarFormularios() {
+    $('btnLivro').hidden = !CONTATO_ATIVO;
+    $('livroEmBreve').hidden = CONTATO_ATIVO;
+    $('painelContato').hidden = !CONTATO_ATIVO;
+}
+
+function ligarFormulario(form, msgEl, tipo, aoEnviar) {
+    form.addEventListener('submit', async e => {
+        e.preventDefault();
+        const d = Object.fromEntries(new FormData(form).entries());
+        const erros = [];
+        const marca = (campo, ok) => { const el = form.elements[campo]; if (el) el.setAttribute('aria-invalid', ok ? 'false' : 'true'); if (!ok) erros.push(campo); };
+        marca('nome', (d.nome || '').trim().length >= 3);
+        marca('email', EMAIL_OK.test((d.email || '').trim()));
+        if (tipo === 'contato') marca('mensagem', (d.mensagem || '').trim().length >= 5);
+        msgEl.dataset.erro = '1';
+        if (erros.length) { msgEl.textContent = 'Confira os campos marcados.'; form.elements[erros[0]].focus(); return; }
+        if (!form.elements.aceite_privacidade.checked) { msgEl.textContent = 'Para continuar, aceite a política de privacidade.'; form.elements.aceite_privacidade.focus(); return; }
+        const botao = form.querySelector('button[type=submit]');
+        botao.disabled = true; msgEl.dataset.erro = '0'; msgEl.textContent = 'Enviando…';
+        try {
+            const r = await fetch('/api/contato', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({
+                tipo, nome: d.nome, email: d.email, cargo: d.cargo || '', telefone: d.telefone || '', municipio: d.municipio || '', mensagem: d.mensagem || '',
+                site: d.site || '', t: Date.now() - T_FORM[tipo], origem: tipo === 'livro' ? 'livro' : 'aba_vertex',
+                utm: [...new URLSearchParams(location.search)].filter(([k]) => k.indexOf('utm_') === 0).map(([k, v]) => k + '=' + v).join('&'),
+                aceite_privacidade: true
+            })});
+            if (!r.ok) throw new Error('contato ' + r.status);
+            track(tipo === 'livro' ? 'livro_cadastro' : 'contato_enviado', {municipio: d.municipio || ''});
+            aoEnviar(d);
+        } catch (err) {
+            console.error(err);
+            botao.disabled = false; msgEl.dataset.erro = '1';
+            msgEl.textContent = 'Não foi possível enviar agora. Tente de novo em instantes.';
+        }
+    });
+}
+
+function iniciarFormularios() {
+    ligarFormulario($('formLivro'), $('livMsg'), 'livro', d => {
+        $('formLivro').innerHTML = '<p class="form-ok" role="status"><strong>Cadastro recebido.</strong> Você vai receber o sumário do livro e as informações do lançamento em ' + esc(d.email) + '.</p>';
+    });
+    ligarFormulario($('formContato'), $('ctMsgStatus'), 'contato', d => {
+        $('formContato').innerHTML = '<p class="form-ok" role="status"><strong>Mensagem enviada.</strong> A resposta vai para ' + esc(d.email) + '.</p>';
+    });
+    $('btnLivro').addEventListener('click', () => {
+        const f = $('formLivro'), abrir = f.hidden;
+        f.hidden = !abrir; $('btnLivro').setAttribute('aria-expanded', String(abrir));
+        if (abrir) { preencherMunicipioForms(); track('livro_abrir', {}); $('livNome').focus(); }
+    });
+    getJSON('/api/contato').then(r => { CONTATO_ATIVO = !!(r && r.ativo); }).catch(() => { /* sem função: formulários ficam fora */ }).then(mostrarFormularios);
+}
+iniciarFormularios();
 $('btnVoltar').addEventListener('click', () => mostrarVisao('visao-geral'));
 if (CONFIG.razaoSocial) $('privControlador').textContent = CONFIG.razaoSocial + (CONFIG.cnpj ? ' (CNPJ ' + CONFIG.cnpj + ')' : '');
 if (CONFIG.email) $('privContato').textContent = CONFIG.email;
