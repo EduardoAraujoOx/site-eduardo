@@ -1036,19 +1036,10 @@ function irParaContato(base, resumo) {
     }
     abrirContato({rolar: true, semFoco: false});
 }
-function abrirLivro(interesse) {
-    const f = $('formLivro');
-    f.hidden = false; f.elements.interesse.value = interesse;
-    $('btnLivro').setAttribute('aria-expanded', 'true');
-    preencherMunicipioForms(); track('livro_abrir', {interesse});
-    f.scrollIntoView({behavior: 'smooth', block: 'nearest'});
-    $('livNome').focus({preventScroll: true});
-}
-
 function mostrarFormularios() {
     $('btnServico').hidden = !CONTATO_ATIVO;
     $('servicoEmBreve').hidden = CONTATO_ATIVO || !!(CONFIG.whatsapp || CONFIG.email);
-    $('livroAcoes').hidden = !CONTATO_ATIVO;
+    $('formLivro').hidden = !CONTATO_ATIVO;                  // o cadastro do livro já nasce aberto: sem clique extra
     $('livroEmBreve').hidden = CONTATO_ATIVO;
 }
 
@@ -1095,8 +1086,6 @@ function iniciarFormularios() {
         if ($('formContato').hidden) { track('servico_abrir', {}); abrirContato({}); }
         else { $('formContato').hidden = true; $('btnServico').setAttribute('aria-expanded', 'false'); }
     });
-    $('btnLivro').addEventListener('click', () => abrirLivro('lancamento'));
-    $('btnSumario').addEventListener('click', () => abrirLivro('sumario'));
     getJSON('/api/contato').then(r => { CONTATO_ATIVO = !!(r && r.ativo); }).catch(() => { /* sem função: formulários ficam fora */ }).then(mostrarFormularios);
 }
 iniciarFormularios();

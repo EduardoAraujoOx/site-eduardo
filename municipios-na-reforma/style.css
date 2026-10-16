@@ -452,3 +452,18 @@ table.dados th.nome { text-align: left; }
 .livro-acoes { display: flex; align-items: center; gap: .8rem 1.4rem; flex-wrap: wrap; margin-top: 1.2rem; }
 .livro { border-top: 3px solid var(--navy); }
 @media (max-width: 760px) { .servico { padding: 1.3rem 1.2rem; } }
+
+/* ── aba abre no livro, com o cadastro já aberto; serviço em duas colunas logo abaixo ── */
+.livro-topo { border-top: 3px solid var(--gold); padding: 1.4rem 1.8rem; align-items: start; grid-template-columns: minmax(180px, 280px) 1fr; }
+.livro-topo .livro-txt h3 { margin-bottom: .6rem; }
+.livro-topo .livro-txt p { margin-bottom: .7rem; font-size: .96rem; }
+.livro-topo .form-livro { margin-top: 1rem; padding-top: 1rem; max-width: none; gap: .7rem 1rem; }
+.livro-topo .form-nota { font-weight: 600; color: var(--ink); }
+.servico-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem 2.6rem; }
+.servico-grade .servico-txt { max-width: none; }
+.servico-titulo { font: 800 clamp(1.4rem, 3vw, 1.9rem)/1.15 var(--font-head); margin: 0 0 .6rem; }
+.servico .lide { margin: 0 0 1rem; }
+.servico { border-top: 3px solid var(--navy); }
+.servico-grade .servico-txt h3:not(.servico-titulo) { margin-top: 0; }
+@media (max-width: 860px) { .servico-grade { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .livro-topo { grid-template-columns: 1fr; padding: 1.1rem; } .livro-topo .livro-capa { max-width: 200px; } }
