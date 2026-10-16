@@ -234,7 +234,9 @@ def main():
         for ano in ANOS_HIST
     }
 
-    fi26, fr26, n_anos = cpt2026.fatores_uf(ref, "PR")     # 2026 estimado (cpt2026.py)
+    # 2026 estimado (cpt2026.py): distribuição municipal pelo RREO quando o tratamento é "rreo"
+    est26_pr, n_anos = cpt2026.est26_municipios_uf(ref, "PR", {c: (iss[c][2025], recon_cota[c][2025]) for c in names
+                                                            if iss[c].get(2025) is not None and recon_cota[c].get(2025) is not None})
     diag = {r["codigo_ibge"]: r for r in diag_rows}
     audited = {}
     reconstruction_rows = []
@@ -250,7 +252,7 @@ def main():
             else:
                 annual.append((i + cp) * deflator[ano])
 
-        est26 = 0.0 if (unresolved or n_anos == len(ANOS_HIST)) else iss[cod][2025] * fr26 + recon_cota[cod][2025] * fi26
+        est26 = 0.0 if unresolved or cod not in est26_pr else sum(est26_pr[cod])
         hist = None if unresolved else (sum(annual) + est26) / n_anos
         cpt = hist / total_2025 if hist is not None else None
         base = None

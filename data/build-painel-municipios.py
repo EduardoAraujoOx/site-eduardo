@@ -153,7 +153,9 @@ def main():
 
         # 2026 estimado (cpt2026.py): a cota-parte segue o fator da UF; o ISS repete 2025
         estimativa_2026 = None
-        if com_2026 and 2025 in historico_por_ano:
+        if com_2026 and cm.get("estimativa_2026"):
+            estimativa_2026 = cm["estimativa_2026"]       # tratamento "rreo": já calculada em build-coeficientes-municipios.py
+        elif com_2026 and 2025 in historico_por_ano:
             fi, fr = fat26.get(uf, (0.0, 0.0))
             h25 = historico_por_ano[2025]
             estimativa_2026 = {

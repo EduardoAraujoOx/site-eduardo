@@ -143,7 +143,9 @@ def main():
     total_2025 = total_nat[2025]
     deflator = {ano: (1.0 if ano == 2025 else total_2025 / total_nat[ano]) for ano in ANOS}
 
-    fi26, fr26, n_anos = cpt2026.fatores_uf(fold(ref), "PR")     # 2026 estimado: cota-parte segue a UF, ISS repete 2025
+    # 2026 estimado (cpt2026.py): distribuição municipal pelo RREO quando o tratamento é "rreo"
+    est26_pr, n_anos = cpt2026.est26_municipios_uf(fold(ref), "PR", {c: (iss[c][2025], recon_cota[c][2025]) for c in names
+                                                                   if iss[c].get(2025) is not None and recon_cota[c].get(2025) is not None})
     old_diag = {r["codigo_ibge"]: r for r in muni_diag}
     rows = []
     for cod, nome in names.items():
@@ -158,7 +160,7 @@ def main():
             else:
                 annual.append((i + cp) * deflator[ano])
 
-        est26 = 0.0 if (unresolved or n_anos == len(ANOS)) else iss[cod][2025] * fr26 + recon_cota[cod][2025] * fi26
+        est26 = 0.0 if unresolved or cod not in est26_pr else sum(est26_pr[cod])
         hist = None if unresolved else (sum(annual) + est26) / n_anos
         cpt = hist / total_2025 if hist is not None else None
         base = None
