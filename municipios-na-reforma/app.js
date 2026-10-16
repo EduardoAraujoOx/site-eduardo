@@ -383,16 +383,16 @@ function ativarBusca(inp, ul, form, aoEscolher, padrao) {
         const ufFiltro = mUF && NOMES_UF[mUF[1].toUpperCase()] ? mUF[1].toUpperCase() : null;
         const q = norm(ufFiltro ? inp.value.replace(mUF[0], '') : inp.value);
         if (q.length < 2) { fechar(); return; }
-        const comp = q.split(/\s+/);
+        const comp = q.split(/\s+/), ufPreferida = ufFiltro || (ESCOPO !== 'BR' ? ESCOPO : UF_VISITANTE);   // entre homônimos, o do estado de quem busca vem primeiro
         sugestoes = LISTA
             .filter(m => !ufFiltro || m.uf === ufFiltro)
             .map(m => {
                 const alvo = m.chave + ' ' + m.uf.toLowerCase();
                 if (!comp.every(c => alvo.includes(c))) return null;
-                return {m, ordem: m.chave.startsWith(q) ? 0 : m.chave.split(' ').some(w => w.startsWith(comp[0])) ? 1 : 2};
+                return {m, ordem: m.chave === q ? 0 : m.chave.startsWith(q) ? 1 : m.chave.split(' ').some(w => w.startsWith(comp[0])) ? 2 : 3};
             })
             .filter(Boolean)
-            .sort((a, b) => a.ordem - b.ordem || a.m.nome.localeCompare(b.m.nome, 'pt-BR'))
+            .sort((a, b) => a.ordem - b.ordem || (b.m.uf === ufPreferida) - (a.m.uf === ufPreferida) || a.m.nome.localeCompare(b.m.nome, 'pt-BR'))
             .slice(0, 8).map(x => x.m);
         ul.innerHTML = sugestoes.length
             ? sugestoes.map((m, i) => `<li role="option" id="${ul.id}-${i}" data-cod="${m.cod}" aria-selected="false">${esc(m.nome)}<small>${m.uf}</small></li>`).join('')
@@ -746,7 +746,6 @@ function renderFicha(cod, base, m) {
         </div>
         <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Receita realizada até 2025 e projetada de 2029 a 2033, com e sem a reforma, em R$ de 2025.</p>
             <div class="canvas-box canvas-serie"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano, em Detalhes do cálculo."></canvas></div>
-            <details class="como-ler"><summary>Por que o gráfico pula de 2025 para 2029?</summary><p>A redução do ICMS e do ISS só começa em 2029 (ADCT, art. 128) e o modelo não projeta 2026–2028. Os dois cenários partem do valor de 2025, e o eixo vertical não parte de zero, para que a diferença entre eles fique visível.</p></details>
             <p class="leitura">${leitura}</p></div>
         <div class="panel accent">
             <div class="panel-head"><div><h3>De onde vem a receita</h3><p class="panel-sub">Quanto ainda vem do ICMS e do ISS e quanto já vem do IBS, de 2029 a 2033.</p></div>

@@ -373,9 +373,6 @@ table.dados td.nome { text-align: left; } table.dados td.nome small { color: #6b
 .faixa-main .frase b { display: inline; font: 800 1em var(--font-body); color: var(--navy); margin: 0; letter-spacing: 0; }
 .faixa .kpi.destaque { border-top: 3px solid var(--gold); }
 .leitura { margin: 1rem 0 0; padding: .7rem 1rem; border-left: 3px solid var(--gold); background: #fbf7ea; border-radius: 0 var(--radius) var(--radius) 0; font-size: .95rem; color: var(--ink); }
-.como-ler { margin-top: .6rem; font-size: .86rem; color: var(--ink-soft); }
-.como-ler summary { cursor: pointer; color: var(--navy); font-weight: 600; }
-.como-ler p { margin: .4rem 0 0; }
 .pos-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; margin-bottom: .6rem; }
 .pos-item { background: #f7f6f2; border: 1px solid var(--line); border-radius: var(--radius); padding: .8rem .9rem; }
 .pos-item b { display: block; font: 800 1.8rem/1.05 var(--font-head); color: var(--navy); font-variant-numeric: tabular-nums; }
@@ -572,7 +569,7 @@ html, body { overflow-x: clip; }
 }
 @media print { .metodo-indice { display: none; } .metodo-sec { break-inside: avoid; } }
 
-@media print { .detalhes details > :not(summary) { display: block !important; } .como-ler { display: none; } }
+@media print { .detalhes details > :not(summary) { display: block !important; } .busca-ir { display: none; } }
 
 
 /* ── ficha: resumo em duas partes no computador e posição ao lado do mapa ── */
@@ -595,3 +592,11 @@ html, body { overflow-x: clip; }
 .ficha-contexto .map-wrapper { min-height: 0; }
 .ficha-contexto .map-wrapper svg { max-height: 320px; margin: 0 auto; }
 @media (max-width: 900px) { .ficha-contexto .pos-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ficha-contexto .pos-item { display: block; padding: .8rem .9rem; } .ficha-contexto .pos-item b { font-size: 1.8rem; min-width: 0; } .ficha-contexto .pos-item span { margin-top: .3rem; } }
+
+
+/* ── botão "Ir" dentro das buscas da ficha e da memória (a da visão geral tem o "Ver ficha") ── */
+#formBuscaMuni .busca-ir, #formBuscaMemo .busca-ir { position: absolute; right: .35rem; top: 50%; transform: translateY(-50%); min-height: 0; }
+#formBuscaMuni .busca-ir { padding-inline: .9rem; }
+#formBuscaMemo .busca-ir { padding: .55rem 1.1rem; font-size: .92rem; }
+#buscaMuni { padding-right: 4rem; }
+#buscaMemo { padding-right: 5rem; }
