@@ -61,13 +61,23 @@ function memoHistoricoHtml(ctx){
     const neutro = ref2025 != null ? ref2025 / totalBr * 100 : (neutroAproximado ? coef : null);
 
     const colunas = ctx.colunas;
-    const cab = colunas.map(c => `<th class="num">${c.rotulo}</th>`).join('');
+    // Com os fatores de ajuste (ctx.fatores), a tabela mostra a conta inteira: valor declarado, fator do ano e referência em R$ de 2025.
+    const fatores = ctx.fatores || null;
+    const cab = fatores
+        ? colunas.map(c => c.total ? '' : `<th class="num">${c.rotulo}</th>`).join('') + '<th class="num">= Referência (valores correntes)</th><th class="num">× Fator de ajuste</th><th class="num">= Referência em R$ de 2025</th>'
+        : colunas.map(c => `<th class="num">${c.rotulo}</th>`).join('');
     const linhas = anos.map((a,i) => {
         const h = serie[i];
-        const cels = colunas.map(c => {
-            const v = h ? h[c.campo] : null;
-            return `<td class="num"${c.total ? ' style="font-weight:700"' : ''}>${fmtExato(v)}</td>`;
-        }).join('');
+        const fa = fatores ? fatores[String(a)] : null;
+        const valor = (c) => { const v = h ? h[c.campo] : null; return v == null ? v : (fatores && fa ? v / fa : v); };
+        const cels = fatores
+            ? colunas.filter(c => !c.total).map(c => `<td class="num">${fmtExato(valor(c))}</td>`).join('')
+              + `<td class="num">${fmtExato(h ? (fa ? h[ctx.campoTotal] / fa : h[ctx.campoTotal]) : null)}</td>`
+              + `<td class="num">${fa ? fmtNum2(fa, 4) : 'n.a.'}</td><td class="num" style="font-weight:700">${fmtExato(h ? h[ctx.campoTotal] : null)}</td>`
+            : colunas.map(c => {
+                const v = h ? h[c.campo] : null;
+                return `<td class="num"${c.total ? ' style="font-weight:700"' : ''}>${fmtExato(v)}</td>`;
+            }).join('');
         return `<tr><td>${rotuloAno(a)}</td>${cels}</tr>`;
     }).join('');
 
@@ -83,7 +93,7 @@ function memoHistoricoHtml(ctx){
             <div class="table-wrap" style="margin-top:0.6rem">
                 <table class="data" style="font-size:0.78rem"><thead><tr><th>Ano</th>${cab}</tr></thead><tbody>${linhas}</tbody></table>
             </div>
-            <p style="margin-top:0.5rem">Todos os valores estão deflacionados a reais de 2025, para que anos distantes possam ser somados.${anos.length === 8 ? (ctx.origem2026 === 'rreo' ? ' Em 2026, ainda sem a DCA, o ISS é o observado no RREO de setembro de 2025 a agosto de 2026 e a cota-parte é a de 2025 ajustada pelo crescimento de janeiro a agosto, também do RREO.' : ' Em 2026, ainda sem a DCA, este município não publica o Anexo 3 do RREO e mantém a posição relativa de 2025 no estado.') : ''}</p>`)}
+            <p style="margin-top:0.5rem">Os valores de cada ano são levados a reais de 2025, para que anos distantes possam ser somados${fatores ? ': a referência corrente multiplicada pelo fator de ajuste do ano (a variação nominal da arrecadação total de ICMS e ISS do país, LC 227, art. 115, §2º) dá a última coluna.' : '.'}${anos.length === 8 ? (ctx.origem2026 === 'rreo' ? ' Em 2026, ainda sem a DCA, o ISS é o observado no RREO de setembro de 2025 a agosto de 2026 e a cota-parte é a de 2025 ajustada pelo crescimento de janeiro a agosto, também do RREO.' : ' Em 2026, ainda sem a DCA, este município não publica o Anexo 3 do RREO e mantém a posição relativa de 2025 no estado.') : ''}</p>`)}
 
         ${passoHtml(2, 'Média dos ' + nAnosTxt + ' anos', `
             <div class="formula">${fmtExato(soma)} ${op('÷')} ${anos.length} ${op('=')} <span class="res">${fmtExato(media)}</span>

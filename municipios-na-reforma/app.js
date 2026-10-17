@@ -93,6 +93,7 @@ let UF_VISITANTE = null, RANK_UF = null, RANK_ORDEM = 'pct', RANK_PEQ = false;
 const RANK_MAIS = {perdas: false, ganhos: false};
 const CACHE_UF = new Map(), CACHE_MEMO = new Map();
 let MEMO_NAC = null;
+let REF_NAC = null;   // total nacional de 2025 e fator de ajuste de cada ano (índice da base)
 const GEO = {muni: null, uf: null, promessa: null};
 
 /* ── abas ── */
@@ -150,7 +151,7 @@ Promise.all([
 function iniciar(idx, res, nac) {
     LISTA = Object.entries(idx.municipios).map(([cod, m]) => ({cod, nome: m.nome, uf: m.uf, v: m.v, r: !!m.r, chave: norm(m.nome), alt: m.an ? norm(m.an) : ''}));
     LISTA.forEach(m => { POR_COD[m.cod] = m; });
-    RESULT = res; NAC = nac;
+    RESULT = res; NAC = nac; REF_NAC = idx.referencia_nacional || null;
     calcularRanks();
     AGG = (res && res.variacao_municipal_por_uf_2033) || {};
 
@@ -708,23 +709,44 @@ function origemAnosTxt(historico) {
     return ' Anos preenchidos fora da DCA do município, que não traz o dado: ' + frases.join('. ') + '.' + (algumDesc ? ' * O valor da fonte oficial destoava da série do próprio município e foi descartado.' : '');
 }
 
+/* Selo do ano preenchido fora da DCA do município. */
+function seloAno(h) {
+    const o = h && h.origem; if (!o) return '';
+    const fontes = [o.iss, o.cota].filter(x => x && x !== 'dca');
+    return fontes.length ? (fontes.every(x => x === 'rreo') ? ' (RREO)' : ' (est.)') + (o.descartado && (o.descartado.iss || o.descartado.cota) ? '*' : '') : '';
+}
+
 function historicoTableHtml(historico, est26) {
-    // Valores sem "R$" em cada célula, na unidade que cabe ao porte do município (milhões ou milhares), para as quatro colunas caberem no celular.
+    // Mesma conta da lei (LC 227, art. 115, §2º), linha a linha: valor declarado, fator de ajuste do ano e valor em R$ de 2025; depois a média e a divisão pelo total nacional.
+    // Sem o fator (base antiga), cai para a tabela só em R$ de 2025.
+    const fat = REF_NAC && REF_NAC.fatores_ajuste;
     const todos = ANOS_HIST.map(a => historico && historico[a]).concat([est26]).filter(Boolean);
     const maior = Math.max(0, ...todos.map(h => h.total_reais_2025 || 0));
     const mi = maior >= 5e6, div = mi ? 1e6 : 1e3, dec = mi ? 1 : 0;
     const f = v => (v / div).toLocaleString('pt-BR', {minimumFractionDigits: dec, maximumFractionDigits: dec});
+    const bi = v => (v / 1e9).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     let soma = {iss: 0, cota: 0}, faltou = false;
-    const linha = (rot, h, cls) => {
+    const linha = (rot, h, a, cls) => {
         if (h) { soma.iss += h.iss_reais_2025 || 0; soma.cota += h.cota_parte_reais_2025 || 0; } else faltou = true;
+        const fa = fat && a != null ? fat[a] : null;
+        const nom = k => h ? f(fa ? h[k] / fa : h[k]) : '—';        // valor declarado: o ajustado dividido pelo fator
         const c = k => `<td class="num">${h ? f(h[k]) : '—'}</td>`;
-        return `<tr${cls ? ' class="' + cls + '"' : ''}><td>${rot}</td>${c('iss_reais_2025')}${c('cota_parte_reais_2025')}${c('total_reais_2025')}</tr>`;
+        if (!fat) return `<tr${cls ? ' class="' + cls + '"' : ''}><td>${rot}</td>${c('iss_reais_2025')}${c('cota_parte_reais_2025')}${c('total_reais_2025')}</tr>`;
+        return `<tr${cls ? ' class="' + cls + '"' : ''}><td>${rot}</td><td class="num">${nom('iss_reais_2025')}</td><td class="num">${nom('cota_parte_reais_2025')}</td><td class="num">${nom('total_reais_2025')}</td>`
+            + `<td class="num">${a == null ? 'n.a.' : (fa ? fa.toLocaleString('pt-BR', {minimumFractionDigits: 3, maximumFractionDigits: 3}) : '—')}</td>${c('total_reais_2025')}</tr>`;
     };
-    const rows = ANOS_HIST.map(a => linha(a, historico ? historico[a] : null)).join('') + linha(est26 && est26.origem === 'rreo' ? '2026 (RREO)' : '2026 (est.)', est26, 'est');
-    const n = ANOS_HIST.length + 1;
-    return `<div class="table-wrap"><table class="dados tab-hist"><thead><tr><th>Ano</th><th class="num">ISS</th><th class="num">Cota-parte do ICMS</th><th class="num">Total</th></tr></thead><tbody>${rows}
-        <tr class="media"><td>Média 2019–2026</td><td class="num">${f(soma.iss / n)}</td><td class="num">${f(soma.cota / n)}</td><td class="num">${f((soma.iss + soma.cota) / n)}</td></tr></tbody></table></div>
-        <p class="nota">Valores em R$ ${mi ? 'milhões' : 'mil'} de 2025.${faltou ? ' Ano sem dado entra como zero na média.' : ''}${origemAnosTxt(historico)}${est26 ? (est26.origem === 'rreo' ? ' 2026: ISS observado no RREO de setembro de 2025 a agosto de 2026; cota-parte de 2025 ajustada pelo crescimento de janeiro a agosto, também do RREO.' : ' 2026: este município não publica o Anexo 3 do RREO; mantém a posição relativa de 2025 no estado.') : ''}</p>`;
+    const rows = ANOS_HIST.map(a => linha(a + seloAno(historico && historico[a]), historico ? historico[a] : null, a)).join('')
+        + linha(est26 && est26.origem === 'rreo' ? '2026 (RREO)' : '2026 (est.)', est26, null, 'est');
+    const n = ANOS_HIST.length + 1, media = (soma.iss + soma.cota) / n;
+    const cab = fat ? '<th>Ano</th><th class="num">ISS</th><th class="num">Cota-parte do ICMS</th><th class="num">Referência</th><th class="num">Fator</th><th class="num">R$ de 2025</th>'
+                    : '<th>Ano</th><th class="num">ISS</th><th class="num">Cota-parte do ICMS</th><th class="num">Total</th>';
+    const rodape = fat
+        ? `<tr class="media"><td colspan="5">Média da referência ajustada, 2019–2026</td><td class="num">${f(media)}</td></tr>`
+          + `<tr class="rodape"><td colspan="5">Arrecadação nacional de referência em 2025 (R$ bilhões)</td><td class="num">${bi(REF_NAC.total_br_2025)}</td></tr>`
+          + `<tr class="media"><td colspan="5">Coeficiente histórico (φ<sup>CPT</sup>)</td><td class="num">${fmtPctPlain(media / REF_NAC.total_br_2025 * 100, 5)}</td></tr>`
+        : `<tr class="media"><td>Média 2019–2026</td><td class="num">${f(soma.iss / n)}</td><td class="num">${f(soma.cota / n)}</td><td class="num">${f(media)}</td></tr>`;
+    return `<div class="table-wrap"><table class="dados tab-hist"><thead><tr>${cab}</tr></thead><tbody>${rows}${rodape}</tbody></table></div>
+        <p class="nota">Valores em R$ ${mi ? 'milhões' : 'mil'}; a última coluna está em reais de 2025.${fat ? ' O fator de ajuste corrige cada ano pela variação nominal da arrecadação total de ICMS e ISS do país (LC 227, art. 115, §2º), e a referência do ano é o valor declarado vezes esse fator.' : ''}${faltou ? ' Ano sem dado entra como zero na média.' : ''}${origemAnosTxt(historico)}${est26 ? (est26.origem === 'rreo' ? ' 2026, já em reais de 2025: ISS observado no RREO de setembro de 2025 a agosto de 2026; cota-parte de 2025 ajustada pelo crescimento de janeiro a agosto, também do RREO.' : ' 2026, já em reais de 2025: este município não publica o Anexo 3 do RREO; mantém a posição relativa de 2025 no estado.') : ''}</p>`;
 }
 
 function renderFicha(cod, base, m) {
@@ -1152,7 +1174,7 @@ function renderMemoria() {
         if (MEMO.secao === 'historico') {
             corpo = window.MemoriaCalculo.historico({
                 historico: Object.assign({}, m.historico_por_ano, m.estimativa_2026 ? {'2026': m.estimativa_2026} : {}), origem2026: m.estimativa_2026 ? m.estimativa_2026.origem : null,
-                campoTotal: 'total_reais_2025', coefPublicado: m.coef_cpt_pct,
+                campoTotal: 'total_reais_2025', coefPublicado: m.coef_cpt_pct, fatores: REF_NAC ? REF_NAC.fatores_ajuste : null,
                 descricaoReferencia: 'Para o município, a receita de referência é o ISS bruto declarado ao SICONFI mais a cota-parte de ICMS recebida do estado.',
                 colunas: [{rotulo: 'ISS bruto', campo: 'iss_reais_2025'}, {rotulo: '+ Cota-parte de ICMS', campo: 'cota_parte_reais_2025'}, {rotulo: '= Referência', campo: 'total_reais_2025', total: true}]
             });

@@ -277,7 +277,11 @@ def main():
     # Compacto, sem indentação: este arquivo é lido em toda visita à página e
     # nunca por uma pessoa. Os fragmentos por UF seguem indentados.
     with open(OUT_DIR / "index.json", "w", encoding="utf-8") as f:
-        json.dump({"_meta": meta, "n_municipios": len(indice), "municipios": indice},
+        json.dump({"_meta": meta,
+                   # denominador do coeficiente e fatores de correção (LC 227, art. 115, §2º, II) de cada ano: a tabela da ficha mostra a conta inteira
+                   "referencia_nacional": {"total_br_2025": total_br_2025,
+                                           "fatores_ajuste": {str(a): deflators_hist[a] for a in HIST_ANOS if deflators_hist.get(a)}},
+                   "n_municipios": len(indice), "municipios": indice},
                   f, ensure_ascii=False, separators=(",", ":"))
 
     n_ok = sum(1 for m in municipios.values() if not m["neutro_aproximado"] and not m["neutro_suspeito"])
