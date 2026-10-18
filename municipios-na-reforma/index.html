@@ -32,11 +32,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=34">
+<link rel="stylesheet" href="style.css?v=35">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
 <script src="memoria.js?v=34" defer></script>
 <script src="app.js?v=34" defer></script>
+<script src="agenda.js?v=35" defer></script>
 </head>
 <body>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -59,6 +60,7 @@
         <button class="tab-btn active" data-view="visao-geral" type="button">Visão geral</button>
         <button class="tab-btn" data-view="municipio" type="button">Município</button>
         <button class="tab-btn" data-view="rankings" type="button">Comparar</button>
+        <button class="tab-btn" data-view="agenda" type="button">Agenda</button>
         <div class="tab-mais" id="tabMaisBox">
             <button class="tab-mais-btn" id="tabMais" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="tabMaisLista">Mais <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
             <div class="tab-mais-lista" id="tabMaisLista">
@@ -191,6 +193,32 @@
 </section>
 
 <!-- ============ MEMÓRIA DE CÁLCULO ============ -->
+<!-- ============ AGENDA ============ -->
+<section class="view" id="view-agenda">
+    <div class="view-head">
+        <h2>Agenda da reforma para o município</h2>
+        <p class="sub">Os prazos que exigem providência da prefeitura e os atos do Comitê Gestor do IBS, com a explicação do que cada um muda para o município.</p>
+    </div>
+    <div class="memo-abas" id="agendaAbas">
+        <button type="button" data-secao="prazos" class="active">Prazos e providências</button>
+        <button type="button" data-secao="pubs">Publicações do CGIBS</button>
+    </div>
+    <div id="agendaSecPrazos">
+        <label class="agenda-filtro"><input type="checkbox" id="soProvidencia"> Mostrar só o que exige providência do município</label>
+        <div id="agendaPrazos"><div class="vazio"><p>Carregando a agenda…</p></div></div>
+    </div>
+    <div id="agendaSecPubs" hidden>
+        <div class="agenda-barra">
+            <label class="sr-only" for="pubBusca">Buscar nos atos</label>
+            <input id="pubBusca" type="search" placeholder="Buscar por assunto, número ou palavra…" autocomplete="off">
+            <label class="sr-only" for="pubTipo">Tipo de ato</label>
+            <select id="pubTipo"><option value="">Todos os tipos</option></select>
+            <label class="agenda-filtro"><input type="checkbox" id="pubTodas"> Incluir atos administrativos</label>
+        </div>
+        <div id="agendaPubs"></div>
+    </div>
+</section>
+
 <section class="view" id="view-memoria">
     <div class="view-head">
         <h2>Memória de cálculo</h2>

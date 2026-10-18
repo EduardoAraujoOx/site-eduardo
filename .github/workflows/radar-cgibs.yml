@@ -1,0 +1,49 @@
+name: Radar do CGIBS - novas publicações
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Duas vezes por semana (seg e qui): o CGIBS publica em ritmo de vários atos por semana.
+    - cron: '0 11 * * 1,4'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  radar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Ler as seções de atos do site do CGIBS
+        run: python3 data/collect-cgibs.py | tee radar.log
+
+      - name: Abrir PR quando houver ato novo (a revisão e a ficha explicativa são feitas por uma pessoa)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet -- data/cgibs-publicacoes.json; then
+            echo "Sem novidades."; exit 0
+          fi
+          RAMO="bot/radar-cgibs-$(date +%Y%m%d)"
+          git config user.name "radar-cgibs"
+          git config user.email "radar-cgibs@users.noreply.github.com"
+          git checkout -b "$RAMO"
+          git add data/cgibs-publicacoes.json
+          git commit -m "Radar do CGIBS: novos atos publicados"
+          git push -u origin "$RAMO"
+          {
+            echo "A leitura periódica do site do CGIBS encontrou mudanças na lista de atos."
+            echo
+            echo '```'
+            grep -E "novo:|FALHA|atos \(" radar.log
+            echo '```'
+            echo
+            echo "Antes de mesclar: escrever a ficha de cada ato novo em data/cgibs-editorial.json (o que é, por que importa ao município, relevância) e, se o ato criar prazo, incluir o marco em data/cronograma-municipal.json. Sem ficha, o ato aparece só com título, data e link oficial."
+          } > corpo.md
+          gh pr create --draft --base main --head "$RAMO" --title "Radar do CGIBS: novos atos publicados" --body-file corpo.md
