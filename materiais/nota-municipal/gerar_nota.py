@@ -112,10 +112,10 @@ def eixo_ticks(lo, hi, n=5):
     return ticks, passo
 
 
-def svg_serie(m, cor_neg_pos):
+def svg_serie(m, cor_neg_pos, H=258):
     """Gráfico da ficha do portal: realizado 2019-2025 e os dois cenários de 2029 a 2033, no mesmo eixo categórico
     (2026-2028 não são projetados, e a linha segue direto de 2025 para 2029). R$ milhões de 2025."""
-    W, H = 690, 258
+    W = 690
     L, R, T, B = 50, 118, 38, 40
     cats = ANOS_HIST + ANOS
     n = len(cats)
@@ -541,7 +541,7 @@ def main(cod, saida_dir=None):
       <div class="hn" style="--c:{cor}"><em>{selo}</em><b>{pct(v33)}</b></div>
       <p class="manchete">{manchete}<span>Efeito da reforma sobre a receita de ISS e cota-parte do ICMS, em 2033, comparado ao cenário sem reforma, em R$ de 2025.</span></p>
     </div>
-    <div class="fig">{svg_serie(m, cor)}
+    <div class="fig">{svg_serie(m, cor, 226 if ressalva else 258)}
       <div class="leg"><span><i class="l" style="background:{NAVY}"></i>Realizado (2019–2025)</span><span><i class="l" style="background:{GOLD}"></i>Projeção com a reforma</span><span><i class="l tr" style="border-color:#6b6b6b"></i>Cenário sem reforma</span></div>
     </div>
   </div>
