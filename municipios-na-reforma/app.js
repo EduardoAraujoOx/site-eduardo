@@ -823,6 +823,27 @@ function desenhaParticipacao(m) {
     });
 }
 
+/* Leitura em português do que o gráfico mostra, montada por regras a partir dos números do município. */
+function leituraMunicipio(m, base) {
+    const nome = '<b>' + esc(base.nome) + '</b>';
+    const v29 = m.variacao_por_ano['2029'], v33 = m.variacao_por_ano['2033'];
+    const dif33 = m.pos_por_ano['2033'] - m.contrafactual_por_ano['2033'];
+    const rep = m.repasse_seguro_receita_por_ano || {};
+    const seg33 = rep['2033'] || 0;
+    const p = [];
+    if (Math.abs(v33) <= 0.0005) p.push(`Em 2033, a receita de ${nome} com a reforma fica praticamente igual à do cenário sem ela.`);
+    else p.push(`Em 2033, a receita de ${nome} com a reforma é ${fmtPct(Math.abs(v33)).replace(/^[+−]/, '')} ${v33 < 0 ? 'menor' : 'maior'} que no cenário sem ela, uma diferença de ${fmtMoney(Math.abs(dif33))} por ano, em reais de 2025.`);
+    if (Math.abs(v29) > 0.0005 || Math.abs(v33) > 0.0005) p.push(`O efeito começa em ${fmtPct(v29)} em 2029 e chega a ${fmtPct(v33)} em 2033, de modo que a transição vai ${Math.abs(v33) > Math.abs(v29) ? 'ampliando' : 'reduzindo'} a diferença.`);
+    if (seg33 > 0) {
+        if (v33 > 0.0005 && seg33 > dif33) p.push(`Esse resultado depende do Seguro-Receita, o repasse compensatório do Comitê Gestor: ${nome} recebe ${fmtMoney(seg33)} em 2033, mais do que o ganho. Sem o repasse, a receita ficaria ${fmtMoney(seg33 - dif33)} abaixo do cenário sem reforma.`);
+        else p.push(`${nome} recebe ${fmtMoney(seg33)} do Seguro-Receita em 2033, repasse compensatório do Comitê Gestor que já está incluído nos números.`);
+    } else {
+        p.push(`${nome} não recebe Seguro-Receita no período, e o resultado vem da repartição do IBS pelos coeficientes.`);
+    }
+    p.push('São estimativas que dependem das hipóteses do modelo; a seção sobre sensibilidade, mais abaixo, mostra a faixa de resultados.');
+    return p.map(t => '<p>' + t + '</p>').join('');
+}
+
 function renderFicha(cod, base, m) {
     graficos.forEach(g => g.destroy()); graficos = [];
     if (GSENS) { GSENS.destroy(); GSENS = null; }
@@ -873,19 +894,19 @@ function renderFicha(cod, base, m) {
             </div>
         </div>
         ${aviso ? `<div class="aviso" role="note">${aviso}</div>` : ''}
-        <div class="faixa">
-            <div class="faixa-main ${sinal}">
-                <div class="fm-num"><em class="selo">${selo}</em><span>Efeito da reforma na receita em 2033</span><b>${fmtPct(v33)}</b></div>
-                <div class="fm-txt"><p class="frase">${frase}</p>
-                <small>Compara os dois cenários do mesmo ano. <a href="#" data-tab="metodologia" data-depois="met-5">Como ler →</a></small></div>
-            </div>
-            <div class="kpi"><span>Receita em 2025</span><b>${fmtMoneyFino(m.pre_2025)}</b></div>
-            <div class="kpi"><span>2033 sem a reforma</span><b>${fmtMoneyFino(cf33)}</b></div>
-            <div class="kpi destaque"><span>2033 com a reforma</span><b>${fmtMoneyFino(pos33)}</b></div>
+        <div class="resumo ${sinal}">
+            <div class="rs-num"><em class="selo">${selo}</em><b>${fmtPct(v33)}</b><span>em 2033</span></div>
+            <p class="frase">${frase} <a href="#" data-tab="metodologia" data-depois="met-5">Como ler →</a></p>
         </div>
-        <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Receita realizada até 2025 e projetada de 2029 a 2033, com e sem a reforma, em R$ de 2025.</p>
+        <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Realizado até 2025 e projeção de 2029 a 2033, em R$ de 2025.</p>
             <div class="canvas-box canvas-serie"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano, em Detalhes do cálculo."></canvas></div>
-</div>
+            <div class="stats3">
+                <div><span>Receita em 2025</span><b>${fmtMoneyFino(m.pre_2025)}</b></div>
+                <div><span>2033 sem a reforma</span><b>${fmtMoneyFino(cf33)}</b></div>
+                <div class="destaque"><span>2033 com a reforma</span><b>${fmtMoneyFino(pos33)}</b></div>
+            </div>
+            <div class="leitura-dados"><h4>O que os dados sugerem</h4>${leituraMunicipio(m, base)}</div>
+        </div>
         ${painelParticipacaoHtml(m, base)}
         <div class="panel accent">
             <div class="panel-head"><div><h3>De onde vem a receita</h3><p class="panel-sub">Quanto ainda vem do ISS e da cota-parte do ICMS e quanto já vem do IBS, de 2029 a 2033.</p></div>
