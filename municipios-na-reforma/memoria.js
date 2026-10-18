@@ -85,7 +85,7 @@ function memoHistoricoHtml(ctx){
 
     return `
     <div class="panel">
-        <h3>Coeficiente histórico, φ<sup>CPT</sup></h3>
+        <h3>Coeficiente histórico</h3>
         <p class="panel-sub">É a fatia do ente no critério de origem, que rege 90% do IBS em 2033 e vai cedendo lugar ao destino até 2078 (ADCT art. 131, §1º). A base é a receita de referência média de ${nAnosTxt} anos, definida no art. 115 da LC 227/2026.</p>
 
         ${passoHtml(1, 'Receita de referência, ano a ano', `
@@ -105,9 +105,9 @@ function memoHistoricoHtml(ctx){
                 ${confere(coef, ctx.coefPublicado)}</div>`)}
 
         ${passoHtml(4, 'Participação neutra, para comparação', neutroAproximado ? `
-            <p>A participação neutra usa só o ano de 2025, em vez da média de ${nAnosTxt} anos, e é a fatia com que o painel monta o contrafactual de cada ano. Este ente não tem registro individualizado de 2025 no SICONFI, então a rotina usa em seu lugar o próprio φ<sup>CPT</sup> do passo 3, calculado com os anos disponíveis.</p>
-            <div class="formula">${fmtPctPlain(neutro, 6)} <span class="formula-nota">Igual ao φ<sup>CPT</sup> acima, por construção: é a aproximação que o painel adota quando falta 2025, não um segundo cálculo.</span></div>` : `
-            <p>A participação neutra não é o φ<sup>CPT</sup>: usa só o ano de 2025, em vez da média de ${nAnosTxt} anos, e é a fatia com que o painel monta o contrafactual de cada ano.</p>
+            <p>A participação neutra usa só o ano de 2025, em vez da média de ${nAnosTxt} anos, e é a fatia com que o painel monta o contrafactual de cada ano. Este ente não tem registro individualizado de 2025 no SICONFI, então a rotina usa em seu lugar o próprio coeficiente histórico do passo 3, calculado com os anos disponíveis.</p>
+            <div class="formula">${fmtPctPlain(neutro, 6)} <span class="formula-nota">Igual ao coeficiente histórico acima, por construção: é a aproximação que o painel adota quando falta 2025, não um segundo cálculo.</span></div>` : `
+            <p>A participação neutra não é o coeficiente histórico: usa só o ano de 2025, em vez da média de ${nAnosTxt} anos, e é a fatia com que o painel monta o contrafactual de cada ano.</p>
             <div class="formula">${fmtExato(ref2025)} ${op('÷')} ${fmtExato(totalBr)} ${op('=')} <span class="res">${fmtPctPlain(neutro, 6)}</span></div>`)}
     </div>`;
 }
@@ -136,7 +136,7 @@ function memoDestinoMuniHtml(refs, m, cod){
     const propriaPct = pesoPropria * refs.propria_municipios_pct;
     return `
     <div class="panel">
-        <h3>Coeficiente de destino, φ<sup>dest</sup></h3>
+        <h3>Coeficiente de destino</h3>
         <p class="panel-sub">O destino municipal chega por dois caminhos separados, com critérios legais distintos, e o coeficiente do município é a soma dos dois.</p>
 
         ${passoHtml(1, 'Caminho A: cota-parte do destino estadual', `
@@ -203,7 +203,7 @@ function memoSeguroHtml(serie, mediaReferencia, nomeEsfera){
         <p class="panel-sub">O ADCT (art. 132) e o art. 117 da LC 227/2026 retêm 5% do IBS pelo critério de destino para um fundo que nivela os entes mais prejudicados pela mudança de critério. A distribuição é sequencial, não proporcional.</p>
 
         ${passoHtml(1, 'A razão que ordena a fila', `
-            <p>Para cada ente calcula-se a razão entre o IBS que ele recebe pelo critério de destino naquele ano e sua receita de referência ajustada. Quanto menor a razão, mais cedo o ente é atendido. A receita de referência ajustada é a menor entre a média histórica de 2019 a 2026, a mesma do φ<sup>CPT</sup>, e três vezes a média nacional per capita da esfera ${nomeEsfera} (art. 117, §6º).</p>
+            <p>Para cada ente calcula-se a razão entre o IBS que ele recebe pelo critério de destino naquele ano e sua receita de referência ajustada. Quanto menor a razão, mais cedo o ente é atendido. A receita de referência ajustada é a menor entre a média histórica de 2019 a 2026, a mesma do coeficiente histórico, e três vezes a média nacional per capita da esfera ${nomeEsfera} (art. 117, §6º).</p>
             <div class="table-wrap" style="margin-top:0.6rem">
                 <table class="data" style="font-size:0.78rem"><thead><tr>
                     <th>Ano</th><th class="num">IBS por destino recebido</th><th class="num">Receita de referência ajustada</th>

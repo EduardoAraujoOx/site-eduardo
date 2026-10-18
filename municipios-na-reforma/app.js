@@ -668,8 +668,8 @@ function municipiosDaUF(uf) {
 function coefTilesHtml(m) {
     return `<div class="coef-grid">
         <div class="coef"><span>Participação neutra, 2025</span><b>${fmtPctPlain(m.coef_neutro_pct)}</b><small>A fatia deste ente hoje, sem a reforma: o ponto de partida da comparação.</small></div>
-        <div class="coef"><span>Coeficiente histórico (φ<sup>CPT</sup>)</span><b>${fmtPctPlain(m.coef_cpt_pct)}</b><small>Média de 8 anos (2019–2026, com 2026 pelo RREO até agosto) de ISS e cota-parte do ICMS do próprio ente. É o critério que ainda pesa mais até 2033. <a href="#" data-abrir="detHist">Ver a receita usada →</a></small></div>
-        <div class="coef"><span>Coeficiente de destino (φ<sup>dest</sup>)</span><b>${fmtPctPlain(m.coef_pleno_pct)}</b><small>Baseado em consumo (renda × POF) e compras públicas. Pesa cerca de 10% em 2033; por inteiro, só em 2078.</small></div>
+        <div class="coef"><span>Coeficiente histórico</span><b>${fmtPctPlain(m.coef_cpt_pct)}</b><small>Média de 8 anos (2019–2026, com 2026 pelo RREO até agosto) de ISS e cota-parte do ICMS do próprio ente. É o critério que ainda pesa mais até 2033. <a href="#" data-abrir="detHist">Ver a receita usada →</a></small></div>
+        <div class="coef"><span>Coeficiente de destino</span><b>${fmtPctPlain(m.coef_pleno_pct)}</b><small>Baseado em consumo (renda × POF) e compras públicas. Pesa cerca de 10% em 2033; por inteiro, só em 2078.</small></div>
     </div>`;
 }
 
@@ -743,7 +743,7 @@ function historicoTableHtml(historico, est26) {
     const rodape = fat
         ? `<tr class="media"><td colspan="5">Média da referência ajustada, 2019–2026</td><td class="num">${f(media)}</td></tr>`
           + `<tr class="rodape"><td colspan="5">Arrecadação nacional de referência em 2025 (R$ bilhões)</td><td class="num">${bi(REF_NAC.total_br_2025)}</td></tr>`
-          + `<tr class="media"><td colspan="5">Coeficiente histórico (φ<sup>CPT</sup>)</td><td class="num">${fmtPctPlain(media / REF_NAC.total_br_2025 * 100, 5)}</td></tr>`
+          + `<tr class="media"><td colspan="5">Coeficiente histórico</td><td class="num">${fmtPctPlain(media / REF_NAC.total_br_2025 * 100, 5)}</td></tr>`
         : `<tr class="media"><td>Média 2019–2026</td><td class="num">${f(soma.iss / n)}</td><td class="num">${f(soma.cota / n)}</td><td class="num">${f(media)}</td></tr>`;
     return `<div class="table-wrap"><table class="dados tab-hist"><thead><tr>${cab}</tr></thead><tbody>${rows}${rodape}</tbody></table></div>
         <p class="nota">Valores em R$ ${mi ? 'milhões' : 'mil'}; a última coluna está em reais de 2025.${fat ? ' O fator de ajuste corrige cada ano pela variação nominal da arrecadação total de ICMS e ISS do país (LC 227, art. 115, §2º), e a referência do ano é o valor declarado vezes esse fator.' : ''}${faltou ? ' Ano sem dado entra como zero na média.' : ''}${origemAnosTxt(historico)}${est26 ? (est26.origem === 'rreo' ? ' 2026, já em reais de 2025: ISS observado no RREO de setembro de 2025 a agosto de 2026; cota-parte de 2025 ajustada pelo crescimento de janeiro a agosto, também do RREO.' : ' 2026, já em reais de 2025: este município não publica o Anexo 3 do RREO; mantém a posição relativa de 2025 no estado.') : ''}</p>`;
