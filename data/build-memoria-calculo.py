@@ -118,6 +118,7 @@ def main():
         "ano_estimado_na_media": 2026 if cpt2026.n_anos() > len(ANOS_HIST) else None,
         "tratamento_2026": cpt2026.tratamento(),
         "total_br_2025": total_br,
+        "fatores_ajuste": carrega("painel-municipios/index.json")["referencia_nacional"]["fatores_ajuste"],
         "soma_produto_pof_censo_br": soma_produto_br,
         "frac_estado_pct": phi["frac_estado_pct"],
         "frac_muni_pct": phi["frac_muni_pct"],
