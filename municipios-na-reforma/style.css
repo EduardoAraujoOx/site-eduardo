@@ -714,18 +714,18 @@ table.dados.tab-hist tr.media td[colspan] { white-space: normal; }
 
 @media (max-width: 420px) { .tabnav-in > .tab-btn, .tab-mais-btn { padding-inline: .45rem; font-size: .8rem; } }
 
-/* ── Ficha do município: resumo enxuto, gráfico logo abaixo e leitura em texto ── */
-.resumo { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem 1.2rem; background: #fff; border: 1px solid var(--line); border-left: 6px solid var(--gray); border-radius: var(--radius); padding: .7rem 1rem; margin-bottom: .9rem; }
-.resumo.neg { border-left-color: var(--neg); } .resumo.pos { border-left-color: var(--pos); }
-.rs-num { display: flex; align-items: baseline; flex-wrap: wrap; gap: .2rem .6rem; }
-.resumo .selo { display: inline-block; align-self: center; font: 800 .66rem var(--font-head); letter-spacing: .1em; text-transform: uppercase; font-style: normal; padding: .2rem .55rem; border-radius: 999px; background: #eef0f6; color: var(--navy); }
-.resumo.neg .selo { background: #fbe9e6; color: var(--neg); } .resumo.pos .selo { background: #e4eefb; color: var(--pos); }
-.resumo b { font: 800 clamp(1.7rem, 4vw, 2.2rem)/1 var(--font-head); font-variant-numeric: tabular-nums; }
-.resumo.neg b { color: var(--neg); } .resumo.pos b { color: var(--pos); }
-.resumo .rs-num span { font-size: .85rem; color: var(--ink-soft); }
-.resumo .frase { flex: 1 1 18rem; margin: 0; font-size: .97rem; line-height: 1.45; }
-.resumo .frase b { font: 800 1em var(--font-body); color: var(--navy); }
-.resumo .frase a { color: var(--navy); font-weight: 600; white-space: nowrap; }
+/* ── Ficha do município: gráfico logo após o nome, resultado ao lado do título e leitura em texto ── */
+.grafico-topo { display: flex; justify-content: space-between; align-items: flex-start; gap: .4rem 1.2rem; flex-wrap: wrap; }
+.grafico-topo > div:first-child { flex: 1 1 18rem; min-width: 0; }
+.efeito { display: flex; align-items: baseline; flex-wrap: wrap; gap: .1rem .5rem; border-left: 4px solid var(--gray); padding-left: .7rem; }
+.efeito.neg { border-left-color: var(--neg); } .efeito.pos { border-left-color: var(--pos); }
+.efeito .selo { align-self: center; display: inline-block; font: 800 .62rem var(--font-head); letter-spacing: .1em; text-transform: uppercase; font-style: normal; padding: .18rem .5rem; border-radius: 999px; background: #eef0f6; color: var(--navy); }
+.efeito.neg .selo { background: #fbe9e6; color: var(--neg); } .efeito.pos .selo { background: #e4eefb; color: var(--pos); }
+.efeito b { font: 800 1.7rem/1 var(--font-head); font-variant-numeric: tabular-nums; }
+.efeito.neg b { color: var(--neg); } .efeito.pos b { color: var(--pos); }
+.efeito span:last-child { font-size: .82rem; color: var(--ink-soft); }
+.como-ler { margin: .2rem 0 0; font-size: .88rem; }
+.como-ler a { color: var(--navy); font-weight: 600; }
 .stats3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; margin: .9rem 0 0; }
 .stats3 div { border-top: 2px solid var(--line); padding-top: .4rem; }
 .stats3 div.destaque { border-top-color: var(--gold); }
@@ -737,7 +737,5 @@ table.dados.tab-hist tr.media td[colspan] { white-space: normal; }
 .leitura-dados p:last-child { color: var(--ink-soft); font-size: .88rem; }
 @media (max-width: 520px) { .stats3 b { font-size: .92rem; } .stats3 span { font-size: .58rem; } }
 @media (max-width: 520px) {
-    .resumo { padding: .6rem .8rem; gap: .35rem 1rem; }
-    .resumo .frase { font-size: .92rem; }
-    .panel.accent > .panel-sub { font-size: .85rem; margin-bottom: .6rem; }
+    .panel.accent > .panel-sub, .grafico-topo .panel-sub { font-size: .85rem; margin-bottom: .6rem; }
 }

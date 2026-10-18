@@ -894,18 +894,18 @@ function renderFicha(cod, base, m) {
             </div>
         </div>
         ${aviso ? `<div class="aviso" role="note">${aviso}</div>` : ''}
-        <div class="resumo ${sinal}">
-            <div class="rs-num"><em class="selo">${selo}</em><b>${fmtPct(v33)}</b><span>em 2033</span></div>
-            <p class="frase">${frase} <a href="#" data-tab="metodologia" data-depois="met-5">Como ler →</a></p>
-        </div>
-        <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Realizado até 2025 e projeção de 2029 a 2033, em R$ de 2025.</p>
+        <div class="panel accent panel-grafico">
+            <div class="grafico-topo">
+                <div><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Realizado até 2025 e projeção de 2029 a 2033, em R$ de 2025.</p></div>
+                <div class="efeito ${sinal}"><em class="selo">${selo}</em><b>${fmtPct(v33)}</b><span>em 2033</span></div>
+            </div>
             <div class="canvas-box canvas-serie"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano, em Detalhes do cálculo."></canvas></div>
             <div class="stats3">
                 <div><span>Receita em 2025</span><b>${fmtMoneyFino(m.pre_2025)}</b></div>
                 <div><span>2033 sem a reforma</span><b>${fmtMoneyFino(cf33)}</b></div>
                 <div class="destaque"><span>2033 com a reforma</span><b>${fmtMoneyFino(pos33)}</b></div>
             </div>
-            <div class="leitura-dados"><h4>O que os dados sugerem</h4>${leituraMunicipio(m, base)}</div>
+            <div class="leitura-dados"><h4>O que os dados sugerem</h4>${leituraMunicipio(m, base)}<p class="como-ler"><a href="#" data-tab="metodologia" data-depois="met-5">Como ler os dois cenários →</a></p></div>
         </div>
         ${painelParticipacaoHtml(m, base)}
         <div class="panel accent">
