@@ -30,7 +30,8 @@ EM_UF = {"AC": "do Acre", "AL": "de Alagoas", "AM": "do Amazonas", "AP": "do Ama
          "SC": "de Santa Catarina", "SE": "de Sergipe", "SP": "de São Paulo", "TO": "do Tocantins"}
 
 # paleta do portal (municipios-na-reforma/style.css): marinho e dourado como cromo; vermelho e azul só para perda e ganho
-NAVY, GOLD, GOLD_DEEP, NEG, POS, CINZA, GRADE = "#1f2a55", "#b8922f", "#8f6f1c", "#a02525", "#1c5cab", "#858384", "#e2e0d8"
+NAVY, GOLD, GOLD_DEEP, NEG, POS, CINZA, GRADE = "#062254", "#b8860b", "#7d5a00", "#a02525", "#1c5cab", "#858384", "#dde2ea"
+AMARELO, VERDE = "#fcbb1b", "#249266"
 TITULO = "Reforma Tributária: projeções da receita e implicações para municípios"
 SITE = "municipiosnareforma.com.br"
 
@@ -145,7 +146,7 @@ def svg_serie(m, cor_neg_pos):
     # área entre os cenários
     topo = " ".join(f"{X(i):.1f},{Y(v):.1f}" for i, v in zip(idx_proj, cf))
     base = " ".join(f"{X(i):.1f},{Y(v):.1f}" for i, v in reversed(list(zip(idx_proj, ps))))
-    o.append(f'<polygon points="{topo} {base}" fill="{GOLD}" fill-opacity=".20"/>')
+    o.append(f'<polygon points="{topo} {base}" fill="{AMARELO}" fill-opacity=".22"/>')
     # realizado
     pts = " ".join(f"{X(i):.1f},{Y(v):.1f}" for i, v in enumerate(hist) if v)
     o.append(f'<polyline points="{pts}" fill="none" stroke="{NAVY}" stroke-width="2.4" stroke-linejoin="round"/>')
@@ -223,7 +224,7 @@ def svg_composicao(m):
     W, Hh = 690, 235
     L, R, T, B = 50, 14, 22, 28
     comp = m["componentes_por_ano"]
-    cats = [("origem", "ICMS e ISS remanescentes", CINZA), ("cpt", "IBS retido, pelo coeficiente de participação", NAVY), ("destino", "IBS pelo critério de destino", "#cfad56"), ("seguro", "Distribuição complementar (Seguro-Receita)", "#2f7f7a")]
+    cats = [("origem", "ICMS e ISS remanescentes", CINZA), ("cpt", "IBS retido, pelo coeficiente de participação", NAVY), ("destino", "IBS pelo critério de destino", AMARELO), ("seguro", "Distribuição complementar (Seguro-Receita)", VERDE)]
     tot = {a: sum(comp[a][k] for k, _, _ in cats) / 1e6 for a in ANOS}
     ticks, _ = eixo_ticks(0, max(tot.values()) * 1.1, 4)
     topo = ticks[-1]
@@ -506,8 +507,8 @@ def main(cod, saida_dir=None):
     T = monta_textos(ctx)
 
     def cab(n):
-        return (f'<div class="cab"><span class="marca"><img src="../../municipios-na-reforma/images/vertex-simbolo.png" alt="">MUNICÍPIOS NA REFORMA</span><span class="url">{SITE}</span></div>'
-                f'<div class="rod"><span>{esc(TITULO)} · {esc(nome)} ({uf})</span><span>{n} / 5</span></div>')
+        return (f'<div class="cab"><span class="marca"><img src="img/logo-municipios.png" alt="Municípios na Reforma"></span><span class="url">{SITE}</span></div>'
+                f'<div class="rod"><span>{esc(TITULO)} · {esc(nome)} ({uf})</span><span class="rod-d"><em>Uma iniciativa da</em><img src="img/vertex.png" alt="Vertex Advisory"><b>{n} / 5</b></span></div>')
 
     if perde:
         manchete = f"Em 2033, a receita de <b>{esc(nome)}</b> fica <b>{dinheiro(abs(dif33))} abaixo</b> do que seria sem a reforma"
@@ -531,7 +532,7 @@ def main(cod, saida_dir=None):
     p1 = f"""
 <section class="page capa">
   <div class="banda">
-    <div class="lockup"><img src="../../municipios-na-reforma/images/vertex-simbolo-branco.png" alt=""><div><b>MUNICÍPIOS NA REFORMA</b><span>{SITE}</span></div></div>
+    <div class="lockup"><img class="logo-capa" src="img/logo-municipios-branco.png" alt="Municípios na Reforma"><div class="url-capa">{SITE}</div></div>
     <h1>{esc(TITULO)}</h1>
     <div class="alvo"><b>Município de {esc(nome)}</b><span>{esc(nome_uf)} · {num(pop)} habitantes · código IBGE {cod}</span></div>
   </div>
@@ -667,7 +668,7 @@ def main(cod, saida_dir=None):
   <h2 class="sec"><i>8.</i> Limitações</h2>
   <p class="leit peq">As projeções são estimativas e não representam previsões definitivas de arrecadação. Seus resultados dependem das hipóteses de crescimento econômico, da participação de 2025 adotada no cenário sem reforma e da regulamentação do IBS. Os dados fiscais são declarados pelos municípios ao Siconfi, sem auditoria independente, e o horizonte vai de 2029 a 2033. Os coeficientes definitivos serão divulgados pelo CGIBS, que poderá utilizar outras fontes e procedimentos previstos em lei (art. 116, §§ 3º e 4º).</p>
   <div class="citar">
-    <div><b>Como citar.</b> Vertex Advisory. <i>{esc(TITULO)}: Município de {esc(nome)} ({uf})</i>. Municípios na Reforma, {VERSAO}. Disponível em {SITE}/?m={cod}.<br>
+    <div><b>Como citar.</b> Municípios na Reforma (iniciativa da Vertex Advisory). <i>{esc(TITULO)}: Município de {esc(nome)} ({uf})</i>. {VERSAO}. Disponível em {SITE}/?m={cod}.<br>
     <span>Fontes: STN/Siconfi (DCA e RREO), IBGE (Censo 2022, POF e estimativas populacionais), BCB (Focus), IFI, EC 132/2023, LC 214/2025 e LC 227/2026.</span></div>
     <div class="qrbox">{qr_svg(url_ficha)}<span>Ficha interativa e memória de cálculo em<br><b>{SITE}</b></span></div>
   </div>

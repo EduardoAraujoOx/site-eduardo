@@ -3,8 +3,8 @@
 @font-face { font-family: 'Montserrat'; font-weight: 800; src: url('fonts/montserrat-latin-800-normal.woff2') format('woff2'); }
 @page { size: A4; margin: 0; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-:root { --navy:#1f2a55; --navy-deep:#151d3f; --navy-soft:#2b3a74; --gold:#b8922f; --gold-l:#cfad56; --gold-deep:#8f6f1c; --gold-pale:#f4ecd5;
-        --neg:#a02525; --pos:#1c5cab; --ink:#1b1f33; --mut:#55576a; --line:#e2e0d8; --paper:#f6f6f3; --head:'Montserrat','Inter',sans-serif; }
+:root { --navy:#062254; --navy-deep:#041a40; --navy2:#0b2f66; --gold:#fcbb1b; --gold-l:#fcbb1b; --gold-deep:#7d5a00; --gold-pale:#fff3cf;
+        --neg:#a02525; --pos:#1c5cab; --ink:#151c33; --mut:#4f566b; --line:#dde2ea; --paper:#f5f7fa; --head:'Montserrat','Inter',sans-serif; }
 html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 body { font-family: 'Inter', system-ui, sans-serif; font-size: 9.1pt; line-height: 1.55; color: var(--ink); background:#fff; font-feature-settings: 'tnum' 1, 'cv11' 1; }
 .page { width: 210mm; height: 297mm; position: relative; padding: 22mm 16mm 19mm; page-break-after: always; overflow: hidden; background:#fff; }
@@ -140,3 +140,22 @@ h3 { font: 700 8.8pt var(--head); color: var(--navy); margin: 4.6mm 0 1.4mm; }
 .densa .citar .qrbox .qr { width: 14mm; height: 14mm; }
 .densa .citar .qrbox span { font-size: 6pt; }
 .tab.sens td { padding: 1.1mm 2.4mm; }
+
+/* identidade visual do portal: marca do Municípios na Reforma em destaque, Vertex pequena */
+.cab .marca img { height: 8.4mm; width: auto; display: block; }
+.cab .marca { gap: 0; }
+.cab { border-bottom: none; padding-bottom: 2.6mm; }
+.cab::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: .9mm; background: linear-gradient(90deg, var(--gold) 0 22mm, var(--navy) 22mm 100%); }
+.banda { background: linear-gradient(135deg, #041a40 0%, #062254 55%, #0b2f66 100%); }
+.banda::after { background: var(--gold); }
+.lockup { justify-content: space-between; align-items: center; }
+.lockup .logo-capa { height: 17mm; width: auto; }
+.lockup .url-capa { font: 700 10pt var(--head); color: var(--gold-l); letter-spacing: .02em; }
+.kick { color: var(--gold-l); }
+.alvo b { color: var(--gold-l); }
+.rod { align-items: center; }
+.rod-d { display: inline-flex; align-items: center; gap: 1.6mm; }
+.rod-d em { font-style: normal; font-size: 5.8pt; letter-spacing: .1em; text-transform: uppercase; color: var(--mut); }
+.rod-d img { height: 5.2mm; width: auto; }
+.rod-d b { font-weight: 600; margin-left: 2mm; }
+.hn em { background: var(--c); }
