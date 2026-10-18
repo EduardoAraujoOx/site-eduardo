@@ -524,7 +524,7 @@ html, body { overflow-x: clip; }
 .canvas-serie { height: 360px; }
 .canvas-part { height: 320px; }
 @media (max-width: 560px) { .canvas-part { height: 340px; } }
-@media (max-width: 560px) { .canvas-serie { height: 300px; } }
+@media (max-width: 560px) { .canvas-serie { height: 280px; } }
 
 /* ── ficha no celular: só o que importa antes do número ── */
 @media (max-width: 700px) {
@@ -739,3 +739,11 @@ table.dados.tab-hist tr.media td[colspan] { white-space: normal; }
 @media (max-width: 520px) {
     .panel.accent > .panel-sub, .grafico-topo .panel-sub { font-size: .85rem; margin-bottom: .6rem; }
 }
+
+/* gráfico sem legenda: nota de unidade, veredito e leitura abaixo */
+.nota-serie { margin: .3rem 0 0; font-size: .78rem; color: var(--ink-soft); }
+.efeito-linha { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem 1.1rem; margin-top: .9rem; padding-top: .9rem; border-top: 1px solid var(--line); }
+.efeito-linha p { flex: 1 1 16rem; margin: 0; font-size: .97rem; line-height: 1.45; }
+.efeito-linha p a { color: var(--navy); font-weight: 600; white-space: nowrap; }
+.efeito-linha .efeito { border-left: 0; padding-left: 0; }
+.leitura-dados { border-top: 0; margin-top: .9rem; padding-top: 0; }
