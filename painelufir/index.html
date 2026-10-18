@@ -944,10 +944,10 @@ table.data.sens-todos thead th{cursor:default}
         <h3>Fontes primárias</h3>
         <p>A arrecadação histórica de ICMS, ISS e FECOP por UF e por município vem do SICONFI/STN (Declaração das Contas Anuais, DCA, Anexo I-C, e RREO Anexo 3). A população por município e por UF é a média simples 2019–2026 das estimativas do IBGE, no recorte pedido pela LC 227/2026 (art. 117, §§3º–6º). A renda domiciliar per capita por município (média e mediana), usada para estimar o consumo no rateio de destino, vem do Censo 2022. As compras de cada prefeitura e de cada governo estadual, que também entram no coeficiente de destino, vêm da DCA (Anexo I-D, 2024, despesas liquidadas).</p>
 
-        <h3>Coeficiente de Participação de Transição (φ<sup>CPT</sup>)</h3>
+        <h3>Coeficiente histórico</h3>
         <p>Para cada ente, o coeficiente de participação de transição é a média de oito anos (2019–2026, com 2026 ainda estimado) da receita de referência (ICMS bruto menos deduções, mais ISS, mais FECOP e, quando aplicável, as contribuições a fundos estaduais do art. 115, I, "b", da LC 227/2026, para o ente estadual; ISS bruto mais cota-parte de ICMS, para o município), deflacionada a valores de 2025 e dividida pelo total nacional do mesmo agregado. O exercício de 2026 só fecha no SICONFI em 2027; a lei o inclui na média, e o painel o estima: o ICMS (receita líquida do estado e cota-parte municipal) segue a participação de 2025 corrigida pelo nowcast do RREO de janeiro a agosto de 2026 para o estado, e o ISS repete 2025, com as participações renormalizadas para somar 100%. Os municípios herdam o fator do estado na cota-parte e repetem o ISS, sem nowcast próprio; num teste de previsão (2022 a 2025), esse é o melhor tratamento em todas as faixas de população. É o critério histórico (origem) que rege a distribuição do "bolo" enquanto o cronograma do ADCT (art. 131, §1º) ainda não migrou totalmente para o destino.</p>
 
-        <h3>Coeficiente de destino pleno (φ<sup>dest</sup>)</h3>
+        <h3>Coeficiente de destino pleno</h3>
         <p>Quando a transição se completa, a distribuição passa a seguir o local de consumo e, nas compras dos governos, o ente comprador. Para as UFs, o coeficiente é a média de três estimativas da participação na base tributável do IBS (despesa tributável da POF 2017–2018 por pessoa vezes os moradores do Censo 2022; a mesma atualizada pela renda relativa da PNAD Contínua entre 2018 e 2022; e a distribuição de renda por classe de salário mínimo do Censo 2022 vezes o consumo tributável por classe da POF), com a incerteza medida pela dispersão entre as rotas e por uma validação dentro da POF; o composto fica mais próximo da base de Gobetti e da nota técnica do COMSEFAZ do que o consumo bruto usado até outubro de 2026. Como não há uma medida direta de consumo por município, o painel estima o consumo a partir da renda domiciliar per capita do Censo 2022 (média e mediana de cada município) e da elasticidade-renda do consumo estimada nos microdados da Pesquisa de Orçamentos Familiares (POF 2017–2018), de 0,80: o consumo cresce menos que a renda. A parcela do IBS que vem das compras públicas é distribuída pela despesa de compras de cada governo (CF art. 149-C; LC 214/2025, arts. 472 e 473; ver Estudo 17). O coeficiente por UF é validado externamente contra a estimativa de Gobetti e Monteiro (2023), pelo desvio médio absoluto e pela correlação de Pearson entre as duas séries.</p>
 
         <h3>Seguro-Receita</h3>
@@ -967,7 +967,7 @@ table.data.sens-todos thead th{cursor:default}
         <p>O painel inteiro trabalha em reais, nunca em percentual de alíquota, e por isso qualquer desvio em relação à referência é sempre um desvio de receita, não de alíquota. Ainda assim, vale registrar a ordem de grandeza: cruzando a receita de referência já projetada aqui com o consumo das famílias apurado pelas Contas Nacionais do IBGE (SIDRA, tabela 1846: R$ 8,08 trilhões em 2025, sobre um PIB de R$ 12,74 trilhões), a razão bruta receita/consumo fica perto de 12,6%, constante ao longo da transição porque as duas razões envolvidas (bolo/PIB e consumo/PIB) são mantidas fixas por hipótese. Esse número é um piso, não a alíquota que entrará em vigor: falta descontar itens não monetários, tributos já embutidos no preço, e os regimes diferenciados e específicos que a LC 214/2025 prevê para saúde, educação e a cesta básica, entre outros. Aplicando esses descontos, estimativas independentes, seguindo a mesma metodologia original de Orair e Gobetti (2019, IPEA) e sua atualização por Gobetti, Orair e Monteiro (2023, IPEA, Carta de Conjuntura 59), chegam a alíquotas de referência combinadas bem mais altas, na faixa de 25% a 28%.</p>
 
         <h3 id="met-memoria">Memória de cálculo por ente</h3>
-        <p>Os coeficientes descritos acima não ficam só como resultado. A aba Coeficientes refaz, para o ente que a pessoa escolher, a derivação completa dos três componentes: a receita de referência ano a ano até o φ<sup>CPT</sup>, o consumo estimado até o φ<sup>dest</sup>, e a razão de nivelamento ano a ano até o repasse do Seguro-Receita. Os valores aparecem sem abreviação e com o denominador explícito, de modo que a conta possa ser repetida numa planilha e conferida contra o que o painel publica.</p>
+        <p>Os coeficientes descritos acima não ficam só como resultado. A aba Coeficientes refaz, para o ente que a pessoa escolher, a derivação completa dos três componentes: a receita de referência ano a ano até o coeficiente histórico, o consumo estimado até o coeficiente de destino, e a razão de nivelamento ano a ano até o repasse do Seguro-Receita. Os valores aparecem sem abreviação e com o denominador explícito, de modo que a conta possa ser repetida numa planilha e conferida contra o que o painel publica.</p>
 
         <h3 id="met-base-estadual">O que entra na receita de cada esfera</h3>
         <p>Os números atribuídos a um governo estadual são os da receita que fica com ele: ICMS bruto menos deduções e menos a cota-parte de 25% que a Constituição destina aos municípios, mais ISS quando existe, mais FECOP. Os números atribuídos a um município são os da receita própria dele: ISS mais a cota-parte de ICMS recebida. As duas esferas nunca são somadas na mesma linha, porque a cota-parte seria contada duas vezes. Onde o painel apresenta o território inteiro, estado e municípios somados, isso é dito de forma explícita, e o Distrito Federal é o único ente em que as duas leituras coincidem, por não ter esfera municipal própria.</p>
@@ -980,7 +980,7 @@ table.data.sens-todos thead th{cursor:default}
         <p>Cada combinação de ano-base e de valor do destino (reduzido, central e aumentado pela margem de erro) produz uma variação, calculada pela mesma fórmula da projeção principal. Com o ano-base 2025 e o destino central, o resultado coincide com o das demais abas. A faixa do gráfico é a menor e a maior variação entre as combinações escolhidas. É uma grade determinística de cenários, e não um intervalo de confiança: não há distribuição de probabilidade por trás dela. O repasse do Seguro-Receita é mantido no valor central, e por isso a faixa de um estado que o recebe é um pouco mais estreita do que seria se o repasse também variasse. Os dados da aba são gerados por <code>data/build-sensibilidade-painel.py</code>.</p>
 
         <h3>Ressalvas de qualidade dos dados municipais</h3>
-        <p>Municípios sinalizados como <span class="badge warn">estimativa aproximada</span> não têm registro individualizado de ISS e cota-parte de ICMS para 2025 no SICONFI; a participação neutra do ente é aproximada pela própria média de sete anos. Municípios sinalizados como <span class="badge err">dado a conferir</span> têm um valor declarado para 2025 que diverge de forma incompatível (mais de 5 vezes) do que a série histórica do próprio ente implicaria: provável falha de preenchimento na fonte primária, não uma mudança real de receita. Nos dois casos, o valor é exibido, mas não entra nos rankings nacionais de maiores ganhos e perdas.</p>
+        <p>Municípios sinalizados como <span class="badge warn">estimativa aproximada</span> não têm registro individualizado de ISS e cota-parte de ICMS para 2025 no SICONFI; a participação neutra do ente é aproximada pela própria média dos anos disponíveis. Municípios sinalizados como <span class="badge err">dado a conferir</span> têm um valor declarado para 2025 que diverge de forma incompatível (mais de 5 vezes) do que a série histórica do próprio ente implicaria: provável falha de preenchimento na fonte primária, não uma mudança real de receita. Nos dois casos, o valor é exibido, mas não entra nos rankings nacionais de maiores ganhos e perdas.</p>
 
         <h3>Como este painel foi construído</h3>
         <p>É uma página estática (HTML, CSS e JavaScript), sem servidor por trás: os dados são arquivos JSON pré-computados por rotinas em Python, versionadas junto com o código (<code>data/build-*.py</code>), a partir das coletas do SICONFI/STN, IBGE e Censo/POF. Os gráficos usam Chart.js e o mapa usa D3.js com a malha de estados da API do IBGE. O painel não recalcula nada em tempo real: as rotinas de projeção rodam antes da publicação e o navegador só lê o resultado, de modo que todos os números exibidos vêm de uma mesma execução, reorganizada por ente.</p>
@@ -1499,12 +1499,12 @@ function coefTilesHtml(neutro, cpt, pleno){
             <div class="coef-explain">A fatia deste ente hoje, sem a reforma: o ponto de partida da comparação.</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-label">Coeficiente histórico (φ<sup>CPT</sup>)</div>
+            <div class="kpi-label">Coeficiente histórico</div>
             <div class="kpi-value" style="font-size:1.15rem">${fmtPctPlain(cpt)}</div>
             <div class="coef-explain">Média de 8 anos (2019–2026, com 2026 estimado) da receita de referência. É o critério que ainda pesa mais até 2033.</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-label">Coeficiente de destino (φ<sup>dest</sup>)</div>
+            <div class="kpi-label">Coeficiente de destino</div>
             <div class="kpi-value" style="font-size:1.15rem">${fmtPctPlain(pleno)}</div>
             <div class="coef-explain">Baseado na base tributável do consumo (POF, Censo e PNAD). Pesa ~10% em 2033; por inteiro, só em 2078.</div>
         </div>
@@ -1653,8 +1653,8 @@ function renderComponentesChart(canvasEl, componentesPorAno, refs, asPercent){
         type:'bar',
         data:{ labels: anos, datasets:[
             { label:'ICMS/ISS (origem)', data: val(rows.map(r=>r.origem)), backgroundColor:CORES.origem, stack:'s' },
-            { label:'IBS histórico (φCPT)', data: val(rows.map(r=>r.cpt)), backgroundColor:CORES.cpt, stack:'s' },
-            { label:'IBS destino (φdest)', data: val(rows.map(r=>r.destino)), backgroundColor:CORES.destino, stack:'s' },
+            { label:'IBS histórico', data: val(rows.map(r=>r.cpt)), backgroundColor:CORES.cpt, stack:'s' },
+            { label:'IBS destino', data: val(rows.map(r=>r.destino)), backgroundColor:CORES.destino, stack:'s' },
             { label:'Seguro-Receita', data: val(rows.map(r=>r.seguro)), backgroundColor:CORES.seguro, stack:'s' },
         ].map(d => Object.assign(d, { borderColor:CORES.superficie, borderWidth:gap, borderSkipped:false, maxBarThickness:28 }))},
         options:{ responsive:true, maintainAspectRatio:false,
@@ -1675,8 +1675,8 @@ function renderComponentesChart(canvasEl, componentesPorAno, refs, asPercent){
 // depende de distinguir cores para ser lido.
 function composicaoTabelaHtml(componentesPorAno, asPercent){
     const cats = [
-        ['origem','ICMS/ISS (origem)'], ['cpt','IBS histórico (φCPT)'],
-        ['destino','IBS destino (φdest)'], ['seguro','Seguro-Receita'],
+        ['origem','ICMS/ISS (origem)'], ['cpt','IBS histórico'],
+        ['destino','IBS destino'], ['seguro','Seguro-Receita'],
     ];
     const head = ANOS.map(a => `<th>${a}</th>`).join('');
     const linhas = cats.map(([k,rotulo]) => {
@@ -2497,6 +2497,7 @@ function memoHistoricoHtml(ctx){
     const anosObs = MEMO_NAC.anos_historicos;
     const anoEst = (ctx.estimativa && MEMO_NAC.ano_estimado_na_media) || null;
     const anos = anoEst ? anosObs.concat([anoEst]) : anosObs;
+    const nAnosTxt = anos.length === 8 ? 'oito' : 'sete';
     const totalBr = MEMO_NAC.total_br_2025;
     const serie = anos.map(a => a === anoEst ? ctx.estimativa : (ctx.historico[String(a)] || null));
     const valores = serie.map(h => h ? h[ctx.campoTotal] : null);
@@ -2505,41 +2506,61 @@ function memoHistoricoHtml(ctx){
     const coef = media != null ? media / totalBr * 100 : null;
     const ref2025 = ctx.historico['2025'] ? ctx.historico['2025'][ctx.campoTotal] : null;
     // Quando 2025 falta no SICONFI (município novo, ausente da DCA daquele ano),
-    // a rotina usa o próprio φCPT no lugar da participação neutra, em vez de
-    // deixar o contrafactual desse ente sem base nenhuma. É a mesma regra por
-    // trás do selo "estimativa aproximada" que aparece nas demais abas.
+    // a rotina usa o próprio coeficiente histórico no lugar da participação neutra,
+    // em vez de deixar o contrafactual desse ente sem base nenhuma. É a mesma regra
+    // por trás do selo "estimativa aproximada" que aparece nas demais abas.
     const neutroAproximado = ref2025 == null && coef != null;
     const neutro = ref2025 != null ? ref2025 / totalBr * 100 : (neutroAproximado ? coef : null);
 
+    // anos preenchidos fora da DCA (RREO anual ou estimativa a partir dos anos vizinhos) levam o selo da fonte
+    const seloOrigem = a => {
+        const o = ctx.historico[String(a)] && ctx.historico[String(a)].origem; if (!o) return '';
+        const f = [o.iss, o.cota].filter(x => x && x !== 'dca');
+        return f.length ? (f.every(x => x === 'rreo') ? ' (RREO)' : f.some(x => x === 'estimativa_serie') ? ' (est.)' : '') : '';
+    };
+    const rreo26 = ctx.estimativa && ctx.estimativa.tratamento === 'rreo' || ctx.estimativa && ctx.estimativa.origem === 'rreo';
+    const rotuloAno = a => a === anoEst ? a + (rreo26 ? ' (RREO)' : ' (est.)') : a + seloOrigem(a);
+
+    // Com os fatores de ajuste (MEMO_NAC.fatores_ajuste) a tabela mostra a conta inteira: valor corrente, fator do ano e referência em R$ de 2025.
+    const fatores = MEMO_NAC.fatores_ajuste || null;
     const colunas = ctx.colunas;
-    const cab = colunas.map(c => `<th class="num">${c.rotulo}</th>`).join('');
+    const cab = fatores
+        ? colunas.filter(c => !c.total).map(c => `<th class="num">${c.rotulo}</th>`).join('') + '<th class="num">= Referência (valores correntes)</th><th class="num">× Fator de ajuste</th><th class="num">= Referência em R$ de 2025</th>'
+        : colunas.map(c => `<th class="num">${c.rotulo}</th>`).join('');
     const linhas = anos.map((a,i) => {
         const h = serie[i];
-        const cels = colunas.map(c => {
-            const v = h ? h[c.campo] : null;
-            return `<td class="num"${c.total ? ' style="font-weight:700"' : ''}>${fmtExato(v)}</td>`;
-        }).join('');
-        return `<tr><td>${a}${a === anoEst ? ' <small>(estimado)</small>' : ''}</td>${cels}</tr>`;
+        const fa = fatores ? fatores[String(a)] : null;
+        const corrente = v => (v == null || !fa) ? v : v / fa;
+        const cels = fatores
+            ? colunas.filter(c => !c.total).map(c => `<td class="num">${fmtExato(h ? corrente(h[c.campo]) : null)}</td>`).join('')
+              + `<td class="num">${fmtExato(h ? corrente(h[ctx.campoTotal]) : null)}</td>`
+              + `<td class="num">${fa ? fmtNum2(fa, 4) : 'n.a.'}</td><td class="num" style="font-weight:700">${fmtExato(h ? h[ctx.campoTotal] : null)}</td>`
+            : colunas.map(c => `<td class="num"${c.total ? ' style="font-weight:700"' : ''}>${fmtExato(h ? h[c.campo] : null)}</td>`).join('');
+        return `<tr><td>${rotuloAno(a)}</td>${cels}</tr>`;
     }).join('');
 
     const soma = validos.reduce((x,y)=>x+y, 0);
+    const nota26 = !anoEst ? '' : (ctx.ehEstado
+        ? ' Em ' + anoEst + ', ainda sem a DCA, o ICMS segue a participação de 2025 corrigida pelo crescimento de janeiro a agosto no RREO do estado, e o ISS repete 2025, com as participações renormalizadas para somar 100%.'
+        : (rreo26
+            ? ' Em ' + anoEst + ', ainda sem a DCA, o ISS é o observado no RREO de setembro de 2025 a agosto de ' + anoEst + ' e a cota-parte é a de 2025 ajustada pelo crescimento de janeiro a agosto, também do RREO.'
+            : ' Em ' + anoEst + ', ainda sem a DCA, este município não publica o Anexo 3 do RREO e mantém a posição relativa de 2025 no estado.'));
 
     return `
     <div class="panel">
-        <h3>Coeficiente histórico, φ<sup>CPT</sup></h3>
-        <p class="panel-sub">É a fatia do ente no critério de origem, que rege 90% do IBS em 2033 e vai cedendo lugar ao destino até 2078 (ADCT art. 131, §1º). A base é a receita de referência média de ${anoEst ? '2019 a ' + anoEst + ' (com ' + anoEst + ' estimado)' : 'sete anos'}, definida no art. 115 da LC 227/2026.</p>
+        <h3>Coeficiente histórico</h3>
+        <p class="panel-sub">É a fatia do ente no critério de origem, que rege 90% do IBS em 2033 e vai cedendo lugar ao destino até 2078 (ADCT art. 131, §1º). A base é a receita de referência média de ${anoEst ? '2019 a ' + anoEst : nAnosTxt + ' anos'}, definida no art. 115 da LC 227/2026.</p>
 
         ${passoHtml(1, 'Receita de referência, ano a ano', `
             <p>${ctx.descricaoReferencia}</p>
             <div class="table-wrap" style="margin-top:0.6rem">
                 <table class="data" style="font-size:0.78rem"><thead><tr><th>Ano</th>${cab}</tr></thead><tbody>${linhas}</tbody></table>
             </div>
-            <p style="margin-top:0.5rem">Todos os valores estão deflacionados a reais de 2025, para que anos distantes possam ser somados.</p>`)}
+            <p style="margin-top:0.5rem">Os valores de cada ano são levados a reais de 2025, para que anos distantes possam ser somados${fatores ? ': a referência corrente multiplicada pelo fator de ajuste do ano (a variação nominal da arrecadação total de ICMS e ISS do país, LC 227, art. 115, §2º) dá a última coluna.' : '.'}${nota26} Os anos marcados (RREO) ou (est.) não vieram da DCA: foram completados pelo RREO ou pela série do próprio ente.</p>`)}
 
-        ${passoHtml(2, 'Média dos ' + (anos.length === 8 ? 'oito' : 'sete') + ' anos', `
+        ${passoHtml(2, 'Média dos ' + nAnosTxt + ' anos', `
             <div class="formula">${fmtExato(soma)} ${op('÷')} ${anos.length} ${op('=')} <span class="res">${fmtExato(media)}</span>
-                <span class="formula-nota">O dividendo é a soma da última coluna da tabela acima.</span></div>
-            ${anoEst ? '<p style="margin-top:0.5rem">' + anoEst + ' ainda não fechou no SICONFI, e a lei o inclui na média. O painel o estima: o ICMS (receita líquida do estado e cota-parte municipal) segue a participação de 2025 corrigida pelo nowcast do RREO de janeiro a agosto de ' + anoEst + ' para o estado, e o ISS repete 2025, com as participações renormalizadas para somar 100%. Os municípios herdam o fator do estado na cota-parte e repetem o ISS, sem nowcast próprio.</p>' : ''}`)}
+                <span class="formula-nota">O dividendo é a soma da última coluna da tabela acima.</span></div>`)}
 
         ${passoHtml(3, 'Divisão pelo total nacional', `
             <p>O denominador é a receita de referência de todos os entes do país somada, no mesmo conceito e na mesma moeda.</p>
@@ -2547,9 +2568,9 @@ function memoHistoricoHtml(ctx){
                 ${confere(coef, ctx.coefPublicado)}</div>`)}
 
         ${passoHtml(4, 'Participação neutra, para comparação', neutroAproximado ? `
-            <p>A participação neutra usa só o ano de 2025, em vez da média dos anos, e é a fatia com que o painel monta o contrafactual de cada ano. Este ente não tem registro individualizado de 2025 no SICONFI, então a rotina usa em seu lugar o próprio φ<sup>CPT</sup> do passo 3, calculado com os anos disponíveis.</p>
-            <div class="formula">${fmtPctPlain(neutro, 6)} <span class="formula-nota">Igual ao φ<sup>CPT</sup> acima, por construção: é a aproximação que o painel adota quando falta 2025, não um segundo cálculo.</span></div>` : `
-            <p>A participação neutra não é o φ<sup>CPT</sup>: usa só o ano de 2025, em vez da média dos anos, e é a fatia com que o painel monta o contrafactual de cada ano.</p>
+            <p>A participação neutra usa só o ano de 2025, em vez da média de ${nAnosTxt} anos, e é a fatia com que o painel monta o contrafactual de cada ano. Este ente não tem registro individualizado de 2025 no SICONFI, então a rotina usa em seu lugar o próprio coeficiente histórico do passo 3, calculado com os anos disponíveis.</p>
+            <div class="formula">${fmtPctPlain(neutro, 6)} <span class="formula-nota">Igual ao coeficiente histórico acima, por construção: é a aproximação que o painel adota quando falta 2025, não um segundo cálculo.</span></div>` : `
+            <p>A participação neutra não é o coeficiente histórico: usa só o ano de 2025, em vez da média de ${nAnosTxt} anos, e é a fatia com que o painel monta o contrafactual de cada ano.</p>
             <div class="formula">${fmtExato(ref2025)} ${op('÷')} ${fmtExato(totalBr)} ${op('=')} <span class="res">${fmtPctPlain(neutro, 6)}</span></div>`)}
     </div>`;
 }
@@ -2567,7 +2588,7 @@ function faixaDestPassoHtml(faixa, numero){
         </tr>`;
     }).join('');
     return passoHtml(numero || 4, 'E se o método de estimar o consumo fosse outro?', `
-        <p>Os métodos abaixo estimam a mesma coisa, a participação do estado no consumo nacional, por caminhos diferentes. O painel publica o primeiro (o φ robusto); os outros, incluindo o método anterior (consumo bruto da POF vezes domicílios) e a tabela de Gobetti e Monteiro (2023), servem de comparação. Trocar o método muda também o repasse do Seguro-Receita de todos os entes, porque desloca a régua de nivelamento nacional; por isso a variação abaixo já vem recalculada com esse efeito, não é só o coeficiente sozinho.</p>
+        <p>Os métodos abaixo estimam a mesma coisa, a participação do estado no consumo nacional, por caminhos diferentes. O painel publica o primeiro (o coeficiente robusto); os outros, incluindo o método anterior (consumo bruto da POF vezes domicílios) e a tabela de Gobetti e Monteiro (2023), servem de comparação. Trocar o método muda também o repasse do Seguro-Receita de todos os entes, porque desloca a régua de nivelamento nacional; por isso a variação abaixo já vem recalculada com esse efeito, não é só o coeficiente sozinho.</p>
         <div class="table-wrap" style="margin-top:0.6rem">
             <table class="data" style="font-size:0.78rem"><thead><tr><th>Método</th><th class="num">Coeficiente do estado</th><th class="num">Variação em 2033</th></tr></thead><tbody>${linhas}</tbody></table>
         </div>
@@ -2592,10 +2613,10 @@ function memoDestinoEstadoHtml(refs, faixa){
             <div class="formula">${fmtExato(cg.compras_estado_reais)} ${op('÷')} ${fmtExato(cg.compras_estados_total_reais)} ${op('=')} <span class="res">${fmtPctPlain(sE, 6)}</span>
                 <span class="formula-nota">Participação do estado nas compras estaduais.</span></div>
             <div class="formula">(1 ${op('−')} ${fmtNum2(cg.theta_estadual, 3)}) ${op('×')} ${fmtPctPlain(phiUf, 6)} ${op('+')} ${fmtNum2(cg.theta_estadual, 3)} ${op('×')} ${fmtPctPlain(sE, 6)} ${op('=')} <span class="res">${fmtPctPlain(phiE, 6)}</span>
-                <span class="formula-nota">φ da esfera estadual, com compras.</span>${confere(phiE, refs.phi_estado_compras_pct)}</div>`) : '';
+                <span class="formula-nota">Coeficiente da esfera estadual, com compras.</span>${confere(phiE, refs.phi_estado_compras_pct)}</div>`) : '';
     return `
     <div class="panel">
-        <h3>Coeficiente de destino, φ<sup>dest</sup></h3>
+        <h3>Coeficiente de destino</h3>
         <p class="panel-sub">É a fatia do ente no critério de consumo, que responde por 10% do IBS em 2033 e cresce um quarenta e cinco avos por ano a partir de 2034. Como não existe medida direta de consumo por ente, o painel estima a proporção do consumo nacional.</p>
 
         ${rb ? passoHtml(1, 'Três estimativas da participação na base tributável', `
@@ -2654,7 +2675,7 @@ function memoDestinoMuniHtml(refs, m, cod){
     const propriaPct = pesoPropria * refs.propria_municipios_pct;
     return `
     <div class="panel">
-        <h3>Coeficiente de destino, φ<sup>dest</sup></h3>
+        <h3>Coeficiente de destino</h3>
         <p class="panel-sub">O destino municipal chega por dois caminhos separados, com critérios legais distintos, e o coeficiente do município é a soma dos dois.</p>
 
         ${passoHtml(1, 'Caminho A: cota-parte do destino estadual', `
@@ -2722,7 +2743,7 @@ function memoSeguroHtml(serie, mediaReferencia, nomeEsfera){
         <p class="panel-sub">O ADCT (art. 132) e o art. 117 da LC 227/2026 retêm 5% do IBS pelo critério de destino para um fundo que nivela os entes mais prejudicados pela mudança de critério. A distribuição é sequencial, não proporcional.</p>
 
         ${passoHtml(1, 'A razão que ordena a fila', `
-            <p>Para cada ente calcula-se a razão entre o IBS que ele recebe pelo critério de destino naquele ano e sua receita de referência ajustada. Quanto menor a razão, mais cedo o ente é atendido. A receita de referência ajustada é a menor entre a média histórica de sete anos, a mesma do φ<sup>CPT</sup>, e três vezes a média nacional per capita da esfera ${nomeEsfera} (art. 117, §6º).</p>
+            <p>Para cada ente calcula-se a razão entre o IBS que ele recebe pelo critério de destino naquele ano e sua receita de referência ajustada. Quanto menor a razão, mais cedo o ente é atendido. A receita de referência ajustada é a menor entre a média histórica de oito anos (2019 a 2026), a mesma do coeficiente histórico, e três vezes a média nacional per capita da esfera ${nomeEsfera} (art. 117, §6º).</p>
             <div class="table-wrap" style="margin-top:0.6rem">
                 <table class="data" style="font-size:0.78rem"><thead><tr>
                     <th>Ano</th><th class="num">IBS por destino recebido</th><th class="num">Receita de referência ajustada</th>
@@ -2786,6 +2807,7 @@ function renderMemoria(){
         let corpo = '';
         if (MEMO.secao === 'historico') {
             const ctx = ehEstado ? {
+                ehEstado: true,
                 historico: e.historico_por_ano,
                 estimativa: e.estimativa_2026,
                 campoTotal: 'estado_reais_2025',

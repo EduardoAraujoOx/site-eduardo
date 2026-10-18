@@ -62,7 +62,7 @@ function memoHistoricoHtml(ctx){
 
     const colunas = ctx.colunas;
     // Com os fatores de ajuste (ctx.fatores), a tabela mostra a conta inteira: valor declarado, fator do ano e referência em R$ de 2025.
-    const fatores = ctx.fatores || null;
+    const fatores = ctx.fatores || MEMO_NAC.fatores_ajuste || null;
     const cab = fatores
         ? colunas.map(c => c.total ? '' : `<th class="num">${c.rotulo}</th>`).join('') + '<th class="num">= Referência (valores correntes)</th><th class="num">× Fator de ajuste</th><th class="num">= Referência em R$ de 2025</th>'
         : colunas.map(c => `<th class="num">${c.rotulo}</th>`).join('');
