@@ -830,7 +830,10 @@ function leituraMunicipio(m, base) {
     const dif33 = m.pos_por_ano['2033'] - m.contrafactual_por_ano['2033'];
     const rep = m.repasse_seguro_receita_por_ano || {};
     const seg33 = rep['2033'] || 0;
-    const p = [];
+    const pos33 = m.pos_por_ano['2033'], neutra = Math.abs(v33) <= 0.0005, perde = v33 < 0;
+    const p = [`O gráfico apresenta os efeitos estimados da reforma tributária do consumo sobre as receitas municipais de ${nome}. As projeções consideram a substituição gradual do ISS e do ICMS pelo IBS e comparam os resultados com um cenário sem reforma. Em 2033, a receita projetada alcança ${fmtMoneyFino(pos33)}, já incluindo a parcela de 25% do IBS estadual que cabe aos municípios. ` + (neutra
+        ? 'Esse valor é praticamente igual ao do cenário sem reforma.'
+        : `Esse valor é ${fmtPct(Math.abs(v33)).replace(/^[+−]/, '')} ${perde ? 'inferior' : 'superior'} ao cenário sem reforma, o equivalente a ${perde ? 'uma perda' : 'um ganho'} anual de ${fmtMoney(Math.abs(dif33))}.`)];
     if (Math.abs(v29) > 0.0005 || Math.abs(v33) > 0.0005) p.push(`O efeito começa em ${fmtPct(v29)} em 2029 e chega a ${fmtPct(v33)} em 2033, de modo que a transição vai ${Math.abs(v33) > Math.abs(v29) ? 'ampliando' : 'reduzindo'} a diferença.`);
     if (seg33 > 0) {
         if (v33 > 0.0005 && seg33 > dif33) p.push(`Esse resultado depende do Seguro-Receita, o repasse compensatório do Comitê Gestor: ${nome} recebe ${fmtMoney(seg33)} em 2033, mais do que o ganho. Sem o repasse, a receita ficaria ${fmtMoney(seg33 - dif33)} abaixo do cenário sem reforma.`);
@@ -896,8 +899,8 @@ function renderFicha(cod, base, m) {
             <h3 class="sr-only">Para onde vai a arrecadação</h3>
             <div class="canvas-box canvas-serie"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano, em Detalhes do cálculo."></canvas></div>
             <p class="nota-serie">Valores em R$ de 2025. Linha tracejada: cenário sem a reforma.</p>
-            <div class="efeito-linha"><div class="efeito ${sinal}"><em class="selo">${selo}</em><b>${fmtPct(v33)}</b><span>em 2033</span></div><p>${frase} <a href="#" data-tab="metodologia" data-depois="met-5">Como ler →</a></p></div>
-            <div class="leitura-dados"><h4>O que os dados sugerem</h4>${leituraMunicipio(m, base)}</div>
+            <div class="efeito-linha"><div class="efeito ${sinal}"><em class="selo">${selo}</em><b>${fmtPct(v33)}</b><span>em 2033</span></div></div>
+            <div class="leitura-dados"><h4>Como a reforma tributária afeta a receita de ${nomeSeg}?</h4>${leituraMunicipio(m, base)}<p class="como-ler"><a href="#" data-tab="metodologia" data-depois="met-5">Como ler os dois cenários →</a></p></div>
         </div>
         ${painelParticipacaoHtml(m, base)}
         <div class="panel accent">
