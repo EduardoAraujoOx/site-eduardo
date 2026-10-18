@@ -577,7 +577,7 @@ function criarMapa(svgEl, wrapEl, tipEl, opt) {
             .attr('data-uf', d => d.properties.uf).attr('fill', d => corUF(d.properties.uf));
         rotulos = gUF.selectAll('text').data(GEO.uf.features).enter().append('text').attr('class', 'uf-rotulo')
             .text(d => d.properties.uf)
-            .attr('fill', d => luminancia(corUF(d.properties.uf)) > 0.32 ? '#1f2a55' : '#fff');
+            .attr('fill', d => luminancia(corUF(d.properties.uf)) > 0.32 ? '#062254' : '#fff');
     }
 
     ctl.definir = (uf, nivel) => {
@@ -810,9 +810,9 @@ function desenhaParticipacao(m) {
     GPART = new Chart(cv, {
         type: 'line', plugins: [valoresNosPontos],
         data: {labels: rotulos, datasets: [
-            Object.assign({label: 'Participação em cada ano', data: obs, borderColor: '#1f2a55', backgroundColor: '#1f2a55', pointBackgroundColor: '#1f2a55', pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 4.5, pointHoverRadius: 6}, linha),
-            Object.assign({label: rotuloEst, data: est, borderColor: '#1f2a55', borderDash: [5, 4], backgroundColor: '#fff', pointBackgroundColor: ctx => ctx.dataIndex === rotulos.length - 1 ? '#fff' : 'rgba(0,0,0,0)', pointBorderColor: ctx => ctx.dataIndex === rotulos.length - 1 ? '#1f2a55' : 'rgba(0,0,0,0)', pointBorderWidth: 2, pointRadius: ctx => ctx.dataIndex === rotulos.length - 1 ? 5.5 : 0, pointHoverRadius: 6}, linha),
-            {label: 'Coeficiente histórico: ' + pctAdapt(d.coef), data: media, borderColor: '#b8922f', borderWidth: 2, borderDash: [7, 5], pointRadius: 0, pointHitRadius: 0, fill: false}
+            Object.assign({label: 'Participação em cada ano', data: obs, borderColor: '#062254', backgroundColor: '#062254', pointBackgroundColor: '#062254', pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 4.5, pointHoverRadius: 6}, linha),
+            Object.assign({label: rotuloEst, data: est, borderColor: '#062254', borderDash: [5, 4], backgroundColor: '#fff', pointBackgroundColor: ctx => ctx.dataIndex === rotulos.length - 1 ? '#fff' : 'rgba(0,0,0,0)', pointBorderColor: ctx => ctx.dataIndex === rotulos.length - 1 ? '#062254' : 'rgba(0,0,0,0)', pointBorderWidth: 2, pointRadius: ctx => ctx.dataIndex === rotulos.length - 1 ? 5.5 : 0, pointHoverRadius: 6}, linha),
+            {label: 'Coeficiente histórico: ' + pctAdapt(d.coef), data: media, borderColor: '#b8860b', borderWidth: 2, borderDash: [7, 5], pointRadius: 0, pointHitRadius: 0, fill: false}
         ]},
         options: {responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false}, layout: {padding: {top: 16, bottom: 12, right: 30}},
             plugins: {legend: {position: 'bottom', labels: {boxWidth: 26, boxHeight: 2, padding: 14, color: '#141414', font: {size: 11}}},
@@ -1055,7 +1055,7 @@ function desenharSens() {
         const e = SENS_ESTILO[r] || ['#7a7a7a', [3, 3]];
         ds.push(Object.assign({label: 'Base ' + r + (r === '2026' ? ' (est.)' : ''), data: calc.linhas[r].map(x => pc(x.c)), borderColor: e[0], backgroundColor: e[0], borderDash: e[1]}, linha, {borderWidth: 1.8}));
     });
-    ds.push(Object.assign({label: 'Base 2025 (a do painel)', data: calc.linhas['2025'].map(x => pc(x.c)), borderColor: '#1f2a55', backgroundColor: '#1f2a55', pointBackgroundColor: '#1f2a55', pointRadius: 4}, linha, {pointRadius: 4, borderWidth: 3}));
+    ds.push(Object.assign({label: 'Base 2025 (a do painel)', data: calc.linhas['2025'].map(x => pc(x.c)), borderColor: '#062254', backgroundColor: '#062254', pointBackgroundColor: '#062254', pointRadius: 4}, linha, {pointRadius: 4, borderWidth: 3}));
 
     const estreito = $('gSens').parentElement.clientWidth < 520;
     if (GSENS) GSENS.destroy();
@@ -1070,7 +1070,7 @@ function desenharSens() {
     });
 }
 
-const COMP_ROTULOS = [['origem', 'ISS e cota-parte do ICMS residuais', '#858384'], ['cpt', 'IBS pelo critério histórico*', '#1f2a55'], ['destino', 'IBS por destino*', '#cfad56'], ['seguro', 'Seguro-Receita', '#2f7f7a']];
+const COMP_ROTULOS = [['origem', 'ISS e cota-parte do ICMS residuais', '#858384'], ['cpt', 'IBS pelo critério histórico*', '#062254'], ['destino', 'IBS por destino*', '#fcbb1b'], ['seguro', 'Seguro-Receita', '#249266']];
 
 function desenharGraficos(m) {
     const tabelaComp = pct => {
@@ -1110,8 +1110,8 @@ function desenharGraficos(m) {
     graficos.push(new Chart($('gSerie'), {
         type: 'line',
         data: {labels: rotulos, datasets: [
-            Object.assign({label: 'Realizado (2019–2025)', data: hist, borderColor: '#1f2a55', backgroundColor: '#1f2a55', pointBackgroundColor: '#1f2a55'}, linha),
-            Object.assign({label: 'Projeção com a reforma', data: cenario(m.pos_por_ano), borderColor: '#b8922f', backgroundColor: 'rgba(207,173,86,.18)', pointBackgroundColor: '#b8922f', fill: '+1'}, linha),
+            Object.assign({label: 'Realizado (2019–2025)', data: hist, borderColor: '#062254', backgroundColor: '#062254', pointBackgroundColor: '#062254'}, linha),
+            Object.assign({label: 'Projeção com a reforma', data: cenario(m.pos_por_ano), borderColor: '#b8860b', backgroundColor: 'rgba(252,187,27,.2)', pointBackgroundColor: '#b8860b', fill: '+1'}, linha),
             Object.assign({label: 'Cenário sem a reforma', data: cenario(m.contrafactual_por_ano), borderColor: '#6b6b6b', backgroundColor: '#6b6b6b', pointBackgroundColor: '#6b6b6b', borderDash: [5, 4], fill: false}, linha)
         ]},
         options: {responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false},
