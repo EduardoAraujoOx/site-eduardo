@@ -53,16 +53,15 @@ function renderPrazos() {
         const s = situacao(m, hoje);
         const ehProx = prox && prox.id === m.id;
         const item = el('li', { class: 'lt-item lt-' + s.chave + (ehProx ? ' lt-prox' : ''), id: 'marco-' + m.id });
+        const mostraSit = s.chave === 'curso' || m.tipo !== 'inicio' && s.chave === 'encerrado';
         const topo = el('div', { class: 'lt-topo' },
             el('span', { class: 'lt-data', text: m.rotulo_data }),
-            el('span', { class: 'chip chip-' + s.chave, text: s.rotulo }),
-            ehProx ? el('span', { class: 'chip chip-prox', text: 'Próxima providência' }) : null,
-            el('span', { class: 'chip chip-quem', text: m.quem === 'Município' ? 'Cabe ao município' : m.quem === 'CGIBS' ? 'Cabe ao CGIBS' : 'Todos os entes' }),
+            ehProx ? el('span', { class: 'chip chip-prox', text: 'Próxima providência' }) : (mostraSit ? el('span', { class: 'chip chip-' + s.chave, text: s.rotulo }) : null),
+            m.quem === 'Município' && !ehProx ? el('span', { class: 'chip chip-quem', text: 'Providência do município' }) : null,
             m.a_confirmar ? el('span', { class: 'chip chip-conf', text: 'Data a confirmar' }) : null);
         item.append(topo, el('h3', { text: m.titulo }), el('p', { text: m.resumo }));
         if (m.acao_municipio) item.append(el('div', { class: 'lt-acao' }, el('strong', { text: 'O que fazer: ' }), m.acao_municipio));
-        const refs = el('p', { class: 'lt-base' }, el('span', { text: 'Base: ' + m.base_legal.join('; ') }));
-        item.append(refs);
+        item.append(el('details', { class: 'lt-base' }, el('summary', { text: 'Base legal' }), el('p', { text: m.base_legal.join('; ') })));
         const vinc = (m.pub_ids || []).map(id => pubs && pubs.itens.find(i => i.id === id)).filter(Boolean);
         if (vinc.length) item.append(el('p', { class: 'lt-pubs' }, 'Ato oficial: ', vinc.map((p, i) =>
             [i ? ' · ' : '', el('a', { href: p.pdf_url, target: '_blank', rel: 'noopener', text: p.titulo })]).flat()));
@@ -80,7 +79,6 @@ function renderPubs() {
     const q = document.getElementById('pubBusca').value.trim().toLowerCase();
     const tipo = document.getElementById('pubTipo').value;
     const todas = document.getElementById('pubTodas').checked;
-    const lim = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
     const itens = pubs.itens.filter(i => {
         const f = edit[i.id] || {};
         if (!todas && f.relevancia === 'baixa') return false;
@@ -95,8 +93,6 @@ function renderPubs() {
         card.append(el('div', { class: 'pub-topo' },
             el('span', { class: 'chip chip-tipo', text: i.tipo }),
             f.tema ? el('span', { class: 'chip chip-tema', text: f.tema }) : null,
-            f.relevancia === 'alta' ? el('span', { class: 'chip chip-alta', text: 'Relevância alta' }) : null,
-            i.publicado_em >= lim ? el('span', { class: 'chip chip-nova', text: 'Recente' }) : null,
             i.revogado ? el('span', { class: 'chip chip-conf', text: 'Revogado' }) : null,
             el('time', { class: 'pub-data', datetime: i.publicado_em, text: 'Publicado em ' + dataCurta(i.publicado_em) })));
         card.append(el('h3', { text: i.titulo }));
@@ -140,15 +136,4 @@ document.querySelectorAll('#agendaAbas button').forEach(b => b.addEventListener(
 document.getElementById('soProvidencia').addEventListener('change', () => cron && renderPrazos());
 ['pubBusca', 'pubTipo', 'pubTodas'].forEach(id => document.getElementById(id).addEventListener(id === 'pubBusca' ? 'input' : 'change', () => pubs && renderPubs()));
 
-/* faixa na visão geral com o próximo prazo que exige providência */
-carrega().then(() => {
-    const m = proximoMarco(hojeISO());
-    const raiz = document.getElementById('view-visao-geral');
-    if (!m || !raiz) return;
-    const faixa = el('p', { class: 'proximo-prazo' },
-        el('span', { class: 'pp-rot', text: 'Próxima providência' }),
-        el('strong', { text: m.rotulo_data.charAt(0).toUpperCase() + m.rotulo_data.slice(1) + ': ' }), m.titulo + '. ',
-        el('a', { href: '#', 'data-tab': 'agenda', text: 'Ver a agenda de prazos' }));
-    raiz.prepend(faixa);
-}).catch(() => {});
 })();
