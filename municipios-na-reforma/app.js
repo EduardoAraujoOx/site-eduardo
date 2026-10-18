@@ -749,9 +749,84 @@ function historicoTableHtml(historico, est26) {
         <p class="nota">Valores em R$ ${mi ? 'milhões' : 'mil'}; a última coluna está em reais de 2025.${fat ? ' O fator de ajuste corrige cada ano pela variação nominal da arrecadação total de ICMS e ISS do país (LC 227, art. 115, §2º), e a referência do ano é o valor declarado vezes esse fator.' : ''}${faltou ? ' Ano sem dado entra como zero na média.' : ''}${origemAnosTxt(historico)}${est26 ? (est26.origem === 'rreo' ? ' 2026, já em reais de 2025: ISS observado no RREO de setembro de 2025 a agosto de 2026; cota-parte de 2025 ajustada pelo crescimento de janeiro a agosto, também do RREO.' : ' 2026, já em reais de 2025: este município não publica o Anexo 3 do RREO; mantém a posição relativa de 2025 no estado.') : ''}</p>`;
 }
 
+/* ── participação histórica: a fatia do município na arrecadação nacional, ano a ano, contra a média que vira o coeficiente histórico ── */
+function pctAdapt(v) {
+    if (v == null || !isFinite(v)) return '—';
+    const d = Math.abs(v) < 0.01 ? 5 : Math.abs(v) < 0.1 ? 4 : Math.abs(v) < 1 ? 3 : 2;
+    return v.toLocaleString('pt-BR', {minimumFractionDigits: d, maximumFractionDigits: d}) + '%';
+}
+
+function partDados(m) {
+    if (!REF_NAC || !REF_NAC.total_br_2025 || m.coef_cpt_pct == null) return null;
+    const tb = REF_NAC.total_br_2025, h = m.historico_por_ano || {};
+    const valores = ANOS_HIST.map(a => h[a] ? h[a].total_reais_2025 / tb * 100 : null);
+    const est = m.estimativa_2026 ? m.estimativa_2026.total_reais_2025 / tb * 100 : null;
+    const s25 = valores[valores.length - 1];
+    return {valores, est, coef: m.coef_cpt_pct, s25, rreo: !!(m.estimativa_2026 && m.estimativa_2026.origem === 'rreo')};
+}
+
+/* Texto que explica o porquê: compara a fatia de 2025 (a do cenário sem reforma) com a média de 2019 a 2026 (a do coeficiente histórico). */
+function explicaParticipacao(nome, d) {
+    const fecho = ' O resultado de 2033 também depende do critério de destino e do Seguro-Receita, mostrados nos blocos abaixo.';
+    if (d.s25 == null) return `Este município não tem o dado de 2025 no SICONFI, então não dá para comparar a fatia atual com a média. O painel usa a própria média como aproximação da fatia de 2025, e por isso o critério histórico, aqui, quase não altera o ponto de partida.` + fecho;
+    const r = d.coef / d.s25, vezes = r.toLocaleString('pt-BR', {maximumFractionDigits: 1});
+    const base = `Em 2025, a fatia de ${nome} na arrecadação nacional de ICMS e ISS foi de ${pctAdapt(d.s25)}. A média de 2019 a 2026 é de ${pctAdapt(d.coef)}`;
+    const regra = ' É essa média, e não o valor de 2025, que vira o coeficiente histórico, e em 2033 cerca de 90% do IBS ainda é repartido por ele. O cenário sem a reforma, ao contrário, mantém a fatia de 2025.';
+    if (r > 1.15) return `${base}, ${vezes} vez${r >= 2 ? 'es' : ''} a de 2025.${regra} Por isso a reforma preserva uma fatia maior do que o município tem hoje, e o critério histórico puxa o resultado para cima. Se a queda for permanente, o município ganha em relação a continuar como está; se a receita voltar ao patamar anterior, o ganho diminui ou desaparece.` + fecho;
+    if (r < 0.87) return `${base}, abaixo da fatia de 2025.${regra} Por isso a reforma devolve uma fatia menor do que o município tem hoje, e o critério histórico puxa o resultado para baixo. Se o nível de 2025 for um novo patamar, o município perde parte do que já tem; se for um pico passageiro, o efeito é menor.` + fecho;
+    return `${base}, parecida com a de 2025.${regra} Por isso o critério histórico quase não altera o ponto de partida do município.` + fecho;
+}
+
+function painelParticipacaoHtml(m, base) {
+    const d = partDados(m); if (!d) return '';
+    return `<div class="panel accent" id="painelPart"><h3>Por que o resultado é este: a participação histórica</h3>
+        <p class="panel-sub">A reforma distribui o IBS pela fatia que cada município teve, em média, na arrecadação nacional de ICMS e ISS de 2019 a 2026. O gráfico compara a fatia de cada ano com essa média.</p>
+        <div class="canvas-box canvas-part"><canvas id="gPart" role="img" aria-label="Gráfico de linhas com a participação de ${esc(base.nome)} na arrecadação nacional de 2019 a 2025, a estimativa de 2026 e a média de 2019 a 2026, que é o coeficiente histórico. Os valores estão na tabela de receita histórica, em Detalhes do cálculo."></canvas></div>
+        <p class="leitura">${esc(explicaParticipacao(base.nome, d))}</p>
+        <p class="nota nota-grafico"><a href="#" data-abrir="detHist">Ver a conta, ano a ano, na tabela da receita histórica →</a></p>
+    </div>`;
+}
+
+function desenhaParticipacao(m) {
+    const d = partDados(m), cv = $('gPart'); if (!d || !cv) return;
+    const rotulos = ANOS_HIST.concat(['2026']);
+    const estreito = cv.parentElement.clientWidth < 520;
+    const todos = d.valores.concat([d.est, d.coef]).filter(v => v != null);
+    const lo = Math.min(...todos), hi = Math.max(...todos), dig = Math.abs(hi) < 0.01 ? 5 : Math.abs(hi) < 0.1 ? 4 : Math.abs(hi) < 1 ? 3 : 2;
+    const obs = d.valores.concat([null]);
+    const est = ANOS_HIST.map((a, i) => i === ANOS_HIST.length - 1 ? d.s25 : null).concat([d.est]);
+    const media = rotulos.map(() => d.coef);
+    const rotuloEst = d.rreo ? '2026 (estimada pelo RREO até agosto)' : '2026 (estimada)';
+    const linha = {borderWidth: 2.5, tension: 0.1, spanGaps: false, hitRadius: 14};
+    // rótulos com o valor em cada ponto (no celular, alternando acima e abaixo para não se sobreporem)
+    const valoresNosPontos = {id: 'valoresNosPontos', afterDatasetsDraw(chart) {
+        const c = chart.ctx; c.save(); c.font = (estreito ? '600 9px' : '600 11px') + " 'Inter', system-ui, sans-serif"; c.fillStyle = '#141414'; c.textAlign = 'center';
+        [0, 1].forEach(di => chart.getDatasetMeta(di).data.forEach((pt, i) => {
+            const v = chart.data.datasets[di].data[i]; if (v == null || (di === 1 && i < rotulos.length - 1)) return;
+            const abaixo = estreito ? i % 2 === 1 : (di === 1);
+            c.textBaseline = abaixo ? 'top' : 'bottom'; c.fillText(pctAdapt(v), pt.x, pt.y + (abaixo ? 9 : -9));
+        })); c.restore();
+    }};
+    GPART = new Chart(cv, {
+        type: 'line', plugins: [valoresNosPontos],
+        data: {labels: rotulos, datasets: [
+            Object.assign({label: 'Participação em cada ano', data: obs, borderColor: '#1f2a55', backgroundColor: '#1f2a55', pointBackgroundColor: '#1f2a55', pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 4.5, pointHoverRadius: 6}, linha),
+            Object.assign({label: rotuloEst, data: est, borderColor: '#1f2a55', borderDash: [5, 4], backgroundColor: '#fff', pointBackgroundColor: ctx => ctx.dataIndex === rotulos.length - 1 ? '#fff' : 'rgba(0,0,0,0)', pointBorderColor: ctx => ctx.dataIndex === rotulos.length - 1 ? '#1f2a55' : 'rgba(0,0,0,0)', pointBorderWidth: 2, pointRadius: ctx => ctx.dataIndex === rotulos.length - 1 ? 5.5 : 0, pointHoverRadius: 6}, linha),
+            {label: 'Coeficiente histórico: ' + pctAdapt(d.coef), data: media, borderColor: '#b8922f', borderWidth: 2, borderDash: [7, 5], pointRadius: 0, pointHitRadius: 0, fill: false}
+        ]},
+        options: {responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false}, layout: {padding: {top: 16, bottom: 12, right: 30}},
+            plugins: {legend: {position: 'bottom', labels: {boxWidth: 26, boxHeight: 2, padding: 14, color: '#141414', font: {size: 11}}},
+                tooltip: {callbacks: {label: c => c.parsed.y == null ? null : ' ' + c.dataset.label + ': ' + pctAdapt(c.parsed.y)}}},
+            scales: {y: {grace: '12%', grid: {color: '#e9edf0', drawTicks: false}, border: {display: false}, ticks: {maxTicksLimit: 5, color: '#6b6b6b', font: {size: 11}, padding: 8,
+                        callback: v => v.toLocaleString('pt-BR', {minimumFractionDigits: dig, maximumFractionDigits: dig}) + '%'}},
+                x: {grid: {display: false}, border: {color: '#c8d0d6'}, ticks: {autoSkip: false, maxRotation: estreito ? 55 : 0, minRotation: estreito ? 55 : 0, font: {size: estreito ? 10 : 11}, color: '#6b6b6b', padding: 6}}}}
+    });
+}
+
 function renderFicha(cod, base, m) {
     graficos.forEach(g => g.destroy()); graficos = [];
     if (GSENS) { GSENS.destroy(); GSENS = null; }
+    if (GPART) { GPART.destroy(); GPART = null; }
     const ok = LISTA.filter(x => !x.r).sort((a, b) => b.v - a.v);
     const posBR = ok.findIndex(x => x.cod === cod) + 1;
     const naUF = ok.filter(x => x.uf === base.uf);
@@ -811,6 +886,7 @@ function renderFicha(cod, base, m) {
         <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Receita realizada até 2025 e projetada de 2029 a 2033, com e sem a reforma, em R$ de 2025.</p>
             <div class="canvas-box canvas-serie"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano, em Detalhes do cálculo."></canvas></div>
 </div>
+        ${painelParticipacaoHtml(m, base)}
         <div class="panel accent">
             <div class="panel-head"><div><h3>De onde vem a receita</h3><p class="panel-sub">Quanto ainda vem do ISS e da cota-parte do ICMS e quanto já vem do IBS, de 2029 a 2033.</p></div>
                 <div class="comp-controles">
@@ -878,7 +954,7 @@ function renderFicha(cod, base, m) {
    central, reproduz a variação publicada. A fatia de cada ano é a de 2025 (coef_neutro) escalada pela receita real do
    município naquele ano em relação a 2025 (série deflacionada da ficha; 2026 é a estimativa). A margem de erro do destino
    é a medida para a UF (sensibilidade-uf.json). */
-let GSENS = null, SENS_UF = null, SENS_P = null;
+let GSENS = null, GPART = null, SENS_UF = null, SENS_P = null;
 const SENSM = {refs: ['2019', '2025', '2026'], erro: null};
 const SENS_ESTILO = {'2019': ['#9c3d3d', [2, 4]], '2020': ['#8a6d3b', [10, 3, 2, 3]], '2021': ['#6b4c9a', [6, 3]], '2022': ['#00799a', [3, 3]],
     '2023': ['#b5651d', [12, 4]], '2024': ['#7a7a7a', [1, 3]], '2026': ['#2e7d32', [8, 4]]};
@@ -1059,6 +1135,7 @@ function desenharGraficos(m) {
         }));
     };
     desenhaComp();
+    desenhaParticipacao(m);
     document.querySelectorAll('#compModo button').forEach(b => b.addEventListener('click', () => {
         modo = b.dataset.modo;
         document.querySelectorAll('#compModo button').forEach(x => x.classList.toggle('active', x === b));
