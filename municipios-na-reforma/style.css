@@ -516,6 +516,8 @@ html, body { overflow-x: clip; }
 .panel, .ficha-grid > *, .grid2 > *, .mapa-layout > *, .trilho, .faixa > *, .view { min-width: 0; max-width: 100%; }
 .table-wrap { max-width: 100%; -webkit-overflow-scrolling: touch; }
 .canvas-serie { height: 360px; }
+.canvas-part { height: 320px; }
+@media (max-width: 560px) { .canvas-part { height: 340px; } }
 @media (max-width: 560px) { .canvas-serie { height: 380px; } }
 
 /* ── ficha no celular: só o que importa antes do número ── */
@@ -634,7 +636,13 @@ table.dados.tab-hist th { white-space: normal; line-height: 1.25; vertical-align
 table.dados.tab-hist tr.est td { color: var(--ink-soft); font-style: italic; }
 table.dados.tab-hist tr.media td { font-weight: 800; color: var(--navy); border-top: 2px solid var(--navy); }
 .detalhes details a[data-abrir] { white-space: nowrap; font-weight: 700; }
-@media (max-width: 560px) { .tab-hist { font-size: .84rem; } table.dados.tab-hist th { font-size: .62rem; letter-spacing: .03em; } table.dados.tab-hist th, table.dados.tab-hist td { padding-inline: .3rem; } }
+@media (max-width: 560px) {
+  table.dados.tab-hist { font-size: .76rem; table-layout: fixed; }
+  table.dados.tab-hist th { font-size: .56rem; letter-spacing: .01em; }
+  table.dados.tab-hist th, table.dados.tab-hist td { padding-inline: .15rem; padding-block: .4rem; }
+  table.dados.tab-hist th:nth-child(1) { width: 14%; } table.dados.tab-hist th:nth-child(2) { width: 13%; } table.dados.tab-hist th:nth-child(3) { width: 17%; }
+  table.dados.tab-hist th:nth-child(4) { width: 21%; } table.dados.tab-hist th:nth-child(5) { width: 13%; } table.dados.tab-hist th:nth-child(6) { width: 22%; }
+}
 
 /* chamada da busca na abertura e setas nas linhas que abrem uma ficha */
 .busca-chamada { margin: 0 0 .55rem; font: 600 .95rem var(--font-body); color: var(--navy); }
@@ -644,3 +652,5 @@ table.dados tr.clicavel td.nome::after { content: '\203A'; margin-left: .4rem; f
 @media (max-width: 560px) { .busca-chamada { font-size: .9rem; } }
 @media (max-width: 560px) { .search-barra .busca-ir { font-size: .82rem; padding: .45rem .7rem; } }
 @media (max-width: 560px) { #tabPerdas td.nome, #tabGanhos td.nome { min-width: 5.2rem; } }
+table.dados.tab-hist tr.rodape td { color: var(--ink-soft); }
+table.dados.tab-hist tr.media td[colspan] { white-space: normal; }

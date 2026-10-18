@@ -61,13 +61,23 @@ function memoHistoricoHtml(ctx){
     const neutro = ref2025 != null ? ref2025 / totalBr * 100 : (neutroAproximado ? coef : null);
 
     const colunas = ctx.colunas;
-    const cab = colunas.map(c => `<th class="num">${c.rotulo}</th>`).join('');
+    // Com os fatores de ajuste (ctx.fatores), a tabela mostra a conta inteira: valor declarado, fator do ano e referência em R$ de 2025.
+    const fatores = ctx.fatores || null;
+    const cab = fatores
+        ? colunas.map(c => c.total ? '' : `<th class="num">${c.rotulo}</th>`).join('') + '<th class="num">= Referência (valores correntes)</th><th class="num">× Fator de ajuste</th><th class="num">= Referência em R$ de 2025</th>'
+        : colunas.map(c => `<th class="num">${c.rotulo}</th>`).join('');
     const linhas = anos.map((a,i) => {
         const h = serie[i];
-        const cels = colunas.map(c => {
-            const v = h ? h[c.campo] : null;
-            return `<td class="num"${c.total ? ' style="font-weight:700"' : ''}>${fmtExato(v)}</td>`;
-        }).join('');
+        const fa = fatores ? fatores[String(a)] : null;
+        const valor = (c) => { const v = h ? h[c.campo] : null; return v == null ? v : (fatores && fa ? v / fa : v); };
+        const cels = fatores
+            ? colunas.filter(c => !c.total).map(c => `<td class="num">${fmtExato(valor(c))}</td>`).join('')
+              + `<td class="num">${fmtExato(h ? (fa ? h[ctx.campoTotal] / fa : h[ctx.campoTotal]) : null)}</td>`
+              + `<td class="num">${fa ? fmtNum2(fa, 4) : 'n.a.'}</td><td class="num" style="font-weight:700">${fmtExato(h ? h[ctx.campoTotal] : null)}</td>`
+            : colunas.map(c => {
+                const v = h ? h[c.campo] : null;
+                return `<td class="num"${c.total ? ' style="font-weight:700"' : ''}>${fmtExato(v)}</td>`;
+            }).join('');
         return `<tr><td>${rotuloAno(a)}</td>${cels}</tr>`;
     }).join('');
 
@@ -75,7 +85,7 @@ function memoHistoricoHtml(ctx){
 
     return `
     <div class="panel">
-        <h3>Coeficiente histórico, φ<sup>CPT</sup></h3>
+        <h3>Coeficiente histórico</h3>
         <p class="panel-sub">É a fatia do ente no critério de origem, que rege 90% do IBS em 2033 e vai cedendo lugar ao destino até 2078 (ADCT art. 131, §1º). A base é a receita de referência média de ${nAnosTxt} anos, definida no art. 115 da LC 227/2026.</p>
 
         ${passoHtml(1, 'Receita de referência, ano a ano', `
@@ -83,7 +93,7 @@ function memoHistoricoHtml(ctx){
             <div class="table-wrap" style="margin-top:0.6rem">
                 <table class="data" style="font-size:0.78rem"><thead><tr><th>Ano</th>${cab}</tr></thead><tbody>${linhas}</tbody></table>
             </div>
-            <p style="margin-top:0.5rem">Todos os valores estão deflacionados a reais de 2025, para que anos distantes possam ser somados.${anos.length === 8 ? (ctx.origem2026 === 'rreo' ? ' Em 2026, ainda sem a DCA, o ISS é o observado no RREO de setembro de 2025 a agosto de 2026 e a cota-parte é a de 2025 ajustada pelo crescimento de janeiro a agosto, também do RREO.' : ' Em 2026, ainda sem a DCA, este município não publica o Anexo 3 do RREO e mantém a posição relativa de 2025 no estado.') : ''}</p>`)}
+            <p style="margin-top:0.5rem">Os valores de cada ano são levados a reais de 2025, para que anos distantes possam ser somados${fatores ? ': a referência corrente multiplicada pelo fator de ajuste do ano (a variação nominal da arrecadação total de ICMS e ISS do país, LC 227, art. 115, §2º) dá a última coluna.' : '.'}${anos.length === 8 ? (ctx.origem2026 === 'rreo' ? ' Em 2026, ainda sem a DCA, o ISS é o observado no RREO de setembro de 2025 a agosto de 2026 e a cota-parte é a de 2025 ajustada pelo crescimento de janeiro a agosto, também do RREO.' : ' Em 2026, ainda sem a DCA, este município não publica o Anexo 3 do RREO e mantém a posição relativa de 2025 no estado.') : ''}</p>`)}
 
         ${passoHtml(2, 'Média dos ' + nAnosTxt + ' anos', `
             <div class="formula">${fmtExato(soma)} ${op('÷')} ${anos.length} ${op('=')} <span class="res">${fmtExato(media)}</span>
@@ -95,9 +105,9 @@ function memoHistoricoHtml(ctx){
                 ${confere(coef, ctx.coefPublicado)}</div>`)}
 
         ${passoHtml(4, 'Participação neutra, para comparação', neutroAproximado ? `
-            <p>A participação neutra usa só o ano de 2025, em vez da média de ${nAnosTxt} anos, e é a fatia com que o painel monta o contrafactual de cada ano. Este ente não tem registro individualizado de 2025 no SICONFI, então a rotina usa em seu lugar o próprio φ<sup>CPT</sup> do passo 3, calculado com os anos disponíveis.</p>
-            <div class="formula">${fmtPctPlain(neutro, 6)} <span class="formula-nota">Igual ao φ<sup>CPT</sup> acima, por construção: é a aproximação que o painel adota quando falta 2025, não um segundo cálculo.</span></div>` : `
-            <p>A participação neutra não é o φ<sup>CPT</sup>: usa só o ano de 2025, em vez da média de ${nAnosTxt} anos, e é a fatia com que o painel monta o contrafactual de cada ano.</p>
+            <p>A participação neutra usa só o ano de 2025, em vez da média de ${nAnosTxt} anos, e é a fatia com que o painel monta o contrafactual de cada ano. Este ente não tem registro individualizado de 2025 no SICONFI, então a rotina usa em seu lugar o próprio coeficiente histórico do passo 3, calculado com os anos disponíveis.</p>
+            <div class="formula">${fmtPctPlain(neutro, 6)} <span class="formula-nota">Igual ao coeficiente histórico acima, por construção: é a aproximação que o painel adota quando falta 2025, não um segundo cálculo.</span></div>` : `
+            <p>A participação neutra não é o coeficiente histórico: usa só o ano de 2025, em vez da média de ${nAnosTxt} anos, e é a fatia com que o painel monta o contrafactual de cada ano.</p>
             <div class="formula">${fmtExato(ref2025)} ${op('÷')} ${fmtExato(totalBr)} ${op('=')} <span class="res">${fmtPctPlain(neutro, 6)}</span></div>`)}
     </div>`;
 }
@@ -126,7 +136,7 @@ function memoDestinoMuniHtml(refs, m, cod){
     const propriaPct = pesoPropria * refs.propria_municipios_pct;
     return `
     <div class="panel">
-        <h3>Coeficiente de destino, φ<sup>dest</sup></h3>
+        <h3>Coeficiente de destino</h3>
         <p class="panel-sub">O destino municipal chega por dois caminhos separados, com critérios legais distintos, e o coeficiente do município é a soma dos dois.</p>
 
         ${passoHtml(1, 'Caminho A: cota-parte do destino estadual', `
@@ -193,7 +203,7 @@ function memoSeguroHtml(serie, mediaReferencia, nomeEsfera){
         <p class="panel-sub">O ADCT (art. 132) e o art. 117 da LC 227/2026 retêm 5% do IBS pelo critério de destino para um fundo que nivela os entes mais prejudicados pela mudança de critério. A distribuição é sequencial, não proporcional.</p>
 
         ${passoHtml(1, 'A razão que ordena a fila', `
-            <p>Para cada ente calcula-se a razão entre o IBS que ele recebe pelo critério de destino naquele ano e sua receita de referência ajustada. Quanto menor a razão, mais cedo o ente é atendido. A receita de referência ajustada é a menor entre a média histórica de 2019 a 2026, a mesma do φ<sup>CPT</sup>, e três vezes a média nacional per capita da esfera ${nomeEsfera} (art. 117, §6º).</p>
+            <p>Para cada ente calcula-se a razão entre o IBS que ele recebe pelo critério de destino naquele ano e sua receita de referência ajustada. Quanto menor a razão, mais cedo o ente é atendido. A receita de referência ajustada é a menor entre a média histórica de 2019 a 2026, a mesma do coeficiente histórico, e três vezes a média nacional per capita da esfera ${nomeEsfera} (art. 117, §6º).</p>
             <div class="table-wrap" style="margin-top:0.6rem">
                 <table class="data" style="font-size:0.78rem"><thead><tr>
                     <th>Ano</th><th class="num">IBS por destino recebido</th><th class="num">Receita de referência ajustada</th>
