@@ -114,8 +114,8 @@ def eixo_ticks(lo, hi, n=5):
 def svg_serie(m, cor_neg_pos):
     """Gráfico da ficha do portal: realizado 2019-2025 e os dois cenários de 2029 a 2033, no mesmo eixo categórico
     (2026-2028 não são projetados, e a linha segue direto de 2025 para 2029). R$ milhões de 2025."""
-    W, H = 690, 282
-    L, R, T, B = 50, 118, 40, 42
+    W, H = 690, 258
+    L, R, T, B = 50, 118, 38, 40
     cats = ANOS_HIST + ANOS
     n = len(cats)
     X = lambda i: L + i * (W - L - R) / (n - 1)
@@ -126,13 +126,14 @@ def svg_serie(m, cor_neg_pos):
     vals = [v for v in hist if v] + cf + ps
     ticks, _ = eixo_ticks(min(vals) * 0.88, max(vals) * 1.05, 5)
     lo, hi = ticks[0], ticks[-1]
+    dec = 0 if hi >= 60 else 1 if hi >= 6 else 2
     Y = lambda v: T + (1 - (v - lo) / (hi - lo)) * (H - T - B)
     i25 = ANOS_HIST.index("2025")
     idx_proj = [i25] + [len(ANOS_HIST) + k for k in range(len(ANOS))]
     o = [f'<svg viewBox="0 0 {W} {H}" xmlns="http://www.w3.org/2000/svg" class="graf" role="img" aria-label="Receita realizada de 2019 a 2025 e projeção de 2029 a 2033 com e sem a reforma">']
     for t in ticks:
         o.append(f'<line x1="{L}" x2="{W - R}" y1="{Y(t):.1f}" y2="{Y(t):.1f}" stroke="{GRADE}"/>')
-        o.append(f'<text x="{L - 8}" y="{Y(t) + 3.5:.1f}" text-anchor="end" class="eixo">{num(t, 0)}</text>')
+        o.append(f'<text x="{L - 8}" y="{Y(t) + 3.5:.1f}" text-anchor="end" class="eixo">{num(t, dec)}</text>')
     o.append(f'<text x="2" y="{T - 22}" class="eixo-tit">R$ milhões de 2025</text>')
     for i, a in enumerate(cats):
         o.append(f'<text x="{X(i):.1f}" y="{H - B + 18}" text-anchor="middle" class="eixo{" neg-eixo" if a == "2025" else ""}">{a}</text>')
@@ -161,15 +162,17 @@ def svg_serie(m, cor_neg_pos):
     for i, v in list(zip(idx_proj, ps))[1:]:
         o.append(f'<circle cx="{X(i):.1f}" cy="{Y(v):.1f}" r="3.6" fill="{GOLD}" stroke="#fff" stroke-width="1.6"/>')
     # rótulos diretos
-    o.append(f'<text x="{X(0):.1f}" y="{Y(hist[0]) - 11:.1f}" text-anchor="middle" class="rot-pt">{num(hist[0], 0)}</text>')
-    o.append(f'<text x="{X(i25):.1f}" y="{Y(p25) - 12:.1f}" text-anchor="middle" class="rot-pt">{num(p25, 0)}</text>')
+    prim = next((k for k, v in enumerate(hist) if v), None)
+    if prim is not None:
+        o.append(f'<text x="{X(prim):.1f}" y="{Y(hist[prim]) - 11:.1f}" text-anchor="middle" class="rot-pt">{num(hist[prim], dec)}</text>')
+    o.append(f'<text x="{X(i25):.1f}" y="{Y(p25) - 12:.1f}" text-anchor="middle" class="rot-pt">{num(p25, dec)}</text>')
     xe = X(idx_proj[-1])
     yc, yp = Y(cf[-1]), Y(ps[-1])
     cima_cf = yc <= yp
     def rot(y, nome, v, cor, acima):
         yy = y - 22 if acima else y + 8
         return (f'<text x="{xe + 12:.1f}" y="{yy + 9:.1f}" class="rot-nome">{nome}</text>'
-                f'<text x="{xe + 12:.1f}" y="{yy + 23:.1f}" class="rot-fim" fill="{cor}">{num(v, 0)}</text>')
+                f'<text x="{xe + 12:.1f}" y="{yy + 23:.1f}" class="rot-fim" fill="{cor}">{num(v, dec)}</text>')
     o.append(rot(yc, "Sem a reforma", cf[-1], "#4a4a4a", cima_cf))
     o.append(rot(yp, "Com a reforma", ps[-1], GOLD_DEEP, not cima_cf))
     # colchete da diferença
@@ -247,8 +250,8 @@ def svg_composicao(m):
 
 def svg_pares(lista, cod):
     """Todos os municípios da UF ordenados da maior variação à menor; o município da nota em destaque."""
-    W, Hh = 690, 180
-    L, R, T, B = 50, 14, 16, 24
+    W, Hh = 690, 160
+    L, R, T, B = 50, 14, 14, 22
     vs = [x["v"] * 100 for x in lista]
     lo_d, hi_d = min(vs), max(vs)
     ticks, _ = eixo_ticks(min(lo_d, -1) * 1.05, max(hi_d, 1) * 1.05, 5)
@@ -305,21 +308,146 @@ def sens_var(m, nac, ref, mult, ano="2033"):
 
 
 # ── textos por regra ──
-def texto_participacao(nome, d):
-    r = d["coef"] / d["s25"]
-    cresc = d["s25"] / d["valores"][0] - 1 if d["valores"][0] else None
-    if r < 0.87:
-        sent = ("Por isso a reforma devolve uma fatia menor do que o município tem hoje, e o critério histórico puxa o resultado para baixo. "
-                "Se o nível de 2025 se mostrar um novo patamar, o município perde parte do que já arrecada; se tiver sido um pico passageiro, o efeito é menor.")
-    elif r > 1.15:
-        sent = ("Por isso a reforma preserva uma fatia maior do que o município tem hoje, e o critério histórico puxa o resultado para cima. "
-                "Se a queda for permanente, o município ganha em relação a continuar como está; se a receita voltar ao patamar anterior, o ganho diminui ou desaparece.")
+# ── textos por regra (v3): a redação segue a revisão editorial; cada frase depende dos dados do município ──
+def lista_anos(anos):
+    anos = [str(a) for a in anos]
+    return anos[0] if len(anos) == 1 else ", ".join(anos[:-1]) + " e " + anos[-1]
+
+
+def em_anos(anos):
+    """'em 2029 e 2030' ou 'de 2029 a 2033', conforme o agrupamento."""
+    t = faixa_anos(anos)
+    return ("de " if " a " in t and "," not in t and " e " not in t else "em ") + t
+
+
+def comp(rel, lim=0.05):
+    """Classifica uma razão relativa: abaixo, acima ou próxima."""
+    return "abaixo" if rel < -lim else "acima" if rel > lim else "proxima"
+
+
+def monta_textos(c):
+    """c: contexto do município. Devolve os parágrafos variáveis da nota."""
+    nome, v33 = c["nome"], c["v33"]
+    perde, ganha = c["perde"], c["ganha"]
+    cpt, neu, ple = c["cpt"], c["neu"], c["ple"]
+    t = {}
+    cr = c["cresc"]
+    tend = ""
+    if cr is not None:
+        tend = (f"Entre 2019 e 2025, a participação do município na arrecadação nacional de ICMS e ISS {'aumentou' if cr > 0 else 'diminuiu'} {num(abs(cr) * 100, 0)}%"
+                f" (de {pct_adapt(c['val0'])} para {pct_adapt(neu)}).")
+    h_rel, d_rel = c["h_rel"], c["d_rel"]
+    ch, cd = comp(h_rel), comp(d_rel)
+
+    # 1. regra de transição (capa)
+    t["s1"] = ("A transição para o IBS preserva temporariamente parte da distribuição histórica das receitas. De 2029 a 2032, 80% do IBS destinado a cada ente é retido e redistribuído pelos "
+               "coeficientes de participação; em 2033, 90%, percentual que diminui até 2077. O restante é distribuído principalmente pelo critério de destino, que considera o consumo e as "
+               "compras públicas locais (LC 227/2026, arts. 109, 114 e 115).")
+
+    # 2. por que o resultado é este (capa)
+    adverbio = {True: "perda", False: "ganho"}
+    if c["sem_2025"]:
+        t["s2"] = (f"<b>Resultado com ressalva.</b> {esc(nome)} não tem ISS e cota-parte de 2025 individualizados no Siconfi, e a participação de 2025 foi aproximada pelo próprio coeficiente de participação "
+                   f"({pct_adapt(cpt)}). O resultado deve ser lido como ordem de grandeza e não entra nas posições.")
+    elif ch == "abaixo":
+        fim = (f"Essa diferença contribui para que a receita projetada em 2033 fique {pct(abs(v33), 1, False)} abaixo do cenário sem reforma." if perde else
+               f"Mesmo assim, o resultado de 2033 é de {pct(v33)}, porque as demais parcelas compensam: " + ("o município recebe repasse do Seguro-Receita" if c["recebe"] else
+               f"o coeficiente de destino ({pct_adapt(ple)}) é {'superior' if cd == 'acima' else 'próximo'} à participação de 2025") + ".")
+        t["s2"] = (f"<b>O coeficiente de participação de {esc(nome)} é inferior à participação de 2025.</b> {tend} O coeficiente considera a média de 2019 a 2026 ({pct_adapt(cpt)}), "
+                   f"{num(abs(h_rel) * 100, 0)}% abaixo da participação alcançada em 2025 ({pct_adapt(neu)}), que é o ponto de partida do cenário sem reforma. {fim}")
+    elif ch == "acima":
+        fim = (f"Essa diferença contribui para que a receita projetada em 2033 fique {pct(abs(v33), 1, False)} acima do cenário sem reforma." if ganha else
+               f"Ainda assim, o resultado de 2033 é de {pct(v33)}, porque o coeficiente de destino ({pct_adapt(ple)}) é {'inferior' if cd == 'abaixo' else 'próximo'} à participação de 2025.")
+        t["s2"] = (f"<b>O coeficiente de participação de {esc(nome)} é superior à participação de 2025.</b> {tend} O coeficiente considera a média de 2019 a 2026 ({pct_adapt(cpt)}), "
+                   f"{num(abs(h_rel) * 100, 0)}% acima da participação de 2025 ({pct_adapt(neu)}), ponto de partida do cenário sem reforma. {fim}")
     else:
-        sent = "Por isso o critério histórico quase não altera o ponto de partida do município."
-    cr = (f" A fatia {'cresceu' if cresc > 0 else 'caiu'} {num(abs(cresc) * 100, 0)}% entre 2019 e 2025 (de {pct_adapt(d['valores'][0])} para {pct_adapt(d['s25'])})." if cresc is not None else "")
-    return (f"Em 2025, a fatia de {nome} na arrecadação nacional de ICMS e ISS foi de {pct_adapt(d['s25'])}.{cr} A média de 2019 a 2026 é de "
-            f"{pct_adapt(d['coef'])}, {num(abs(1 - r) * 100, 0)}% {'abaixo' if r < 1 else 'acima'} da fatia de 2025. É essa média, e não o valor de 2025, que vira o "
-            f"coeficiente histórico, e em 2033 cerca de 90% do IBS ainda é repartido por ele. O cenário sem a reforma, ao contrário, mantém a fatia de 2025. {sent}")
+        rd = lambda r: f"{num(abs(r) * 100, 0)}% {'abaixo' if r < 0 else 'acima'}"
+        comb = (f"O resultado de 2033 ({pct(v33)}) combina os dois coeficientes: o de participação, {rd(h_rel)} da participação de 2025 e responsável por 90% do IBS retido, "
+                f"e o de destino ({pct_adapt(ple)}), {rd(d_rel)}.")
+        t["s2"] = (f"<b>O critério histórico quase não altera o ponto de partida.</b> {tend} A média de 2019 a 2026 ({pct_adapt(cpt)}) é próxima da participação de 2025 ({pct_adapt(neu)}). " + comb)
+
+    # 3. Seguro-Receita e incerteza (capa)
+    if c["recebe"]:
+        anos = em_anos(c["anos_seg"])
+        v = f" Em 2033, o repasse é de {dinheiro(c['seg33'])}." if c["seg33"] > 1 else " Em 2033, o município deixa de receber, pois a receita pelo critério de destino alcança o nível de nivelamento."
+        t["s3"] = (f"<b>Seguro-Receita.</b> As simulações indicam que {esc(nome)} deve receber recursos da distribuição complementar prevista no art. 117 da LC 227/2026 {anos}.{v} "
+                   + ("Esse repasse reduz a perda estimada." if perde else "Esse repasse contribui para o resultado estimado."))
+    else:
+        t["s3"] = (f"<b>Seguro-Receita.</b> As simulações indicam que {esc(nome)} não deve receber recursos da distribuição complementar prevista no art. 117 da LC 227/2026, "
+                   f"pois sua receita pelo critério de destino permanece acima do nível de nivelamento entre 2029 e 2033.")
+    t["s4"] = ("<b>Incerteza das estimativas.</b> O resultado depende da participação utilizada como referência no cenário sem reforma. "
+               "A seção 5 apresenta como as projeções variam conforme essa escolha.")
+
+    # 5. trajetória
+    vs = c["vars"]
+    mesmo_sinal = all(v < -0.0005 for v in vs) or all(v > 0.0005 for v in vs)
+    if mesmo_sinal and abs(vs[-1]) > abs(vs[0]):
+        t["traj"] = (f"{'A perda' if perde else 'O ganho'} estimada{'' if perde else 'o'} aumenta ao longo da transição, passando de {pct(abs(vs[0]), 1, False)} em 2029 para "
+                     f"{pct(abs(vs[3]), 1, False)} em 2032 e {pct(abs(vs[4]), 1, False)} em 2033. ").replace("estimadao", "estimado")
+    else:
+        t["traj"] = f"A diferença entre os cenários é de {pct(vs[0])} em 2029, {pct(vs[3])} em 2032 e {pct(vs[4])} em 2033. "
+    if c["salto"] and abs(vs[4]) > abs(vs[3]) * 1.3:
+        t["traj"] += (f"A mudança mais acentuada ocorre em 2033, quando ICMS e ISS são extintos (ADCT, art. 128). Até 2032, a arrecadação remanescente desses impostos, ainda distribuída segundo "
+                      f"a participação de 2025, atenua {'as perdas' if perde else 'os ganhos' if ganha else 'a diferença'}. Com sua extinção, a receita passa a depender integralmente do IBS, "
+                      f"cuja distribuição ainda é determinada principalmente pelo coeficiente de participação.")
+    t["traj"] += " A comparação relevante é entre os dois cenários no mesmo ano; a variação em relação a 2025 aparece nos indicadores acima."
+
+    # 9. coeficiente (p3)
+    lvl = {"abaixo": "inferior", "acima": "superior", "proxima": "próximo"}[ch]
+    if c["sem_2025"]:
+        t["coef"] = (f"{esc(nome)} não tem o dado de 2025 no Siconfi, o que impede comparar o coeficiente de participação com a participação atual. O modelo adota o próprio coeficiente "
+                     f"({pct_adapt(cpt)}) como aproximação da participação de 2025; por isso, o critério histórico quase não altera o ponto de partida.")
+    else:
+        p1 = f"{tend} Seu coeficiente de participação, calculado pela média de 2019 a 2026, é de {pct_adapt(cpt)}, " + (
+            f"aproximadamente {num(abs(h_rel) * 100, 0)}% {'inferior' if h_rel < 0 else 'superior'} à participação de 2025." if ch != "proxima" else "próximo da participação de 2025.")
+        p2 = ("Essa diferença é relevante porque, em 2033, 90% do IBS retido é distribuído pelo coeficiente de participação (LC 227/2026, arts. 109 e 114), enquanto o cenário sem reforma "
+              "preserva a participação de 2025. ")
+        if ch == "abaixo":
+            p2 += ("Assim, a participação alcançada em 2025 não se reflete integralmente no coeficiente, contribuindo para a perda projetada. Se a arrecadação de 2025 representar um novo patamar, "
+                   "o impacto tende a ser maior; se tiver sido um aumento temporário, menor.")
+        elif ch == "acima":
+            p2 += ("Assim, a média histórica reconhece uma participação maior do que a atual, contribuindo para o ganho projetado. Se a queda recente for permanente, o ganho tende a ser maior; "
+                   "se for passageira, menor.")
+        else:
+            p2 += "Como o coeficiente é próximo da participação de 2025, o critério histórico pouco altera o ponto de partida do município."
+        t["coef"] = p1 + "</p><p class=\"leit\">" + p2
+
+    # 11. distribuição complementar (p4)
+    base = ("O Seguro-Receita reserva uma parcela adicional de 5% do IBS entre 2029 e 2077, retida após a retenção do art. 109, para os entes com as menores razões entre a receita do IBS e a receita "
+            "média de referência ajustada, limitada a três vezes a média per capita do conjunto dos Municípios (LC 227/2026, arts. 110 e 117, §4º). ")
+    if c["recebe"]:
+        base += f"Nas simulações, {esc(nome)} recebe repasse {em_anos(c['anos_seg'])}" + (f", com {dinheiro(c['seg33'])} em 2033." if c["seg33"] > 1 else ", e deixa de receber em 2033.")
+    else:
+        base += f"Nas simulações, {esc(nome)} permanece acima do patamar de nivelamento entre 2029 e 2033 e, por isso, não recebe recursos dessa distribuição complementar."
+    t["compl"] = base
+
+    # 13. sensibilidade
+    pos_a, neg_a = c["pos_anos"], c["neg_anos"]
+    ss = "Os resultados são sensíveis ao ano usado como referência do cenário sem reforma, que adotamos como 2025 por ser o último ano fechado. "
+    if pos_a and neg_a:
+        ss += f"Com a participação de {faixa_anos(pos_a)}, a projeção indica ganhos de receita em 2033; com a de {faixa_anos(neg_a)}, o resultado é negativo. "
+    elif neg_a:
+        ss += f"Em todos os anos de referência o resultado de 2033 é negativo, entre {pct(c['sens_min'])} e {pct(c['sens_max'])}. "
+    elif pos_a:
+        ss += f"Em todos os anos de referência o resultado de 2033 é positivo, entre {pct(c['sens_min'])} e {pct(c['sens_max'])}. "
+    ss += ("Essa diferença reflete a evolução da participação do município na arrecadação nacional: quanto maior a participação tomada como referência, maior a receita do cenário sem reforma "
+           "e, portanto, a perda relativa estimada. ")
+    ss += f"A última coluna incorpora a incerteza do consumo estimado pelo critério de destino ({num(c['erro'] * 100, 1)}% {c['em_uf_curto']}), cujo efeito é menor do que o da escolha do ano-base."
+    t["sens"] = ss
+
+    # 17. critério de destino (p5)
+    if c["sem_2025"]:
+        t["dest"] = ("A parcela do consumo na distribuição do IBS aumenta gradualmente até 2078 e dependerá da atividade econômica, da renda, do consumo e das compras públicas locais.")
+    else:
+        if cd == "acima":
+            efeito = (f"O coeficiente de destino ({pct_adapt(ple)}) supera a participação de 2025 ({pct_adapt(neu)}); por isso, a transição para o destino tende a favorecer o município no longo prazo.")
+        elif cd == "abaixo":
+            efeito = (f"O coeficiente de destino ({pct_adapt(ple)}) é {num(abs(d_rel) * 100, 0)}% inferior à participação de 2025 ({pct_adapt(neu)}); por isso, a transição para o destino "
+                      f"não reverte a perda estimada e tende a mantê-la no longo prazo.")
+        else:
+            efeito = (f"O coeficiente de destino ({pct_adapt(ple)}) é próximo da participação de 2025 ({pct_adapt(neu)}); a transição para o destino tende a ser neutra no longo prazo.")
+        t["dest"] = ("O peso do consumo na distribuição do IBS aumenta gradualmente até 2078 e dependerá da atividade econômica, da renda, do consumo e das compras públicas locais. " + efeito)
+    return t
 
 
 def qr_svg(url, cor=NAVY):
@@ -327,63 +455,60 @@ def qr_svg(url, cor=NAVY):
     return segno.make(url, error="m").svg_inline(scale=3, border=0, dark=cor, light=None, omitsize=True).replace("<svg ", '<svg class="qr" ', 1)
 
 
-def texto_participacao(nome, d):
-    r = d["coef"] / d["s25"]
-    cresc = d["s25"] / d["valores"][0] - 1 if d["valores"][0] else None
-    if r < 0.87:
-        sent = ("Por isso o critério histórico devolve ao município uma fatia menor do que a de hoje e puxa o resultado para baixo. "
-                "Se o nível de 2025 se mostrar um novo patamar, o município perde parte do que já arrecada; se tiver sido um pico passageiro, o efeito é menor.")
-    elif r > 1.15:
-        sent = ("Por isso o critério histórico preserva uma fatia maior do que a de hoje e puxa o resultado para cima. "
-                "Se a queda for permanente, o município ganha em relação a continuar como está; se a receita voltar ao patamar anterior, o ganho diminui ou desaparece.")
-    else:
-        sent = "Por isso o critério histórico quase não altera o ponto de partida do município."
-    cr = (f" A participação {'cresceu' if cresc > 0 else 'caiu'} {num(abs(cresc) * 100, 0)}% entre 2019 e 2025, de {pct_adapt(d['valores'][0])} para {pct_adapt(d['s25'])}." if cresc is not None else "")
-    return (f"Em 2025, a participação de {nome} na arrecadação nacional de ICMS e ISS foi de {pct_adapt(d['s25'])}.{cr} A receita média de referência, que considera os "
-            f"anos de 2019 a 2026 (art. 115, §2º, I), corresponde a {pct_adapt(d['coef'])} do total nacional, {num(abs(1 - r) * 100, 0)}% {'abaixo' if r < 1 else 'acima'} da participação de 2025. "
-            f"É esse coeficiente, e não o valor de 2025, que distribui a parcela retida do IBS (art. 114, §1º), em 2033 correspondente a 90% da arrecadação (art. 109, II). "
-            f"O cenário contrafactual, ao contrário, mantém a participação de 2025. {sent}")
-
-
-def main(cod):
+def main(cod, saida_dir=None):
     idx = carrega("painel-municipios/index.json")
-    uf = next(m["uf"] for c, m in idx["municipios"].items() if c == cod)
+    uf = next(m["uf"] for c_, m in idx["municipios"].items() if c_ == cod)
     m = carrega(f"painel-municipios/{uf}.json")["municipios"][cod]
     nome = m["nome"]
-    nac_j = carrega("ibs-projecao-nacional.json")
-    nac = {str(r["ano"]): r for r in nac_j["projecao"]}
-    ref_nac = idx["referencia_nacional"]
-    tb, fat = ref_nac["total_br_2025"], ref_nac["fatores_ajuste"]
+    nac = {str(r["ano"]): r for r in carrega("ibs-projecao-nacional.json")["projecao"]}
+    tb, fat = idx["referencia_nacional"]["total_br_2025"], idx["referencia_nacional"]["fatores_ajuste"]
 
-    todos = [{"cod": c, "nome": x["nome"], "uf": x["uf"], "v": x["v"], "r": bool(x.get("r"))} for c, x in idx["municipios"].items()]
+    todos = [{"cod": c_, "nome": x["nome"], "uf": x["uf"], "v": x["v"], "r": bool(x.get("r"))} for c_, x in idx["municipios"].items()]
     ok = sorted([x for x in todos if not x["r"]], key=lambda x: -x["v"])
     uf_lista = [x for x in ok if x["uf"] == uf]
-    pos_br = next(i for i, x in enumerate(ok) if x["cod"] == cod) + 1
-    pos_uf = next(i for i, x in enumerate(uf_lista) if x["cod"] == cod) + 1
-    perdem_uf = sum(1 for x in uf_lista if x["v"] < 0)
-    perdem_br = sum(1 for x in ok if x["v"] < 0)
+    ressalva = bool(m.get("neutro_aproximado") or m.get("neutro_suspeito"))
+    pos_br = next((i for i, x in enumerate(ok) if x["cod"] == cod), -1) + 1
+    pos_uf = next((i for i, x in enumerate(uf_lista) if x["cod"] == cod), -1) + 1
+    perdem_uf, perdem_br = sum(1 for x in uf_lista if x["v"] < 0), sum(1 for x in ok if x["v"] < 0)
 
     v33 = m["variacao_por_ano"]["2033"]
     pos33, cf33 = m["pos_por_ano"]["2033"], m["contrafactual_por_ano"]["2033"]
     dif33 = pos33 - cf33
     perde, ganha = v33 < -0.0005, v33 > 0.0005
     cor = NEG if perde else POS if ganha else CINZA
-    recebe_seguro = any((m["repasse_seguro_receita_por_ano"].get(a) or 0) > 1 for a in ANOS)
+    rep = m.get("repasse_seguro_receita_por_ano") or {}
+    anos_seg = [a for a in ANOS if (rep.get(a) or 0) > 1]
     h = m["historico_por_ano"]
     valores = [h[a]["total_reais_2025"] / tb * 100 if a in h else None for a in ANOS_HIST]
-    est26 = m["estimativa_2026"]["total_reais_2025"] / tb * 100 if m.get("estimativa_2026") else None
-    d = {"valores": valores, "est": est26, "coef": m["coef_cpt_pct"], "s25": valores[-1]}
+    e26 = m.get("estimativa_2026")
+    est26 = e26["total_reais_2025"] / tb * 100 if e26 else None
+    s25 = valores[-1]
+    d = {"valores": valores, "est": est26, "coef": m["coef_cpt_pct"], "s25": s25}
+    neu = m["coef_neutro_pct"]
+    val0 = next((v for v in valores if v), None)
+    cresc = (s25 / val0 - 1) if (s25 and val0 and not ressalva) else None
     pop = round(m["pop_media"])
     nome_uf = NOMES_UF[uf]
     url_ficha = f"https://{SITE}/?m={cod}"
-    cresc = d["s25"] / d["valores"][0] - 1
-    r_ = d["coef"] / d["s25"]
+    erro = carrega("sensibilidade-uf.json")["por_uf"].get(uf, {}).get("incerteza_rel", 0.0)
+    refs = sens_refs(m) if (h.get("2025") or {}).get("total_reais_2025") else {}
+    sens_linhas = [(a, refs[a], sens_var(m, nac, refs[a], 0), sens_var(m, nac, refs[a], -erro), sens_var(m, nac, refs[a], erro)) for a in sorted(refs)]
+    pos_anos = [l[0] for l in sens_linhas if l[2] > 0]
+    neg_anos = [l[0] for l in sens_linhas if l[2] < 0]
+    todos_v = [l[2] for l in sens_linhas] or [v33]
+    vs = [m["variacao_por_ano"][a] for a in ANOS]
+    comp_ = m["componentes_por_ano"]
+    ctx = dict(nome=nome, v33=v33, perde=perde, ganha=ganha, cpt=m["coef_cpt_pct"], neu=neu, ple=m["coef_pleno_pct"], cresc=cresc, val0=val0,
+               h_rel=m["coef_cpt_pct"] / neu - 1, d_rel=m["coef_pleno_pct"] / neu - 1, sem_2025=bool(m.get("neutro_aproximado")),
+               recebe=bool(anos_seg), anos_seg=anos_seg, seg33=rep.get("2033") or 0, vars=vs,
+               salto=comp_["2033"]["origem"] == 0 and comp_["2032"]["origem"] > 0, pos_anos=pos_anos, neg_anos=neg_anos,
+               sens_min=min(todos_v), sens_max=max(todos_v), erro=erro, em_uf_curto=f"para {nome_uf}")
+    T = monta_textos(ctx)
 
     def cab(n):
         return (f'<div class="cab"><span class="marca"><img src="../../municipios-na-reforma/images/vertex-simbolo.png" alt="">MUNICÍPIOS NA REFORMA</span><span class="url">{SITE}</span></div>'
                 f'<div class="rod"><span>{esc(TITULO)} · {esc(nome)} ({uf})</span><span>{n} / 5</span></div>')
 
-    # ── p1: abertura com o gráfico narrativo ──
     if perde:
         manchete = f"Em 2033, a receita de <b>{esc(nome)}</b> fica <b>{dinheiro(abs(dif33))} abaixo</b> do que seria sem a reforma"
     elif ganha:
@@ -391,26 +516,17 @@ def main(cod):
     else:
         manchete = f"Em 2033, a receita de <b>{esc(nome)}</b> fica praticamente igual à que seria sem a reforma"
     selo = "Perda estimada" if perde else "Ganho estimado" if ganha else "Efeito neutro"
+    aviso = ""
+    if m.get("neutro_suspeito"):
+        aviso = f'<div class="aviso-dado"><b>Dado a conferir.</b> O valor declarado ao Siconfi para 2025 diverge de forma incompatível da série histórica do município, o que sugere falha de preenchimento na fonte. Os números são apresentados com cautela e não entram nas posições.</div>'
+    elif m.get("neutro_aproximado"):
+        aviso = f'<div class="aviso-dado"><b>Estimativa aproximada.</b> {esc(nome)} não tem ISS e cota-parte de 2025 individualizados no Siconfi, e a participação de 2025 foi aproximada pela média do período. Leia os números como ordem de grandeza.</div>'
 
-    kpis = (f'<div class="kpi"><span>Receita em 2025</span><b>{dinheiro(m["pre_2025"], True)}</b></div>'
-            f'<div class="kpi"><span>2033, cenário contrafactual</span><b>{dinheiro(cf33, True)}</b></div>'
-            f'<div class="kpi dest" style="--c:{cor}"><span>2033, com a reforma</span><b>{dinheiro(pos33, True)}</b></div>')
-
-    s1 = (f"De 2029 a 2077, parte do IBS de cada ente é retida e distribuída pelo <b>coeficiente de participação</b>, que compara a receita média de referência do ente com a do conjunto de Estados, "
-          f"Distrito Federal e Municípios (LC 227/2026, arts. 109, 114 e 115). A retenção é de 80% do IBS de 2029 a 2032 e de 90% em 2033, e decresce até 2077; o restante segue o critério de destino, "
-          f"ligado ao consumo e às compras públicas locais.")
-    if r_ < 0.87:
-        s2 = (f"<b>O resultado de {esc(nome)} decorre do crescimento recente.</b> A participação do município na arrecadação nacional de ICMS e ISS {'cresceu' if cresc > 0 else 'caiu'} {num(abs(cresc) * 100, 0)}% entre 2019 e 2025. "
-              f"Como o coeficiente usa a média de 2019 a 2026 ({pct_adapt(d['coef'])}) e não a participação de 2025 ({pct_adapt(d['s25'])}), o crescimento não é plenamente reconhecido, "
-              f"e a reforma devolve uma fatia {num((1 - r_) * 100, 0)}% menor do que a atual.")
-    elif r_ > 1.15:
-        s2 = (f"<b>O resultado de {esc(nome)} decorre da média histórica.</b> O coeficiente usa a média de 2019 a 2026 ({pct_adapt(d['coef'])}), acima da participação de 2025 ({pct_adapt(d['s25'])}); "
-              f"a reforma preserva uma fatia maior do que a atual.")
-    else:
-        s2 = (f"<b>O efeito é pequeno.</b> A média de 2019 a 2026 ({pct_adapt(d['coef'])}) é parecida com a participação de 2025 ({pct_adapt(d['s25'])}), e o critério histórico quase não altera o ponto de partida.")
-    s3 = ("<b>Distribuição complementar (Seguro-Receita).</b> " + ("O município recebe repasse em parte do período, o que reduz o efeito acima." if recebe_seguro else
-          f"A receita de {esc(nome)} pelo critério de destino fica acima do nível de nivelamento em todos os anos de 2029 a 2033; o município não recebe o repasse do art. 117 da LC 227/2026."))
-    s4 = ("<b>Grau de incerteza.</b> O número depende da participação tomada como ponto de partida do cenário contrafactual; a seção 5 mostra o quanto ele varia com essa escolha.")
+    posicoes = ("" if ressalva else
+                f'<div><b>{pos_uf}º</b><span>entre {len(uf_lista)} municípios {EM_UF[uf]}, do maior ganho à maior perda. {perdem_uf} têm perda estimada em 2033.</span></div>'
+                f'<div><b>{num(pos_br)}º</b><span>entre {num(len(ok))} municípios do Brasil. {num(perdem_br)} têm perda estimada em 2033.</span></div>')
+    if ressalva:
+        posicoes = '<div class="semrank"><span>Município com ressalva de dados: fica fora das posições e dos rankings do portal.</span></div>'
 
     p1 = f"""
 <section class="page capa">
@@ -422,23 +538,19 @@ def main(cod):
   <div class="narr">
     <div class="narr-top">
       <div class="hn" style="--c:{cor}"><em>{selo}</em><b>{pct(v33)}</b></div>
-      <p class="manchete">{manchete}<span>Efeito da reforma sobre a receita de ISS e cota-parte do ICMS, em 2033, comparado ao cenário contrafactual (sem a reforma), em R$ de 2025.</span></p>
+      <p class="manchete">{manchete}<span>Efeito da reforma sobre a receita de ISS e cota-parte do ICMS, em 2033, comparado ao cenário sem reforma, em R$ de 2025.</span></p>
     </div>
     <div class="fig">{svg_serie(m, cor)}
-      <div class="leg"><span><i class="l" style="background:{NAVY}"></i>Realizado (2019–2025)</span><span><i class="l" style="background:{GOLD}"></i>Projeção com a reforma</span><span><i class="l tr" style="border-color:#6b6b6b"></i>Cenário contrafactual (sem a reforma)</span></div>
+      <div class="leg"><span><i class="l" style="background:{NAVY}"></i>Realizado (2019–2025)</span><span><i class="l" style="background:{GOLD}"></i>Projeção com a reforma</span><span><i class="l tr" style="border-color:#6b6b6b"></i>Cenário sem reforma</span></div>
     </div>
   </div>
+  {aviso}
   <h2 class="sec">Síntese dos resultados</h2>
-  <div class="resumo"><p>{s1}</p><p>{s2}</p><p>{s3} {s4}</p></div>
-  <div class="posicoes">
-    <div><b>{pos_uf}º</b><span>entre {len(uf_lista)} municípios {EM_UF[uf]}, do maior ganho à maior perda. {perdem_uf} têm perda estimada em 2033.</span></div>
-    <div><b>{num(pos_br)}º</b><span>entre {num(len(ok))} municípios do Brasil. {num(perdem_br)} têm perda estimada em 2033.</span></div>
-    <div class="qrbox">{qr_svg(url_ficha)}<span>Ficha interativa e memória de cálculo</span></div>
-  </div>
+  <div class="resumo"><p>{T['s1']}</p><p>{T['s2']}</p><p>{T['s3']} {T['s4']}</p></div>
+  <div class="posicoes">{posicoes}<div class="qrbox">{qr_svg(url_ficha)}<span>Ficha interativa e memória de cálculo</span></div></div>
   {cab(1)}
 </section>"""
 
-    # ── p2: projeção ──
     cls = lambda v: "neg" if v < -0.0005 else "pos" if v > 0.0005 else ""
     linhas = "".join(
         f'<tr><td>{a}</td><td class="n">{mi(m["contrafactual_por_ano"][a])}</td><td class="n">{mi(m["pos_por_ano"][a])}</td>'
@@ -446,55 +558,54 @@ def main(cod):
         f'<td class="n {cls(m["variacao_por_ano"][a])}"><b>{pct(m["variacao_por_ano"][a])}</b></td></tr>' for a in ANOS)
     acum = sum(m["pos_por_ano"][a] - m["contrafactual_por_ano"][a] for a in ANOS)
     real_c, real_s = pos33 / m["pre_2025"] - 1, cf33 / m["pre_2025"] - 1
-    v29, v32 = m["variacao_por_ano"]["2029"], m["variacao_por_ano"]["2032"]
-    salto = m["componentes_por_ano"]["2033"]["origem"] == 0 and m["componentes_por_ano"]["2032"]["origem"] > 0
-    t_traj = f"A diferença entre os cenários {'aumenta' if abs(v33) > abs(v29) else 'varia'} a cada ano: {pct(v29)} em 2029, {pct(v32)} em 2032 e {pct(v33)} em 2033. "
-    if salto and abs(v33) > abs(v32) * 1.3:
-        t_traj += ("O salto de 2033 é mecânico: até 2032 resta uma parcela do ICMS e do ISS, ainda repartida pela participação de 2025, que amortece o efeito; "
-                   "em 2033 esses tributos deixam de existir (ADCT, art. 128) e a receita passa a depender do IBS, distribuído sobretudo pelo coeficiente de participação.")
     svg_c, leg_c = svg_composicao(m)
     p2 = f"""
 <section class="page">
   {cab(2)}
   <h2 class="sec first"><i>1.</i> Projeção da receita municipal, 2029 a 2033</h2>
-  <p class="sub">Receita de {esc(nome)} nos dois cenários, em R$ milhões de 2025. O cenário contrafactual mantém a participação de 2025 na arrecadação nacional de ICMS e ISS e a aplica ao bolo projetado (PIB do Focus e da IFI); o cenário com a reforma aplica a transição prevista no ADCT e na LC 227/2026 à mesma projeção.</p>
-  <table class="tab"><thead><tr><th>Ano</th><th class="n">Cenário contrafactual<br><small>R$ mi</small></th><th class="n">Com a reforma<br><small>R$ mi</small></th><th class="n">Diferença<br><small>R$ mi</small></th><th class="n">Variação</th></tr></thead><tbody>{linhas}</tbody></table>
+  <p class="sub">A tabela compara as receitas projetadas de {esc(nome)} com e sem a reforma tributária, em R$ milhões de 2025. No cenário sem reforma, o município mantém a participação de 2025 na arrecadação nacional projetada de ICMS e ISS, que evolui conforme as projeções do PIB (Focus e IFI). O cenário com reforma aplica as regras de transição do ADCT e da LC 227/2026.</p>
+  <table class="tab"><thead><tr><th>Ano</th><th class="n">Sem a reforma<br><small>R$ mi</small></th><th class="n">Com a reforma<br><small>R$ mi</small></th><th class="n">Diferença<br><small>R$ mi</small></th><th class="n">Variação</th></tr></thead><tbody>{linhas}</tbody></table>
   <div class="mini">
     <div><span>Diferença acumulada, 2029–2033</span><b class="{cls(acum)}">{dinheiro(acum)}</b><small>soma das diferenças anuais, em R$ de 2025</small></div>
     <div><span>Com a reforma, 2033 vs. 2025</span><b class="{cls(real_c)}">{pct(real_c)}</b><small>variação real da receita entre os dois anos</small></div>
-    <div><span>Cenário contrafactual, 2033 vs. 2025</span><b class="{cls(real_s)}">{pct(real_s)}</b><small>variação real mantendo a participação de 2025</small></div>
+    <div><span>Sem a reforma, 2033 vs. 2025</span><b class="{cls(real_s)}">{pct(real_s)}</b><small>variação real mantendo a participação de 2025</small></div>
   </div>
-  <p class="leit">{t_traj}</p>
+  <p class="leit">{T['traj']}</p>
   <h2 class="sec"><i>2.</i> Composição da receita projetada</h2>
-  <p class="sub">Quanto da receita ainda vem do ICMS e do ISS remanescentes e quanto já vem do IBS, por critério de distribuição. R$ milhões de 2025.</p>
+  <p class="sub">O gráfico mostra a substituição gradual do ICMS e do ISS pelo IBS e a composição da receita municipal segundo os diferentes critérios de distribuição. Valores em R$ milhões de 2025.</p>
   <div class="fig">{svg_c}<div class="leg">{leg_c}</div></div>
-  <p class="nota">Inclui a cota-parte do ICMS que o município já recebia, na parcela histórica, e os 25% do IBS dos Estados repassados aos Municípios, na parcela de destino. A distribuição complementar (art. 117) é nula quando o município não recebe repasse.</p>
+  <p class="nota">A parcela histórica incorpora a cota-parte do ICMS que o município já recebia. A parcela de destino inclui os 25% do IBS dos Estados repassados aos Municípios. A distribuição complementar (art. 117) só aparece quando há repasse ao município.</p>
 </section>"""
 
-    # ── p3: receita média de referência e coeficiente ──
     linhas_b1, soma = "", 0.0
     for a in ANOS_HIST:
         if a not in h:
             continue
         f = fat.get(a, 1.0)
         soma += h[a]["total_reais_2025"]
-        linhas_b1 += (f'<tr><td>{a}</td><td class="n">{num(h[a]["iss_reais_2025"] / f)}</td><td class="n">{num(h[a]["cota_parte_reais_2025"] / f)}</td><td class="n">{num(h[a]["total_reais_2025"] / f)}</td><td class="n">{num(f, 4)}</td>'
+        orig = h[a].get("origem") or {}
+        sel = [x for x in (orig.get("iss"), orig.get("cota")) if x and x != "dca"]
+        marca = "" if not sel else (" <small>(RREO)</small>" if all(x == "rreo" for x in sel) else " <small>(est.)</small>")
+        linhas_b1 += (f'<tr><td>{a}{marca}</td><td class="n">{num(h[a]["iss_reais_2025"] / f)}</td><td class="n">{num(h[a]["cota_parte_reais_2025"] / f)}</td><td class="n">{num(h[a]["total_reais_2025"] / f)}</td><td class="n">{num(f, 4)}</td>'
                       f'<td class="n"><b>{num(h[a]["total_reais_2025"])}</b></td><td class="n">{pct_adapt(h[a]["total_reais_2025"] / tb * 100)}</td></tr>')
-    e = m.get("estimativa_2026")
-    n_anos = len(ANOS_HIST) + (1 if e else 0)
-    if e:
-        soma += e["total_reais_2025"]
-        linhas_b1 += (f'<tr class="est"><td>2026 <small>(RREO)</small></td><td class="n">{num(e["iss_reais_2025"])}</td><td class="n">{num(e["cota_parte_reais_2025"])}</td><td class="n">{num(e["total_reais_2025"])}</td>'
-                      f'<td class="n">n.a.</td><td class="n"><b>{num(e["total_reais_2025"])}</b></td><td class="n">{pct_adapt(e["total_reais_2025"] / tb * 100)}</td></tr>')
+    n_anos = len(ANOS_HIST) + (1 if e26 else 0)
+    rreo26 = bool(e26 and (e26.get("origem") == "rreo" or e26.get("tratamento") == "rreo"))
+    if e26:
+        soma += e26["total_reais_2025"]
+        linhas_b1 += (f'<tr class="est"><td>2026 <small>({"RREO" if rreo26 else "est."})</small></td><td class="n">{num(e26["iss_reais_2025"])}</td><td class="n">{num(e26["cota_parte_reais_2025"])}</td><td class="n">{num(e26["total_reais_2025"])}</td>'
+                      f'<td class="n">n.a.</td><td class="n"><b>{num(e26["total_reais_2025"])}</b></td><td class="n">{pct_adapt(e26["total_reais_2025"] / tb * 100)}</td></tr>')
     media = soma / n_anos
-    origem_txt = " Os anos assinalados foram completados fora da DCA (RREO ou estimativa pela série do município)." if any(h[a].get("origem") for a in h) else ""
+    n26 = ("Para 2026, ainda sem DCA, utiliza-se o ISS informado no RREO de setembro de 2025 a agosto de 2026 e a cota-parte do ICMS de 2025, ajustada pelo crescimento observado entre janeiro e agosto." if rreo26 else
+           "Para 2026, ainda sem DCA, o município não publica o Anexo 3 do RREO, e o valor repete a posição relativa de 2025 no estado." if e26 else "")
+    anos_comp = [a for a in ANOS_HIST if (h.get(a) or {}).get("origem")]
+    ntxt_orig = f" Os anos marcados (RREO ou est.) foram completados fora da DCA, pelo RREO anual ou pela série do próprio município." if anos_comp else ""
     p3 = f"""
 <section class="page">
   {cab(3)}
   <h2 class="sec first"><i>3.</i> Receita média de referência e coeficiente de participação</h2>
-  <p class="sub">O valor retido do IBS é distribuído a cada ente na proporção do seu coeficiente de participação, a razão entre a sua receita média de referência e a do conjunto de Estados, Distrito Federal e Municípios (LC 227/2026, arts. 114 e 115). No modelo, a receita média de referência do município é a média de 2019 a 2026 da arrecadação do ISS e da cota-parte do ICMS, corrigida pela variação nominal da arrecadação nacional desses impostos.</p>
+  <p class="sub">O coeficiente de participação determina a parcela do IBS retido que cabe a cada ente federativo. Corresponde à razão entre a receita média de referência do município e a do conjunto de Estados, Distrito Federal e Municípios (LC 227/2026, arts. 114 e 115). Para os municípios, essa receita é a média do ISS e da cota-parte do ICMS entre 2019 e 2026, corrigida pela variação nominal da arrecadação nacional desses impostos.</p>
   <div class="fig">{svg_participacao(d, h)}</div>
-  <p class="leit">{esc(texto_participacao(nome, d))}</p>
+  <p class="leit">{T['coef']}</p>
   <h3>Cálculo da receita média de referência e do coeficiente (art. 115, III e §2º)</h3>
   <table class="tab b1"><thead><tr><th>Ano</th><th class="n">ISS<br><small>(corrente)</small></th><th class="n">+ Cota-parte do ICMS<br><small>(CF, art. 158, IV, a)</small></th><th class="n">= Receita<br><small>(corrente)</small></th><th class="n">× Fator de<br>correção</th><th class="n">= Receita corrigida<br><small>(R$ de 2025)</small></th><th class="n">Participação no<br>total nacional</th></tr></thead>
   <tbody>{linhas_b1}</tbody>
@@ -502,72 +613,59 @@ def main(cod):
   <tr><td colspan="5">Receita média de referência (soma ÷ {n_anos})</td><td class="n"><b>{num(media)}</b></td><td class="n"></td></tr>
   <tr><td colspan="5">Total nacional de ICMS e ISS corrigido (receita média de referência do conjunto)</td><td class="n">{num(tb)}</td><td class="n"></td></tr>
   <tr class="res"><td colspan="5">Coeficiente de participação = receita média de referência ÷ conjunto</td><td class="n" colspan="2"><b>{pct_plain(m["coef_cpt_pct"], 6)}</b></td></tr></tfoot></table>
-  <p class="nota">Valores em R$. O fator de correção é a variação nominal da arrecadação nacional de ICMS e ISS entre o ano e 2025 (art. 115, §2º, II, que corrige até 2026; a escolha da data-base não altera o coeficiente, que é uma razão). Como o fator iguala o total nacional de todos os anos, a receita média de referência do conjunto equivale ao total de 2025.{origem_txt} Em 2026, ainda sem DCA, o ISS é o observado no RREO de setembro de 2025 a agosto de 2026 e a cota-parte é a de 2025 ajustada pelo crescimento de janeiro a agosto.</p>
+  <p class="nota">Valores em R$. As receitas são corrigidas pela variação nominal da arrecadação nacional de ICMS e ISS (art. 115, §2º, II, que corrige até 2026); aqui são expressas em reais de 2025, o que não altera o coeficiente, por ser uma razão. {n26}{ntxt_orig}</p>
 </section>"""
 
-    # ── p4: destino, distribuição complementar, posição, sensibilidade ──
-    refs = sens_refs(m)
-    erro = carrega("sensibilidade-uf.json")["por_uf"][uf]["incerteza_rel"]
-    sens_linhas = [(a, refs[a], sens_var(m, nac, refs[a], 0), sens_var(m, nac, refs[a], -erro), sens_var(m, nac, refs[a], erro)) for a in sorted(refs)]
     sens_rows = ""
     for a, rf, vc, vlo, vhi in sens_linhas:
         central = a == "2025"
-        cls_c = ' class="cent"' if central else ""
-        sens_rows += (f'<tr{cls_c}><td>{a}{" (estimado)" if a == "2026" else ""}{" <small>· cenário central</small>" if central else ""}</td><td class="n">{pct_adapt(rf * 100)}</td>'
+        sens_rows += (f'<tr{" class=cent" if central else ""}><td>{a}{" (estimado)" if a == "2026" else ""}{" <small>· cenário central</small>" if central else ""}</td><td class="n">{pct_adapt(rf * 100)}</td>'
                       f'<td class="n {"neg" if vc < 0 else "pos"}"><b>{pct(vc)}</b></td><td class="n">{pct(min(vlo, vhi))} a {pct(max(vlo, vhi))}</td></tr>')
-    pos_anos = [l[0] for l in sens_linhas if l[2] > 0]
-    neg_anos = [l[0] for l in sens_linhas if l[2] < 0]
-    t_sens = "Cada linha refaz o cálculo de 2033 supondo que o cenário contrafactual mantivesse a participação de outro ano, em vez da de 2025, adotada como referência central por ser o último ano fechado. "
-    if pos_anos and neg_anos:
-        t_sens += (f"O sinal do resultado muda conforme o ano escolhido: com a participação de {faixa_anos(pos_anos)} a reforma seria favorável ao município; com a de {faixa_anos(neg_anos)}, desfavorável. "
-                   f"Quanto mais rápido o município cresceu em relação ao país, mais o resultado depende dessa escolha. ")
-    t_sens += f"A última coluna acrescenta a margem de erro do consumo estimado pelo critério de destino ({num(erro * 100, 1)}% para {nome_uf}), que pesa pouco frente à escolha do ano-base."
-    svg_p = svg_pares(uf_lista, cod)
-    compl = (f"Após a retenção do art. 109, outros 5% do IBS de cada ente são retidos de 2029 a 2077 e distribuídos aos entes com as menores razões entre a receita do IBS e a receita média de referência ajustada, "
-             f"que não passa de três vezes a média per capita do conjunto dos Municípios (arts. 110 e 117, §4º). " +
-             ("Neste caso, o município recebe repasse em parte do período." if recebe_seguro else
-              f"A receita de {esc(nome)} pelo critério de destino fica acima do nível de nivelamento em todos os anos de 2029 a 2033, e o município não recebe esse repasse."))
+    if sens_linhas:
+        bloco_sens = f"""<h3>Sensibilidade ao ano-base do cenário sem reforma</h3>
+  <table class="tab sens"><thead><tr><th>Participação mantida do ano</th><th class="n">Participação</th><th class="n">Efeito em 2033</th><th class="n">Com margem de erro do destino</th></tr></thead><tbody>{sens_rows}</tbody></table>
+  <p class="leit">{T['sens']}</p>"""
+    else:
+        bloco_sens = '<p class="leit">A análise de sensibilidade ao ano-base não se aplica a este município, que não tem a participação de 2025 individualizada.</p>'
+    bloco_pos = "" if ressalva or not uf_lista else f"""<h3>{esc(nome)} entre os {len(uf_lista)} municípios {EM_UF[uf]}</h3>
+  <p class="sub">Posição dos municípios com base de 2025 segundo a variação estimada da receita em 2033, em relação ao cenário sem reforma, do maior ganho (esquerda) à maior perda (direita).</p>
+  <div class="fig">{svg_pares(uf_lista, cod)}</div>"""
     p4 = f"""
 <section class="page">
   {cab(4)}
   <h2 class="sec first"><i>4.</i> Critério de destino e distribuição complementar</h2>
   <div class="coefs">
-    <div><span>Participação em 2025</span><b>{pct_adapt(m["coef_neutro_pct"])}</b><small>Ponto de partida do cenário contrafactual: a participação do município hoje.</small></div>
-    <div><span>Coeficiente de participação</span><b>{pct_adapt(m["coef_cpt_pct"])}</b><small>Receita média de referência de 2019 a 2026. Distribui a parcela retida: 90% do IBS em 2033.</small></div>
+    <div><span>Participação em 2025</span><b>{pct_adapt(neu)}</b><small>Ponto de partida do cenário sem reforma: a participação do município hoje.</small></div>
+    <div><span>Coeficiente de participação</span><b>{pct_adapt(m["coef_cpt_pct"])}</b><small>Receita média de referência de 2019 a 2026. Distribui o IBS retido: 90% do IBS em 2033.</small></div>
     <div><span>Coeficiente de destino</span><b>{pct_adapt(m["coef_pleno_pct"])}</b><small>{pct_adapt(m["cota_parte_pct"])} pela cota-parte dos Estados e {pct_adapt(m["propria_pct"])} pelo IBS próprio (consumo e compras públicas). Vale por inteiro em 2078.</small></div>
   </div>
-  <p class="leit">{compl}</p>
+  <p class="leit">{T['compl']}</p>
   <h2 class="sec"><i>5.</i> Posição relativa e análise de sensibilidade</h2>
-  <h3>{esc(nome)} entre os {len(uf_lista)} municípios {EM_UF[uf]}</h3>
-  <p class="sub">Variação da receita em 2033 contra o cenário contrafactual, do maior ganho (esquerda) à maior perda (direita).</p>
-  <div class="fig">{svg_p}</div>
-  <h3>Sensibilidade ao ano-base do cenário contrafactual</h3>
-  <table class="tab sens"><thead><tr><th>Participação mantida do ano</th><th class="n">Participação</th><th class="n">Efeito em 2033</th><th class="n">Com margem de erro do destino</th></tr></thead><tbody>{sens_rows}</tbody></table>
-  <p class="leit">{t_sens}</p>
+  {bloco_pos}
+  {bloco_sens}
 </section>"""
 
-    # ── p5 ──
     p5 = f"""
-<section class="page">
+<section class="page densa">
   {cab(5)}
   <h2 class="sec first"><i>6.</i> Considerações para a gestão fiscal municipal</h2>
   <div class="atencao">
-    <p><b>Conferir a base declarada antes da divulgação do coeficiente.</b> O CGIBS divulgará o coeficiente de participação de cada ente, com o detalhamento dos valores e das fontes, até 31 de agosto de 2027 (art. 116, §1º), a partir do Siconfi (art. 116, §2º). Ausências, repetições e lançamentos em conta indevida reduzem a receita média de referência. Vale revisar a série de {esc(nome)} ano a ano, como na tabela da seção 3, e retificar o que for necessário.</p>
-    <p><b>Preparar a contestação.</b> Havendo discordância, o município poderá apresentar contestação fundamentada em 30 dias contados da publicação do coeficiente no Diário Oficial da União; o CGIBS responde em até 90 dias e não cabe nova contestação nem recurso administrativo (art. 116, §§ 7º e 8º).</p>
-    <p><b>Planejar com faixa, e não com ponto.</b> Para o PPA e a LDO, é prudente trabalhar com o intervalo da seção 5 e acompanhar as atualizações do modelo e a regulamentação do CGIBS.</p>
-    <p><b>Acompanhar o critério de destino.</b> A parcela de destino cresce até 2078 e depende da renda, do consumo e das compras públicas locais. É o canal pelo qual o município recupera participação no longo prazo.</p>
+    <p><b>Revisar os dados fiscais antes da divulgação dos coeficientes.</b> O Comitê Gestor do IBS (CGIBS) deverá divulgar o coeficiente de participação de cada ente até 31 de agosto de 2027, com os valores e as fontes utilizados no cálculo, extraídos do Siconfi (LC 227/2026, art. 116, §§ 1º e 2º). Informações ausentes, duplicadas ou classificadas incorretamente podem alterar a receita média de referência. Por isso, é importante conferir a série de {esc(nome)}, apresentada na seção 3, e retificar eventuais inconsistências.</p>
+    <p><b>Preparar-se para eventual contestação.</b> Caso identifique divergências no coeficiente divulgado, o município poderá apresentar contestação fundamentada no prazo de 30 dias após sua publicação no Diário Oficial da União. O CGIBS terá até 90 dias para responder, sem possibilidade de nova contestação ou recurso administrativo (art. 116, §§ 7º e 8º).</p>
+    <p><b>Planejar com faixas, e não com valores únicos.</b> As projeções podem subsidiar o PPA e a LDO, considerando a sensibilidade dos resultados apresentada na seção 5. Recomenda-se acompanhar a atualização dos dados e a regulamentação do CGIBS.</p>
+    <p><b>Acompanhar a transição para o critério de destino.</b> {T['dest']}</p>
   </div>
   <h2 class="sec"><i>7.</i> Metodologia e base legal</h2>
   <div class="met">
-    <p><b>Receita média de referência (LC 227/2026, art. 115).</b> Para o município, ISS e parcela creditada da cota-parte do ICMS (CF, art. 158, IV, a), de 2019 a 2026, corrigidos pela variação nominal da arrecadação nacional de ICMS e ISS. Dados do Siconfi: DCA (Anexo I-C) até 2025 e RREO até agosto de 2026. Quando uma DCA falta, o modelo completa a série pelo RREO anual ou pela série do próprio município e descarta valores fora da faixa entre metade e o dobro do esperado.</p>
-    <p><b>Coeficiente de participação (art. 114, §1º).</b> Receita média de referência do município dividida pela do conjunto de Estados, Distrito Federal e Municípios, em reais de 2025 ({dinheiro(tb, True)} no conjunto).</p>
-    <p><b>Cenário contrafactual.</b> Participação do município em 2025 vezes o bolo nacional projetado de ICMS e ISS, que cresce com o PIB nominal (Focus do BCB até 2030 e IFI de 2031 a 2033) e com a razão média entre receita de referência e PIB de 2024 a 2026 (LC 214/2025, arts. 361 a 365, na redação da LC 227/2026).</p>
-    <p><b>Cenário com a reforma.</b> Soma ICMS e ISS remanescentes, repartidos pela participação de 2025; o IBS retido (80% de 2029 a 2032 e 90% em 2033, art. 109), distribuído pelo coeficiente de participação; o IBS de destino, descontada a parcela do CGIBS; e a distribuição complementar (art. 117). O peso do ICMS e do ISS cai de 90% em 2029 a zero em 2033 (ADCT, art. 128).</p>
-    <p><b>Coeficiente de destino.</b> Combina a cota-parte dos Estados (no modelo, por população e partilha igualitária, o que trata os critérios de educação e meio ambiente como proporcionais à população) e o IBS próprio, estimado pelo consumo (renda per capita do Censo 2022 e POF) e pelas compras públicas da DCA.</p>
-    <p><b>Distribuição complementar (arts. 110 e 117).</b> Retenção adicional de 5% do IBS, após a do art. 109, distribuída aos entes de menor razão entre IBS e receita média de referência ajustada (limitada a 3 vezes a média per capita), de modo a igualar a razão entre os beneficiários.</p>
+    <p><b>Receita média de referência (art. 115).</b> Considera a arrecadação municipal de ISS e a cota-parte do ICMS (CF, art. 158, IV, a) entre 2019 e 2026, corrigidas pela variação nominal da arrecadação nacional desses impostos. As informações vêm do Siconfi, com dados da DCA até 2025 e do RREO até agosto de 2026. Na ausência de registros, o modelo usa o RREO anual ou estimativas baseadas na série do município, e exclui valores fora da faixa entre metade e o dobro do esperado.</p>
+    <p><b>Coeficiente de participação (art. 114, §1º).</b> Corresponde à razão entre a receita média de referência do município e a do conjunto dos entes federativos, equivalente a {dinheiro(tb, True)} em valores de 2025.</p>
+    <p><b>Cenário sem reforma.</b> Projeta a receita municipal mantendo a participação de 2025 na arrecadação nacional de ICMS e ISS. A arrecadação evolui conforme o PIB nominal projetado pelo Focus (até 2030) e pela IFI (2031 a 2033), com a razão média entre receita de referência e PIB de 2024 a 2026 (LC 214/2025, arts. 361 a 365, com redação da LC 227/2026).</p>
+    <p><b>Cenário com reforma.</b> A receita resulta da soma do ICMS e do ISS remanescentes, repartidos pela participação de 2025; do IBS retido (80% entre 2029 e 2032 e 90% em 2033, art. 109), distribuído pelo coeficiente de participação; do IBS pelo critério de destino, descontada a parcela do CGIBS; e dos eventuais repasses da distribuição complementar (art. 117). O peso do ICMS e do ISS cai de 90% em 2029 a zero em 2033 (ADCT, art. 128).</p>
+    <p><b>Coeficiente de destino.</b> Combina a participação municipal na receita estadual do IBS com a estimativa do consumo (renda per capita do Censo 2022 e POF) e das compras públicas locais (DCA). Os critérios de educação e meio ambiente da cota-parte são aproximados pela distribuição populacional.</p>
+    <p><b>Distribuição complementar (arts. 110 e 117).</b> Reserva adicional de 5% do IBS para os entes com menor razão entre o IBS e a receita média de referência ajustada, limitada a três vezes a média per capita, de modo a igualar essa razão entre os beneficiários.</p>
   </div>
   <h2 class="sec"><i>8.</i> Limitações</h2>
-  <p class="leit peq">Os valores são estimativas, não previsão de caixa, e dependem da projeção macroeconômica, da hipótese de que a participação de 2025 é o ponto de partida do cenário contrafactual e da regulamentação em curso. Os dados municipais são os declarados pelos próprios entes ao Siconfi, sem auditoria, e o horizonte vai de 2029 a 2033. O coeficiente efetivo será o divulgado pelo CGIBS, que poderá usar outras fontes legais e estimar entes com dados inconsistentes (art. 116, §§ 3º e 4º).</p>
+  <p class="leit peq">As projeções são estimativas e não representam previsões definitivas de arrecadação. Seus resultados dependem das hipóteses de crescimento econômico, da participação de 2025 adotada no cenário sem reforma e da regulamentação do IBS. Os dados fiscais são declarados pelos municípios ao Siconfi, sem auditoria independente, e o horizonte vai de 2029 a 2033. Os coeficientes definitivos serão divulgados pelo CGIBS, que poderá utilizar outras fontes e procedimentos previstos em lei (art. 116, §§ 3º e 4º).</p>
   <div class="citar">
     <div><b>Como citar.</b> Vertex Advisory. <i>{esc(TITULO)}: Município de {esc(nome)} ({uf})</i>. Municípios na Reforma, {VERSAO}. Disponível em {SITE}/?m={cod}.<br>
     <span>Fontes: STN/Siconfi (DCA e RREO), IBGE (Censo 2022, POF e estimativas populacionais), BCB (Focus), IFI, EC 132/2023, LC 214/2025 e LC 227/2026.</span></div>
@@ -577,10 +675,12 @@ def main(cod):
 
     css = (Path(__file__).resolve().parent / "nota.css").read_text(encoding="utf-8")
     html = f'<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>{esc(TITULO)} · {esc(nome)} ({uf})</title><style>{css}</style></head><body>{p1}{p2}{p3}{p4}{p5}</body></html>'
-    saida = SAIDA / f"nota-{cod}.html"
+    saida = (Path(saida_dir) if saida_dir else SAIDA) / f"nota-{cod}.html"
     saida.write_text(html, encoding="utf-8")
     print(saida)
+    return saida
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else "3201308")
+    for c_ in (sys.argv[1:] or ["3201308"]):
+        main(c_)
