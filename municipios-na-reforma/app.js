@@ -823,6 +823,28 @@ function desenhaParticipacao(m) {
     });
 }
 
+/* Leitura em português do que o gráfico mostra, montada por regras a partir dos números do município. */
+function leituraMunicipio(m, base) {
+    const nome = '<b>' + esc(base.nome) + '</b>';
+    const v29 = m.variacao_por_ano['2029'], v33 = m.variacao_por_ano['2033'];
+    const dif33 = m.pos_por_ano['2033'] - m.contrafactual_por_ano['2033'];
+    const rep = m.repasse_seguro_receita_por_ano || {};
+    const seg33 = rep['2033'] || 0;
+    const pos33 = m.pos_por_ano['2033'], neutra = Math.abs(v33) <= 0.0005, perde = v33 < 0;
+    const p = [`O gráfico apresenta os efeitos estimados da reforma tributária do consumo sobre as receitas municipais de ${nome}. As projeções consideram a substituição gradual do ISS e do ICMS pelo IBS e comparam os resultados com um cenário sem reforma. Em 2033, a receita projetada alcança ${fmtMoneyFino(pos33)}, já incluindo a parcela de 25% do IBS estadual que cabe aos municípios. ` + (neutra
+        ? 'Esse valor é praticamente igual ao do cenário sem reforma.'
+        : `Esse valor é ${fmtPct(Math.abs(v33)).replace(/^[+−]/, '')} ${perde ? 'inferior' : 'superior'} ao cenário sem reforma, o equivalente a ${perde ? 'uma perda' : 'um ganho'} anual de ${fmtMoney(Math.abs(dif33))}.`)];
+    if (Math.abs(v29) > 0.0005 || Math.abs(v33) > 0.0005) p.push(`O efeito começa em ${fmtPct(v29)} em 2029 e chega a ${fmtPct(v33)} em 2033, de modo que a transição vai ${Math.abs(v33) > Math.abs(v29) ? 'ampliando' : 'reduzindo'} a diferença.`);
+    if (seg33 > 0) {
+        if (v33 > 0.0005 && seg33 > dif33) p.push(`Esse resultado depende do Seguro-Receita, o repasse compensatório do Comitê Gestor: ${nome} recebe ${fmtMoney(seg33)} em 2033, mais do que o ganho. Sem o repasse, a receita ficaria ${fmtMoney(seg33 - dif33)} abaixo do cenário sem reforma.`);
+        else p.push(`${nome} recebe ${fmtMoney(seg33)} do Seguro-Receita em 2033, repasse compensatório do Comitê Gestor que já está incluído nos números.`);
+    } else {
+        p.push(`${nome} não recebe Seguro-Receita no período, e o resultado vem da repartição do IBS pelos coeficientes.`);
+    }
+    p.push('São estimativas que dependem das hipóteses do modelo; a seção sobre sensibilidade, mais abaixo, mostra a faixa de resultados.');
+    return p.map(t => '<p>' + t + '</p>').join('');
+}
+
 function renderFicha(cod, base, m) {
     graficos.forEach(g => g.destroy()); graficos = [];
     if (GSENS) { GSENS.destroy(); GSENS = null; }
@@ -865,7 +887,7 @@ function renderFicha(cod, base, m) {
         <div class="ficha-top">
             <div>
                 <h2 id="fichaTitulo" tabindex="-1">${nomeSeg}<small>${base.uf}</small></h2>
-                <p class="ficha-meta">${esc(NOMES_UF[base.uf])} · ${fmtInt(m.pop_media)} habitantes<span class="meta-fonte"> (média 2019–2026, IBGE)</span></p>
+                <p class="ficha-meta">${esc(NOMES_UF[base.uf])} · <span title="Média 2019–2026, IBGE">${fmtInt(m.pop_media)} habitantes</span></p>
             </div>
             <div class="ficha-acoes">
                 <button class="btn btn-ghost btn-sm" type="button" id="btnCopiar">Copiar link</button>
@@ -873,19 +895,13 @@ function renderFicha(cod, base, m) {
             </div>
         </div>
         ${aviso ? `<div class="aviso" role="note">${aviso}</div>` : ''}
-        <div class="faixa">
-            <div class="faixa-main ${sinal}">
-                <div class="fm-num"><em class="selo">${selo}</em><span>Efeito da reforma na receita em 2033</span><b>${fmtPct(v33)}</b></div>
-                <div class="fm-txt"><p class="frase">${frase}</p>
-                <small>Compara os dois cenários do mesmo ano. <a href="#" data-tab="metodologia" data-depois="met-5">Como ler →</a></small></div>
-            </div>
-            <div class="kpi"><span>Receita em 2025</span><b>${fmtMoneyFino(m.pre_2025)}</b></div>
-            <div class="kpi"><span>2033 sem a reforma</span><b>${fmtMoneyFino(cf33)}</b></div>
-            <div class="kpi destaque"><span>2033 com a reforma</span><b>${fmtMoneyFino(pos33)}</b></div>
-        </div>
-        <div class="panel accent"><h3>Para onde vai a arrecadação</h3><p class="panel-sub">Receita realizada até 2025 e projetada de 2029 a 2033, com e sem a reforma, em R$ de 2025.</p>
+        <div class="panel accent panel-grafico">
+            <h3 class="sr-only">Para onde vai a arrecadação</h3>
             <div class="canvas-box canvas-serie"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano, em Detalhes do cálculo."></canvas></div>
-</div>
+            <p class="nota-serie">Valores em R$ de 2025. Linha tracejada: cenário sem a reforma.</p>
+            <div class="efeito-linha"><div class="efeito ${sinal}"><em class="selo">${selo}</em><b>${fmtPct(v33)}</b><span>em 2033</span></div></div>
+            <div class="leitura-dados"><h4>Como a reforma tributária afeta a receita de ${nomeSeg}?</h4>${leituraMunicipio(m, base)}<p class="como-ler"><a href="#" data-tab="metodologia" data-depois="met-5">Como ler os dois cenários →</a></p></div>
+        </div>
         ${painelParticipacaoHtml(m, base)}
         <div class="panel accent">
             <div class="panel-head"><div><h3>De onde vem a receita</h3><p class="panel-sub">Quanto ainda vem do ISS e da cota-parte do ICMS e quanto já vem do IBS, de 2029 a 2033.</p></div>
@@ -1107,6 +1123,17 @@ function desenharGraficos(m) {
     // Desenho do painel dos estados: linha fina, ponto de 4 px com anel de 2 px na cor da superfície (continua legível onde as séries
     // se tocam), área de acerto folgada para o toque, grade só na horizontal e sem eixo vertical.
     const linha = {borderWidth: 2, spanGaps: false, tension: 0.1, pointRadius: 4, pointHoverRadius: 6, pointBorderWidth: 2, pointBorderColor: '#fff', hitRadius: 14};
+    // Rótulos diretos no lugar da legenda: o valor de cada cenário em 2033 e o de 2025, ao lado dos pontos.
+    const rotulosDiretos = {id: 'rotulosDiretos', afterDatasetsDraw(chart) {
+        const ctx = chart.ctx, fs = estreito ? 11 : 12, ult = rotulos.length - 1, i25 = rotulos.indexOf('2025');
+        const texto = (x, y, t, cor, peso, tam, al) => { ctx.font = peso + ' ' + tam + 'px Inter, system-ui, sans-serif'; ctx.fillStyle = cor; ctx.textAlign = al || 'left'; ctx.fillText(t, x, y); };
+        ctx.save();
+        const pos = chart.getDatasetMeta(1).data[ult], cf = chart.getDatasetMeta(2).data[ult], p25 = chart.getDatasetMeta(0).data[i25];
+        if (pos) { texto(pos.x + 10, pos.y - 16, fmtMoneyFino(m.pos_por_ano['2033']), '#8a6508', 700, fs); texto(pos.x + 10, pos.y - 4, 'com a reforma', '#8a6508', 500, fs - 1); }
+        if (cf) { texto(cf.x + 10, cf.y + 14, fmtMoneyFino(m.contrafactual_por_ano['2033']), '#555', 700, fs); texto(cf.x + 10, cf.y + 26, 'sem a reforma', '#555', 500, fs - 1); }
+        if (p25) { const y = Math.min(p25.y + 20, chart.chartArea.bottom - 14); texto(p25.x, y, fmtMoneyFino(m.pre_2025), '#062254', 700, fs, 'center'); texto(p25.x, y + 12, 'realizado em 2025', '#062254', 500, fs - 1, 'center'); }
+        ctx.restore();
+    }};
     graficos.push(new Chart($('gSerie'), {
         type: 'line',
         data: {labels: rotulos, datasets: [
@@ -1115,9 +1142,11 @@ function desenharGraficos(m) {
             Object.assign({label: 'Cenário sem a reforma', data: cenario(m.contrafactual_por_ano), borderColor: '#6b6b6b', backgroundColor: '#6b6b6b', pointBackgroundColor: '#6b6b6b', borderDash: [5, 4], fill: false}, linha)
         ]},
         options: {responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false},
-            plugins: {legend: {position: 'bottom', labels: {usePointStyle: false, boxWidth: 26, boxHeight: 2, padding: 16, color: '#141414', font: {size: 11}}}, tooltip: tip},
+            plugins: {legend: {display: false}, tooltip: tip},
+            layout: {padding: {right: estreito ? 90 : 104}},
             scales: {y: {grid: {color: '#e9edf0', drawTicks: false}, border: {display: false}, beginAtZero: false, grace: '8%', ticks: {callback: v => fmtMoney(v * 1e6), color: '#6b6b6b', font: {size: 11}, padding: 8}},
                 x: {grid: {display: false}, border: {color: '#c8d0d6'}, ticks: {maxRotation: estreito ? 55 : 0, minRotation: estreito ? 55 : 0, autoSkip: false, font: {size: estreito ? 10 : 11}, color: '#6b6b6b', padding: 6}}}}
+        , plugins: [rotulosDiretos]
     }));
     const desenhaComp = () => {
         const pct = modo === 'pct';
