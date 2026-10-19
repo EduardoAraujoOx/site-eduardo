@@ -51,8 +51,8 @@ p { margin: 0 0 1em; }
 .masthead::after { content: ''; display: block; height: 4px; background: linear-gradient(90deg, var(--gold) 0 120px, var(--navy) 120px 100%); }
 .masthead-in { display: flex; align-items: center; gap: 1.4rem; padding: .75rem 0; }
 .masthead .marca { flex: none; display: block; line-height: 0; }
-.masthead h1 { margin: 0; line-height: 0; font-size: 1rem; }
-.masthead h1 img { height: 64px; width: auto; display: block; }
+.masthead .marca-nome { display: block; margin: 0; line-height: 0; font-size: 1rem; }
+.masthead .marca-nome img { height: 64px; width: auto; display: block; }
 .masthead .sub { margin: 0; color: var(--ink-soft); font-size: .95rem; line-height: 1.35; max-width: 30rem; padding-left: 1.4rem; border-left: 1px solid var(--line); }
 .credito { margin-left: auto; display: flex; align-items: center; gap: .55rem; text-decoration: none; flex: none; opacity: .9; }
 .credito:hover { opacity: 1; }
@@ -61,7 +61,7 @@ p { margin: 0 0 1em; }
 @media (max-width: 760px) {
     .masthead .sub { display: none; }
     .masthead-in { padding: .55rem 0; gap: .8rem; }
-    .masthead h1 img { height: 44px; }
+    .masthead .marca-nome img { height: 44px; }
     .credito-txt { display: none; }
     .credito img { height: 28px; }
 }
@@ -291,7 +291,7 @@ table.dados td.nome { text-align: left; } table.dados td.nome small { color: #6b
 @media print {
     .utility-bar, .tabnav, .credito, .view:not(#view-municipio), .site-foot, .ficha-acoes, .ficha-barra, .voltar, .search, .view-head { display: none !important; }
     #view-municipio { display: block !important; }
-    body { background: #fff; } .masthead { background: #fff; color: var(--ink); } .masthead h1, .masthead .sub { color: var(--ink); }
+    body { background: #fff; } .masthead { background: #fff; color: var(--ink); } .masthead .marca-nome, .masthead .sub { color: var(--ink); }
     .veredito, .faixa, .kpi, .panel { box-shadow: none; break-inside: avoid; }
     .cta-inline, .ladder { display: none !important; }
     .print-credito { display: block; margin-top: 1.2rem; padding-top: .6rem; border-top: 1px solid var(--line); font-size: .85rem; color: var(--ink-soft); }
@@ -498,7 +498,7 @@ table.dados th.nome { text-align: left; }
 /* ── cabeçalho enxuto no celular ── */
 @media (max-width: 700px) {
     .masthead .sub { display: none; }
-    .masthead h1 { font-size: 1.3rem; }
+    .masthead .marca-nome { font-size: 1.3rem; }
 }
 
 /* ── WhatsApp flutuante: botão em pílula, com texto também no celular e um pulso discreto que chama a atenção ── */
@@ -810,3 +810,17 @@ html { scroll-behavior: smooth; }
     .zap svg { width: 28px; height: 28px; }
 }
 @media (max-width: 520px) { .cap-nav { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } .cap-nav a { white-space: nowrap; padding: .3rem .7rem; font-size: .8rem; } }
+
+/* Apresentação legível antes de carregar os dados do painel. */
+.portal-intro { margin: 0 0 1.4rem; max-width: 58rem; }
+.portal-intro h1 { font-size: clamp(1.6rem, 3vw, 2rem); font-weight: 800; margin-bottom: .45rem; }
+.portal-intro p { margin: 0 0 .45rem; font-size: 1rem; color: var(--ink-soft); }
+.portal-intro .portal-intro-fonte { font-size: .8rem; max-width: 52rem; }
+.portal-sobre { margin: 1.8rem 0 0; padding-top: 1.5rem; border-top: 1px solid var(--line); max-width: 58rem; }
+.portal-sobre h2 { font-size: 1.2rem; }
+.portal-sobre p { color: var(--ink-soft); font-size: .92rem; }
+.portal-sobre a { color: var(--brand-blue); text-underline-offset: .2em; }
+@media (max-width: 560px) {
+    .portal-intro p { font-size: .92rem; }
+    .portal-intro .portal-intro-fonte { font-size: .76rem; }
+}

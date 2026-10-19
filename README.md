@@ -37,6 +37,8 @@ site-eduardo/
 
 ## Configuracao
 
+Para o portal **Municípios na Reforma**, siga o [guia de Search Console e GA4](docs/municipios-seo-medicao.md). A configuração abaixo se refere ao site pessoal.
+
 ### 1. Google Analytics
 
 Substitua `G-XXXXXXXXXX` pelo seu ID do Google Analytics em `index.html`:
