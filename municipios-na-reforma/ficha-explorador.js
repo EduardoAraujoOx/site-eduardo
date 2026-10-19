@@ -28,15 +28,19 @@
       maximumFractionDigits: 1
     }) + '%';
   }
-  function scaleDomain(values) {
-    const low = Math.min(0, ...values),
-      high = Math.max(0, ...values),
-      range = high - low || 1e6;
+  function scaleDomain(values, trim) {
+    let low = Math.min(0, ...values);
+    const high = Math.max(0, ...values);
+    const floor = Math.min(...values);
+    // Em linhas, quando todos os valores são positivos e próximos entre si, o zero esconde a diferença
+    // entre os cenários. Nesse caso o eixo parte de um piso próximo do menor valor (avisado no gráfico).
+    if (trim && floor > 0 && (high - floor) / high < 0.45) low = floor - (high - floor) * 0.6;
+    const range = high - low || 1e6;
     const raw = range / 4,
       power = 10 ** Math.floor(Math.log10(raw)),
       fraction = raw / power;
     const step = (fraction <= 1 ? 1 : fraction <= 2 ? 2 : fraction <= 2.5 ? 2.5 : fraction <= 5 ? 5 : 10) * power;
-    const min = Math.floor(low / step) * step;
+    const min = trim && low > 0 ? Math.max(0, Math.floor(low / step) * step) : Math.floor(low / step) * step;
     const max = Math.max(min + step, Math.ceil(high / step) * step);
     const ticks = [];
     for (let i = 0; i <= Math.round((max - min) / step); i++) ticks.push(min + i * step);
@@ -128,7 +132,11 @@
       $('#difference').classList.toggle('neg', m.pos_por_ano[year] < m.contrafactual_por_ano[year]);
       $('#percent').textContent = signedPercent(m.variacao_por_ano[year]) + ' frente ao cenário sem reforma';
       $('#percent').classList.toggle('neg', m.variacao_por_ano[year] < 0);
-      $('#insurance').textContent = money(m.repasse_seguro_receita_por_ano?.[year] || 0);
+      const seguro = m.repasse_seguro_receita_por_ano?.[year] || 0,
+        dif = m.pos_por_ano[year] - m.contrafactual_por_ano[year];
+      $('#readout-insurance').hidden = !(seguro > 0);
+      $('#insurance').textContent = money(seguro);
+      $('#insurance-dep').innerHTML = dif > 0 && seguro > dif ? `<b>O ganho depende dele:</b> sem o repasse, a diferença seria de ${signedMoney(dif - seguro)}.` : '';
       $('#comp-year').textContent = year;
       $('#comp-total').textContent = money(m.pos_por_ano[year]);
       $$('[data-tick]').forEach(el => {
@@ -158,14 +166,15 @@
       const start = all ? 2019 : 2029;
       const x = yr => L + (yr - start) / (2033 - start) * (R - L);
       const values = lens === 'impacto' ? years.map(yr => m.pos_por_ano[yr] - m.contrafactual_por_ano[yr]) : years.flatMap(yr => [m.pos_por_ano[yr], m.contrafactual_por_ano[yr]]).concat(all ? Object.values(m.historico_por_ano || {}).map(row => row.total_reais_2025).filter(Number.isFinite) : []);
-      const domain = scaleDomain(values);
+      const domain = scaleDomain(values, lens === 'receita');
+      const truncated = lens === 'receita' && domain.min > 0;
       const y = v => B - (v - domain.min) / (domain.max - domain.min) * (B - T);
       const diff = yr => m.pos_por_ano[yr] - m.contrafactual_por_ano[yr];
       const line = field => years.map((yr, i) => `${i ? 'L' : 'M'}${x(+yr).toFixed(1)},${y(m[field][yr]).toFixed(1)}`).join(' ');
       let html = `<defs><linearGradient id="${uid}-area" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#0f508e" stop-opacity=".14"/><stop offset="1" stop-color="#0f508e" stop-opacity=".025"/></linearGradient><linearGradient id="${uid}-impact-area" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#0f508e" stop-opacity=".22"/><stop offset="1" stop-color="#0f508e" stop-opacity=".02"/></linearGradient></defs>`;
-      if (all) html += `<rect x="${x(2026)}" y="${T - 12}" width="${x(2028) - x(2026)}" height="${B - T + 12}" fill="#dce4ef" fill-opacity=".7"/><text x="${x(2027)}" y="${T + 14}" text-anchor="middle" fill="#7c8fa9" font-size="${small ? 7 : 10}">Sem projeção</text>`;
+      if (all) html += `<rect x="${x(2026)}" y="${T - 12}" width="${x(2028) - x(2026)}" height="${B - T + 12}" fill="#dce4ef" fill-opacity=".7"/><text x="${x(2027)}" y="${T + 14}" text-anchor="middle" fill="#5d7090" font-size="${small ? 9 : 11}">Sem projeção</text>`;
       const ticks = domain.ticks;
-      ticks.forEach(v => html += `<line x1="${L}" x2="${R}" y1="${y(v)}" y2="${y(v)}" stroke="#d6e0ed" stroke-width=".8"/><text x="${L - 9}" y="${y(v) + 3}" text-anchor="end" fill="#526a8a" font-size="${small ? 9 : 11}">${dec(v / 1e6, Math.abs(v) < 1e6 && v !== 0 ? 2 : 0)}</text>`);
+      ticks.forEach(v => html += `<line x1="${L}" x2="${R}" y1="${y(v)}" y2="${y(v)}" stroke="#d6e0ed" stroke-width=".8"/><text x="${L - 9}" y="${y(v) + 3}" text-anchor="end" fill="#526a8a" font-size="${small ? 11 : 12}">${dec(v / 1e6, Math.abs(v) < 1e6 && v !== 0 ? 2 : 0)}</text>`);
       if (lens === 'receita') {
         const area = line('pos_por_ano') + ' ' + years.slice().reverse().map(yr => `L${x(+yr)},${y(m.contrafactual_por_ano[yr])}`).join(' ') + ' Z';
         html += `<path d="${area}" fill="url(#${uid}-area)"/><path d="${line('contrafactual_por_ano')}" fill="none" stroke="#7c8fa9" stroke-width="2" stroke-dasharray="4 5"/><path d="${line('pos_por_ano')}" fill="none" stroke="#0f508e" stroke-width="3.3" stroke-linecap="round" stroke-linejoin="round"/>`;
@@ -179,7 +188,7 @@
         html += `<path d="${a} L${x(2033)},${y(0)} L${x(2029)},${y(0)} Z" fill="url(#${uid}-impact-area)"/><path d="${a}" fill="none" stroke="#0f508e" stroke-width="3.3" stroke-linejoin="round"/>`;
       }
       const labels = all ? small ? [2019, 2022, 2025, 2029, 2033] : [2019, 2021, 2023, 2025, 2029, 2031, 2033] : years.map(Number);
-      labels.forEach(yr => html += `<text x="${x(yr)}" y="${B + 25}" text-anchor="middle" fill="${String(yr) === year ? '#062254' : '#526a8a'}" font-size="${small ? 9 : 11}" font-weight="${String(yr) === year ? 750 : 400}">${yr}</text>`);
+      labels.forEach(yr => html += `<text x="${x(yr)}" y="${B + 25}" text-anchor="middle" fill="${String(yr) === year ? '#062254' : '#526a8a'}" font-size="${small ? 11 : 12}" font-weight="${String(yr) === year ? 750 : 400}">${yr}</text>`);
       const sx = x(+year),
         val = lens === 'impacto' ? diff(year) : m.pos_por_ano[year],
         sy = y(val);
@@ -188,11 +197,11 @@
         const ny = y(m.contrafactual_por_ano[year]);
         html += `<line x1="${sx}" x2="${sx}" y1="${sy}" y2="${ny}" stroke="#fcbb1b" stroke-width="3"/><path d="M${sx - 5} ${sy}h10M${sx - 5} ${ny}h10" stroke="#bf8d11" stroke-width="1.2"/><circle cx="${sx}" cy="${ny}" r="4" fill="#7c8fa9" stroke="#edf2f8" stroke-width="2"/>`;
         if ((!small || !all) && Math.abs(ny - sy) > 52 && B - Math.max(ny, sy) > (small ? 66 : 72)) {
-          const aw = small ? 126 : 151,
+          const aw = small ? 140 : 156,
             ah = small ? 43 : 49;
           const ax = Math.max(L + 6, Math.min(R - aw - 12, sx - aw - 16)),
             ay = Math.min(B - ah - 9, Math.max(ny, sy) + 16);
-          html += `<g class="gap-label"><rect x="${ax}" y="${ay}" width="${aw}" height="${ah}" rx="5" fill="#f9fbfe" stroke="#d2ddec"/><rect x="${ax}" y="${ay + 9}" width="3" height="${ah - 18}" rx="1" fill="#fcbb1b"/><text x="${ax + 12}" y="${ay + 15}" fill="#7389a6" font-size="${small ? 8 : 9}">Efeito da reforma · ${year}</text><text x="${ax + 12}" y="${ay + ah - 11}" fill="${diff(year) < 0 ? '#a02525' : '#062254'}" font-size="${small ? 11 : 14}" font-weight="700">${signedMoney(diff(year))}</text><path d="M${ax + aw} ${ay + ah / 2}H${sx}V${Math.max(ny, sy) + 5}" fill="none" stroke="#d1a339" stroke-width="1"/></g>`;
+          html += `<g class="gap-label"><rect x="${ax}" y="${ay}" width="${aw}" height="${ah}" rx="5" fill="#f9fbfe" stroke="#d2ddec"/><rect x="${ax}" y="${ay + 9}" width="3" height="${ah - 18}" rx="1" fill="#fcbb1b"/><text x="${ax + 12}" y="${ay + 15}" fill="#7389a6" font-size="${small ? 10 : 11}">Efeito da reforma · ${year}</text><text x="${ax + 12}" y="${ay + ah - 11}" fill="${diff(year) < 0 ? '#a02525' : '#062254'}" font-size="${small ? 11 : 14}" font-weight="700">${signedMoney(diff(year))}</text><path d="M${ax + aw} ${ay + ah / 2}H${sx}V${Math.max(ny, sy) + 5}" fill="none" stroke="#d1a339" stroke-width="1"/></g>`;
         }
       }
       years.forEach(yr => {
@@ -204,13 +213,14 @@
         lh = 27,
         labelX = Math.max(L, Math.min(R - lw, sx - lw / 2)),
         labelY = Math.max(1, sy - 42);
-      html += `<g><rect x="${labelX}" y="${labelY}" width="${lw}" height="${lh}" rx="5" fill="#f9fbfe" stroke="#c3d3e7"/><circle cx="${labelX + 12}" cy="${labelY + 13.5}" r="2.7" fill="#0f508e"/><text x="${labelX + lw / 2 + 5}" y="${labelY + 17}" text-anchor="middle" fill="#0f508e" font-size="${small ? 10 : 12}" font-weight="700">${label}</text></g><circle class="handle" cx="${sx}" cy="${B}" r="6" fill="#fcbb1b" stroke="#b88916" stroke-width="1"/>`;
+      html += `<g><rect x="${labelX}" y="${labelY}" width="${lw}" height="${lh}" rx="5" fill="#f9fbfe" stroke="#c3d3e7"/><circle cx="${labelX + 12}" cy="${labelY + 13.5}" r="2.7" fill="#0f508e"/><text x="${labelX + lw / 2 + 5}" y="${labelY + 17}" text-anchor="middle" fill="#0f508e" font-size="${small ? 11 : 12}" font-weight="700">${label}</text></g><circle class="handle" cx="${sx}" cy="${B}" r="6" fill="#fcbb1b" stroke="#b88916" stroke-width="1"/>`;
       svg.innerHTML = html;
       chartGeometry = {
         L,
         R,
         start
       };
+      $('#axis-note').textContent = truncated ? 'Eixo vertical a partir de R$ ' + dec(domain.min / 1e6, 0) + ' mi' : '';
       $('#legend').innerHTML = lens === 'impacto' ? '<span><i class="legend-line"></i>Diferença: com reforma − sem reforma</span>' : '<span><i class="legend-line"></i>Com reforma</span><span><i class="legend-line without"></i>Sem reforma</span>' + (all ? '<span><i class="legend-line history"></i>Histórico</span>' : '');
     }
     function scrub(event) {
@@ -425,7 +435,7 @@
 <div class="stage-core">
 <div class="graph">
 <div class="graph-meta">
-<div class="graph-legend" id="legend"><span><i class="legend-line"></i>Com reforma</span><span><i class="legend-line without"></i>Sem reforma</span></div><span class="graph-unit">R$ MILHÕES · PREÇOS DE 2025</span></div>
+<div class="graph-legend" id="legend"><span><i class="legend-line"></i>Com reforma</span><span><i class="legend-line without"></i>Sem reforma</span></div><span class="graph-unit">R$ milhões · preços de 2025<span id="axis-note"></span></span></div>
 <div id="svg-view"><svg id="chart" class="chart" viewBox="0 0 900 360" role="img" aria-label="Gráfico interativo das receitas projetadas com e sem reforma de 2029 a 2033. Selecione o ano no controle de tempo ou abra a tabela."></svg>
 <div class="graph-hint" id="hint"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor">
 <path d="m5 4-4 4 4 4m6-8 4 4-4 4M1 8h14"/></svg>Arraste o ponto para explorar</div></div>
@@ -447,7 +457,7 @@
 <div class="difference-label">Diferença anual estimada</div>
 <div class="difference-value" id="difference">+ R$ 421,4 mi</div>
 <div class="difference-percent" id="percent">+113,8% frente ao cenário sem reforma</div></div>
-<div class="readout-insurance">Inclui <b id="insurance">R$ 48,7 mi</b> de Seguro-Receita bruto.<br>Comparação entre cenários no mesmo ano.</div>
+<div class="readout-insurance" id="readout-insurance">Inclui <b id="insurance">R$ 48,7 mi</b> de Seguro-Receita, o repasse compensatório do Comitê Gestor. <span id="insurance-dep"></span></div>
 </aside></div>
 <div class="transport">
 <button type="button" class="play" id="play" aria-label="Assistir à transição" aria-pressed="false"><svg id="play-icon" viewBox="0 0 16 16">
@@ -471,7 +481,7 @@
 <div class="composition-total"><span>Composição da receita com reforma</span><b id="comp-total">R$ 791,8 mi</b></div>
 <div class="bands" id="bands" role="group" aria-label="Parcelas da receita"></div>
 <div class="band-labels" id="band-labels"></div>
-<p class="composition-note">O Seguro-Receita nesta composição é o valor efetivo do modelo. O resumo do gráfico informa o repasse bruto.</p></div>
+<p class="composition-note">A parcela do Seguro-Receita aqui é o valor efetivo do modelo, que pode diferir levemente do repasse bruto citado no resumo e no texto.</p></div>
 <aside class="explain-component">
 <div class="component-tag" id="component-tag">ENTENDA A COMPOSIÇÃO</div>
 <h3 id="component-title">Uma receita. Quatro origens.</h3>

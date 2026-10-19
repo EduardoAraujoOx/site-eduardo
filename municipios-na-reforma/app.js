@@ -953,7 +953,7 @@ function renderFicha(cod, base, m) {
         ${painelSeguro}
         <h3 class="capitulo" id="cap-porque">Por que o resultado é este</h3>
         ${painelParticipacaoHtml(m, base)}
-        <div class="panel">
+        <div class="panel" id="painelComp">
             <div class="panel-head"><div><h3>De onde vem a receita</h3><p class="panel-sub">Quanto ainda vem do ISS e da cota-parte do ICMS e quanto já vem do IBS, de 2029 a 2033.</p></div>
                 <div class="comp-controles">
                     <div class="toggle" id="compModo" role="group" aria-label="Unidade"><button type="button" data-modo="pct" class="active">%</button><button type="button" data-modo="rs">R$</button></div>
@@ -1002,7 +1002,7 @@ function renderFicha(cod, base, m) {
 
     $('btnMemoria').addEventListener('click', () => { track('abrir_memoria', {municipio: base.nome}); abrirMemoria(cod); });
     $('btnCopiar').addEventListener('click', e => {
-        const u = new URL(location.href); u.searchParams.set('m', cod);
+        const u = new URL(location.href); u.searchParams.set('m', cod); u.searchParams.delete('visual');
         const url = u.href;
         (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(() => { e.target.textContent = 'Link copiado'; }, () => { prompt('Copie o link:', url); });
         track('copiar_link', {municipio: base.nome});
@@ -1010,7 +1010,7 @@ function renderFicha(cod, base, m) {
     $('btnImprimir').addEventListener('click', () => { track('imprimir_ficha', {municipio: base.nome}); window.print(); });
     $('btnPdf').addEventListener('click', () => { track('imprimir_ficha', {municipio: base.nome}); window.print(); });
     $('btnCompartilhar').addEventListener('click', () => {
-        const u = new URL(location.href); u.searchParams.set('m', cod);
+        const u = new URL(location.href); u.searchParams.set('m', cod); u.searchParams.delete('visual');
         const url = u.href, texto = base.nome + ': ' + fmtPct(v33) + ' na receita em 2033 com a reforma tributária (estimativa).';
         track('compartilhar', {municipio: base.nome});
         if (navigator.share) navigator.share({title: 'Municípios na Reforma', text: texto, url}).catch(() => {});
