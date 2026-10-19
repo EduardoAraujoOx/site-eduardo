@@ -86,6 +86,11 @@ if (CONFIG.gaId) {
 /* ── estado ── */
 let LISTA = [], POR_COD = {}, RESULT = null, NAC = null, AGG = {};
 let ESCOPO = 'BR', NIVEL = 'uf', ATUAL = null, MAPA = null, MINI = null, graficos = [];
+let exploradorFicha = null;
+function desmontarExplorador() {
+    if (exploradorFicha) exploradorFicha.destruir();
+    exploradorFicha = null;
+}
 const MEMO = {cod: null, secao: 'historico'};
 const RANK = {}, DADOS_UF = {};
 let LOCAL = null, MAPA_DESTAQUE = null;
@@ -98,6 +103,8 @@ const GEO = {muni: null, uf: null, promessa: null};
 
 /* ── abas ── */
 function mostrarVisao(v) {
+    if (v !== 'municipio' && exploradorFicha) exploradorFicha.pausar();
+    document.documentElement.classList.toggle('ficha-preview-nova', v === 'municipio' && !!exploradorFicha);
     if (v === 'vertex') { preencherMunicipioForms(); renderContextoVertex(); }
     document.querySelectorAll('.view').forEach(s => s.classList.toggle('active', s.id === 'view-' + v));
     document.querySelectorAll('.tab-btn').forEach(b => {
@@ -111,6 +118,7 @@ function mostrarVisao(v) {
     const ativa = document.querySelector('.tab-btn.active'); if (ativa && $('navAtual')) $('navAtual').textContent = ativa.textContent;
     fecharMenu();
     window.scrollTo({top: 0});
+    if (v === 'municipio' && exploradorFicha) requestAnimationFrame(exploradorFicha.atualizar);
 }
 function fecharMenu() { const n = $('tabnav'); if (n) n.classList.remove('aberto'); const t = $('navToggle'); if (t) t.setAttribute('aria-expanded', 'false'); }
 if ($('navToggle')) $('navToggle').addEventListener('click', e => {
@@ -652,6 +660,7 @@ function criarMapa(svgEl, wrapEl, tipEl, opt) {
 /* ── ficha do município ── */
 async function abrirMunicipio(cod, opt) {
     opt = opt || {};
+    desmontarExplorador();
     const base = POR_COD[cod];
     ATUAL = cod;
     mostrarVisao('municipio');
@@ -872,6 +881,7 @@ function marcarPin() {
 window.addEventListener('resize', () => { if (PIN) marcarPin(); });
 
 function renderFicha(cod, base, m) {
+    desmontarExplorador();
     graficos.forEach(g => g.destroy()); graficos = [];
     if (GSENS) { GSENS.destroy(); GSENS = null; }
     if (GPART) { GPART.destroy(); GPART = null; }
@@ -896,6 +906,11 @@ function renderFicha(cod, base, m) {
     const neutra = Math.abs(v33) <= 0.0005;
     const lado = v33 < 0 ? 'a menos' : 'a mais';
     const nomeSeg = esc(base.nome);
+    const previaNovaFicha = !!(window.FichaExplorador && window.FichaExplorador.ativo());
+    const urlVisual = new URL(location.href);
+    urlVisual.searchParams.set('m', cod);
+    if (previaNovaFicha) urlVisual.searchParams.delete('visual');
+    else urlVisual.searchParams.set('visual', 'novo');
     const selo = neutra ? 'Receita estável' : v33 < 0 ? 'Perda estimada' : 'Ganho estimado';
     const frase = neutra
         ? `Em 2033, a receita de <b>${nomeSeg}</b> fica praticamente igual à que teria sem a reforma.`
@@ -920,6 +935,7 @@ function renderFicha(cod, base, m) {
                 <p class="ficha-meta">${esc(NOMES_UF[base.uf])} · <span title="Média 2019–2026, IBGE">${fmtInt(m.pop_media)} habitantes</span></p>
             </div>
             <div class="ficha-acoes">
+                <a class="btn btn-ghost btn-sm" href="${esc(urlVisual.pathname + urlVisual.search)}" data-visual-ficha>${previaNovaFicha ? 'Voltar ao visual atual' : 'Experimentar nova ficha'}</a>
                 <button class="btn btn-ghost btn-sm" type="button" id="btnCopiar">Copiar link</button>
                 <button class="btn btn-ghost btn-sm" type="button" id="btnImprimir">Imprimir / salvar PDF</button>
             </div>
@@ -927,6 +943,7 @@ function renderFicha(cod, base, m) {
         ${aviso ? `<div class="aviso" role="note">${aviso}</div>` : ''}
         <nav class="cap-nav" aria-label="Seções desta página"><a href="#cap-resultado">Resultado</a><a href="#cap-porque">Por quê</a><a href="#cap-compara">Comparação</a><a href="#cap-detalhes">Cálculo</a></nav>
         <div class="panel accent panel-grafico" id="cap-resultado">
+            <div id="fichaExplorador" hidden></div>
             <h3 class="sr-only">Para onde vai a arrecadação</h3>
             <div class="canvas-box canvas-serie"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano, em Detalhes do cálculo."></canvas></div>
             <p class="nota-serie">Valores em R$ de 2025. Linha tracejada: cenário sem a reforma. Faixa cinza: 2026 a 2028, sem projeção.</p>
@@ -985,19 +1002,34 @@ function renderFicha(cod, base, m) {
 
     $('btnMemoria').addEventListener('click', () => { track('abrir_memoria', {municipio: base.nome}); abrirMemoria(cod); });
     $('btnCopiar').addEventListener('click', e => {
-        const url = location.origin + location.pathname + '?m=' + cod;
+        const u = new URL(location.href); u.searchParams.set('m', cod);
+        const url = u.href;
         (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(() => { e.target.textContent = 'Link copiado'; }, () => { prompt('Copie o link:', url); });
         track('copiar_link', {municipio: base.nome});
     });
     $('btnImprimir').addEventListener('click', () => { track('imprimir_ficha', {municipio: base.nome}); window.print(); });
     $('btnPdf').addEventListener('click', () => { track('imprimir_ficha', {municipio: base.nome}); window.print(); });
     $('btnCompartilhar').addEventListener('click', () => {
-        const url = location.origin + location.pathname + '?m=' + cod, texto = base.nome + ': ' + fmtPct(v33) + ' na receita em 2033 com a reforma tributária (estimativa).';
+        const u = new URL(location.href); u.searchParams.set('m', cod);
+        const url = u.href, texto = base.nome + ': ' + fmtPct(v33) + ' na receita em 2033 com a reforma tributária (estimativa).';
         track('compartilhar', {municipio: base.nome});
         if (navigator.share) navigator.share({title: 'Municípios na Reforma', text: texto, url}).catch(() => {});
         else window.open('https://wa.me/?text=' + encodeURIComponent(texto + ' ' + url), '_blank', 'noopener');
     });
-    desenharGraficos(m);
+    if (previaNovaFicha) {
+        const alvo = $('fichaExplorador');
+        alvo.hidden = false;
+        try {
+            exploradorFicha = window.FichaExplorador.montar(alvo, {municipio: m, nome: base.nome});
+        } catch (e) {
+            console.error('Não foi possível iniciar a prévia da ficha.', e);
+            desmontarExplorador();
+        }
+        if (!exploradorFicha) { alvo.hidden = true; alvo.replaceChildren(); }
+    }
+    $('cap-resultado').classList.toggle('com-explorador', !!exploradorFicha);
+    document.documentElement.classList.toggle('ficha-preview-nova', !!exploradorFicha);
+    desenharGraficos(m, !!exploradorFicha);
     iniciarSens(cod, base, m);
     carregarMalha().then(() => {
         if (ATUAL !== cod || !$('miniSvg')) return;
@@ -1132,7 +1164,7 @@ function desenharSens() {
 
 const COMP_ROTULOS = [['origem', 'ISS e cota-parte do ICMS residuais', '#858384'], ['cpt', 'IBS pelo critério histórico*', '#0f508e'], ['destino', 'IBS por destino*', '#6aa8dd'], ['seguro', 'Seguro-Receita', '#249266']];
 
-function desenharGraficos(m) {
+function desenharGraficos(m, serieExploravel) {
     const tabelaComp = pct => {
         const cab = ANOS.map(a => `<th>${a}</th>`).join('');
         const corpo = COMP_ROTULOS.map(([k, rot]) => `<tr><td>${rot}</td>${ANOS.map(a => {
@@ -1195,7 +1227,7 @@ function desenharGraficos(m) {
             if (p25) { const y = Math.min(p25.y + 20, chart.chartArea.bottom - 14); texto(p25.x, y, fmtMoneyFino(m.pre_2025), '#062254', 700, fs, 'center'); texto(p25.x, y + 12, 'realizado em 2025', '#062254', 500, fs - 1, 'center'); }
             ctx.restore();
         }};
-    graficos.push(new Chart($('gSerie'), {
+    if (!serieExploravel) graficos.push(new Chart($('gSerie'), {
         type: 'line',
         data: {labels: rotulos, datasets: [
             Object.assign({label: 'Realizado (2019–2025)', data: hist, borderColor: '#062254', backgroundColor: '#062254', pointBackgroundColor: '#062254'}, linha),
@@ -1209,12 +1241,16 @@ function desenharGraficos(m) {
                 x: {grid: {display: false}, border: {color: '#c8d0d6'}, ticks: {maxRotation: estreito ? 55 : 0, minRotation: estreito ? 55 : 0, autoSkip: false, font: {size: estreito ? 10 : 11}, color: '#6b6b6b', padding: 6}}}}
         , plugins: [rotulosDiretos]
     }));
+    let graficoComposicao = null;
     const desenhaComp = () => {
         const pct = modo === 'pct';
         const tot = ANOS.map(a => { const r = m.componentes_por_ano[a]; return r.origem + r.cpt + r.destino + r.seguro; });
         const serie = k => ANOS.map((a, i) => pct ? (tot[i] ? m.componentes_por_ano[a][k] / tot[i] * 100 : 0) : mi(m.componentes_por_ano[a][k]));
-        if (graficos[1]) { graficos[1].destroy(); graficos.pop(); }
-        graficos.push(new Chart($('gComp'), {
+        if (graficoComposicao) {
+            graficoComposicao.destroy();
+            graficos = graficos.filter(g => g !== graficoComposicao);
+        }
+        graficoComposicao = new Chart($('gComp'), {
             type: 'bar',
             data: {labels: ANOS, datasets: COMP_ROTULOS.map(([k, rot, cor]) => ({label: rot, data: serie(k), backgroundColor: cor}))},
             options: {responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false},
@@ -1222,7 +1258,8 @@ function desenharGraficos(m) {
                     tooltip: {callbacks: {label: c => ' ' + c.dataset.label + ': ' + (pct ? c.parsed.y.toLocaleString('pt-BR', {maximumFractionDigits: 1}) + '%' : fmtMoney(c.parsed.y * 1e6))}}},
                 scales: {x: {stacked: true, grid: {display: false}},
                     y: pct ? {stacked: true, max: 100, ticks: {callback: v => v + '%', color: '#55576a'}, grid: {color: '#ecebe5'}} : Object.assign({stacked: true}, eixoR$)}}
-        }));
+        });
+        graficos.push(graficoComposicao);
     };
     desenhaComp();
     desenhaParticipacao(m);
