@@ -749,3 +749,40 @@ table.dados.tab-hist tr.media td[colspan] { white-space: normal; }
 .leitura-dados { border-top: 0; margin-top: .9rem; padding-top: 0; }
 .efeito-linha .efeito { flex-wrap: wrap; }
 .como-ler-inline { margin-left: .6rem; font-size: .85rem; color: var(--navy); font-weight: 600; white-space: nowrap; }
+
+/* ── Ficha do município: capítulos, cores e blocos novos ── */
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+.capitulo { font: 800 1.3rem var(--font-head); color: var(--navy); margin: 2rem 0 .8rem; scroll-margin-top: 4.5rem; }
+#cap-resultado, #cap-detalhes { scroll-margin-top: 4.5rem; }
+.cap-nav { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 1rem; }
+.cap-nav a { padding: .35rem .85rem; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--navy); font: 600 .85rem var(--font-body); text-decoration: none; }
+.cap-nav a:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
+.tag-seg { display: inline-block; align-self: center; padding: .2rem .6rem; border-radius: 999px; background: var(--gold-pale); color: var(--gold-deep); border: 1px solid var(--gold); font: 700 .74rem var(--font-body); }
+.tag-seg-leve { background: #eef4ee; color: #1d6b4a; border-color: #b9d8c7; }
+.acoes-fim { display: flex; flex-wrap: wrap; gap: .6rem; }
+.map-wrapper { position: relative; }
+.pin-muni { position: absolute; transform: translate(-50%, -50%); pointer-events: none; z-index: 5; }
+.pin-ponto { display: block; width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--navy); background: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.85); }
+.pin-rotulo { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--navy); color: #fff; font: 700 .75rem var(--font-head); padding: .15rem .5rem; border-radius: 4px; white-space: nowrap; }
+@media print { .proximos, .cap-nav { display: none !important; } }
+
+/* ── celular: menu em barras e botão do WhatsApp discreto ── */
+.nav-toggle { display: none; }
+@media (max-width: 700px) {
+    .nav-toggle { display: flex; align-items: center; gap: .7rem; width: 100%; background: none; border: 0; color: #fff; font: 700 1rem var(--font-head); padding: .8rem 1rem; cursor: pointer; text-align: left; }
+    .nav-toggle .nav-atual { flex: 1; }
+    .nav-toggle .nav-menu { font: 600 .78rem var(--font-body); color: #cfd8ee; }
+    .tabnav .tabnav-in { display: none; flex-direction: column; padding: 0; }
+    .tabnav.aberto .tabnav-in { display: flex; position: absolute; left: 0; right: 0; top: 100%; background: var(--navy-soft); box-shadow: 0 10px 24px rgba(0,0,0,.35); z-index: 60; }
+    .tabnav .tab-mais, .tabnav .tab-mais-lista { display: contents; }
+    .tabnav .tab-mais-btn { display: none; }
+    .tabnav .tab-btn { display: block; width: 100%; text-align: left; padding: .9rem 1.1rem; font-size: .98rem; border-bottom: 1px solid rgba(255,255,255,.1); border-left: 3px solid transparent; }
+    .tabnav .tab-btn.active { background: var(--navy); border-left-color: var(--gold); border-bottom-color: rgba(255,255,255,.1); }
+}
+@media (max-width: 560px) {
+    .zap { padding: .7rem; bottom: .8rem; right: .8rem; }
+    .zap .zap-txt { display: none; }
+    .zap svg { width: 28px; height: 28px; }
+}
+@media (max-width: 520px) { .cap-nav { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } .cap-nav a { white-space: nowrap; padding: .3rem .7rem; font-size: .8rem; } }

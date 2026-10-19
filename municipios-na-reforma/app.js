@@ -108,8 +108,17 @@ function mostrarVisao(v) {
     const dentro = !!document.querySelector('.tab-mais-lista .tab-btn.active');         // aba aberta está no menu "Mais"
     $('tabMais').classList.toggle('active', dentro);
     fecharMais();
+    const ativa = document.querySelector('.tab-btn.active'); if (ativa && $('navAtual')) $('navAtual').textContent = ativa.textContent;
+    fecharMenu();
     window.scrollTo({top: 0});
 }
+function fecharMenu() { const n = $('tabnav'); if (n) n.classList.remove('aberto'); const t = $('navToggle'); if (t) t.setAttribute('aria-expanded', 'false'); }
+if ($('navToggle')) $('navToggle').addEventListener('click', e => {
+    e.stopPropagation();
+    const aberto = $('tabnav').classList.toggle('aberto');
+    $('navToggle').setAttribute('aria-expanded', aberto ? 'true' : 'false');
+});
+document.addEventListener('click', e => { if ($('tabnav') && !$('tabnav').contains(e.target)) fecharMenu(); });
 function fecharMais() { $('tabMaisBox').classList.remove('aberto'); $('tabMais').setAttribute('aria-expanded', 'false'); }
 $('tabMais').addEventListener('click', e => {
     e.stopPropagation();
@@ -779,7 +788,7 @@ function explicaParticipacao(nome, d) {
 
 function painelParticipacaoHtml(m, base) {
     const d = partDados(m); if (!d) return '';
-    return `<div class="panel accent" id="painelPart"><h3>Por que o resultado é este: a participação histórica</h3>
+    return `<div class="panel" id="painelPart"><h3>A participação histórica</h3>
         <p class="panel-sub">A reforma distribui o IBS pela fatia que cada município teve, em média, na arrecadação nacional de ICMS e ISS de 2019 a 2026. O gráfico compara a fatia de cada ano com essa média.</p>
         <div class="canvas-box canvas-part"><canvas id="gPart" role="img" aria-label="Gráfico de linhas com a participação de ${esc(base.nome)} na arrecadação nacional de 2019 a 2025, a estimativa de 2026 e a média de 2019 a 2026, que é o coeficiente histórico. Os valores estão na tabela de receita histórica, em Detalhes do cálculo."></canvas></div>
         <p class="leitura">${esc(explicaParticipacao(base.nome, d))}</p>
@@ -812,7 +821,7 @@ function desenhaParticipacao(m) {
         data: {labels: rotulos, datasets: [
             Object.assign({label: 'Participação em cada ano', data: obs, borderColor: '#062254', backgroundColor: '#062254', pointBackgroundColor: '#062254', pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 4.5, pointHoverRadius: 6}, linha),
             Object.assign({label: rotuloEst, data: est, borderColor: '#062254', borderDash: [5, 4], backgroundColor: '#fff', pointBackgroundColor: ctx => ctx.dataIndex === rotulos.length - 1 ? '#fff' : 'rgba(0,0,0,0)', pointBorderColor: ctx => ctx.dataIndex === rotulos.length - 1 ? '#062254' : 'rgba(0,0,0,0)', pointBorderWidth: 2, pointRadius: ctx => ctx.dataIndex === rotulos.length - 1 ? 5.5 : 0, pointHoverRadius: 6}, linha),
-            {label: 'Coeficiente histórico: ' + pctAdapt(d.coef), data: media, borderColor: '#b8860b', borderWidth: 2, borderDash: [7, 5], pointRadius: 0, pointHitRadius: 0, fill: false}
+            {label: 'Coeficiente histórico: ' + pctAdapt(d.coef), data: media, borderColor: '#0f508e', borderWidth: 2, borderDash: [7, 5], pointRadius: 0, pointHitRadius: 0, fill: false}
         ]},
         options: {responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false}, layout: {padding: {top: 16, bottom: 12, right: 30}},
             plugins: {legend: {position: 'bottom', labels: {boxWidth: 26, boxHeight: 2, padding: 14, color: '#141414', font: {size: 11}}},
@@ -845,6 +854,23 @@ function leituraMunicipio(m, base) {
     return p.map(t => '<p>' + t + '</p>').join('');
 }
 
+/* Marcador do município no mini-mapa: um ponto com o nome, sobre o contorno (que sozinho quase não se vê num estado inteiro). */
+let PIN = null;
+function marcarPin() {
+    const wrap = $('miniWrap'), svg = $('miniSvg');
+    if (!PIN || !wrap || !svg) return;
+    const path = svg.querySelector('path[data-cod="' + PIN.cod + '"]');
+    wrap.querySelectorAll('.pin-muni').forEach(n => n.remove());
+    if (!path) return;
+    const r = path.getBoundingClientRect(), w = wrap.getBoundingClientRect();
+    const pin = document.createElement('div'); pin.className = 'pin-muni';
+    pin.innerHTML = '<span class="pin-rotulo"></span><span class="pin-ponto"></span>';
+    pin.firstChild.textContent = PIN.nome;
+    pin.style.left = (r.left - w.left + r.width / 2) + 'px'; pin.style.top = (r.top - w.top + r.height / 2) + 'px';
+    wrap.appendChild(pin);
+}
+window.addEventListener('resize', () => { if (PIN) marcarPin(); });
+
 function renderFicha(cod, base, m) {
     graficos.forEach(g => g.destroy()); graficos = [];
     if (GSENS) { GSENS.destroy(); GSENS = null; }
@@ -863,6 +889,10 @@ function renderFicha(cod, base, m) {
     else if (m.neutro_aproximado) aviso = '<strong>Estimativa aproximada.</strong> Este município não tem registro individualizado de ISS e cota-parte do ICMS para 2025 no SICONFI, e a participação de 2025 foi aproximada pela média de sete anos. Leia os números como ordem de grandeza.';
     else if (m.cobertura_anos < 5) aviso = '<strong>Série curta.</strong> Há apenas ' + m.cobertura_anos + ' anos de dados históricos para este município, abaixo do mínimo recomendado de 5. Os números são menos estáveis.';
 
+    const seg33 = (m.repasse_seguro_receita_por_ano || {})['2033'] || 0;
+    const dependeSeg = seg33 > 0 && v33 > 0.0005 && seg33 > dif33;
+    const tagSeg = dependeSeg ? '<span class="tag-seg">Depende do Seguro-Receita</span>' : seg33 > 0 ? '<span class="tag-seg tag-seg-leve">Recebe Seguro-Receita</span>' : '';
+    const painelSeguro = seg33 > 0 ? `<div class="panel" id="painelSeguro"><h3>Seguro-Receita</h3><p class="panel-sub">Repasse compensatório do Comitê Gestor para entes cuja receita pelo critério de destino fica abaixo do nível de nivelamento.</p>${seguroCardHtml(m.repasse_seguro_receita_por_ano, m.pos_por_ano)}</div>` : '';
     const neutra = Math.abs(v33) <= 0.0005;
     const lado = v33 < 0 ? 'a menos' : 'a mais';
     const nomeSeg = esc(base.nome);
@@ -879,8 +909,8 @@ function renderFicha(cod, base, m) {
     const posicao = m.neutro_aproximado || m.neutro_suspeito
         ? '<p class="nota">Posição nos rankings indisponível para municípios com ressalva de dados.</p>'
         : `<div class="pos-grid">
-            <div class="pos-item"><b>${fmtInt(posUF)}º</b><span>entre ${fmtInt(naUF.length)} municípios ${DE_UF[base.uf]} com base de 2025${totalUF(base.uf) > naUF.length ? ' (de ' + fmtInt(totalUF(base.uf)) + ')' : ''}</span></div>
-            <div class="pos-item"><b>${fmtInt(posBR)}º</b><span>entre ${fmtInt(ok.length)} municípios do Brasil com base de 2025${LISTA.length > ok.length ? ' (de ' + fmtInt(LISTA.length) + ')' : ''}</span></div>
+            <div class="pos-item"><b>${fmtInt(posUF)}º</b><span>entre ${fmtInt(naUF.length)} municípios ${DE_UF[base.uf]}: à frente de ${Math.round((naUF.length - posUF) / naUF.length * 100)}% deles</span></div>
+            <div class="pos-item"><b>${fmtInt(posBR)}º</b><span>entre ${fmtInt(ok.length)} municípios do Brasil: à frente de ${Math.round((ok.length - posBR) / ok.length * 100)}% deles</span></div>
         </div><p class="nota">Do maior ganho (1º) à maior perda, na variação da receita em 2033.</p>`;
 
     $('fichaCorpo').innerHTML = `
@@ -895,15 +925,18 @@ function renderFicha(cod, base, m) {
             </div>
         </div>
         ${aviso ? `<div class="aviso" role="note">${aviso}</div>` : ''}
-        <div class="panel accent panel-grafico">
+        <nav class="cap-nav" aria-label="Seções desta página"><a href="#cap-resultado">Resultado</a><a href="#cap-porque">Por quê</a><a href="#cap-compara">Comparação</a><a href="#cap-detalhes">Cálculo</a></nav>
+        <div class="panel accent panel-grafico" id="cap-resultado">
             <h3 class="sr-only">Para onde vai a arrecadação</h3>
             <div class="canvas-box canvas-serie"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano, em Detalhes do cálculo."></canvas></div>
-            <p class="nota-serie">Valores em R$ de 2025. Linha tracejada: cenário sem a reforma.</p>
-            <div class="efeito-linha"><div class="efeito ${sinal}"><em class="selo">${selo}</em><b>${fmtPct(v33)}</b><span>em 2033</span></div></div>
+            <p class="nota-serie">Valores em R$ de 2025. Linha tracejada: cenário sem a reforma. Faixa cinza: 2026 a 2028, sem projeção.</p>
+            <div class="efeito-linha"><div class="efeito ${sinal}"><em class="selo">${selo}</em><b>${fmtPct(v33)}</b><span>em 2033</span>${tagSeg}</div></div>
             <div class="leitura-dados"><h4>Como a reforma tributária afeta a receita de ${nomeSeg}?</h4>${leituraMunicipio(m, base)}<p class="como-ler"><a href="#" data-tab="metodologia" data-depois="met-5">Como ler os dois cenários →</a></p></div>
         </div>
+        ${painelSeguro}
+        <h3 class="capitulo" id="cap-porque">Por que o resultado é este</h3>
         ${painelParticipacaoHtml(m, base)}
-        <div class="panel accent">
+        <div class="panel">
             <div class="panel-head"><div><h3>De onde vem a receita</h3><p class="panel-sub">Quanto ainda vem do ISS e da cota-parte do ICMS e quanto já vem do IBS, de 2029 a 2033.</p></div>
                 <div class="comp-controles">
                     <div class="toggle" id="compModo" role="group" aria-label="Unidade"><button type="button" data-modo="pct" class="active">%</button><button type="button" data-modo="rs">R$</button></div>
@@ -913,7 +946,7 @@ function renderFicha(cod, base, m) {
             <div class="table-wrap" id="compTabela" hidden></div>
             <p class="nota nota-grafico">* Inclui a cota-parte dos municípios: na parte histórica, a cota-parte do ICMS que o município já recebia; no destino, os 25% do IBS do estado repassados às prefeituras. <a href="#" data-tab="metodologia" data-depois="met-3">Entenda →</a></p>
         </div>
-        <div class="panel accent" id="painelSens" hidden>
+        <div class="panel" id="painelSens" hidden>
             <h3>Quanto este resultado depende das hipóteses?</h3>
             <p class="panel-sub">O modelo faz duas escolhas: qual ano define a fatia do município no cenário sem reforma e quanto de IBS ele recebe pelo consumo no destino. Aqui as duas variam.</p>
             <p class="leitura" id="sensTexto"></p>
@@ -928,23 +961,26 @@ function renderFicha(cod, base, m) {
                 <p class="nota">Cada linha usa um ano-base com o destino no valor central; a faixa sombreada vai do menor ao maior resultado entre todos os cenários, incluindo o destino reduzido e aumentado pela margem de erro. Não é um intervalo de confiança. A margem é a medida para o estado, aplicada ao destino do município; o Seguro-Receita fica no valor central.</p>
             </details>
         </div>
+        <h3 class="capitulo" id="cap-compara">Como ${nomeSeg} se compara</h3>
         <div class="ficha-grid ficha-contexto">
-            <div class="panel"><h3>Como ${nomeSeg} se compara</h3><p class="panel-sub">Posição na variação da receita em 2033.</p>${posicao}</div>
+            <div class="panel"><h3>Posição no ranking</h3><p class="panel-sub">Posição na variação da receita em 2033.</p>${posicao}</div>
             <div class="panel"><h3>${nomeSeg} no mapa ${DE_UF[base.uf]}</h3><p class="panel-sub">Contornado; a cor mostra a variação em 2033.</p>
                 <div class="map-wrapper" id="miniWrap"><svg id="miniSvg" role="img" aria-label="Mapa dos municípios ${DE_UF[base.uf]} com ${nomeSeg} contornado."></svg><div class="map-tip" id="miniTip" role="tooltip"></div></div></div>
         </div>
-        <div class="detalhes">
+        <div class="detalhes" id="cap-detalhes">
             <h3 class="detalhes-tit">Detalhes do cálculo</h3>
             <details><summary>Ano a ano, 2029–2033</summary>
                 <div class="table-wrap"><table class="dados"><thead><tr><th>Ano</th><th>Sem a reforma</th><th>Com a reforma</th><th>Diferença</th><th>Variação</th></tr></thead><tbody>${linhas}</tbody></table></div></details>
             <details id="detCoef"><summary>Coeficientes de participação</summary>
                 <p class="panel-sub">Os critérios que, ponderados pelo cronograma do ADCT, definem a fatia deste município no IBS.</p>${coefTilesHtml(m)}</details>
-            <details><summary>Seguro-Receita</summary>
-                <p class="panel-sub">Repasse compensatório para entes cuja receita pelo critério de destino fica abaixo do nível de nivelamento.</p>${seguroCardHtml(m.repasse_seguro_receita_por_ano, m.pos_por_ano)}</details>
+            ${seg33 > 0 ? '' : `<details><summary>Seguro-Receita</summary>
+                <p class="panel-sub">Repasse compensatório para entes cuja receita pelo critério de destino fica abaixo do nível de nivelamento.</p>${seguroCardHtml(m.repasse_seguro_receita_por_ano, m.pos_por_ano)}</details>`}
             <details id="detHist"><summary>Receita histórica: ISS e cota-parte do ICMS</summary>
                 <p class="panel-sub">São as receitas do próprio município usadas no cálculo: o ISS que ele arrecada e a cota-parte do ICMS que recebe do estado (SICONFI, DCA). A média dos oito anos, com 2026 pelo RREO até agosto, é a base do coeficiente histórico. <a href="#" data-abrir="detCoef">Ver o coeficiente histórico →</a></p>${historicoTableHtml(m.historico_por_ano, m.estimativa_2026)}</details>
             <button type="button" class="memo-link" id="btnMemoria">Ver a memória de cálculo deste município →</button>
         </div>
+        <div class="panel proximos" id="cap-proximos"><h3>E agora?</h3><p class="panel-sub">Leve este resultado adiante ou acompanhe os próximos passos da reforma.</p>
+            <div class="acoes-fim"><button class="btn btn-gold" type="button" id="btnPdf">Salvar em PDF</button><button class="btn btn-ghost" type="button" id="btnCompartilhar">Compartilhar</button><a class="btn btn-ghost" href="#" data-tab="agenda">Ver os prazos da reforma</a><a class="btn btn-ghost" href="#" data-tab="vertex">Falar com a equipe</a></div></div>
         <p class="print-credito">Municípios na Reforma, iniciativa da Vertex Advisory · municipiosnareforma.com.br${CONFIG.email ? ' · ' + CONFIG.email : ''}</p>`;
 
     $('btnMemoria').addEventListener('click', () => { track('abrir_memoria', {municipio: base.nome}); abrirMemoria(cod); });
@@ -954,12 +990,20 @@ function renderFicha(cod, base, m) {
         track('copiar_link', {municipio: base.nome});
     });
     $('btnImprimir').addEventListener('click', () => { track('imprimir_ficha', {municipio: base.nome}); window.print(); });
+    $('btnPdf').addEventListener('click', () => { track('imprimir_ficha', {municipio: base.nome}); window.print(); });
+    $('btnCompartilhar').addEventListener('click', () => {
+        const url = location.origin + location.pathname + '?m=' + cod, texto = base.nome + ': ' + fmtPct(v33) + ' na receita em 2033 com a reforma tributária (estimativa).';
+        track('compartilhar', {municipio: base.nome});
+        if (navigator.share) navigator.share({title: 'Municípios na Reforma', text: texto, url}).catch(() => {});
+        else window.open('https://wa.me/?text=' + encodeURIComponent(texto + ' ' + url), '_blank', 'noopener');
+    });
     desenharGraficos(m);
     iniciarSens(cod, base, m);
     carregarMalha().then(() => {
         if (ATUAL !== cod || !$('miniSvg')) return;
         MINI = criarMapa($('miniSvg'), $('miniWrap'), $('miniTip'), {camadaUF: false, todos: false, uf: base.uf, nivel: 'muni', aoClicar: c => abrirMunicipio(c)});
         MINI.destacar(cod);
+        PIN = {cod, nome: base.nome}; requestAnimationFrame(marcarPin);
     }).catch(() => { const w = $('miniWrap'); if (w) w.innerHTML = '<p class="nota">O mapa não pôde ser carregado agora.</p>'; });
     $('fichaTitulo').focus({preventScroll: true});
 }
@@ -1086,7 +1130,7 @@ function desenharSens() {
     });
 }
 
-const COMP_ROTULOS = [['origem', 'ISS e cota-parte do ICMS residuais', '#858384'], ['cpt', 'IBS pelo critério histórico*', '#062254'], ['destino', 'IBS por destino*', '#fcbb1b'], ['seguro', 'Seguro-Receita', '#249266']];
+const COMP_ROTULOS = [['origem', 'ISS e cota-parte do ICMS residuais', '#858384'], ['cpt', 'IBS pelo critério histórico*', '#0f508e'], ['destino', 'IBS por destino*', '#6aa8dd'], ['seguro', 'Seguro-Receita', '#249266']];
 
 function desenharGraficos(m) {
     const tabelaComp = pct => {
@@ -1124,16 +1168,33 @@ function desenharGraficos(m) {
     // se tocam), área de acerto folgada para o toque, grade só na horizontal e sem eixo vertical.
     const linha = {borderWidth: 2, spanGaps: false, tension: 0.1, pointRadius: 4, pointHoverRadius: 6, pointBorderWidth: 2, pointBorderColor: '#fff', hitRadius: 14};
     // Rótulos diretos no lugar da legenda: o valor de cada cenário em 2033 e o de 2025, ao lado dos pontos.
-    const rotulosDiretos = {id: 'rotulosDiretos', afterDatasetsDraw(chart) {
-        const ctx = chart.ctx, fs = estreito ? 11 : 12, ult = rotulos.length - 1, i25 = rotulos.indexOf('2025');
-        const texto = (x, y, t, cor, peso, tam, al) => { ctx.font = peso + ' ' + tam + 'px Inter, system-ui, sans-serif'; ctx.fillStyle = cor; ctx.textAlign = al || 'left'; ctx.fillText(t, x, y); };
-        ctx.save();
-        const pos = chart.getDatasetMeta(1).data[ult], cf = chart.getDatasetMeta(2).data[ult], p25 = chart.getDatasetMeta(0).data[i25];
-        if (pos) { texto(pos.x + 10, pos.y - 16, fmtMoneyFino(m.pos_por_ano['2033']), '#8a6508', 700, fs); texto(pos.x + 10, pos.y - 4, 'com a reforma', '#8a6508', 500, fs - 1); }
-        if (cf) { texto(cf.x + 10, cf.y + 14, fmtMoneyFino(m.contrafactual_por_ano['2033']), '#555', 700, fs); texto(cf.x + 10, cf.y + 26, 'sem a reforma', '#555', 500, fs - 1); }
-        if (p25) { const y = Math.min(p25.y + 20, chart.chartArea.bottom - 14); texto(p25.x, y, fmtMoneyFino(m.pre_2025), '#062254', 700, fs, 'center'); texto(p25.x, y + 12, 'realizado em 2025', '#062254', 500, fs - 1, 'center'); }
-        ctx.restore();
-    }};
+    const rotulosDiretos = {id: 'rotulosDiretos',
+        beforeDatasetsDraw(chart) {   // faixa dos anos sem projeção (2026 a 2028), para o salto do eixo não parecer continuidade
+            const ctx = chart.ctx, ca = chart.chartArea, i25 = rotulos.indexOf('2025');
+            if (i25 < 0 || !rotulos[i25 + 1]) return;
+            const x0 = chart.scales.x.getPixelForValue(i25), x1 = chart.scales.x.getPixelForValue(i25 + 1);
+            ctx.save(); ctx.fillStyle = 'rgba(107,107,107,.08)'; ctx.fillRect(x0, ca.top, x1 - x0, ca.bottom - ca.top);
+            ctx.restore();
+        },
+        afterDatasetsDraw(chart) {
+            const ctx = chart.ctx, fs = estreito ? 11 : 12, ult = rotulos.length - 1, i25 = rotulos.indexOf('2025');
+            const texto = (x, y, t, cor, peso, tam, al) => { ctx.font = peso + ' ' + tam + 'px Inter, system-ui, sans-serif'; ctx.fillStyle = cor; ctx.textAlign = al || 'left'; ctx.fillText(t, x, y); };
+            ctx.save();
+            const pos = chart.getDatasetMeta(1).data[ult], cf = chart.getDatasetMeta(2).data[ult], p25 = chart.getDatasetMeta(0).data[i25];
+            if (pos && cf) {
+                const ganha = pos.y <= cf.y, v = m.variacao_por_ano['2033'];
+                const blocoPos = ganha ? [pos.y - 16, pos.y - 4] : [pos.y + 14, pos.y + 26], blocoCf = ganha ? [cf.y + 14, cf.y + 26] : [cf.y - 16, cf.y - 4];
+                texto(pos.x + 10, blocoPos[0], fmtMoneyFino(m.pos_por_ano['2033']), '#8a6508', 700, fs); texto(pos.x + 10, blocoPos[1], 'com a reforma', '#8a6508', 500, fs - 1);
+                texto(cf.x + 10, blocoCf[0], fmtMoneyFino(m.contrafactual_por_ano['2033']), '#555', 700, fs); texto(cf.x + 10, blocoCf[1], 'sem a reforma', '#555', 500, fs - 1);
+                if (Math.abs(v) > 0.0005) {   // colchete com a diferença entre os dois cenários em 2033
+                    const cor = v < 0 ? '#a02525' : '#1c5cab', topo = Math.min(pos.y, cf.y), base = Math.max(pos.y, cf.y);
+                    ctx.strokeStyle = cor; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(pos.x + 6, topo); ctx.lineTo(pos.x + 6, base); ctx.stroke();
+                    texto(pos.x + 10, base + 44, fmtPct(v), cor, 800, fs + 1);
+                }
+            }
+            if (p25) { const y = Math.min(p25.y + 20, chart.chartArea.bottom - 14); texto(p25.x, y, fmtMoneyFino(m.pre_2025), '#062254', 700, fs, 'center'); texto(p25.x, y + 12, 'realizado em 2025', '#062254', 500, fs - 1, 'center'); }
+            ctx.restore();
+        }};
     graficos.push(new Chart($('gSerie'), {
         type: 'line',
         data: {labels: rotulos, datasets: [
