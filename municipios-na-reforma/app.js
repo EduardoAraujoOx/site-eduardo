@@ -841,7 +841,7 @@ function leituraMunicipio(m, base) {
     } else {
         p.push(`${nome} não recebe Seguro-Receita no período, e o resultado vem da repartição do IBS pelos coeficientes.`);
     }
-    p.push('São estimativas que dependem das hipóteses do modelo; a seção sobre sensibilidade, mais abaixo, mostra a faixa de resultados.');
+    p.push('São estimativas que dependem das hipóteses do modelo' + (CONFIG.sensibilidade ? '; a seção sobre sensibilidade, mais abaixo, mostra a faixa de resultados.' : '. Os critérios e as fontes estão em Detalhes do cálculo e na Metodologia.'));
     return p.map(t => '<p>' + t + '</p>').join('');
 }
 
