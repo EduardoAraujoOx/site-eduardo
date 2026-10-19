@@ -841,18 +841,21 @@ function leituraMunicipio(m, base) {
     const rep = m.repasse_seguro_receita_por_ano || {};
     const seg33 = rep['2033'] || 0;
     const pos33 = m.pos_por_ano['2033'], neutra = Math.abs(v33) <= 0.0005, perde = v33 < 0;
-    const p = [`O gráfico apresenta os efeitos estimados da reforma tributária do consumo sobre as receitas municipais de ${nome}. As projeções consideram a substituição gradual do ISS e do ICMS pelo IBS e comparam os resultados com um cenário sem reforma. Em 2033, a receita projetada alcança ${fmtMoneyFino(pos33)}, já incluindo a parcela de 25% do IBS estadual que cabe aos municípios. ` + (neutra
+    const depende = seg33 > 0 && v33 > 0.0005 && seg33 > dif33;
+    // Resposta à pergunta do título, em poucas linhas: o resultado de 2033 e, se for o caso, de que ele depende.
+    const lead = [`Em 2033, a receita projetada de ${nome} alcança ${fmtMoneyFino(pos33)}, já incluindo a parcela de 25% do IBS estadual que cabe aos municípios. ` + (neutra
         ? 'Esse valor é praticamente igual ao do cenário sem reforma.'
         : `Esse valor é ${fmtPct(Math.abs(v33)).replace(/^[+−]/, '')} ${perde ? 'inferior' : 'superior'} ao cenário sem reforma, o equivalente a ${perde ? 'uma perda' : 'um ganho'} anual de ${fmtMoney(Math.abs(dif33))}.`)];
-    if (Math.abs(v29) > 0.0005 || Math.abs(v33) > 0.0005) p.push(`O efeito começa em ${fmtPct(v29)} em 2029 e chega a ${fmtPct(v33)} em 2033, de modo que a transição vai ${Math.abs(v33) > Math.abs(v29) ? 'ampliando' : 'reduzindo'} a diferença.`);
-    if (seg33 > 0) {
-        if (v33 > 0.0005 && seg33 > dif33) p.push(`Esse resultado depende do Seguro-Receita, o repasse compensatório do Comitê Gestor: ${nome} recebe ${fmtMoney(seg33)} em 2033, mais do que o ganho. Sem o repasse, a receita ficaria ${fmtMoney(seg33 - dif33)} abaixo do cenário sem reforma.`);
-        else p.push(`${nome} recebe ${fmtMoney(seg33)} do Seguro-Receita em 2033, repasse compensatório do Comitê Gestor que já está incluído nos números.`);
-    } else {
-        p.push(`${nome} não recebe Seguro-Receita no período, e o resultado vem da repartição do IBS pelos coeficientes.`);
-    }
-    p.push('São estimativas que dependem das hipóteses do modelo' + (CONFIG.sensibilidade ? '; a seção sobre sensibilidade, mais abaixo, mostra a faixa de resultados.' : '. Os critérios e as fontes estão em Detalhes do cálculo e na Metodologia.'));
-    return p.map(t => '<p>' + t + '</p>').join('');
+    if (depende) lead.push(`Esse resultado depende do Seguro-Receita, o repasse compensatório do Comitê Gestor: sem ele, a receita ficaria ${fmtMoney(seg33 - dif33)} abaixo do cenário sem reforma.`);
+    // O restante explica como ler o gráfico; no celular fica recolhido.
+    const resto = ['O gráfico apresenta os efeitos estimados da reforma tributária do consumo sobre as receitas municipais. As projeções consideram a substituição gradual do ISS e do ICMS pelo IBS e comparam os resultados com um cenário sem reforma.'];
+    if (Math.abs(v29) > 0.0005 || Math.abs(v33) > 0.0005) resto.push(`O efeito começa em ${fmtPct(v29)} em 2029 e chega a ${fmtPct(v33)} em 2033, de modo que a transição vai ${Math.abs(v33) > Math.abs(v29) ? 'ampliando' : 'reduzindo'} a diferença.`);
+    if (seg33 > 0) resto.push(`${nome} recebe ${fmtMoney(seg33)} do Seguro-Receita em 2033${depende ? ', mais do que o ganho' : ''}; o repasse compensatório do Comitê Gestor já está incluído nos números.`);
+    else resto.push(`${nome} não recebe Seguro-Receita no período, e o resultado vem da repartição do IBS pelos coeficientes.`);
+    resto.push('São estimativas que dependem das hipóteses do modelo' + (CONFIG.sensibilidade ? '; a seção sobre sensibilidade, mais abaixo, mostra a faixa de resultados.' : '. Os critérios e as fontes estão em Detalhes do cálculo e na Metodologia.'));
+    const par = l => l.map(t => '<p>' + t + '</p>').join('');
+    return `<div class="leitura-corpo"><div class="leitura-lead">${par(lead)}</div>
+        <details class="leitura-mais" id="leituraMais"><summary>Como ler este gráfico</summary><div class="leitura-resto">${par(resto)}<p class="como-ler"><a href="#" data-tab="metodologia" data-depois="met-5">Como ler os dois cenários →</a></p></div></details></div>`;
 }
 
 /* Marcador do município no mini-mapa: um ponto com o nome, sobre o contorno (que sozinho quase não se vê num estado inteiro). */
@@ -933,7 +936,7 @@ function renderFicha(cod, base, m) {
             <p class="nota-serie">Valores em R$ de 2025. Linha tracejada: cenário sem a reforma. Faixa cinza: 2026 a 2028, sem projeção. O eixo vertical não começa em zero, para destacar a diferença entre os cenários.</p>
             <div class="ano-sel" id="anoSel" role="group" aria-label="Ano em destaque no gráfico"><span>Ver o ano</span>${ANOS.map(a => `<button type="button" data-ano="${a}" aria-pressed="${a === '2033'}">${a}</button>`).join('')}</div>
             <div class="efeito-linha" id="efeitoLinha" aria-live="polite"></div>
-            <div class="leitura-dados"><h4>Como a reforma tributária afeta a receita de ${nomeSeg}?</h4>${leituraMunicipio(m, base)}<p class="como-ler"><a href="#" data-tab="metodologia" data-depois="met-5">Como ler os dois cenários →</a></p></div>
+            <div class="leitura-dados"><h4>Como a reforma tributária afeta a receita de ${nomeSeg}?</h4>${leituraMunicipio(m, base)}</div>
         </div>
         ${painelSeguro}
         <h3 class="capitulo" id="cap-porque">Por que o resultado é este</h3>
@@ -1011,6 +1014,8 @@ function renderFicha(cod, base, m) {
         if (grafSerie) { grafSerie.anoSel = ano; grafSerie.draw(); }
     };
     document.querySelectorAll('#anoSel button').forEach(b => b.addEventListener('click', () => selecionarAno(b.dataset.ano)));
+    const mais = $('leituraMais'), larga = matchMedia('(min-width: 900px)');
+    if (mais) { mais.open = larga.matches; larga.onchange = e => { mais.open = e.matches; }; }
     desenharGraficos(m, selecionarAno);
     selecionarAno('2033');
     iniciarSens(cod, base, m);
