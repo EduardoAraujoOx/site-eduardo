@@ -676,8 +676,8 @@ function municipiosDaUF(uf) {
 function coefTilesHtml(m) {
     return `<div class="coef-grid">
         <div class="coef"><span>Participação de referência, 2025</span><b>${fmtPctPlain(m.coef_neutro_pct)}</b><small>A fatia deste ente em 2025, sem a reforma: é a base do cenário sem reforma.</small></div>
-        <div class="coef"><span>Coeficiente histórico</span><b>${fmtPctPlain(m.coef_cpt_pct)}</b><small>Média de 8 anos (2019–2026, com 2026 pelo RREO até agosto) de ISS e cota-parte do ICMS do próprio ente. É o critério que ainda pesa mais até 2033. <a href="#" data-abrir="detHist">Ver a receita usada →</a></small></div>
-        <div class="coef"><span>Coeficiente de destino</span><b>${fmtPctPlain(m.coef_pleno_pct)}</b><small>Baseado no consumo estimado (população e renda, com a POF), nas compras da prefeitura e na cota-parte do IBS estadual. Pesa cerca de 10% do IBS em 2033; por inteiro, só em 2078.</small></div>
+        <div class="coef"><span>Coeficiente histórico</span><b>${fmtPctPlain(m.coef_cpt_pct)}</b><small>Razão entre a receita média de referência do ente (ISS e cota-parte do ICMS, média de 2019 a 2026, com 2026 estimado) e a de todos os entes (LC 227/2026, arts. 114 e 115). Rege 80% do IBS até 2032 e 90% em 2033. <a href="#" data-abrir="detHist">Ver a receita usada →</a></small></div>
+        <div class="coef"><span>Coeficiente de destino</span><b>${fmtPctPlain(m.coef_pleno_pct)}</b><small>Estimativa do painel, baseada no consumo estimado (população e renda, com a POF), nas compras da prefeitura e na cota-parte do IBS estadual. Rege 19% do IBS até 2032 e 9,5% em 2033, depois da retenção do Seguro-Receita; por inteiro, só em 2078.</small></div>
     </div>`;
 }
 
@@ -780,18 +780,18 @@ function explicaParticipacao(nome, d) {
     const r = d.coef / d.s25, vezes = r.toLocaleString('pt-BR', {maximumFractionDigits: 1});
     const base = `Em 2025, a fatia de ${nome} na arrecadação nacional de ICMS e ISS foi de ${pctAdapt(d.s25)}. A média de 2019 a 2026 é de ${pctAdapt(d.coef)}`;
     const regra = ' É essa média, e não o valor de 2025, que vira o coeficiente histórico, e em 2033 cerca de 90% do IBS ainda é repartido por ele. O cenário sem a reforma, ao contrário, mantém a fatia de 2025.';
-    if (r > 1.15) return `${base}, ${vezes} vez${r >= 2 ? 'es' : ''} a de 2025.${regra} Por isso a reforma preserva uma fatia maior do que o município tem hoje, e o critério histórico puxa o resultado para cima. Se a queda for permanente, o município ganha em relação a continuar como está; se a receita voltar ao patamar anterior, o ganho diminui ou desaparece.` + fecho;
-    if (r < 0.87) return `${base}, abaixo da fatia de 2025.${regra} Por isso a reforma devolve uma fatia menor do que o município tem hoje, e o critério histórico puxa o resultado para baixo. Se o nível de 2025 for um novo patamar, o município perde parte do que já tem; se for um pico passageiro, o efeito é menor.` + fecho;
+    if (r > 1.15) return `${base}, ${vezes} vez${r >= 2 ? 'es' : ''} a de 2025.${regra} Por isso a reforma preserva uma fatia maior do que o município tem hoje, e o critério histórico puxa o resultado para cima. Se o nível de 2025 for um novo patamar, o município ganha em relação ao cenário sem reforma; se a receita voltar ao patamar anterior, o ganho diminui ou desaparece.` + fecho;
+    if (r < 0.87) return `${base}, abaixo da fatia de 2025.${regra} Por isso a reforma devolve uma fatia menor do que o município tem hoje, e o critério histórico puxa o resultado para baixo. Se o nível de 2025 for um novo patamar, o município perde em relação ao cenário sem reforma; se for um pico passageiro, o efeito é menor.` + fecho;
     return `${base}, parecida com a de 2025.${regra} Por isso o critério histórico quase não altera o ponto de partida do município.` + fecho;
 }
 
 function painelParticipacaoHtml(m, base) {
     const d = partDados(m); if (!d) return '';
-    return `<div class="panel" id="painelPart"><h3>A participação histórica</h3>
-        <p class="panel-sub">Em 2033, 90% do IBS ainda é repartido pela fatia que cada município teve, em média, na arrecadação nacional de ICMS e ISS de 2019 a 2026 (80% entre 2029 e 2032). O gráfico compara a fatia de cada ano com essa média.</p>
-        <div class="canvas-box canvas-part"><canvas id="gPart" role="img" aria-label="Gráfico de linhas com a participação de ${esc(base.nome)} na arrecadação nacional de 2019 a 2025, a estimativa de 2026 e a média de 2019 a 2026, que é o coeficiente histórico. Os valores estão na tabela de receita histórica, em Detalhes do cálculo."></canvas></div>
+    return `<div class="panel" id="painelPart"><h3>O coeficiente histórico</h3>
+        <p class="panel-sub">O coeficiente histórico rege 90% do IBS em 2033 (80% entre 2029 e 2032) e é a fatia que o município teve, em média, na receita de referência nacional (ISS e cota-parte do ICMS) de 2019 a 2026. O gráfico compara a fatia de cada ano com essa média.</p>
+        <div class="canvas-box canvas-part"><canvas id="gPart" role="img" aria-label="Gráfico de linhas com a participação de ${esc(base.nome)} na arrecadação nacional de 2019 a 2025, a estimativa de 2026 e a média de 2019 a 2026, que é o coeficiente histórico. Os valores estão na tabela da receita de referência, em Detalhes do cálculo."></canvas></div>
         <p class="leitura">${esc(explicaParticipacao(base.nome, d))}</p>
-        <p class="nota nota-grafico"><a href="#" data-abrir="detHist">Ver a conta, ano a ano, na tabela da receita histórica →</a></p>
+        <p class="nota nota-grafico"><a href="#" data-abrir="detHist">Ver a conta, ano a ano, na tabela da receita de referência →</a></p>
     </div>`;
 }
 
@@ -894,12 +894,10 @@ function renderFicha(cod, base, m) {
 
     let aviso = '';
     if (m.neutro_suspeito) aviso = '<strong>Dado a conferir.</strong> O valor declarado ao SICONFI para 2025 diverge de forma incompatível da série histórica deste município, o que sugere falha de preenchimento na fonte. Os números são exibidos com cautela e não entram nos rankings.';
-    else if (m.neutro_aproximado) aviso = '<strong>Estimativa aproximada.</strong> Este município não tem registro individualizado de ISS e cota-parte do ICMS para 2025 no SICONFI, e a participação de 2025 foi aproximada pela média de sete anos. Leia os números como ordem de grandeza.';
+    else if (m.neutro_aproximado) aviso = '<strong>Estimativa aproximada.</strong> Este município não tem registro individualizado de ISS e cota-parte do ICMS para 2025 no SICONFI, e a participação de 2025 foi aproximada pelo próprio coeficiente histórico (média de 2019 a 2026). Leia os números como ordem de grandeza.';
     else if (m.cobertura_anos < 5) aviso = '<strong>Série curta.</strong> Há apenas ' + m.cobertura_anos + ' anos de dados históricos para este município, abaixo do mínimo recomendado de 5. Os números são menos estáveis.';
 
     const seg33 = (m.repasse_seguro_receita_por_ano || {})['2033'] || 0;
-    const dependeSeg = seg33 > 0 && v33 > 0.0005 && seg33 > dif33;
-    const tagSeg = dependeSeg ? '<span class="tag-seg">Depende do Seguro-Receita</span>' : seg33 > 0 ? '<span class="tag-seg tag-seg-leve">Recebe Seguro-Receita</span>' : '';
     const painelSeguro = seg33 > 0 ? `<div class="panel" id="painelSeguro"><h3>Seguro-Receita</h3><p class="panel-sub">O fundo equivale a 5% do IBS que não é distribuído pelo critério histórico e é repartido entre os entes de menor razão entre o IBS pelo destino e a receita média de referência, até igualar essa razão.</p>${seguroCardHtml(m.repasse_seguro_receita_por_ano, m.pos_por_ano)}</div>` : '';
     const neutra = Math.abs(v33) <= 0.0005;
     const lado = v33 < 0 ? 'a menos' : 'a mais';
@@ -953,7 +951,7 @@ function renderFicha(cod, base, m) {
                 </div></div>
             <div class="canvas-box" id="compBox"><canvas id="gComp" role="img" aria-label="Gráfico de barras empilhadas com a composição da receita projetada de 2029 a 2033: ISS e cota-parte do ICMS residuais, IBS pelo critério histórico, IBS por destino e Seguro-Receita. Os mesmos valores estão na aba Tabela."></canvas></div>
             <div class="table-wrap" id="compTabela" hidden></div>
-            <p class="nota nota-grafico">* Inclui a cota-parte dos municípios: na parte histórica, a cota-parte do ICMS que o município já recebia; no destino, os 25% do IBS do estado repassados às prefeituras. <a href="#" data-tab="metodologia" data-depois="met-3">Entenda →</a></p>
+            <p class="nota nota-grafico">* Inclui a cota-parte dos municípios: no critério histórico, a cota-parte do ICMS que o município já recebia; no critério de destino, os 25% do IBS do estado repassados às prefeituras. <a href="#" data-tab="metodologia" data-depois="met-3">Entenda →</a></p>
         </div>
         <div class="panel" id="painelSens" hidden>
             <h3>Quanto este resultado depende das hipóteses?</h3>
@@ -980,12 +978,12 @@ function renderFicha(cod, base, m) {
             <h3 class="detalhes-tit">Detalhes do cálculo</h3>
             <details><summary>Ano a ano, 2029–2033</summary>
                 <div class="table-wrap"><table class="dados"><thead><tr><th>Ano</th><th>Sem a reforma</th><th>Com a reforma</th><th>Diferença</th><th>Variação</th></tr></thead><tbody>${linhas}</tbody></table></div></details>
-            <details id="detCoef"><summary>Coeficientes de participação</summary>
-                <p class="panel-sub">Os critérios que, ponderados pelo cronograma do ADCT, definem a fatia deste município no IBS.</p>${coefTilesHtml(m)}</details>
+            <details id="detCoef"><summary>Coeficientes: histórico e de destino</summary>
+                <p class="panel-sub">O coeficiente histórico e o de destino, ponderados pelo cronograma do ADCT (o histórico rege 80% do IBS até 2032 e 90% em 2033; o de destino, o que sobra depois do Seguro-Receita: 19% e 9,5%), definem a fatia deste município no IBS. A participação de referência de 2025 não entra nessa fatia: é a base do cenário sem reforma.</p>${coefTilesHtml(m)}</details>
             ${seg33 > 0 ? '' : `<details><summary>Seguro-Receita</summary>
-                <p class="panel-sub">Repasse compensatório para entes cuja receita pelo critério de destino fica abaixo do nível de nivelamento.</p>${seguroCardHtml(m.repasse_seguro_receita_por_ano, m.pos_por_ano)}</details>`}
-            <details id="detHist"><summary>Receita histórica: ISS e cota-parte do ICMS</summary>
-                <p class="panel-sub">São as receitas do próprio município usadas no cálculo: o ISS que ele arrecada e a cota-parte do ICMS que recebe do estado (SICONFI, DCA). A média dos oito anos, com 2026 pelo RREO até agosto, é a base do coeficiente histórico. <a href="#" data-abrir="detCoef">Ver o coeficiente histórico →</a></p>${historicoTableHtml(m.historico_por_ano, m.estimativa_2026)}</details>
+                <p class="panel-sub">O fundo equivale a 5% do IBS que não é distribuído pelo critério histórico e é repartido entre os entes de menor razão entre o IBS pelo destino e a receita média de referência, até igualar essa razão.</p>${seguroCardHtml(m.repasse_seguro_receita_por_ano, m.pos_por_ano)}</details>`}
+            <details id="detHist"><summary>Receita de referência: ISS e cota-parte do ICMS</summary>
+                <p class="panel-sub">É a receita de referência do município, na definição da lei (LC 227/2026, art. 115): o ISS que ele arrecada e a cota-parte do ICMS que recebe do estado (SICONFI, DCA). A média dos oito anos de 2019 a 2026, com 2026 estimado, é a base do coeficiente histórico. <a href="#" data-abrir="detCoef">Ver o coeficiente histórico →</a></p>${historicoTableHtml(m.historico_por_ano, m.estimativa_2026)}</details>
             <button type="button" class="memo-link" id="btnMemoria">Ver a memória de cálculo deste município →</button>
         </div>
         <div class="panel proximos" id="cap-proximos"><h3>E agora?</h3><p class="panel-sub">Leve este resultado adiante ou acompanhe os próximos passos da reforma.</p>
