@@ -32,11 +32,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=36">
+<link rel="stylesheet" href="style.css?v=38">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
 <script src="memoria.js?v=34" defer></script>
-<script src="app.js?v=37" defer></script>
+<script src="app.js?v=38" defer></script>
 <script src="agenda.js?v=35" defer></script>
 </head>
 <body>
@@ -55,8 +55,12 @@
     </div>
 </header>
 
-<nav class="tabnav" aria-label="Navegação do painel">
-    <div class="wrap tabnav-in">
+<nav class="tabnav" id="tabnav" aria-label="Navegação do painel">
+    <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="tabnavIn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <span class="nav-atual" id="navAtual">Visão geral</span><span class="nav-menu">Menu</span>
+    </button>
+    <div class="wrap tabnav-in" id="tabnavIn">
         <button class="tab-btn active" data-view="visao-geral" type="button">Visão geral</button>
         <button class="tab-btn" data-view="municipio" type="button">Município</button>
         <button class="tab-btn" data-view="rankings" type="button">Comparar</button>
