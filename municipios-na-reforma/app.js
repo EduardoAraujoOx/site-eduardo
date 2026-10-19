@@ -9,7 +9,7 @@
 const CONFIG = {
     whatsapp: '5527988361923',   // somente dígitos com DDI e DDD, ex.: '5527999999999'
     email: '',      // ex.: 'fale@municipiosnareforma.com.br'
-    gaId: '',       // ex.: 'G-XXXXXXXXXX' (Google Analytics 4), opcional
+    gaId: '',       // ID público do GA4. A coleta só começa na produção, após consentimento.
     razaoSocial: '', // ex.: 'Vertex Advisory Ltda.', aparece na política de privacidade
     cnpj: '',        // ex.: '00.000.000/0001-00'
     sensibilidade: false   // painel "Quanto este resultado depende das hipóteses?" na ficha; adiado, mude para true para reativar
@@ -72,16 +72,9 @@ function classeDe(m) {
 
 /* ── medição da campanha (GA4 opcional) ── */
 function track(evento, params) {
-    try { if (typeof window.gtag === 'function') window.gtag('event', evento, params || {}); } catch (e) { /* sem medição, sem problema */ }
+    if (window.MnrMedicao) window.MnrMedicao.registrar(evento, params);
 }
-if (CONFIG.gaId) {
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function () { window.dataLayer.push(arguments); };
-    const s = document.createElement('script');
-    s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(CONFIG.gaId);
-    document.head.appendChild(s);
-    window.gtag('js', new Date()); window.gtag('config', CONFIG.gaId);
-}
+if (window.MnrMedicao) window.MnrMedicao.iniciar(CONFIG.gaId);
 
 /* ── estado ── */
 let LISTA = [], POR_COD = {}, RESULT = null, NAC = null, AGG = {};
@@ -287,7 +280,7 @@ function renderTrilho() {
             <span class="vl ${clsSinal(m.v)}">${fmtPct(m.v)}</span><i class="bar ${clsSinal(m.v)}" style="width:${Math.max(2, Math.min(Math.abs(m.v) / 0.6, 1) * 62)}%"></i></button>`;
         lista.innerHTML = ok.map(linha).join('');
         lista.scrollTop = 0;
-        lista.querySelectorAll('[data-cod]').forEach(b => b.addEventListener('click', () => { track('trilho_municipio', {municipio: POR_COD[b.dataset.cod].nome}); abrirMunicipio(b.dataset.cod); }));
+        lista.querySelectorAll('[data-cod]').forEach(b => b.addEventListener('click', () => { track('trilho_municipio', {municipio_codigo: b.dataset.cod}); abrirMunicipio(b.dataset.cod); }));
     }
 }
 
@@ -375,7 +368,7 @@ async function renderRankUF() {
         || '<tr><td colspan="5" class="vazio-td">Nenhum município nesta situação com os critérios atuais.</td></tr>';
     const preenche = (idTab, idBotao, lista, chaveMais) => {
         $(idTab).querySelector('tbody').innerHTML = linhas(lista, RANK_MAIS[chaveMais]);
-        $(idTab).querySelectorAll('tr[data-cod]').forEach(tr => tr.addEventListener('click', () => { track('ranking_municipio', {municipio: POR_COD[tr.dataset.cod].nome}); abrirMunicipio(tr.dataset.cod); }));
+        $(idTab).querySelectorAll('tr[data-cod]').forEach(tr => tr.addEventListener('click', () => { track('ranking_municipio', {municipio_codigo: tr.dataset.cod}); abrirMunicipio(tr.dataset.cod); }));
         const b = $(idBotao);
         b.hidden = lista.length <= N;
         b.textContent = RANK_MAIS[chaveMais] ? 'Mostrar só os ' + N + ' primeiros' : 'Ver todos os ' + fmtInt(lista.length) + ' municípios';
@@ -427,7 +420,7 @@ function ativarBusca(inp, ul, form, aoEscolher, padrao) {
     };
     const escolher = cod => {
         fechar();
-        track('busca_municipio', {municipio: POR_COD[cod].nome, uf: POR_COD[cod].uf});
+        track('busca_municipio', {municipio_codigo: cod, uf: POR_COD[cod].uf});
         aoEscolher(cod);
     };
     inp.addEventListener('input', buscar);
@@ -533,7 +526,7 @@ function sugerirLocal(cod, origem) {
     LOCAL = {cod, origem};
     MAPA_DESTAQUE = cod;
     if (MAPA) MAPA.destacar(cod);                                                  // o mapa continua no Brasil; o município fica marcado para quando o usuário abrir o estado
-    track('local_sugerido', {origem, municipio: m.nome, uf: m.uf});
+    track('local_sugerido', {origem, municipio_codigo: cod, uf: m.uf});
     LOCAL.rotulo = m.nome;                                                         // o campo de busca já abre com o município; quem mora em outro digita por cima
     const campo = $('busca');
     if (!campo.value || campo.value === anterior) campo.value = m.nome;
@@ -648,7 +641,7 @@ function criarMapa(svgEl, wrapEl, tipEl, opt) {
         const cod = p.getAttribute('data-cod'), uf = p.getAttribute('data-uf');
         if (uf) { if (AGG[uf] != null && opt.aoClicarUF) { track('clique_mapa_uf', {uf}); opt.aoClicarUF(uf); } return; }
         if (!cod || !POR_COD[cod]) return;
-        track('clique_mapa', {municipio: POR_COD[cod].nome, uf: POR_COD[cod].uf});
+        track('clique_mapa', {municipio_codigo: cod, uf: POR_COD[cod].uf});
         opt.aoClicar(cod);
     });
     ctl.definir(opt.uf, opt.nivel || 'muni');
@@ -994,17 +987,17 @@ function renderFicha(cod, base, m) {
             <div class="acoes-fim"><button class="btn btn-gold" type="button" id="btnPdf">Salvar em PDF</button><button class="btn btn-ghost" type="button" id="btnCompartilhar">Compartilhar</button><a class="btn btn-ghost" href="#" data-tab="agenda">Ver os prazos da reforma</a><a class="btn btn-ghost" href="#" data-tab="vertex">Falar com a equipe</a></div></div>
         <p class="print-credito">Municípios na Reforma, iniciativa da Vertex Advisory · municipiosnareforma.com.br${CONFIG.email ? ' · ' + CONFIG.email : ''}</p>`;
 
-    $('btnMemoria').addEventListener('click', () => { track('abrir_memoria', {municipio: base.nome}); abrirMemoria(cod); });
+    $('btnMemoria').addEventListener('click', () => { track('abrir_memoria', {municipio_codigo: cod}); abrirMemoria(cod); });
     $('btnCopiar').addEventListener('click', e => {
         const url = location.origin + location.pathname + '?m=' + cod;
         (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(() => { e.target.textContent = 'Link copiado'; }, () => { prompt('Copie o link:', url); });
-        track('copiar_link', {municipio: base.nome});
+        track('copiar_link', {municipio_codigo: cod});
     });
-    $('btnImprimir').addEventListener('click', () => { track('imprimir_ficha', {municipio: base.nome}); window.print(); });
-    $('btnPdf').addEventListener('click', () => { track('imprimir_ficha', {municipio: base.nome}); window.print(); });
+    $('btnImprimir').addEventListener('click', () => { track('imprimir_ficha', {municipio_codigo: cod}); window.print(); });
+    $('btnPdf').addEventListener('click', () => { track('imprimir_ficha', {municipio_codigo: cod}); window.print(); });
     $('btnCompartilhar').addEventListener('click', () => {
         const url = location.origin + location.pathname + '?m=' + cod, texto = base.nome + ': ' + fmtPct(v33) + ' na receita em 2033 com a reforma tributária (estimativa).';
-        track('compartilhar', {municipio: base.nome});
+        track('compartilhar', {municipio_codigo: cod});
         if (navigator.share) navigator.share({title: 'Municípios na Reforma', text: texto, url}).catch(() => {});
         else window.open('https://wa.me/?text=' + encodeURIComponent(texto + ' ' + url), '_blank', 'noopener');
     });
@@ -1099,7 +1092,7 @@ function iniciarSens(cod, base, m) {
         document.querySelectorAll('#sensChips .sens-chip').forEach(b => b.addEventListener('click', () => {
             const r = b.dataset.ref; if (r === '2025') return;
             SENSM.refs = SENSM.refs.includes(r) ? SENSM.refs.filter(x => x !== r) : SENSM.refs.concat(r);
-            track('sens_ano_base', {municipio: base.nome, ano: r}); desenharSens();
+            track('sens_ano_base', {municipio_codigo: cod, ano: r}); desenharSens();
         }));
         $('sensErro').addEventListener('input', e => { SENSM.erro = Number(e.target.value) / 100; desenharSens(); });
         $('sensErroReset').addEventListener('click', () => { SENSM.erro = null; desenharSens(); });
@@ -1351,7 +1344,7 @@ function renderCadastro() {
             })});
             if (!r.ok) throw new Error('lead ' + r.status);
             lembrarCadastro();
-            track('cadastro', {origem: 'memoria', municipio: base ? base.nome : '', vinculo: d.vinculo, contato: !!f.elements.aceite_contato.checked});
+            track('cadastro', {origem: 'memoria', municipio_codigo: base ? base.cod : '', contato: !!f.elements.aceite_contato.checked});
             renderMemoria();
         } catch (err) {
             console.error(err);
@@ -1407,8 +1400,8 @@ function contatoBotoes(alvo, base, resumo, local) {
     if (CONFIG.email) html.push(`<a class="btn ${CONFIG.whatsapp ? 'btn-ghost' : 'btn-gold'} btn-sm" data-contato="email" href="mailto:${CONFIG.email}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(texto)}">${rotulo && !CONFIG.whatsapp ? esc(rotulo) : 'Enviar e-mail'}</a>`);
     if (!html.length && base) html.push('<a class="btn btn-gold btn-sm" href="#" data-ir="vertex">Falar com a Vertex</a>');
     alvo.innerHTML = html.join('');
-    alvo.querySelectorAll('[data-contato]').forEach(a => a.addEventListener('click', () => track('clique_contato', {canal: a.dataset.contato, municipio: base ? base.nome : 'geral', local: local || 'aba'})));
-    alvo.querySelectorAll('[data-ir]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); track('clique_contato', {canal: 'aba_vertex', municipio: base ? base.nome : 'geral', local: local || 'aba'}); if (a.dataset.ir === 'vertex') irParaContato(base, resumo); else mostrarVisao(a.dataset.ir); }));
+    alvo.querySelectorAll('[data-contato]').forEach(a => a.addEventListener('click', () => track('clique_contato', {canal: a.dataset.contato, municipio_codigo: base ? base.cod : '', local: local || 'aba'})));
+    alvo.querySelectorAll('[data-ir]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); track('clique_contato', {canal: 'aba_vertex', municipio_codigo: base ? base.cod : '', local: local || 'aba'}); if (a.dataset.ir === 'vertex') irParaContato(base, resumo); else mostrarVisao(a.dataset.ir); }));
 }
 contatoBotoes($('botoesContato'), null);
 
@@ -1425,7 +1418,7 @@ function iniciarZap() {
     const atualizar = () => { zap.href = 'https://wa.me/' + CONFIG.whatsapp + '?text=' + encodeURIComponent(mensagem()); };
     atualizar();
     ['pointerdown', 'focus', 'mouseover'].forEach(ev => zap.addEventListener(ev, atualizar));      // o link já sai atualizado no toque ou no clique
-    zap.addEventListener('click', () => { atualizar(); const m = municipioEmFoco(); track('clique_contato', {canal: 'whatsapp', municipio: m ? m.nome : 'geral', local: 'flutuante'}); });
+    zap.addEventListener('click', () => { atualizar(); const m = municipioEmFoco(); track('clique_contato', {canal: 'whatsapp', municipio_codigo: m ? m.cod : '', local: 'flutuante'}); });
 }
 
 /* ── formulários: pedido de informações sobre os serviços e cadastro do livro ──
@@ -1498,7 +1491,7 @@ function ligarFormulario(form, msgEl, tipo, aoEnviar) {
             if (d.cargo) linhas.push('Cargo: ' + d.cargo.trim());
             if (d.municipio) linhas.push('Município ou órgão: ' + d.municipio.trim());
             const url = 'https://wa.me/' + CONFIG.whatsapp + '?text=' + encodeURIComponent(linhas.join('\n'));
-            track(tipo === 'livro' ? 'livro_cadastro' : 'contato_enviado', {municipio: d.municipio || '', canal: 'whatsapp'});
+            track(tipo === 'livro' ? 'livro_cadastro' : 'contato_enviado', {canal: 'whatsapp'});
             window.open(url, '_blank', 'noopener');
             form.innerHTML = '<p class="form-ok" role="status"><strong>Quase lá.</strong> Abrimos o WhatsApp com os seus dados já escritos: é só tocar em enviar. Se a conversa não abriu, <a href="' + url + '" target="_blank" rel="noopener">toque aqui para abri-la</a>.</p>';
             return;
@@ -1513,7 +1506,7 @@ function ligarFormulario(form, msgEl, tipo, aoEnviar) {
                 aceite_privacidade: true
             })});
             if (!r.ok) throw new Error('contato ' + r.status);
-            track(tipo === 'livro' ? 'livro_cadastro' : 'contato_enviado', {municipio: d.municipio || '', interesse: d.interesse || ''});
+            track(tipo === 'livro' ? 'livro_cadastro' : 'contato_enviado', {canal: 'formulario'});
             aoEnviar(d);
         } catch (err) {
             console.error(err);
@@ -1544,5 +1537,4 @@ window.addEventListener('beforeprint', () => { const ds = [...document.querySele
 window.addEventListener('afterprint', () => { if (ABERTOS_ANTES) [...document.querySelectorAll('.detalhes details')].forEach((d, i) => { d.open = ABERTOS_ANTES[i]; }); ABERTOS_ANTES = null; });
 if (CONFIG.razaoSocial) $('privControlador').textContent = CONFIG.razaoSocial + (CONFIG.cnpj ? ' (CNPJ ' + CONFIG.cnpj + ')' : '');
 if (CONFIG.email) $('privContato').textContent = CONFIG.email;
-if (CONFIG.gaId) $('privAnalytics').textContent = 'Este portal usa o Google Analytics 4 para medir audiência de forma agregada (páginas vistas, cliques nos botões de contato, uso do mapa). O Google define cookies para isso; você pode bloqueá-los no navegador sem perder nenhuma função do portal.';
 })();

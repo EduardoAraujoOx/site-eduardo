@@ -26,10 +26,13 @@
     },
     {
       "source": "/data/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600, must-revalidate" }]
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600, must-revalidate" },
+        { "key": "X-Robots-Tag", "value": "noindex" }
+      ]
     },
     {
-      "source": "/(style\\.css|app\\.js|memoria\\.js)",
+      "source": "/(style\\.css|app\\.js|memoria\\.js|medicao\\.js|medicao\\.css)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
     }
   ]

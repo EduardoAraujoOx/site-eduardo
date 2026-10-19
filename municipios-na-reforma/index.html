@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 <meta name="theme-color" content="#062254">
 
-<meta property="og:title" content="Seu município vai ganhar ou perder receita com a reforma tributária?">
+<meta property="og:title" content="Municípios na Reforma | Reforma tributária e receitas municipais">
 <meta property="og:description" content="Consulte o painel Municípios na Reforma e veja as projeções de ganhos ou perdas para todos os municípios do Brasil.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://municipiosnareforma.com.br/">
@@ -25,18 +25,37 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Municípios na Reforma">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Seu município vai ganhar ou perder receita com a reforma tributária?">
+<meta name="twitter:title" content="Municípios na Reforma | Reforma tributária e receitas municipais">
 <meta name="twitter:description" content="Consulte o painel e veja as projeções de ganhos ou perdas para todos os municípios do Brasil.">
 <meta name="twitter:image" content="https://municipiosnareforma.com.br/images/og-municipios-v3.jpg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://municipiosnareforma.com.br/#website",
+  "url": "https://municipiosnareforma.com.br/",
+  "name": "Municípios na Reforma",
+  "alternateName": "Municipios na Reforma",
+  "inLanguage": "pt-BR",
+  "description": "Painel independente sobre os efeitos da reforma tributária nas receitas municipais, com mapa, projeções, comparação e metodologia aberta.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Vertex Advisory",
+    "logo": "https://municipiosnareforma.com.br/images/logo-vertex-advisory.png"
+  }
+}
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=42">
+<link rel="stylesheet" href="style.css?v=43">
+<link rel="stylesheet" href="medicao.css?v=1">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
 <script src="memoria.js?v=34" defer></script>
-<script src="app.js?v=42" defer></script>
+<script src="medicao.js?v=1" defer></script>
+<script src="app.js?v=43" defer></script>
 <script src="agenda.js?v=35" defer></script>
 </head>
 <body>
@@ -46,7 +65,7 @@
 
 <header class="masthead">
     <div class="wrap masthead-in">
-        <a class="marca" href="./" aria-label="Municípios na Reforma, página inicial"><h1><img src="images/logo-municipios.png" alt="Municípios na Reforma" width="232" height="83"></h1></a>
+        <a class="marca" href="./" aria-label="Municípios na Reforma, página inicial"><span class="marca-nome"><img src="images/logo-municipios.png" alt="Municípios na Reforma" width="232" height="83"></span></a>
         <p class="sub">Painel da reforma tributária: para onde vai a arrecadação de cada município</p>
         <a class="credito" href="#" data-ir="vertex" aria-label="Uma iniciativa da Vertex Advisory. Saiba mais">
             <span class="credito-txt">Uma iniciativa da</span>
@@ -80,6 +99,11 @@
 
 <!-- ============ VISÃO GERAL ============ -->
 <section class="view active" id="view-visao-geral">
+    <div class="portal-intro">
+        <h1>Municípios na Reforma</h1>
+        <p>Entenda os efeitos da reforma tributária na receita do seu município. Explore o mapa, consulte as projeções de 2029 a 2033 e compare os cenários com e sem a reforma.</p>
+        <p class="portal-intro-fonte">Uma iniciativa da Vertex Advisory, com dados públicos e metodologia aberta. Estimativas independentes, sem vínculo com projeções oficiais do CGIBS ou do Governo Federal.</p>
+    </div>
     <h2 class="sr-only">Visão geral: mapa da variação da receita municipal em 2033</h2>
     <div class="panel accent painel-mapa">
         <p class="busca-chamada">Escolha a sua cidade e veja o efeito da reforma na receita dela.</p>
@@ -133,6 +157,12 @@
     </div>
 
     <div class="contexto" id="contexto" aria-live="polite"></div>
+    <section class="portal-sobre" aria-labelledby="sobre-portal">
+        <h2 id="sobre-portal">O que é o Municípios na Reforma?</h2>
+        <p>O Municípios na Reforma é um painel de consulta sobre a transição do ISS e do ICMS para o IBS e seus efeitos estimados nas receitas municipais do consumo. Reúne fichas por município, comparação entre cidades, agenda de providências e memória de cálculo.</p>
+        <p>As estimativas usam dados públicos do SICONFI/STN e do IBGE, combinados com as regras da reforma e as premissas descritas na metodologia. Os resultados apoiam a análise e o planejamento fiscal; não são valores definitivos de arrecadação futura.</p>
+        <p><a href="#view-metodologia" data-tab="metodologia">Conheça as fontes e a metodologia</a> · <a href="#view-vertex" data-tab="vertex">Conheça a iniciativa e entre em contato</a></p>
+    </section>
 </section>
 
 <!-- ============ MUNICÍPIO ============ -->
@@ -401,6 +431,7 @@
         <h3>Navegar sem se cadastrar</h3>
         <p>Consultar o mapa, as fichas e os rankings não exige cadastro. Se você escolher &ldquo;Minha localização&rdquo;, o navegador lê a sua posição e a compara com a malha dos municípios dentro do próprio aparelho: as coordenadas não são enviadas ao servidor. Sem essa escolha, o portal usa uma estimativa de cidade e estado derivada do endereço de rede da conexão, calculada pela plataforma de hospedagem na hora do acesso e devolvida só ao seu navegador, sem ser gravada por nós.</p>
         <p id="privAnalytics">Este portal não usa cookies de medição de audiência.</p>
+        <button type="button" id="medicaoPreferencias" class="link-btn" hidden>Alterar preferência de medição</button>
 
         <h3>O cadastro para a memória de cálculo</h3>
         <p>A memória de cálculo pede nome, e-mail, cargo, vínculo e município ou órgão. Usamos esses dados para liberar o acesso, saber quem utiliza o painel e avisar sobre atualizações do modelo. A base legal é o seu consentimento (LGPD, art. 7º, I). Se, e somente se, você marcar a caixa opcional, usamos o contato também para a Vertex Advisory apresentar conteúdos e serviços sobre a reforma tributária; você pode desmarcar essa opção a qualquer momento pedindo a mudança no canal acima.</p>
