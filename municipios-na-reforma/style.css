@@ -824,3 +824,21 @@ html { scroll-behavior: smooth; }
     .portal-intro p { font-size: .92rem; }
     .portal-intro .portal-intro-fonte { font-size: .76rem; }
 }
+
+/* ── decomposição da diferença anual ── */
+.decomp { list-style: none; margin: .4rem 0 0; padding: 0; }
+.decomp li { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.2fr) minmax(0, 1fr); gap: .8rem; align-items: center; padding: .65rem 0; border-top: 1px solid var(--line); }
+.decomp li:first-child { border-top: 0; }
+.dc-nome b { display: block; font: 700 .95rem var(--font-head); color: var(--navy); }
+.dc-nome small, .dc-valor small { display: block; font-size: .78rem; line-height: 1.35; color: var(--ink-soft); font-weight: 400; }
+.dc-barra { position: relative; height: 1.1rem; background: linear-gradient(to right, transparent calc(50% - .5px), var(--line) calc(50% - .5px), var(--line) calc(50% + .5px), transparent calc(50% + .5px)); }
+.dc-barra span { position: absolute; top: .15rem; bottom: .15rem; border-radius: 3px; }
+.dc-barra span.pos { background: var(--pos); } .dc-barra span.neg { background: var(--neg); }
+.dc-valor { text-align: right; font: 800 1rem var(--font-head); font-variant-numeric: tabular-nums; }
+.dc-valor.pos, .dc-total b.pos { color: var(--pos); } .dc-valor.neg, .dc-total b.neg { color: var(--neg); }
+.dc-total { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: .7rem 0 .2rem; border-top: 2px solid var(--navy); font-size: .92rem; color: var(--ink); }
+.dc-total b { font: 800 1.25rem var(--font-head); font-variant-numeric: tabular-nums; }
+@media (max-width: 640px) {
+    .decomp li { grid-template-columns: 1fr auto; gap: .35rem .8rem; }
+    .dc-barra { grid-column: 1 / -1; order: 3; }
+}

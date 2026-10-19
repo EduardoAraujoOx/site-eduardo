@@ -675,9 +675,9 @@ function municipiosDaUF(uf) {
 
 function coefTilesHtml(m) {
     return `<div class="coef-grid">
-        <div class="coef"><span>Participação neutra, 2025</span><b>${fmtPctPlain(m.coef_neutro_pct)}</b><small>A fatia deste ente hoje, sem a reforma: o ponto de partida da comparação.</small></div>
-        <div class="coef"><span>Coeficiente histórico</span><b>${fmtPctPlain(m.coef_cpt_pct)}</b><small>Média de 8 anos (2019–2026, com 2026 pelo RREO até agosto) de ISS e cota-parte do ICMS do próprio ente. É o critério que ainda pesa mais até 2033. <a href="#" data-abrir="detHist">Ver a receita usada →</a></small></div>
-        <div class="coef"><span>Coeficiente de destino</span><b>${fmtPctPlain(m.coef_pleno_pct)}</b><small>Baseado em consumo (renda × POF) e compras públicas. Pesa cerca de 10% em 2033; por inteiro, só em 2078.</small></div>
+        <div class="coef"><span>Participação de referência, 2025</span><b>${fmtPctPlain(m.coef_neutro_pct)}</b><small>A fatia deste ente em 2025, sem a reforma: é a base do cenário sem reforma.</small></div>
+        <div class="coef"><span>Coeficiente histórico</span><b>${fmtPctPlain(m.coef_cpt_pct)}</b><small>Razão entre a receita média de referência do ente (ISS e cota-parte do ICMS, média de 2019 a 2026, com 2026 estimado) e a de todos os entes (LC 227/2026, arts. 114 e 115). Rege 80% do IBS até 2032 e 90% em 2033. <a href="#" data-abrir="detHist">Ver a receita usada →</a></small></div>
+        <div class="coef"><span>Coeficiente de destino</span><b>${fmtPctPlain(m.coef_pleno_pct)}</b><small>Estimativa do painel, baseada no consumo estimado (população e renda, com a POF), nas compras da prefeitura e na cota-parte do IBS estadual. Rege 19% do IBS até 2032 e 9,5% em 2033, depois da retenção do Seguro-Receita; por inteiro, só em 2078.</small></div>
     </div>`;
 }
 
@@ -686,17 +686,17 @@ function seguroCardHtml(repasse, posByYear) {
     const recebeAlgumAno = ANOS.some(a => ((repasse && repasse[a]) || 0) > 1);
     if (!recebeAlgumAno) {
         return `<div class="seguro-card"><div class="seguro-label">Seguro-Receita (ADCT art. 132)</div><div class="seguro-value muted">Não recebe</div>
-            <div class="seguro-note">Em 2029–2033, a receita deste ente pelo critério de destino fica acima do nível de nivelamento em todos os anos do período; não há repasse.</div></div>`;
+            <div class="seguro-note">Em 2029–2033, a razão entre o IBS que este ente receberia pelo critério de destino e a sua receita média de referência fica acima do nível de nivelamento em todos os anos; não há repasse.</div></div>`;
     }
     if (v2033 <= 1) {
         return `<div class="seguro-card recebe"><div class="seguro-label">Seguro-Receita (ADCT art. 132)</div><div class="seguro-value muted">Não recebe em 2033</div>
-            <div class="seguro-note">Recebeu repasse em anos anteriores da transição, mas deixa de receber a partir de 2033: a receita própria pelo critério de destino alcançou o nível de nivelamento daquele ano.</div></div>`;
+            <div class="seguro-note">Recebeu repasse em anos anteriores da transição, mas deixa de receber a partir de 2033: a razão entre o IBS pelo critério de destino e a receita média de referência alcançou o nível de nivelamento daquele ano.</div></div>`;
     }
     const total2033 = posByYear && posByYear['2033'];
     const share = total2033 ? v2033 / total2033 * 100 : null;
     const anos = ANOS.filter(a => (repasse[a] || 0) > 1).map(a => a + ': ' + fmtMoney(repasse[a])).join(' · ');
     return `<div class="seguro-card recebe"><div class="seguro-label">Seguro-Receita (ADCT art. 132)</div><div class="seguro-value">${fmtMoney(v2033)}</div>
-        <div class="seguro-note">Repasse bruto em 2033${share != null ? ' (' + share.toLocaleString('pt-BR', {maximumFractionDigits: 1}) + '% da receita projetada do município naquele ano)' : ''}. Série: ${anos}. Veja a memória de cálculo para o nível de nivelamento de cada ano.</div></div>`;
+        <div class="seguro-note">Repasse bruto em 2033, antes da dedução do financiamento do CGIBS${share != null ? ', equivalente a ' + share.toLocaleString('pt-BR', {maximumFractionDigits: 1}) + '% da receita projetada do município no mesmo ano' : ''}. Série (bruta, em R$ de 2025): ${anos}. Veja a memória de cálculo para o nível de nivelamento de cada ano.</div></div>`;
 }
 
 /* Anos preenchidos fora da DCA (RREO anual ou estimativa a partir do ano anterior): uma frase que diz de onde veio cada componente. */
@@ -754,7 +754,7 @@ function historicoTableHtml(historico, est26) {
           + `<tr class="media"><td colspan="5">Coeficiente histórico</td><td class="num">${fmtPctPlain(media / REF_NAC.total_br_2025 * 100, 5)}</td></tr>`
         : `<tr class="media"><td>Média 2019–2026</td><td class="num">${f(soma.iss / n)}</td><td class="num">${f(soma.cota / n)}</td><td class="num">${f(media)}</td></tr>`;
     return `<div class="table-wrap"><table class="dados tab-hist"><thead><tr>${cab}</tr></thead><tbody>${rows}${rodape}</tbody></table></div>
-        <p class="nota">Valores em R$ ${mi ? 'milhões' : 'mil'}; a última coluna está em reais de 2025.${fat ? ' O fator de ajuste corrige cada ano pela variação nominal da arrecadação total de ICMS e ISS do país (LC 227, art. 115, §2º), e a referência do ano é o valor declarado vezes esse fator.' : ''}${faltou ? ' Ano sem dado entra como zero na média.' : ''}${origemAnosTxt(historico)}${est26 ? (est26.origem === 'rreo' ? ' 2026, já em reais de 2025: ISS observado no RREO de setembro de 2025 a agosto de 2026; cota-parte de 2025 ajustada pelo crescimento de janeiro a agosto, também do RREO.' : ' 2026, já em reais de 2025: este município não publica o Anexo 3 do RREO; mantém a posição relativa de 2025 no estado.') : ''}</p>`;
+        <p class="nota">Valores em R$ ${mi ? 'milhões' : 'mil'}; a última coluna está em reais de 2025.${fat ? ' O fator de ajuste corrige cada ano pela variação nominal da arrecadação total de ICMS e ISS do país (LC 227, art. 115, §2º), e a referência do ano é o valor declarado vezes esse fator.' : ''}${origemAnosTxt(historico)}${est26 ? (est26.origem === 'rreo' ? ' 2026, já em reais de 2025: ISS observado no RREO de setembro de 2025 a agosto de 2026; cota-parte de 2025 ajustada pelo crescimento de janeiro a agosto, também do RREO.' : ' 2026, já em reais de 2025: este município não publica o Anexo 3 do RREO; mantém a posição relativa de 2025 no estado.') : ''}</p>`;
 }
 
 /* ── participação histórica: a fatia do município na arrecadação nacional, ano a ano, contra a média que vira o coeficiente histórico ── */
@@ -780,18 +780,18 @@ function explicaParticipacao(nome, d) {
     const r = d.coef / d.s25, vezes = r.toLocaleString('pt-BR', {maximumFractionDigits: 1});
     const base = `Em 2025, a fatia de ${nome} na arrecadação nacional de ICMS e ISS foi de ${pctAdapt(d.s25)}. A média de 2019 a 2026 é de ${pctAdapt(d.coef)}`;
     const regra = ' É essa média, e não o valor de 2025, que vira o coeficiente histórico, e em 2033 cerca de 90% do IBS ainda é repartido por ele. O cenário sem a reforma, ao contrário, mantém a fatia de 2025.';
-    if (r > 1.15) return `${base}, ${vezes} vez${r >= 2 ? 'es' : ''} a de 2025.${regra} Por isso a reforma preserva uma fatia maior do que o município tem hoje, e o critério histórico puxa o resultado para cima. Se a queda for permanente, o município ganha em relação a continuar como está; se a receita voltar ao patamar anterior, o ganho diminui ou desaparece.` + fecho;
-    if (r < 0.87) return `${base}, abaixo da fatia de 2025.${regra} Por isso a reforma devolve uma fatia menor do que o município tem hoje, e o critério histórico puxa o resultado para baixo. Se o nível de 2025 for um novo patamar, o município perde parte do que já tem; se for um pico passageiro, o efeito é menor.` + fecho;
+    if (r > 1.15) return `${base}, ${vezes} vez${r >= 2 ? 'es' : ''} a de 2025.${regra} Por isso a reforma preserva uma fatia maior do que o município tem hoje, e o critério histórico puxa o resultado para cima. Se o nível de 2025 for um novo patamar, o município ganha em relação ao cenário sem reforma; se a receita voltar ao patamar anterior, o ganho diminui ou desaparece.` + fecho;
+    if (r < 0.87) return `${base}, abaixo da fatia de 2025.${regra} Por isso a reforma devolve uma fatia menor do que o município tem hoje, e o critério histórico puxa o resultado para baixo. Se o nível de 2025 for um novo patamar, o município perde em relação ao cenário sem reforma; se for um pico passageiro, o efeito é menor.` + fecho;
     return `${base}, parecida com a de 2025.${regra} Por isso o critério histórico quase não altera o ponto de partida do município.` + fecho;
 }
 
 function painelParticipacaoHtml(m, base) {
     const d = partDados(m); if (!d) return '';
-    return `<div class="panel" id="painelPart"><h3>A participação histórica</h3>
-        <p class="panel-sub">A reforma distribui o IBS pela fatia que cada município teve, em média, na arrecadação nacional de ICMS e ISS de 2019 a 2026. O gráfico compara a fatia de cada ano com essa média.</p>
-        <div class="canvas-box canvas-part"><canvas id="gPart" role="img" aria-label="Gráfico de linhas com a participação de ${esc(base.nome)} na arrecadação nacional de 2019 a 2025, a estimativa de 2026 e a média de 2019 a 2026, que é o coeficiente histórico. Os valores estão na tabela de receita histórica, em Detalhes do cálculo."></canvas></div>
+    return `<div class="panel" id="painelPart"><h3>O coeficiente histórico</h3>
+        <p class="panel-sub">O coeficiente histórico rege 90% do IBS em 2033 (80% entre 2029 e 2032) e é a fatia que o município teve, em média, na receita de referência nacional (ISS e cota-parte do ICMS) de 2019 a 2026. O gráfico compara a fatia de cada ano com essa média.</p>
+        <div class="canvas-box canvas-part"><canvas id="gPart" role="img" aria-label="Gráfico de linhas com a participação de ${esc(base.nome)} na arrecadação nacional de 2019 a 2025, a estimativa de 2026 e a média de 2019 a 2026, que é o coeficiente histórico. Os valores estão na tabela da receita de referência, em Detalhes do cálculo."></canvas></div>
         <p class="leitura">${esc(explicaParticipacao(base.nome, d))}</p>
-        <p class="nota nota-grafico"><a href="#" data-abrir="detHist">Ver a conta, ano a ano, na tabela da receita histórica →</a></p>
+        <p class="nota nota-grafico"><a href="#" data-abrir="detHist">Ver a conta, ano a ano, na tabela da receita de referência →</a></p>
     </div>`;
 }
 
@@ -832,6 +832,49 @@ function desenhaParticipacao(m) {
 }
 
 /* Leitura em português do que o gráfico mostra, montada por regras a partir dos números do município. */
+/* O repasse bruto do Seguro-Receita (o que o fundo paga) e o efetivo (o que entra na receita, depois da dedução do CGIBS) diferem em até 2%.
+   As comparações com o cenário sem reforma usam o efetivo, que é o valor que está somado à receita com reforma. */
+const seguroEfetivo = (m, ano) => { const c = m.componentes_por_ano && m.componentes_por_ano[ano]; return c && c.seguro != null ? c.seguro : ((m.repasse_seguro_receita_por_ano || {})[ano] || 0); };
+
+/* Decomposição da diferença anual em quatro fontes, com a mesma base do modelo (build-resultados-consolidados): o cenário sem reforma é dividido
+   nas mesmas parcelas da receita com reforma, e cada fonte é o que a receita com reforma tem a mais ou a menos que a sua parcela.
+   histórico = IBS pelo critério histórico, antes do CGIBS, menos a parcela do cenário sem reforma (s·λ·C);
+   destino = IBS por destino, antes do CGIBS, menos a parcela depois da retenção do Seguro-Receita (s·(1−λ)·(1−ρ)·C);
+   Seguro-Receita = repasse recebido menos a retenção de 5% que todos sofrem (ρ·s·(1−λ)·C);
+   CGIBS = dedução sobre os três blocos. A soma é igual a pos − cenário sem reforma. */
+function decomposicaoEfeito(m, ano) {
+    const p = NAC && NAC.projecao && NAC.projecao.find(r => String(r.ano) === String(ano));
+    const c = m.componentes_por_ano && m.componentes_por_ano[ano];
+    if (!p || !c || !p.ibs_bruto || p.alpha_a == null) return null;
+    const C = m.contrafactual_por_ano[ano], s = p.sa, l = p.alpha_a, ca = p.ca, rho = p.ibs_seguro_receita / (p.ibs_bruto * (1 - l));
+    const hist = c.cpt / (1 - ca) - s * l * C;
+    const dest = c.destino / (1 - ca) - s * (1 - l) * (1 - rho) * C;
+    const seg = c.seguro / (1 - ca) - rho * s * (1 - l) * C;
+    const cg = -ca * (c.cpt + c.destino + c.seguro) / (1 - ca);
+    const resto = m.pos_por_ano[ano] - C - (hist + dest + seg + cg);   // ICMS e ISS remanescentes: zero por construção; guarda contra mudança do modelo
+    return {C, ca, partes: [
+        {k: 'hist', nome: 'Critério histórico', ref: 'o critério histórico', dica: 'O coeficiente histórico contra a participação de 2025.', v: hist},
+        {k: 'dest', nome: 'Critério de destino', ref: 'o critério de destino', dica: 'O coeficiente de destino contra a participação de 2025, depois da retenção de 5% do Seguro-Receita.', v: dest},
+        {k: 'seg', nome: 'Seguro-Receita', ref: 'o Seguro-Receita', dica: 'O repasse recebido menos a retenção de 5% que todos os entes sofrem.', v: seg},
+        {k: 'cg', nome: 'Financiamento do CGIBS', ref: 'o financiamento do CGIBS', dica: 'A dedução sobre o IBS do município, limitada a ' + (ca * 100).toLocaleString('pt-BR', {maximumFractionDigits: 2}) + '% em ' + ano + '.', v: cg}
+    ], resto};
+}
+function decompHtml(m, ano) {
+    const d = decomposicaoEfeito(m, ano);
+    if (!d || Math.abs(d.resto) > Math.max(1e4, Math.abs(d.C) * 1e-6)) return '';
+    const total = d.partes.reduce((a, x) => a + x.v, 0), max = Math.max(...d.partes.map(x => Math.abs(x.v)), 1);
+    const maior = d.partes.slice().sort((a, b) => Math.abs(b.v) - Math.abs(a.v))[0];
+    const linha = x => {
+        const w = Math.abs(x.v) / max * 50, cls = x.v < 0 ? 'neg' : 'pos';
+        return `<li><div class="dc-nome"><b>${x.nome}</b><small>${x.dica}</small></div>
+            <div class="dc-barra" aria-hidden="true"><span class="${cls}" style="width:${w.toFixed(1)}%;${x.v < 0 ? 'right:50%' : 'left:50%'}"></span></div>
+            <div class="dc-valor ${cls}">${x.v > 0 ? '+' : ''}${fmtMoney(x.v)}<small>${fmtPct(x.v / d.C)} do cenário sem reforma</small></div></li>`;
+    };
+    return `<ul class="decomp" role="list">${d.partes.map(linha).join('')}</ul>
+        <div class="dc-total"><span>Diferença anual em ${ano}</span><b class="${total < 0 ? 'neg' : 'pos'}">${total > 0 ? '+' : ''}${fmtMoney(total)}</b></div>
+        <p class="leitura">O maior componente é ${maior.ref}, que ${maior.v < 0 ? 'reduz' : 'soma'} ${fmtMoney(Math.abs(maior.v))} à receita do ano em relação ao cenário sem reforma.</p>`;
+}
+
 function leituraMunicipio(m, base) {
     const nome = '<b>' + esc(base.nome) + '</b>';
     const v29 = m.variacao_por_ano['2029'], v33 = m.variacao_por_ano['2033'];
@@ -839,16 +882,17 @@ function leituraMunicipio(m, base) {
     const rep = m.repasse_seguro_receita_por_ano || {};
     const seg33 = rep['2033'] || 0;
     const pos33 = m.pos_por_ano['2033'], neutra = Math.abs(v33) <= 0.0005, perde = v33 < 0;
-    const depende = seg33 > 0 && v33 > 0.0005 && seg33 > dif33;
+    const segEf33 = seguroEfetivo(m, '2033');
+    const depende = seg33 > 0 && v33 > 0.0005 && segEf33 > dif33;
     // Resposta à pergunta do título, em poucas linhas: o resultado de 2033 e, se for o caso, de que ele depende.
     const lead = [`Em 2033, a receita projetada de ${nome} alcança ${fmtMoneyFino(pos33)}, já incluindo a parcela de 25% do IBS estadual que cabe aos municípios. ` + (neutra
         ? 'Esse valor é praticamente igual ao do cenário sem reforma.'
         : `Esse valor é ${fmtPct(Math.abs(v33)).replace(/^[+−]/, '')} ${perde ? 'inferior' : 'superior'} ao cenário sem reforma, o equivalente a ${perde ? 'uma perda' : 'um ganho'} anual de ${fmtMoney(Math.abs(dif33))}.`)];
-    if (depende) lead.push(`Esse resultado depende do Seguro-Receita, o repasse compensatório do Comitê Gestor: sem ele, a receita ficaria ${fmtMoney(seg33 - dif33)} abaixo do cenário sem reforma.`);
+    if (depende) lead.push(`Esse resultado depende do Seguro-Receita, o repasse compensatório do Comitê Gestor: sem ele, a receita ficaria ${fmtMoney(segEf33 - dif33)} abaixo do cenário sem reforma.`);
     // O restante explica como ler o gráfico; no celular fica recolhido.
     const resto = ['O gráfico apresenta os efeitos estimados da reforma tributária do consumo sobre as receitas municipais. As projeções consideram a substituição gradual do ISS e do ICMS pelo IBS e comparam os resultados com um cenário sem reforma.'];
     if (Math.abs(v29) > 0.0005 || Math.abs(v33) > 0.0005) resto.push(`O efeito começa em ${fmtPct(v29)} em 2029 e chega a ${fmtPct(v33)} em 2033, de modo que a transição vai ${Math.abs(v33) > Math.abs(v29) ? 'ampliando' : 'reduzindo'} a diferença.`);
-    if (seg33 > 0) resto.push(`${nome} recebe ${fmtMoney(seg33)} do Seguro-Receita em 2033${depende ? ', mais do que o ganho' : ''}; o repasse compensatório do Comitê Gestor já está incluído nos números.`);
+    if (seg33 > 0) resto.push(`${nome} recebe ${fmtMoney(seg33)} do Seguro-Receita em 2033${depende ? ', mais do que o ganho' : ''}; o repasse compensatório do Comitê Gestor já está incluído nos números, depois da dedução do financiamento do CGIBS.`);
     else resto.push(`${nome} não recebe Seguro-Receita no período, e o resultado vem da repartição do IBS pelos coeficientes.`);
     // A ressalva de que são estimativas fica sempre à vista, junto da resposta, mesmo quando o restante está recolhido.
     const ressalva = 'São estimativas que dependem das hipóteses do modelo' + (CONFIG.sensibilidade ? '; a seção sobre sensibilidade, mais abaixo, mostra a faixa de resultados.' : '. Os critérios e as fontes estão em Detalhes do cálculo e na Metodologia.');
@@ -889,13 +933,11 @@ function renderFicha(cod, base, m) {
 
     let aviso = '';
     if (m.neutro_suspeito) aviso = '<strong>Dado a conferir.</strong> O valor declarado ao SICONFI para 2025 diverge de forma incompatível da série histórica deste município, o que sugere falha de preenchimento na fonte. Os números são exibidos com cautela e não entram nos rankings.';
-    else if (m.neutro_aproximado) aviso = '<strong>Estimativa aproximada.</strong> Este município não tem registro individualizado de ISS e cota-parte do ICMS para 2025 no SICONFI, e a participação de 2025 foi aproximada pela média de sete anos. Leia os números como ordem de grandeza.';
+    else if (m.neutro_aproximado) aviso = '<strong>Estimativa aproximada.</strong> Este município não tem registro individualizado de ISS e cota-parte do ICMS para 2025 no SICONFI, e a participação de 2025 foi aproximada pelo próprio coeficiente histórico (média de 2019 a 2026). Leia os números como ordem de grandeza.';
     else if (m.cobertura_anos < 5) aviso = '<strong>Série curta.</strong> Há apenas ' + m.cobertura_anos + ' anos de dados históricos para este município, abaixo do mínimo recomendado de 5. Os números são menos estáveis.';
 
     const seg33 = (m.repasse_seguro_receita_por_ano || {})['2033'] || 0;
-    const dependeSeg = seg33 > 0 && v33 > 0.0005 && seg33 > dif33;
-    const tagSeg = dependeSeg ? '<span class="tag-seg">Depende do Seguro-Receita</span>' : seg33 > 0 ? '<span class="tag-seg tag-seg-leve">Recebe Seguro-Receita</span>' : '';
-    const painelSeguro = seg33 > 0 ? `<div class="panel" id="painelSeguro"><h3>Seguro-Receita</h3><p class="panel-sub">Repasse compensatório do Comitê Gestor para entes cuja receita pelo critério de destino fica abaixo do nível de nivelamento.</p>${seguroCardHtml(m.repasse_seguro_receita_por_ano, m.pos_por_ano)}</div>` : '';
+    const painelSeguro = seg33 > 0 ? `<div class="panel" id="painelSeguro"><h3>Seguro-Receita</h3><p class="panel-sub">O fundo equivale a 5% do IBS que não é distribuído pelo critério histórico e é repartido entre os entes de menor razão entre o IBS pelo destino e a receita média de referência, até igualar essa razão.</p>${seguroCardHtml(m.repasse_seguro_receita_por_ano, m.pos_por_ano)}</div>` : '';
     const neutra = Math.abs(v33) <= 0.0005;
     const lado = v33 < 0 ? 'a menos' : 'a mais';
     const nomeSeg = esc(base.nome);
@@ -939,6 +981,7 @@ function renderFicha(cod, base, m) {
         </div>
         ${painelSeguro}
         <h3 class="capitulo" id="cap-porque">Por que o resultado é este</h3>
+        <div class="panel" id="painelDecomp" hidden><h3 id="decompTit">O que explica a diferença</h3><p class="panel-sub">A diferença entre a receita com e sem reforma vem de quatro fontes. Cada barra mostra quanto uma delas soma ou subtrai, no ano escolhido no gráfico.</p><div id="decompCorpo"></div></div>
         ${painelParticipacaoHtml(m, base)}
         <div class="panel">
             <div class="panel-head"><div><h3>De onde vem a receita</h3><p class="panel-sub">Quanto ainda vem do ISS e da cota-parte do ICMS e quanto já vem do IBS, de 2029 a 2033.</p></div>
@@ -948,7 +991,7 @@ function renderFicha(cod, base, m) {
                 </div></div>
             <div class="canvas-box" id="compBox"><canvas id="gComp" role="img" aria-label="Gráfico de barras empilhadas com a composição da receita projetada de 2029 a 2033: ISS e cota-parte do ICMS residuais, IBS pelo critério histórico, IBS por destino e Seguro-Receita. Os mesmos valores estão na aba Tabela."></canvas></div>
             <div class="table-wrap" id="compTabela" hidden></div>
-            <p class="nota nota-grafico">* Inclui a cota-parte dos municípios: na parte histórica, a cota-parte do ICMS que o município já recebia; no destino, os 25% do IBS do estado repassados às prefeituras. <a href="#" data-tab="metodologia" data-depois="met-3">Entenda →</a></p>
+            <p class="nota nota-grafico">* Inclui a cota-parte dos municípios: no critério histórico, a cota-parte do ICMS que o município já recebia; no critério de destino, os 25% do IBS do estado repassados às prefeituras. <a href="#" data-tab="metodologia" data-depois="met-3">Entenda →</a></p>
         </div>
         <div class="panel" id="painelSens" hidden>
             <h3>Quanto este resultado depende das hipóteses?</h3>
@@ -975,12 +1018,12 @@ function renderFicha(cod, base, m) {
             <h3 class="detalhes-tit">Detalhes do cálculo</h3>
             <details><summary>Ano a ano, 2029–2033</summary>
                 <div class="table-wrap"><table class="dados"><thead><tr><th>Ano</th><th>Sem a reforma</th><th>Com a reforma</th><th>Diferença</th><th>Variação</th></tr></thead><tbody>${linhas}</tbody></table></div></details>
-            <details id="detCoef"><summary>Coeficientes de participação</summary>
-                <p class="panel-sub">Os critérios que, ponderados pelo cronograma do ADCT, definem a fatia deste município no IBS.</p>${coefTilesHtml(m)}</details>
+            <details id="detCoef"><summary>Coeficientes: histórico e de destino</summary>
+                <p class="panel-sub">O coeficiente histórico e o de destino, ponderados pelo cronograma do ADCT (o histórico rege 80% do IBS até 2032 e 90% em 2033; o de destino, o que sobra depois do Seguro-Receita: 19% e 9,5%), definem a fatia deste município no IBS. A participação de referência de 2025 não entra nessa fatia: é a base do cenário sem reforma.</p>${coefTilesHtml(m)}</details>
             ${seg33 > 0 ? '' : `<details><summary>Seguro-Receita</summary>
-                <p class="panel-sub">Repasse compensatório para entes cuja receita pelo critério de destino fica abaixo do nível de nivelamento.</p>${seguroCardHtml(m.repasse_seguro_receita_por_ano, m.pos_por_ano)}</details>`}
-            <details id="detHist"><summary>Receita histórica: ISS e cota-parte do ICMS</summary>
-                <p class="panel-sub">São as receitas do próprio município usadas no cálculo: o ISS que ele arrecada e a cota-parte do ICMS que recebe do estado (SICONFI, DCA). A média dos oito anos, com 2026 pelo RREO até agosto, é a base do coeficiente histórico. <a href="#" data-abrir="detCoef">Ver o coeficiente histórico →</a></p>${historicoTableHtml(m.historico_por_ano, m.estimativa_2026)}</details>
+                <p class="panel-sub">O fundo equivale a 5% do IBS que não é distribuído pelo critério histórico e é repartido entre os entes de menor razão entre o IBS pelo destino e a receita média de referência, até igualar essa razão.</p>${seguroCardHtml(m.repasse_seguro_receita_por_ano, m.pos_por_ano)}</details>`}
+            <details id="detHist"><summary>Receita de referência: ISS e cota-parte do ICMS</summary>
+                <p class="panel-sub">É a receita de referência do município, na definição da lei (LC 227/2026, art. 115): o ISS que ele arrecada e a cota-parte do ICMS que recebe do estado (SICONFI, DCA). A média dos oito anos de 2019 a 2026, com 2026 estimado, é a base do coeficiente histórico. <a href="#" data-abrir="detCoef">Ver o coeficiente histórico →</a></p>${historicoTableHtml(m.historico_por_ano, m.estimativa_2026)}</details>
             <button type="button" class="memo-link" id="btnMemoria">Ver a memória de cálculo deste município →</button>
         </div>
         <div class="panel proximos" id="cap-proximos"><h3>E agora?</h3><p class="panel-sub">Leve este resultado adiante ou acompanhe os próximos passos da reforma.</p>
@@ -1004,13 +1047,15 @@ function renderFicha(cod, base, m) {
     const efeitoAno = ano => {
         const v = m.variacao_por_ano[ano], d = m.pos_por_ano[ano] - m.contrafactual_por_ano[ano], sg = (m.repasse_seguro_receita_por_ano || {})[ano] || 0;
         const neu = Math.abs(v) <= 0.0005, cls = clsSinal(v);
-        const tag = sg > 0 && v > 0.0005 && sg > d ? '<span class="tag-seg">Depende do Seguro-Receita</span>' : sg > 0 ? '<span class="tag-seg tag-seg-leve">Recebe Seguro-Receita</span>' : '';
+        const tag = sg > 0 && v > 0.0005 && seguroEfetivo(m, ano) > d ? '<span class="tag-seg">Depende do Seguro-Receita</span>' : sg > 0 ? '<span class="tag-seg tag-seg-leve">Recebe Seguro-Receita</span>' : '';
         return `<div class="efeito ${cls}"><em class="selo">${neu ? 'Receita estável' : v < 0 ? 'Perda estimada' : 'Ganho estimado'}</em><b>${fmtPct(v)}</b><span>em ${ano}</span><span>${neu ? '' : (d > 0 ? '+' : '') + fmtMoney(d) + ' ao ano'}</span>${tag}</div>`;
     };
     const selecionarAno = ano => {
         $('efeitoLinha').innerHTML = efeitoAno(ano);
         document.querySelectorAll('#anoSel button').forEach(b => b.setAttribute('aria-pressed', b.dataset.ano === ano));
         if (grafSerie) { grafSerie.anoSel = ano; grafSerie.draw(); }
+        const dh = decompHtml(m, ano), pd = $('painelDecomp');
+        if (pd) { pd.hidden = !dh; $('decompCorpo').innerHTML = dh; $('decompTit').textContent = 'O que explica a diferença em ' + ano; }
     };
     document.querySelectorAll('#anoSel button').forEach(b => b.addEventListener('click', () => selecionarAno(b.dataset.ano)));
     const mais = $('leituraMais'), larga = matchMedia('(min-width: 900px)');

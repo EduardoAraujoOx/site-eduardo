@@ -86,7 +86,7 @@ function memoHistoricoHtml(ctx){
     return `
     <div class="panel">
         <h3>Coeficiente histórico</h3>
-        <p class="panel-sub">É a fatia do ente no critério de origem, que rege 90% do IBS em 2033 e vai cedendo lugar ao destino até 2078 (ADCT art. 131, §1º). A base é a receita de referência média de ${nAnosTxt} anos, definida no art. 115 da LC 227/2026.</p>
+        <p class="panel-sub">É a fatia do ente no critério histórico, que rege 80% do IBS de 2029 a 2032 e 90% em 2033, e depois perde 2 pontos percentuais por ano, até 2077, para o critério de destino (ADCT, art. 131, §1º; LC 227/2026, art. 109). A base é a receita de referência média de ${nAnosTxt} anos, definida no art. 115 da LC 227/2026.</p>
 
         ${passoHtml(1, 'Receita de referência, ano a ano', `
             <p>${ctx.descricaoReferencia}</p>
@@ -104,10 +104,10 @@ function memoHistoricoHtml(ctx){
             <div class="formula">${fmtExato(media)} ${op('÷')} ${fmtExato(totalBr)} ${op('=')} <span class="res">${fmtPctPlain(coef, 6)}</span>
                 ${confere(coef, ctx.coefPublicado)}</div>`)}
 
-        ${passoHtml(4, 'Participação neutra, para comparação', neutroAproximado ? `
-            <p>A participação neutra usa só o ano de 2025, em vez da média de ${nAnosTxt} anos, e é a fatia com que o painel monta o contrafactual de cada ano. Este ente não tem registro individualizado de 2025 no SICONFI, então a rotina usa em seu lugar o próprio coeficiente histórico do passo 3, calculado com os anos disponíveis.</p>
+        ${passoHtml(4, 'Participação de referência de 2025, para comparação', neutroAproximado ? `
+            <p>A participação de referência de 2025 usa só esse ano, em vez da média de ${nAnosTxt} anos, e é a fatia com que o painel monta o cenário sem reforma de cada ano. Este ente não tem registro individualizado de 2025 no SICONFI, então a rotina usa em seu lugar o próprio coeficiente histórico do passo 3, calculado com os anos disponíveis.</p>
             <div class="formula">${fmtPctPlain(neutro, 6)} <span class="formula-nota">Igual ao coeficiente histórico acima, por construção: é a aproximação que o painel adota quando falta 2025, não um segundo cálculo.</span></div>` : `
-            <p>A participação neutra não é o coeficiente histórico: usa só o ano de 2025, em vez da média de ${nAnosTxt} anos, e é a fatia com que o painel monta o contrafactual de cada ano.</p>
+            <p>A participação de referência de 2025 não é o coeficiente histórico: usa só esse ano, em vez da média de ${nAnosTxt} anos, e é a fatia com que o painel monta o cenário sem reforma de cada ano.</p>
             <div class="formula">${fmtExato(ref2025)} ${op('÷')} ${fmtExato(totalBr)} ${op('=')} <span class="res">${fmtPctPlain(neutro, 6)}</span></div>`)}
     </div>`;
 }
@@ -140,7 +140,7 @@ function memoDestinoMuniHtml(refs, m, cod){
         <p class="panel-sub">O destino municipal chega por dois caminhos separados, com critérios legais distintos, e o coeficiente do município é a soma dos dois.</p>
 
         ${passoHtml(1, 'Caminho A: cota-parte do destino estadual', `
-            <p>A cota-parte corresponde a 25% da receita de destino do estado (CF art. 158, IV, "b") e é repartida entre os municípios pelo art. 128 da LC 227/2026: 80% por população, 10% por educação e equidade, 5% por critério ambiental e 5% em partes iguais. Como os indicadores de educação e ambientais dependem de lei estadual ainda não editada na maior parte das UFs, o painel aplica os dois critérios já definidos e redistribui os 15% pendentes proporcionalmente, o que equivale a 95% por população e 5% em partes iguais.</p>
+            <p>A cota-parte corresponde a 25% da receita de destino do estado (CF art. 158, IV, "b") e é repartida entre os municípios pelo art. 128 da LC 227/2026: 80% por população, 10% por educação e equidade, 5% por critério ambiental e 5% em partes iguais. Como os indicadores de educação e ambientais dependem de lei estadual ainda não editada na maior parte das UFs, o painel aplica os dois critérios já definidos e aproxima os 15% pendentes pela população, o que resulta em 95% por população e 5% em partes iguais.</p>
             <div class="formula">0,95 ${op('×')} (${fmtNum2(m.pop_media, 1)} ${op('÷')} ${fmtNum2(refs.pop_uf, 1)}) ${op('+')} 0,05 ${op('×')} (1 ${op('÷')} ${refs.n_municipios}) ${op('=')} <span class="res">${fmtNum2(pesoCota*100, 6)}%</span>
                 <span class="formula-nota">Peso deste município dentro da cota-parte da UF.</span></div>
             <div class="formula">${fmtNum2(pesoCota*100, 6)}% ${op('×')} ${fmtPctPlain(refs.cota_parte_municipios_pct, 6)} ${op('=')} <span class="res">${fmtPctPlain(cotaPct, 6)}</span>
@@ -200,10 +200,10 @@ function memoSeguroHtml(serie, mediaReferencia, nomeEsfera){
     return `
     <div class="panel">
         <h3>Seguro-Receita</h3>
-        <p class="panel-sub">O ADCT (art. 132) e o art. 117 da LC 227/2026 retêm 5% do IBS pelo critério de destino para um fundo que nivela os entes mais prejudicados pela mudança de critério. A distribuição é sequencial, não proporcional.</p>
+        <p class="panel-sub">O ADCT (art. 132) e os arts. 110 e 117 da LC 227/2026 retêm 5% do IBS que não segue o critério histórico para um fundo que beneficia os entes com as menores razões entre o IBS pelo destino e a receita média de referência. A distribuição é sequencial, não proporcional.</p>
 
         ${passoHtml(1, 'A razão que ordena a fila', `
-            <p>Para cada ente calcula-se a razão entre o IBS que ele recebe pelo critério de destino naquele ano e sua receita de referência ajustada. Quanto menor a razão, mais cedo o ente é atendido. A receita de referência ajustada é a menor entre a média histórica de 2019 a 2026, a mesma do coeficiente histórico, e três vezes a média nacional per capita da esfera ${nomeEsfera} (art. 117, §6º).</p>
+            <p>Para cada ente calcula-se a razão entre o IBS que ele recebe pelo critério de destino naquele ano (média móvel de 12 meses, com as alíquotas de referência) e sua receita de referência ajustada. Quanto menor a razão, mais cedo o ente é atendido. A receita de referência ajustada é a menor entre a média histórica de 2019 a 2026, a mesma do coeficiente histórico, e três vezes a média nacional per capita da esfera ${nomeEsfera} (ADCT, art. 132, II; LC 227/2026, art. 117, ${/estad/i.test(nomeEsfera || '') ? '§ 3º' : '§ 4º'}).</p>
             <div class="table-wrap" style="margin-top:0.6rem">
                 <table class="data" style="font-size:0.78rem"><thead><tr>
                     <th>Ano</th><th class="num">IBS por destino recebido</th><th class="num">Receita de referência ajustada</th>
@@ -217,7 +217,7 @@ function memoSeguroHtml(serie, mediaReferencia, nomeEsfera){
                 <span class="formula-nota">${recebe ? 'Com o repasse, a razão do ente chega exatamente ao nível do ano.' : 'A razão do ente já está no nível do ano ou acima dele, e por isso não há repasse em 2033.'}</span></div>` : ''}`)}
 
         <div class="memo-ressalva">
-            <p><b>O repasse não encolhe sozinho.</b> O fundo é uma fração fixa de 5% do IBS pelo critério de destino, que cresce enquanto o ICMS e o ISS são extintos, de modo que tanto o montante total quanto o nível de nivelamento sobem a cada ano. Na projeção, o fundo passa de ${fmtExato((MEMO_NAC.seguro_por_ano['2029']||{}).pool)} em 2029 para ${fmtExato(nac33.pool)} em 2033, e o repasse de quase todos os contemplados cresce junto. Um ente deixa de receber quando a própria receita de destino alcança o nível do ano, não pela passagem do tempo.</p>
+            <p><b>O repasse não encolhe sozinho.</b> O fundo é uma fração fixa de 5% do IBS que sobra depois da retenção do critério histórico, e esse IBS cresce enquanto o ICMS e o ISS são extintos, de modo que tanto o montante total quanto o nível de nivelamento sobem a cada ano. Na projeção, o fundo passa de ${fmtExato((MEMO_NAC.seguro_por_ano['2029']||{}).pool)} em 2029 para ${fmtExato(nac33.pool)} em 2033, e o repasse de quase todos os contemplados cresce junto. Um ente deixa de receber quando a própria receita de destino alcança o nível do ano, não pela passagem do tempo.</p>
         </div>
     </div>`;
 }
