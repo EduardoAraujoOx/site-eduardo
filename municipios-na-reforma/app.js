@@ -754,7 +754,7 @@ function historicoTableHtml(historico, est26) {
           + `<tr class="media"><td colspan="5">Coeficiente histórico</td><td class="num">${fmtPctPlain(media / REF_NAC.total_br_2025 * 100, 5)}</td></tr>`
         : `<tr class="media"><td>Média 2019–2026</td><td class="num">${f(soma.iss / n)}</td><td class="num">${f(soma.cota / n)}</td><td class="num">${f(media)}</td></tr>`;
     return `<div class="table-wrap"><table class="dados tab-hist"><thead><tr>${cab}</tr></thead><tbody>${rows}${rodape}</tbody></table></div>
-        <p class="nota">Valores em R$ ${mi ? 'milhões' : 'mil'}; a última coluna está em reais de 2025.${fat ? ' O fator de ajuste corrige cada ano pela variação nominal da arrecadação total de ICMS e ISS do país (LC 227, art. 115, §2º), e a referência do ano é o valor declarado vezes esse fator.' : ''}${faltou ? ' Ano sem dado entra como zero na média.' : ''}${origemAnosTxt(historico)}${est26 ? (est26.origem === 'rreo' ? ' 2026, já em reais de 2025: ISS observado no RREO de setembro de 2025 a agosto de 2026; cota-parte de 2025 ajustada pelo crescimento de janeiro a agosto, também do RREO.' : ' 2026, já em reais de 2025: este município não publica o Anexo 3 do RREO; mantém a posição relativa de 2025 no estado.') : ''}</p>`;
+        <p class="nota">Valores em R$ ${mi ? 'milhões' : 'mil'}; a última coluna está em reais de 2025.${fat ? ' O fator de ajuste corrige cada ano pela variação nominal da arrecadação total de ICMS e ISS do país (LC 227, art. 115, §2º), e a referência do ano é o valor declarado vezes esse fator.' : ''}${origemAnosTxt(historico)}${est26 ? (est26.origem === 'rreo' ? ' 2026, já em reais de 2025: ISS observado no RREO de setembro de 2025 a agosto de 2026; cota-parte de 2025 ajustada pelo crescimento de janeiro a agosto, também do RREO.' : ' 2026, já em reais de 2025: este município não publica o Anexo 3 do RREO; mantém a posição relativa de 2025 no estado.') : ''}</p>`;
 }
 
 /* ── participação histórica: a fatia do município na arrecadação nacional, ano a ano, contra a média que vira o coeficiente histórico ── */
@@ -835,6 +835,45 @@ function desenhaParticipacao(m) {
 /* O repasse bruto do Seguro-Receita (o que o fundo paga) e o efetivo (o que entra na receita, depois da dedução do CGIBS) diferem em até 2%.
    As comparações com o cenário sem reforma usam o efetivo, que é o valor que está somado à receita com reforma. */
 const seguroEfetivo = (m, ano) => { const c = m.componentes_por_ano && m.componentes_por_ano[ano]; return c && c.seguro != null ? c.seguro : ((m.repasse_seguro_receita_por_ano || {})[ano] || 0); };
+
+/* Decomposição da diferença anual em quatro fontes, com a mesma base do modelo (build-resultados-consolidados): o cenário sem reforma é dividido
+   nas mesmas parcelas da receita com reforma, e cada fonte é o que a receita com reforma tem a mais ou a menos que a sua parcela.
+   histórico = IBS pelo critério histórico, antes do CGIBS, menos a parcela do cenário sem reforma (s·λ·C);
+   destino = IBS por destino, antes do CGIBS, menos a parcela depois da retenção do Seguro-Receita (s·(1−λ)·(1−ρ)·C);
+   Seguro-Receita = repasse recebido menos a retenção de 5% que todos sofrem (ρ·s·(1−λ)·C);
+   CGIBS = dedução sobre os três blocos. A soma é igual a pos − cenário sem reforma. */
+function decomposicaoEfeito(m, ano) {
+    const p = NAC && NAC.projecao && NAC.projecao.find(r => String(r.ano) === String(ano));
+    const c = m.componentes_por_ano && m.componentes_por_ano[ano];
+    if (!p || !c || !p.ibs_bruto || p.alpha_a == null) return null;
+    const C = m.contrafactual_por_ano[ano], s = p.sa, l = p.alpha_a, ca = p.ca, rho = p.ibs_seguro_receita / (p.ibs_bruto * (1 - l));
+    const hist = c.cpt / (1 - ca) - s * l * C;
+    const dest = c.destino / (1 - ca) - s * (1 - l) * (1 - rho) * C;
+    const seg = c.seguro / (1 - ca) - rho * s * (1 - l) * C;
+    const cg = -ca * (c.cpt + c.destino + c.seguro) / (1 - ca);
+    const resto = m.pos_por_ano[ano] - C - (hist + dest + seg + cg);   // ICMS e ISS remanescentes: zero por construção; guarda contra mudança do modelo
+    return {C, ca, partes: [
+        {k: 'hist', nome: 'Critério histórico', ref: 'o critério histórico', dica: 'O coeficiente histórico contra a participação de 2025.', v: hist},
+        {k: 'dest', nome: 'Critério de destino', ref: 'o critério de destino', dica: 'O coeficiente de destino contra a participação de 2025, depois da retenção de 5% do Seguro-Receita.', v: dest},
+        {k: 'seg', nome: 'Seguro-Receita', ref: 'o Seguro-Receita', dica: 'O repasse recebido menos a retenção de 5% que todos os entes sofrem.', v: seg},
+        {k: 'cg', nome: 'Financiamento do CGIBS', ref: 'o financiamento do CGIBS', dica: 'A dedução sobre o IBS do município, limitada a ' + (ca * 100).toLocaleString('pt-BR', {maximumFractionDigits: 2}) + '% em ' + ano + '.', v: cg}
+    ], resto};
+}
+function decompHtml(m, ano) {
+    const d = decomposicaoEfeito(m, ano);
+    if (!d || Math.abs(d.resto) > Math.max(1e4, Math.abs(d.C) * 1e-6)) return '';
+    const total = d.partes.reduce((a, x) => a + x.v, 0), max = Math.max(...d.partes.map(x => Math.abs(x.v)), 1);
+    const maior = d.partes.slice().sort((a, b) => Math.abs(b.v) - Math.abs(a.v))[0];
+    const linha = x => {
+        const w = Math.abs(x.v) / max * 50, cls = x.v < 0 ? 'neg' : 'pos';
+        return `<li><div class="dc-nome"><b>${x.nome}</b><small>${x.dica}</small></div>
+            <div class="dc-barra" aria-hidden="true"><span class="${cls}" style="width:${w.toFixed(1)}%;${x.v < 0 ? 'right:50%' : 'left:50%'}"></span></div>
+            <div class="dc-valor ${cls}">${x.v > 0 ? '+' : ''}${fmtMoney(x.v)}<small>${fmtPct(x.v / d.C)} do cenário sem reforma</small></div></li>`;
+    };
+    return `<ul class="decomp" role="list">${d.partes.map(linha).join('')}</ul>
+        <div class="dc-total"><span>Diferença anual em ${ano}</span><b class="${total < 0 ? 'neg' : 'pos'}">${total > 0 ? '+' : ''}${fmtMoney(total)}</b></div>
+        <p class="leitura">O maior componente é ${maior.ref}, que ${maior.v < 0 ? 'reduz' : 'soma'} ${fmtMoney(Math.abs(maior.v))} à receita do ano em relação ao cenário sem reforma.</p>`;
+}
 
 function leituraMunicipio(m, base) {
     const nome = '<b>' + esc(base.nome) + '</b>';
@@ -942,6 +981,7 @@ function renderFicha(cod, base, m) {
         </div>
         ${painelSeguro}
         <h3 class="capitulo" id="cap-porque">Por que o resultado é este</h3>
+        <div class="panel" id="painelDecomp" hidden><h3 id="decompTit">O que explica a diferença</h3><p class="panel-sub">A diferença entre a receita com e sem reforma vem de quatro fontes. Cada barra mostra quanto uma delas soma ou subtrai, no ano escolhido no gráfico.</p><div id="decompCorpo"></div></div>
         ${painelParticipacaoHtml(m, base)}
         <div class="panel">
             <div class="panel-head"><div><h3>De onde vem a receita</h3><p class="panel-sub">Quanto ainda vem do ISS e da cota-parte do ICMS e quanto já vem do IBS, de 2029 a 2033.</p></div>
@@ -1014,6 +1054,8 @@ function renderFicha(cod, base, m) {
         $('efeitoLinha').innerHTML = efeitoAno(ano);
         document.querySelectorAll('#anoSel button').forEach(b => b.setAttribute('aria-pressed', b.dataset.ano === ano));
         if (grafSerie) { grafSerie.anoSel = ano; grafSerie.draw(); }
+        const dh = decompHtml(m, ano), pd = $('painelDecomp');
+        if (pd) { pd.hidden = !dh; $('decompCorpo').innerHTML = dh; $('decompTit').textContent = 'O que explica a diferença em ' + ano; }
     };
     document.querySelectorAll('#anoSel button').forEach(b => b.addEventListener('click', () => selecionarAno(b.dataset.ano)));
     const mais = $('leituraMais'), larga = matchMedia('(min-width: 900px)');
