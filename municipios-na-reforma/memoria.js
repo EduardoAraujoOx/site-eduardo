@@ -104,7 +104,7 @@ function memoHistoricoHtml(ctx){
             <div class="formula">${fmtExato(media)} ${op('÷')} ${fmtExato(totalBr)} ${op('=')} <span class="res">${fmtPctPlain(coef, 6)}</span>
                 ${confere(coef, ctx.coefPublicado)}</div>`)}
 
-        ${passoHtml(4, 'Participação neutra, para comparação', neutroAproximado ? `
+        ${passoHtml(4, 'Participação de referência de 2025, para comparação', neutroAproximado ? `
             <p>A participação neutra usa só o ano de 2025, em vez da média de ${nAnosTxt} anos, e é a fatia com que o painel monta o contrafactual de cada ano. Este ente não tem registro individualizado de 2025 no SICONFI, então a rotina usa em seu lugar o próprio coeficiente histórico do passo 3, calculado com os anos disponíveis.</p>
             <div class="formula">${fmtPctPlain(neutro, 6)} <span class="formula-nota">Igual ao coeficiente histórico acima, por construção: é a aproximação que o painel adota quando falta 2025, não um segundo cálculo.</span></div>` : `
             <p>A participação neutra não é o coeficiente histórico: usa só o ano de 2025, em vez da média de ${nAnosTxt} anos, e é a fatia com que o painel monta o contrafactual de cada ano.</p>
