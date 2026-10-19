@@ -852,9 +852,10 @@ function leituraMunicipio(m, base) {
     if (Math.abs(v29) > 0.0005 || Math.abs(v33) > 0.0005) resto.push(`O efeito começa em ${fmtPct(v29)} em 2029 e chega a ${fmtPct(v33)} em 2033, de modo que a transição vai ${Math.abs(v33) > Math.abs(v29) ? 'ampliando' : 'reduzindo'} a diferença.`);
     if (seg33 > 0) resto.push(`${nome} recebe ${fmtMoney(seg33)} do Seguro-Receita em 2033${depende ? ', mais do que o ganho' : ''}; o repasse compensatório do Comitê Gestor já está incluído nos números.`);
     else resto.push(`${nome} não recebe Seguro-Receita no período, e o resultado vem da repartição do IBS pelos coeficientes.`);
-    resto.push('São estimativas que dependem das hipóteses do modelo' + (CONFIG.sensibilidade ? '; a seção sobre sensibilidade, mais abaixo, mostra a faixa de resultados.' : '. Os critérios e as fontes estão em Detalhes do cálculo e na Metodologia.'));
+    // A ressalva de que são estimativas fica sempre à vista, junto da resposta, mesmo quando o restante está recolhido.
+    const ressalva = 'São estimativas que dependem das hipóteses do modelo' + (CONFIG.sensibilidade ? '; a seção sobre sensibilidade, mais abaixo, mostra a faixa de resultados.' : '. Os critérios e as fontes estão em Detalhes do cálculo e na Metodologia.');
     const par = l => l.map(t => '<p>' + t + '</p>').join('');
-    return `<div class="leitura-corpo"><div class="leitura-lead">${par(lead)}</div>
+    return `<div class="leitura-corpo"><div class="leitura-lead">${par(lead)}<p class="leitura-ressalva">${ressalva}</p></div>
         <details class="leitura-mais" id="leituraMais"><summary>Como ler este gráfico</summary><div class="leitura-resto">${par(resto)}<p class="como-ler"><a href="#" data-tab="metodologia" data-depois="met-5">Como ler os dois cenários →</a></p></div></details></div>`;
 }
 
