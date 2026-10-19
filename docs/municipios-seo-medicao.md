@@ -2,7 +2,7 @@
 
 O Search Console mostra **cliques vindos da busca do Google**, impressões, consultas e posição média. O Google Analytics 4 (GA4) mostra **visitas e ações dentro do site**, como consultas de municípios e cliques no WhatsApp. São contas gratuitas e complementares.
 
-A integração está preparada, mas o GA4 permanece desligado enquanto `CONFIG.gaId` estiver vazio em `app.js`. As propriedades Google ainda precisam ser criadas pelo proprietário. Nenhuma senha ou chave privada precisa ser compartilhada.
+O ID de medição configurado em `CONFIG.gaId`, no `app.js`, é `G-JYFYHLBRP9`. A coleta depende da publicação desta configuração, do aceite do visitante e dos ajustes do fluxo Web descritos abaixo. A administração das propriedades Google é feita pelo proprietário; nenhuma senha ou chave privada precisa ser compartilhada. Para desligar a integração no código, deixe `CONFIG.gaId` vazio.
 
 ## 1. Criar e verificar o Search Console
 
@@ -25,7 +25,7 @@ Para acompanhar a marca: abra **Desempenho → Resultados da pesquisa**, filtre 
 3. Crie um **fluxo de dados Web** para `https://municipiosnareforma.com.br`, nomeando-o como **Site Municípios na Reforma**.
 4. Nos detalhes do fluxo, **desative Medição otimizada / Enhanced measurement**. O portal envia seus próprios eventos; a captura automática de links poderia incluir mensagens pré-preenchidas do WhatsApp e duplicar contagens. Mantenha desativadas a coleta de dados fornecidos pelo usuário e a associação a recursos de publicidade.
 5. Copie o **ID de medição**, que começa com `G-`. Envie apenas esse identificador público. Não é necessário colar outro snippet do Google no HTML.
-6. Preencha `gaId` em `CONFIG`, no início de `municipios-na-reforma/app.js`, com o ID real. Publique pela revisão habitual do projeto. Não há segredo de servidor nem variável de ambiente obrigatória para esse ID.
+6. O ID informado já foi preenchido em `gaId`, no início de `municipios-na-reforma/app.js`. Antes de publicar pela revisão habitual do projeto, confirme o ajuste de Medição otimizada do passo 4. Não há segredo de servidor nem variável de ambiente obrigatória para esse ID. Ao trocar de propriedade, substitua esse campo pelo novo ID de medição.
 7. No domínio de produção, abra uma janela privativa, aceite a medição e consulte um município. Confira a visita e os eventos no relatório **Tempo real** do GA4. Teste também **Continuar sem medição**: nesse caso, a tag Google não deve ser carregada.
 
 O banner só aparece com ID válido **no domínio de produção**. Não há coleta nas prévias da Vercel nem no desenvolvimento local. Antes da autorização, cliques são descartados e nenhuma tag GA4 é carregada. A escolha é lembrada por até 180 dias. Para alterá-la, abra **Política de privacidade → Alterar preferência de medição**. Revogar remove os cookies GA4 conhecidos e recarrega a página sem a biblioteca.

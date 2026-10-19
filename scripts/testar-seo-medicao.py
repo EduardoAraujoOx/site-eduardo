@@ -2,6 +2,7 @@
 """Verifica SEO e GA4 sem acessar o site real nem enviar estatísticas."""
 import argparse
 import json
+import re
 import shutil
 from contextlib import contextmanager
 from html.parser import HTMLParser
@@ -107,6 +108,7 @@ def main():
     parser.add_argument('--assets-dir', type=Path, default=ROOT / '.cache/seo-medicao')
     parser.add_argument('--screenshots-dir', type=Path, default=ROOT / 'artifacts/seo-medicao')
     args = parser.parse_args()
+    id_configurado = re.search(r"gaId:\s*'([^']*)'", (PORTAL / 'app.js').read_text()).group(1)
     verificar_seo()
     args.assets_dir.mkdir(parents=True, exist_ok=True)
     args.screenshots_dir.mkdir(parents=True, exist_ok=True)
@@ -143,7 +145,8 @@ def main():
                         assert caminho.is_relative_to(raiz), caminho
                         assert caminho.is_file(), caminho
                         if url.path == '/app.js' and identificador is not None:
-                            codigo = caminho.read_text().replace("gaId: '',", f"gaId: '{identificador}',", 1)
+                            codigo, alteracoes = re.subn(r"gaId:\s*'[^']*'", lambda _: 'gaId: ' + json.dumps(identificador), caminho.read_text(), count=1)
+                            assert alteracoes == 1, 'Não foi possível configurar o ID do cenário de teste'
                             route.fulfill(body=codigo, content_type='application/javascript')
                         else:
                             route.fulfill(path=str(caminho))
@@ -179,9 +182,9 @@ def main():
                 context.unroute_all(behavior='wait')
                 context.close()
 
-        # O código publicado continua sem ID: sem Google, sem banner e painel operante.
+        # Desligar o ID continua removendo Google e banner sem afetar o painel.
         for nome, width, height in [('desktop', 1512, 1100), ('celular', 390, 844)]:
-            with cenario(width=width, height=height) as (page, ga):
+            with cenario('', width=width, height=height) as (page, ga):
                 page.goto(f'https://{PRODUCAO}/', wait_until='domcontentloaded')
                 expect(page.locator('#busca')).to_be_enabled(timeout=20000)
                 expect(page.locator('#mapaSvg path').first).to_be_attached(timeout=20000)
@@ -212,10 +215,15 @@ def main():
             assert json.loads(page.evaluate(f'localStorage.getItem("{CHAVE}")'))['escolha'] == 'denied'
         print('PASS: nenhum pedido/evento antes da autorização; recusa persistida sem impedir a consulta')
 
-        with cenario(ID_TESTE) as (page, ga):
+        # Usar o app sem substituições comprova o encaminhamento ao ID configurado.
+        with cenario() as (page, ga):
             page.goto(f'https://{PRODUCAO}/?email=pessoa%40exemplo.com&texto=privado#segredo', wait_until='domcontentloaded')
+            assert re.fullmatch(r'G-[A-Z0-9]{6,20}', id_configurado), 'ID GA4 ausente ou inválido no código'
+            assert not ga and not fila(page)
             page.get_by_role('button', name='Aceitar medição').click()
             expect(page.locator('script[src*="googletagmanager.com/gtag/js"]')).to_have_count(1)
+            expect(page.locator('script[src*="googletagmanager.com/gtag/js"]')).to_have_attribute('src', 'https://www.googletagmanager.com/gtag/js?id=' + id_configurado)
+            assert [item for item in fila(page) if item[0] == 'config'][0][1] == id_configurado
             assert len(eventos(page, 'page_view')) == 1
             assert eventos(page, 'page_view')[0]['page_location'] == f'https://{PRODUCAO}/'
             busca(page)
@@ -254,7 +262,7 @@ def main():
             comandos = json.dumps(fila(page))
             for privado in ['Pessoa Teste', 'teste@example.com', 'escrito livremente', 'Mensagem privada', 'texto privado', 'pessoa@exemplo.com']:
                 assert privado not in comandos, privado
-            page.evaluate("document.cookie = '_ga=teste; Path=/'; document.cookie = '_ga_SEO000001=teste; Path=/; Domain=municipiosnareforma.com.br'")
+            page.evaluate("id => { document.cookie = '_ga=teste; Path=/'; document.cookie = '_ga_' + id.slice(2) + '=teste; Path=/; Domain=municipiosnareforma.com.br'; }", id_configurado)
             page.locator('.site-foot a[data-ir="privacidade"]').click()
             page.locator('#medicaoPreferencias').click()
             with page.expect_navigation(wait_until='domcontentloaded'):
@@ -264,7 +272,7 @@ def main():
             assert not any(cookie['name'].startswith('_ga') for cookie in page.context.cookies())
             assert json.loads(page.evaluate(f'localStorage.getItem("{CHAVE}")'))['escolha'] == 'denied'
             assert len(ga) == 1, ga
-        print('PASS: aceite, eventos reais da busca/formulário, filtros de privacidade e revogação')
+        print(f'PASS: ID configurado {id_configurado}, aceite, eventos da busca/formulário, filtros de privacidade e revogação')
 
         with cenario(ID_TESTE, inicial=f"localStorage.setItem('{CHAVE}', JSON.stringify({{escolha:'granted', em:Date.now()}}))") as (page, ga):
             page.goto(f'https://{PRODUCAO}/?m=2929206&segredo=privado', wait_until='domcontentloaded')

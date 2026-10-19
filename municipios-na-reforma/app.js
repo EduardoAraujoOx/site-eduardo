@@ -9,7 +9,7 @@
 const CONFIG = {
     whatsapp: '5527988361923',   // somente dígitos com DDI e DDD, ex.: '5527999999999'
     email: '',      // ex.: 'fale@municipiosnareforma.com.br'
-    gaId: '',       // ID público do GA4. A coleta só começa na produção, após consentimento.
+    gaId: 'G-JYFYHLBRP9', // ID público do GA4. A coleta só começa na produção, após consentimento.
     razaoSocial: '', // ex.: 'Vertex Advisory Ltda.', aparece na política de privacidade
     cnpj: '',        // ex.: '00.000.000/0001-00'
     sensibilidade: false   // painel "Quanto este resultado depende das hipóteses?" na ficha; adiado, mude para true para reativar
