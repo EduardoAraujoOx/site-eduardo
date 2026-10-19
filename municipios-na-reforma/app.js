@@ -85,6 +85,7 @@ if (CONFIG.gaId) {
 
 /* ── estado ── */
 let LISTA = [], POR_COD = {}, RESULT = null, NAC = null, AGG = {};
+let grafSerie = null;
 let ESCOPO = 'BR', NIVEL = 'uf', ATUAL = null, MAPA = null, MINI = null, graficos = [];
 const MEMO = {cod: null, secao: 'historico'};
 const RANK = {}, DADOS_UF = {};
@@ -872,7 +873,7 @@ function marcarPin() {
 window.addEventListener('resize', () => { if (PIN) marcarPin(); });
 
 function renderFicha(cod, base, m) {
-    graficos.forEach(g => g.destroy()); graficos = [];
+    graficos.forEach(g => g.destroy()); graficos = []; grafSerie = null;
     if (GSENS) { GSENS.destroy(); GSENS = null; }
     if (GPART) { GPART.destroy(); GPART = null; }
     const ok = LISTA.filter(x => !x.r).sort((a, b) => b.v - a.v);
@@ -928,9 +929,10 @@ function renderFicha(cod, base, m) {
         <nav class="cap-nav" aria-label="Seções desta página"><a href="#cap-resultado">Resultado</a><a href="#cap-porque">Por quê</a><a href="#cap-compara">Comparação</a><a href="#cap-detalhes">Cálculo</a></nav>
         <div class="panel accent panel-grafico" id="cap-resultado">
             <h3 class="sr-only">Para onde vai a arrecadação</h3>
-            <div class="canvas-box canvas-serie"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita histórica de 2019 a 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano, em Detalhes do cálculo."></canvas></div>
-            <p class="nota-serie">Valores em R$ de 2025. Linha tracejada: cenário sem a reforma. Faixa cinza: 2026 a 2028, sem projeção.</p>
-            <div class="efeito-linha"><div class="efeito ${sinal}"><em class="selo">${selo}</em><b>${fmtPct(v33)}</b><span>em 2033</span>${tagSeg}</div></div>
+            <div class="canvas-box canvas-serie"><canvas id="gSerie" role="img" aria-label="Gráfico de linhas com a receita realizada em 2025 e a projeção de 2029 a 2033 com e sem a reforma. Os mesmos valores estão na tabela ano a ano, em Detalhes do cálculo."></canvas></div>
+            <p class="nota-serie">Valores em R$ de 2025. Linha tracejada: cenário sem a reforma. Faixa cinza: 2026 a 2028, sem projeção. O eixo vertical não começa em zero, para destacar a diferença entre os cenários.</p>
+            <div class="ano-sel" id="anoSel" role="group" aria-label="Ano em destaque no gráfico"><span>Ver o ano</span>${ANOS.map(a => `<button type="button" data-ano="${a}" aria-pressed="${a === '2033'}">${a}</button>`).join('')}</div>
+            <div class="efeito-linha" id="efeitoLinha" aria-live="polite"></div>
             <div class="leitura-dados"><h4>Como a reforma tributária afeta a receita de ${nomeSeg}?</h4>${leituraMunicipio(m, base)}<p class="como-ler"><a href="#" data-tab="metodologia" data-depois="met-5">Como ler os dois cenários →</a></p></div>
         </div>
         ${painelSeguro}
@@ -997,7 +999,20 @@ function renderFicha(cod, base, m) {
         if (navigator.share) navigator.share({title: 'Municípios na Reforma', text: texto, url}).catch(() => {});
         else window.open('https://wa.me/?text=' + encodeURIComponent(texto + ' ' + url), '_blank', 'noopener');
     });
-    desenharGraficos(m);
+    const efeitoAno = ano => {
+        const v = m.variacao_por_ano[ano], d = m.pos_por_ano[ano] - m.contrafactual_por_ano[ano], sg = (m.repasse_seguro_receita_por_ano || {})[ano] || 0;
+        const neu = Math.abs(v) <= 0.0005, cls = clsSinal(v);
+        const tag = sg > 0 && v > 0.0005 && sg > d ? '<span class="tag-seg">Depende do Seguro-Receita</span>' : sg > 0 ? '<span class="tag-seg tag-seg-leve">Recebe Seguro-Receita</span>' : '';
+        return `<div class="efeito ${cls}"><em class="selo">${neu ? 'Receita estável' : v < 0 ? 'Perda estimada' : 'Ganho estimado'}</em><b>${fmtPct(v)}</b><span>em ${ano}</span><span>${neu ? '' : (d > 0 ? '+' : '') + fmtMoney(d) + ' ao ano'}</span>${tag}</div>`;
+    };
+    const selecionarAno = ano => {
+        $('efeitoLinha').innerHTML = efeitoAno(ano);
+        document.querySelectorAll('#anoSel button').forEach(b => b.setAttribute('aria-pressed', b.dataset.ano === ano));
+        if (grafSerie) { grafSerie.anoSel = ano; grafSerie.draw(); }
+    };
+    document.querySelectorAll('#anoSel button').forEach(b => b.addEventListener('click', () => selecionarAno(b.dataset.ano)));
+    desenharGraficos(m, selecionarAno);
+    selecionarAno('2033');
     iniciarSens(cod, base, m);
     carregarMalha().then(() => {
         if (ATUAL !== cod || !$('miniSvg')) return;
@@ -1132,7 +1147,7 @@ function desenharSens() {
 
 const COMP_ROTULOS = [['origem', 'ISS e cota-parte do ICMS residuais', '#858384'], ['cpt', 'IBS pelo critério histórico*', '#0f508e'], ['destino', 'IBS por destino*', '#6aa8dd'], ['seguro', 'Seguro-Receita', '#249266']];
 
-function desenharGraficos(m) {
+function desenharGraficos(m, aoEscolherAno) {
     const tabelaComp = pct => {
         const cab = ANOS.map(a => `<th>${a}</th>`).join('');
         const corpo = COMP_ROTULOS.map(([k, rot]) => `<tr><td>${rot}</td>${ANOS.map(a => {
@@ -1158,11 +1173,11 @@ function desenharGraficos(m) {
     const eixoR$ = {ticks: {callback: v => 'R$ ' + v.toLocaleString('pt-BR') + ' mi', color: '#55576a'}, grid: {color: '#ecebe5'}, beginAtZero: true};
     const tip = {callbacks: {label: c => c.parsed.y == null ? null : ' ' + c.dataset.label + ': ' + fmtMoney(c.parsed.y * 1e6)}};
     Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
-    // Mesma solução do painel original: o eixo vai de 2019 a 2025 e segue direto para 2029–2033, sem espaço para 2026–2028
-    // (o modelo não projeta esses anos), e os dois cenários partem do valor de 2025, de onde o contrafactual é construído.
-    const rotulos = ANOS_HIST.concat(ANOS);
+    // O eixo traz só o 2025 realizado (de onde o contrafactual é construído) e segue direto para 2029–2033, sem espaço para 2026–2028
+    // (o modelo não projeta esses anos). A série de 2019 a 2025 fica em Detalhes do cálculo: no mesmo gráfico, ela triplica a
+    // amplitude do eixo e achata a diferença entre os cenários, que é o que a página quer mostrar.
+    const rotulos = ['2025'].concat(ANOS);
     const estreito = $('gSerie').parentElement.clientWidth < 520;      // no celular, todos os anos, na diagonal e menores (como no painel dos estados)
-    const hist = rotulos.map(a => ANOS_HIST.includes(a) && m.historico_por_ano[a] ? mi(m.historico_por_ano[a].total_reais_2025) : null);
     const cenario = serie => rotulos.map(a => a === '2025' ? mi(m.pre_2025) : (ANOS.includes(a) && serie[a] != null ? mi(serie[a]) : null));
     // Desenho do painel dos estados: linha fina, ponto de 4 px com anel de 2 px na cor da superfície (continua legível onde as séries
     // se tocam), área de acerto folgada para o toque, grade só na horizontal e sem eixo vertical.
@@ -1180,7 +1195,7 @@ function desenharGraficos(m) {
             const ctx = chart.ctx, fs = estreito ? 11 : 12, ult = rotulos.length - 1, i25 = rotulos.indexOf('2025');
             const texto = (x, y, t, cor, peso, tam, al) => { ctx.font = peso + ' ' + tam + 'px Inter, system-ui, sans-serif'; ctx.fillStyle = cor; ctx.textAlign = al || 'left'; ctx.fillText(t, x, y); };
             ctx.save();
-            const pos = chart.getDatasetMeta(1).data[ult], cf = chart.getDatasetMeta(2).data[ult], p25 = chart.getDatasetMeta(0).data[i25];
+            const pos = chart.getDatasetMeta(0).data[ult], cf = chart.getDatasetMeta(1).data[ult], p25 = chart.getDatasetMeta(0).data[i25];
             if (pos && cf) {
                 const ganha = pos.y <= cf.y, v = m.variacao_por_ano['2033'];
                 const blocoPos = ganha ? [pos.y - 16, pos.y - 4] : [pos.y + 14, pos.y + 26], blocoCf = ganha ? [cf.y + 14, cf.y + 26] : [cf.y - 16, cf.y - 4];
@@ -1192,23 +1207,35 @@ function desenharGraficos(m) {
                     texto(pos.x + 10, base + 44, fmtPct(v), cor, 800, fs + 1);
                 }
             }
-            if (p25) { const y = Math.min(p25.y + 20, chart.chartArea.bottom - 14); texto(p25.x, y, fmtMoneyFino(m.pre_2025), '#062254', 700, fs, 'center'); texto(p25.x, y + 12, 'realizado em 2025', '#062254', 500, fs - 1, 'center'); }
+            const iSel = rotulos.indexOf(chart.anoSel || '2033');
+            if (iSel > 0 && iSel < ult) {   // ano escolhido no meio da série: guia vertical e colchete com a diferença
+                const a = chart.getDatasetMeta(0).data[iSel], b = chart.getDatasetMeta(1).data[iSel];
+                if (a && b) {
+                    const cor = m.variacao_por_ano[rotulos[iSel]] < 0 ? '#a02525' : '#1c5cab';
+                    ctx.setLineDash([3, 4]); ctx.strokeStyle = '#b9c1c8'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(a.x, chart.chartArea.top); ctx.lineTo(a.x, chart.chartArea.bottom); ctx.stroke(); ctx.setLineDash([]);
+                    ctx.strokeStyle = cor; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(a.x, b.y); ctx.stroke();
+                    ctx.fillStyle = '#fff'; ctx.strokeStyle = cor; ctx.lineWidth = 2.5;
+                    [a, b].forEach(pt => { ctx.beginPath(); ctx.arc(pt.x, pt.y, 6, 0, 7); ctx.fill(); ctx.stroke(); });
+                }
+            }
+            if (p25) { const y = Math.min(p25.y + 20, chart.chartArea.bottom - 14); texto(p25.x + 10, y, fmtMoneyFino(m.pre_2025), '#062254', 700, fs); texto(p25.x + 10, y + 12, 'realizado em 2025', '#062254', 500, fs - 1); }
             ctx.restore();
         }};
-    graficos.push(new Chart($('gSerie'), {
+    grafSerie = new Chart($('gSerie'), {
         type: 'line',
         data: {labels: rotulos, datasets: [
-            Object.assign({label: 'Realizado (2019–2025)', data: hist, borderColor: '#062254', backgroundColor: '#062254', pointBackgroundColor: '#062254'}, linha),
             Object.assign({label: 'Projeção com a reforma', data: cenario(m.pos_por_ano), borderColor: '#b8860b', backgroundColor: 'rgba(252,187,27,.2)', pointBackgroundColor: '#b8860b', fill: '+1'}, linha),
             Object.assign({label: 'Cenário sem a reforma', data: cenario(m.contrafactual_por_ano), borderColor: '#6b6b6b', backgroundColor: '#6b6b6b', pointBackgroundColor: '#6b6b6b', borderDash: [5, 4], fill: false}, linha)
         ]},
         options: {responsive: true, maintainAspectRatio: false, interaction: {mode: 'index', intersect: false},
+            onClick: (ev, _, chart) => { const el = chart.getElementsAtEventForMode(ev, 'index', {intersect: false}, false)[0]; if (el && el.index > 0 && aoEscolherAno) aoEscolherAno(rotulos[el.index]); },
             plugins: {legend: {display: false}, tooltip: tip},
             layout: {padding: {right: estreito ? 90 : 104}},
-            scales: {y: {grid: {color: '#e9edf0', drawTicks: false}, border: {display: false}, beginAtZero: false, grace: '8%', ticks: {callback: v => fmtMoney(v * 1e6), color: '#6b6b6b', font: {size: 11}, padding: 8}},
+            scales: {y: {grid: {color: '#e9edf0', drawTicks: false}, border: {display: false}, beginAtZero: false, grace: '12%', ticks: {maxTicksLimit: 6, callback: v => fmtMoney(v * 1e6), color: '#6b6b6b', font: {size: 11}, padding: 8}},
                 x: {grid: {display: false}, border: {color: '#c8d0d6'}, ticks: {maxRotation: estreito ? 55 : 0, minRotation: estreito ? 55 : 0, autoSkip: false, font: {size: estreito ? 10 : 11}, color: '#6b6b6b', padding: 6}}}}
         , plugins: [rotulosDiretos]
-    }));
+    });
+    graficos.push(grafSerie);
     const desenhaComp = () => {
         const pct = modo === 'pct';
         const tot = ANOS.map(a => { const r = m.componentes_por_ano[a]; return r.origem + r.cpt + r.destino + r.seguro; });
