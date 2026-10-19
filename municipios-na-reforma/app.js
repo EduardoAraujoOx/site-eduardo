@@ -189,6 +189,7 @@ function iniciar(idx, res, nac) {
         MAPA = criarMapa($('mapaSvg'), $('mapaWrap'), $('mapaTip'), {camadaUF: true, todos: true, uf: ESCOPO, nivel: NIVEL, aoClicar: cod => abrirMunicipio(cod), aoClicarUF: uf => definirEscopo(uf, 'muni')});
         $('mapaCarregando').hidden = true; $('mapaSvg').removeAttribute('hidden');   // SVGElement não tem a propriedade hidden
         if (ATUAL || MAPA_DESTAQUE) MAPA.destacar(ATUAL || MAPA_DESTAQUE);
+        if (UF_VISITANTE) MAPA.destacarUF(UF_VISITANTE);
     }).catch(e => { console.error(e); $('mapaCarregando').textContent = 'O mapa não pôde ser carregado agora. Use a busca por município ou a lista ao lado.'; });
 
     const cod = new URLSearchParams(location.search).get('m');
@@ -476,6 +477,7 @@ function tipMunicipio(m) {
    A sugestão nunca abre a ficha sozinha: leva o mapa à UF, contorna o município e deixa o nome dele no campo de busca. */
 function definirUFVisitante(uf) {
     UF_VISITANTE = uf;
+    if (MAPA) MAPA.destacarUF(uf);
     if (!RANK_UF && $('view-rankings').classList.contains('active')) renderRankUF();
 }
 
@@ -485,7 +487,6 @@ function iniciarLocalizacao() {
         const alvo = norm(g.city), achados = LISTA.filter(m => m.uf === g.uf && (m.chave === alvo || m.alt === alvo));
         if (NOMES_UF[g.uf]) definirUFVisitante(g.uf);
         if (achados.length === 1) sugerirLocal(achados[0].cod, 'conexao');
-        else if (NOMES_UF[g.uf] && !ATUAL && ESCOPO === 'BR') definirEscopo(g.uf, 'muni');   // cidade não identificada: ao menos abre no estado
     }).catch(() => { /* fora da Vercel não há estimativa: tudo certo */ });
     try {
         if (navigator.permissions && navigator.geolocation) {
@@ -531,8 +532,7 @@ function sugerirLocal(cod, origem) {
     const anterior = LOCAL && LOCAL.rotulo;                                        // a posição precisa do GPS substitui a estimativa pela conexão
     LOCAL = {cod, origem};
     MAPA_DESTAQUE = cod;
-    if (ESCOPO !== m.uf) definirEscopo(m.uf, 'muni');
-    if (MAPA) MAPA.destacar(cod);
+    if (MAPA) MAPA.destacar(cod);                                                  // o mapa continua no Brasil; o município fica marcado para quando o usuário abrir o estado
     track('local_sugerido', {origem, municipio: m.nome, uf: m.uf});
     LOCAL.rotulo = m.nome;                                                         // o campo de busca já abre com o município; quem mora em outro digita por cima
     const campo = $('busca');
@@ -544,7 +544,7 @@ const CAPITAIS = {AC:'1200401',AL:'2704302',AM:'1302603',AP:'1600303',BA:'292740
 function municipioInicial() {
     if (ATUAL) return;
     const cod = LOCAL ? LOCAL.cod : (UF_VISITANTE && CAPITAIS[UF_VISITANTE]);
-    if (cod && POR_COD[cod]) abrirMunicipio(cod, {semUrl: true});
+    if (cod && POR_COD[cod]) abrirMunicipio(cod, {semUrl: true, semEscopo: true});
 }
 
 $('busca').addEventListener('focus', e => { if (LOCAL && e.target.value === LOCAL.rotulo) e.target.select(); });
@@ -608,6 +608,11 @@ function criarMapa(svgEl, wrapEl, tipEl, opt) {
         }
         if (ctl.cod) ctl.destacar(ctl.cod);
     };
+    ctl.destacarUF = uf => {   // contorna, no mapa do Brasil, o estado de quem chega, sem mudar o que o mapa mostra
+        if (!pathsUF) return;
+        pathsUF.classed('sua', d => d.properties.uf === uf).filter('.sua').raise();
+        rotulos.raise();   // as siglas continuam por cima do contorno
+    };
     ctl.destacar = cod => {
         ctl.cod = cod;
         paths.classed('sel', false);
@@ -659,7 +664,7 @@ async function abrirMunicipio(cod, opt) {
     const rotulo = base.nome + ' (' + base.uf + ')';
     $('busca').value = rotulo; $('buscaMuni').value = rotulo;
     if (!opt.semUrl) { const u = new URL(location.href); u.searchParams.set('m', cod); history.replaceState(null, '', u); }
-    if (ESCOPO !== base.uf) definirEscopo(base.uf, 'muni');
+    if (ESCOPO !== base.uf && !opt.semEscopo) definirEscopo(base.uf, 'muni');
     if (MAPA) MAPA.destacar(cod);
     const corpo = $('fichaCorpo');
     corpo.innerHTML = '<p class="nota" role="status">Carregando a ficha de ' + esc(base.nome) + '…</p>';
