@@ -8,10 +8,10 @@
 /* ── CONFIGURAÇÃO COMERCIAL: preencher antes da campanha ─────────────────── */
 const CONFIG = {
     whatsapp: '5527988361923',   // somente dígitos com DDI e DDD, ex.: '5527999999999'
-    email: '',      // ex.: 'fale@municipiosnareforma.com.br'
+    email: 'fale@municipiosnareforma.com.br',
     gaId: 'G-JYFYHLBRP9', // ID público do GA4. A coleta só começa na produção, após consentimento.
-    razaoSocial: '', // nome do controlador dos dados, exibido na política de privacidade
-    cnpj: '',        // ex.: '00.000.000/0001-00'
+    razaoSocial: '59.747.635 EDUARDO REIS ARAUJO', // controlador dos dados, exibido na política de privacidade
+    cnpj: '59.747.635/0001-08',
     sensibilidade: false   // painel "Quanto este resultado depende das hipóteses?" na ficha; adiado, mude para true para reativar
 };
 
