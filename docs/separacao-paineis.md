@@ -10,19 +10,21 @@ O novo repositório leva somente o painel e suas funções, não o site pessoal,
 
 ## Validação
 
-- Build Node do Vertex com o endereço solicitado `https://painelvertex.vercel.app`, canonical, compartilhamento e configuração de produção verificados; página e assets servidos por HTTP local.
+- Build Node do Vertex com o endereço publicado `https://painel-vertex.vercel.app`, canonical, compartilhamento e configuração de produção verificados; página e assets servidos por HTTP local.
 - Testes de desktop e celular dos dois painéis: mapa, busca, ficha, gráfico e memória de cálculo.
 - Comparação dos dados das séries do gráfico: valores idênticos entre os dois painéis.
 - No Vertex, pedidos analíticos usam a origem comum; APIs de contato e cadastro permanecem no domínio próprio. O fluxo GA4 do Municípios na Reforma não é reutilizado.
 - No portal independente, testes de consentimento, recusa, revogação e ausência de formulários comerciais passaram. Projeções e bases de dados não foram alteradas nesta revisão.
 
+- Na primeira versão publicada, testes reais em computador e celular passaram para mapa, busca de São Francisco do Conde, gráfico e memória; séries numéricas idênticas às do Municípios na Reforma em produção. Nenhum formulário ou evento de medição foi enviado pelos testes.
+
 ## Repositório independente
 
-O proprietário criou o repositório privado `EduardoAraujoOx/painel-vertex`. A cópia foi enviada à branch `main`, no commit `01186653f56a3b24478310d7c93a60f8c0efdeb6`, e o acesso Git foi verificado. O projeto mantém um ZIP de recuperação e configuração própria para `https://painelvertex.vercel.app`.
+O proprietário criou o repositório privado `EduardoAraujoOx/painel-vertex` e publicou a primeira versão em `https://painel-vertex.vercel.app`. O acesso Git foi verificado. O commit `e48751b8d037c50839da82474cff1b3d1dc190d9` da branch `main` corrige o endereço nos metadados, links de compartilhamento e configuração. Essa atualização ainda aguarda liberação do deploy pela Vercel. O projeto mantém um ZIP de recuperação atualizado.
 
 ## Pendências reais de publicação e identificação
 
-1. Não há autenticação Vercel nesta sessão. O endereço solicitado ainda retorna `DEPLOYMENT_NOT_FOUND`. O proprietário pode importar o repositório em **Add New → Project**, com nome `painelvertex` e diretório raiz; o `vercel.json` da cópia já define o build e `public/`. O endereço deve ser atribuído ao projeto em **Settings → Domains**. Um domínio próprio pode ser definido depois com `SITE_URL` nessa mesma tela.
+1. O site publicado responde HTTP 200 em `https://painel-vertex.vercel.app`. A Vercel marcou o deploy do commit `e48751b` como `Deployment was blocked`; a produção ainda aponta o canonical, a imagem de compartilhamento e a configuração para o endereço sem hífen. Não há autenticação Vercel nesta sessão para consultar o motivo detalhado ou liberar a publicação. O proprietário precisa consultar o bloqueio no painel autenticado e liberar a atualização pelo fluxo indicado pela Vercel.
 2. Falta definir quem assume a identificação de responsável pelo Municípios na Reforma e qual contato deve aparecer na política de privacidade. Por isso, **a identificação atual de controlador foi preservada nessa política nesta revisão**. A publicação da remoção completa da Vertex depende de substituir essa identificação por informação confirmada pelo proprietário.
 
 A revisão permanece em rascunho enquanto esses pontos de identificação e publicação são concluídos. Não há migração ou exclusão de registros de cadastros; serviços comerciais existentes devem ser configurados no novo projeto com suas próprias variáveis de ambiente.
