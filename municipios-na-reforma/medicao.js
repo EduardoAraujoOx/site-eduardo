@@ -11,13 +11,12 @@ const EVENTOS = new Set([
     'aba', 'mapa_uf', 'trilho_uf', 'trilho_municipio', 'ranking_ordem', 'ranking_uf',
     'ranking_municipio', 'busca_municipio', 'local_sugerido', 'clique_mapa_uf',
     'clique_mapa', 'abrir_memoria', 'copiar_link', 'imprimir_ficha', 'compartilhar',
-    'sens_ano_base', 'cadastro', 'clique_contato', 'livro_cadastro', 'contato_enviado',
-    'servico_abrir'
+    'sens_ano_base', 'cadastro', 'clique_contato'
 ]);
 const OPCOES = {
     uf: 'AC AL AM AP BA CE DF ES GO MA MG MS MT PA PB PE PI PR RJ RN RO RR RS SC SE SP TO BR'.split(' '),
-    aba: ['visao-geral', 'municipio', 'rankings', 'agenda', 'memoria', 'metodologia', 'vertex'],
-    canal: ['whatsapp', 'email', 'aba_vertex', 'formulario'],
+    aba: ['visao-geral', 'municipio', 'rankings', 'agenda', 'memoria', 'metodologia'],
+    canal: ['whatsapp', 'email'],
     origem: ['gps', 'conexao', 'memoria'],
     local: ['aba', 'ficha', 'memoria', 'flutuante'],
     ordem: ['pct', 'rs']
