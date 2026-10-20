@@ -5,12 +5,11 @@
 (function () {
 'use strict';
 
-/* ── CONFIGURAÇÃO COMERCIAL: preencher antes da campanha ─────────────────── */
+/* ── CONFIGURAÇÃO DO PORTAL ─────────────────────────────────────────────── */
 const CONFIG = {
-    whatsapp: '5527988361923',   // somente dígitos com DDI e DDD, ex.: '5527999999999'
-    email: '',      // ex.: 'fale@municipiosnareforma.com.br'
+    email: '',      // contato do responsável pelo portal
     gaId: 'G-JYFYHLBRP9', // ID público do GA4. A coleta só começa na produção, após consentimento.
-    razaoSocial: '', // ex.: 'Vertex Advisory Ltda.', aparece na política de privacidade
+    razaoSocial: '', // responsável confirmado; aparece na política de privacidade
     cnpj: '',        // ex.: '00.000.000/0001-00'
     sensibilidade: false   // painel "Quanto este resultado depende das hipóteses?" na ficha; adiado, mude para true para reativar
 };
@@ -92,7 +91,6 @@ const GEO = {muni: null, uf: null, promessa: null};
 
 /* ── abas ── */
 function mostrarVisao(v) {
-    if (v === 'vertex') { preencherMunicipioForms(); renderContextoVertex(); }
     document.querySelectorAll('.view').forEach(s => s.classList.toggle('active', s.id === 'view-' + v));
     document.querySelectorAll('.tab-btn').forEach(b => {
         const on = b.dataset.view === v;
@@ -1027,8 +1025,8 @@ function renderFicha(cod, base, m) {
             <button type="button" class="memo-link" id="btnMemoria">Ver a memória de cálculo deste município →</button>
         </div>
         <div class="panel proximos" id="cap-proximos"><h3>E agora?</h3><p class="panel-sub">Leve este resultado adiante ou acompanhe os próximos passos da reforma.</p>
-            <div class="acoes-fim"><button class="btn btn-gold" type="button" id="btnPdf">Salvar em PDF</button><button class="btn btn-ghost" type="button" id="btnCompartilhar">Compartilhar</button><a class="btn btn-ghost" href="#" data-tab="agenda">Ver os prazos da reforma</a><a class="btn btn-ghost" href="#" data-tab="vertex">Falar com a equipe</a></div></div>
-        <p class="print-credito">Municípios na Reforma, iniciativa da Vertex Advisory · municipiosnareforma.com.br${CONFIG.email ? ' · ' + CONFIG.email : ''}</p>`;
+            <div class="acoes-fim"><button class="btn btn-gold" type="button" id="btnPdf">Salvar em PDF</button><button class="btn btn-ghost" type="button" id="btnCompartilhar">Compartilhar</button><a class="btn btn-ghost" href="#" data-tab="agenda">Ver os prazos da reforma</a></div></div>
+        <p class="print-credito">Municípios na Reforma · municipiosnareforma.com.br${CONFIG.email ? ' · ' + CONFIG.email : ''}</p>`;
 
     $('btnMemoria').addEventListener('click', () => { track('abrir_memoria', {municipio_codigo: cod}); abrirMemoria(cod); });
     $('btnCopiar').addEventListener('click', e => {
@@ -1336,76 +1334,10 @@ function dadosMemoria(uf) {
     return CACHE_MEMO.get(uf);
 }
 
-/* ── cadastro: abre a memória de cálculo ──
-   Só entra em cena quando /api/lead informa que o armazenamento está configurado na Vercel.
-   Sem isso (prévia, outro servidor, variáveis ausentes) a memória fica aberta a todos, de modo
-   que o cadastro nunca vira uma porta fechada por falha técnica. */
-const CHAVE_CADASTRO = 'mnr-cadastro-v1', VERSAO_TERMOS = '2026-10';
-let CADASTRO_ATIVO = false, CADASTRO_PULADO = false;
-getJSON('/api/lead').then(r => { CADASTRO_ATIVO = !!(r && r.ativo); }).catch(() => { /* sem função: memória aberta */ });
-function jaCadastrado() { try { return !!localStorage.getItem(CHAVE_CADASTRO); } catch (e) { return false; } }
-function lembrarCadastro() { try { localStorage.setItem(CHAVE_CADASTRO, String(Date.now())); } catch (e) { /* sem armazenamento, pede de novo na próxima vez */ } }
-const precisaCadastro = () => CADASTRO_ATIVO && !CADASTRO_PULADO && !jaCadastrado();
-const EMAIL_OK = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-function renderCadastro() {
-    const base = MEMO.cod ? POR_COD[MEMO.cod] : null;
-    $('memoConteudo').innerHTML = `<div class="panel accent cadastro">
-        <h3>Cadastro gratuito para abrir a memória de cálculo</h3>
-        <p class="panel-sub">A memória mostra, com os números intermediários, como cada coeficiente foi obtido, para que a conta possa ser refeita e conferida. O acesso é livre; o cadastro nos ajuda a saber quem usa o painel e a avisar quando o modelo for atualizado.</p>
-        <form id="formCadastro" class="form-cad" novalidate>
-            <div class="campo"><label for="cadNome">Nome completo</label><input id="cadNome" name="nome" autocomplete="name" required></div>
-            <div class="campo"><label for="cadEmail">E-mail</label><input id="cadEmail" name="email" type="email" autocomplete="email" required></div>
-            <div class="campo"><label for="cadCargo">Cargo ou função</label><input id="cadCargo" name="cargo" autocomplete="organization-title" required></div>
-            <div class="campo"><label for="cadVinculo">Vínculo</label><select id="cadVinculo" name="vinculo"><option>Prefeitura</option><option>Câmara municipal</option><option>Governo estadual</option><option>Consultoria ou empresa</option><option>Imprensa ou academia</option><option>Outro</option></select></div>
-            <div class="campo campo-largo"><label for="cadMunicipio">Município ou órgão</label><input id="cadMunicipio" name="municipio" autocomplete="off" value="${base ? esc(base.nome + ' (' + base.uf + ')') : ''}"></div>
-            <input class="isca" type="text" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
-            <label class="aceite"><input type="checkbox" name="aceite_privacidade" required><span>Li e aceito a <a href="#" data-ir-priv>política de privacidade</a>.</span></label>
-            <label class="aceite"><input type="checkbox" name="aceite_contato"><span>Aceito receber contato da Vertex Advisory sobre a reforma tributária e os serviços para prefeituras (opcional).</span></label>
-            <div class="form-acoes"><button class="btn btn-gold" type="submit">Abrir a memória de cálculo</button><span class="nota" id="cadMsg" role="status"></span></div>
-        </form></div>`;
-    const f = $('formCadastro'), msg = $('cadMsg');
-    f.querySelector('[data-ir-priv]').addEventListener('click', e => { e.preventDefault(); mostrarVisao('privacidade'); });
-    f.addEventListener('submit', async e => {
-        e.preventDefault();
-        const d = Object.fromEntries(new FormData(f).entries());
-        const erros = [];
-        const marca = (campo, ok) => { const el = f.elements[campo]; if (el) el.setAttribute('aria-invalid', ok ? 'false' : 'true'); if (!ok) erros.push(campo); };
-        marca('nome', (d.nome || '').trim().length >= 3);
-        marca('email', EMAIL_OK.test((d.email || '').trim()));
-        marca('cargo', (d.cargo || '').trim().length >= 2);
-        msg.dataset.erro = '1';
-        if (erros.length) { msg.textContent = 'Confira os campos marcados.'; f.elements[erros[0]].focus(); return; }
-        if (!f.elements.aceite_privacidade.checked) { msg.textContent = 'Para continuar, aceite a política de privacidade.'; f.elements.aceite_privacidade.focus(); return; }
-        const botao = f.querySelector('button[type=submit]');
-        botao.disabled = true; msg.dataset.erro = '0'; msg.textContent = 'Enviando…';
-        try {
-            const r = await fetch('/api/lead', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({
-                nome: d.nome, email: d.email, cargo: d.cargo, vinculo: d.vinculo, municipio: d.municipio, site: d.site || '',
-                municipio_cod: base ? MEMO.cod : '', uf: base ? base.uf : '',
-                origem: 'memoria:' + MEMO.secao,
-                utm: [...new URLSearchParams(location.search)].filter(([k]) => k.indexOf('utm_') === 0).map(([k, v]) => k + '=' + v).join('&'),
-                aceite_privacidade: true, aceite_contato: !!f.elements.aceite_contato.checked, versao_termos: VERSAO_TERMOS
-            })});
-            if (!r.ok) throw new Error('lead ' + r.status);
-            lembrarCadastro();
-            track('cadastro', {origem: 'memoria', municipio_codigo: base ? base.cod : '', contato: !!f.elements.aceite_contato.checked});
-            renderMemoria();
-        } catch (err) {
-            console.error(err);
-            botao.disabled = false; msg.dataset.erro = '1';
-            msg.innerHTML = 'Não foi possível enviar agora. Tente de novo, ou <button type="button" class="link-btn" id="cadPular">abra a memória mesmo assim</button>.';
-            $('cadPular').addEventListener('click', () => { CADASTRO_PULADO = true; renderMemoria(); });
-        }
-    });
-}
-
 function renderMemoria() {
     document.querySelectorAll('#memoAbas button').forEach(b => b.classList.toggle('active', b.dataset.secao === MEMO.secao));
     const alvo = $('memoConteudo');
-    const barrada = precisaCadastro();
-    $('memoAbas').hidden = barrada;
-    if (barrada) { renderCadastro(); return; }
+    $('memoAbas').hidden = false;
     if (!MEMO.cod) return;
     const cod = MEMO.cod, base = POR_COD[cod];
     alvo.innerHTML = '<div class="panel"><p class="nota" role="status">Carregando os dados do município…</p></div>';
@@ -1431,150 +1363,6 @@ function renderMemoria() {
     }).catch(e => { console.error(e); alvo.innerHTML = '<div class="panel"><p class="aviso">Não foi possível carregar a memória de cálculo deste município. Tente novamente em instantes.</p></div>'; });
 }
 
-/* ── contato ──
-   Os links só existem quando WhatsApp ou e-mail estão configurados no topo deste arquivo.
-   A mensagem já leva o município e o número da ficha, para que o contato chegue qualificado. */
-function contatoBotoes(alvo, base, resumo, local) {
-    const assunto = base ? 'Diagnóstico da reforma tributária: ' + base.nome + '/' + base.uf : 'Diagnóstico da reforma tributária para a minha prefeitura';
-    const texto = base
-        ? 'Olá! Escrevo da Prefeitura de ' + base.nome + '/' + base.uf + '. Vi no Municípios na Reforma que a variação estimada da receita em 2033 é ' + resumo + ', frente ao cenário sem a reforma, e gostaria de conversar sobre o diagnóstico da reforma tributária para o município. Meu nome e cargo: '
-        : 'Olá! Vim pelo Municípios na Reforma e gostaria de conversar sobre o diagnóstico da reforma tributária para a minha prefeitura. Meu nome, cargo e município: ';
-    const rotulo = base ? 'Pedir diagnóstico de ' + base.nome : null;
-    const html = [];
-    if (CONFIG.whatsapp) html.push(`<a class="btn btn-gold btn-sm" data-contato="whatsapp" href="https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(texto)}" rel="noopener" target="_blank">${rotulo ? esc(rotulo) + ' pelo WhatsApp' : 'Falar pelo WhatsApp'}</a>`);
-    if (CONFIG.email) html.push(`<a class="btn ${CONFIG.whatsapp ? 'btn-ghost' : 'btn-gold'} btn-sm" data-contato="email" href="mailto:${CONFIG.email}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(texto)}">${rotulo && !CONFIG.whatsapp ? esc(rotulo) : 'Enviar e-mail'}</a>`);
-    if (!html.length && base) html.push('<a class="btn btn-gold btn-sm" href="#" data-ir="vertex">Falar com a Vertex</a>');
-    alvo.innerHTML = html.join('');
-    alvo.querySelectorAll('[data-contato]').forEach(a => a.addEventListener('click', () => track('clique_contato', {canal: a.dataset.contato, municipio_codigo: base ? base.cod : '', local: local || 'aba'})));
-    alvo.querySelectorAll('[data-ir]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); track('clique_contato', {canal: 'aba_vertex', municipio_codigo: base ? base.cod : '', local: local || 'aba'}); if (a.dataset.ir === 'vertex') irParaContato(base, resumo); else mostrarVisao(a.dataset.ir); }));
-}
-contatoBotoes($('botoesContato'), null);
-
-/* Botão flutuante do WhatsApp: o canal comercial fica fora das fichas e dos dados. A mensagem leva o município em foco. */
-function iniciarZap() {
-    const zap = $('zap');
-    if (!CONFIG.whatsapp) return;
-    zap.hidden = false;
-    const mensagem = () => {
-        const m = municipioEmFoco();
-        return m ? 'Olá! Vim pelo painel Municípios na Reforma e gostaria de conversar sobre o diagnóstico da reforma tributária para ' + m.nome + '/' + m.uf + '.'
-                 : 'Olá! Vim pelo painel Municípios na Reforma e gostaria de conversar sobre o diagnóstico da reforma tributária para a minha prefeitura.';
-    };
-    const atualizar = () => { zap.href = 'https://wa.me/' + CONFIG.whatsapp + '?text=' + encodeURIComponent(mensagem()); };
-    atualizar();
-    ['pointerdown', 'focus', 'mouseover'].forEach(ev => zap.addEventListener(ev, atualizar));      // o link já sai atualizado no toque ou no clique
-    zap.addEventListener('click', () => { atualizar(); const m = municipioEmFoco(); track('clique_contato', {canal: 'whatsapp', municipio_codigo: m ? m.cod : '', local: 'flutuante'}); });
-}
-
-/* ── formulários: pedido de informações sobre os serviços e cadastro do livro ──
-   Mandam um e-mail de texto por /api/contato. Só aparecem quando a função informa que o envio está
-   configurado na Vercel (RESEND_API_KEY e CONTATO_PARA); antes disso o portal não promete nada. */
-let CONTATO_ATIVO = false;
-const T_FORM = {contato: Date.now(), livro: Date.now()};   // tempo desde o carregamento da página, para a armadilha de robôs (nunca reiniciado, para não descartar quem usa preenchimento automático)
-const MSG_PADRAO = 'Gostaria de receber informações sobre os serviços da Vertex Advisory para a minha prefeitura.';
-let MSG_AUTO = '';
-
-const municipioEmFoco = () => {
-    const cod = ATUAL || (LOCAL && LOCAL.cod);
-    return cod && POR_COD[cod] ? POR_COD[cod] : null;
-};
-iniciarZap();
-function preencherMunicipioForms() {
-    const m = municipioEmFoco();
-    if (!m) return;
-    ['ctMunicipio', 'livMunicipio'].forEach(id => { const el = $(id); if (el && !el.value) el.value = m.nome + ' (' + m.uf + ')'; });
-}
-/* Uma linha com o número do município em foco abre a seção de serviços: o dado vem antes da oferta. */
-function renderContextoVertex() {
-    const el = $('contextoVertex'), m = municipioEmFoco();
-    if (!m || m.r) { el.hidden = true; el.innerHTML = ''; return; }
-    el.innerHTML = `<span><b>${esc(m.nome)} (${m.uf})</b>: variação estimada de <b class="${clsSinal(m.v)}">${fmtPct(m.v)}</b> da receita em 2033, contra o cenário sem a reforma.</span> <button type="button" class="link-btn" id="verFichaVertex">Ver a ficha →</button>`;
-    el.hidden = false;
-    $('verFichaVertex').addEventListener('click', () => abrirMunicipio(m.cod));
-}
-
-function abrirContato(opcoes) {
-    const f = $('formContato');
-    f.hidden = false; $('btnServico').setAttribute('aria-expanded', 'true');
-    if (!$('ctMsg').value) { $('ctMsg').value = MSG_PADRAO; MSG_AUTO = MSG_PADRAO; }
-    preencherMunicipioForms();
-    if (opcoes && opcoes.rolar) f.scrollIntoView({behavior: 'smooth', block: 'center'});
-    if (!(opcoes && opcoes.semFoco)) $('ctNome').focus({preventScroll: true});
-}
-/* O botão "Pedir diagnóstico" da ficha chega aqui: município e variação já vão na mensagem. */
-function irParaContato(base, resumo) {
-    mostrarVisao('vertex');
-    if (base) {
-        $('ctMunicipio').value = base.nome + ' (' + base.uf + ')';
-        const msg = 'Olá! Escrevo da Prefeitura de ' + base.nome + '/' + base.uf + '. Vi no Municípios na Reforma que a variação estimada da receita em 2033 é ' + resumo + ', frente ao cenário sem a reforma, e gostaria de conversar sobre o diagnóstico da reforma tributária para o município.';
-        if (!$('ctMsg').value || $('ctMsg').value === MSG_AUTO) { $('ctMsg').value = msg; MSG_AUTO = msg; }
-    }
-    abrirContato({rolar: true, semFoco: false});
-}
-function mostrarFormularios() {
-    $('livroEmBreve').hidden = true; $('servicoEmBreve').hidden = true;    // os formulários estão sempre abertos; sem o e-mail ativo, o envio sai pelo WhatsApp
-}
-
-function ligarFormulario(form, msgEl, tipo, aoEnviar) {
-    form.addEventListener('submit', async e => {
-        e.preventDefault();
-        const d = Object.fromEntries(new FormData(form).entries());
-        const erros = [];
-        const marca = (campo, ok) => { const el = form.elements[campo]; if (el) el.setAttribute('aria-invalid', ok ? 'false' : 'true'); if (!ok) erros.push(campo); };
-        marca('nome', (d.nome || '').trim().length >= 3);
-        marca('email', EMAIL_OK.test((d.email || '').trim()));
-        if (tipo === 'contato') marca('mensagem', (d.mensagem || '').trim().length >= 5);
-        msgEl.dataset.erro = '1';
-        if (erros.length) { msgEl.textContent = 'Confira os campos marcados.'; form.elements[erros[0]].focus(); return; }
-        if (!form.elements.aceite_privacidade.checked) { msgEl.textContent = 'Para continuar, aceite a política de privacidade.'; form.elements.aceite_privacidade.focus(); return; }
-        if (!CONTATO_ATIVO && CONFIG.whatsapp) {                   // canal de e-mail ainda não ativo: a mensagem sai pelo WhatsApp, já escrita
-            const linhas = tipo === 'livro'
-                ? ['Olá! Quero receber o sumário e as informações de lançamento do livro "Modernização Tributária Municipal no Brasil".']
-                : ['Olá! ' + (d.mensagem || '').trim()];
-            linhas.push('Nome: ' + d.nome.trim(), 'E-mail: ' + d.email.trim());
-            if (d.telefone) linhas.push('Telefone: ' + d.telefone.trim());
-            if (d.cargo) linhas.push('Cargo: ' + d.cargo.trim());
-            if (d.municipio) linhas.push('Município ou órgão: ' + d.municipio.trim());
-            const url = 'https://wa.me/' + CONFIG.whatsapp + '?text=' + encodeURIComponent(linhas.join('\n'));
-            track(tipo === 'livro' ? 'livro_cadastro' : 'contato_enviado', {canal: 'whatsapp'});
-            window.open(url, '_blank', 'noopener');
-            form.innerHTML = '<p class="form-ok" role="status"><strong>Quase lá.</strong> Abrimos o WhatsApp com os seus dados já escritos: é só tocar em enviar. Se a conversa não abriu, <a href="' + url + '" target="_blank" rel="noopener">toque aqui para abri-la</a>.</p>';
-            return;
-        }
-        const botao = form.querySelector('button[type=submit]');
-        botao.disabled = true; msgEl.dataset.erro = '0'; msgEl.textContent = 'Enviando…';
-        try {
-            const r = await fetch('/api/contato', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({
-                tipo, nome: d.nome, email: d.email, cargo: d.cargo || '', telefone: d.telefone || '', municipio: d.municipio || '', mensagem: d.mensagem || '',
-                interesse: d.interesse || '', site: d.site || '', t: Date.now() - T_FORM[tipo], origem: tipo === 'livro' ? 'livro' : 'aba_vertex',
-                utm: [...new URLSearchParams(location.search)].filter(([k]) => k.indexOf('utm_') === 0).map(([k, v]) => k + '=' + v).join('&'),
-                aceite_privacidade: true
-            })});
-            if (!r.ok) throw new Error('contato ' + r.status);
-            track(tipo === 'livro' ? 'livro_cadastro' : 'contato_enviado', {canal: 'formulario'});
-            aoEnviar(d);
-        } catch (err) {
-            console.error(err);
-            botao.disabled = false; msgEl.dataset.erro = '1';
-            msgEl.textContent = 'Não foi possível enviar agora. Tente de novo em instantes.';
-        }
-    });
-}
-
-function iniciarFormularios() {
-    ligarFormulario($('formLivro'), $('livMsg'), 'livro', d => {
-        $('formLivro').innerHTML = '<p class="form-ok" role="status"><strong>Cadastro recebido.</strong> Você vai receber o sumário do livro e as informações do lançamento em ' + esc(d.email) + '.</p>';
-    });
-    ligarFormulario($('formContato'), $('ctMsgStatus'), 'contato', d => {
-        $('formContato').innerHTML = '<p class="form-ok" role="status"><strong>Solicitação enviada.</strong> A Vertex responde no e-mail ' + esc(d.email) + '.</p>';
-    });
-    $('btnServico').addEventListener('click', () => {
-        if ($('formContato').hidden) { track('servico_abrir', {}); abrirContato({}); }
-        else { $('formContato').hidden = true; $('btnServico').setAttribute('aria-expanded', 'false'); }
-    });
-    getJSON('/api/contato').then(r => { CONTATO_ATIVO = !!(r && r.ativo); }).catch(() => { /* sem função: formulários ficam fora */ }).then(mostrarFormularios);
-}
-iniciarFormularios();
 $('btnVoltar').addEventListener('click', () => mostrarVisao('visao-geral'));
 /* Ao imprimir, os detalhes do cálculo saem abertos; depois voltam ao estado em que estavam. */
 let ABERTOS_ANTES = null;
