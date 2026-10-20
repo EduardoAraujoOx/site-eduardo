@@ -45,9 +45,9 @@ As contagens começam com a instalação; o GA4 não recupera as visitas anterio
 | `clique_mapa`, `trilho_municipio`, `ranking_municipio` | Seleção de município no mapa ou nas listas |
 | `aba` | Troca de aba, identificada pelo parâmetro `aba` |
 | `copiar_link`, `compartilhar`, `imprimir_ficha` | Uso de compartilhamento ou impressão da ficha |
-| `clique_contato` | Clique em um canal, como WhatsApp; não confirma envio de mensagem |
-| `contato_enviado`, `livro_cadastro` | Formulário concluído no portal; com `canal=whatsapp`, significa abertura da conversa, não envio confirmado. Com `canal=formulario`, a API de envio respondeu com sucesso |
-| `cadastro`, `abrir_memoria` | Cadastro concluído ou abertura da memória de cálculo |
+| `abrir_memoria` | Abertura da memória de cálculo, agora disponível sem cadastro |
+
+Os eventos comerciais `clique_contato`, `contato_enviado`, `livro_cadastro` e `cadastro` pertencem à versão anterior do portal. O histórico do GA4 é preservado, mas a versão independente não apresenta esses formulários nem dispara essas ações. O novo Painel Vertex deve usar seu próprio fluxo de medição; veja `separacao-paineis.md`.
 
 O código permite apenas nomes de eventos e parâmetros conhecidos. Não envia nome, e-mail, telefone, mensagem ou outros campos livres dos formulários ao GA4. Municípios são identificados pelo código público do IBGE, evitando confusão entre cidades homônimas. A URL medida conserva apenas o parâmetro municipal numérico `m`; parâmetros arbitrários, UTM e fragmentos são descartados. O referenciador mantém apenas a origem, sem caminho ou consulta. A origem de busca continua podendo ser identificada pelo domínio de referência; campanhas UTM não são detalhadas por esta integração.
 

@@ -16,8 +16,8 @@ const EVENTOS = new Set([
 ]);
 const OPCOES = {
     uf: 'AC AL AM AP BA CE DF ES GO MA MG MS MT PA PB PE PI PR RJ RN RO RR RS SC SE SP TO BR'.split(' '),
-    aba: ['visao-geral', 'municipio', 'rankings', 'agenda', 'memoria', 'metodologia', 'vertex'],
-    canal: ['whatsapp', 'email', 'aba_vertex', 'formulario'],
+    aba: ['visao-geral', 'municipio', 'rankings', 'agenda', 'memoria', 'metodologia'],
+    canal: ['whatsapp', 'email', 'formulario'],
     origem: ['gps', 'conexao', 'memoria'],
     local: ['aba', 'ficha', 'memoria', 'flutuante'],
     ordem: ['pct', 'rs']

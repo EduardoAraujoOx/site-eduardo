@@ -72,7 +72,7 @@ def verificar_seo():
     assert html.metas['og:site_name'] == 'Municípios na Reforma'
     site = next(schema for schema in html.schemas if schema['@type'] == 'WebSite')
     assert site['name'] == html.h1[0] and site['url'] == html.canonica
-    assert (PORTAL / 'images/logo-vertex-advisory.png').is_file()
+    assert (PORTAL / 'images/logo-municipios.png').is_file()
     robots = RobotFileParser()
     robots.parse((PORTAL / 'robots.txt').read_text().splitlines())
     for caminho in ['/', '/app.js', '/medicao.js', '/data/painel-municipios/index.json', '/data/malha-municipios.json']:
@@ -242,23 +242,14 @@ def main():
             assert set(evento) == {'canal', 'municipio_codigo', 'local', 'page_location'}, evento
             assert evento['page_location'] == f'https://{PRODUCAO}/?m=2929206'
             assert not eventos(page, 'evento_desconhecido')
-            # Exercitar o formulário de verdade, com WhatsApp simulado e nenhum envio externo.
+            # A versão independente não apresenta cadastros nem contatos comerciais.
             page.locator('.site-foot a[data-ir="privacidade"]').click()
             page.locator('#medicaoPreferencias').click()
             page.get_by_role('button', name='Aceitar medição').click()
             assert len(eventos(page, 'page_view')) == 1
             expect(page.locator('script[src*="googletagmanager.com/gtag/js"]')).to_have_count(1)
-            page.locator('[data-view="vertex"]').click()
-            page.locator('#btnServico').click()
-            page.locator('#ctNome').fill('Pessoa Teste')
-            page.locator('#ctEmail').fill('teste@example.com')
-            page.locator('#ctMunicipio').fill('Município escrito livremente')
-            page.locator('#ctMsg').fill('Mensagem privada de teste')
-            page.locator('#formContato [name="aceite_privacidade"]').check()
-            with page.expect_popup() as popup:
-                page.locator('#formContato button[type="submit"]').click()
-            popup.value.close()
-            assert eventos(page, 'contato_enviado')[-1]['canal'] == 'whatsapp'
+            assert page.locator('#formContato, #formLivro, #formCadastro').count() == 0
+            assert page.locator('[data-view="vertex"], #zap').count() == 0
             comandos = json.dumps(fila(page))
             for privado in ['Pessoa Teste', 'teste@example.com', 'escrito livremente', 'Mensagem privada', 'texto privado', 'pessoa@exemplo.com']:
                 assert privado not in comandos, privado
@@ -272,7 +263,7 @@ def main():
             assert not any(cookie['name'].startswith('_ga') for cookie in page.context.cookies())
             assert json.loads(page.evaluate(f'localStorage.getItem("{CHAVE}")'))['escolha'] == 'denied'
             assert len(ga) == 1, ga
-        print(f'PASS: ID configurado {id_configurado}, aceite, eventos da busca/formulário, filtros de privacidade e revogação')
+        print(f'PASS: ID configurado {id_configurado}, aceite, eventos da busca, ausência de formulários, filtros de privacidade e revogação')
 
         with cenario(ID_TESTE, inicial=f"localStorage.setItem('{CHAVE}', JSON.stringify({{escolha:'granted', em:Date.now()}}))") as (page, ga):
             page.goto(f'https://{PRODUCAO}/?m=2929206&segredo=privado', wait_until='domcontentloaded')
