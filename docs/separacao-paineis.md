@@ -10,16 +10,19 @@ O novo repositório leva somente o painel e suas funções, não o site pessoal,
 
 ## Validação
 
-- Build Node do Vertex, com domínio de produção simulado derivado das variáveis Vercel.
+- Build Node do Vertex com o endereço solicitado `https://painelvertex.vercel.app`, canonical, compartilhamento e configuração de produção verificados; página e assets servidos por HTTP local.
 - Testes de desktop e celular dos dois painéis: mapa, busca, ficha, gráfico e memória de cálculo.
 - Comparação dos dados das séries do gráfico: valores idênticos entre os dois painéis.
 - No Vertex, pedidos analíticos usam a origem comum; APIs de contato e cadastro permanecem no domínio próprio. O fluxo GA4 do Municípios na Reforma não é reutilizado.
 - No portal independente, testes de consentimento, recusa, revogação e ausência de formulários comerciais passaram. Projeções e bases de dados não foram alteradas nesta revisão.
 
-## Pendências reais de acesso e identificação
+## Repositório independente
 
-1. A integração GitHub permite editar este repositório, mas recusou criar `EduardoAraujoOx/painel-vertex`: `Resource not accessible by integration`, confirmado também por HTTP 403 na API REST. A cópia foi preservada como repositório Git local e arquivo ZIP. O proprietário precisa criar o repositório privado vazio e informar a URL; o envio deve ser tentado com as permissões existentes e, se necessário, o acesso do aplicativo GitHub ao novo repositório precisa ser concedido.
-2. Não há autenticação Vercel nesta sessão. A API informou ausência de token. Depois de enviar o código ao GitHub, o proprietário pode importar o repositório em **Add New → Project**; o `vercel.json` da cópia já define o build e `public/`. A Vercel atribui o domínio provisório. Um domínio próprio pode ser definido depois com `SITE_URL` e **Settings → Domains**.
-3. Falta definir quem assume a identificação de responsável pelo Municípios na Reforma e qual contato deve aparecer na política de privacidade. Por isso, **a identificação atual de controlador foi preservada nessa política nesta revisão**. A publicação da remoção completa da Vertex depende de substituir essa identificação por informação confirmada pelo proprietário.
+O proprietário criou o repositório privado `EduardoAraujoOx/painel-vertex`. A cópia foi enviada à branch `main`, no commit `01186653f56a3b24478310d7c93a60f8c0efdeb6`, e o acesso Git foi verificado. O projeto mantém um ZIP de recuperação e configuração própria para `https://painelvertex.vercel.app`.
+
+## Pendências reais de publicação e identificação
+
+1. Não há autenticação Vercel nesta sessão. O endereço solicitado ainda retorna `DEPLOYMENT_NOT_FOUND`. O proprietário pode importar o repositório em **Add New → Project**, com nome `painelvertex` e diretório raiz; o `vercel.json` da cópia já define o build e `public/`. O endereço deve ser atribuído ao projeto em **Settings → Domains**. Um domínio próprio pode ser definido depois com `SITE_URL` nessa mesma tela.
+2. Falta definir quem assume a identificação de responsável pelo Municípios na Reforma e qual contato deve aparecer na política de privacidade. Por isso, **a identificação atual de controlador foi preservada nessa política nesta revisão**. A publicação da remoção completa da Vertex depende de substituir essa identificação por informação confirmada pelo proprietário.
 
 A revisão permanece em rascunho enquanto esses pontos de identificação e publicação são concluídos. Não há migração ou exclusão de registros de cadastros; serviços comerciais existentes devem ser configurados no novo projeto com suas próprias variáveis de ambiente.
