@@ -508,7 +508,7 @@ def main(cod, saida_dir=None):
 
     def cab(n):
         return (f'<div class="cab"><span class="marca"><img src="img/logo-municipios.png" alt="Municípios na Reforma"></span><span class="url">{SITE}</span></div>'
-                f'<div class="rod"><span>{esc(TITULO)} · {esc(nome)} ({uf})</span><span class="rod-d"><em>Uma iniciativa da</em><img src="img/vertex.png" alt="Vertex Advisory"><b>{n} / 5</b></span></div>')
+                f'<div class="rod"><span>{esc(TITULO)} · {esc(nome)} ({uf})</span><span class="rod-d"><b>{n} / 5</b></span></div>')
 
     if perde:
         manchete = f"Em 2033, a receita de <b>{esc(nome)}</b> fica <b>{dinheiro(abs(dif33))} abaixo</b> do que seria sem a reforma"
@@ -668,7 +668,7 @@ def main(cod, saida_dir=None):
   <h2 class="sec"><i>8.</i> Limitações</h2>
   <p class="leit peq">As projeções são estimativas e não representam previsões definitivas de arrecadação. Seus resultados dependem das hipóteses de crescimento econômico, da participação de 2025 adotada no cenário sem reforma e da regulamentação do IBS. Os dados fiscais são declarados pelos municípios ao Siconfi, sem auditoria independente, e o horizonte vai de 2029 a 2033. Os coeficientes definitivos serão divulgados pelo CGIBS, que poderá utilizar outras fontes e procedimentos previstos em lei (art. 116, §§ 3º e 4º).</p>
   <div class="citar">
-    <div><b>Como citar.</b> Municípios na Reforma (iniciativa da Vertex Advisory). <i>{esc(TITULO)}: Município de {esc(nome)} ({uf})</i>. {VERSAO}. Disponível em {SITE}/?m={cod}.<br>
+    <div><b>Como citar.</b> Municípios na Reforma. <i>{esc(TITULO)}: Município de {esc(nome)} ({uf})</i>. {VERSAO}. Disponível em {SITE}/?m={cod}.<br>
     <span>Fontes: STN/Siconfi (DCA e RREO), IBGE (Censo 2022, POF e estimativas populacionais), BCB (Focus), IFI, EC 132/2023, LC 214/2025 e LC 227/2026.</span></div>
     <div class="qrbox">{qr_svg(url_ficha)}<span>Ficha interativa e memória de cálculo em<br><b>{SITE}</b></span></div>
   </div>

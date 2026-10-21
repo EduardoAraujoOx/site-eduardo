@@ -46,7 +46,6 @@ As contagens começam com a instalação; o GA4 não recupera as visitas anterio
 | `aba` | Troca de aba, identificada pelo parâmetro `aba` |
 | `copiar_link`, `compartilhar`, `imprimir_ficha` | Uso de compartilhamento ou impressão da ficha |
 | `clique_contato` | Clique em um canal, como WhatsApp; não confirma envio de mensagem |
-| `contato_enviado`, `livro_cadastro` | Formulário concluído no portal; com `canal=whatsapp`, significa abertura da conversa, não envio confirmado. Com `canal=formulario`, a API de envio respondeu com sucesso |
 | `cadastro`, `abrir_memoria` | Cadastro concluído ou abertura da memória de cálculo |
 
 O código permite apenas nomes de eventos e parâmetros conhecidos. Não envia nome, e-mail, telefone, mensagem ou outros campos livres dos formulários ao GA4. Municípios são identificados pelo código público do IBGE, evitando confusão entre cidades homônimas. A URL medida conserva apenas o parâmetro municipal numérico `m`; parâmetros arbitrários, UTM e fragmentos são descartados. O referenciador mantém apenas a origem, sem caminho ou consulta. A origem de busca continua podendo ser identificada pelo domínio de referência; campanhas UTM não são detalhadas por esta integração.
