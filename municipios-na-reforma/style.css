@@ -773,10 +773,17 @@ html { scroll-behavior: smooth; }
 .portal-sobre h2 { font-size: 1.2rem; }
 .portal-sobre p { color: var(--ink-soft); font-size: .92rem; }
 .portal-sobre a { color: var(--brand-blue); text-underline-offset: .2em; }
+.portal-intro .portal-intro-fonte a { color: var(--brand-blue); text-underline-offset: .2em; }
 @media (max-width: 560px) {
-    .portal-intro p { font-size: .92rem; }
+    .portal-intro { margin-bottom: .9rem; }
+    .portal-intro h1 { font-size: 1.3rem; margin-bottom: .25rem; }
+    .portal-intro p { font-size: .92rem; line-height: 1.45; margin-bottom: .3rem; }
     .portal-intro .portal-intro-fonte { font-size: .76rem; }
+    .portal-intro .so-desktop { display: none; }
 }
+/* No celular o botão do WhatsApp só entra depois que a pessoa começa a rolar a página, para não cobrir a busca e o mapa. */
+.zap { transition: opacity .25s ease, transform .25s ease; }
+@media (max-width: 700px) { .zap.zap-recolhido { opacity: 0; transform: translateY(1rem); pointer-events: none; } .zap.zap-recolhido:focus-visible { opacity: 1; transform: none; pointer-events: auto; } }
 
 /* ── decomposição da diferença anual ── */
 .decomp { list-style: none; margin: .4rem 0 0; padding: 0; }

@@ -1436,6 +1436,11 @@ function iniciarZap() {
     const zap = $('zap');
     if (!CONFIG.whatsapp) return;
     zap.hidden = false;
+    const celular = window.matchMedia('(max-width: 700px)');
+    const recolher = () => zap.classList.toggle('zap-recolhido', celular.matches && window.scrollY < 480);
+    window.addEventListener('scroll', recolher, {passive: true});
+    celular.addEventListener('change', recolher);
+    recolher();
     const mensagem = () => {
         const m = municipioEmFoco();
         return m ? 'Olá! Vim pelo painel Municípios na Reforma e tenho uma pergunta sobre ' + m.nome + '/' + m.uf + '.'
