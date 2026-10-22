@@ -306,7 +306,7 @@ m += [
     macro("NumRotaC", num(pes["rota_C_pct"], 2)),
     macro("NumComposto", num(pes["phi_robusto_pct"], 3)),
     macro("NumIncert", num(pes["incerteza_rel"] * 100, 1)),
-    macro("NumFracEst", num(frac_est, 2)),
+    macro("NumFracEst", num(frac_est, 4)),
     macro("NumThetaE", num(theta_E, 1)),
     macro("NumPhiEstCompras", num(pdes["phi_estado_compras_pct"], 3)),
     macro("NumBaseDois", num(abs(var_ano("2033", ref_es["2026"])), 1)),
@@ -605,7 +605,7 @@ ex = [
     macro("NumFundosPP", num(efeito_fundos_33, 0)),
     macro("NumFundosCoefPP", num(dwH * 100, 1)),
     macro("NumDestTrintaTres", num(abs(var_ano("2033", w0, incert) - var_ano("2033", w0)), 1)),
-    macro("NumFracMuni", num(phi_pof["frac_muni_pct"], 2)),
+    macro("NumFracMuni", num(phi_pof["frac_muni_pct"], 4)),
     macro("NumThetaM", num(phi_pof["compras_governamentais"]["theta_municipal"] * 100, 0)),
     macro("NumThetaEInt", num(theta_E, 0)),
     macro("NumCoefMuniq", num(pdes["coef_muni_compras_pct"], 4)),
@@ -617,7 +617,8 @@ ex = [
     macro("NumIpeaBaseDelta", num(abs((ipea_es_base / pre - 1) * 100), 1)),
     macro("NumIpeaTrintaTres", num(ipea_es_33, 1)),
     macro("NumIpeaDelta", num(abs((ipea_es_33 / pos["2033"] - 1) * 100), 1)),
-    macro("NumRazaoPib", num(nac["2033"]["bolo_pct_pib"], 2)),
+    macro("NumRazaoPib", num(nac["2033"]["bolo_pct_pib"], 4)),
+    macro("NumIcmsBruto", num(rt["dca_icms_por_uf"]["2025"][UF_ALVO] / BI, 1)),
 ]
 with open(OUT / "numeros.tex", "a", encoding="utf-8") as f:
     f.write("".join(ex))
