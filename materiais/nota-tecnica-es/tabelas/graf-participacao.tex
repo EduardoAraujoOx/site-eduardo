@@ -1,0 +1,25 @@
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.92\linewidth, height=6.4cm, xmin=2018.6, xmax=2026.4, ymin=1.40, ymax=1.76,
+  xtick={2019,2020,2021,2022,2023,2024,2025,2026}, xticklabel style={font=\footnotesize, /pgf/number format/1000 sep=},
+  yticklabel style={font=\footnotesize, /pgf/number format/.cd, fixed, fixed zerofill, precision=2, use comma},
+  ylabel={Participação na arrecadação nacional (\%)}, ylabel style={font=\footnotesize},
+  ymajorgrids, grid style={gray!25}, axis x line*=bottom, axis y line*=left, axis line style={gray!60},
+  legend style={font=\scriptsize, at={(0.02,0.98)}, anchor=north west, draw=none, fill=none}, legend cell align=left,
+]
+\addplot[azul, very thick, mark=*, mark size=2pt] coordinates {(2019,1.4622) (2020,1.4960) (2021,1.5389) (2022,1.5569) (2023,1.6114) (2024,1.6493) (2025,1.6640)};
+\addlegendentry{Participação anual}
+\addplot[azul, dashed, thick, mark=o, mark size=2.4pt, mark options={fill=white, solid}] coordinates {(2025,1.6640) (2026,1.6985)};
+\addlegendentry{2026 (estimado, RREO jan.--ago.)}
+\addplot[black!60, dashed, no marks] coordinates {(2018.6,1.5846) (2026.4,1.5846)};
+\addlegendentry{Coeficiente 2019--2026 = 1,5846\%}
+\node[font=\tiny, below] at (axis cs:2019,1.4622) {1,4622\%};
+\node[font=\tiny, below] at (axis cs:2020,1.4960) {1,4960\%};
+\node[font=\tiny, below] at (axis cs:2021,1.5389) {1,5389\%};
+\node[font=\tiny, below] at (axis cs:2022,1.5569) {1,5569\%};
+\node[font=\tiny, above] at (axis cs:2023,1.6114) {1,6114\%};
+\node[font=\tiny, above] at (axis cs:2024,1.6493) {1,6493\%};
+\node[font=\tiny, above] at (axis cs:2025,1.6640) {1,6640\%};
+\node[font=\tiny, above] at (axis cs:2026,1.6985) {1,6985\%};
+\end{axis}
+\end{tikzpicture}

@@ -1,0 +1,23 @@
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{3.0cm}>{\raggedright\arraybackslash}p{4.3cm}>{\raggedright\arraybackslash}p{4.9cm}r@{}}
+\toprule
+\cabecalhoL{Item} & \cabecalhoL{Expressão} & \cabecalhoL{Substituição numérica} & \cabecalho{Valor} \\
+\midrule
+Base nacional de referência & $A_{2033}$ & Valor projetado para 2033 & R\$ 1.198,69 bi \\
+Participação de referência do Espírito Santo & $w^{0}_{ES}$ & Receita estadual de 2025 dividida pela base nacional de 2025 & 1,66397\% \\
+Coeficiente histórico & $w^{H}_{ES}$ & Média de 2019 a 2026 (2026 estimado) dividida pela base nacional & 1,58465\% \\
+Coeficiente estadual de destino & $w^{D}_{ES}$ & Composto de três rotas (POF, Censo 2022 e PNAD Contínua) com compras governamentais & 1,20501\% \\
+Parâmetros de 2033 & $f_t,\,s_t,\,\lambda_t,\,\rho_t,\,c_t$ & $f=0$; $s=1$; $\lambda=0{,}90$; $\rho=0{,}05$; $c=0{,}002$ & --- \\
+\addlinespace[2pt]
+Cenário sem reforma & $A_{2033}\,w^{0}_{ES}$ & $1.198{,}69 \times 0{,}0166397$ & R\$ 19,95 bi \\
+ICMS residual & $A_{2033}f_{2033}w^{0}_{ES}$ & $1.198{,}69 \times 0 \times 0{,}0166397$ & R\$ 0,00 bi \\
+\addlinespace[2pt]
+IBS pelo histórico, bruto & $A_{2033}s_{2033}\lambda_{2033}w^{H}_{ES}$ & $1.198{,}69 \times 1 \times 0{,}90 \times 0{,}0158465$ & R\$ 17,10 bi \\
+IBS pelo destino, após Seguro-Receita & $A_{2033}s_{2033}(1-\lambda_{2033})(1-\rho_{2033})w^{D}_{ES}$ & $1.198{,}69 \times 1 \times 0{,}10 \times 0{,}95 \times 0{,}0120501$ & R\$ 1,37 bi \\
+Subtotal do IBS antes do CGIBS & soma dos componentes do IBS & $17{,}10 + 1{,}37$ & R\$ 18,47 bi \\
+Dedução para o CGIBS & $G_{ES,2033}=c\times\text{subtotal}$ & $0{,}002 \times 18{,}468$ & R\$ $-$0,04 bi \\
+Seguro-Receita recebido & $S_{ES,2033}$ & Governo estadual não elegível na simulação de 2033 & R\$ 0,00 bi \\
+\addlinespace[2pt]
+\textbf{Receita com reforma} & $R^{R}_{ES,2033}$ & $18{,}468 - 0{,}037$ & \textbf{R\$ 18,43 bi} \\
+\textbf{Variação ante o cenário sem reforma} & $R^{R}/R^{C}-1$ & $18{,}431/19{,}946-1$ & \textbf{$-$7,60\%} \\
+\bottomrule
+\end{tabular}
