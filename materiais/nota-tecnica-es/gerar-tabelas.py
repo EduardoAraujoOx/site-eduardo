@@ -16,8 +16,8 @@ Saídas, todas em tabelas/ (incluídas pelo .tex com \\input):
   graf-dispersao.tex    Gráfico 3: variação em 2033 contra a diferença relativa dos coeficientes, 27 UFs
   anexo-a1.tex          Tabela A.1: ente estadual, todas as UFs, 2029-2033
   anexo-a2.tex          Tabela A.2: coeficientes e variação consolidada (estado + municípios)
-  anexo-b-memoria.tex   Tabela B.2: memória de cálculo da receita do ES em 2033
-  anexo-b-anobase.tex   Tabela B.3: sensibilidade ao ano-base do cenário sem reforma
+  anexo-a-memoria.tex   Tabela B.2: memória de cálculo da receita do ES em 2033
+  anexo-a-anobase.tex   Tabela B.3: sensibilidade ao ano-base do cenário sem reforma
 
 Uso:  python3 gerar-tabelas.py
 Para atualizar a nota quando os dados mudarem: rodar este script e recompilar o .tex.
@@ -390,38 +390,37 @@ for u in ordem_a:
 L.append("\\bottomrule\n\\end{tabular}\n")
 (OUT / "tab-ufs.tex").write_text("".join(L), encoding="utf-8")
 
-# ---------------------------------------------------------------- Tabela 3: decomposição
-L = ["\\begin{tabular}{@{}>{\\raggedright\\arraybackslash}p{6.1cm}*{5}{r}@{}}\n\\toprule\n"]
-L.append("\\cabecalhoL{Componente} & " + " & ".join(f"\\cabecalho{{{a}}}" for a in ANOS) + " \\\\\n\\midrule\n")
-linhas = [
-    ("Deduções do Seguro-Receita e do CGIBS", 0),
-    ("Coeficiente histórico abaixo da participação de 2025", 1),
-    ("Coeficiente de destino abaixo da participação de 2025", 2),
-    ("Repasse do Seguro-Receita ao Estado", 3),
-]
-for rot, k in linhas:
-    L.append(f"{rot} & " + " & ".join(num(decomp[a][k], 2, True) for a in ANOS) + " \\\\\n")
-L.append("\\midrule\n")
-L.append("\\textbf{Variação total $\\Delta_{it}$ (p.p. de $R^{C}_{it}$)} & " +
-         " & ".join(f"\\textbf{{{num(decomp[a][4], 2, True)}}}" for a in ANOS) + " \\\\\n")
+# ---------------------------------------------------------------- Tabela A.1: validação externa (formato do artigo)
+ipea = {}
+ref_md = DATA / "referencias-externas" / "NT_COMSEFAZ_RefTributaria_v3.md"
+if ref_md.exists():
+    nome_uf = {est[u]["nome"]: u for u in est}
+    linhas_md = ref_md.read_text(encoding="utf-8").splitlines()
+    i12 = next(i for i, ln in enumerate(linhas_md) if ln.startswith("Tabela 12 —"))
+    i13 = next(i for i, ln in enumerate(linhas_md) if ln.startswith("Tabela 13 —"))
+    assert any([c.strip() for c in ln.strip("|").split("|")][:7] == ["Ano", "2025", "2029", "2030", "2031", "2032", "2033"] for ln in linhas_md[i12:i13]), "cabeçalho da Tabela 12 mudou"
+    for ln in linhas_md[i12:i13]:
+        cols = [c.strip() for c in ln.strip().strip("|").split("|")]
+        if len(cols) >= 7 and cols[0] in nome_uf and cols[1].replace(".", "").isdigit() and cols[0] not in ipea:
+            vals = [float(c.replace(".", "")) / 1e6 for c in cols[1:7]]  # R$ bi: 2025, 2029..2033
+            ipea[nome_uf[cols[0]]] = (vals[0], vals[5])
+assert len(ipea) == 27, f"validação externa: {len(ipea)} UFs lidas"
+L = ["\\begin{tabular}{@{}ll*{6}{r}@{}}\n\\toprule\n"]
+L.append(" & & \\multicolumn{3}{c}{\\textbf{Base 2025}} & \\multicolumn{3}{c}{\\textbf{Projeção 2033}} \\\\\n\\cmidrule(lr){3-5}\\cmidrule(l){6-8}\n"
+         "\\cabecalhoL{UF} & \\cabecalhoL{Estado} & \\cabecalho{Este estudo\\\\R\\$ bi} & \\cabecalho{Ipea\\\\R\\$ bi} & \\cabecalho{$\\Delta$ base\\\\(\\%)} & "
+         "\\cabecalho{Este estudo\\\\R\\$ bi} & \\cabecalho{Ipea\\\\R\\$ bi} & \\cabecalho{$\\Delta$ 2033\\\\(\\%)} \\\\\n\\midrule\n")
+for u in ordem_a:
+    v = est[u]
+    b_e, b_i = v["pre_2025"] / BI, ipea[u][0]
+    f_e, f_i = v["pos_por_ano"]["2033"] / BI, ipea[u][1]
+    d = u == UF_ALVO
+    neg = (lambda s_: f"\\textbf{{{s_}}}") if d else (lambda s_: s_)
+    L.append((CS if d else "") + neg(u) + " & " + neg(nome_tex(v["nome"])) + " & " + neg(num(b_e, 1)) + " & " + neg(num(b_i, 1)) + " & " +
+             neg(num((b_i / b_e - 1) * 100, 1, True) + "\\%") + " & " + neg(num(f_e, 1)) + " & " + neg(num(f_i, 1)) + " & " +
+             neg(num((f_i / f_e - 1) * 100, 1, True) + "\\%") + " \\\\\n")
 L.append("\\bottomrule\n\\end{tabular}\n")
-(OUT / "tab-decomposicao.tex").write_text("".join(L), encoding="utf-8")
-
-# ---------------------------------------------------------------- Tabela 4: sensibilidade ao método
-L = ["\\begin{tabular}{@{}>{\\raggedright\\arraybackslash}p{5.4cm}r*{5}{r}@{}}\n\\toprule\n"]
-L.append("\\cabecalhoL{Método do coeficiente de destino} & \\cabecalho{$w^{D}_{i}$\\\\(\\%)} & " +
-         " & ".join(f"\\cabecalho{{{a}}}" for a in ANOS) + " \\\\\n\\midrule\n")
-for k in ordem_metodos:
-    cel = (lambda s: f"\\textbf{{{s}}}") if k == "phi_robusto" else (lambda s: s)
-    L.append(f"{cel(rotulos[k])} & {cel(num(fm[k]['coef_pleno_estado_pct'], 3))} & " +
-             " & ".join(cel(num(fm[k]["variacao_por_ano"][a], 2, True)) for a in ANOS) + " \\\\\n")
-if comsefaz:
-    L.append("\\midrule\n")
-    L.append("Simulação preliminar elaborada para o Comsefaz\\textsuperscript{a} & --- & " +
-             " & ".join(num(comsefaz[a], 2, True) for a in ANOS) + " \\\\\n")
-L.append("\\bottomrule\n\\end{tabular}\n")
-(OUT / "tab-metodos.tex").write_text("".join(L), encoding="utf-8")
-
+(OUT / "anexo-a-validacao.tex").write_text("".join(L), encoding="utf-8")
+ipea_es_base, ipea_es_33 = ipea[UF_ALVO]
 
 # ---------------------------------------------------------------- Gráfico 1: participação anual e coeficiente histórico
 def coord(pares):
@@ -449,15 +448,15 @@ for ano, v in serie + [(2026, ref_es["2026"] * 100)]:
 G.append("\\end{axis}\n\\end{tikzpicture}\n")
 (OUT / "graf-participacao.tex").write_text("".join(G), encoding="utf-8")
 
-# ---------------------------------------------------------------- Gráfico 2: (a) sensibilidade 2029-2033 e (b) extensão até 2077
+# ---------------------------------------------------------------- Gráfico 2: sensibilidade 2029-2033 (painel único)
 xs = [int(a) for a in ANOS]
-G = ["\\begin{minipage}[t]{0.50\\linewidth}\\centering\n\\begin{tikzpicture}\n\\begin{axis}[\n"
-     "  title={\\footnotesize (a) Sensibilidade, 2029 a 2033}, title style={yshift=-2pt}, width=1.12\\linewidth, height=6.4cm, ymin=-11, ymax=7,\n"
-     "  xmin=2028.7, xmax=2033.9, xtick={2029,2030,2031,2032,2033}, xticklabel style={font=\\scriptsize, /pgf/number format/1000 sep=},\n"
-     "  yticklabel style={font=\\scriptsize, /pgf/number format/.cd, fixed, precision=0, use comma},\n"
-     "  ylabel={Variação ante o cenário sem reforma (\\%)}, ylabel style={font=\\scriptsize},\n"
+G = ["\\begin{tikzpicture}\n\\begin{axis}[\n"
+     "  width=0.88\\linewidth, height=6.4cm, ymin=-11, ymax=7,\n"
+     "  xmin=2028.7, xmax=2033.9, xtick={2029,2030,2031,2032,2033}, xticklabel style={font=\\footnotesize, /pgf/number format/1000 sep=},\n"
+     "  yticklabel style={font=\\footnotesize, /pgf/number format/.cd, fixed, precision=0, use comma},\n"
+     "  ylabel={Variação ante o cenário sem reforma (\\%)}, ylabel style={font=\\footnotesize},\n"
      "  ymajorgrids, grid style={gray!25}, axis x line*=bottom, axis y line*=left, axis line style={gray!60},\n"
-     "  legend style={font=\\tiny, at={(0.5,-0.14)}, anchor=north, draw=none, fill=none, legend columns=2, /tikz/every even column/.append style={column sep=4pt}}, legend cell align=left,\n"
+     "  legend style={font=\\scriptsize, at={(0.5,-0.13)}, anchor=north, draw=none, fill=none, legend columns=3, /tikz/every even column/.append style={column sep=4pt}}, legend cell align=left,\n"
      "]\n"]
 G.append(f"\\addplot[name path=ua, draw=none, forget plot] coordinates {{{coord(zip(xs, [e_[1] for e_ in env_all]))}}};\n"
          f"\\addplot[name path=la, draw=none, forget plot] coordinates {{{coord(zip(xs, [e_[0] for e_ in env_all]))}}};\n"
@@ -470,24 +469,10 @@ for (rot, est_), (b, _) in zip(estilos, bases[1:]):
     G.append(f"\\addplot[{est_}, thick, no marks] coordinates {{{coord(zip(xs, casos[(b, 0.0)]))}}};\n\\addlegendentry{{{rot.replace('Média de', 'Média')}}}\n")
 G.append(f"\\addplot[azul, very thick, mark=*, mark size=1.8pt] coordinates {{{coord(zip(xs, central))}}};\n\\addlegendentry{{Central (2025)}}\n")
 G.append("\\addplot[black!70, thin, no marks, forget plot] coordinates {(2028.7,0) (2033.9,0)};\n")
-G.append(f"\\node[font=\\tiny, azul, anchor=west] at (axis cs:2033.05,{central[-1]:.3f}) {{{tx(central[-1], 2)}\\%}};\n"
-         f"\\node[font=\\tiny, gray, anchor=west] at (axis cs:2033.05,{env_all[-1][1]:.3f}) {{{('+' if env_all[-1][1] > 0 else '')}{tx(env_all[-1][1], 1)}\\%}};\n"
-         f"\\node[font=\\tiny, gray, anchor=west] at (axis cs:2033.05,{env_all[-1][0]:.3f}) {{{tx(env_all[-1][0], 1)}\\%}};\n")
-G.append("\\end{axis}\n\\end{tikzpicture}\n\\end{minipage}\\hfill\n")
-xe = [int(a) for a in ANOS_EXT]
-G.append("\\begin{minipage}[t]{0.48\\linewidth}\\centering\n\\begin{tikzpicture}\n\\begin{axis}[\n"
-         "  title={\\footnotesize (b) Extensão do cronograma legal, 2033 a 2077}, title style={yshift=-2pt}, width=1.12\\linewidth, height=6.4cm,\n"
-         "  xmin=2029, xmax=2086, xtick={2033,2040,2050,2060,2070,2077}, xticklabel style={font=\\scriptsize, /pgf/number format/1000 sep=},\n"
-         "  yticklabel style={font=\\scriptsize, /pgf/number format/.cd, fixed, precision=0, use comma}, ymin=10,\n"
-         "  ylabel={Receita estadual (R\\$ bilhões de 2025)}, ylabel style={font=\\scriptsize},\n"
-         "  ymajorgrids, grid style={gray!25}, axis x line*=bottom, axis y line*=left, axis line style={gray!60},\n"
-         "  legend style={font=\\tiny, at={(0.02,0.98)}, anchor=north west, draw=none, fill=none}, legend cell align=left,\n"
-         "]\n")
-G.append(f"\\addplot[black!60, thick, dotted, mark=o, mark size=2pt, mark options={{fill=white, solid}}] coordinates {{{coord(zip(xe, [ext[a][1] for a in ANOS_EXT]))}}};\n\\addlegendentry{{Cenário sem reforma}}\n")
-G.append(f"\\addplot[azul, thick, dashed, mark=*, mark size=2pt, mark options={{solid}}] coordinates {{{coord(zip(xe, [ext[a][0] for a in ANOS_EXT]))}}};\n\\addlegendentry{{Com reforma}}\n")
-for a in ANOS_EXT:
-    G.append(f"\\node[font=\\tiny, anchor=north west] at (axis cs:{a},{ext[a][0]:.3f}) {{{tx(ext[a][2], 1)}\\%}};\n")
-G.append("\\end{axis}\n\\end{tikzpicture}\n\\end{minipage}\n")
+G.append(f"\\node[font=\\scriptsize, azul, anchor=west] at (axis cs:2033.05,{central[-1]:.3f}) {{{tx(central[-1], 2)}\\%}};\n"
+         f"\\node[font=\\scriptsize, gray, anchor=west] at (axis cs:2033.05,{env_all[-1][1]:.3f}) {{{('+' if env_all[-1][1] > 0 else '')}{tx(env_all[-1][1], 1)}\\%}};\n"
+         f"\\node[font=\\scriptsize, gray, anchor=west] at (axis cs:2033.05,{env_all[-1][0]:.3f}) {{{tx(env_all[-1][0], 1)}\\%}};\n")
+G.append("\\end{axis}\n\\end{tikzpicture}\n")
 (OUT / "graf-sensibilidade.tex").write_text("".join(G), encoding="utf-8")
 
 # ---------------------------------------------------------------- Gráfico 3: dispersão por UF
@@ -499,7 +484,7 @@ for (chave, rot, a_, b_, r2_, idx) in [("diff_cpt_pct", "(a) Participação na t
     xmin, xmax = min(p_[chave] for p_ in pts), max(p_[chave] for p_ in pts)
     esp = next(p_ for p_ in pts if p_["uf"] == UF_ALVO)
     G.append("\\begin{tikzpicture}\n\\begin{axis}[\n"
-             f"  title={{\\footnotesize {rot} $|$ $R^{{2}}={nm(r2_, 3)}$}}, title style={{yshift=-2pt}}, width=1.12\\linewidth, height=5.6cm,\n"
+             f"  title={{\\footnotesize {rot} $|$ $R^{{2}}={nm(r2_, 3)}$}}, title style={{yshift=-2pt}}, width=0.92\\linewidth, height=5.6cm,\n"
              "  xlabel={Diferença relativa ante a participação de 2025 (\\%)}, xlabel style={font=\\scriptsize},\n"
              "  ylabel={Variação em 2033 (\\%)}, ylabel style={font=\\scriptsize},\n"
              "  xticklabel style={font=\\scriptsize, /pgf/number format/.cd, fixed, precision=0, use comma}, yticklabel style={font=\\scriptsize, /pgf/number format/.cd, fixed, precision=0, use comma},\n"
@@ -515,37 +500,6 @@ for (chave, rot, a_, b_, r2_, idx) in [("diff_cpt_pct", "(a) Participação na t
         G.append("\\end{minipage}\\hfill\n\\begin{minipage}[t]{0.49\\linewidth}\\centering\n")
 G.append("\\end{minipage}\n")
 (OUT / "graf-dispersao.tex").write_text("".join(G), encoding="utf-8")
-
-# ---------------------------------------------------------------- Tabela A.1 (anexo A): coeficientes, variação e diferença acumulada
-L = ["\\begin{longtable}{@{}>{\\raggedright\\arraybackslash}p{3.0cm}*{9}{r}@{}}\n"]
-cab = ("\\cabecalhoL{Unidade da\\\\Federação} & \\cabecalho{$w^{0}_{i}$\\\\(\\%)} & \\cabecalho{$w^{H}_{i}$\\\\(\\%)} & "
-       "\\cabecalho{$w^{D}_{i}$\\\\(\\%)} & \\cabecalho{Histórico\\\\vs. 2025\\\\(\\%)} & \\cabecalho{Destino\\\\vs. 2025\\\\(\\%)} & "
-       "\\cabecalho{Estado\\\\2033\\\\(\\%)} & \\cabecalho{Estado e\\\\munic.\\\\2033 (\\%)} & "
-       "\\cabecalho{Acum.\\\\2029--33\\\\(\\%)} & \\cabecalho{Dif. acum.\\\\(R\\$ bi)} \\\\\n")
-L.append("\\toprule\n" + cab + "\\midrule\n\\endfirsthead\n")
-L.append("\\toprule\n" + cab + "\\midrule\n\\endhead\n\\bottomrule\n\\endfoot\n")
-soma = {"dif": 0.0, "cf": 0.0}
-for u in ordem_a:
-    v, c = est[u], coefs[u]
-    dif_u = sum(v["pos_por_ano"][a] - v["contrafactual_por_ano"][a] for a in ANOS) / BI
-    soma["dif"] += dif_u
-    soma["cf"] += sum(v["contrafactual_por_ano"][a] for a in ANOS) / BI
-    d_h = (c["coef_cpt_pct"] / c["coef_neutro_icms_pct"] - 1) * 100
-    d_d = (c["coef_pleno_pct"] / c["coef_neutro_icms_pct"] - 1) * 100
-    d = u == UF_ALVO
-    neg = (lambda s_: f"\\textbf{{{s_}}}") if d else (lambda s_: s_)
-    L.append((CS if d else "") + neg(nome_tex(v["nome"])) + " & " + neg(num(c["coef_neutro_icms_pct"], 3)) + " & " +
-             neg(num(c["coef_cpt_pct"], 3)) + " & " + neg(num(c["coef_pleno_pct"], 3)) + " & " +
-             neg(num(d_h, 1, True)) + " & " + neg(num(d_d, 1, True)) + " & " +
-             neg(num(v["variacao_por_ano"]["2033"] * 100, 1, True)) + " & " +
-             neg(num(tot[u]["variacao_por_ano"]["2033"] * 100, 1, True)) + " & " +
-             neg(num(v["acumulado_dpct"] * 100, 1, True)) + " & " + neg(num(dif_u, 2, True)) + " \\\\\n")
-L.append("\\midrule\n")
-L.append("\\textbf{Total dos entes estaduais} & " + f"\\textbf{{{num(soma_n, 1)}}} & \\textbf{{{num(soma_c, 1)}}} & "
-         f"\\textbf{{{num(sum(c['coef_pleno_pct'] for c in coefs.values()), 1)}}} & & & \\textbf{{{num(var_ag, 1, True)}}} & "
-         f"\\textbf{{{num(var_uf_ag, 1, True)}}} & \\textbf{{{num(soma['dif'] / soma['cf'] * 100, 1, True)}}} & \\textbf{{{num(soma['dif'], 2, True)}}} \\\\\n")
-L.append("\\end{longtable}\n\\addtocounter{table}{-1}\n")  # longtable consome o contador de tabelas
-(OUT / "anexo-a1.tex").write_text("".join(L), encoding="utf-8")
 
 # ---------------------------------------------------------------- Tabela B.1: memória de cálculo do coeficiente histórico (série nominal e ajustada)
 rt = load("reforma-tributaria.json")
@@ -587,7 +541,7 @@ L.append(f"\\multicolumn{{7}}{{@{{}}l}}{{\\textbf{{Média da receita de referên
 L.append(f"\\multicolumn{{7}}{{@{{}}l}}{{\\textbf{{Arrecadação nacional de referência em 2025}}}} & \\textbf{{{num(tb25 / BI, 2)}}} \\\\\n")
 L.append(f"\\multicolumn{{7}}{{@{{}}l}}{{\\textbf{{Coeficiente de participação do Espírito Santo}}}} & \\textbf{{{num(wH * 100, 4)}\\%}} \\\\\n")
 L.append("\\bottomrule\n\\end{tabular}\n")
-(OUT / "anexo-b-coef-historico.tex").write_text("".join(L), encoding="utf-8")
+(OUT / "anexo-a-coef-historico.tex").write_text("".join(L), encoding="utf-8")
 
 # ---------------------------------------------------------------- Tabela B.2: memória de cálculo do ES em 2033
 n33 = nac["2033"]
@@ -627,7 +581,7 @@ for i, (a_, b_, c_, d_) in enumerate(linhas_mem):
     if i in (4, 6, 11):
         L.append("\\addlinespace[2pt]\n")
 L.append("\\bottomrule\n\\end{tabular}\n")
-(OUT / "anexo-b-memoria.tex").write_text("".join(L), encoding="utf-8")
+(OUT / "anexo-a-memoria.tex").write_text("".join(L), encoding="utf-8")
 
 # ---------------------------------------------------------------- Tabela B.3: sensibilidade ao ano-base
 u_pct = incert * 100
@@ -637,7 +591,36 @@ L.append(f"\\cabecalhoL{{Ano-base do cenário\\\\sem reforma}} & \\cabecalho{{Pa
 for rot, wb in bases:
     L.append(f"{rot} & {num(wb * 100, 4)} & {num(var_ano('2033', wb, -incert), 2, True)}\\% & {num(var_ano('2033', wb), 2, True)}\\% & {num(var_ano('2033', wb, incert), 2, True)}\\% \\\\\n")
 L.append("\\bottomrule\n\\end{tabular}\n")
-(OUT / "anexo-b-anobase.tex").write_text("".join(L), encoding="utf-8")
+(OUT / "anexo-a-anobase.tex").write_text("".join(L), encoding="utf-8")
+
+
+# ---------------------------------------------------------------- macros adicionais (usam valores calculados acima)
+tb25_nac = load("coeficientes-uf.json")["total_br_2025"]
+dwH = 1e9 / tb25_nac  # efeito de R$ 1 bi de contribuições a fundos sobre o coeficiente histórico (fração do total nacional)
+efeito_fundos_33 = (1 - nac["2033"]["ca"]) * nac["2033"]["alpha_a"] * dwH / w0 * 100
+benef = {a: seguro_lp[a]["n_beneficiarios"] for a in ("2029", "2033")}
+ufs_sr = sorted({u for a in ANOS for u, v in seguro_lp[a]["repasse_por_uf"].items() if isinstance(v, dict) and (v.get("estado") or 0) > 0})
+assert ufs_sr == ["AM"], f"texto assume que só o Amazonas recebe entre os estados: {ufs_sr}"
+ex = [
+    macro("NumFundosPP", num(efeito_fundos_33, 0)),
+    macro("NumFundosCoefPP", num(dwH * 100, 1)),
+    macro("NumDestTrintaTres", num(abs(var_ano("2033", w0, incert) - var_ano("2033", w0)), 1)),
+    macro("NumFracMuni", num(phi_pof["frac_muni_pct"], 2)),
+    macro("NumThetaM", num(phi_pof["compras_governamentais"]["theta_municipal"] * 100, 0)),
+    macro("NumThetaEInt", num(theta_E, 0)),
+    macro("NumCoefMuniq", num(pdes["coef_muni_compras_pct"], 4)),
+    macro("NumFundoUm", num(nac["2029"]["ibs_seguro_receita"] / BI, 2)),
+    macro("NumFundoCinco", num(nac["2033"]["ibs_seguro_receita"] / BI, 2)),
+    macro("NumBenefUm", str(benef["2029"])),
+    macro("NumBenefCinco", str(benef["2033"])),
+    macro("NumIpeaBase", num(ipea_es_base, 1)),
+    macro("NumIpeaBaseDelta", num(abs((ipea_es_base / pre - 1) * 100), 1)),
+    macro("NumIpeaTrintaTres", num(ipea_es_33, 1)),
+    macro("NumIpeaDelta", num(abs((ipea_es_33 / pos["2033"] - 1) * 100), 1)),
+    macro("NumRazaoPib", num(nac["2033"]["bolo_pct_pib"], 2)),
+]
+with open(OUT / "numeros.tex", "a", encoding="utf-8") as f:
+    f.write("".join(ex))
 
 # ---------------------------------------------------------------- resumo no terminal (conferência)
 print(f"ES: pré-IBS 2025 R$ {pre:.2f} bi")
