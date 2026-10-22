@@ -1,0 +1,287 @@
+% Nota Técnica: Impactos da transição do ICMS para o IBS sobre a receita do Estado do Espírito Santo, 2029-2033
+% Compilar com:  pdflatex nota-tecnica-impacto-es.tex  (duas vezes, para as referências cruzadas)
+% Os números do texto e as tabelas vêm de tabelas/*.tex, gerados por gerar-tabelas.py a partir dos dados do site.
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazilian]{babel}
+\usepackage{textcomp}
+\usepackage[scale=.95]{tgheros}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[helvet]{sfmath}
+\usepackage{microtype}
+\usepackage[a4paper,top=2.4cm,bottom=2.3cm,left=2.4cm,right=2.4cm,headheight=22pt]{geometry}
+\usepackage{xcolor}
+\usepackage{booktabs,array,colortbl,longtable}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{lastpage}
+\usepackage{pgfplots}
+\usepackage{caption}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\usepackage[unicode,hidelinks,pdftitle={Impactos da transição do ICMS para o IBS sobre a receita do Estado do Espírito Santo, 2029--2033},pdfauthor={Eduardo Araújo},pdfsubject={Nota técnica},pdfkeywords={reforma tributária, IBS, ICMS, Espírito Santo}]{hyperref}
+\pgfplotsset{compat=1.16}
+
+% ------------------------------------------------------------------ identidade visual
+\definecolor{azul}{RGB}{31,78,121}
+\definecolor{azulclaro}{RGB}{150,180,212}
+\definecolor{azulfundo}{RGB}{222,232,244}
+\definecolor{caixa}{RGB}{241,246,251}
+\definecolor{zebra}{RGB}{246,248,251}
+\definecolor{destaque}{RGB}{255,240,204}
+\definecolor{cinza}{RGB}{102,102,102}
+
+\newcommand{\cabecalho}[1]{\textcolor{white}{\footnotesize\bfseries\shortstack[r]{#1}}}
+\newcommand{\cabecalhoL}[1]{\textcolor{white}{\footnotesize\bfseries\shortstack[l]{#1}}}
+
+\pretocmd{\section}{\needspace{6\baselineskip}}{}{}
+\setstretch{1.1}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.62em}
+\setlength{\emergencystretch}{2em}
+\renewcommand{\arraystretch}{1.18}
+
+\titleformat{\section}{\color{azul}\large\bfseries}{\thesection.}{0.5em}{}[\vspace{-0.55em}{\color{azul}\titlerule[0.8pt]}]
+\titleformat{\subsection}{\color{azul}\normalsize\bfseries}{\thesubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{1.7em}{0.6em}
+\titlespacing*{\subsection}{0pt}{1.1em}{0.2em}
+
+\captionsetup{font={footnotesize},labelfont={bf,color=azul},labelsep=period,justification=raggedright,singlelinecheck=false,skip=5pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{azulclaro}\leaders\hrule height \headrulewidth\hfill}}
+\fancyhead[L]{\footnotesize\color{cinza} Nota Técnica · Transição do ICMS para o IBS: impactos no Espírito Santo}
+\fancyhead[R]{\footnotesize\color{cinza} Eduardo Araújo}
+\fancyfoot[C]{\footnotesize\color{cinza} Página \thepage\ de \pageref{LastPage}}
+\fancypagestyle{primeira}{\fancyhf{}\renewcommand{\headrulewidth}{0pt}\fancyfoot[C]{\footnotesize\color{cinza} Página \thepage\ de \pageref{LastPage}}}
+
+\newtcolorbox{quadro}[1][]{colback=caixa,colframe=azul,boxrule=0.6pt,arc=0pt,left=9pt,right=9pt,top=7pt,bottom=7pt,#1}
+\newtcolorbox{aviso}[1][]{colback=white,colframe=black!35,boxrule=0.5pt,arc=0pt,left=8pt,right=8pt,top=5pt,bottom=5pt,fontupper=\small,#1}
+
+\newcommand{\nota}[1]{{\footnotesize\color{cinza}#1}}
+\newcommand{\Rs}{R\$\,}
+
+\input{tabelas/numeros.tex}
+
+\begin{document}
+\thispagestyle{primeira}
+
+% ------------------------------------------------------------------ cabeçalho do documento
+\begin{center}
+  {\color{azul}\bfseries\large NOTA TÉCNICA}\\[0.9em]
+  {\Large\bfseries Impactos da transição do ICMS para o IBS\\[0.15em] sobre a receita do Estado do Espírito Santo, 2029--2033}\\[0.9em]
+  {\small\color{cinza} Eduardo Araújo\\[0.1em] 22 de outubro de 2026}
+\end{center}
+
+\begin{quadro}
+\textbf{\color{azul}Síntese.} Esta nota estima o efeito da transição do ICMS para o Imposto sobre Bens e Serviços (IBS) sobre a receita do Estado do Espírito Santo entre 2029 e 2033, em relação a um cenário sem reforma em que o Estado preservaria, sobre a mesma base nacional, a participação que detinha em 2025. Em 2033, a receita do ente estadual é estimada em \Rs\NumPosCinco\ bilhões, a preços de 2025, o que representa \Rs\NumDifCinco\ bilhão (\NumVarFinalUma\%) a menos que no cenário sem reforma. No acumulado de 2029 a 2033, a diferença é de \Rs\NumDifAcum\ bilhões (\NumVarAcum\%). Entre as 27 unidades da federação, o Espírito Santo tem a \NumRank\textordfeminine\ maior perda relativa em 2033, atrás apenas de \NumPrimeiroNome\ e \NumSegundoNome. Dos \NumVarFinalUma\ pontos percentuais da perda em 2033, \NumDecCpt\ decorrem de o coeficiente histórico do Estado ser menor que sua participação atual, \NumDecDest\ de o coeficiente de destino ser ainda menor e \NumDecDed\ das deduções comuns a todos os entes. O Anexo A reúne o resultado de todas as unidades da federação.
+\end{quadro}
+
+% ------------------------------------------------------------------ 1
+\section{Introdução}
+
+A Emenda Constitucional nº 132/2023 substituiu o ICMS e o ISS por um imposto único sobre o consumo, o IBS, e determinou que a troca fosse gradual: de 2029 a 2032 os dois regimes convivem e, em 2033, o ICMS e o ISS são extintos. Mais do que trocar tributos, a reforma muda o critério que atribui a receita aos entes. O ICMS é, em grande medida, arrecadado onde o bem é produzido ou circula; o IBS pertence ao ente em que o consumo ocorre. Como a mudança de critério é escalonada, durante a transição a receita é repartida por uma regra mista, que combina a participação histórica de cada ente com sua participação no consumo nacional. Para cada Estado, a pergunta relevante é quanto sua receita se afasta daquilo que seria sem a reforma, e não apenas quanto ela cresce.
+
+Esta nota responde a essa pergunta para o Espírito Santo no período de 2029 a 2033, que é o núcleo da transição. O procedimento é o mesmo aplicado em estudo anterior sobre o Estado do Paraná, agora com os parâmetros e as bases de dados públicas atualizados até outubro de 2026. O resultado de todas as unidades da federação consta do Anexo A, para que o leitor situe o Estado no conjunto. A seção~\ref{sec:legal} resume o marco legal, a seção~\ref{sec:metodo} apresenta a metodologia, a seção~\ref{sec:result} traz os resultados e a seção~\ref{sec:final} reúne os comentários finais.
+
+% ------------------------------------------------------------------ 2
+\section{Marco legal da transição}\label{sec:legal}
+
+O art.~128 do Ato das Disposições Constitucionais Transitórias (ADCT), na redação da EC~132/2023, fixa o cronograma de extinção do ICMS e do ISS: as alíquotas dos dois impostos são reduzidas à razão de um décimo ao ano de 2029 a 2032 e eles deixam de existir em 2033. A parcela da base que sai do ICMS e do ISS passa a ser tributada pelo IBS, de modo que o ICMS e o ISS ``residuais'' respondem por 90\% da receita de referência em 2029 e por 60\% em 2032, enquanto o IBS cresce de 10\% a 40\% no mesmo período e, em 2033, responde por toda a receita.
+
+O IBS arrecadado não é entregue por inteiro ao ente em que o consumo ocorreu. Nos termos do art.~109 da Lei Complementar nº 227/2026, de 2029 a 2032 retêm-se 80\% do produto do IBS destinado a cada ente, percentual que sobe para 90\% em 2033 e, de 2034 em diante, diminui um quarenta e cinco avos por ano até 2077. A parcela retida é distribuída pelo Coeficiente de Participação de Transição (CPT), que reproduz a participação média de cada ente na receita de ICMS e de ISS entre 2019 e 2026 (arts.~114 a 116 da mesma lei). O restante, que cresce ao longo do tempo, é distribuído segundo o destino do consumo. Dele se retêm ainda 5\% para formar o Seguro-Receita (art.~110 da LC~227/2026 e art.~132 do ADCT), fundo que recompõe, de forma escalonada, a receita dos entes que mais perdem participação. Sobre a receita distribuída por ambos os critérios incide, por fim, a dedução destinada ao financiamento do Comitê Gestor do IBS (CGIBS), cujo teto é de 2\% em 2029, 1\% em 2030, 0,67\% em 2031 e 0,5\% em 2032 (art.~51 da LC~227/2026); a partir de 2033, o modelo adota o teto permanente de 0,2\% previsto na regra geral da lei. A Tabela~\ref{tab:cron} reúne esses parâmetros.
+
+\begin{table}[!htb]
+\centering
+\caption{Parâmetros legais da transição, 2029--2033}\label{tab:cron}
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}l*{5}{>{\raggedleft\arraybackslash}p{2.3cm}}@{}}
+\toprule
+\rowcolor{azul}\cabecalhoL{Ano} & \cabecalho{ICMS e ISS\\residuais} & \cabecalho{IBS\\(\% da base)} & \cabecalho{IBS retido pelo\\critério histórico} & \cabecalho{IBS pelo\\destino} & \cabecalho{Teto do\\CGIBS} \\
+\midrule
+2029 & 90\% & 10\% & 80\% & 20\% & 2,00\% \\
+\rowcolor{zebra}2030 & 80\% & 20\% & 80\% & 20\% & 1,00\% \\
+2031 & 70\% & 30\% & 80\% & 20\% & 0,67\% \\
+\rowcolor{zebra}2032 & 60\% & 40\% & 80\% & 20\% & 0,50\% \\
+2033 & 0\% & 100\% & 90\% & 10\% & 0,20\% \\
+\bottomrule
+\end{tabular}
+
+\vspace{3pt}
+\nota{Fontes: ADCT, arts.~128, 131 e 132; LC~227/2026, arts.~47, 51, 109 e 110. Os percentuais do IBS retido e do destino referem-se ao IBS de cada ano; o Seguro-Receita retém 5\% da parcela de destino. O teto de 2033 é a hipótese adotada no modelo.}
+\end{table}
+
+No interior de cada unidade da federação, o IBS estadual continua sujeito à regra constitucional que destina 25\% de seu produto aos municípios (Constituição, art.~158, IV, ``b''), repartidos segundo os critérios do art.~128 da LC~227/2026. Por isso, o ``ente estadual'' de que trata esta nota é líquido da cota-parte municipal, como é hoje a receita estadual de ICMS. Por fim, os arts.~361 a 365 da LC~214/2025, na redação dada pela LC~227/2026, determinam que a alíquota de referência seja calibrada de modo que a receita do IBS, em proporção do PIB, seja igual à média de 2024 a 2026. Essa regra fixa o tamanho do bolo a distribuir; os critérios descritos acima definem como ele é repartido.
+
+% ------------------------------------------------------------------ 3
+\section{Metodologia}\label{sec:metodo}
+
+\subsection{Cenário contrafactual e medida do efeito}
+
+O efeito da reforma é medido pela diferença entre dois cenários que compartilham a mesma trajetória de arrecadação nacional. No cenário sem reforma, o Estado preserva, em todos os anos, a participação que detinha em 2025 na receita de ICMS e ISS do país. No cenário com reforma, sua receita resulta da aplicação das regras da seção~\ref{sec:legal}. Como o tamanho do bolo nacional, $R(t)$, é o mesmo nos dois cenários, a diferença entre eles isola o efeito redistributivo da reforma do efeito do crescimento da economia: um erro na projeção do PIB desloca os dois lados da comparação na mesma proporção e não altera a variação percentual.
+
+Seja $f(t)$ a fração da base ainda tributada pelo ICMS e pelo ISS no ano $t$ e $s(t)=1-f(t)$ a fração já tributada pelo IBS; seja $\alpha(t)$ a parcela do IBS retida pelo critério histórico, $\rho=5\%$ a retenção do Seguro-Receita e $c(t)$ a dedução do CGIBS. A receita do ente estadual com a reforma é
+\begin{equation}\label{eq:receita}
+\mathrm{Receita}(t)=R(t)\Big\{f(t)\,\varphi^{N}+s(t)\big(1-c(t)\big)\Big[\alpha(t)\,\varphi^{C}+\big(1-\alpha(t)\big)(1-\rho)\,\varphi^{D}\Big]\Big\}+\big(1-c(t)\big)\,SR(t),
+\end{equation}
+em que $\varphi^{N}$ é a participação neutra do Estado (sua participação na receita de ICMS e ISS em 2025), $\varphi^{C}$ é o CPT, $\varphi^{D}$ é o coeficiente de destino e $SR(t)$ é o repasse recebido do Seguro-Receita. O cenário sem reforma é simplesmente $R(t)\,\varphi^{N}$. Dividindo a diferença entre os dois cenários por essa base, a variação percentual pode ser escrita como
+\begin{equation}\label{eq:decomp}
+\begin{split}
+\Delta(t)={}&\underbrace{s(t)\big[(1-c)\,k-1\big]}_{\text{deduções}}+\underbrace{s(t)(1-c)\,\alpha\,(\lambda^{C}-1)}_{\text{critério histórico}}\\
+&+\underbrace{s(t)(1-c)(1-\alpha)(1-\rho)\,(\lambda^{D}-1)}_{\text{critério de destino}}+\underbrace{\frac{(1-c)\,SR(t)}{R(t)\,\varphi^{N}}}_{\text{Seguro-Receita}},
+\end{split}
+\end{equation}
+onde $k=\alpha+(1-\alpha)(1-\rho)$, $\lambda^{C}=\varphi^{C}/\varphi^{N}$ e $\lambda^{D}=\varphi^{D}/\varphi^{N}$. A decomposição mostra que a perda tem origem em quatro fontes distintas, e é ela que organiza a leitura dos resultados na seção~\ref{sec:result}.
+
+\subsection{Tamanho do bolo nacional}
+
+A receita de referência $R(t)$ é a soma de ICMS, ISS e Fundo Estadual de Combate à Pobreza (FECOP), observada na Declaração de Contas Anuais (DCA) do Sistema de Informações Contábeis e Fiscais do Setor Público Brasileiro (SICONFI), para 2013 a 2025. Em vez de uma escolha metodológica própria, projeta-se a regra da lei: a razão entre essa receita e o PIB é mantida na média de 2024 a 2026, de 8,02\%. O PIB segue o Boletim Focus, do Banco Central, para 2026 a 2030 e as projeções da Instituição Fiscal Independente (IFI) para os anos seguintes. Todos os valores são expressos em reais constantes de 2025. Com esses parâmetros, o IBS nacional é de cerca de \Rs\NumBoloNac\ trilhão em 2033.
+
+\subsection{Coeficientes de participação do Estado}
+
+A participação neutra, $\varphi^{N}$, é a participação do Estado na receita de ICMS e de ISS do país em 2025; para o ente estadual, considera-se o ICMS líquido da cota-parte municipal, acrescido do FECOP. O CPT, $\varphi^{C}$, é a média das participações do Estado no período de 2019 a 2026, com a receita de cada ano reescalada de modo que o total nacional coincida com o de 2025, o que neutraliza o crescimento nominal do agregado sem impor hipótese de inflação. Como 2026 ainda não está encerrado, seu valor é estimado a partir dos demonstrativos bimestrais do SICONFI (RREO) de janeiro a agosto.
+
+O coeficiente de destino, $\varphi^{D}$, é a participação do Estado no consumo nacional sujeito ao IBS, para a qual não há pesquisa oficial. Estima-se esse coeficiente por um composto de três rotas sobre a base tributável, isto é, sobre a despesa das famílias já ponderada pelas regras de incidência da LC~214/2025. A primeira multiplica a despesa familiar por pessoa da Pesquisa de Orçamentos Familiares (POF) de 2017--2018 pelos moradores do Censo Demográfico de 2022. A segunda atualiza a primeira pela renda relativa de cada Estado na Pesquisa Nacional por Amostra de Domicílios Contínua entre 2018 e 2022, com a elasticidade-renda do consumo estimada na própria POF. A terceira combina os moradores do Censo 2022 por classe de salário mínimo com a base tributável por pessoa de cada classe na POF. O composto é a média simples das três rotas e incorpora as compras governamentais, cujo IBS pertence ao ente comprador (Constituição, art.~149-C; LC~214/2025, arts.~472 e 473). Numa validação em que cada Estado é excluído da amostra da POF e sua participação no consumo é prevista com os demais, o erro relativo médio fica entre 6\% e 9\% nas especificações que usam a renda, contra 40\% quando se usa apenas a população.
+
+\subsection{Seguro-Receita e limites do exercício}
+
+O Seguro-Receita é calculado para cada um dos 5.596 entes (os 26 Estados, o Distrito Federal e os 5.569 municípios): compara-se a receita recebida sob as novas regras com uma receita de referência histórica, limitada a três vezes a média nacional por habitante da respectiva esfera, e o fundo, de 5\% da parcela de destino, eleva sequencialmente os entes de menor razão até se esgotar (LC~227/2026, art.~117). Trata-se de um nivelamento, e não de uma partilha proporcional à perda.
+
+Todas as bases são públicas. Os resultados constituem estimativa própria e independente, não o cálculo oficial que competirá ao CGIBS, e dependem de parâmetros ainda sujeitos a regulamentação, como as alíquotas de referência definitivas. Duas limitações merecem registro: o coeficiente de destino é estimado, sem dado observado de destino contra o qual validar, e o ano de 2026 entra no CPT por estimativa. A calibração definitiva virá da arrecadação do IBS e da CBS a partir de 2027.
+
+% ------------------------------------------------------------------ 4
+\section{Resultados}\label{sec:result}
+
+\subsection{Receita do ente estadual, 2029--2033}
+
+A Tabela~\ref{tab:traj} compara a receita do ente estadual capixaba com e sem a reforma. Em 2025, antes do IBS, a receita de referência do Estado é de \Rs\NumRecPre\ bilhões. Nos três primeiros anos a diferença é pequena, de \Rs\NumDifUm\ bilhão (\NumVarUm\%) em 2029 a \Rs\NumDifTres\ bilhão (\NumVarTres\%) em 2031, e cresce de forma regular até \Rs\NumDifQuatro\ bilhão (\NumVarQuatro\%) em 2032. Em 2033, quando o ICMS e o ISS são extintos, a perda sobe para \Rs\NumDifCinco\ bilhão (\NumVarCinco\%). No acumulado do período, a receita do Estado fica \Rs\NumDifAcum\ bilhões abaixo do que teria sem a reforma, o equivalente a \NumVarAcum\% do cenário contrafactual.
+
+\begin{table}[!htb]
+\centering
+\caption{Receita do ente estadual do Espírito Santo, com e sem a reforma, 2029--2033 (R\$ bilhões, preços constantes de 2025)}\label{tab:traj}
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\input{tabelas/tab-trajetoria.tex}
+
+\vspace{3pt}
+\nota{Fonte: elaboração própria a partir de SICONFI/STN, EC~132/2023, LC~214/2025 e LC~227/2026. ``Sem reforma'' mantém a participação de 2025 sobre a receita nacional de referência de cada ano; a receita é líquida da cota-parte municipal e inclui o FECOP.}
+\end{table}
+
+É importante distinguir perda relativa de queda absoluta. Em termos reais, a receita do Estado ainda cresce \NumCrescPos\% entre 2025 e 2033, mas cresceria \NumCrescCf\% sem a reforma, porque o crescimento da economia compensa em boa parte a mudança de critério. A exceção é 2033, ano em que a receita projetada recua \NumQueda\% em relação a 2032, a única queda real do período, consequência direta da extinção do ICMS e do ISS. Somando-se os municípios, o conjunto formado pelo Estado e por seus municípios tem variação de $-$\NumTotVar\% em 2033 e de $-$\NumTotAcum\% no acumulado. A diferença para o ente estadual isolado decorre, em parte, do Seguro-Receita, que o Estado não recebe em nenhum ano do período e que, para os municípios capixabas, soma \Rs\NumRepMun\ milhões em 2033. A distribuição da receita entre os municípios do Estado foge ao escopo desta nota.
+
+\subsection{De onde vem a perda}
+
+A Tabela~\ref{tab:decomp} aplica a decomposição da equação~\eqref{eq:decomp}. O Estado tem participação neutra de \NumCoefN\% do total nacional, CPT de \NumCoefC\% (\NumCoefCRel\% menor) e coeficiente de destino de \NumCoefP\% (\NumCoefPRel\% menor). O CPT é inferior à participação atual porque a participação do Estado na arrecadação nacional cresceu ao longo da série, de 1,46\% em 2019 a 1,66\% em 2025: a média histórica, que a lei manda usar, fica abaixo do ponto de chegada. O coeficiente de destino é ainda menor porque a participação do Estado no consumo nacional é inferior à sua participação na arrecadação, característica de quem arrecada mais do que consome.
+
+\begin{table}[!htb]
+\centering
+\caption{Decomposição da diferença de receita do ente estadual (pontos percentuais da receita do cenário sem reforma)}\label{tab:decomp}
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\input{tabelas/tab-decomposicao.tex}
+
+\vspace{3pt}
+\nota{Fonte: elaboração própria. A decomposição segue a equação~\eqref{eq:decomp}; a soma das linhas é a variação da Tabela~\ref{tab:traj}. O Espírito Santo não recebe repasse do Seguro-Receita no período.}
+\end{table}
+
+Até 2032, a maior parte da base ainda é distribuída pela participação de 2025, que por construção não gera perda, e isso explica o avanço gradual da diferença. Em 2033 toda a base passa a seguir os critérios do IBS, e o resultado muda de escala: dos \NumVarFinalUma\ pontos percentuais da perda, \NumDecCpt\ vêm do critério histórico, \NumDecDest\ do critério de destino e \NumDecDed\ das deduções do Seguro-Receita e do CGIBS, comuns a todos os entes. Em 2033, portanto, o resultado do Estado depende mais de sua participação histórica do que do critério de destino, que então responde por apenas 10\% do IBS. Essa proporção se inverte depois de 2033, à medida que o peso do destino cresce. Como extrapolação, a mesma metodologia aplicada até 2077 indica receita estadual de \Rs\NumRecSetentaSete\ bilhões, \NumVarSetentaSete\% abaixo dos \Rs\NumCfSetentaSete\ bilhões do cenário sem reforma. Esse horizonte, porém, depende de hipóteses sobre o crescimento e sobre a regulamentação que se estendem por mais de cinco décadas e deve ser lido apenas como indicação de direção.
+
+\subsection{Posição do Estado entre as unidades da federação}
+
+A Figura~\ref{fig:rank} ordena as 27 unidades da federação pela variação da receita do ente estadual em 2033, e \NumPerdem\ delas perdem relativamente ao cenário sem reforma. O Espírito Santo ocupa a \NumRank\textordfeminine\ posição entre as maiores perdas, atrás de \NumPrimeiroNome\ ($-$\NumPrimeiroVar\%) e \NumSegundoNome\ ($-$\NumSegundoVar\%), e também a \NumRankAcum\textordfeminine\ no acumulado de 2029 a 2033. No outro extremo, \NumMelhorNome\ tem o maior ganho (\NumMelhorVar\%). Convém notar que os 27 entes estaduais, em conjunto, têm receita \NumAgEst\% maior que no cenário sem reforma em 2033: a soma de seus coeficientes históricos é de \NumSomaC\% do total nacional, contra \NumSomaN\% da soma das participações de 2025, em contrapartida da menor participação dos municípios. Em relação a essa evolução média dos Estados, a perda do Espírito Santo é de \NumVsMedia\%. O Anexo A traz a trajetória completa de cada unidade e o Anexo B, os coeficientes que explicam o resultado.
+
+\begin{figure}[!htb]
+\centering
+\captionsetup{type=figure}
+\caption{Variação da receita do ente estadual em 2033, por unidade da federação}\label{fig:rank}
+\footnotesize
+\input{tabelas/figura-ranking.tex}
+
+\vspace{3pt}
+\nota{Fonte: elaboração própria. Variação em relação ao cenário sem reforma, preços constantes de 2025. Espírito Santo em destaque.}
+\end{figure}
+
+\subsection{Sensibilidade ao método e comparação com outras estimativas}
+
+A principal fonte de incerteza do exercício é o coeficiente de destino. A Tabela~\ref{tab:metodos} refaz o cálculo do Espírito Santo com outros métodos de estimação desse coeficiente. Em 2033, a variação vai de $-$\NumVarMax\% (método adotado) a $-$\NumVarMin\% (coeficiente de Gobetti e Monteiro, 2023), uma amplitude de \NumAmplitude\ ponto percentual. Entre os métodos testados, o adotado é o mais favorável ao Estado, de modo que a estimativa central corresponde ao limite inferior da perda dentro dessa faixa. Parte da diferença se deve ao fato de que os comparadores, ao contrário do método adotado, não incorporam as compras governamentais. A simulação preliminar elaborada para o Comsefaz chega a $-$\NumComsefaz\% em 2033, valor próximo ao deste estudo e dentro da faixa.
+
+\begin{table}[!htb]
+\centering
+\caption{Variação da receita do ente estadual do Espírito Santo segundo o método de estimação do coeficiente de destino (\% do cenário sem reforma)}\label{tab:metodos}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\input{tabelas/tab-metodos.tex}
+
+\vspace{3pt}
+\nota{Fonte: elaboração própria; GOBETTI, S. W.; MONTEIRO, P. K. (2023). Os métodos alternativos mantêm o CPT e o CGIBS do cenário base, refazem o nivelamento do Seguro-Receita e não incluem compras governamentais. \textsuperscript{a}Nota técnica elaborada para o Comsefaz, versão 3 (agosto de 2026), Tabela 12: variação de cada ano em relação à participação de 2025 aplicada à receita total simulada; documento preliminar e não oficial.}
+\end{table}
+
+% ------------------------------------------------------------------ 5
+\section{Comentários finais}\label{sec:final}
+
+A transição do ICMS para o IBS reduz a receita do ente estadual capixaba em relação ao cenário sem reforma em todos os anos de 2029 a 2033, de modo gradual até 2032 e de forma mais intensa em 2033. A perda de \NumVarFinalUma\% em 2033, equivalente a \Rs\NumDifFinalMil\ bilhão a preços de 2025, é a terceira maior entre as unidades da federação e não é compensada pelo Seguro-Receita, cujo fundo, de 5\% da parcela de destino, é pequeno diante das perdas e atende os entes de menor razão entre a receita nova e a de referência. A perda não significa queda da receita em termos absolutos, exceto em 2033, quando a extinção do ICMS e do ISS faz a receita real recuar \NumQueda\% em relação ao ano anterior.
+
+O resultado decorre da estrutura do Estado e das regras de transição, e não de um parâmetro isolado. O Espírito Santo ampliou sua participação na arrecadação nacional na segunda metade da série, o que torna seu coeficiente histórico menor que o de 2025, e participa menos do consumo do que da arrecadação, o que reduz seu coeficiente de destino. Enquanto a retenção de 80\% a 90\% do IBS pelo critério histórico domina o desenho da transição, a primeira dessas características pesa mais; à medida que o destino ganha peso depois de 2033, a segunda passa a definir o resultado. Por essa razão, o horizonte de 2033 mede apenas o início do efeito.
+
+Para o planejamento orçamentário, a leitura mais segura é a faixa e não o ponto: a perda estimada em 2033 situa-se entre \NumVarMax\% e \NumVarMin\% da receita do cenário sem reforma, conforme o método de estimação do coeficiente de destino. Esta nota não substitui o cálculo oficial. À medida que o IBS e a CBS passarem a ser arrecadados a partir de 2027 e que as notas fiscais eletrônicas permitirem observar o destino das operações, a estimativa do coeficiente de destino poderá ser calibrada com dados efetivos, e este exercício deve ser refeito.
+
+\subsection*{Responsável pelo estudo}
+
+Eduardo Araújo é Economista, Auditor de Finanças, Professor de Finanças Públicas na Fucape Business School e Mestre em Políticas Públicas pela Universidade de Oxford.
+
+\subsection*{Disclosure}
+
+\begin{aviso}
+Este material foi elaborado de forma independente, com base exclusivamente em fontes públicas e em premissas explicitadas nesta nota técnica. O conteúdo não representa posição institucional da Fucape Business School nem da Secretaria da Fazenda do Estado do Espírito Santo.
+\end{aviso}
+
+\subsection*{Referências}
+
+\begin{description}[leftmargin=1.2em,labelindent=0pt,itemsep=0.3em,parsep=0pt,font=\mdseries]
+\item[] \footnotesize ARAÚJO, E. R. \textbf{A transição do ICMS/ISS para o IBS e seus efeitos redistributivos entre entes federativos}: nota metodológica. Agosto de 2026. Disponível em: www.eduardoreisaraujo.com.br/estudos/nota-metodologica-ibs.html.
+\item[] \footnotesize BRASIL. Emenda Constitucional nº 132, de 20 de dezembro de 2023. Altera o Sistema Tributário Nacional.
+\item[] \footnotesize BRASIL. Lei Complementar nº 214, de 16 de janeiro de 2025. Institui o IBS, a CBS e o Imposto Seletivo.
+\item[] \footnotesize BRASIL. Lei Complementar nº 227, de 2026. Institui o Comitê Gestor do IBS e altera a LC nº 214/2025.
+\item[] \footnotesize COMSEFAZ. \textbf{Reforma tributária}: estimativas de receita sob o novo modelo de IBS para os estados. Nota técnica, versão 3, agosto de 2026 (documento preliminar).
+\item[] \footnotesize GOBETTI, S. W.; MONTEIRO, P. K. \textbf{Impactos redistributivos da reforma tributária}: estimativas atualizadas. Carta de Conjuntura nº 60, Nota de Conjuntura 18. Brasília: Ipea, 28 ago. 2023.
+\item[] \footnotesize Bases públicas: Secretaria do Tesouro Nacional (SICONFI: DCA e RREO); Banco Central do Brasil (Boletim Focus e SGS); Instituição Fiscal Independente (Relatórios de Acompanhamento Fiscal); IBGE (POF 2017--2018, Censo Demográfico 2022 e PNAD Contínua).
+\end{description}
+
+% ------------------------------------------------------------------ anexos
+\clearpage
+\appendix
+\section*{Anexo A: receita do ente estadual por unidade da federação, 2029--2033}
+\addcontentsline{toc}{section}{Anexo A}
+\nota{Variação da receita do ente estadual em relação ao cenário sem reforma (\%), por ano; receita pré-IBS de 2025 e receita com reforma em 2033 (R\$ bilhões, preços constantes de 2025); variação e diferença acumuladas de 2029 a 2033. Unidades ordenadas da maior perda à maior variação positiva em 2033; Espírito Santo em destaque.}
+\vspace{0.4em}
+
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\input{tabelas/anexo-a.tex}
+
+\vspace{4pt}
+\nota{Fonte: elaboração própria a partir de SICONFI/STN, EC~132/2023, LC~214/2025 e LC~227/2026. Receita pré-IBS de 2025 corresponde à participação neutra do ente estadual (ICMS e FECOP, líquidos da cota-parte municipal) aplicada à receita de referência nacional. A linha de total reúne os 27 entes estaduais: em conjunto, eles têm receita \NumAgEst\% maior que no cenário sem reforma em 2033, porque a participação média dos Estados em 2019--2026 supera a de 2025, em contrapartida da menor participação dos municípios.}
+
+\clearpage
+\normalsize
+\section*{Anexo B: coeficientes de participação e variação consolidada por unidade da federação}
+\nota{Coeficientes do ente estadual (\% do total nacional): participação neutra de 2025 ($\varphi^{neutro}$), Coeficiente de Participação de Transição ($\varphi^{CPT}$) e coeficiente de destino ($\varphi^{dest}$). As colunas seguintes comparam cada coeficiente com a participação neutra e reportam a variação da receita em 2033 do ente estadual e do conjunto formado pelo Estado e seus municípios. Mesma ordenação do Anexo A.}
+\vspace{0.4em}
+
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\input{tabelas/anexo-b.tex}
+
+\vspace{4pt}
+\nota{Fonte: elaboração própria. O Distrito Federal não tem esfera municipal própria (LC~227/2026, art.~115), de modo que o resultado do ente estadual e do conjunto coincide.}
+
+\end{document}
