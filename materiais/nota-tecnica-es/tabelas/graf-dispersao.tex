@@ -1,0 +1,34 @@
+\begin{minipage}[t]{0.49\linewidth}\centering
+\begin{tikzpicture}
+\begin{axis}[
+  title={\footnotesize (a) Participação na transição federativa $|$ $R^{2}=0{,}864$}, title style={yshift=-2pt}, width=1.12\linewidth, height=5.6cm,
+  xlabel={Diferença relativa ante a participação de 2025 (\%)}, xlabel style={font=\scriptsize},
+  ylabel={Variação em 2033 (\%)}, ylabel style={font=\scriptsize},
+  xticklabel style={font=\scriptsize, /pgf/number format/.cd, fixed, precision=0, use comma}, yticklabel style={font=\scriptsize, /pgf/number format/.cd, fixed, precision=0, use comma},
+  grid=major, grid style={gray!20}, axis lines=box, axis line style={gray!60}, ymin=-11, ymax=11, xmin=-10.1, xmax=10.3,
+]
+\addplot[only marks, mark=*, mark size=1.5pt, azul!70] coordinates {(4.796,5.813) (-5.544,-7.229) (5.839,9.124) (-0.455,4.037) (0.904,0.966) (2.766,2.566) (1.659,5.885) (2.368,2.055) (-6.708,-6.380) (1.342,0.284) (-0.684,-3.366) (-6.149,-9.017) (-2.722,-4.190) (-2.580,-2.635) (1.809,1.254) (-3.972,-2.748) (1.140,0.795) (7.295,6.435) (1.873,3.220) (-3.788,-7.164) (-1.903,-2.957) (6.959,6.166) (-3.943,-5.211) (-1.971,0.927) (4.384,3.363) (-7.100,-9.415)};
+\addplot[azul, thin, no marks, domain=-7.10:7.29] {-0.15843+1.17348*x};
+\addplot[only marks, mark=*, mark size=2.6pt, orange!90!black] coordinates {(-4.767,-7.596)};
+\node[font=\scriptsize, anchor=south west] at (axis cs:-4.767,-7.596) {ES};
+\addplot[black!50, thin, no marks] coordinates {(-10.1,0) (10.3,0)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}\centering
+\begin{tikzpicture}
+\begin{axis}[
+  title={\footnotesize (b) Participação pelo destino $|$ $R^{2}=0{,}240$}, title style={yshift=-2pt}, width=1.12\linewidth, height=5.6cm,
+  xlabel={Diferença relativa ante a participação de 2025 (\%)}, xlabel style={font=\scriptsize},
+  ylabel={Variação em 2033 (\%)}, ylabel style={font=\scriptsize},
+  xticklabel style={font=\scriptsize, /pgf/number format/.cd, fixed, precision=0, use comma}, yticklabel style={font=\scriptsize, /pgf/number format/.cd, fixed, precision=0, use comma},
+  grid=major, grid style={gray!20}, axis lines=box, axis line style={gray!60}, ymin=-11, ymax=11, xmin=-52.8, xmax=57.3,
+]
+\addplot[only marks, mark=*, mark size=1.5pt, azul!70] coordinates {(23.244,5.813) (-16.348,-7.229) (-49.820,9.124) (54.257,4.037) (8.992,0.966) (8.237,2.566) (53.725,5.885) (6.612,2.055) (3.628,-6.380) (-2.349,0.284) (-21.647,-3.366) (-29.488,-9.017) (-11.029,-4.190) (4.028,-2.635) (3.457,1.254) (16.025,-2.748) (4.959,0.795) (6.135,6.435) (23.599,3.220) (-32.304,-7.164) (-5.787,-2.957) (6.484,6.166) (-10.233,-5.211) (35.821,0.927) (1.312,3.363) (-24.670,-9.415)};
+\addplot[azul, thin, no marks, domain=-49.82:54.26] {-0.67091+0.10585*x};
+\addplot[only marks, mark=*, mark size=2.6pt, orange!90!black] coordinates {(-27.582,-7.596)};
+\node[font=\scriptsize, anchor=south west] at (axis cs:-27.582,-7.596) {ES};
+\addplot[black!50, thin, no marks] coordinates {(-52.8,0) (57.3,0)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}

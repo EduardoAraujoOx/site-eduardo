@@ -1,0 +1,56 @@
+\begin{minipage}[t]{0.50\linewidth}\centering
+\begin{tikzpicture}
+\begin{axis}[
+  title={\footnotesize (a) Sensibilidade, 2029 a 2033}, title style={yshift=-2pt}, width=1.12\linewidth, height=6.4cm, ymin=-11, ymax=7,
+  xmin=2028.7, xmax=2033.9, xtick={2029,2030,2031,2032,2033}, xticklabel style={font=\scriptsize, /pgf/number format/1000 sep=},
+  yticklabel style={font=\scriptsize, /pgf/number format/.cd, fixed, precision=0, use comma},
+  ylabel={Variação ante o cenário sem reforma (\%)}, ylabel style={font=\scriptsize},
+  ymajorgrids, grid style={gray!25}, axis x line*=bottom, axis y line*=left, axis line style={gray!60},
+  legend style={font=\tiny, at={(0.5,-0.14)}, anchor=north, draw=none, fill=none, legend columns=2, /tikz/every even column/.append style={column sep=4pt}}, legend cell align=left,
+]
+\addplot[name path=ua, draw=none, forget plot] coordinates {(2029,0.1629) (2030,0.5332) (2031,0.9025) (2032,1.2738) (2033,5.8261)};
+\addplot[name path=la, draw=none, forget plot] coordinates {(2029,-1.4781) (2030,-2.7823) (2031,-4.0874) (2032,-5.3908) (2033,-10.0529)};
+\addplot[azulclaro!45, draw=none] fill between[of=ua and la];
+\addlegendentry{Ano-base e destino $\pm$8,6\% (envoltória)}
+\addplot[name path=ub, draw=none, forget plot] coordinates {(2029,0.0309) (2030,0.2666) (2031,0.5012) (2032,0.7379) (2033,5.1541)};
+\addplot[name path=lb, draw=none, forget plot] coordinates {(2029,-1.3645) (2030,-2.5528) (2031,-3.7420) (2032,-4.9294) (2033,-9.4744)};
+\addplot[azul!35, draw=none] fill between[of=ub and lb];
+\addlegendentry{Ano-base alternativo}
+\addplot[green!45!black, dashed, thick, no marks] coordinates {(2029,-1.3645) (2030,-2.5528) (2031,-3.7420) (2032,-4.9294) (2033,-9.4744)};
+\addlegendentry{2026 (estimado)}
+\addplot[brown!70!black, dash dot, thick, no marks] coordinates {(2029,-0.7441) (2030,-1.2993) (2031,-1.8554) (2032,-2.4097) (2033,-2.9704)};
+\addlegendentry{Média 2019 a 2026}
+\addplot[red!60!black, dotted, thick, no marks] coordinates {(2029,0.0309) (2030,0.2666) (2031,0.5012) (2032,0.7379) (2033,5.1541)};
+\addlegendentry{2019}
+\addplot[azul, very thick, mark=*, mark size=1.8pt] coordinates {(2029,-1.1853) (2030,-2.1907) (2031,-3.1970) (2032,-4.2016) (2033,-7.5957)};
+\addlegendentry{Central (2025)}
+\addplot[black!70, thin, no marks, forget plot] coordinates {(2028.7,0) (2033.9,0)};
+\node[font=\tiny, azul, anchor=west] at (axis cs:2033.05,-7.596) {$-$7,60\%};
+\node[font=\tiny, gray, anchor=west] at (axis cs:2033.05,5.826) {+5,8\%};
+\node[font=\tiny, gray, anchor=west] at (axis cs:2033.05,-10.053) {$-$10,1\%};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}\centering
+\begin{tikzpicture}
+\begin{axis}[
+  title={\footnotesize (b) Extensão do cronograma legal, 2033 a 2077}, title style={yshift=-2pt}, width=1.12\linewidth, height=6.4cm,
+  xmin=2029, xmax=2086, xtick={2033,2040,2050,2060,2070,2077}, xticklabel style={font=\scriptsize, /pgf/number format/1000 sep=},
+  yticklabel style={font=\scriptsize, /pgf/number format/.cd, fixed, precision=0, use comma}, ymin=10,
+  ylabel={Receita estadual (R\$ bilhões de 2025)}, ylabel style={font=\scriptsize},
+  ymajorgrids, grid style={gray!25}, axis x line*=bottom, axis y line*=left, axis line style={gray!60},
+  legend style={font=\tiny, at={(0.02,0.98)}, anchor=north west, draw=none, fill=none}, legend cell align=left,
+]
+\addplot[black!60, thick, dotted, mark=o, mark size=2pt, mark options={fill=white, solid}] coordinates {(2033,19.9458) (2040,23.2279) (2050,28.8748) (2060,35.8944) (2070,44.6207) (2077,51.9628)};
+\addlegendentry{Cenário sem reforma}
+\addplot[azul, thick, dashed, mark=*, mark size=2pt, mark options={solid}] coordinates {(2033,18.4308) (2040,20.6056) (2050,24.0913) (2060,28.8594) (2070,35.5885) (2077,41.0709)};
+\addlegendentry{Com reforma}
+\node[font=\tiny, anchor=north west] at (axis cs:2033,18.431) {$-$7,6\%};
+\node[font=\tiny, anchor=north west] at (axis cs:2040,20.606) {$-$11,3\%};
+\node[font=\tiny, anchor=north west] at (axis cs:2050,24.091) {$-$16,6\%};
+\node[font=\tiny, anchor=north west] at (axis cs:2060,28.859) {$-$19,6\%};
+\node[font=\tiny, anchor=north west] at (axis cs:2070,35.589) {$-$20,2\%};
+\node[font=\tiny, anchor=north west] at (axis cs:2077,41.071) {$-$21,0\%};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
