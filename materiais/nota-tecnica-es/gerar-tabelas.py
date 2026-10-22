@@ -258,6 +258,7 @@ for a, nome in nomes_ano.items():
     m.append(macro(f"NumPos{nome}", num(pos[a], 2)))
     m.append(macro(f"NumCf{nome}", num(cf[a], 2)))
     m.append(macro(f"NumDif{nome}", num(abs(dif[a]), 2)))
+    m.append(macro(f"NumDifMi{nome}", num(abs(dif[a]) * 1000, 0)))
     m.append(macro(f"NumVar{nome}", num(abs(var[a]), 2)))
     m.append(macro(f"NumDed{nome}", num(abs(decomp[a][0]), 2)))
     m.append(macro(f"NumHist{nome}", num(abs(decomp[a][1]), 2)))
@@ -362,18 +363,32 @@ for a in ANOS:
 L.append("\\bottomrule\n\\end{tabular}\n")
 (OUT / "tab-parametros.tex").write_text("".join(L), encoding="utf-8")
 
-# ---------------------------------------------------------------- Tabela 2: trajetória
+# ---------------------------------------------------------------- Tabela 3: projeção da receita estadual do ES (formato do artigo)
 L = ["\\begin{tabular}{@{}lrrrr@{}}\n\\toprule\n"]
-L.append("\\cabecalhoL{Ano} & \\cabecalho{Sem reforma\\\\$R^{C}_{it}$} & \\cabecalho{Com reforma\\\\$R^{R}_{it}$} & "
-         "\\cabecalho{Diferença\\\\(R\\$ bi)} & \\cabecalho{Variação\\\\$\\Delta_{it}$ (\\%)} \\\\\n\\midrule\n")
-L.append(f"2025 (base, pré-IBS) & {num(pre, 2)} & {num(pre, 2)} & --- & --- \\\\\n")
+L.append("\\cabecalhoL{Ano} & \\cabecalho{Cenário sem reforma\\\\R\\$ bi} & \\cabecalho{Receita com reforma\\\\R\\$ bi} & "
+         "\\cabecalho{Variação\\\\(\\%)} & \\cabecalho{Diferença\\\\R\\$ mi} \\\\\n\\midrule\n")
 for a in ANOS:
-    L.append(f"{a} & {num(cf[a], 2)} & {num(pos[a], 2)} & {num(dif[a], 2, True)} & {num(var[a], 2, True)} \\\\\n")
-L.append("\\midrule\n")
-L.append(f"\\textbf{{Acumulado 2029--2033}} & {num(sum(cf.values()), 2)} & {num(sum(pos.values()), 2)} & "
-         f"\\textbf{{{num(dif_acum, 2, True)}}} & \\textbf{{{num(var_acum, 2, True)}}} \\\\\n")
+    L.append(f"{a} & {num(cf[a], 2)} & {num(pos[a], 2)} & {num(var[a], 2, True)} & {num(dif[a] * 1000, 0, True)} \\\\\n")
 L.append("\\bottomrule\n\\end{tabular}\n")
 (OUT / "tab-trajetoria.tex").write_text("".join(L), encoding="utf-8")
+
+# ---------------------------------------------------------------- Tabela 2: todas as UFs (formato do artigo)
+ordem_a = sorted(est, key=lambda u: est[u]["variacao_por_ano"]["2033"])
+CS = "\\rowcolor{black!10}"
+L = ["\\begin{tabular}{@{}l*{11}{r}@{}}\n\\toprule\n"]
+L.append("\\cabecalhoL{UF} & \\cabecalho{Receita-\\\\base\\\\2025} & \\multicolumn{5}{c}{\\textbf{\\shortstack{Receita projetada sob\\\\a reforma, R\\$ bi}}} & "
+         "\\multicolumn{5}{c}{\\textbf{\\shortstack{Variação ante o cenário\\\\sem reforma (\\%)}}} \\\\\n"
+         "\\cmidrule(lr){3-7}\\cmidrule(l){8-12}\n"
+         " & & " + " & ".join(f"\\cabecalho{{{a}}}" for a in ANOS) + " & " + " & ".join(f"\\cabecalho{{{a}}}" for a in ANOS) + " \\\\\n\\midrule\n")
+for u in ordem_a:
+    v = est[u]
+    d = u == UF_ALVO
+    neg = (lambda s_: f"\\textbf{{{s_}}}") if d else (lambda s_: s_)
+    L.append((CS if d else "") + neg(u) + " & " + neg(num(v["pre_2025"] / BI, 1)) + " & " +
+             " & ".join(neg(num(v["pos_por_ano"][a] / BI, 1)) for a in ANOS) + " & " +
+             " & ".join(neg(num(v["variacao_por_ano"][a] * 100, 2, True)) for a in ANOS) + " \\\\\n")
+L.append("\\bottomrule\n\\end{tabular}\n")
+(OUT / "tab-ufs.tex").write_text("".join(L), encoding="utf-8")
 
 # ---------------------------------------------------------------- Tabela 3: decomposição
 L = ["\\begin{tabular}{@{}>{\\raggedright\\arraybackslash}p{6.1cm}*{5}{r}@{}}\n\\toprule\n"]
@@ -501,59 +516,78 @@ for (chave, rot, a_, b_, r2_, idx) in [("diff_cpt_pct", "(a) Participação na t
 G.append("\\end{minipage}\n")
 (OUT / "graf-dispersao.tex").write_text("".join(G), encoding="utf-8")
 
-# ---------------------------------------------------------------- Tabela A.1 e A.2 (anexo A)
-ordem_a = sorted(est, key=lambda u: est[u]["variacao_por_ano"]["2033"])
-CS = "\\rowcolor{black!10}"
-L = ["\\begin{longtable}{@{}>{\\raggedright\\arraybackslash}p{3.15cm}*{2}{r}*{5}{r}rr@{}}\n"]
-cab = ("\\cabecalhoL{Unidade da\\\\Federação} & \\cabecalho{Pré-IBS\\\\2025} & \\cabecalho{Com\\\\reforma\\\\2033} & "
-       "\\cabecalho{2029} & \\cabecalho{2030} & \\cabecalho{2031} & \\cabecalho{2032} & \\cabecalho{2033} & "
-       "\\cabecalho{Acum.\\\\2029--33} & \\cabecalho{Dif. acum.\\\\(R\\$ bi)} \\\\\n")
-L.append("\\toprule\n" + cab + "\\midrule\n\\endfirsthead\n")
-L.append("\\toprule\n" + cab + "\\midrule\n\\endhead\n\\bottomrule\n\\endfoot\n")
-soma = {"pre": 0.0, "pos33": 0.0, "dif": 0.0, "cf": 0.0}
-somas_ano = {a: [0.0, 0.0] for a in ANOS}
-for u in ordem_a:
-    v = est[u]
-    dif_u = sum(v["pos_por_ano"][a] - v["contrafactual_por_ano"][a] for a in ANOS) / BI
-    soma["pre"] += v["pre_2025"] / BI
-    soma["pos33"] += v["pos_por_ano"]["2033"] / BI
-    soma["dif"] += dif_u
-    soma["cf"] += sum(v["contrafactual_por_ano"][a] for a in ANOS) / BI
-    for a in ANOS:
-        somas_ano[a][0] += v["pos_por_ano"][a]
-        somas_ano[a][1] += v["contrafactual_por_ano"][a]
-    d = u == UF_ALVO
-    neg = (lambda s: f"\\textbf{{{s}}}") if d else (lambda s: s)
-    L.append((CS if d else "") + neg(nome_tex(v["nome"])) + " & " + neg(num(v["pre_2025"] / BI, 2)) + " & " +
-             neg(num(v["pos_por_ano"]["2033"] / BI, 2)) + " & " +
-             " & ".join(neg(num(v["variacao_por_ano"][a] * 100, 1, True)) for a in ANOS) + " & " +
-             neg(num(v["acumulado_dpct"] * 100, 1, True)) + " & " + neg(num(dif_u, 2, True)) + " \\\\\n")
-L.append("\\midrule\n")
-L.append("\\textbf{Total dos entes estaduais} & " + f"\\textbf{{{num(soma['pre'], 1)}}} & \\textbf{{{num(soma['pos33'], 1)}}} & " +
-         " & ".join(f"\\textbf{{{num((somas_ano[a][0] / somas_ano[a][1] - 1) * 100, 1, True)}}}" for a in ANOS) + " & " +
-         f"\\textbf{{{num(soma['dif'] / soma['cf'] * 100, 1, True)}}} & \\textbf{{{num(soma['dif'], 2, True)}}} \\\\\n")
-L.append("\\end{longtable}\n\\addtocounter{table}{-1}\n")  # longtable consome o contador de tabelas
-(OUT / "anexo-a1.tex").write_text("".join(L), encoding="utf-8")
-
-L = ["\\begin{longtable}{@{}>{\\raggedright\\arraybackslash}p{3.15cm}*{3}{r}rrrr@{}}\n"]
+# ---------------------------------------------------------------- Tabela A.1 (anexo A): coeficientes, variação e diferença acumulada
+L = ["\\begin{longtable}{@{}>{\\raggedright\\arraybackslash}p{3.0cm}*{9}{r}@{}}\n"]
 cab = ("\\cabecalhoL{Unidade da\\\\Federação} & \\cabecalho{$w^{0}_{i}$\\\\(\\%)} & \\cabecalho{$w^{H}_{i}$\\\\(\\%)} & "
        "\\cabecalho{$w^{D}_{i}$\\\\(\\%)} & \\cabecalho{Histórico\\\\vs. 2025\\\\(\\%)} & \\cabecalho{Destino\\\\vs. 2025\\\\(\\%)} & "
-       "\\cabecalho{Estado\\\\2033\\\\(\\%)} & \\cabecalho{Estado e\\\\municípios\\\\2033 (\\%)} \\\\\n")
+       "\\cabecalho{Estado\\\\2033\\\\(\\%)} & \\cabecalho{Estado e\\\\munic.\\\\2033 (\\%)} & "
+       "\\cabecalho{Acum.\\\\2029--33\\\\(\\%)} & \\cabecalho{Dif. acum.\\\\(R\\$ bi)} \\\\\n")
 L.append("\\toprule\n" + cab + "\\midrule\n\\endfirsthead\n")
 L.append("\\toprule\n" + cab + "\\midrule\n\\endhead\n\\bottomrule\n\\endfoot\n")
+soma = {"dif": 0.0, "cf": 0.0}
 for u in ordem_a:
-    c = coefs[u]
+    v, c = est[u], coefs[u]
+    dif_u = sum(v["pos_por_ano"][a] - v["contrafactual_por_ano"][a] for a in ANOS) / BI
+    soma["dif"] += dif_u
+    soma["cf"] += sum(v["contrafactual_por_ano"][a] for a in ANOS) / BI
     d_h = (c["coef_cpt_pct"] / c["coef_neutro_icms_pct"] - 1) * 100
     d_d = (c["coef_pleno_pct"] / c["coef_neutro_icms_pct"] - 1) * 100
     d = u == UF_ALVO
-    neg = (lambda s: f"\\textbf{{{s}}}") if d else (lambda s: s)
-    L.append((CS if d else "") + neg(nome_tex(est[u]["nome"])) + " & " + neg(num(c["coef_neutro_icms_pct"], 3)) + " & " +
+    neg = (lambda s_: f"\\textbf{{{s_}}}") if d else (lambda s_: s_)
+    L.append((CS if d else "") + neg(nome_tex(v["nome"])) + " & " + neg(num(c["coef_neutro_icms_pct"], 3)) + " & " +
              neg(num(c["coef_cpt_pct"], 3)) + " & " + neg(num(c["coef_pleno_pct"], 3)) + " & " +
              neg(num(d_h, 1, True)) + " & " + neg(num(d_d, 1, True)) + " & " +
-             neg(num(est[u]["variacao_por_ano"]["2033"] * 100, 1, True)) + " & " +
-             neg(num(tot[u]["variacao_por_ano"]["2033"] * 100, 1, True)) + " \\\\\n")
-L.append("\\end{longtable}\n\\addtocounter{table}{-1}\n")
-(OUT / "anexo-a2.tex").write_text("".join(L), encoding="utf-8")
+             neg(num(v["variacao_por_ano"]["2033"] * 100, 1, True)) + " & " +
+             neg(num(tot[u]["variacao_por_ano"]["2033"] * 100, 1, True)) + " & " +
+             neg(num(v["acumulado_dpct"] * 100, 1, True)) + " & " + neg(num(dif_u, 2, True)) + " \\\\\n")
+L.append("\\midrule\n")
+L.append("\\textbf{Total dos entes estaduais} & " + f"\\textbf{{{num(soma_n, 1)}}} & \\textbf{{{num(soma_c, 1)}}} & "
+         f"\\textbf{{{num(sum(c['coef_pleno_pct'] for c in coefs.values()), 1)}}} & & & \\textbf{{{num(var_ag, 1, True)}}} & "
+         f"\\textbf{{{num(var_uf_ag, 1, True)}}} & \\textbf{{{num(soma['dif'] / soma['cf'] * 100, 1, True)}}} & \\textbf{{{num(soma['dif'], 2, True)}}} \\\\\n")
+L.append("\\end{longtable}\n\\addtocounter{table}{-1}\n")  # longtable consome o contador de tabelas
+(OUT / "anexo-a1.tex").write_text("".join(L), encoding="utf-8")
+
+# ---------------------------------------------------------------- Tabela B.1: memória de cálculo do coeficiente histórico (série nominal e ajustada)
+rt = load("reforma-tributaria.json")
+ph = painel["estados"][UF_ALVO]
+ctot = load("coeficientes-uf.json")
+anos_h = [str(a) for a in range(2019, 2026)]
+
+
+def total_nac(a):
+    out = sum((rt["dca_icms_outras_deducoes_por_uf"].get(a) or {}).values())
+    return rt["dca_icms_br"][a] - out + rt["dca_iss_br"][a] + (rt["dca_fecop_br"].get(a, 0) or 0)
+
+
+tn = {a: total_nac(a) for a in anos_h}
+L = ["\\begin{tabular}{@{}l*{7}{r}@{}}\n\\toprule\n"]
+L.append("\\cabecalhoL{Ano} & \\cabecalho{ICMS bruto\\\\R\\$ bi} & \\cabecalho{Outras\\\\deduções} & \\cabecalho{Cota\\\\municipal} & \\cabecalho{FECOP} & "
+         "\\cabecalho{Receita de\\\\referência} & \\cabecalho{Fator de\\\\ajuste} & \\cabecalho{Referência\\\\R\\$ de 2025} \\\\\n\\midrule\n")
+reais = []
+for a in anos_h:
+    icms = rt["dca_icms_por_uf"][a][UF_ALVO]
+    outras = rt["dca_icms_outras_deducoes_por_uf"][a].get(UF_ALVO) or 0
+    cota = (rt["dca_transf_munis_por_uf"][a] or {}).get(UF_ALVO)
+    cota = icms * 0.25 if cota is None else cota
+    fe = (rt["dca_fecop_por_uf"][a] or {}).get(UF_ALVO, 0) or 0
+    refn = icms - outras - cota + fe
+    fator = tn["2025"] / tn[a]
+    real = refn * fator
+    assert abs(real - ph["historico_por_ano"][a]["estado_reais_2025"]) < 1.0, (a, real)
+    reais.append(real)
+    L.append(f"{a} & {num(icms / BI, 2)} & {num(outras / BI, 2)} & {num(cota / BI, 2)} & {num(fe / BI, 2)} & {num(refn / BI, 2)} & {num(fator, 3)} & {num(real / BI, 2)} \\\\\n")
+e26 = ph["estimativa_2026"]
+L.append(f"2026 (est.) & {num(e26['icms_reais_2025'] / BI, 2)} & {num(e26['outras_deducoes_reais_2025'] / BI, 2)} & {num(e26['cota_parte_reais_2025'] / BI, 2)} & "
+         f"{num(e26['fecop_reais_2025'] / BI, 2)} & {num(e26['estado_reais_2025'] / BI, 2)} & --- & {num(e26['estado_reais_2025'] / BI, 2)} \\\\\n")
+media = (sum(reais) + e26["estado_reais_2025"]) / 8
+tb25 = ctot["total_br_2025"]
+assert abs(media / tb25 - wH) < 1e-9, (media / tb25, wH)
+L.append("\\midrule\n")
+L.append(f"\\multicolumn{{7}}{{@{{}}l}}{{\\textbf{{Média da receita de referência ajustada}}}} & \\textbf{{{num(media / BI, 2)}}} \\\\\n")
+L.append(f"\\multicolumn{{7}}{{@{{}}l}}{{\\textbf{{Arrecadação nacional de referência em 2025}}}} & \\textbf{{{num(tb25 / BI, 2)}}} \\\\\n")
+L.append(f"\\multicolumn{{7}}{{@{{}}l}}{{\\textbf{{Coeficiente de participação do Espírito Santo}}}} & \\textbf{{{num(wH * 100, 4)}\\%}} \\\\\n")
+L.append("\\bottomrule\n\\end{tabular}\n")
+(OUT / "anexo-b-coef-historico.tex").write_text("".join(L), encoding="utf-8")
 
 # ---------------------------------------------------------------- Tabela B.2: memória de cálculo do ES em 2033
 n33 = nac["2033"]
