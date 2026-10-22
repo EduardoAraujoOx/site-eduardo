@@ -88,7 +88,7 @@ const RANK_MAIS = {perdas: false, ganhos: false};
 const CACHE_UF = new Map(), CACHE_MEMO = new Map();
 let MEMO_NAC = null;
 let REF_NAC = null;   // total nacional de 2025 e fator de ajuste de cada ano (índice da base)
-const GEO = {muni: null, uf: null, promessa: null};
+const GEO = {muni: null, uf: null, promessa: null, promessaUF: null};
 
 /* ── abas ── */
 function mostrarVisao(v) {
@@ -177,11 +177,20 @@ function iniciar(idx, res, nac) {
     montarRankings();
     document.querySelectorAll('#memoAbas button').forEach(b => b.addEventListener('click', () => { MEMO.secao = b.dataset.secao; renderMemoria(); }));
 
-    carregarMalha().then(() => {
-        MAPA = criarMapa($('mapaSvg'), $('mapaWrap'), $('mapaTip'), {camadaUF: true, todos: true, uf: ESCOPO, nivel: NIVEL, aoClicar: cod => abrirMunicipio(cod), aoClicarUF: uf => definirEscopo(uf, 'muni')});
+    const avisoMapa = (ligado, falhou) => {
+        const el = $('mapaCarregando');
+        el.hidden = !ligado && !falhou;
+        el.textContent = falhou ? 'Não foi possível carregar os municípios agora. Tente de novo em instantes.' : 'Carregando os municípios…';
+    };
+    carregarMalhaUF().then(() => (ESCOPO !== 'BR' || NIVEL === 'muni' || !GEO.uf) ? carregarMalha() : null).then(() => {
+        if (!GEO.uf && NIVEL === 'uf') { NIVEL = 'muni'; document.querySelector('#toggleNivel [data-nivel="uf"]').hidden = true; definirEscopo(ESCOPO, 'muni'); }
+        MAPA = criarMapa($('mapaSvg'), $('mapaWrap'), $('mapaTip'), {camadaUF: true, todos: true, uf: ESCOPO, nivel: NIVEL, aoEsperar: avisoMapa, aoClicar: cod => abrirMunicipio(cod), aoClicarUF: uf => definirEscopo(uf, 'muni')});
         $('mapaCarregando').hidden = true; $('mapaSvg').removeAttribute('hidden');   // SVGElement não tem a propriedade hidden
         if (ATUAL || MAPA_DESTAQUE) MAPA.destacar(ATUAL || MAPA_DESTAQUE);
         if (UF_VISITANTE) MAPA.destacarUF(UF_VISITANTE);
+        // com a primeira tela pronta, a malha municipal vem em segundo plano: a ficha e o nível Municípios já a encontram carregada
+        const aquecer = () => { carregarMalha().catch(() => {}); carregarChart().catch(() => {}); };
+        if ('requestIdleCallback' in window) requestIdleCallback(aquecer, {timeout: 5000}); else setTimeout(aquecer, 2000);
     }).catch(e => { console.error(e); $('mapaCarregando').textContent = 'O mapa não pôde ser carregado agora. Use a busca por município ou a lista ao lado.'; });
 
     const cod = new URLSearchParams(location.search).get('m');
@@ -233,13 +242,21 @@ function renderLegenda() {
 
 function linhasUF() {
     return Object.keys(NOMES_UF).filter(u => LISTA.some(m => m.uf === u)).map(u => {
-        const ok = LISTA.filter(m => m.uf === u && !m.r), perdem = ok.filter(m => m.v < 0).length;
-        return {uf: u, v: AGG[u] != null ? AGG[u] : null, perdem, n: ok.length, total: LISTA.filter(m => m.uf === u).length};
+        const c = contagemUF(u);
+        return {uf: u, v: AGG[u] != null ? AGG[u] : null, perdem: c.perdem, n: c.n, total: c.total};
     }).sort((a, b) => (b.v != null && a.v != null) ? b.v - a.v : (b.perdem / b.n) - (a.perdem / a.n));
 }
 
 /* Contagens: o total é o de municípios do estado; as posições e a contagem de quem perde usam os que têm base de 2025 (ver a metodologia). */
-const totalUF = uf => LISTA.filter(m => m.uf === uf).length;
+const CONT_UF = {};      // por estado: quantos municípios, quantos têm base de 2025 e quantos perdem (a lista não muda depois de carregada)
+function contagemUF(uf) {
+    if (!CONT_UF[uf]) {
+        const doEstado = LISTA.filter(m => m.uf === uf), ok = doEstado.filter(m => !m.r);
+        CONT_UF[uf] = {total: doEstado.length, n: ok.length, perdem: ok.filter(m => m.v < 0).length};
+    }
+    return CONT_UF[uf];
+}
+const totalUF = uf => contagemUF(uf).total;
 function txtPerdem(l) {
     return `${fmtInt(l.perdem)} de ${fmtInt(l.n)} prefeituras perdem`;
 }
@@ -445,10 +462,14 @@ function ativarBusca(inp, ul, form, aoEscolher, padrao) {
 }
 
 /* ── dica do município: mesmo molde da dica do estado (nome, número, contexto, posição, convite) ── */
+const POS_BR = {};
+let N_BR = 0;
 function calcularRanks() {
-    const porUF = {};
-    LISTA.filter(m => !m.r).forEach(m => (porUF[m.uf] = porUF[m.uf] || []).push(m));
+    const porUF = {}, ok = LISTA.filter(m => !m.r);
+    ok.forEach(m => (porUF[m.uf] = porUF[m.uf] || []).push(m));
     Object.values(porUF).forEach(arr => { arr.sort((a, b) => b.v - a.v); arr.forEach((m, i) => { RANK[m.cod] = {pos: i + 1, n: arr.length}; }); });
+    ok.slice().sort((a, b) => b.v - a.v).forEach((m, i) => { POS_BR[m.cod] = i + 1; });
+    N_BR = ok.length;
 }
 
 function tipMunicipio(m) {
@@ -542,12 +563,33 @@ function municipioInicial() {
 $('busca').addEventListener('focus', e => { if (LOCAL && e.target.value === LOCAL.rotulo) e.target.select(); });
 
 /* ── mapa ── */
+/* A malha de estados é pequena (cerca de 45 KB) e basta para a primeira tela. A municipal (cerca de 600 KB, 5,6 mil polígonos)
+   só é pedida quando alguma vista precisa dela: estado aberto, nível Municípios, localização ou minimapa da ficha. */
+let CHART_PROMESSA = null;
+function carregarChart() {
+    if (typeof Chart !== 'undefined') return Promise.resolve();
+    if (!CHART_PROMESSA) CHART_PROMESSA = new Promise((ok, falha) => {
+        const sc = document.createElement('script');
+        sc.src = 'vendor/chart-4.4.4.umd.min.js';
+        sc.onload = ok;
+        sc.onerror = () => { CHART_PROMESSA = null; falha(new Error('Chart.js indisponível')); };
+        document.head.appendChild(sc);
+    });
+    return CHART_PROMESSA;
+}
+function carregarMalhaUF() {
+    if (GEO.promessaUF) return GEO.promessaUF;
+    if (typeof d3 === 'undefined') return Promise.reject(new Error('d3 indisponível'));
+    GEO.promessaUF = getJSON('/data/malha-uf.json').catch(() => null).then(uf => { GEO.uf = uf; });
+    GEO.promessaUF.catch(() => { GEO.promessaUF = null; });
+    return GEO.promessaUF;
+}
 function carregarMalha() {
     if (GEO.promessa) return GEO.promessa;
     if (typeof d3 === 'undefined') return Promise.reject(new Error('d3 indisponível'));
-    GEO.promessa = Promise.all([getJSON('/data/malha-municipios.json'), getJSON('/data/malha-uf.json').catch(() => null)]).then(([muni, uf]) => {
+    GEO.promessa = Promise.all([getJSON('/data/malha-municipios.json'), carregarMalhaUF()]).then(([muni]) => {
         muni.features.forEach(f => { f.properties.uf = UF_POR_PREFIXO[f.properties.cod.slice(0, 2)]; });
-        GEO.muni = muni; GEO.uf = uf;
+        GEO.muni = muni;
     });
     GEO.promessa.catch(() => { GEO.promessa = null; });
     return GEO.promessa;
@@ -561,13 +603,20 @@ function luminancia(hex) {
 /* Um mapa independente por instância: o principal (estados e municípios) e o minimapa da ficha (só a UF). */
 function criarMapa(svgEl, wrapEl, tipEl, opt) {
     const W = 900;
-    const feats = opt.todos ? GEO.muni.features : GEO.muni.features.filter(f => f.properties.uf === opt.uf);
     const ctl = {uf: null, nivel: null, cod: null};
     const svg = d3.select(svgEl); svg.selectAll('*').remove();
-    const gMuni = svg.append('g');
-    const paths = gMuni.selectAll('path').data(feats).enter().append('path')
-        .attr('data-cod', d => d.properties.cod)
-        .attr('fill', d => { const c = classeDe(POR_COD[d.properties.cod]); return c ? c.cor : COR_SEM_ESFERA; });
+    let feats = null, gMuni = null, paths = null;
+    const montarMuni = () => {      // a camada municipal fica por baixo da de estados; só é montada quando a malha já chegou
+        if (gMuni) return true;
+        if (!GEO.muni) return false;
+        feats = opt.todos ? GEO.muni.features : GEO.muni.features.filter(f => f.properties.uf === opt.uf);
+        gMuni = svg.insert('g', ':first-child');
+        paths = gMuni.selectAll('path').data(feats).enter().append('path')
+            .attr('data-cod', d => d.properties.cod)
+            .attr('fill', d => { const c = classeDe(POR_COD[d.properties.cod]); return c ? c.cor : COR_SEM_ESFERA; });
+        return true;
+    };
+    montarMuni();
 
     let gUF = null, pathsUF = null, rotulos = null, escalaUF = null;
     if (opt.camadaUF && GEO.uf) {
@@ -585,13 +634,19 @@ function criarMapa(svgEl, wrapEl, tipEl, opt) {
     ctl.definir = (uf, nivel) => {
         const nv = uf === 'BR' ? (gUF ? nivel : 'muni') : 'muni';
         ctl.uf = uf; ctl.nivel = nv;
+        if (nv === 'muni' && !montarMuni()) {      // vista municipal antes da malha: carrega e desenha de novo, se a vista não mudou nesse intervalo
+            if (opt.aoEsperar) opt.aoEsperar(true);
+            carregarMalha().then(() => { if (opt.aoEsperar) opt.aoEsperar(false); if (ctl.uf === uf && ctl.nivel === nv) ctl.definir(uf, nivel); })
+                .catch(() => { if (opt.aoEsperar) opt.aoEsperar(false, true); });
+            return;
+        }
         const visivel = d => uf === 'BR' || d.properties.uf === uf;
         const H = Math.round(W * (nv === 'uf' || uf === 'BR' ? 0.92 : 0.8));
         const alvo = nv === 'uf' ? GEO.uf.features : feats.filter(visivel);
         const proj = d3.geoMercator().fitSize([W, H], {type: 'FeatureCollection', features: alvo});
         const gen = d3.geoPath().projection(proj);
         svg.attr('viewBox', '0 0 ' + W + ' ' + H);
-        gMuni.style('display', nv === 'muni' ? null : 'none');
+        if (gMuni) gMuni.style('display', nv === 'muni' ? null : 'none');
         if (gUF) gUF.style('display', nv === 'uf' ? null : 'none');
         if (nv === 'muni') paths.style('display', d => visivel(d) ? null : 'none').attr('d', d => visivel(d) ? gen(d) : null);
         else {
@@ -607,6 +662,7 @@ function criarMapa(svgEl, wrapEl, tipEl, opt) {
     };
     ctl.destacar = cod => {
         ctl.cod = cod;
+        if (!paths) return;      // a camada municipal ainda não existe; o destaque é aplicado quando ela for montada
         paths.classed('sel', false);
         if (cod) paths.filter(d => d.properties.cod === cod).classed('sel', true).raise();
     };
@@ -619,10 +675,10 @@ function criarMapa(svgEl, wrapEl, tipEl, opt) {
             if (!p) { tipEl.classList.remove('on'); return; }
             const cod = p.getAttribute('data-cod'), uf = p.getAttribute('data-uf');
             if (uf) {
-                const ok = LISTA.filter(m => m.uf === uf && !m.r), perdem = ok.filter(m => m.v < 0).length;
+                const c = contagemUF(uf);
                 tipEl.innerHTML = AGG[uf] == null
                     ? `<b>${esc(NOMES_UF[uf])}</b><small>Sem esfera municipal própria: o Distrito Federal não entra na projeção municipal.</small>`
-                    : `<b>${esc(NOMES_UF[uf])}</b><span class="v ${clsSinal(AGG[uf])}">${fmtPct(AGG[uf])}</span><small>receita das prefeituras somada, em 2033, contra o cenário sem a reforma</small><small>${txtPerdem({perdem, n: ok.length, total: totalUF(uf)})}</small><em>Clique para ver os municípios →</em>`;
+                    : `<b>${esc(NOMES_UF[uf])}</b><span class="v ${clsSinal(AGG[uf])}">${fmtPct(AGG[uf])}</span><small>receita das prefeituras somada, em 2033, contra o cenário sem a reforma</small><small>${txtPerdem({perdem: c.perdem, n: c.n, total: totalUF(uf)})}</small><em>Clique para ver os municípios →</em>`;
             } else {
                 const m = POR_COD[cod];
                 tipEl.innerHTML = m ? tipMunicipio(m) : '<b>Sem esfera municipal própria</b><small>Este território não entra na projeção municipal.</small>';
@@ -860,7 +916,7 @@ function decomposicaoEfeito(m, ano) {
 }
 function decompHtml(m, ano) {
     const d = decomposicaoEfeito(m, ano);
-    if (!d || Math.abs(d.resto) > Math.max(1e4, Math.abs(d.C) * 1e-6)) return '';
+    if (!d || !d.partes.every(x => isFinite(x.v)) || !(Math.abs(d.resto) <= Math.max(1e4, Math.abs(d.C) * 1e-6))) return '';
     const total = d.partes.reduce((a, x) => a + x.v, 0), max = Math.max(...d.partes.map(x => Math.abs(x.v)), 1);
     const maior = d.partes.slice().sort((a, b) => Math.abs(b.v) - Math.abs(a.v))[0];
     const linha = x => {
@@ -921,10 +977,7 @@ function renderFicha(cod, base, m) {
     graficos.forEach(g => g.destroy()); graficos = []; grafSerie = null;
     if (GSENS) { GSENS.destroy(); GSENS = null; }
     if (GPART) { GPART.destroy(); GPART = null; }
-    const ok = LISTA.filter(x => !x.r).sort((a, b) => b.v - a.v);
-    const posBR = ok.findIndex(x => x.cod === cod) + 1;
-    const naUF = ok.filter(x => x.uf === base.uf);
-    const posUF = naUF.findIndex(x => x.cod === cod) + 1;
+    const posBR = POS_BR[cod] || 0, rkUF = RANK[cod] || {pos: 0, n: 0}, posUF = rkUF.pos, nUF = rkUF.n;
 
     const pos33 = m.pos_por_ano['2033'], cf33 = m.contrafactual_por_ano['2033'];
     const dif33 = pos33 - cf33, v33 = m.variacao_por_ano['2033'];
@@ -953,8 +1006,8 @@ function renderFicha(cod, base, m) {
     const posicao = m.neutro_aproximado || m.neutro_suspeito
         ? '<p class="nota">Posição nos rankings indisponível para municípios com ressalva de dados.</p>'
         : `<div class="pos-grid">
-            <div class="pos-item"><b>${fmtInt(posUF)}º</b><span>entre ${fmtInt(naUF.length)} municípios ${DE_UF[base.uf]}: à frente de ${Math.round((naUF.length - posUF) / naUF.length * 100)}% deles</span></div>
-            <div class="pos-item"><b>${fmtInt(posBR)}º</b><span>entre ${fmtInt(ok.length)} municípios do Brasil: à frente de ${Math.round((ok.length - posBR) / ok.length * 100)}% deles</span></div>
+            <div class="pos-item"><b>${fmtInt(posUF)}º</b><span>entre ${fmtInt(nUF)} municípios ${DE_UF[base.uf]}: à frente de ${Math.round((nUF - posUF) / nUF * 100)}% deles</span></div>
+            <div class="pos-item"><b>${fmtInt(posBR)}º</b><span>entre ${fmtInt(N_BR)} municípios do Brasil: à frente de ${Math.round((N_BR - posBR) / N_BR * 100)}% deles</span></div>
         </div><p class="nota">Do maior ganho (1º) à maior perda, na variação da receita em 2033.</p>`;
 
     $('fichaCorpo').innerHTML = `
@@ -1060,9 +1113,12 @@ function renderFicha(cod, base, m) {
     document.querySelectorAll('#anoSel button').forEach(b => b.addEventListener('click', () => selecionarAno(b.dataset.ano)));
     const mais = $('leituraMais'), larga = matchMedia('(min-width: 900px)');
     if (mais) { mais.open = larga.matches; larga.onchange = e => { mais.open = e.matches; }; }
-    desenharGraficos(m, selecionarAno);
-    selecionarAno('2033');
-    iniciarSens(cod, base, m);
+    const comGraficos = () => { desenharGraficos(m, selecionarAno); selecionarAno('2033'); iniciarSens(cod, base, m); };
+    if (typeof Chart !== 'undefined') comGraficos();
+    else {      // a biblioteca de gráficos só é pedida quando a primeira ficha é aberta (ou em segundo plano, depois da primeira tela)
+        selecionarAno('2033');
+        carregarChart().catch(() => {}).then(() => { if (ATUAL === cod && $('gSerie')) comGraficos(); });
+    }
     carregarMalha().then(() => {
         if (ATUAL !== cod || !$('miniSvg')) return;
         MINI = criarMapa($('miniSvg'), $('miniWrap'), $('miniTip'), {camadaUF: false, todos: false, uf: base.uf, nivel: 'muni', aoClicar: c => abrirMunicipio(c)});
@@ -1312,12 +1368,12 @@ function desenharGraficos(m, aoEscolherAno) {
 
 /* ── memória de cálculo (portada do painel) ── */
 function memoriaInicial() {
-    if (MEMO.cod) return;
+    if (MEMO.cod && !(MEMO.auto && ATUAL && MEMO.cod !== ATUAL)) return;      // escolha do usuário fica; a automática acompanha a ficha aberta
     const cod = ATUAL || (LOCAL && LOCAL.cod) || (UF_VISITANTE && CAPITAIS[UF_VISITANTE]);
-    if (cod && POR_COD[cod]) { MEMO.cod = cod; $('buscaMemo').value = rotuloMuni(cod); }
+    if (cod && POR_COD[cod]) { MEMO.cod = cod; MEMO.auto = true; $('buscaMemo').value = rotuloMuni(cod); }
 }
 function abrirMemoria(cod, secao) {
-    MEMO.cod = cod;
+    MEMO.cod = cod; MEMO.auto = false;
     if (secao) MEMO.secao = secao;
     $('buscaMemo').value = POR_COD[cod].nome + ' (' + POR_COD[cod].uf + ')';
     mostrarVisao('memoria');
