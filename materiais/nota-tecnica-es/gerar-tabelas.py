@@ -605,6 +605,8 @@ ex = [
     macro("NumFundosPP", num(efeito_fundos_33, 0)),
     macro("NumFundosCoefPP", num(dwH * 100, 1)),
     macro("NumDestTrintaTres", num(abs(var_ano("2033", w0, incert) - var_ano("2033", w0)), 1)),
+    macro("NumDestPPTrintaTres", num(abs(var_ano("2033", w0, 0.01 / wD) - var_ano("2033", w0)), 1)),
+    macro("NumDestPPSetentaSete", num((dest_2077 * 0.01 / wD) / ext["2077"][1] * 100, 0)),
     macro("NumFracMuni", num(phi_pof["frac_muni_pct"], 4)),
     macro("NumThetaM", num(phi_pof["compras_governamentais"]["theta_municipal"] * 100, 0)),
     macro("NumThetaEInt", num(theta_E, 0)),
