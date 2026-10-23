@@ -23,7 +23,6 @@
 \newcommand{\TituloPrincipal}{IMPACTOS DA TRANSIÇÃO\\DO ICMS PARA O IBS}
 \newcommand{\Subtitulo}{sobre a receita do Estado\\do Espírito Santo, 2029--2033}
 \newcommand{\LinhaIdentificacao}{ESPÍRITO SANTO\quad|\quad 2026}
-\newcommand{\Responsavel}{Eduardo Araújo}
 \newcommand{\CidadeData}{Vitória, outubro de 2026}
 \newcommand{\MarcaGoverno}{\includegraphics[width=2.75cm]{Brasao_Governo_640.png}}
 
@@ -45,10 +44,8 @@
   \draw[CinzaLinha,line width=.7pt] ([xshift=5.72cm,yshift=-12.10cm]current page.north west)--++(1.55cm,0);
   \node[anchor=north west] at ([xshift=5.72cm,yshift=-12.66cm]current page.north west){\sffamily\bfseries\fontsize{10.2}{12.4}\selectfont\color{AzulInstitucional}\LinhaIdentificacao};
 
-  % rodapé: responsável pela elaboração e local e data
-  \fill[BrancoCapa] ([xshift=5.55cm,yshift=0.9cm]current page.south west) rectangle ([xshift=13.7cm,yshift=4.75cm]current page.south west);
-  \node[anchor=south west] at ([xshift=5.72cm,yshift=3.95cm]current page.south west){\sffamily\fontsize{9.5}{11.5}\selectfont\color{AzulMedio}ELABORAÇÃO};
-  \node[anchor=south west] at ([xshift=5.72cm,yshift=3.12cm]current page.south west){\sffamily\bfseries\fontsize{12}{14.4}\selectfont\color{AzulInstitucional}\Responsavel};
+  % rodapé: local e data (o nome do autor fica na página do título e do resumo)
+  \fill[BrancoCapa] ([xshift=5.55cm,yshift=0.9cm]current page.south west) rectangle ([xshift=13.7cm,yshift=2.65cm]current page.south west);
   \node[anchor=south west] at ([xshift=5.72cm,yshift=1.52cm]current page.south west){\sffamily\fontsize{9.7}{11.7}\selectfont\color{AzulInstitucional}\MakeUppercase{\CidadeData}};
   \draw[AzulMedio,line width=2pt] ([xshift=5.72cm,yshift=1.30cm]current page.south west)--++(.92cm,0);
 \end{tikzpicture}
