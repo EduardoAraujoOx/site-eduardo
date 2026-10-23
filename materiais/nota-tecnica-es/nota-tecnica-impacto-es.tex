@@ -21,7 +21,8 @@
 \usepgfplotslibrary{fillbetween}
 \usepackage{caption}
 \usepackage{amsmath}
-\usepackage[unicode,hidelinks,pdftitle={Impactos da transição do ICMS para o IBS sobre a receita do Estado do Espírito Santo, 2029--2033},pdfauthor={Eduardo Araújo},pdfsubject={Nota técnica},pdfkeywords={reforma tributária, IBS, ICMS, Espírito Santo}]{hyperref}
+\usepackage{pdfpages}
+\usepackage[unicode,hidelinks,plainpages=false,pdftitle={Impactos da transição do ICMS para o IBS sobre a receita do Estado do Espírito Santo, 2029--2033},pdfauthor={Eduardo Araújo},pdfsubject={Nota técnica},pdfkeywords={reforma tributária, IBS, ICMS, Espírito Santo}]{hyperref}
 \pgfplotsset{compat=1.16}
 
 % ------------------------------------------------------------------ cores dos gráficos (as tabelas são em preto e branco)
@@ -65,6 +66,12 @@
 \input{tabelas/numeros.tex}
 
 \begin{document}
+% ------------------------------------------------------------------ capa (capa/capa.pdf, gerada por capa/capa.tex com xelatex)
+% A capa conta como página, mas a numeração do texto recomeça em 1 na página do título e do resumo, como antes.
+\pagenumbering{roman}
+\includepdf[pages=1,pagecommand={\thispagestyle{empty}}]{capa/capa.pdf}
+\clearpage
+\pagenumbering{arabic}
 \thispagestyle{empty}
 
 % ------------------------------------------------------------------ título e resumo
