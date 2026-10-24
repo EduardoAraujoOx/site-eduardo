@@ -1,0 +1,53 @@
+% Capa da nota técnica, no desenho da Nota Técnica nº 02/2026 da Unidade Fazendária da Reforma Tributária.
+% Compilar com:  xelatex capa.tex   (precisa da fonte Inter instalada)
+% O resultado, capa.pdf (uma página A4), é inserido por nota-tecnica-impacto-es.tex com \includepdf,
+% de modo que o corpo da nota continue compilando com pdflatex.
+\documentclass[10pt,a4paper]{article}
+\usepackage[a4paper,margin=0pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{Inter}[Ligatures=TeX]
+\setsansfont{Inter}[Ligatures=TeX]
+\usepackage[brazil]{babel}
+\usepackage{graphicx,xcolor,tikz}
+
+\definecolor{AzulInstitucional}{HTML}{063E67}
+\definecolor{AzulMedio}{HTML}{4A91C5}
+\definecolor{CinzaTexto}{HTML}{424A50}
+\definecolor{CinzaLinha}{HTML}{C8CED3}
+\definecolor{BrancoCapa}{HTML}{F8F7FA}
+
+% Textos da capa. O cabeçalho "Secretaria da Fazenda do Espírito Santo / Unidade Fazendária da Reforma
+% Tributária" vem gravado na imagem de fundo; o título, a numeração e a data da imagem são cobertos
+% por retângulos e redesenhados abaixo.
+\newcommand{\Rotulo}{NOTA TÉCNICA}
+\newcommand{\TituloPrincipal}{IMPACTOS DA TRANSIÇÃO\\DO ICMS PARA O IBS}
+\newcommand{\Subtitulo}{sobre a receita do Estado\\do Espírito Santo, 2029--2033}
+\newcommand{\LinhaIdentificacao}{ESPÍRITO SANTO\quad|\quad 2026}
+\newcommand{\CidadeData}{Vitória, outubro de 2026}
+\newcommand{\MarcaGoverno}{\includegraphics[width=2.75cm]{Brasao_Governo_640.png}}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=center,inner sep=0] at (current page.center){\includegraphics[width=\paperwidth,height=\paperheight]{capa_base_clean.jpg}};
+  \node[anchor=north,inner sep=0] at ([xshift=2.24cm,yshift=-1.10cm]current page.north west){\MarcaGoverno};
+  \node[anchor=north] at ([xshift=2.24cm,yshift=-4.17cm]current page.north west){\sffamily\itshape\fontsize{7.2}{8.6}\selectfont\color{white}Secretaria da Fazenda};
+
+  % cobre título, série, numeração e data da imagem de fundo
+  \fill[BrancoCapa] ([xshift=5.55cm,yshift=-5.20cm]current page.north west) rectangle ([xshift=-0.75cm,yshift=-15.55cm]current page.north east);
+  \node[anchor=north west,text width=13.2cm,align=left] at ([xshift=5.72cm,yshift=-5.52cm]current page.north west){\sffamily\fontsize{13.8}{16.5}\selectfont\color{AzulMedio}\Rotulo};
+  \draw[AzulInstitucional,line width=.65pt] ([xshift=5.72cm,yshift=-6.55cm]current page.north west)--++(1.85cm,0);
+  \draw[AzulMedio!65,line width=.65pt] ([xshift=7.57cm,yshift=-6.55cm]current page.north west)--++(1.70cm,0);
+  \node[anchor=north west,text width=13.55cm,align=left] at ([xshift=5.72cm,yshift=-6.88cm]current page.north west){\sffamily\bfseries\fontsize{18.2}{21}\selectfont\color{AzulInstitucional}\TituloPrincipal\par\vspace{0.45em}\fontsize{14.5}{18}\selectfont\mdseries\color{AzulMedio}\Subtitulo};
+  \draw[CinzaLinha,line width=.7pt] ([xshift=5.72cm,yshift=-12.10cm]current page.north west)--++(1.55cm,0);
+  \node[anchor=north west] at ([xshift=5.72cm,yshift=-12.66cm]current page.north west){\sffamily\bfseries\fontsize{10.2}{12.4}\selectfont\color{AzulInstitucional}\LinhaIdentificacao};
+
+  % rodapé: local e data (o nome do autor fica na página do título e do resumo)
+  \fill[BrancoCapa] ([xshift=5.55cm,yshift=0.9cm]current page.south west) rectangle ([xshift=13.7cm,yshift=2.65cm]current page.south west);
+  \node[anchor=south west] at ([xshift=5.72cm,yshift=1.52cm]current page.south west){\sffamily\fontsize{9.7}{11.7}\selectfont\color{AzulInstitucional}\MakeUppercase{\CidadeData}};
+  \draw[AzulMedio,line width=2pt] ([xshift=5.72cm,yshift=1.30cm]current page.south west)--++(.92cm,0);
+\end{tikzpicture}
+\mbox{}
+\end{document}
