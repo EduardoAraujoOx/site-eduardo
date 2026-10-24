@@ -213,7 +213,7 @@ def svg_participacao(d, h):
         o.append(f'<text x="{x + w / 2:.1f}" y="{Hh - B + 17}" text-anchor="middle" class="eixo">{a}{" (est.)" if est else ""}</text>')
     yc = Y(d["coef"])
     o.append(f'<line x1="{L}" x2="{W - R}" y1="{yc:.1f}" y2="{yc:.1f}" stroke="{GOLD}" stroke-width="2.4" stroke-dasharray="7 5"/>')
-    o.append(f'<text x="{L + 8}" y="{yc - 7:.1f}" class="rot-ouro">coeficiente de participação {num(d["coef"], dig)}%</text>')
+    o.append(f'<text x="{L + 8}" y="{yc - 7:.1f}" class="rot-ouro">coeficiente histórico {num(d["coef"], dig)}%</text>')
     o.append(f'<defs><pattern id="hach" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#fff"/><line x1="0" y1="0" x2="0" y2="6" stroke="{NAVY}" stroke-width="2.4"/></pattern></defs>')
     o.append("</svg>")
     return "".join(o)
@@ -224,7 +224,7 @@ def svg_composicao(m):
     W, Hh = 690, 235
     L, R, T, B = 50, 14, 22, 28
     comp = m["componentes_por_ano"]
-    cats = [("origem", "ICMS e ISS remanescentes", CINZA), ("cpt", "IBS retido, pelo coeficiente de participação", NAVY), ("destino", "IBS pelo critério de destino", AMARELO), ("seguro", "Distribuição complementar (Seguro-Receita)", VERDE)]
+    cats = [("origem", "ICMS e ISS remanescentes", CINZA), ("cpt", "IBS pelo critério histórico", NAVY), ("destino", "IBS pelo critério de destino", AMARELO), ("seguro", "Seguro-Receita", VERDE)]
     tot = {a: sum(comp[a][k] for k, _, _ in cats) / 1e6 for a in ANOS}
     ticks, _ = eixo_ticks(0, max(tot.values()) * 1.1, 4)
     topo = ticks[-1]
@@ -342,28 +342,28 @@ def monta_textos(c):
 
     # 1. regra de transição (capa)
     t["s1"] = ("A transição para o IBS preserva temporariamente parte da distribuição histórica das receitas. De 2029 a 2032, 80% do IBS destinado a cada ente é retido e redistribuído pelos "
-               "coeficientes de participação; em 2033, 90%, percentual que diminui até 2077. O restante é distribuído principalmente pelo critério de destino, que considera o consumo e as "
+               "coeficiente histórico; em 2033, 90%, percentual que diminui até 2077. O restante é distribuído principalmente pelo critério de destino, que considera o consumo e as "
                "compras públicas locais (LC 227/2026, arts. 109, 114 e 115).")
 
     # 2. por que o resultado é este (capa)
     adverbio = {True: "perda", False: "ganho"}
     if c["sem_2025"]:
-        t["s2"] = (f"<b>Resultado com ressalva.</b> {esc(nome)} não tem ISS e cota-parte de 2025 individualizados no Siconfi, e a participação de 2025 foi aproximada pelo próprio coeficiente de participação "
+        t["s2"] = (f"<b>Resultado com ressalva.</b> {esc(nome)} não tem ISS e cota-parte de 2025 individualizados no Siconfi, e a participação de 2025 foi aproximada pelo próprio coeficiente histórico "
                    f"({pct_adapt(cpt)}). O resultado deve ser lido como ordem de grandeza e não entra nas posições.")
     elif ch == "abaixo":
         fim = (f"Essa diferença contribui para que a receita projetada em 2033 fique {pct(abs(v33), 1, False)} abaixo do cenário sem reforma." if perde else
                f"Mesmo assim, o resultado de 2033 é de {pct(v33)}, porque as demais parcelas compensam: " + ("o município recebe repasse do Seguro-Receita" if c["recebe"] else
                f"o coeficiente de destino ({pct_adapt(ple)}) é {'superior' if cd == 'acima' else 'próximo'} à participação de 2025") + ".")
-        t["s2"] = (f"<b>O coeficiente de participação de {esc(nome)} é inferior à participação de 2025.</b> {tend} O coeficiente considera a média de 2019 a 2026 ({pct_adapt(cpt)}), "
+        t["s2"] = (f"<b>O coeficiente histórico de {esc(nome)} é inferior à participação de 2025.</b> {tend} O coeficiente considera a média de 2019 a 2026 ({pct_adapt(cpt)}), "
                    f"{num(abs(h_rel) * 100, 0)}% abaixo da participação alcançada em 2025 ({pct_adapt(neu)}), que é o ponto de partida do cenário sem reforma. {fim}")
     elif ch == "acima":
         fim = (f"Essa diferença contribui para que a receita projetada em 2033 fique {pct(abs(v33), 1, False)} acima do cenário sem reforma." if ganha else
                f"Ainda assim, o resultado de 2033 é de {pct(v33)}, porque o coeficiente de destino ({pct_adapt(ple)}) é {'inferior' if cd == 'abaixo' else 'próximo'} à participação de 2025.")
-        t["s2"] = (f"<b>O coeficiente de participação de {esc(nome)} é superior à participação de 2025.</b> {tend} O coeficiente considera a média de 2019 a 2026 ({pct_adapt(cpt)}), "
+        t["s2"] = (f"<b>O coeficiente histórico de {esc(nome)} é superior à participação de 2025.</b> {tend} O coeficiente considera a média de 2019 a 2026 ({pct_adapt(cpt)}), "
                    f"{num(abs(h_rel) * 100, 0)}% acima da participação de 2025 ({pct_adapt(neu)}), ponto de partida do cenário sem reforma. {fim}")
     else:
         rd = lambda r: f"{num(abs(r) * 100, 0)}% {'abaixo' if r < 0 else 'acima'}"
-        comb = (f"O resultado de 2033 ({pct(v33)}) combina os dois coeficientes: o de participação, {rd(h_rel)} da participação de 2025 e responsável por 90% do IBS retido, "
+        comb = (f"O resultado de 2033 ({pct(v33)}) combina os dois coeficientes: o histórico, {rd(h_rel)} da participação de 2025 e responsável por 90% do IBS retido, "
                 f"e o de destino ({pct_adapt(ple)}), {rd(d_rel)}.")
         t["s2"] = (f"<b>O critério histórico quase não altera o ponto de partida.</b> {tend} A média de 2019 a 2026 ({pct_adapt(cpt)}) é próxima da participação de 2025 ({pct_adapt(neu)}). " + comb)
 
@@ -371,10 +371,10 @@ def monta_textos(c):
     if c["recebe"]:
         anos = em_anos(c["anos_seg"])
         v = f" Em 2033, o repasse é de {dinheiro(c['seg33'])}." if c["seg33"] > 1 else " Em 2033, o município deixa de receber, pois a receita pelo critério de destino alcança o nível de nivelamento."
-        t["s3"] = (f"<b>Seguro-Receita.</b> As simulações indicam que {esc(nome)} deve receber recursos da distribuição complementar prevista no art. 117 da LC 227/2026 {anos}.{v} "
+        t["s3"] = (f"<b>Seguro-Receita.</b> As simulações indicam que {esc(nome)} deve receber repasses do Seguro-Receita (art. 117 da LC 227/2026) {anos}.{v} "
                    + ("Esse repasse reduz a perda estimada." if perde else "Esse repasse contribui para o resultado estimado."))
     else:
-        t["s3"] = (f"<b>Seguro-Receita.</b> As simulações indicam que {esc(nome)} não deve receber recursos da distribuição complementar prevista no art. 117 da LC 227/2026, "
+        t["s3"] = (f"<b>Seguro-Receita.</b> As simulações indicam que {esc(nome)} não deve receber repasses do Seguro-Receita (art. 117 da LC 227/2026), "
                    f"pois sua receita pelo critério de destino permanece acima do nível de nivelamento entre 2029 e 2033.")
     t["s4"] = ("<b>Incerteza das estimativas.</b> O resultado depende da participação utilizada como referência no cenário sem reforma. "
                "A seção 5 apresenta como as projeções variam conforme essa escolha.")
@@ -390,18 +390,18 @@ def monta_textos(c):
     if c["salto"] and abs(vs[4]) > abs(vs[3]) * 1.3:
         t["traj"] += (f"A mudança mais acentuada ocorre em 2033, quando ICMS e ISS são extintos (ADCT, art. 128). Até 2032, a arrecadação remanescente desses impostos, ainda distribuída segundo "
                       f"a participação de 2025, atenua {'as perdas' if perde else 'os ganhos' if ganha else 'a diferença'}. Com sua extinção, a receita passa a depender integralmente do IBS, "
-                      f"cuja distribuição ainda é determinada principalmente pelo coeficiente de participação.")
+                      f"cuja distribuição ainda é determinada principalmente pelo coeficiente histórico.")
     t["traj"] += " A comparação relevante é entre os dois cenários no mesmo ano; a variação em relação a 2025 aparece nos indicadores acima."
 
     # 9. coeficiente (p3)
     lvl = {"abaixo": "inferior", "acima": "superior", "proxima": "próximo"}[ch]
     if c["sem_2025"]:
-        t["coef"] = (f"{esc(nome)} não tem o dado de 2025 no Siconfi, o que impede comparar o coeficiente de participação com a participação atual. O modelo adota o próprio coeficiente "
+        t["coef"] = (f"{esc(nome)} não tem o dado de 2025 no Siconfi, o que impede comparar o coeficiente histórico com a participação atual. O modelo adota o próprio coeficiente "
                      f"({pct_adapt(cpt)}) como aproximação da participação de 2025; por isso, o critério histórico quase não altera o ponto de partida.")
     else:
-        p1 = f"{tend} Seu coeficiente de participação, calculado pela média de 2019 a 2026, é de {pct_adapt(cpt)}, " + (
+        p1 = f"{tend} Seu coeficiente histórico, calculado pela média de 2019 a 2026, é de {pct_adapt(cpt)}, " + (
             f"aproximadamente {num(abs(h_rel) * 100, 0)}% {'inferior' if h_rel < 0 else 'superior'} à participação de 2025." if ch != "proxima" else "próximo da participação de 2025.")
-        p2 = ("Essa diferença é relevante porque, em 2033, 90% do IBS retido é distribuído pelo coeficiente de participação (LC 227/2026, arts. 109 e 114), enquanto o cenário sem reforma "
+        p2 = ("Essa diferença é relevante porque, em 2033, 90% do IBS retido é distribuído pelo coeficiente histórico (coeficiente de participação, LC 227/2026, arts. 109 e 114), enquanto o cenário sem reforma "
               "preserva a participação de 2025. ")
         if ch == "abaixo":
             p2 += ("Assim, a participação alcançada em 2025 não se reflete integralmente no coeficiente, contribuindo para a perda projetada. Se a arrecadação de 2025 representar um novo patamar, "
@@ -413,13 +413,13 @@ def monta_textos(c):
             p2 += "Como o coeficiente é próximo da participação de 2025, o critério histórico pouco altera o ponto de partida do município."
         t["coef"] = p1 + "</p><p class=\"leit\">" + p2
 
-    # 11. distribuição complementar (p4)
-    base = ("O Seguro-Receita reserva uma parcela adicional de 5% do IBS entre 2029 e 2077, retida após a retenção do art. 109, para os entes com as menores razões entre a receita do IBS e a receita "
+    # 11. Seguro-Receita (p4)
+    base = ("O Seguro-Receita retém 5% do IBS que não segue o critério histórico, entre 2029 e 2077 (retenção complementar do art. 132 do ADCT e art. 110 da LC 227/2026), para os entes com as menores razões entre a receita do IBS e a receita "
             "média de referência ajustada, limitada a três vezes a média per capita do conjunto dos Municípios (LC 227/2026, arts. 110 e 117, §4º). ")
     if c["recebe"]:
         base += f"Nas simulações, {esc(nome)} recebe repasse {em_anos(c['anos_seg'])}" + (f", com {dinheiro(c['seg33'])} em 2033." if c["seg33"] > 1 else ", e deixa de receber em 2033.")
     else:
-        base += f"Nas simulações, {esc(nome)} permanece acima do patamar de nivelamento entre 2029 e 2033 e, por isso, não recebe recursos dessa distribuição complementar."
+        base += f"Nas simulações, {esc(nome)} permanece acima do patamar de nivelamento entre 2029 e 2033 e, por isso, não recebe recursos do Seguro-Receita."
     t["compl"] = base
 
     # 13. sensibilidade
@@ -575,7 +575,7 @@ def main(cod, saida_dir=None):
   <h2 class="sec"><i>2.</i> Composição da receita projetada</h2>
   <p class="sub">O gráfico mostra a substituição gradual do ICMS e do ISS pelo IBS e a composição da receita municipal segundo os diferentes critérios de distribuição. Valores em R$ milhões de 2025.</p>
   <div class="fig">{svg_c}<div class="leg">{leg_c}</div></div>
-  <p class="nota">A parcela histórica incorpora a cota-parte do ICMS que o município já recebia. A parcela de destino inclui os 25% do IBS dos Estados repassados aos Municípios. A distribuição complementar (art. 117) só aparece quando há repasse ao município.</p>
+  <p class="nota">A parcela histórica incorpora a cota-parte do ICMS que o município já recebia. A parcela de destino inclui os 25% do IBS dos Estados repassados aos Municípios. O Seguro-Receita (art. 117) só aparece quando há repasse ao município.</p>
 </section>"""
 
     linhas_b1, soma = "", 0.0
@@ -603,8 +603,8 @@ def main(cod, saida_dir=None):
     p3 = f"""
 <section class="page">
   {cab(3)}
-  <h2 class="sec first"><i>3.</i> Receita média de referência e coeficiente de participação</h2>
-  <p class="sub">O coeficiente de participação determina a parcela do IBS retido que cabe a cada ente federativo. Corresponde à razão entre a receita média de referência do município e a do conjunto de Estados, Distrito Federal e Municípios (LC 227/2026, arts. 114 e 115). Para os municípios, essa receita é a média do ISS e da cota-parte do ICMS entre 2019 e 2026, corrigida pela variação nominal da arrecadação nacional desses impostos.</p>
+  <h2 class="sec first"><i>3.</i> Receita média de referência e coeficiente histórico</h2>
+  <p class="sub">O coeficiente histórico (chamado de coeficiente de participação na LC 227/2026) determina a parcela do IBS retido que cabe a cada ente federativo. Corresponde à razão entre a receita média de referência do município e a do conjunto de Estados, Distrito Federal e Municípios (LC 227/2026, arts. 114 e 115). Para os municípios, essa receita é a média do ISS e da cota-parte do ICMS entre 2019 e 2026, corrigida pela variação nominal da arrecadação nacional desses impostos.</p>
   <div class="fig">{svg_participacao(d, h)}</div>
   <p class="leit">{T['coef']}</p>
   <h3>Cálculo da receita média de referência e do coeficiente (art. 115, III e §2º)</h3>
@@ -613,7 +613,7 @@ def main(cod, saida_dir=None):
   <tfoot><tr><td colspan="5">Soma da receita corrigida</td><td class="n">{num(soma)}</td><td class="n"></td></tr>
   <tr><td colspan="5">Receita média de referência (soma ÷ {n_anos})</td><td class="n"><b>{num(media)}</b></td><td class="n"></td></tr>
   <tr><td colspan="5">Total nacional de ICMS e ISS corrigido (receita média de referência do conjunto)</td><td class="n">{num(tb)}</td><td class="n"></td></tr>
-  <tr class="res"><td colspan="5">Coeficiente de participação = receita média de referência ÷ conjunto</td><td class="n" colspan="2"><b>{pct_plain(m["coef_cpt_pct"], 6)}</b></td></tr></tfoot></table>
+  <tr class="res"><td colspan="5">Coeficiente histórico = receita média de referência ÷ conjunto</td><td class="n" colspan="2"><b>{pct_plain(m["coef_cpt_pct"], 6)}</b></td></tr></tfoot></table>
   <p class="nota">Valores em R$. As receitas são corrigidas pela variação nominal da arrecadação nacional de ICMS e ISS (art. 115, §2º, II, que corrige até 2026); aqui são expressas em reais de 2025, o que não altera o coeficiente, por ser uma razão. {n26}{ntxt_orig}</p>
 </section>"""
 
@@ -634,10 +634,10 @@ def main(cod, saida_dir=None):
     p4 = f"""
 <section class="page">
   {cab(4)}
-  <h2 class="sec first"><i>4.</i> Critério de destino e distribuição complementar</h2>
+  <h2 class="sec first"><i>4.</i> Critério de destino e Seguro-Receita</h2>
   <div class="coefs">
     <div><span>Participação em 2025</span><b>{pct_adapt(neu)}</b><small>Ponto de partida do cenário sem reforma: a participação do município hoje.</small></div>
-    <div><span>Coeficiente de participação</span><b>{pct_adapt(m["coef_cpt_pct"])}</b><small>Receita média de referência de 2019 a 2026. Distribui o IBS retido: 90% do IBS em 2033.</small></div>
+    <div><span>Coeficiente histórico</span><b>{pct_adapt(m["coef_cpt_pct"])}</b><small>Receita média de referência de 2019 a 2026. Distribui o IBS retido: 90% do IBS em 2033.</small></div>
     <div><span>Coeficiente de destino</span><b>{pct_adapt(m["coef_pleno_pct"])}</b><small>{pct_adapt(m["cota_parte_pct"])} pela cota-parte dos Estados e {pct_adapt(m["propria_pct"])} pelo IBS próprio (consumo e compras públicas). Vale por inteiro em 2078.</small></div>
   </div>
   <p class="leit">{T['compl']}</p>
@@ -651,7 +651,7 @@ def main(cod, saida_dir=None):
   {cab(5)}
   <h2 class="sec first"><i>6.</i> Considerações para a gestão fiscal municipal</h2>
   <div class="atencao">
-    <p><b>Revisar os dados fiscais antes da divulgação dos coeficientes.</b> O Comitê Gestor do IBS (CGIBS) deverá divulgar o coeficiente de participação de cada ente até 31 de agosto de 2027, com os valores e as fontes utilizados no cálculo, extraídos do Siconfi (LC 227/2026, art. 116, §§ 1º e 2º). Informações ausentes, duplicadas ou classificadas incorretamente podem alterar a receita média de referência. Por isso, é importante conferir a série de {esc(nome)}, apresentada na seção 3, e retificar eventuais inconsistências.</p>
+    <p><b>Revisar os dados fiscais antes da divulgação dos coeficientes.</b> O Comitê Gestor do IBS (CGIBS) deverá divulgar o coeficiente de participação de cada ente (o coeficiente histórico deste documento) até 31 de agosto de 2027, com os valores e as fontes utilizados no cálculo, extraídos do Siconfi (LC 227/2026, art. 116, §§ 1º e 2º). Informações ausentes, duplicadas ou classificadas incorretamente podem alterar a receita média de referência. Por isso, é importante conferir a série de {esc(nome)}, apresentada na seção 3, e retificar eventuais inconsistências.</p>
     <p><b>Preparar-se para eventual contestação.</b> Caso identifique divergências no coeficiente divulgado, o município poderá apresentar contestação fundamentada no prazo de 30 dias após sua publicação no Diário Oficial da União. O CGIBS terá até 90 dias para responder, sem possibilidade de nova contestação ou recurso administrativo (art. 116, §§ 7º e 8º).</p>
     <p><b>Planejar com faixas, e não com valores únicos.</b> As projeções podem subsidiar o PPA e a LDO, considerando a sensibilidade dos resultados apresentada na seção 5. Recomenda-se acompanhar a atualização dos dados e a regulamentação do CGIBS.</p>
     <p><b>Acompanhar a transição para o critério de destino.</b> {T['dest']}</p>
@@ -659,11 +659,11 @@ def main(cod, saida_dir=None):
   <h2 class="sec"><i>7.</i> Metodologia e base legal</h2>
   <div class="met">
     <p><b>Receita média de referência (art. 115).</b> Considera a arrecadação municipal de ISS e a cota-parte do ICMS (CF, art. 158, IV, a) entre 2019 e 2026, corrigidas pela variação nominal da arrecadação nacional desses impostos. As informações vêm do Siconfi, com dados da DCA até 2025 e do RREO até agosto de 2026. Na ausência de registros, o modelo usa o RREO anual ou estimativas baseadas na série do município, e exclui valores fora da faixa entre metade e o dobro do esperado.</p>
-    <p><b>Coeficiente de participação (art. 114, §1º).</b> Corresponde à razão entre a receita média de referência do município e a do conjunto dos entes federativos, equivalente a {dinheiro(tb, True)} em valores de 2025.</p>
+    <p><b>Coeficiente histórico (coeficiente de participação, art. 114, §1º).</b> Corresponde à razão entre a receita média de referência do município e a do conjunto dos entes federativos, equivalente a {dinheiro(tb, True)} em valores de 2025.</p>
     <p><b>Cenário sem reforma.</b> Projeta a receita municipal mantendo a participação de 2025 na arrecadação nacional de ICMS e ISS. A arrecadação evolui conforme o PIB nominal projetado pelo Focus (até 2030) e pela IFI (2031 a 2033), com a razão média entre receita de referência e PIB de 2024 a 2026 (LC 214/2025, arts. 361 a 365, com redação da LC 227/2026).</p>
-    <p><b>Cenário com reforma.</b> A receita resulta da soma do ICMS e do ISS remanescentes, repartidos pela participação de 2025; do IBS retido (80% entre 2029 e 2032 e 90% em 2033, art. 109), distribuído pelo coeficiente de participação; do IBS pelo critério de destino, descontada a parcela do CGIBS; e dos eventuais repasses da distribuição complementar (art. 117). O peso do ICMS e do ISS cai de 90% em 2029 a zero em 2033 (ADCT, art. 128).</p>
+    <p><b>Cenário com reforma.</b> A receita resulta da soma do ICMS e do ISS remanescentes, repartidos pela participação de 2025; do IBS retido (80% entre 2029 e 2032 e 90% em 2033, art. 109), distribuído pelo coeficiente histórico; do IBS pelo critério de destino, descontada a parcela do CGIBS; e dos eventuais repasses do Seguro-Receita (art. 117). O peso do ICMS e do ISS cai de 90% em 2029 a zero em 2033 (ADCT, art. 128).</p>
     <p><b>Coeficiente de destino.</b> Combina a participação municipal na receita estadual do IBS com a estimativa do consumo (renda per capita do Censo 2022 e POF) e das compras públicas locais (DCA). Os critérios de educação e meio ambiente da cota-parte são aproximados pela distribuição populacional.</p>
-    <p><b>Distribuição complementar (arts. 110 e 117).</b> Reserva adicional de 5% do IBS para os entes com menor razão entre o IBS e a receita média de referência ajustada, limitada a três vezes a média per capita, de modo a igualar essa razão entre os beneficiários.</p>
+    <p><b>Seguro-Receita (arts. 110 e 117).</b> Retenção complementar de 5% do IBS que não segue o critério histórico, para os entes com menor razão entre o IBS e a receita média de referência ajustada, limitada a três vezes a média per capita, de modo a igualar essa razão entre os beneficiários.</p>
   </div>
   <h2 class="sec"><i>8.</i> Limitações</h2>
   <p class="leit peq">As projeções são estimativas e não representam previsões definitivas de arrecadação. Seus resultados dependem das hipóteses de crescimento econômico, da participação de 2025 adotada no cenário sem reforma e da regulamentação do IBS. Os dados fiscais são declarados pelos municípios ao Siconfi, sem auditoria independente, e o horizonte vai de 2029 a 2033. Os coeficientes definitivos serão divulgados pelo CGIBS, que poderá utilizar outras fontes e procedimentos previstos em lei (art. 116, §§ 3º e 4º).</p>

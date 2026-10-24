@@ -31,8 +31,8 @@ function confere(calculado, publicado, dec){
     if (publicado == null || !isFinite(publicado)) return '';
     const bate = Math.abs(calculado - publicado) < 1e-9;
     return `<span class="formula-nota">${bate
-        ? 'Confere com o coeficiente publicado nas demais abas do painel.'
-        : 'O painel publica ' + fmtPctPlain(publicado, dec || 6) + '.'}</span>`;
+        ? 'Confere com o coeficiente exibido nas demais abas.'
+        : 'As demais abas exibem ' + fmtPctPlain(publicado, dec || 6) + '.'}</span>`;
 }
 
 function memoHistoricoHtml(ctx){
@@ -212,7 +212,7 @@ function memoSeguroHtml(serie, mediaReferencia, nomeEsfera){
             </div>`)}
 
         ${passoHtml(2, 'Até onde o fundo alcança', `
-            <p>O fundo eleva, um a um, os entes de menor razão, até se esgotar. O patamar em que ele para é o nível do ano, igual para todos os contemplados. Em 2033 o fundo dispõe de ${fmtExato(nac33.pool)} e alcança ${fmtNum2(nac33.n_beneficiarios, 0)} dos ${fmtNum2(nac33.n_entes, 0)} entes do país, parando na razão de ${nac33.nivel != null ? fmtNum2(nac33.nivel*100, 4)+'%' : '—'}.</p>
+            <p>O fundo eleva, um a um, os entes de menor razão, até se esgotar. O patamar em que ele para é o nível do ano, igual para todos os contemplados. Em 2033 o fundo dispõe de ${fmtExato(nac33.pool)} e alcança ${fmtNum2(nac33.n_beneficiarios, 0)} dos ${fmtNum2(nac33.n_entes, 0)} entes do país (estados, DF e municípios), parando na razão de ${nac33.nivel != null ? fmtNum2(nac33.nivel*100, 4)+'%' : '—'}.</p>
             ${ultimo ? `<div class="formula">(${fmtExato(ultimo.num)} ${op('+')} ${fmtExato(ultimo.rep)}) ${op('÷')} ${fmtExato(ultimo.den)} ${op('=')} <span class="res">${fmtNum2((ultimo.num+ultimo.rep)/ultimo.den*100, 4)}%</span>
                 <span class="formula-nota">${recebe ? 'Com o repasse, a razão do ente chega exatamente ao nível do ano.' : 'A razão do ente já está no nível do ano ou acima dele, e por isso não há repasse em 2033.'}</span></div>` : ''}`)}
 

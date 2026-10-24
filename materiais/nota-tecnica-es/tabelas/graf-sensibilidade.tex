@@ -1,0 +1,31 @@
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.88\linewidth, height=6.4cm, ymin=-11, ymax=7,
+  xmin=2028.7, xmax=2033.9, xtick={2029,2030,2031,2032,2033}, xticklabel style={font=\footnotesize, /pgf/number format/1000 sep=},
+  yticklabel style={font=\footnotesize, /pgf/number format/.cd, fixed, precision=0, use comma},
+  ylabel={Variação ante o cenário sem reforma (\%)}, ylabel style={font=\footnotesize},
+  ymajorgrids, grid style={gray!25}, axis x line*=bottom, axis y line*=left, axis line style={gray!60},
+  legend style={font=\scriptsize, at={(0.5,-0.13)}, anchor=north, draw=none, fill=none, legend columns=3, /tikz/every even column/.append style={column sep=4pt}}, legend cell align=left,
+]
+\addplot[name path=ua, draw=none, forget plot] coordinates {(2029,0.1629) (2030,0.5332) (2031,0.9025) (2032,1.2738) (2033,5.8261)};
+\addplot[name path=la, draw=none, forget plot] coordinates {(2029,-1.4781) (2030,-2.7823) (2031,-4.0874) (2032,-5.3908) (2033,-10.0529)};
+\addplot[azulclaro!45, draw=none] fill between[of=ua and la];
+\addlegendentry{Ano-base e destino $\pm$8,6\% (envoltória)}
+\addplot[name path=ub, draw=none, forget plot] coordinates {(2029,0.0309) (2030,0.2666) (2031,0.5012) (2032,0.7379) (2033,5.1541)};
+\addplot[name path=lb, draw=none, forget plot] coordinates {(2029,-1.3645) (2030,-2.5528) (2031,-3.7420) (2032,-4.9294) (2033,-9.4744)};
+\addplot[azul!35, draw=none] fill between[of=ub and lb];
+\addlegendentry{Ano-base alternativo}
+\addplot[green!45!black, dashed, thick, no marks] coordinates {(2029,-1.3645) (2030,-2.5528) (2031,-3.7420) (2032,-4.9294) (2033,-9.4744)};
+\addlegendentry{2026 (estimado)}
+\addplot[brown!70!black, dash dot, thick, no marks] coordinates {(2029,-0.7441) (2030,-1.2993) (2031,-1.8554) (2032,-2.4097) (2033,-2.9704)};
+\addlegendentry{Média 2019 a 2026}
+\addplot[red!60!black, dotted, thick, no marks] coordinates {(2029,0.0309) (2030,0.2666) (2031,0.5012) (2032,0.7379) (2033,5.1541)};
+\addlegendentry{2019}
+\addplot[azul, very thick, mark=*, mark size=1.8pt] coordinates {(2029,-1.1853) (2030,-2.1907) (2031,-3.1970) (2032,-4.2016) (2033,-7.5957)};
+\addlegendentry{Central (2025)}
+\addplot[black!70, thin, no marks, forget plot] coordinates {(2028.7,0) (2033.9,0)};
+\node[font=\scriptsize, azul, anchor=west] at (axis cs:2033.05,-7.596) {$-$7,60\%};
+\node[font=\scriptsize, gray, anchor=west] at (axis cs:2033.05,5.826) {+5,8\%};
+\node[font=\scriptsize, gray, anchor=west] at (axis cs:2033.05,-10.053) {$-$10,1\%};
+\end{axis}
+\end{tikzpicture}
