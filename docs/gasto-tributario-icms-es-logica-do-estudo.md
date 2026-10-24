@@ -1,6 +1,6 @@
 # Gasto tributário de ICMS no Espírito Santo e a transição para o IBS: lógica do estudo
 
-Documento de trabalho, outubro de 2026. Reúne o que a coleta de dados já mostrou e propõe o algoritmo do estudo. Os dados estão em `data/gasto-tributario-es/` e são gerados por `data/build-gasto-tributario-es.py`.
+Documento de trabalho, outubro de 2026. Reúne o que a coleta de dados já mostrou e propõe o algoritmo do estudo. Os dados estão em `data/gasto-tributario-es/` e são gerados por `data/build-gasto-tributario-es.py`. O painel que aplica essa lógica, com os parâmetros de retenção, de benefício oneroso e de destino como deslizadores, está em `estudos/gasto-tributario-icms-es.html` (Estudo 19).
 
 ## O que a LDO traz, e onde
 
