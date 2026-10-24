@@ -15,17 +15,15 @@ const el = (tag, attrs, ...filhos) => {
     return n;
 };
 const getJSON = url => fetch(url).then(r => { if (!r.ok) throw new Error(url + ' ' + r.status); return r.json(); });
-const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
-const dataBR = iso => { const [a, m, d] = iso.split('-').map(Number); return d + ' de ' + MESES[m - 1] + ' de ' + a; };
-const dataCurta = iso => iso.split('-').reverse().join('/');
-const hojeISO = () => new Date().toISOString().slice(0, 10);
+const dataCurta = iso => iso.slice(0, 10).split('-').reverse().join('/');
+const hojeISO = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };      // dia civil local: toISOString viraria o dia às 21h de Brasília
 
 let cron = null, pubs = null, edit = null, carregando = null;
 const carrega = () => carregando || (carregando = Promise.all([
     getJSON('/data/cronograma-municipal.json'),
     getJSON('/data/cgibs-publicacoes.json').catch(() => null),
     getJSON('/data/cgibs-editorial.json').catch(() => ({ fichas: {} }))
-]).then(([c, p, e]) => { cron = c; pubs = p; edit = e.fichas || {}; }));
+]).then(([c, p, e]) => { cron = c; pubs = p; edit = e.fichas || {}; }).catch(e => { carregando = null; throw e; }));
 
 /* ── situação de cada marco, em relação ao dia de hoje ── */
 function situacao(m, hoje) {
