@@ -222,7 +222,7 @@ function renderLegenda() {
         const m = limiteEscala();
         alvo.innerHTML = `<div class="escala"><div class="escala-barra" aria-hidden="true"></div>
             <div class="escala-ticks" aria-hidden="true"><span>${fmtPct(-m)}</span><span>0</span><span>${fmtPct(m)}</span></div>
-            <p class="nota">Vermelho: as prefeituras do estado, somadas, arrecadam menos do que arrecadariam sem a reforma. Azul: arrecadam mais. O valor de cada estado aparece ao passar o cursor e na lista ao lado.</p></div>`;
+            <p class="nota">Vermelho: a receita dos municípios do estado, somada, fica abaixo da que teriam sem a reforma. Azul: fica acima. O valor de cada estado aparece ao passar o cursor e na lista ao lado.</p></div>`;
         return;
     }
     const escopo = noEscopo(), cont = {};
@@ -241,13 +241,13 @@ function linhasUF() {
 /* Contagens: o total é o de municípios do estado; as posições e a contagem de quem perde usam os que têm base de 2025 (ver a metodologia). */
 const totalUF = uf => LISTA.filter(m => m.uf === uf).length;
 function txtPerdem(l) {
-    return `${fmtInt(l.perdem)} de ${fmtInt(l.n)} prefeituras perdem`;
+    return `${fmtInt(l.perdem)} de ${fmtInt(l.n)} municípios perdem`;
 }
 
 function renderTabelaMapa() {
     const alvo = $('mapaTabela');
     if (nivelAtual() === 'uf') {
-        alvo.innerHTML = `<table class="dados"><thead><tr><th>Estado</th><th>Prefeituras</th><th>Perdem em 2033</th><th>Variação agregada</th></tr></thead><tbody>`
+        alvo.innerHTML = `<table class="dados"><thead><tr><th>Estado</th><th>Municípios</th><th>Perdem em 2033</th><th>Variação agregada</th></tr></thead><tbody>`
             + linhasUF().map(l => `<tr class="clicavel" data-uf="${l.uf}"><td class="nome">${NOMES_UF[l.uf]}</td><td>${fmtInt(l.total)}</td><td>${fmtInt(l.perdem)} de ${fmtInt(l.n)} (${fmtPctSimples(l.perdem / l.n)})</td><td class="${clsSinal(l.v)}">${fmtPct(l.v)}</td></tr>`).join('') + '</tbody></table>';
         alvo.querySelectorAll('tr[data-uf]').forEach(tr => tr.addEventListener('click', () => definirEscopo(tr.dataset.uf, 'muni')));
         return;
@@ -291,12 +291,12 @@ function renderContexto() {
     const partes = [];
     if (ESCOPO === 'BR' && NAC && NAC.historico && NAC.projecao) {
         const h = NAC.historico[NAC.historico.length - 1], p = NAC.projecao[NAC.projecao.length - 1];
-        partes.push(`<span>Bolo tributário 2025: <b>${fmtMoney(h.bolo_nominal)}</b></span>`,
-            `<span>Projetado 2033: <b>${fmtMoney(p.icms_iss_residual + p.ibs_bruto)}</b></span>`,
-            `<span>IBS já por destino em 2033: <b>${fmtPctPlain(p.ibs_destino_liquido / p.ibs_bruto * 100, 0)}</b> (pleno só em 2078)</span>`);
+        partes.push(`<span>Arrecadação nacional de referência em 2025 (ICMS e ISS): <b>${fmtMoney(h.bolo_nominal)}</b></span>`,
+            `<span>Arrecadação nacional projetada para 2033 (ICMS, ISS e IBS): <b>${fmtMoney(p.icms_iss_residual + p.ibs_bruto)}</b></span>`,
+            `<span>IBS repartido pelo critério de destino em 2033: <b>${fmtPctPlain(p.ibs_destino_liquido / p.ibs_bruto * 100, 1)}</b> (por inteiro, só em 2078)</span>`);
     }
-    partes.push(`<span>${nome}: <b>${fmtInt(escopo.length)}</b> municípios analisados</span>`,
-        `<span><b class="neg">${fmtInt(perdem)}</b> de ${fmtInt(ok.length)} municípios (<b>${fmtPctSimples(perdem / ok.length)}</b>) arrecadam menos em 2033 do que arrecadariam sem a reforma</span>`,
+    partes.push(`<span>${nome}: <b>${fmtInt(escopo.length)}</b> municípios${ok.length < escopo.length ? ', <b>' + fmtInt(ok.length) + '</b> com base de 2025' : ''}</span>`,
+        `<span><b class="neg">${fmtInt(perdem)}</b> de ${fmtInt(ok.length)} municípios (<b>${fmtPctSimples(perdem / ok.length)}</b>) têm receita menor em 2033 do que teriam sem a reforma</span>`,
         `<span>Variação mediana: <b class="${clsSinal(mediana)}">${fmtPct(mediana)}</b></span>`);
     if (ESCOPO !== 'BR' && AGG[ESCOPO] != null) partes.push(`<span>Receita municipal agregada ${esc(DE_UF[ESCOPO])}: <b class="${clsSinal(AGG[ESCOPO])}">${fmtPct(AGG[ESCOPO])}</b></span>`);
     $('contexto').innerHTML = partes.join('');
@@ -353,7 +353,7 @@ async function renderRankUF() {
     const mediana = ord.length ? (ord.length % 2 ? ord[(ord.length - 1) / 2] : (ord[ord.length / 2 - 1] + ord[ord.length / 2]) / 2) : null;
     $('rankResumo').innerHTML = [
         `<span><b>${fmtInt(noEstado.length)}</b> municípios ${esc(emUF(uf))}</span>`,
-        `<span><b class="neg">${fmtInt(perdem)}</b> de ${fmtInt(confiaveis.length)} municípios (<b>${fmtPctSimples(perdem / Math.max(confiaveis.length, 1))}</b>) arrecadam menos em 2033</span>`,
+        `<span><b class="neg">${fmtInt(perdem)}</b> de ${fmtInt(confiaveis.length)} municípios (<b>${fmtPctSimples(perdem / Math.max(confiaveis.length, 1))}</b>) têm receita menor em 2033</span>`,
         mediana != null ? `<span>Variação mediana: <b class="${clsSinal(mediana)}">${fmtPct(mediana)}</b></span>` : '',
         AGG[uf] != null ? `<span>Receita municipal agregada: <b class="${clsSinal(AGG[uf])}">${fmtPct(AGG[uf])}</b></span>` : ''
     ].join('');
@@ -695,7 +695,7 @@ function seguroCardHtml(repasse, posByYear) {
     const share = total2033 ? v2033 / total2033 * 100 : null;
     const anos = ANOS.filter(a => (repasse[a] || 0) > 1).map(a => a + ': ' + fmtMoney(repasse[a])).join(' · ');
     return `<div class="seguro-card recebe"><div class="seguro-label">Seguro-Receita (ADCT art. 132)</div><div class="seguro-value">${fmtMoney(v2033)}</div>
-        <div class="seguro-note">Repasse bruto em 2033, antes da dedução do financiamento do CGIBS${share != null ? ', equivalente a ' + share.toLocaleString('pt-BR', {maximumFractionDigits: 1}) + '% da receita projetada do município no mesmo ano' : ''}. Série (bruta, em R$ de 2025): ${anos}. Veja a memória de cálculo para o nível de nivelamento de cada ano.</div></div>`;
+        <div class="seguro-note">Repasse bruto em 2033, antes da dedução do financiamento do CGIBS${share != null ? ', equivalente a ' + share.toLocaleString('pt-BR', {maximumFractionDigits: 1}) + '% da receita projetada do município no mesmo ano (o fundo nacional é de 5% do IBS, mas é repartido só entre os entes de menor razão)' : ''}. Série (bruta, em R$ de 2025): ${anos}. Veja a memória de cálculo para o nível de nivelamento de cada ano.</div></div>`;
 }
 
 /* Anos preenchidos fora da DCA (RREO anual ou estimativa a partir do ano anterior): uma frase que diz de onde veio cada componente. */
@@ -938,12 +938,12 @@ function renderFicha(cod, base, m) {
     const seg33 = (m.repasse_seguro_receita_por_ano || {})['2033'] || 0;
     const painelSeguro = seg33 > 0 ? `<div class="panel" id="painelSeguro"><h3>Seguro-Receita</h3><p class="panel-sub">O fundo equivale a 5% do IBS que não é distribuído pelo critério histórico e é repartido entre os entes de menor razão entre o IBS pelo destino e a receita média de referência, até igualar essa razão.</p>${seguroCardHtml(m.repasse_seguro_receita_por_ano, m.pos_por_ano)}</div>` : '';
     const neutra = Math.abs(v33) <= 0.0005;
-    const lado = v33 < 0 ? 'a menos' : 'a mais';
+    const lado2 = v33 < 0 ? 'menor' : 'maior';
     const nomeSeg = esc(base.nome);
     const selo = neutra ? 'Receita estável' : v33 < 0 ? 'Perda estimada' : 'Ganho estimado';
     const frase = neutra
         ? `Em 2033, a receita de <b>${nomeSeg}</b> fica praticamente igual à que teria sem a reforma.`
-        : `Em 2033, <b>${nomeSeg}</b> deve arrecadar <b>${fmtMoney(Math.abs(dif33))} ${lado} por ano</b> do que arrecadaria sem a reforma.`;
+        : `Em 2033, <b>${nomeSeg}</b> deve ter uma receita <b>${fmtMoney(Math.abs(dif33))} ${lado2} por ano</b> do que teria sem a reforma.`;
 
     const linhas = ANOS.map(a => {
         const v = m.variacao_por_ano[a], d = m.pos_por_ano[a] - m.contrafactual_por_ano[a];
