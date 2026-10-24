@@ -261,10 +261,14 @@ def main():
     regional_soma = [sum(vals[i] for vals, _ in REG27.values()) for i in range(len(MICRORREGIOES))]
 
     real25 = ICMS_PREV_REAL[2025][1] * 1000
-    # crescimento nominal anual implícito na própria série da LDO 2027 (2027 -> 2028), usado só
-    # para recuar o gasto de 2027 até 2025 e comparar com o ICMS realizado de 2025.
-    g = SUB27["ICMS"][1] / SUB27["ICMS"][0]
-    gt25_aprox = SUB27["ICMS"][0] / g ** 2
+    # A LDO 2027 corrige a base de 2025 (EFD) por IPCA e PIB até 2027. Para recuar o gasto de 2027
+    # até 2025 e compará-lo com o ICMS realizado de 2025, desfaz-se essa correção com o IPCA e o PIB
+    # real de 2026 e 2027 da trajetória macro do modelo do site (data/ibs-projecao-nacional.json).
+    macro = {m["ano"]: m for m in json.loads((HERE / "ibs-projecao-nacional.json").read_text(encoding="utf-8"))["macro_path"]}
+    fator = 1.0
+    for a in (2026, 2027):
+        fator *= (1 + macro[a]["ipca_pct"]) * (1 + macro[a]["pib_real_pct"])
+    gt25_aprox = SUB27["ICMS"][0] / fator
 
     dados = {
         "_meta": {
@@ -301,7 +305,7 @@ def main():
                                            "programas": ["Compete Atacadista", "Compete Varejo Não Presencial", "INVEST"]},
             "metropolitana_participacao_nos_segmentos_regionalizados": metro_total / reg_total,
             "gt_icms_2027_sobre_icms_realizado_2025": total_icms_27 / real25,
-            "gt_icms_2025_aproximado": {"valor": gt25_aprox, "metodo": "GT de 2027 recuado dois anos pela taxa nominal implícita na própria série da LDO 2027 (2028/2027)",
+            "gt_icms_2025_aproximado": {"valor": gt25_aprox, "metodo": "GT de 2027 dividido pelo IPCA e pelo PIB real de 2026 e 2027 da trajetória macro do modelo (Focus ago/2026), que desfaz a correção que a LDO aplica sobre a base de 2025",
                                          "sobre_icms_realizado_2025": gt25_aprox / real25,
                                          "sobre_icms_potencial_2025": gt25_aprox / (gt25_aprox + real25)},
             "quebra_de_serie": {
