@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gasto Tributário de ICMS no ES e a Transição para o IBS | Eduardo Reis Araújo</title>
+    <meta name="description" content="Quanto o Espírito Santo deixa de arrecadar de ICMS com incentivos fiscais (Demonstrativo VII das LDO 2024-2027), como esse gasto evolui na transição para o IBS e o que ele muda no coeficiente histórico do Estado.">
+    <meta name="author" content="Eduardo Reis Araujo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/gasto-tributario-icms-es.html">
+    <meta property="og:title" content="Gasto Tributário de ICMS no ES e a Transição para o IBS">
+    <meta property="og:description" content="Painel com o gasto tributário de ICMS do Espírito Santo, sua trajetória até 2033 e o efeito sobre o coeficiente histórico do IBS.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/gasto-tributario-icms-es.html">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Eduardo Reis Araújo">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="/css/notas.css?v=4">
+    <link rel="stylesheet" href="/css/search.css">
+    <style>
+        :root { --text-primary: #1D1D1B; --bg-secondary: #f7f7f5; --c-azul: #2a6496; --c-ambar: #b47828; --c-verde: #288c50; --c-verm: #b43c3c; --c-cinza: #9a9a9a; }
+        .study-hero { max-width: 900px; margin: 0 auto; padding: 3.5rem 2rem 2rem; }
+        .study-hero-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+        .study-hero-tag { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); padding: 0.25rem 0.6rem; border-radius: 4px; }
+        .study-hero-topic { font-family: var(--sans); font-size: 0.73rem; color: var(--text-secondary); background: var(--border-light); padding: 0.2rem 0.55rem; border-radius: 4px; }
+        .study-hero-date { font-family: var(--sans); font-size: 0.73rem; color: var(--text-muted); margin-left: auto; }
+        .study-hero h1 { font-family: var(--display); font-size: 2rem; font-weight: 700; line-height: 1.22; letter-spacing: -0.025em; margin-bottom: 0.9rem; }
+        .study-hero .lead { font-family: var(--serif); font-size: 1.05rem; line-height: 1.72; color: var(--text-secondary); max-width: 700px; }
+        .study-content { max-width: 900px; margin: 0 auto; padding: 0 2rem 5rem; }
+        .section-heading { font-family: var(--display); font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin: 2.8rem 0 0.6rem; letter-spacing: -0.01em; }
+        .prose { font-family: var(--serif); font-size: 0.95rem; line-height: 1.75; color: var(--text-secondary); max-width: 740px; margin-bottom: 1rem; }
+        .prose strong { color: var(--text-primary); }
+        .status-bar { font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted); padding: 0.4rem 0; margin-bottom: 0.5rem; }
+        .status-bar.erro { color: var(--c-verm); }
+
+        .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; margin: 1rem 0 1.5rem; }
+        .kpi { border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.15rem; background: var(--bg-secondary); }
+        .kpi-label { font-family: var(--mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.35rem; }
+        .kpi-value { font-family: var(--mono); font-size: 1.5rem; font-weight: 700; color: var(--c-azul); margin-bottom: 0.2rem; }
+        .kpi-sub { font-family: var(--sans); font-size: 0.74rem; color: var(--text-muted); line-height: 1.45; }
+
+        .chart-wrap { background: var(--bg-secondary); border-radius: 8px; padding: 1.1rem 1.4rem 1.25rem; margin: 0 0 1.6rem; }
+        .chart-title { font-family: var(--sans); font-size: 0.84rem; font-weight: 600; color: var(--text-secondary); margin: 0 0 0.25rem; }
+        .chart-subtitle { font-family: var(--sans); font-size: 0.72rem; color: var(--text-muted); margin: 0 0 0.9rem; line-height: 1.45; }
+        .chart-box { position: relative; height: 300px; }
+        .chart-box.alto { height: 340px; }
+        .chart-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+        .param-box { border: 1px solid var(--border); border-left: 3px solid var(--c-ambar); border-radius: 8px; padding: 0.9rem 1.15rem; margin: 0.9rem 0 1.2rem; background: #fffdf8; }
+        .param-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; font-family: var(--sans); font-size: 0.82rem; color: var(--text-secondary); }
+        .param-row label { min-width: 220px; font-weight: 600; color: var(--text-primary); }
+        .param-row input[type="range"] { width: 220px; accent-color: var(--accent); }
+        .param-val { font-family: var(--mono); font-weight: 700; color: var(--c-ambar); min-width: 3.2rem; }
+        .param-help { font-family: var(--sans); font-size: 0.74rem; color: var(--text-muted); line-height: 1.5; margin-top: 0.5rem; }
+
+        .data-table-wrap { overflow-x: auto; margin: 0.75rem 0 1.8rem; border: 1px solid var(--border-light); border-radius: 8px; }
+        .data-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 0.75rem; }
+        .data-table thead th { background: var(--bg-secondary); font-weight: 600; padding: 0.55rem 0.7rem; text-align: right; border-bottom: 2px solid var(--border); white-space: nowrap; line-height: 1.3; }
+        .data-table thead th.th-left, .data-table tbody td.td-left { text-align: left; }
+        .data-table tbody td { padding: 0.45rem 0.7rem; text-align: right; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+        .data-table tbody td.td-txt { text-align: left; font-family: var(--sans); font-size: 0.74rem; color: var(--text-secondary); line-height: 1.45; min-width: 190px; }
+        .data-table tbody tr:last-child td { border-bottom: none; }
+        .data-table tr.destaque td { background: rgba(180,120,40,0.07); font-weight: 700; }
+        .data-table tr.total td { font-weight: 700; background: var(--bg-secondary); }
+        .tag { font-family: var(--sans); font-size: 0.62rem; font-weight: 600; padding: 0.1rem 0.4rem; border-radius: 3px; margin-left: 0.3rem; white-space: nowrap; }
+        .tag-doc { background: rgba(40,140,80,0.14); color: var(--c-verde); }
+        .tag-hip { background: rgba(180,120,40,0.15); color: var(--c-ambar); }
+        .tag-lac { background: rgba(180,60,60,0.12); color: var(--c-verm); }
+
+        .callout { font-family: var(--sans); font-size: 0.82rem; line-height: 1.55; color: var(--text-secondary); padding: 0.7rem 1rem; margin: 0.4rem 0 1.4rem; border-left: 3px solid var(--c-azul); background: var(--bg-secondary); border-radius: 0 6px 6px 0; max-width: 760px; }
+        .callout strong { color: var(--text-primary); }
+        .notas { font-family: var(--sans); font-size: 0.78rem; line-height: 1.6; color: var(--text-muted); border-top: 1px solid var(--border); margin-top: 3rem; padding-top: 1.2rem; }
+        .notas p { margin-bottom: 0.7rem; max-width: 760px; }
+        .notas code { font-family: var(--mono); font-size: 0.72rem; }
+
+        @media (max-width: 760px) { .kpi-grid, .chart-pair { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .study-hero { padding: 2rem 1.25rem 1.5rem; } .study-content { padding: 0 1.25rem 4rem; } .param-row label { min-width: 100%; } }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+    <main>
+        <section class="study-hero">
+            <div class="study-hero-meta">
+                <span class="study-hero-tag">Estudo 19</span>
+                <span class="study-hero-topic">Reforma Tributária</span>
+                <span class="study-hero-topic">ICMS</span>
+                <span class="study-hero-topic">Gasto tributário</span>
+                <span class="study-hero-date">Out 2026 · versão preliminar</span>
+            </div>
+            <h1>Quanto o ES deixa de arrecadar de ICMS com incentivos, e o que a transição para o IBS faz com isso?</h1>
+            <p class="lead">
+                A LDO do Espírito Santo estima, no Demonstrativo VII, o gasto tributário de ICMS: a diferença entre
+                o ICMS potencial e o ICMS que o Estado de fato arrecada. Este painel mostra a magnitude desse gasto,
+                como ele se reduz entre 2029 e 2033 e por que ele não se converte em receita de IBS: o imposto passa
+                a pertencer ao Estado de destino, e o gasto passado já está embutido no coeficiente histórico.
+            </p>
+        </section>
+
+        <section class="study-content">
+            <div id="status" class="status-bar">Carregando dados…</div>
+
+            <!-- 1. DIAGNÓSTICO -->
+            <h2 class="section-heading">1. Diagnóstico: a magnitude do gasto hoje</h2>
+            <p class="prose">
+                O gasto tributário de ICMS é, na definição da SEFAZ, o <strong>ICMS potencial menos o ICMS real</strong>.
+                O potencial é o faturamento do beneficiário multiplicado pelo índice de recolhimento das empresas do mesmo
+                CNAE no regime normal e sem benefício; o real é o que o beneficiário de fato recolheu. A identidade
+                contábil é, portanto, <strong>potencial = real + gasto</strong>.
+            </p>
+            <div class="kpi-grid">
+                <div class="kpi"><div class="kpi-label">Gasto tributário de ICMS, 2027</div><div class="kpi-value" id="k-gt27">–</div><div class="kpi-sub" id="k-gt27-sub">R$ correntes, LDO 2027</div></div>
+                <div class="kpi"><div class="kpi-label">Taxa de renúncia, 2025 (aprox.)</div><div class="kpi-value" id="k-taxa">–</div><div class="kpi-sub" id="k-taxa-sub">gasto ÷ ICMS potencial</div></div>
+                <div class="kpi"><div class="kpi-label">Três maiores programas</div><div class="kpi-value" id="k-conc">–</div><div class="kpi-sub" id="k-conc-sub">Compete Atacadista, Varejo Não Presencial e INVEST</div></div>
+            </div>
+
+            <div class="chart-wrap">
+                <div class="chart-title">Gasto tributário de ICMS por programa, 2027–2029</div>
+                <div class="chart-subtitle">R$ bilhões correntes. Demonstrativo VII da LDO 2027 (BI/SEFAZ, emitido em 11/03/2026). Base: EFD de 2025 corrigida por IPCA e PIB.</div>
+                <div class="chart-box"><canvas id="ch-programas" role="img" aria-label="Gráfico de colunas empilhadas: gasto tributário de ICMS por programa, 2027 a 2029"></canvas></div>
+            </div>
+
+            <div class="chart-pair">
+                <div class="chart-wrap">
+                    <div class="chart-title">ICMS real e potencial, 2025</div>
+                    <div class="chart-subtitle">R$ bilhões. O gasto de 2025 é recuado a partir do de 2027 pelo IPCA e PIB do Focus (aproximação).</div>
+                    <div class="chart-box"><canvas id="ch-potencial" role="img" aria-label="Gráfico de colunas: ICMS real e gasto tributário em 2025"></canvas></div>
+                </div>
+                <div class="chart-wrap">
+                    <div class="chart-title">Onde está o gasto (microrregiões), 2027</div>
+                    <div class="chart-subtitle">R$ bilhões; só Compete e INVEST são regionalizados na LDO.</div>
+                    <div class="chart-box"><canvas id="ch-regiao" role="img" aria-label="Gráfico de barras: gasto tributário de ICMS por microrregião, 2027"></canvas></div>
+                </div>
+            </div>
+
+            <div class="callout">
+                <strong>Atenção à série histórica.</strong> A primeira linha de ICMS da LDO 2025 era de R$ 3,2 bi e a da LDO 2026, de
+                R$ 14,4 bi. O ICMS realizado cresceu 28% entre 2023 e 2025. O salto vem da mudança de método (a partir da
+                LDO 2026, atacadista, venda não presencial e INVEST passaram a ser medidos pelos ajustes lançados na EFD) e da
+                inclusão do INVEST, que antes não aparecia. Só as safras de 2026 e 2027 são comparáveis entre si.
+            </div>
+            <div class="chart-wrap">
+                <div class="chart-title">Gasto tributário de ICMS no primeiro ano de cada safra da LDO</div>
+                <div class="chart-subtitle">R$ bilhões correntes. A quebra entre as LDO 2025 e 2026 é metodológica, não econômica.</div>
+                <div class="chart-box"><canvas id="ch-safras" role="img" aria-label="Gráfico de colunas: gasto tributário de ICMS no primeiro ano de cada safra da LDO"></canvas></div>
+            </div>
+
+            <!-- 2. TRAJETÓRIA -->
+            <h2 class="section-heading">2. A trajetória até 2033 e o fundo de compensação</h2>
+            <p class="prose">
+                O art. 128, § 1º, do ADCT manda reduzir os benefícios de ICMS na mesma proporção das alíquotas: 9/10 em 2029,
+                8/10 em 2030, 7/10 em 2031 e 6/10 em 2032, e o ICMS é extinto em 2033. Os beneficiários de incentivos
+                <em>onerosos</em> (por prazo certo e sob condição, concedidos até 31/05/2023) são compensados pela União,
+                de 2029 a 2032, pela parte do benefício que se perde (LC 214/2025, arts. 384 e 385). A compensação é paga à
+                empresa, e não ao Estado. Como a LDO não informa quanto do gasto é oneroso, esse percentual é um parâmetro.
+            </p>
+            <div class="param-box">
+                <div class="param-row">
+                    <label for="p-eta">Parcela do gasto que é benefício oneroso</label>
+                    <input type="range" id="p-eta" min="0" max="100" step="5" value="100">
+                    <span class="param-val" id="v-eta">100%</span>
+                </div>
+                <div class="param-help">Hipótese, não dado: a LDO não classifica os benefícios. 100% é o limite superior da compensação. Em 0%, ninguém é compensado.</div>
+            </div>
+            <div class="chart-wrap">
+                <div class="chart-title">Benefício da empresa: o que fica, o que é compensado e o que se perde</div>
+                <div class="chart-subtitle">R$ bilhões de 2025. Gasto sem a redução do ADCT: LDO 2027 deflacionada pelo IPCA até 2029 e, depois, crescendo com o PIB real (Focus e IFI).</div>
+                <div class="chart-box alto"><canvas id="ch-trajetoria" role="img" aria-label="Gráfico de colunas empilhadas: benefício que permanece, compensado e perdido, 2029 a 2033"></canvas></div>
+            </div>
+            <div class="data-table-wrap"><table class="data-table" id="tb-trajetoria"></table></div>
+            <p class="prose" id="txt-trajetoria"></p>
+
+            <!-- 3. COEFICIENTE -->
+            <h2 class="section-heading">3. O que o IBS devolve ao Estado: o preço dos incentivos no coeficiente histórico</h2>
+            <p class="prose">
+                O gasto tributário não é uma receita latente que o IBS libera. A receita de referência dos Estados, que calibra as
+                alíquotas e o coeficiente histórico, é o ICMS <em>efetivamente arrecadado</em> (LC 214/2025, art. 350), e o IBS
+                não admite incentivos (CF, art. 156-A, § 1º, X). O efeito dos incentivos aparece no coeficiente: ele é calculado
+                sobre a receita média de 2019 a 2026, líquida dos benefícios, e cada real renunciado no passado reduz a fatia
+                do Estado hoje. O exercício abaixo recalcula a participação do ES somando de volta a parcela estadual do gasto,
+                ponderada pela fração da atividade que <strong>permaneceria no Estado sem o benefício</strong> (retenção).
+            </p>
+            <div class="param-box">
+                <div class="param-row">
+                    <label for="p-theta">Retenção: atividade que existiria sem o benefício</label>
+                    <input type="range" id="p-theta" min="0" max="100" step="5" value="50">
+                    <span class="param-val" id="v-theta">50%</span>
+                </div>
+                <div class="param-help">Hipótese, não dado. Com 100%, todo o gasto seria receita perdida (limite superior, “estático”); com 0%, nenhuma atividade existiria sem o incentivo, e o Estado não renunciou a nada. A LDO admite que o efeito provável está longe de 100%.</div>
+            </div>
+            <div class="chart-wrap">
+                <div class="chart-title">Receita adicional de IBS no componente histórico, 2029–2033</div>
+                <div class="chart-subtitle">R$ bilhões de 2025, ao nível de retenção escolhido. Compara a receita de IBS pelo coeficiente observado e pelo coeficiente recalculado.</div>
+                <div class="chart-box"><canvas id="ch-coef" role="img" aria-label="Gráfico de colunas empilhadas: componente histórico do IBS e acréscimo com o coeficiente recalculado, 2029 a 2033"></canvas></div>
+            </div>
+            <div class="data-table-wrap"><table class="data-table" id="tb-coef"></table></div>
+            <p class="prose" id="txt-coef"></p>
+            <div class="callout">
+                <strong>Como ler.</strong> Os demais Estados ficam constantes, o que superestima o ganho do ES (os outros também têm incentivos).
+                O ajuste do coeficiente histórico (média de 2019 a 2026) usa a mesma elevação relativa estimada para 2025, porque o gasto
+                de 2019 a 2024 não existe na metodologia atual. É uma ordem de grandeza e não uma estimativa oficial.
+            </div>
+
+            <!-- 4. DESTINO -->
+            <h2 class="section-heading">4. Onde a receita dessas vendas passa a nascer</h2>
+            <p class="prose">
+                No IBS, o imposto pertence ao Estado de destino do consumo. A venda de um atacadista capixaba a outro Estado gera
+                receita para o Estado do comprador, e a exportação não gera receita estadual. Para o ES, a receita ligada à
+                atividade dessas empresas só sobrevive depois de 2033 pelo consumo interno e pelo coeficiente histórico, que se
+                dilui ao longo dos anos. A tabela mostra o que a LDO documenta sobre a operação beneficiada de cada programa;
+                o resto depende de dados que só a SEFAZ tem.
+            </p>
+            <div class="param-box">
+                <div class="param-row">
+                    <label for="p-dest">Fração das operações de INVEST e Varejo Não Presencial com destino fora do ES</label>
+                    <input type="range" id="p-dest" min="0" max="100" step="5" value="50">
+                    <span class="param-val" id="v-dest">50%</span>
+                </div>
+                <div class="param-help">Hipótese, não dado. O Compete Atacadista é documentado como crédito nas saídas interestaduais; para os demais programas a LDO não informa o destino.</div>
+            </div>
+            <div class="data-table-wrap"><table class="data-table" id="tb-destino"></table></div>
+            <p class="prose" id="txt-destino"></p>
+
+            <!-- LIMITES -->
+            <h2 class="section-heading">O que este painel não faz</h2>
+            <p class="prose">
+                Não há dado público sobre o destino das vendas dos beneficiados, sobre a parcela de benefícios onerosos nem sobre
+                o gasto tributário de 2019 a 2024 na metodologia atual. Esses são os pedidos à SEFAZ (GEARC) que fechariam o estudo:
+                faturamento, ICMS recolhido e índice de recolhimento por segmento; abertura do faturamento por destino
+                (interna, interestadual, exterior, importação); classificação oneroso e não oneroso; e a série do gasto de 2023 a 2025.
+                Os três deslizadores acima são hipóteses explícitas, e nada neste painel deve ser lido como projeção oficial.
+            </p>
+
+            <div class="notas">
+                <p><strong>Fontes.</strong> Demonstrativo VII (Estimativa e Compensação da Renúncia de Receita) do Anexo de Metas Fiscais das LDO 2024 a 2027, em
+                <a href="https://planejamento.es.gov.br/GrupodeArquivos/ldo">planejamento.es.gov.br</a>; ICMS previsto e realizado, PLDO 2027, pp. 68–69;
+                ADCT, art. 128; LC 214/2025, arts. 350, 384 e 385; CF, art. 156-A. Os valores foram transcritos das tabelas (publicadas como imagem) e
+                conferidos contra todos os subtotais e totais (desvio máximo de R$ 3, por arredondamento): <code>data/build-gasto-tributario-es.py</code>.</p>
+                <p><strong>Premissas macro e de coeficientes.</strong> IPCA e PIB real de <code>data/ibs-projecao-nacional.json</code> (Focus, ago/2026, e IFI); arrecadação nacional de referência de
+                <code>data/coeficientes-uf.json</code>; coeficientes do ES de <code>data/painel-estados.json</code>; parâmetros de transição de
+                <code>data/ibs-projecao-nacional.json</code>, os mesmos da <a href="/materiais/nota-tecnica-es/nota-tecnica-impacto-es.pdf">nota técnica sobre o impacto no ES</a>.
+                A lógica completa do estudo está em <code>docs/gasto-tributario-icms-es-logica-do-estudo.md</code>.</p>
+            </div>
+        </section>
+    </main>
+    <div id="footer-placeholder"></div>
+    <script src="/js/main.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var AZUL = '#2a6496', AMBAR = '#b47828', VERDE = '#288c50', VERM = '#b43c3c', CINZA = '#b9b9b9', AZUL_C = '#8fb4d6';
+        var ANOS = [2029, 2030, 2031, 2032, 2033];
+        var PERDA_NOTA = 3.57; // R$ bi de 2025, perda acumulada 2029-2033 da nota técnica do impacto no ES (out/2026)
+        var S_ESTADO = 0.75; // parcela do ICMS que fica com o Estado (25% é cota-parte municipal)
+        var D = {};            // dados carregados
+        var charts = {};
+
+        function fmt(x, d) { return x.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+        function bi(x, d) { return fmt(x / 1e9, d === undefined ? 2 : d); }
+        function pct(x, d) { return fmt(x * 100, d === undefined ? 1 : d) + '%'; }
+        function $(id) { return document.getElementById(id); }
+        function setStatus(msg, erro) { var s = $('status'); s.textContent = msg; s.className = 'status-bar' + (erro ? ' erro' : ''); }
+
+        function chart(id, cfg) {
+            if (charts[id]) { charts[id].destroy(); }
+            charts[id] = new Chart($(id), cfg);
+        }
+        var baseOpts = {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 12 } },
+                       tooltip: { callbacks: { label: function (c) { return ' ' + c.dataset.label + ': R$ ' + fmt(c.parsed.y !== undefined && c.chart.config.options.indexAxis !== 'y' ? c.parsed.y : c.parsed.x, 2) + ' bi'; } } } },
+            scales: { y: { beginAtZero: true, ticks: { callback: function (v) { return fmt(v, 0); } } } }
+        };
+
+        // ---------------------------------------------------------------- preparação dos dados
+        function prepara() {
+            var ldo = D.gt.ldo_2027, linhas = ldo.linhas.filter(function (l) { return l.tributo === 'ICMS'; });
+            var anosLdo = ['2027', '2028', '2029'];
+            function soma(filtro, a) { return linhas.filter(filtro).reduce(function (s, l) { return s + l.valores[a]; }, 0); }
+            var progs = [
+                { nome: 'Compete Atacadista', f: function (l) { return l.setor === 'Atacadista'; } },
+                { nome: 'INVEST (indústrias/importadoras)', f: function (l) { return l.setor.indexOf('INVEST') >= 0; } },
+                { nome: 'Compete Varejo Não Presencial', f: function (l) { return l.setor === 'Varejo Não Presencial'; } }
+            ];
+            progs.forEach(function (p) { p.v = {}; anosLdo.forEach(function (a) { p.v[a] = soma(p.f, a); }); });
+            var outros = {};
+            anosLdo.forEach(function (a) {
+                var tot = ldo.subtotais.ICMS[a];
+                outros[a] = tot - progs.reduce(function (s, p) { return s + p.v[a]; }, 0);
+            });
+            D.progs = progs; D.outros = outros; D.anosLdo = anosLdo;
+            D.G = {}; anosLdo.forEach(function (a) { D.G[a] = ldo.subtotais.ICMS[a]; });
+
+            // macro (Focus/IFI) do estudo 11
+            var m = {}; D.nac.macro_path.forEach(function (x) { m[x.ano] = x; });
+            D.macro = m;
+            var cumIpca = function (de, ate) { var f = 1; for (var a = de; a <= ate; a++) { f *= 1 + m[a].ipca_pct; } return f; };
+            var cumPib = function (de, ate) { var f = 1; for (var a = de; a <= ate; a++) { f *= 1 + m[a].pib_real_pct; } return f; };
+            // gasto sem a redução do ADCT, a preços de 2025
+            var G = {};
+            G[2027] = D.G['2027'] / cumIpca(2026, 2027);
+            G[2028] = D.G['2028'] / cumIpca(2026, 2028);
+            G[2029] = D.G['2029'] / cumIpca(2026, 2029);
+            for (var a = 2030; a <= 2033; a++) { G[a] = G[a - 1] * (1 + m[a].pib_real_pct); }
+            // base de 2025: a LDO corrige a EFD de 2025 por IPCA e PIB (nominal) até 2027
+            var G25 = D.G['2027'] / (cumIpca(2026, 2027) * cumPib(2026, 2027));
+            D.Greal = G; D.G25 = G25;
+
+            var real25 = D.gt.icms_previsto_realizado_mil['2025'].realizado * 1000;
+            D.real25 = real25;
+
+            // coeficientes do ES e bolo nacional
+            var es = D.painel.estados.ES;
+            D.w0 = es.coef_neutro_estado_pct / 100;
+            D.wH = es.coef_cpt_estado_pct / 100;
+            D.A25 = D.coef.total_br_2025;
+            D.R25 = D.w0 * D.A25;
+            D.proj = {}; D.nac.projecao.forEach(function (p) { D.proj[p.ano] = p; });
+        }
+
+        // ---------------------------------------------------------------- 1. diagnóstico
+        function secDiagnostico() {
+            var G27 = D.G['2027'];
+            $('k-gt27').textContent = 'R$ ' + bi(G27, 1) + ' bi';
+            $('k-gt27-sub').textContent = 'de R$ ' + bi(D.gt.ldo_2027.subtotais.TOTAL['2027'], 1) + ' bi de renúncia total (ICMS, IPVA, ITCMD e taxas)';
+            var taxa = D.G25 / (D.G25 + D.real25);
+            $('k-taxa').textContent = pct(taxa, 0);
+            $('k-taxa-sub').textContent = 'gasto de R$ ' + bi(D.G25, 1) + ' bi sobre potencial de R$ ' + bi(D.G25 + D.real25, 1) + ' bi (real: R$ ' + bi(D.real25, 1) + ' bi)';
+            var big3 = D.progs.reduce(function (s, p) { return s + p.v['2027']; }, 0);
+            $('k-conc').textContent = pct(big3 / G27, 1);
+            $('k-conc-sub').textContent = 'do gasto de ICMS de 2027: R$ ' + bi(big3, 1) + ' bi';
+
+            var cores = [AZUL, AMBAR, VERDE, CINZA];
+            var ds = D.progs.map(function (p, i) { return { label: p.nome, data: D.anosLdo.map(function (a) { return p.v[a] / 1e9; }), backgroundColor: cores[i] }; });
+            ds.push({ label: 'Demais benefícios de ICMS', data: D.anosLdo.map(function (a) { return D.outros[a] / 1e9; }), backgroundColor: cores[3] });
+            chart('ch-programas', { type: 'bar', data: { labels: D.anosLdo, datasets: ds },
+                options: Object.assign({}, baseOpts, { scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true, ticks: { callback: function (v) { return fmt(v, 0); } } } } }) });
+
+            chart('ch-potencial', { type: 'bar', data: { labels: ['2025'], datasets: [
+                { label: 'ICMS real (arrecadado)', data: [D.real25 / 1e9], backgroundColor: AZUL },
+                { label: 'Gasto tributário (aprox.)', data: [D.G25 / 1e9], backgroundColor: AMBAR } ] },
+                options: Object.assign({}, baseOpts, { scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } } }) });
+
+            var reg = D.gt.regionalizacao_ldo_2027, nomes = reg.microrregioes;
+            var ordem = nomes.slice().sort(function (a, b) { return reg.total_por_microrregiao[b] - reg.total_por_microrregiao[a]; });
+            chart('ch-regiao', { type: 'bar', data: { labels: ordem, datasets: [{ label: 'Gasto tributário 2027', data: ordem.map(function (n) { return reg.total_por_microrregiao[n] / 1e9; }), backgroundColor: AZUL }] },
+                options: Object.assign({}, baseOpts, { indexAxis: 'y', plugins: { legend: { display: false }, tooltip: baseOpts.plugins.tooltip }, scales: { x: { beginAtZero: true } } }) });
+
+            var sa = D.gt.safras_anteriores_subtotais;
+            var rot = ['LDO 2024', 'LDO 2025', 'LDO 2026', 'LDO 2027'];
+            var vals = [sa['LDO 2024 (base EFD 2022, Focus mar/2023)'].icms[0], sa['LDO 2025 (base EFD 2023, Focus fev/2024)'].icms[0], D.gt.ldo_2026.subtotais.ICMS['2026'], G27];
+            var anosPrim = ['2023', '2025', '2026', '2027'];
+            chart('ch-safras', { type: 'bar', data: { labels: rot.map(function (r, i) { return r + ' (' + anosPrim[i] + ')'; }), datasets: [{ label: 'Gasto tributário de ICMS no primeiro ano', data: vals.map(function (v) { return v / 1e9; }), backgroundColor: [CINZA, CINZA, AZUL, AZUL] }] },
+                options: Object.assign({}, baseOpts, { plugins: { legend: { display: false }, tooltip: baseOpts.plugins.tooltip } }) });
+        }
+
+        // ---------------------------------------------------------------- 2. trajetória
+        function secTrajetoria() {
+            var eta = +$('p-eta').value / 100;
+            $('v-eta').textContent = Math.round(eta * 100) + '%';
+            var rem = [], comp = [], perd = [], tot = [];
+            ANOS.forEach(function (a) {
+                var f = D.proj[a].fa, G = D.Greal[a];
+                var r = G * f, c = (a <= 2032 ? eta * G * (1 - f) : 0), p = Math.max(0, G - r - c);
+                rem.push(r / 1e9); comp.push(c / 1e9); perd.push(p / 1e9); tot.push(G / 1e9);
+            });
+            chart('ch-trajetoria', { type: 'bar', data: { labels: ANOS, datasets: [
+                { label: 'Benefício que permanece (ICMS reduzido)', data: rem, backgroundColor: AZUL },
+                { label: 'Compensado pelo fundo da União', data: comp, backgroundColor: VERDE },
+                { label: 'Benefício perdido pela empresa', data: perd, backgroundColor: VERM } ] },
+                options: Object.assign({}, baseOpts, { scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true, ticks: { callback: function (v) { return fmt(v, 0); } } } } }) });
+
+            var t = $('tb-trajetoria');
+            var h = '<thead><tr><th class="th-left">R$ bilhões de 2025</th>' + ANOS.map(function (a) { return '<th>' + a + '</th>'; }).join('') + '</tr></thead><tbody>';
+            h += '<tr><td class="td-left">Fração do ICMS que permanece (ADCT, art. 128)</td>' + ANOS.map(function (a) { return '<td>' + pct(D.proj[a].fa, 0) + '</td>'; }).join('') + '</tr>';
+            h += '<tr><td class="td-left">Gasto sem a redução do ADCT</td>' + tot.map(function (v) { return '<td>' + fmt(v, 2) + '</td>'; }).join('') + '</tr>';
+            h += '<tr><td class="td-left">Benefício que permanece</td>' + rem.map(function (v) { return '<td>' + fmt(v, 2) + '</td>'; }).join('') + '</tr>';
+            h += '<tr><td class="td-left">Compensação do fundo (hipótese)</td>' + comp.map(function (v) { return '<td>' + fmt(v, 2) + '</td>'; }).join('') + '</tr>';
+            h += '<tr class="destaque"><td class="td-left">Vantagem líquida da empresa</td>' + rem.map(function (v, i) { return '<td>' + fmt(v + comp[i], 2) + '</td>'; }).join('') + '</tr>';
+            h += '<tr><td class="td-left">Benefício perdido</td>' + perd.map(function (v) { return '<td>' + fmt(v, 2) + '</td>'; }).join('') + '</tr></tbody>';
+            t.innerHTML = h;
+            var v32 = rem[3] + comp[3], v33 = rem[4] + comp[4];
+            $('txt-trajetoria').innerHTML = 'Com ' + Math.round(eta * 100) + '% do gasto compensável, a vantagem líquida da empresa vai de R$ ' + fmt(rem[0] + comp[0], 2) +
+                ' bi em 2029 a R$ ' + fmt(v32, 2) + ' bi em 2032 e <strong>cai a R$ ' + fmt(v33, 2) + ' bi em 2033</strong>, quando o ICMS é extinto e o fundo deixa de existir. ' +
+                (eta > 0 ? 'Quanto mais benefício oneroso, mais a vantagem se mantém até 2032 e mais abrupta é a queda em 2033.' : 'Sem compensação, a vantagem se esvai gradualmente a cada ano.') +
+                ' O ente estadual não recebe a compensação; o que ele perde é a base de ICMS que alimenta o benefício, tratada nas próximas seções.';
+        }
+
+        // ---------------------------------------------------------------- 3. coeficiente
+        function efeitoTheta(theta) {
+            var gt = D.G25 * theta;
+            var wcf = (D.R25 + S_ESTADO * gt) / (D.A25 + gt);
+            var q = wcf / D.w0;
+            var wHcf = D.wH * q;
+            var extra = ANOS.map(function (a) {
+                var p = D.proj[a];
+                return (1 - p.ca) * p.bolo_projetado * p.sa * p.alpha_a * (wHcf - D.wH);
+            });
+            return { theta: theta, wcf: wcf, q: q, wHcf: wHcf, extra: extra, acum: extra.reduce(function (s, x) { return s + x; }, 0) };
+        }
+        function secCoef() {
+            var theta = +$('p-theta').value / 100;
+            $('v-theta').textContent = Math.round(theta * 100) + '%';
+            var e = efeitoTheta(theta);
+            var base = ANOS.map(function (a) { var p = D.proj[a]; return (1 - p.ca) * p.bolo_projetado * p.sa * p.alpha_a * D.wH / 1e9; });
+            chart('ch-coef', { type: 'bar', data: { labels: ANOS, datasets: [
+                { label: 'Componente histórico, coeficiente observado', data: base, backgroundColor: AZUL },
+                { label: 'Acréscimo com o coeficiente recalculado', data: e.extra.map(function (x) { return x / 1e9; }), backgroundColor: AMBAR } ] },
+                options: Object.assign({}, baseOpts, { scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true, ticks: { callback: function (v) { return fmt(v, 1); } } } } }) });
+
+            var casos = [0.25, 0.5, 0.75, 1].map(efeitoTheta);
+            var h = '<thead><tr><th class="th-left">Retenção</th><th>Participação 2025</th><th>Coef. histórico</th><th>Δ (p.p.)</th><th>Extra 2029–33 (R$ bi)</th><th>Extra em 2033 (R$ bi)</th></tr></thead><tbody>';
+            h += '<tr><td class="td-left">Observado</td><td>' + fmt(D.w0 * 100, 3) + '%</td><td>' + fmt(D.wH * 100, 3) + '%</td><td>–</td><td>–</td><td>–</td></tr>';
+            casos.concat([e]).forEach(function (c, i) {
+                var custom = (i === casos.length);
+                h += '<tr' + (custom ? ' class="destaque"' : '') + '><td class="td-left">' + Math.round(c.theta * 100) + '%' + (custom ? ' (deslizador)' : '') + '</td><td>' + fmt(c.wcf * 100, 3) + '%</td><td>' + fmt(c.wHcf * 100, 3) + '%</td><td>+' + fmt((c.wHcf - D.wH) * 100, 3) + '</td><td>' + fmt(c.acum / 1e9, 2) + '</td><td>' + fmt(c.extra[4] / 1e9, 2) + '</td></tr>';
+            });
+            h += '</tbody>';
+            $('tb-coef').innerHTML = h;
+            $('txt-coef').innerHTML = 'Se ' + Math.round(theta * 100) + '% do gasto tributário de 2025 (R$ ' + bi(D.G25 * theta, 1) + ' bi) tivesse permanecido na base, a participação do ES subiria de ' +
+                fmt(D.w0 * 100, 2) + '% para ' + fmt(e.wcf * 100, 2) + '% e o coeficiente histórico, de ' + fmt(D.wH * 100, 2) + '% para ' + fmt(e.wHcf * 100, 2) +
+                '%. O componente histórico renderia ao Estado <strong>R$ ' + fmt(e.acum / 1e9, 2) + ' bi a mais em 2029–2033</strong> (preços de 2025). Para ter uma referência de escala, a ' +
+                '<a href="/materiais/nota-tecnica-es/nota-tecnica-impacto-es.pdf">nota técnica do impacto no ES</a> estima uma perda acumulada de R$ ' + fmt(PERDA_NOTA, 2) + ' bi no mesmo período; ' +
+                'o acréscimo acima equivale a ' + fmt(e.acum / 1e9 / PERDA_NOTA, 1) + ' vez(es) essa perda. Em outras palavras, o que os incentivos custaram em coeficiente é uma ordem de grandeza comparável ao que a transição tira do Estado, e é o preço, em participação, da atividade que a política atraiu.';
+        }
+
+        // ---------------------------------------------------------------- 4. destino
+        function secDestino() {
+            var d = +$('p-dest').value / 100;
+            $('v-dest').textContent = Math.round(d * 100) + '%';
+            var G27 = D.G['2027'];
+            var atac = D.progs[0].v['2027'], inv = D.progs[1].v['2027'], varejo = D.progs[2].v['2027'], out = D.outros['2027'];
+            var minimo = atac / G27, maximo = (atac + inv + varejo) / G27, cenario = (atac + d * (inv + varejo)) / G27;
+            var linhas = [
+                ['Compete Atacadista', atac, 'Crédito presumido nas saídas interestaduais, de modo que a carga efetiva resulte em 1,10% (texto da LDO 2027).', '<span class="tag tag-doc">documentado</span> Outro Estado'],
+                ['INVEST (indústrias/importadoras)', inv, 'Crédito presumido da Lei 10.550/2016, com ajustes nos registros E110 da EFD. A LDO não informa o destino das operações.', '<span class="tag tag-lac">lacuna</span> ' + Math.round(d * 100) + '% fora do ES (hipótese)'],
+                ['Compete Varejo Não Presencial', varejo, 'Crédito presumido em vendas sem presença física, com ajustes no registro E110. A LDO não informa o destino.', '<span class="tag tag-lac">lacuna</span> ' + Math.round(d * 100) + '% fora do ES (hipótese)'],
+                ['Demais benefícios de ICMS', out, 'Dezenas de leis setoriais (rochas, metalmecânica, vestuário, bares e restaurantes, energia e outros).', '<span class="tag tag-hip">não avaliado</span> fora do cálculo']
+            ];
+            var h = '<thead><tr><th class="th-left">Programa</th><th>Gasto 2027 (R$ bi)</th><th>Parcela</th><th class="th-left">Operação beneficiada</th><th class="th-left">Destino do IBS</th></tr></thead><tbody>';
+            linhas.forEach(function (l) { h += '<tr><td class="td-left">' + l[0] + '</td><td>' + fmt(l[1] / 1e9, 2) + '</td><td>' + pct(l[1] / G27, 1) + '</td><td class="td-txt">' + l[2] + '</td><td class="td-txt">' + l[3] + '</td></tr>'; });
+            h += '<tr class="total"><td class="td-left">Total de ICMS</td><td>' + fmt(G27 / 1e9, 2) + '</td><td>100%</td><td class="td-txt"></td><td class="td-txt"></td></tr></tbody>';
+            $('tb-destino').innerHTML = h;
+            $('txt-destino').innerHTML = 'A parcela do gasto de 2027 cujo IBS nasceria <strong>fora do Espírito Santo</strong> é de no mínimo <strong>' + pct(minimo, 1) +
+                '</strong> (só o que a LDO documenta, o Compete Atacadista) e de até ' + pct(maximo, 1) + ' (se todo o INVEST e o Varejo Não Presencial também forem para fora). Com a hipótese do deslizador (' +
+                Math.round(d * 100) + '%), seria de ' + pct(cenario, 1) + '. Para essa parcela o IBS pertence a outro Estado. Para o restante ele pertence ao ES, mas pelo local do consumo e não pelo da empresa: em nenhum dos casos a arrecadação continua ligada à localização do beneficiário, que é o vínculo em que a política de incentivos se apoiava.';
+        }
+
+        function renderiza() { secDiagnostico(); secTrajetoria(); secCoef(); secDestino(); }
+
+        function get(url) { return fetch(url).then(function (r) { if (!r.ok) { throw new Error(url + ' ' + r.status); } return r.json(); }); }
+        Promise.all([
+            get('/data/gasto-tributario-es/gasto-tributario-es.json'),
+            get('/data/ibs-projecao-nacional.json'),
+            get('/data/coeficientes-uf.json'),
+            get('/data/painel-estados.json')
+        ]).then(function (r) {
+            D.gt = r[0]; D.nac = r[1]; D.coef = r[2]; D.painel = r[3];
+            prepara();
+            renderiza();
+            setStatus('Dados: LDO 2024–2027 (SEFAZ/SEP-ES), Focus/IFI, DCA/Siconfi. Valores de 2027–2029 em R$ correntes; a partir da seção 2, R$ de 2025.');
+            $('p-eta').addEventListener('input', secTrajetoria);
+            $('p-theta').addEventListener('input', secCoef);
+            $('p-dest').addEventListener('input', secDestino);
+        }).catch(function (e) {
+            setStatus('Não foi possível carregar os dados (' + e.message + ').', true);
+        });
+    })();
+    </script>
+</body>
+</html>
