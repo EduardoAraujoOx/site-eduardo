@@ -21,6 +21,7 @@ Uma notícia entra quando o título (ou, nos feeds gerais, o resumo) cita reform
 - Parte dos links de imprensa passa pelo Google Notícias antes de abrir o veículo, porque o Google não informa o endereço direto.
 - Alguns sites bloqueiam leitores automáticos (o feed do Valor Econômico, por exemplo, recusa o acesso direto; o Valor entra pelas buscas). Uma fonte que falha não derruba as outras: ela aparece em `falhas` na resposta.
 - O feed da CNM e o da Comsefaz não foram lidos diretamente (acesso recusado em teste); eles entram pela busca no Google Notícias.
+- Na produção, o feed direto da Agência Câmara falhou na primeira chamada (a Vercel lê de outros endereços de rede). A busca `gn-congresso` cobre Câmara e Senado pelo Google Notícias, e a resposta traz as fontes que falharam em `falhas`, com o motivo, para diagnóstico.
 - A seleção é automática. Não há revisão humana de cada item, e a página diz que listar não significa endossar.
 
 ## Teste local

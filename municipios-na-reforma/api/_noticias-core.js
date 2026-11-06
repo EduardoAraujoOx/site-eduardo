@@ -22,6 +22,7 @@ export const BUSCAS = [
     {id: 'gn-cgibs', url: gn('IBS site:cgibs.gov.br when:60d'), veiculo: {nome: 'Comitê Gestor do IBS', tipo: 'cgibs'}, semFiltro: true},
     {id: 'gn-fazenda', url: gn('reforma tributária site:gov.br/fazenda when:30d'), veiculo: {nome: 'Ministério da Fazenda', tipo: 'governo'}},
     {id: 'gn-planalto', url: gn('reforma tributária site:gov.br/planalto when:30d'), veiculo: {nome: 'Presidência da República', tipo: 'governo'}},
+    {id: 'gn-congresso', url: gn('reforma tributária (site:camara.leg.br OR site:senado.leg.br) when:30d')},
     {id: 'gn-entes', url: gn('reforma tributária (site:cnm.org.br OR site:fnp.org.br OR site:comsefaz.org.br) when:30d')},
     {id: 'gn-imprensa', url: gn('"reforma tributária" (IBS OR CBS OR CGIBS OR "Comitê Gestor") when:7d')},
     {id: 'gn-municipios', url: gn('"reforma tributária" (municípios OR prefeituras OR ISS) when:14d')}
@@ -56,7 +57,7 @@ export const VEICULOS = {
 // Convites, cursos e eventos de divulgação não são notícia da reforma; ficam de fora, salvo se tratarem de audiência, consulta ou ato oficial.
 const PROMO = /inscri[cç]|capacit|curso\b|webinar|workshop|palestra|treinamento|jornada\b|semin[aá]rio|simp[oó]sio|encontro\b|promove\b|mentoria|\blive\b|oficina|roda de conversa|fórum\b|forum\b/i;
 const OFICIAL = /audi[eê]ncia p[uú]blica|consulta p[uú]blica|medida provis[oó]ria|portaria|resolu[cç][aã]o|decreto|regulament|prazo|aprova|sanciona|publica/i;
-const JANELA_DIAS = 30, MAXIMO = 80, ESPERA_MS = 9000, TAM_MAX = 1.5e6;
+const JANELA_DIAS = 30, MAXIMO = 80, ESPERA_MS = 6000, TAM_MAX = 1.5e6;
 
 /* ── texto ── */
 const sem = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -115,7 +116,7 @@ const veiculoDe = host => {
     return null;
 };
 // O Google Notícias põe o nome do veículo ao fim do título ("Título - Valor Econômico"), e alguns órgãos repetem o próprio nome ("Título — Planalto").
-const ORGAOS = /\s[—–-]\s(?:Receita Federal|Minist[eé]rio da Fazenda|Governo Federal|Planalto|Presid[eê]ncia da Rep[uú]blica|Senado Not[ií]cia|Secretaria de Comunica[cç][aã]o Social)\s*$/i;
+const ORGAOS = /\s[—–-]\s(?:Receita Federal|Minist[eé]rio da Fazenda|Governo Federal|Planalto|Presid[eê]ncia da Rep[uú]blica|Senado Not[ií]cias?|Secretaria de Comunica[cç][aã]o Social)\s*$/i;
 const limpaTitulo = (titulo, nomes) => {
     for (const n of nomes) if (n) {
         const fim = ' - ' + n;
@@ -149,7 +150,7 @@ export async function coletar(agora = Date.now()) {
     const resultados = await Promise.allSettled(fontes.map(async f => ({f, itens: leFeed(await baixa(f.url))})));
     const itens = [], falhas = [];
     resultados.forEach((r, i) => {
-        if (r.status === 'rejected') { falhas.push(fontes[i].id); return; }
+        if (r.status === 'rejected') { falhas.push(fontes[i].id + ' (' + (r.reason && r.reason.name === 'AbortError' ? 'demorou demais' : (r.reason && r.reason.message) || 'erro') + ')'); return; }
         const {f, itens: lidos} = r.value;
         for (const it of lidos) {
             const quando = Date.parse(it.data);
@@ -162,7 +163,7 @@ export async function coletar(agora = Date.now()) {
                 titulo = limpaTitulo(titulo, [it.fonteNome, veiculo.nome]);
             }
             const rel = f.semFiltro ? 2 : relevancia(titulo, f.geral ? it.resumo : '');
-            if (!rel) continue;
+            if (!rel || titulo.length < 25) continue;      // título curto demais é página institucional, não notícia
             if (PROMO.test(titulo) && !OFICIAL.test(titulo)) continue;
             itens.push({
                 titulo, fonte: veiculo.nome, tipo: veiculo.tipo, url, publicado_em: it.data,
