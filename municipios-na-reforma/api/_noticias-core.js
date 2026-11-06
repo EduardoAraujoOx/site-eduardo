@@ -57,7 +57,7 @@ export const VEICULOS = {
 // Convites, cursos e eventos de divulgação não são notícia da reforma; ficam de fora, salvo se tratarem de audiência, consulta ou ato oficial.
 const PROMO = /inscri[cç]|capacit|curso\b|webinar|workshop|palestra|treinamento|jornada\b|semin[aá]rio|simp[oó]sio|encontro\b|promove\b|mentoria|\blive\b|oficina|roda de conversa|fórum\b|forum\b/i;
 const OFICIAL = /audi[eê]ncia p[uú]blica|consulta p[uú]blica|medida provis[oó]ria|portaria|resolu[cç][aã]o|decreto|regulament|prazo|aprova|sanciona|publica/i;
-const JANELA_DIAS = 30, MAXIMO = 80, ESPERA_MS = 6000, TAM_MAX = 1.5e6;
+const JANELA_DIAS = 30, MAXIMO = 80, ESPERA_MS = 4000, TAM_MAX = 1.5e6;
 
 /* ── texto ── */
 const sem = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
