@@ -49,13 +49,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=47">
+<link rel="stylesheet" href="style.css?v=48">
 <link rel="stylesheet" href="medicao.css?v=1">
 <script src="vendor/d3-7.9.0.min.js" defer></script>
 <script src="memoria.js?v=37" defer></script>
 <script src="medicao.js?v=2" defer></script>
 <script src="app.js?v=53" defer></script>
 <script src="agenda.js?v=36" defer></script>
+<script src="noticias.js?v=1" defer></script>
 </head>
 <body>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -79,6 +80,7 @@
         <button class="tab-btn" data-view="municipio" type="button">Município</button>
         <button class="tab-btn" data-view="rankings" type="button">Comparar</button>
         <button class="tab-btn" data-view="agenda" type="button">Agenda</button>
+        <button class="tab-btn" data-view="noticias" type="button">Notícias</button>
         <div class="tab-mais" id="tabMaisBox">
             <button class="tab-mais-btn" id="tabMais" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="tabMaisLista">Mais <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
             <div class="tab-mais-lista" id="tabMaisLista">
@@ -245,6 +247,24 @@
         </div>
         <div id="agendaPubs"></div>
     </div>
+</section>
+
+<section class="view" id="view-noticias">
+    <div class="view-head">
+        <h2>Notícias da reforma tributária</h2>
+        <p class="sub">Radar automático de links de fontes oficiais, entidades de municípios e imprensa, renovado a cada hora. O portal não reproduz as matérias: cada título leva ao veículo de origem.</p>
+    </div>
+    <div class="agenda-barra">
+        <div class="toggle" id="noticiasFiltro" role="group" aria-label="Origem das notícias">
+            <button type="button" data-grupo="" class="active">Todas</button>
+            <button type="button" data-grupo="oficiais">Governo e Congresso</button>
+            <button type="button" data-grupo="entes">Entidades</button>
+            <button type="button" data-grupo="imprensa">Imprensa</button>
+        </div>
+        <label class="agenda-filtro"><input type="checkbox" id="noticiasMunicipal"> Só o que toca os municípios</label>
+    </div>
+    <div id="noticiasLista" aria-live="polite"><div class="vazio"><p>Carregando as notícias…</p></div></div>
+    <p class="agenda-aviso" id="noticiasRodape"></p>
 </section>
 
 <section class="view" id="view-memoria">
