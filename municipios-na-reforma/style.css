@@ -799,3 +799,26 @@ html { scroll-behavior: smooth; }
     .decomp li { grid-template-columns: 1fr auto; gap: .35rem .8rem; }
     .dc-barra { grid-column: 1 / -1; order: 3; }
 }
+
+/* ── Notícias: radar de links ── */
+#noticiasFiltro { flex-wrap: wrap; gap: .4rem; }
+#noticiasFiltro button, #noticiasFiltro button:first-child, #noticiasFiltro button:last-child { border: 1px solid #b9bdd0; border-radius: 999px; padding: .42rem .9rem; }
+#noticiasFiltro button.active { background: var(--navy); border-color: var(--navy); color: #fff; }
+.noticias-dia { margin: 1.5rem 0 .55rem; font: 800 1rem var(--font-head); color: var(--navy); }
+.noticias-dia:first-child { margin-top: .4rem; }
+.noticia { display: block; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: .85rem 1.1rem; margin: 0 0 .6rem; color: var(--ink); text-decoration: none; }
+.noticia:hover, .noticia:focus-visible { border-color: var(--brand-blue); box-shadow: 0 0 0 2px #e3eefa; }
+.noticia:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.noticia-titulo { display: block; font: 700 1rem/1.35 var(--font-head); color: var(--ink); }
+.noticia-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .55rem; margin-top: .4rem; font-size: .82rem; color: var(--ink-soft); }
+.noticia-tag { display: inline-block; padding: .08rem .5rem; border-radius: 999px; font: 700 .72rem var(--font-body); background: #eef0f5; color: var(--ink-soft); }
+.noticia-tag.oficial { background: #e3eefa; color: var(--brand-blue); }
+.noticia-tag.entes { background: #e6f4ec; color: #1b6b4c; }
+.noticia-tag.municipio { background: var(--gold-pale); color: var(--warn); }
+.noticia-fim { margin-left: auto; color: var(--ink-soft); }
+.noticias-fontes summary { cursor: pointer; font-weight: 600; margin-top: .4rem; }
+.noticias-fontes p { margin: .4rem 0 0; }
+.noticias-links { margin: .8rem 0 0; font-size: .9rem; }
+.noticias-links a { color: var(--brand-blue); text-underline-offset: .2em; margin-right: .9rem; white-space: nowrap; }
+@media (max-width: 560px) { .noticia { padding: .75rem .9rem; } .noticia-titulo { font-size: .95rem; } #noticiasFiltro button { padding: .36rem .7rem; font-size: .8rem; } }
+@media print { #view-noticias { display: none; } }
