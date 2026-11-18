@@ -34,6 +34,7 @@ modelo() {
   run build-painel-estados.py
   run build-faixa-phi-dest.py          # confere contra painel-estados e resultados-consolidados
   run build-painel-municipios.py
+  run build-painel-municipios-longo-prazo.py   # trajetória 2029-2097 por município; confere contra painel-municipios e contra o agregado por UF
   run build-painel-seguro-receita.py   # aba Seguro-Receita do painel (grava também em painelufir/data)
   run build-sensibilidade-painel.py     # aba Sensibilidade do painel (grava também em painelufir/data)
   run build-memoria-calculo.py
