@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-Sensibilidade do φ de destino robusto à subestimação das rendas altas no Censo (a nota técnica do COMSEFAZ corrige com o IRPF,
-sem documentar a extração). Aqui a correção usa dados públicos: Grandes Números do IRPF, ano-calendário 2024 (Tabela 8).
+Sensibilidade do φ de destino robusto à subestimação das rendas altas no Censo. A correção usa dados públicos: Grandes Números do IRPF, ano-calendário 2024 (Tabela 8).
 Fator por UF = participação da UF na renda total declarada nas faixas de topo (160 salários mínimos anuais ou mais) dividida pela
 participação da UF na massa de renda das classes acima de 10 salários mínimos per capita do Censo 2022, normalizada para que o total
 nacional de pessoas no topo não mude (só a redistribuição entre UFs conta). O fator reponderaria as classes de topo da rota C
@@ -70,10 +69,8 @@ def main():
     rb = json.loads((HERE / "phi-dest-robusto.json").read_text(encoding="utf-8"))["por_uf"]
     comp0 = ph.sh({u: (rb[u]["rota_A_pct"] + rb[u]["rota_B_pct"] + c0[u]) / 3 for u in ufs})
     compd = ph.sh({u: (rb[u]["rota_A_pct"] + rb[u]["rota_B_pct"] + cd[u]) / 3 for u in ufs})
-    t2, t3 = ph.parse_comsefaz()
     phi = json.loads((HERE / "phi-dest-pof-censo.json").read_text(encoding="utf-8"))["por_uf"]
-    ext = {"comsefaz_base_IBS_2025": ph.sh({u: t3[u][3] for u in ufs}), "gobetti_2023": {u: phi[u]["gobetti_tabela1_2023_pct"] for u in ufs},
-           "comsefaz_base_TRU_2018": ph.sh({u: t2[u][3] for u in ufs})}
+    ext = {"gobetti_2023": {u: phi[u]["gobetti_tabela1_2023_pct"] for u in ufs}}
     rmse = lambda a, b: round(float(np.sqrt(np.mean([(a[u] - b[u]) ** 2 for u in ufs]))), 3)
     saida = {"_meta": "Sensibilidade à correção das rendas altas pelo IRPF (AC 2024); não altera o publicado",
              "fator_topo_por_uf": {u: round(float(f[u]), 3) for u in ufs},

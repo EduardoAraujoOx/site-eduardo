@@ -22,11 +22,11 @@ destino do IBS:
          phi_E(u) = (1 - theta_E) phi_fam(u) + theta_E s_E(u)    (esfera estadual)
          phi_M(u) = (1 - theta_M) phi_fam(u) + theta_M s_M(u)    (esfera municipal)
 
-      theta = peso das compras no IBS da esfera (nota Gobetti/COMSEFAZ, 2026: 30% no
-      IBS municipal próprio, cerca de 3% no estadual). s_E(u), s_M(u) = participação
+      theta = peso das compras no IBS da esfera (calibrado em data/calibra-peso-compras.py com
+      dados públicos: DCA, Contas Nacionais e POF). s_E(u), s_M(u) = participação
       da UF nas compras estaduais e municipais (DCA Anexo I-D 2024, liquidado,
       data/compras-governamentais-dca.json). DF: as compras do ente distrital entram
-      na esfera estadual (a DCA não separa), como na nota.
+      na esfera estadual (a DCA não separa).
       Dentro da UF, a parcela de compras do IBS municipal próprio é rateada entre os
       municípios pela compra observada de cada prefeitura; a parte de famílias, pelo
       consumo estimado em (1); a cota-parte, por população (art. 128), como hoje.

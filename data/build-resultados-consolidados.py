@@ -310,7 +310,6 @@ def compute_anexo_a(ref_data, coef_uf, phi_dest, coef_muni, rateio_muni, params_
             "max_abs_delta_pp": max_abs_delta,
             "uf_max_delta": uf_max_delta,
         },
-        "es_gobetti_sefaz_pct": phi_dest.get("es_gobetti_2025_sefaz_referencia_pct"),
     }
 
 

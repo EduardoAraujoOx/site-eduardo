@@ -3,7 +3,7 @@
 TESTE (não altera nenhum resultado publicado): como tratar 2026 no coeficiente histórico (CPT, média 2019-2026 na lei).
 Três tratamentos para o ano ainda não fechado:
   (a) omitir 2026 (média de 2019-2025: o que o repositório faz hoje);
-  (b) repetir 2025 em 2026 (a nota técnica do COMSEFAZ; média com 2025 em dobro);
+  (b) repetir 2025 em 2026 (média com 2025 em dobro);
   (c) nowcast de 2026 pelo RREO de jan-ago (participação de 2025 x exp(β · variação da participação jan-ago); β do nowcast).
 Backtest (20 UFs sem quebras da DCA, 2013-2025): para cada ano terminal T de 2020 a 2025, o alvo é a média da participação no
 ICMS em T-7..T (oito anos, como na lei), e cada tratamento só usa dados até T-1 (e, em (c), o RREO de T).

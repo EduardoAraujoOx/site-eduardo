@@ -21,7 +21,6 @@ NAC = {r["ano"]: r for r in J("ibs-projecao-nacional.json")["projecao"]}
 BOLO = {r["ano"]: r["bolo_projetado"] for r in J("ibs-projecao-longo-prazo.json")["projecao"]}
 ANOS = [2029, 2030, 2031, 2032, 2033]
 NOMES = {'AC':'Acre','AL':'Alagoas','AM':'Amazonas','AP':'Amapá','BA':'Bahia','CE':'Ceará','DF':'Distrito Federal','ES':'Espírito Santo','GO':'Goiás','MA':'Maranhão','MG':'Minas Gerais','MS':'Mato Grosso do Sul','MT':'Mato Grosso','PA':'Pará','PB':'Paraíba','PE':'Pernambuco','PI':'Piauí','PR':'Paraná','RJ':'Rio de Janeiro','RN':'Rio Grande do Norte','RO':'Rondônia','RR':'Roraima','RS':'Rio Grande do Sul','SC':'Santa Catarina','SE':'Sergipe','SP':'São Paulo','TO':'Tocantins'}
-COMSEFAZ = {'AM': 2031, 'MS': 2055, 'ES': 2056, 'RO': 2061, 'MT': 2064}   # Nota técnica do Comsefaz, seção 6.4
 
 
 def n(x, d=1):
@@ -119,14 +118,13 @@ def tab_estados():
         e = ent[2033][f"UF-{uf}"]
         acum = sum(ent[a][f"UF-{uf}"]["repasse"] for a in ANOS)
         ano = entrada.get(uf)
-        com = COMSEFAZ.get(uf)
         cls = " class='row-es'" if uf == "ES" else ""
         linhas.append(
             f"<tr{cls}><td class='td-ente'>{NOMES[uf]} <small>{uf}</small></td><td>{n(razao_uf[2033][uf],2)}</td>"
-            f"<td>{ano if ano else 'depois de 2077'}</td><td>{com if com else '—'}</td>"
+            f"<td>{ano if ano else 'depois de 2077'}</td>"
             f"<td>{mi(e['repasse']) if e['repasse']>1 else '—'}</td><td>{mi(acum) if acum>1 else '—'}</td></tr>")
     return ("<div class='table-wrap curta'><table class='data-table'><thead><tr><th class='th-left'>Estado</th><th>Razão em 2033</th>"
-            "<th>Ano em que entra (esta estimativa)</th><th>Ano em que entra (nota do Comsefaz)</th><th>Repasse em 2033 (R$ mi)</th>"
+            "<th>Ano em que entra (esta estimativa)</th><th>Repasse em 2033 (R$ mi)</th>"
             "<th>Repasse acumulado 2029–2033 (R$ mi)</th></tr></thead><tbody>" + "".join(linhas) + "</tbody></table></div>")
 
 
@@ -350,8 +348,7 @@ corpo = f"""
 {tx(f"Entre os estados, apenas o Amazonas recebe o fundo de 2029 a 2033. O ano de entrada dos demais depende de quando o nível de equalização alcança a razão de cada um. Seis estados chegam a ser atendidos até 2077: Amazonas ({entrada['AM']}), Rondônia ({entrada['RO']}), Mato Grosso ({entrada['MT']}), Espírito Santo ({entrada['ES']}), Mato Grosso do Sul ({entrada['MS']}) e Tocantins ({entrada['TO']}). Os demais, entre os quais o Paraná, não são alcançados nesse horizonte (Tabela 4).")}
 {tit("Tabela 4 – Estados ordenados pela razão de 2033 e ano de entrada no fundo")}
 {tab_estados()}
-<p class="nota-tabela">A razão considera o coeficiente de destino estimado nesta nota; o COMSEFAZ usa o de Gobetti e Monteiro (2023). “Depois de 2077” indica que o estado não é alcançado até esse ano. Fontes: elaboração própria e Nota Técnica do COMSEFAZ, seção 6.4.</p>
-{tx(f"A comparação com a Nota Técnica do COMSEFAZ oferece um teste de ordem de grandeza. A nota simula cinco estados e também coloca o Amazonas como o primeiro a ser atendido ({COMSEFAZ['AM']}, contra {entrada['AM']} nesta estimativa). Para o Espírito Santo, as duas projeções coincidem em {entrada['ES']}. Nos demais, as datas diferem em alguns anos: Mato Grosso do Sul entra em {entrada['MS']} (COMSEFAZ: {COMSEFAZ['MS']}), Rondônia em {entrada['RO']} ({COMSEFAZ['RO']}) e Mato Grosso em {entrada['MT']} ({COMSEFAZ['MT']}). As diferenças decorrem, em boa parte, do coeficiente de destino, que cada estimativa calcula por método próprio.")}
+<p class="nota-tabela">A razão considera o coeficiente de destino estimado nesta nota. “Depois de 2077” indica que o estado não é alcançado até esse ano. Fonte: elaboração própria.</p>
 {tx(f"O caso do Espírito Santo ilustra a mecânica. Em 2033, a razão capixaba é de {n(es['razao'],2)} e o nível, de {n(L33,2)}, de modo que o estado ainda está longe de ser alcançado. Os dois valores sobem a cada ano, mas o nível sobe mais depressa, porque o fundo cresce mais que a receita do estado. Em {entrada['ES']}, os dois se encontram, e o estado passa a receber (Tabela 5).")}
 {tit("Tabela 5 – Razão do Espírito Santo e nível de equalização, anos selecionados")}
 {tab_es()}
@@ -375,7 +372,6 @@ corpo = f"""
 {ref("BRASIL. <strong>Emenda Constitucional n.º 132, de 20 de dezembro de 2023</strong>. Altera o Sistema Tributário Nacional. Brasília: Diário Oficial da União, 2023.")}
 {ref("BRASIL. <strong>Lei Complementar n.º 214, de 16 de janeiro de 2025</strong>. Institui o Imposto sobre Bens e Serviços (IBS), a Contribuição Social sobre Bens e Serviços (CBS) e o Imposto Seletivo (IS). Brasília: Diário Oficial da União, 2025.")}
 {ref("BRASIL. <strong>Lei Complementar n.º 227, de 2026</strong>. Arts. 106 a 110, 115 a 117. Brasília: Diário Oficial da União, 2026. Transcrição literal em <code>data/legislacao/11_LC227_TITULO_III_DISTRIBUICAO_IBS_ARTS_103_A_131_LITERAL.md</code>.")}
-{ref("GOBETTI, S. W. <strong>Nota técnica para o COMSEFAZ sobre a reforma tributária do consumo</strong>. Comitê Nacional de Secretários de Estado da Fazenda, 2026. Seção 6.4.")}
 {ref("GOBETTI, S. W.; MONTEIRO, P. K. <strong>Carta de Conjuntura</strong>, n. 60, Nota de Conjuntura 18. Brasília: Instituto de Pesquisa Econômica Aplicada, 28 ago. 2023.")}
 {ref("INSTITUTO BRASILEIRO DE GEOGRAFIA E ESTATÍSTICA. <strong>Pesquisa de Orçamentos Familiares 2017–2018</strong>; <strong>Censo Demográfico 2022</strong>; <strong>Pesquisa Nacional por Amostra de Domicílios Contínua</strong>; <strong>Estimativas da população</strong> (SIDRA, tabelas 4714 e 6579). Rio de Janeiro: IBGE.")}
 {ref("SECRETARIA DO TESOURO NACIONAL. <strong>Siconfi</strong>: Declaração de Contas Anuais (Anexo I-C) e Relatório Resumido da Execução Orçamentária (Anexo 3). Brasília: STN.")}
