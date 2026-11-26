@@ -81,6 +81,13 @@ const db = global.__DB_MOCK__ || {
 
 // ---- e-mail (Resend)
 async function enviarEmail({ para, assunto, html, texto }) {
+  // Gmail (senha de app) tem prioridade; sem ele, usa o Resend.
+  if (env('GMAIL_USER') && env('GMAIL_APP_PASSWORD')) {
+    const nodemailer = require('nodemailer');
+    const t = nodemailer.createTransport({ host: env('SMTP_HOST', 'smtp.gmail.com'), port: +env('SMTP_PORT', '465'), secure: true, auth: { user: env('GMAIL_USER'), pass: env('GMAIL_APP_PASSWORD') } });
+    await t.sendMail({ from: `"Eduardo Reis Araújo" <${env('GMAIL_USER')}>`, to: para, subject: assunto, html, text: texto });
+    return;
+  }
   const chave = env('RESEND_API_KEY');
   if (!chave) throw new Error('email_nao_configurado');
   const r = await fetch(env('RESEND_API_URL', 'https://api.resend.com/emails'), {
