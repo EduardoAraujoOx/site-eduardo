@@ -78,7 +78,7 @@ extra_css = """
 """
 head = head + extra_css + "    </style>\n</head>\n"
 head = re.sub(r"<title>.*?</title>", "<title>Seguro-Receita do IBS: legislação, cálculo e beneficiários, 2029–2033 | Eduardo Reis Araújo</title>", head, flags=re.S)
-head = re.sub(r'(<meta name="description" content=")[^"]*(")', r"\1Nota técnica sobre o Seguro-Receita do IBS (ADCT, art. 132; LC 227/2026, arts. 106 a 117): legislação, metodologia de cálculo, resultados para os 27 estados e 5.569 municípios e lista dos beneficiários de 2029 a 2033.\2", head)
+head = re.sub(r'(<meta name="description" content=")[^"]*(")', r"\1Estudo sobre o Seguro-Receita do IBS (ADCT, art. 132; LC 227/2026, arts. 106 a 117): legislação, metodologia de cálculo, resultados para os 27 estados e 5.569 municípios e lista dos beneficiários de 2029 a 2033.\2", head)
 head = re.sub(r'(<meta property="og:title" content=")[^"]*(")', r"\1Seguro-Receita do IBS: legislação, cálculo e beneficiários, 2029–2033\2", head)
 head = re.sub(r'(<meta property="og:description" content=")[^"]*(")', r"\1Nota técnica: a regra do art. 117 da LC 227/2026, a metodologia de cálculo e os estados e municípios beneficiados entre 2029 e 2033.\2", head)
 head = head.replace("seguro-receita-repasses.html", "seguro-receita-lei-e-beneficiarios.html")
@@ -386,7 +386,7 @@ corpo = f"""
 
 </div>
 <!-- ressalva-editorial -->
-<aside class="ressalva-editorial" style="max-width:860px;margin:2rem auto 1rem;padding:0 1rem;font-size:.8rem;line-height:1.55;opacity:.75;text-align:center;color:inherit">Os estudos publicados neste site têm caráter técnico e analítico e não representam posicionamentos oficiais das instituições às quais o autor está vinculado. As estimativas apresentadas não constituem projeções oficiais. As fontes de informação, premissas e limitações metodológicas são identificadas em cada estudo.</aside>
+<aside class="ressalva-editorial" style="max-width:860px;margin:2rem auto 1rem;padding:0 1rem;font-size:.8rem;line-height:1.55;opacity:.75;text-align:center;color:inherit">Os estudos publicados neste site têm caráter técnico e analítico e não representam posicionamentos oficiais das instituições às quais o autor está vinculado. As estimativas apresentadas não constituem projeções oficiais. As fontes de informação, premissas e limitações metodológicas são identificadas em cada estudo. As estimativas foram produzidas mediante metodologia própria, fundamentada na legislação aplicável e em bases públicas de informação.</aside>
 <footer class="footer">Eduardo Reis Araújo · Políticas públicas orientadas por evidências</footer>
 <script src="/js/search.js"></script>
 <script>

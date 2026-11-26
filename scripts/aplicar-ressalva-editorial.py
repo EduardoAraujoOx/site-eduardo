@@ -13,7 +13,10 @@ GERAL = ("Os estudos publicados neste site têm caráter técnico e analítico e
          "projeções oficiais. As fontes de informação, premissas e limitações metodológicas são identificadas em cada estudo.")
 PROPRIA = ("As estimativas foram produzidas mediante metodologia própria, fundamentada na legislação aplicável "
            "e em bases públicas de informação.")
-INDEPENDENTES = {"fndr-es-2029-2033.html", "icms-iss-participacao-vs-populacao.html", "icms-iss-ibs-atual-potencial.html"}
+INDEPENDENTES = {"fndr-es-2029-2033.html", "icms-iss-participacao-vs-populacao.html", "icms-iss-ibs-atual-potencial.html",
+                 "ibs-projecao-nacional.html", "ibs-destino-pof-censo.html", "resultados-consolidados-ibs.html",
+                 "aliquota-base-referencia-ibs.html", "compras-governamentais-ibs.html",
+                 "seguro-receita-lei-e-beneficiarios.html", "nota-metodologica-ibs.html"}
 ESTILO = "max-width:860px;margin:2rem auto 1rem;padding:0 1rem;font-size:.8rem;line-height:1.55;opacity:.75;text-align:center;color:inherit"
 MARCA = "<!-- ressalva-editorial -->"
 
