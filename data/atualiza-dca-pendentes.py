@@ -20,7 +20,7 @@ registrado em "descartado". Sem vizinho observado não há referência e vale a 
 
 Cada componente preenchido leva em "origem" a fonte ("dca", "rreo" ou "estimativa_serie"). Valores já observados não são alterados. Os agregados
 (dca_iss_br, dca_iss_es, dca_iss_por_uf, dca_cota_icms_por_uf) recebem apenas o acréscimo do que foi preenchido: os agregados dos anos 2022+ não
-coincidem com a soma de dca_detalhes e a validação contra a Nota Técnica v22 depende deles como estão.
+coincidem com a soma de dca_detalhes; os coeficientes calculados dependem deles como estão.
 
 Uso (da raiz do repositório):
     python3 data/atualiza-dca-pendentes.py [ANO ...] [--dry]       # padrão: 2019 a 2025

@@ -24,7 +24,7 @@ contam como zero, mesma convenção do HTML, não são excluídos do denominador
 a de 2019-2026, com 2026 pelo RREO municipal (data/cpt2026.py; data/parametros-cpt-2026.json): ISS observado de
 set/2025 a ago/2026 e cota-parte = 2025 x crescimento de jan-ago, redistribuídos dentro de cada UF com os totais do nowcast;
 quem não tem o Anexo 03 do RREO mantém a posição relativa de 2025 no estado. O campo coeficiente_obs_2019_2025_pct traz a
-média só dos sete anos observados (igual à Nota Técnica nº 02/2026 da SEFAZ-ES).
+média só dos sete anos observados (DCA 2019-2025).
 
 Uso:
   python3 build-coeficientes-municipios.py

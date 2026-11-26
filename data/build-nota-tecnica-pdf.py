@@ -453,8 +453,7 @@ HTML = f"""<!DOCTYPE html>
     Natureza, ISSQN") porque o código da conta no plano de contas do DCA mudou de esquema mais
     de uma vez entre 2013 e 2025.</li>
     <li><strong>FECOP, 2019&ndash;2025:</strong> {meta['fontes'].get('fecop_2019_2025', 'SICONFI/STN, DCA Anexo I-C')},
-    mesma fonte usada no coeficiente estadual do Estudo 06, validado contra a Nota Técnica
-    nº 02/2026. Zero em 2013&ndash;2018 (sem coleta equivalente via RREO); 2026 usa o valor de
+    mesma fonte usada no coeficiente estadual do Estudo 06. Zero em 2013&ndash;2018 (sem coleta equivalente via RREO); 2026 usa o valor de
     2025 como estimativa preliminar.</li>
 </ul>
 <p>
