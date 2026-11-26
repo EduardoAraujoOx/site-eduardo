@@ -5,7 +5,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const env = (k, d) => process.env[k] || d;
-const SITE = () => env('SITE_URL') || (env('VERCEL_URL') ? 'https://' + env('VERCEL_URL') : 'https://www.eduardoreisaraujo.com.br');
+const SITE_PUBLICO = 'https://www.eduardoreisaraujo.com.br';
+// Produção e desenvolvimento usam sempre o endereço público (o cookie de sessão precisa ficar nele). Só as prévias usam a URL da prévia.
+const SITE = () => env('SITE_URL') || (env('VERCEL_ENV') === 'preview' && env('VERCEL_URL') ? 'https://' + env('VERCEL_URL') : SITE_PUBLICO);
 const sha256 = (s) => crypto.createHash('sha256').update(s).digest('hex');
 const hmac = (s) => crypto.createHmac('sha256', env('SESSION_SECRET', '')).update(s).digest('base64url');
 const seguroIgual = (a, b) => { const x = Buffer.from(String(a)), y = Buffer.from(String(b)); return x.length === y.length && crypto.timingSafeEqual(x, y); };
