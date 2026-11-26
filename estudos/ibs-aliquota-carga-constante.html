@@ -1,401 +1,83 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Receita-Base de Referência de Estados e Municípios com IBS/ICMS, 2029–2033 | Eduardo Reis Araújo</title>
-    <meta name="description" content="Qual seria a Receita-Base de referência de estados e municípios com IBS/ICMS entre 2029 e 2033 (art. 130, §3º, IV, do ADCT), a partir de dados históricos de 2019-2025, sob a hipótese de que não há inflação nem crescimento do PIB a partir de hoje?">
-    <meta name="author" content="Eduardo Reis Araujo">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/ibs-aliquota-carga-constante.html">
-
-    <meta property="og:title" content="Receita-Base de referência de estados e municípios com IBS/ICMS, 2029–2033">
-    <meta property="og:description" content="A partir de dados históricos de 2019-2025, qual seria essa receita-base entre 2029 e 2033 sob a hipótese de que não há inflação nem crescimento do PIB a partir de hoje?">
-    <meta property="og:type" content="article">
-    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/ibs-aliquota-carga-constante.html">
-    <meta property="og:locale" content="pt_BR">
-    <meta property="og:site_name" content="Eduardo Reis Araújo">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-
-    <link rel="stylesheet" href="/css/notas.css?v=4">
-    <link rel="stylesheet" href="/css/search.css">
-
-    <style>
-        /* ── Page layout ── */
-        .study-hero { max-width: 980px; margin: 0 auto; padding: 3rem 2rem 1.5rem; }
-        .study-hero-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
-        .study-hero-tag { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); padding: 0.25rem 0.6rem; border-radius: 4px; }
-        .study-hero-topic { font-family: var(--sans); font-size: 0.73rem; color: var(--text-secondary); background: var(--border-light); padding: 0.2rem 0.55rem; border-radius: 4px; }
-        .study-hero-date { font-family: var(--sans); font-size: 0.73rem; color: var(--text-muted); margin-left: auto; }
-        .study-hero h1 { font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 0.8rem; }
-        .study-hero .lead { font-family: var(--serif); font-size: 1rem; line-height: 1.72; color: var(--text-secondary); max-width: 760px; }
-        .study-hero .study-meta { font-family: var(--sans); font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem; }
-
-        .study-content { max-width: 980px; margin: 0 auto; padding: 0 2rem 5rem; }
-
-        /* ── Status bar ── */
-        .status-bar { display: flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.5rem; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #999; flex-shrink: 0; transition: background 0.3s; }
-
-        /* --text/--bg (notas.css) não têm variante escura -- fica fixo no valor claro, para não
-           descasar fundo escuro com texto que continua escuro no modo escuro do SO. */
-        :root { --pos: #1e8449; --pos-bg: #f0faf4; }
-
-        /* ── Resposta em destaque ── */
-        .resposta-box { border: 2px solid var(--pos); background: var(--pos-bg); border-radius: 10px; padding: 1.5rem 1.75rem; margin: 0.5rem 0 2rem; }
-        .resposta-label { font-family: var(--mono); font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.09em; color: var(--pos); margin-bottom: 0.6rem; }
-        .resposta-numero { font-family: var(--display); font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 700; color: var(--text); line-height: 1.15; margin-bottom: 0.4rem; }
-        .resposta-sub { font-family: var(--sans); font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
-
-        /* ── Metodologia ── */
-        .methodology { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 2rem; background: var(--surface); }
-        .methodology summary { padding: 0.9rem 1.25rem; cursor: pointer; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; list-style: none; display: flex; align-items: center; gap: 0.5rem; }
-        .methodology summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; }
-        .methodology[open] summary::before { transform: rotate(90deg); }
-        .methodology-body { padding: 0 1.5rem 1.5rem; }
-        .meto-note { font-family: var(--serif); font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; margin-top: 0.5rem; }
-        .meto-note:first-child { margin-top: 0; }
-
-        .lei-box { border-left: 3px solid var(--accent); background: var(--bg); border-radius: 0 6px 6px 0; padding: 1rem 1.25rem; margin: 0.75rem 0 1.25rem; }
-        .lei-box p { font-family: var(--serif); font-size: 0.81rem; line-height: 1.75; color: var(--text); margin: 0; }
-        .lei-box .lei-artigo { font-weight: 700; }
-
-        /* ── Label de seção ── */
-        .section-label { display: block; font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 0.5rem; }
-
-        /* ── Tabela de dados ── */
-        .table-wrap { overflow-x: auto; margin-bottom: 1.5rem; }
-        .data-table { width: 100%; border-collapse: collapse; font-size: 0.81rem; }
-        .data-table th { background: var(--bg); border: 1px solid var(--border); padding: 0.42rem 0.6rem; text-align: center; font-family: var(--sans); font-weight: 600; font-size: 0.76rem; white-space: nowrap; color: var(--text); }
-        .data-table th.th-left { text-align: left; }
-        .data-table td { border: 1px solid var(--border); padding: 0.36rem 0.6rem; text-align: right; font-family: var(--mono); font-size: 0.78rem; white-space: nowrap; color: var(--text); }
-        .data-table td.td-left { text-align: left; font-family: var(--sans); font-weight: 600; }
-        .data-table tr.row-resposta { background: var(--pos-bg); }
-        .data-table tr.row-resposta td { color: var(--text); font-weight: 600; }
-        .data-table tr:hover:not(.row-resposta) { background: var(--accent-bg); }
-
-        /* ── Gráficos ── */
-        .chart-panel { background: var(--border-light); border-radius: 8px; padding: 1.25rem 1.25rem 1.5rem; margin: 0 0 1.5rem; }
-        .chart-panel-title { font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin: 0 0 1rem; }
-        .chart-legend-note { font-family: var(--sans); font-size: 0.75rem; color: var(--text-muted); margin: 0.75rem 0 0; display: flex; gap: 1.25rem; flex-wrap: wrap; }
-        .legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 0.35rem; vertical-align: middle; }
-        .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-
-        /* ── Callout ── */
-        .callout { background: var(--accent-bg); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 0.75rem 1rem; font-family: var(--serif); font-size: 0.84rem; color: var(--text); margin: 1rem 0; line-height: 1.6; }
-
-        /* ── Notas de rodapé ── */
-        .footnotes { margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
-        .footnotes p { font-family: var(--serif); font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.4rem; }
-        .footnotes a { color: var(--accent); text-decoration: none; }
-        .footnotes a:hover { text-decoration: underline; }
-
-        @media (max-width: 780px) {
-            .chart-grid-2 { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 640px) {
-            .study-hero { padding: 2rem 1.25rem 1rem; }
-            .study-content { padding: 0 1.25rem 3rem; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Receita-Base de Referência de Estados e Municípios com IBS/ICMS, 2029–2033 | Eduardo Reis Araújo</title>
+<meta name="description" content="Qual seria a Receita-Base de referência de estados e municípios com IBS/ICMS entre 2029 e 2033 (art. 130, §3º, IV, do ADCT), a partir de dados históricos de 2019-2025, sob a hipótese de que não há inflação nem crescimento do PIB a partir de hoje?">
+<style>
+:root{--bg:#f7f6f2;--fg:#1c1c1c;--mut:#5b5b5b;--card:#fff;--bd:#d9d6cc;--ac:#8a6d1d}
+@media (prefers-color-scheme:dark){:root{--bg:#14161a;--fg:#ece9e1;--mut:#a7a39a;--card:#1c1f25;--bd:#33373f;--ac:#d4b25c}}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:680px;margin:0 auto;padding:1.6rem 1.1rem}
+.voltar{font-size:.9rem;color:var(--mut);text-decoration:none}
+h1{font-size:1.45rem;line-height:1.28;margin:1rem 0 .5rem}
+.desc{color:var(--mut);margin:0 0 1rem;font-size:.95rem}
+.trecho{font-family:Georgia,'Times New Roman',serif;font-size:1.08rem;line-height:1.75;margin:0;
+  -webkit-mask-image:linear-gradient(#000 35%,transparent 95%);mask-image:linear-gradient(#000 35%,transparent 95%)}
+.veu{position:fixed;inset:0;z-index:10;background:rgba(8,10,14,.58);
+  display:flex;align-items:flex-end;justify-content:center;padding:1rem;overflow:auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:1rem 1.1rem .9rem;width:100%;max-width:520px;
+  box-shadow:0 12px 40px rgba(0,0,0,.35);margin-top:auto}
+.tag{display:inline-block;font:500 .68rem ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);border:1px solid var(--ac);padding:.15rem .5rem;border-radius:4px}
+.card h2{font-size:1.1rem;margin:.45rem 0 .2rem;line-height:1.3}
+.card p{margin:.1rem 0 .7rem;font-size:.93rem;line-height:1.5}
+form{display:flex;gap:.5rem;flex-wrap:wrap}
+input[type=email]{flex:1 1 200px;padding:.7rem .75rem;font-size:1rem;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--fg)}
+button{padding:.7rem 1.1rem;font-size:1rem;border:0;border-radius:6px;background:var(--ac);color:#fff;cursor:pointer}
+button[disabled]{opacity:.6;cursor:default}
+.oculto{position:absolute;left:-9999px;height:0;width:0;overflow:hidden}
+#msg{min-height:1.3em;margin:.7rem 0 0;font-size:.92rem}#msg.erro{color:#b3261e}
+.peq{font-size:.78rem;color:var(--mut);margin:.5rem 0 0;line-height:1.45}.peq a,.card a{color:var(--ac)}
+.sair{display:inline-block;margin-top:.4rem;font-size:.9rem}
+details{margin-top:.5rem}summary{font-size:.82rem;color:var(--mut);cursor:pointer}
+</style>
 </head>
 <body>
-
-    <header class="header">
-        <div class="header-inner">
-            <a href="/" class="header-logo">Eduardo Reis Araújo</a>
-            <div class="header-right-group">
-                <nav class="header-nav">
-                    <a href="/#publicacoes">Publicações</a>
-                    <a href="/ensino/">Ensino</a>
-                    <a href="/estudos/" class="active">Estudos</a>
-                    <a href="/#contato">Contato</a>
-                </nav>
-                <button class="header-search-btn" id="searchBtn" aria-label="Buscar">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <path d="m21 21-4.35-4.35"></path>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <div class="study-hero">
-        <div class="study-hero-meta">
-            <span class="study-hero-tag">Estudo 09</span>
-            <span class="study-hero-topic">Reforma Tributária</span>
-            <span class="study-hero-topic">IBS</span>
-            <span class="study-hero-topic">Receita-Base</span>
-            <span class="study-hero-date">Julho de 2026</span>
-        </div>
-        <h1>Qual seria a Receita-Base de referência de estados e municípios com IBS/ICMS entre 2029 e 2033?</h1>
-        <p class="lead">
-            O art. 130, &sect;3&ordm;, IV, do ADCT define a "Receita-Base dos Entes Subnacionais": a
-            receita de estados, do Distrito Federal e dos municípios com o IBS &mdash; sucessor do ICMS e
-            do ISS &mdash;, medida como proporção do PIB. Esta página responde a uma única pergunta: a
-            partir dos dados históricos de arrecadação de ICMS e ISS entre 2019 e 2025, qual seria essa
-            receita-base em cada ano entre 2029 e 2033, sob a hipótese de que, a partir de hoje, não há
-            inflação nem crescimento do PIB?
-        </p>
-        <p class="study-meta">
-            Dados: SICONFI/STN, DCA Anexo&nbsp;I-C (mesma base dos Estudos 03 e 06 desta página) &bull;
-            Banco Central do Brasil, SGS (PIB nominal, IPCA) &bull; Base legal: art. 130, &sect;3&ordm;, IV, do ADCT
-        </p>
-    </div>
-
-    <div class="study-content">
-
-        <div id="status-main" class="status-bar">
-            <span class="status-dot"></span>
-            <span>Carregando dados...</span>
-        </div>
-
-        <div class="resposta-box">
-            <div class="resposta-label">A resposta</div>
-            <div class="resposta-numero" id="resposta-numero">Calculando...</div>
-            <div class="resposta-sub" id="resposta-sub"></div>
-        </div>
-
-        <details class="methodology">
-            <summary>O que essa pergunta está pedindo, e por quê</summary>
-            <div class="methodology-body">
-                <p class="meto-note">
-                    A Constituição não fixa um valor em reais para a Receita-Base &mdash; ela é medida
-                    como proporção do PIB, e o texto legal define exatamente o que entra nessa conta:
-                </p>
-                <div class="lei-box">
-                    <p><span class="lei-artigo">Art. 130, &sect;3&ordm;, IV, ADCT</span> &mdash; Receita-Base dos Entes Subnacionais: a receita dos Estados, do Distrito Federal e dos Municípios com o imposto previsto no art. 156-A da Constituição Federal, deduzida da parcela a que se refere a alínea "b" do inciso II do caput, apurada como proporção do PIB.</p>
-                </div>
-                <p class="meto-note">
-                    Como o IBS ainda não existe, a única forma de estimar essa receita-base é olhar para
-                    o histórico do imposto que ele substitui: a soma nacional de ICMS e ISS. A pergunta
-                    pede um cenário contrafactual simples &mdash; sem inflação, sem crescimento do PIB a
-                    partir de hoje &mdash; que elimina qualquer necessidade de projeção: se nada cresce,
-                    nem em termos nominais nem em termos reais nem em proporção ao PIB, o valor observado
-                    hoje simplesmente se repete, sem alteração, em cada ano de 2029 a 2033. O ano-base
-                    usado é 2025 (o mesmo <code>TotalBR_2025</code> dos Estudos 03 e 06 desta página,
-                    SICONFI/STN, DCA Anexo I-C), por ser o último ano fechado disponível nessa mesma base
-                    de dados.
-                </p>
-                <p class="meto-note">
-                    A ressalva relevante: a receita bruta de ICMS+ISS é um limite superior da
-                    Receita-Base tal como definida em lei, que ainda desconta a parcela de fundos
-                    estaduais financiados por contribuições condicionadas a regimes diferenciados do ICMS
-                    (por exemplo, o Fundap, no Espírito Santo). Não há estatística nacional consolidada
-                    dessa dedução; o valor bruto de ICMS+ISS é a melhor aproximação disponível com dados
-                    públicos.
-                </p>
-            </div>
-        </details>
-
-        <span class="section-label">Dados históricos usados: ICMS + ISS, Brasil, 2019&ndash;2025</span>
-        <div class="chart-grid-2">
-            <div class="chart-panel">
-                <p class="chart-panel-title">ICMS + ISS, Brasil (R$ bi, 2019&ndash;2025)</p>
-                <canvas id="chart-bolo-nominal-real" style="max-height:300px"></canvas>
-                <div class="chart-legend-note">
-                    <span><span class="legend-dot" style="background:#2a78d6"></span>Nominal</span>
-                    <span><span class="legend-dot" style="background:#7aa8d6"></span>Real (reais de 2025, IPCA)</span>
-                </div>
-            </div>
-            <div class="chart-panel">
-                <p class="chart-panel-title">ICMS + ISS como % do PIB (2019&ndash;2025)</p>
-                <canvas id="chart-bolo-pib" style="max-height:300px"></canvas>
-                <div class="chart-legend-note">
-                    <span><span class="legend-dot" style="background:#1A3A5C"></span>ICMS+ISS / PIB</span>
-                </div>
-            </div>
-        </div>
-        <div class="table-wrap">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th class="th-left">Ano</th>
-                        <th>ICMS+ISS nominal (R$ bi)</th>
-                        <th>ICMS+ISS real, reais de 2025 (R$ bi)</th>
-                        <th>PIB nominal (R$ bi)</th>
-                        <th>ICMS+ISS / PIB (%)</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody-historico">
-                    <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <span class="section-label">Receita-Base de referência estimada, 2029&ndash;2033 (bolo congelado em 2025)</span>
-        <div class="callout">
-            Sem inflação e sem crescimento do PIB a partir de 2025, o valor de 2025 se repete, sem
-            qualquer correção, em cada um dos cinco anos seguintes &mdash; por isso a tabela abaixo tem o
-            mesmo número em todas as linhas. É exatamente esse resultado invariável que o cenário
-            contrafactual da pergunta implica.
-        </div>
-        <div class="table-wrap">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th class="th-left">Ano</th>
-                        <th>Receita-Base de referência estimada (R$ bi)</th>
-                        <th>Em % do PIB</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody-resposta">
-                    <tr><td colspan="3" style="text-align:center;padding:2rem;color:var(--text-muted);font-family:var(--sans)">Carregando...</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="footnotes">
-            <p><strong>Fontes e notas metodológicas:</strong></p>
-            <p>1. Base legal: art. 130, &sect;3&ordm;, IV, do ADCT (incluído pela Emenda Constitucional 132/2023). Fonte: Diário Oficial da União, 21 dez. 2023.</p>
-            <p>2. ICMS e ISS nacionais, 2019&ndash;2025: SICONFI/STN, DCA Anexo I-C, mesma base de <code>data/ibs-projecao-parametros.json</code> (<code>total_br_2025</code>), usada nos <a href="/estudos/ibs-projecao-arrecadacao-es.html">Estudo 03</a> e <a href="/estudos/ibs-projecao-arrecadacao-br.html">Estudo 06</a> desta página. Ano-base da resposta: 2025.</p>
-            <p>3. PIB nominal: Banco Central do Brasil, Sistema Gerenciador de Séries Temporais (SGS), série 1207 (PIB anual a preços correntes, Contas Nacionais Trimestrais/IBGE), 2019&ndash;2025.</p>
-            <p>4. IPCA: Banco Central do Brasil, SGS, série 433 (variação mensal). A série "real" do gráfico histórico deflaciona cada ano para reais de 2025 pelo produtório dos fatores mensais (1 + IPCA/100) entre o mês de referência e dezembro de 2025.</p>
-            <p>5. A Receita-Base dos Entes Subnacionais (art. 130, &sect;3&ordm;, IV, ADCT) desconta, do valor de IBS de estados e municípios, a parcela de fundos estaduais financiados por contribuições condicionadas a regimes diferenciados do ICMS (art. 130, II, "b", ADCT) &mdash; por exemplo, o Fundap, no Espírito Santo (receita de cerca de R$ 942 milhões em 2022, Sefaz-ES, <em>Planejamento Anual da Receita Estadual 2026</em>, cerca de 5,7% do ICMS bruto do estado naquele ano). Não há estatística nacional consolidada dessa dedução; a série de ICMS+ISS usada nesta página é a arrecadação bruta, um limite superior da Receita-Base tal como definida em lei.</p>
-        </div>
-    </div>
-<!-- ressalva-editorial -->
-<aside class="ressalva-editorial" style="max-width:860px;margin:2rem auto 1rem;padding:0 1rem;font-size:.8rem;line-height:1.55;opacity:.75;text-align:center;color:inherit">Os estudos publicados neste site têm caráter técnico e analítico e não representam posicionamentos oficiais das instituições às quais o autor está vinculado. As estimativas apresentadas não constituem projeções oficiais. As fontes de informação, premissas e limitações metodológicas são identificadas em cada estudo.</aside>
-
-    <footer class="footer">
-        Eduardo Reis Araújo · Políticas públicas orientadas por evidências
-    </footer>
-
-    <script src="/js/search.js"></script>
-    <script>
-    const fmtNum = (v, d=1) => v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
-    const fmtPct = (v, d=2) => v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }) + '%';
-
-    async function init() {
-        const statusEl = document.getElementById('status-main');
-        try {
-            const res = await fetch('/data/ibs-carga-constante.json?t=' + Date.now());
-            const data = await res.json();
-
-            buildResposta(data);
-            buildHistoricoTable(data);
-            buildRespostaTable(data);
-            buildChartNominalReal(data);
-            buildChartPib(data);
-
-            statusEl.innerHTML = '<span class="status-dot" style="background:var(--pos)"></span><span>Dados carregados &middot; ' + new Date().toLocaleDateString('pt-BR') + '</span>';
-        } catch (e) {
-            console.error(e);
-            statusEl.innerHTML = '<span class="status-dot" style="background:#b03a2e"></span><span>Erro ao carregar dados.</span>';
-        }
-    }
-
-    function buildResposta(data) {
-        const r = data.resposta;
-        document.getElementById('resposta-numero').textContent = `R$ ${fmtNum(r.bolo_base / 1e9, 1)} bi por ano, em 2029, 2030, 2031, 2032 e 2033`;
-        document.getElementById('resposta-sub').innerHTML = `Equivalente a ${fmtPct(r.bolo_pct_pib_base, 2)} do PIB, ano-base ${r.ano_base}. Sem inflação nem crescimento do PIB a partir de ${r.ano_base}, esse valor não muda de um ano para o outro: o mesmo número de ${r.ano_base} se repete em todos os cinco anos da transição do IBS (2029&ndash;2033).`;
-    }
-
-    function buildHistoricoTable(data) {
-        const rows = data.historico;
-        document.getElementById('tbody-historico').innerHTML = rows.map(r => `<tr>
-            <td class="td-left">${r.ano}</td>
-            <td>${fmtNum(r.bolo_nominal / 1e9, 1)}</td>
-            <td>${fmtNum(r.bolo_real_2025 / 1e9, 1)}</td>
-            <td>${fmtNum(r.pib_nominal / 1e9, 1)}</td>
-            <td>${fmtPct(r.bolo_pct_pib, 2)}</td>
-        </tr>`).join('');
-    }
-
-    function buildRespostaTable(data) {
-        const rows = data.resposta.anos;
-        document.getElementById('tbody-resposta').innerHTML = rows.map(r => `<tr class="row-resposta">
-            <td class="td-left">${r.ano}</td>
-            <td>${fmtNum(r.bolo / 1e9, 1)}</td>
-            <td>${fmtPct(r.bolo_pct_pib, 2)}</td>
-        </tr>`).join('');
-    }
-
-    function themeColors() {
-        const css = getComputedStyle(document.documentElement);
-        return {
-            grid: 'rgba(128,128,128,0.15)',
-            text: css.getPropertyValue('--text-muted').trim() || '#9A9A9A'
-        };
-    }
-
-    function buildChartNominalReal(data) {
-        const el = document.getElementById('chart-bolo-nominal-real');
-        if (!el || typeof Chart === 'undefined') return;
-        const c = themeColors();
-        const anos = data.historico.map(r => r.ano);
-        new Chart(el, {
-            type: 'line',
-            data: {
-                labels: anos,
-                datasets: [
-                    {
-                        label: 'Nominal',
-                        data: data.historico.map(r => r.bolo_nominal / 1e9),
-                        borderColor: '#2a78d6', backgroundColor: '#2a78d6',
-                        borderWidth: 2.5, pointRadius: 3, pointHoverRadius: 5, tension: 0.15
-                    },
-                    {
-                        label: 'Real (reais de 2025)',
-                        data: data.historico.map(r => r.bolo_real_2025 / 1e9),
-                        borderColor: '#7aa8d6', backgroundColor: '#7aa8d6',
-                        borderWidth: 2, borderDash: [5, 4], pointRadius: 3, pointHoverRadius: 5, tension: 0.15
-                    }
-                ]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: true, aspectRatio: 1.4,
-                interaction: { mode: 'index', intersect: false },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: R$ ${fmtNum(ctx.raw,1)} bi` } }
-                },
-                scales: {
-                    x: { grid: { display: false }, ticks: { color: c.text, font: { size: 10 } } },
-                    y: { grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 }, callback: v => fmtNum(v,0) }, title: { display: true, text: 'R$ bi', color: c.text, font: { size: 10 } } }
-                }
-            }
-        });
-    }
-
-    function buildChartPib(data) {
-        const el = document.getElementById('chart-bolo-pib');
-        if (!el || typeof Chart === 'undefined') return;
-        const c = themeColors();
-        const anos = data.historico.map(r => r.ano);
-        new Chart(el, {
-            type: 'line',
-            data: {
-                labels: anos,
-                datasets: [{
-                    label: 'ICMS+ISS / PIB',
-                    data: data.historico.map(r => r.bolo_pct_pib),
-                    borderColor: '#1A3A5C', backgroundColor: 'rgba(26,58,92,0.12)',
-                    borderWidth: 2.5, pointRadius: 3, pointHoverRadius: 5, tension: 0.15, fill: true
-                }]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: true, aspectRatio: 1.4,
-                interaction: { mode: 'index', intersect: false },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { callbacks: { label: ctx => `${fmtPct(ctx.raw,2)} do PIB` } }
-                },
-                scales: {
-                    x: { grid: { display: false }, ticks: { color: c.text, font: { size: 10 } } },
-                    y: { grid: { color: c.grid }, ticks: { color: c.text, font: { size: 10 }, callback: v => v.toFixed(1) + '%' }, title: { display: true, text: '% do PIB', color: c.text, font: { size: 10 } } }
-                }
-            }
-        });
-    }
-
-    init();
-    </script>
+<main id="vitrine">
+<a class="voltar" href="/estudos/">&larr; Todos os estudos</a>
+<h1 id="t">Receita-Base de Referência de Estados e Municípios com IBS/ICMS, 2029–2033</h1>
+<p class="desc">Qual seria a Receita-Base de referência de estados e municípios com IBS/ICMS entre 2029 e 2033 (art. 130, §3º, IV, do ADCT), a partir de dados históricos de 2019-2025, sob a hipótese de que não há inflação nem crescimento do PIB a partir de hoje?</p>
+<p class="trecho">O art. 130, §3º, IV, do ADCT define a &quot;Receita-Base dos Entes Subnacionais&quot;: a receita de estados, do Distrito Federal e dos municípios com o IBS — sucessor do ICMS e do ISS —, medida como proporção do PIB.</p>
+</main>
+<div class="veu" id="veu">
+<div class="card" role="dialog" aria-modal="true" aria-labelledby="ct">
+<span class="tag">Acesso por cadastro</span>
+<h2 id="ct">Continue lendo</h2>
+<p>Informe seu e-mail e receba um link de acesso pessoal. É gratuito, sem senha, e vale por 30 dias neste navegador.</p>
+<form id="f" autocomplete="on">
+<input id="e" type="email" name="email" placeholder="seu@email.com" aria-label="Seu e-mail" required>
+<input class="oculto" type="text" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
+<button id="b" type="submit">Receber link</button>
+</form>
+<p id="msg" role="status"></p>
+<a class="sair" href="/estudos/">&larr; Voltar à lista de estudos</a>
+<details><summary>Sobre o cadastro e este site</summary>
+<p class="peq">Seu e-mail é usado apenas para liberar o acesso e registrar quais estudos foram lidos. Para pedir a exclusão ou esclarecimentos, entre em contato pela <a href="/#contato">seção de contato</a>.</p>
+<p class="peq">Os estudos publicados neste site têm caráter técnico e analítico e não representam posicionamentos oficiais das instituições às quais o autor está vinculado. As estimativas apresentadas não constituem projeções oficiais. As fontes de informação, premissas e limitações metodológicas são identificadas em cada estudo.</p>
+</details>
+<noscript><p>É necessário habilitar JavaScript para acessar o estudo.</p></noscript>
+</div>
+</div>
+<script>
+(function(){
+var SLUG="ibs-aliquota-carga-constante";
+var m=document.getElementById('msg'),f=document.getElementById('f'),b=document.getElementById('b');
+fetch('/api/estudo?slug='+encodeURIComponent(SLUG),{credentials:'same-origin',cache:'no-store'}).then(function(r){
+  if(r.status===200)return r.text().then(function(h){document.open();document.write(h);document.close();});
+}).catch(function(){});
+f.addEventListener('submit',function(ev){
+  ev.preventDefault();m.className='';m.textContent='Enviando…';b.disabled=true;
+  fetch('/api/acesso/solicitar',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',
+    body:JSON.stringify({email:f.email.value,site:f.site.value,slug:SLUG})})
+  .then(function(r){return r.json().catch(function(){return{}}).then(function(j){return{s:r.status,j:j}});})
+  .then(function(x){
+    if(x.s===200){f.style.display='none';m.textContent='Enviamos um link para '+f.email.value+'. Abra o e-mail e clique em "Abrir estudo". O link vale por 30 minutos. Confira também a caixa de spam.';}
+    else{b.disabled=false;m.className='erro';m.textContent=x.s===400?'E-mail inválido. Confira e tente de novo.':x.s===429?'Muitas tentativas. Tente de novo em alguns minutos.':'O cadastro está temporariamente indisponível. Tente mais tarde ou entre em contato pela seção de contato do site.';}
+  }).catch(function(){b.disabled=false;m.className='erro';m.textContent='Sem conexão. Tente novamente.';});
+});
+})();
+</script>
 </body>
 </html>

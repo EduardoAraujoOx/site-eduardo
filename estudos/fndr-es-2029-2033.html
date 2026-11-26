@@ -1,261 +1,83 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FNDR: quanto o Espírito Santo pode receber entre 2029 e 2033 | Eduardo Reis Araújo</title>
-    <meta name="description" content="Estimativa auditável dos repasses do Fundo Nacional de Desenvolvimento Regional (FNDR) ao Espírito Santo e às demais UFs entre 2029 e 2033, conforme EC 132/2023.">
-    <meta name="author" content="Eduardo Reis Araujo">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://www.eduardoreisaraujo.com.br/estudos/fndr-es-2029-2033.html">
-    <meta property="og:title" content="FNDR: quanto o Espírito Santo pode receber entre 2029 e 2033">
-    <meta property="og:description" content="Estimativa auditável dos repasses do FNDR por UF, com memória de cálculo e fechamento nacional.">
-    <meta property="og:type" content="article">
-    <meta property="og:url" content="https://www.eduardoreisaraujo.com.br/estudos/fndr-es-2029-2033.html">
-    <meta property="og:locale" content="pt_BR">
-    <meta property="og:site_name" content="Eduardo Reis Araújo">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/notas.css?v=4">
-    <link rel="stylesheet" href="/css/search.css">
-    <style>
-        .study-hero { max-width: 900px; margin: 0 auto; padding: 3.5rem 2rem 2rem; }
-        .study-hero-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
-        .study-hero-tag { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); padding: 0.25rem 0.6rem; border-radius: 4px; }
-        .study-hero-topic { font-family: var(--sans); font-size: 0.73rem; color: var(--text-secondary); background: var(--border-light); padding: 0.2rem 0.55rem; border-radius: 4px; }
-        .study-hero-date { font-family: var(--sans); font-size: 0.73rem; color: var(--text-muted); margin-left: auto; }
-        .study-hero h1 { font-family: var(--display); font-size: 2rem; font-weight: 700; line-height: 1.22; letter-spacing: -0.025em; margin-bottom: 0.9rem; }
-        .study-hero .lead { font-family: var(--serif); font-size: 1.05rem; line-height: 1.72; color: var(--text-secondary); max-width: 720px; }
-        .study-content { max-width: 980px; margin: 0 auto; padding: 0 2rem 5rem; }
-        .section-heading { font-family: var(--display); font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin: 2.5rem 0 0.6rem; letter-spacing: -0.01em; }
-        .prose { font-family: var(--serif); font-size: 0.95rem; line-height: 1.75; color: var(--text-secondary); max-width: 760px; margin-bottom: 1rem; }
-        .prose strong { color: var(--text-primary); }
-        .section-label { font-family: var(--mono); font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); display: block; margin: 1.3rem 0 0.75rem; }
-        .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; margin: 1rem 0 1.5rem; }
-        .metric-card { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); padding: 1.1rem 1.25rem; }
-        .metric-label { font-family: var(--mono); font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-bottom: 0.35rem; }
-        .metric-value { font-family: var(--mono); font-size: 1.35rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem; }
-        .metric-sub { font-family: var(--sans); font-size: 0.74rem; line-height: 1.45; color: var(--text-muted); }
-        .formula-box { background: var(--bg-secondary, #f7f7f5); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 1rem 1.25rem; margin: 1rem 0 1.5rem; }
-        .formula-line { font-family: var(--mono); font-size: 0.78rem; line-height: 1.8; color: var(--text-primary); overflow-x: auto; white-space: nowrap; }
-        .formula-note { font-family: var(--sans); font-size: 0.76rem; line-height: 1.55; color: var(--text-secondary); margin-top: 0.65rem; }
-        .data-table-wrap { overflow-x: auto; margin: 0.75rem 0 2rem; border: 1px solid var(--border-light); border-radius: 8px; }
-        .data-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 0.74rem; }
-        .data-table thead th { background: var(--bg-secondary, #f7f7f5); font-weight: 600; padding: 0.55rem 0.7rem; text-align: right; border-bottom: 2px solid var(--border); white-space: nowrap; line-height: 1.25; }
-        .data-table thead .th-left { text-align: left; }
-        .data-table tbody td { padding: 0.48rem 0.7rem; text-align: right; border-bottom: 1px solid var(--border-light); vertical-align: middle; white-space: nowrap; }
-        .data-table tbody td.td-left { text-align: left; color: var(--text-secondary); }
-        .data-table tbody tr:last-child td { border-bottom: none; }
-        .row-total td { font-weight: 700; background: var(--bg-secondary, #f7f7f5); color: var(--text-primary); }
-        .legal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem; margin: 1rem 0 1.5rem; }
-        .legal-box { border: 1px solid var(--border-light); border-radius: 8px; padding: 1rem 1.1rem; background: var(--bg-secondary, #f7f7f5); }
-        .legal-tag { font-family: var(--mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.4rem; }
-        .legal-title { font-family: var(--sans); font-size: 0.88rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.35rem; line-height: 1.35; }
-        .legal-body { font-family: var(--sans); font-size: 0.78rem; color: var(--text-secondary); line-height: 1.55; }
-        .callout { font-family: var(--sans); font-size: 0.82rem; line-height: 1.6; color: var(--text-secondary); background: rgba(180,120,40,0.07); border: 1px solid rgba(180,120,40,0.25); border-radius: 8px; padding: 0.9rem 1.1rem; margin: 1.25rem 0; max-width: 760px; }
-        .source-list { font-family: var(--sans); font-size: 0.78rem; color: var(--text-secondary); line-height: 1.65; padding-left: 1.2rem; max-width: 760px; }
-        .source-list a { color: var(--accent); }
-        .footnote { font-family: var(--sans); font-size: 0.73rem; color: var(--text-muted); line-height: 1.55; border-top: 1px solid var(--border-light); padding-top: 1.25rem; margin-top: 2.5rem; }
-        .footnote p { margin-bottom: 0.6rem; }
-        @media (max-width: 720px) {
-            .metric-grid, .legal-grid { grid-template-columns: 1fr; }
-            .study-hero { padding: 2rem 1.25rem 1.5rem; }
-            .study-content { padding: 0 1.25rem 4rem; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>FNDR: quanto o Espírito Santo pode receber entre 2029 e 2033 | Eduardo Reis Araújo</title>
+<meta name="description" content="Estimativa auditável dos repasses do Fundo Nacional de Desenvolvimento Regional (FNDR) ao Espírito Santo e às demais UFs entre 2029 e 2033, conforme EC 132/2023.">
+<style>
+:root{--bg:#f7f6f2;--fg:#1c1c1c;--mut:#5b5b5b;--card:#fff;--bd:#d9d6cc;--ac:#8a6d1d}
+@media (prefers-color-scheme:dark){:root{--bg:#14161a;--fg:#ece9e1;--mut:#a7a39a;--card:#1c1f25;--bd:#33373f;--ac:#d4b25c}}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:680px;margin:0 auto;padding:1.6rem 1.1rem}
+.voltar{font-size:.9rem;color:var(--mut);text-decoration:none}
+h1{font-size:1.45rem;line-height:1.28;margin:1rem 0 .5rem}
+.desc{color:var(--mut);margin:0 0 1rem;font-size:.95rem}
+.trecho{font-family:Georgia,'Times New Roman',serif;font-size:1.08rem;line-height:1.75;margin:0;
+  -webkit-mask-image:linear-gradient(#000 35%,transparent 95%);mask-image:linear-gradient(#000 35%,transparent 95%)}
+.veu{position:fixed;inset:0;z-index:10;background:rgba(8,10,14,.58);
+  display:flex;align-items:flex-end;justify-content:center;padding:1rem;overflow:auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:1rem 1.1rem .9rem;width:100%;max-width:520px;
+  box-shadow:0 12px 40px rgba(0,0,0,.35);margin-top:auto}
+.tag{display:inline-block;font:500 .68rem ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);border:1px solid var(--ac);padding:.15rem .5rem;border-radius:4px}
+.card h2{font-size:1.1rem;margin:.45rem 0 .2rem;line-height:1.3}
+.card p{margin:.1rem 0 .7rem;font-size:.93rem;line-height:1.5}
+form{display:flex;gap:.5rem;flex-wrap:wrap}
+input[type=email]{flex:1 1 200px;padding:.7rem .75rem;font-size:1rem;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--fg)}
+button{padding:.7rem 1.1rem;font-size:1rem;border:0;border-radius:6px;background:var(--ac);color:#fff;cursor:pointer}
+button[disabled]{opacity:.6;cursor:default}
+.oculto{position:absolute;left:-9999px;height:0;width:0;overflow:hidden}
+#msg{min-height:1.3em;margin:.7rem 0 0;font-size:.92rem}#msg.erro{color:#b3261e}
+.peq{font-size:.78rem;color:var(--mut);margin:.5rem 0 0;line-height:1.45}.peq a,.card a{color:var(--ac)}
+.sair{display:inline-block;margin-top:.4rem;font-size:.9rem}
+details{margin-top:.5rem}summary{font-size:.82rem;color:var(--mut);cursor:pointer}
+</style>
 </head>
 <body>
-    <div id="header-placeholder"></div>
-    <main>
-        <section class="study-hero">
-            <div class="study-hero-meta">
-                <span class="study-hero-tag">Estudo 04</span>
-                <span class="study-hero-topic">Reforma Tributária</span>
-                <span class="study-hero-topic">FNDR</span>
-                <span class="study-hero-topic">Desenvolvimento Regional</span>
-                <span class="study-hero-date">Jul 2026</span>
-            </div>
-            <h1>FNDR: quanto o Espírito Santo pode receber entre 2029 e 2033?</h1>
-            <p class="lead">
-                A EC 132/2023 criou o Fundo Nacional de Desenvolvimento Regional, com recursos da União destinados aos Estados e ao Distrito Federal. Esta nota estima a parcela do Espírito Santo no primeiro quinquênio de repasses, explicita a memória de cálculo e mostra o fechamento nacional por unidade da federação.
-            </p>
-        </section>
-
-        <section class="study-content">
-            <h2 class="section-heading">Resultado principal</h2>
-            <p class="prose">
-                Pela regra constitucional, o FNDR será distribuído com base em dois critérios: <strong>70% pelo coeficiente do Fundo de Participação dos Estados</strong> e <strong>30% pela participação populacional</strong>. Como os coeficientes do FPE aplicáveis aos exercícios de 2029 a 2033 ainda não foram publicados, esta versão usa como parâmetro preliminar de simulação o coeficiente oficial mais recente do FPE, aprovado pela Decisão Normativa TCU nº 221/2026 para o exercício de 2027. Aplicando essa fórmula ao Espírito Santo, o coeficiente estimado do Estado é de <strong>2,231167%</strong> do total nacional do fundo.
-            </p>
-
-            <div class="metric-grid">
-                <div class="metric-card">
-                    <div class="metric-label">Coeficiente estimado ES</div>
-                    <div class="metric-value">2,231167%</div>
-                    <div class="metric-sub">30% população + 70% FPE, conforme art. 159-A da Constituição.</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">Repasse estimado em 2029</div>
-                    <div class="metric-value">R$ 178,5 mi</div>
-                    <div class="metric-sub">Valor-base, antes da atualização pelo IPCA prevista na EC 132/2023.</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">Acumulado 2029 a 2033</div>
-                    <div class="metric-value">R$ 2,68 bi</div>
-                    <div class="metric-sub">Soma dos valores-base nacionais de R$ 8 bi a R$ 40 bi.</div>
-                </div>
-            </div>
-
-            <div class="callout">
-                Os valores abaixo não projetam inflação futura. A EC 132/2023 determina que os valores nacionais do FNDR sejam atualizados pelo IPCA, ou índice que vier a substituí-lo, a partir de 2023 até o ano anterior ao repasse. Portanto, a tabela mostra uma estimativa em valores-base constitucionais, útil para comparação e auditoria da regra de rateio.
-            </div>
-
-            <h2 class="section-heading">Memória de cálculo</h2>
-            <p class="prose">
-                A fórmula parte de três informações: população estimada de cada unidade da federação, população nacional e coeficiente individual do FPE. A participação populacional do ES foi calculada com os dados de população do IBGE, com referência em 1º de julho de 2025 — a mesma base usada pelo TCU na memória de cálculo do FPE para 2027. O coeficiente FPE usado para o Espírito Santo nesta versão é de <strong>2,358667%</strong>, aprovado pela Decisão Normativa TCU nº 221/2026 para aplicação no exercício de 2027. A EC 132/2023 não fixa um ano estático de referência para esse coeficiente; a leitura mais aderente ao texto constitucional é usar, em cada exercício de repasse, o coeficiente do FPE aplicável àquele mesmo exercício. Como os coeficientes de 2029 a 2033 ainda não existem, o coeficiente de 2027 é adotado aqui apenas como <em>proxy</em> preliminar, a ser substituído quando o TCU publicar os parâmetros efetivos.
-            </p>
-
-            <div class="formula-box">
-                <div class="formula-line">Participação_pop_ES = 4.126.854 / 213.421.037 = 1,933668%</div>
-                <div class="formula-line">Coef_FNDR_ES = 0,30 × 1,933668% + 0,70 × 2,358667%</div>
-                <div class="formula-line">Coef_FNDR_ES = 2,231167%</div>
-                <div class="formula-note">
-                    Repasse_ES_ano = Valor_nacional_FNDR_ano × Coef_FNDR_ES. A base auditável do ES está disponível em <a href="/materiais/fndr-es-2029-2033.csv">materiais/fndr-es-2029-2033.csv</a>. A base nacional por UF está disponível em <a href="/materiais/fndr-ufs-2029-2033.csv">materiais/fndr-ufs-2029-2033.csv</a>.
-                </div>
-            </div>
-
-            <span class="section-label">Tabela 1: Estimativa de repasses do FNDR ao Espírito Santo, 2029 a 2033</span>
-            <div class="data-table-wrap">
-                <table class="data-table" style="min-width:680px">
-                    <thead>
-                        <tr>
-                            <th class="th-left">Ano</th>
-                            <th>FNDR nacional<br>(R$ bi)</th>
-                            <th>Coeficiente ES</th>
-                            <th>Repasse ES<br>(R$ mi)</th>
-                            <th>Repasse ES<br>(R$ bi)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td class="td-left">2029</td><td>8,0</td><td>2,231167%</td><td>178,5</td><td>0,178</td></tr>
-                        <tr><td class="td-left">2030</td><td>16,0</td><td>2,231167%</td><td>357,0</td><td>0,357</td></tr>
-                        <tr><td class="td-left">2031</td><td>24,0</td><td>2,231167%</td><td>535,5</td><td>0,535</td></tr>
-                        <tr><td class="td-left">2032</td><td>32,0</td><td>2,231167%</td><td>714,0</td><td>0,714</td></tr>
-                        <tr><td class="td-left">2033</td><td>40,0</td><td>2,231167%</td><td>892,5</td><td>0,892</td></tr>
-                        <tr class="row-total"><td class="td-left">Total</td><td>120,0</td><td>2,231167%</td><td>2.677,4</td><td>2,677</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h2 class="section-heading">Fechamento nacional por UF</h2>
-            <p class="prose">
-                A tabela abaixo aplica a mesma regra às 27 unidades da federação. O fechamento nacional é uma checagem de consistência: a soma dos coeficientes é igual a 100%, a soma dos repasses anuais reproduz os valores previstos pela EC 132/2023 e o acumulado de 2029 a 2033 fecha em <strong>R$ 120 bilhões</strong>, antes da atualização pelo IPCA.
-            </p>
-
-            <span class="section-label">Tabela 2: Estimativa de repasses do FNDR por UF, 2029 a 2033, em R$ milhões</span>
-            <div class="data-table-wrap">
-                <table class="data-table" style="min-width:980px">
-                    <thead>
-                        <tr>
-                            <th class="th-left">UF</th>
-                            <th class="th-left">Estado</th>
-                            <th>Coef. FNDR</th>
-                            <th>2029</th>
-                            <th>2030</th>
-                            <th>2031</th>
-                            <th>2032</th>
-                            <th>2033</th>
-                            <th>Total<br>2029-2033</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td class="td-left">BA</td><td class="td-left">Bahia</td><td>8,2042%</td><td>656,3</td><td>1.312,7</td><td>1.969,0</td><td>2.625,3</td><td>3.281,7</td><td>9.845,0</td></tr>
-                        <tr><td class="td-left">SP</td><td class="td-left">São Paulo</td><td>7,6126%</td><td>609,0</td><td>1.218,0</td><td>1.827,0</td><td>2.436,0</td><td>3.045,1</td><td>9.135,2</td></tr>
-                        <tr><td class="td-left">MG</td><td class="td-left">Minas Gerais</td><td>6,1209%</td><td>489,7</td><td>979,3</td><td>1.469,0</td><td>1.958,7</td><td>2.448,4</td><td>7.345,1</td></tr>
-                        <tr><td class="td-left">CE</td><td class="td-left">Ceará</td><td>6,0796%</td><td>486,4</td><td>972,7</td><td>1.459,1</td><td>1.945,5</td><td>2.431,8</td><td>7.295,5</td></tr>
-                        <tr><td class="td-left">PE</td><td class="td-left">Pernambuco</td><td>5,8863%</td><td>470,9</td><td>941,8</td><td>1.412,7</td><td>1.883,6</td><td>2.354,5</td><td>7.063,6</td></tr>
-                        <tr><td class="td-left">PA</td><td class="td-left">Pará</td><td>5,8057%</td><td>464,5</td><td>928,9</td><td>1.393,4</td><td>1.857,8</td><td>2.322,3</td><td>6.966,8</td></tr>
-                        <tr><td class="td-left">MA</td><td class="td-left">Maranhão</td><td>5,5073%</td><td>440,6</td><td>881,2</td><td>1.321,8</td><td>1.762,3</td><td>2.202,9</td><td>6.608,8</td></tr>
-                        <tr><td class="td-left">RJ</td><td class="td-left">Rio de Janeiro</td><td>4,0650%</td><td>325,2</td><td>650,4</td><td>975,6</td><td>1.300,8</td><td>1.626,0</td><td>4.878,0</td></tr>
-                        <tr><td class="td-left">AM</td><td class="td-left">Amazonas</td><td>3,9453%</td><td>315,6</td><td>631,3</td><td>946,9</td><td>1.262,5</td><td>1.578,1</td><td>4.734,4</td></tr>
-                        <tr><td class="td-left">PB</td><td class="td-left">Paraíba</td><td>3,7982%</td><td>303,9</td><td>607,7</td><td>911,6</td><td>1.215,4</td><td>1.519,3</td><td>4.557,8</td></tr>
-                        <tr><td class="td-left">AL</td><td class="td-left">Alagoas</td><td>3,6017%</td><td>288,1</td><td>576,3</td><td>864,4</td><td>1.152,5</td><td>1.440,7</td><td>4.322,0</td></tr>
-                        <tr><td class="td-left">PI</td><td class="td-left">Piauí</td><td>3,4811%</td><td>278,5</td><td>557,0</td><td>835,5</td><td>1.114,0</td><td>1.392,5</td><td>4.177,4</td></tr>
-                        <tr><td class="td-left">AC</td><td class="td-left">Acre</td><td>3,1514%</td><td>252,1</td><td>504,2</td><td>756,3</td><td>1.008,4</td><td>1.260,5</td><td>3.781,6</td></tr>
-                        <tr><td class="td-left">PR</td><td class="td-left">Paraná</td><td>3,1443%</td><td>251,5</td><td>503,1</td><td>754,6</td><td>1.006,2</td><td>1.257,7</td><td>3.773,2</td></tr>
-                        <tr><td class="td-left">RN</td><td class="td-left">Rio Grande do Norte</td><td>2,9447%</td><td>235,6</td><td>471,2</td><td>706,7</td><td>942,3</td><td>1.177,9</td><td>3.533,7</td></tr>
-                        <tr><td class="td-left">SE</td><td class="td-left">Sergipe</td><td>2,8799%</td><td>230,4</td><td>460,8</td><td>691,2</td><td>921,6</td><td>1.151,9</td><td>3.455,8</td></tr>
-                        <tr><td class="td-left">GO</td><td class="td-left">Goiás</td><td>2,8787%</td><td>230,3</td><td>460,6</td><td>690,9</td><td>921,2</td><td>1.151,5</td><td>3.454,4</td></tr>
-                        <tr><td class="td-left">RS</td><td class="td-left">Rio Grande do Sul</td><td>2,7926%</td><td>223,4</td><td>446,8</td><td>670,2</td><td>893,6</td><td>1.117,0</td><td>3.351,1</td></tr>
-                        <tr><td class="td-left">AP</td><td class="td-left">Amapá</td><td>2,6688%</td><td>213,5</td><td>427,0</td><td>640,5</td><td>854,0</td><td>1.067,5</td><td>3.202,5</td></tr>
-                        <tr><td class="td-left">RR</td><td class="td-left">Roraima</td><td>2,4861%</td><td>198,9</td><td>397,8</td><td>596,7</td><td>795,5</td><td>994,4</td><td>2.983,3</td></tr>
-                        <tr><td class="td-left">ES</td><td class="td-left">Espírito Santo</td><td>2,2312%</td><td>178,5</td><td>357,0</td><td>535,5</td><td>714,0</td><td>892,5</td><td>2.677,4</td></tr>
-                        <tr><td class="td-left">SC</td><td class="td-left">Santa Catarina</td><td>2,1909%</td><td>175,3</td><td>350,5</td><td>525,8</td><td>701,1</td><td>876,4</td><td>2.629,1</td></tr>
-                        <tr><td class="td-left">RO</td><td class="td-left">Rondônia</td><td>2,1133%</td><td>169,1</td><td>338,1</td><td>507,2</td><td>676,3</td><td>845,3</td><td>2.535,9</td></tr>
-                        <tr><td class="td-left">TO</td><td class="td-left">Tocantins</td><td>1,9989%</td><td>159,9</td><td>319,8</td><td>479,7</td><td>639,6</td><td>799,5</td><td>2.398,6</td></tr>
-                        <tr><td class="td-left">MT</td><td class="td-left">Mato Grosso</td><td>1,9988%</td><td>159,9</td><td>319,8</td><td>479,7</td><td>639,6</td><td>799,5</td><td>2.398,5</td></tr>
-                        <tr><td class="td-left">MS</td><td class="td-left">Mato Grosso do Sul</td><td>1,5204%</td><td>121,6</td><td>243,3</td><td>364,9</td><td>486,5</td><td>608,2</td><td>1.824,5</td></tr>
-                        <tr><td class="td-left">DF</td><td class="td-left">Distrito Federal</td><td>0,8922%</td><td>71,4</td><td>142,7</td><td>214,1</td><td>285,5</td><td>356,9</td><td>1.070,6</td></tr>
-                        <tr class="row-total"><td class="td-left">BR</td><td class="td-left">Total nacional</td><td>100,0000%</td><td>8.000,0</td><td>16.000,0</td><td>24.000,0</td><td>32.000,0</td><td>40.000,0</td><td>120.000,0</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h2 class="section-heading">O que a legislação permite fazer com o FNDR</h2>
-            <p class="prose">
-                O art. 159-A da Constituição, incluído pela EC 132/2023, define o FNDR como instrumento para reduzir desigualdades regionais e sociais. A União entrega os recursos aos Estados e ao Distrito Federal, e a aplicação cabe aos entes beneficiários, dentro das finalidades constitucionais.
-            </p>
-
-            <div class="legal-grid">
-                <div class="legal-box">
-                    <div class="legal-tag">Permitido</div>
-                    <div class="legal-title">Estudos, projetos e obras de infraestrutura</div>
-                    <div class="legal-body">A Constituição autoriza a aplicação dos recursos em estudos, projetos e obras de infraestrutura. Isso inclui preparação técnica, carteira de projetos e execução de investimentos estruturantes.</div>
-                </div>
-                <div class="legal-box">
-                    <div class="legal-tag">Permitido</div>
-                    <div class="legal-title">Fomento a atividades produtivas</div>
-                    <div class="legal-body">O texto constitucional permite apoiar atividades produtivas com elevado potencial de geração de emprego e renda, inclusive por meio de subvenções econômicas e financeiras.</div>
-                </div>
-                <div class="legal-box">
-                    <div class="legal-tag">Possível</div>
-                    <div class="legal-title">Sustentabilidade ambiental e redução de emissões</div>
-                    <div class="legal-body">Os Estados e o Distrito Federal podem destinar recursos a projetos com ações de preservação ambiental e redução das emissões de carbono, desde que conectados às finalidades do fundo.</div>
-                </div>
-                <div class="legal-box">
-                    <div class="legal-tag">Limite</div>
-                    <div class="legal-title">Não é uma transferência livre para qualquer despesa</div>
-                    <div class="legal-body">A Constituição vincula o FNDR a desenvolvimento regional, infraestrutura e fomento produtivo. Por isso, o uso como simples recomposição de caixa, despesa ordinária permanente ou gasto sem aderência às finalidades do art. 159-A exigiria cautela jurídica e fiscal.</div>
-                </div>
-            </div>
-
-            <h2 class="section-heading">Interpretação fiscal para o Espírito Santo</h2>
-            <p class="prose">
-                O valor estimado é relevante, mas não substitui automaticamente a perda de instrumentos tradicionais de política econômica associados ao ICMS. A melhor leitura do FNDR não é como uma nova fonte para recriar a guerra fiscal com recursos orçamentários, mas como oportunidade de financiar infraestrutura, estruturar projetos, alavancar investimento privado e apoiar cadeias produtivas com maior adicionalidade econômica.
-            </p>
-            <p class="prose">
-                Uma arquitetura prudente deveria separar os recursos em janelas distintas: bens públicos produtivos, instrumentos reembolsáveis ou de alavancagem e subvenções produtivas limitadas, sempre com critérios de seleção, contrapartidas, metas mensuráveis, avaliação e cláusulas de saída.
-            </p>
-
-            <h2 class="section-heading">Fontes e base legal</h2>
-            <ul class="source-list">
-                <li>Constituição Federal, art. 159-A, incluído pela <a href="https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc132.htm" target="_blank" rel="noopener">Emenda Constitucional nº 132/2023</a>: criação, finalidade, usos e regra de rateio do FNDR.</li>
-                <li>EC 132/2023, art. 13: valores nacionais do FNDR entre 2029 e 2033 e regra de atualização pelo IPCA.</li>
-                <li><a href="https://www.ibge.gov.br/cidades-e-estados/es.html" target="_blank" rel="noopener">IBGE Cidades e Estados, Espírito Santo</a>: população estimada do ES em 2025.</li>
-                <li><a href="https://www.ibge.gov.br/cidades-e-estados/brasil.html" target="_blank" rel="noopener">IBGE Cidades e Estados, Brasil</a>: população residente nacional em 2025.</li>
-                <li><a href="https://portal.tcu.gov.br/uploads/FPE_2027_DNT_2026_221_b878131f61.pdf" target="_blank" rel="noopener">Decisão Normativa TCU nº 221, de 18 de março de 2026</a>: coeficientes individuais do FPE aprovados para aplicação no exercício de 2027, usados nesta versão como parâmetro preliminar de simulação.</li>
-            </ul>
-
-            <div class="footnote">
-                <p><strong>Nota metodológica.</strong> A EC 132/2023 não fixa um ano estático de referência para o coeficiente do FPE usado no cálculo do FNDR. Como o fundo é entregue anualmente a partir de 2029, a leitura mais aderente ao texto constitucional é usar, em cada exercício, o coeficiente do FPE aplicável àquele mesmo exercício. Como os coeficientes de 2029 a 2033 ainda não foram publicados, esta versão adota como <em>proxy</em> o coeficiente oficial mais recente disponível — o de 2027, aprovado pela Decisão Normativa TCU nº 221/2026. Quando o TCU publicar os coeficientes aplicáveis a cada exercício de 2029 a 2033, basta substituir a coluna <code>coeficiente_fpe</code> na base CSV para recalcular a série.</p>
-                <p><strong>Limitações.</strong> A estimativa não incorpora a atualização monetária pelo IPCA prevista na EC 132/2023; para obter valores nominais de pagamento, será necessário aplicar o IPCA acumulado de 2023 até o ano anterior a cada repasse. Além disso, a base populacional usada é a de referência do TCU para o FPE de 2027 (IBGE, 1º de julho de 2025); revisões futuras dessa base, ou eventual critério populacional específico para o FNDR, podem alterar marginalmente os coeficientes apresentados.</p>
-            </div>
-        </section>
-    </main>
-    <div id="footer-placeholder"></div>
-    <script src="/js/main.js"></script>
-<!-- ressalva-editorial -->
-<aside class="ressalva-editorial" style="max-width:860px;margin:2rem auto 1rem;padding:0 1rem;font-size:.8rem;line-height:1.55;opacity:.75;text-align:center;color:inherit">Os estudos publicados neste site têm caráter técnico e analítico e não representam posicionamentos oficiais das instituições às quais o autor está vinculado. As estimativas apresentadas não constituem projeções oficiais. As fontes de informação, premissas e limitações metodológicas são identificadas em cada estudo. As estimativas foram produzidas mediante metodologia própria, fundamentada na legislação aplicável e em bases públicas de informação.</aside>
-    <script src="/js/search.js"></script>
+<main id="vitrine">
+<a class="voltar" href="/estudos/">&larr; Todos os estudos</a>
+<h1 id="t">FNDR: quanto o Espírito Santo pode receber entre 2029 e 2033</h1>
+<p class="desc">Estimativa auditável dos repasses do Fundo Nacional de Desenvolvimento Regional (FNDR) ao Espírito Santo e às demais UFs entre 2029 e 2033, conforme EC 132/2023.</p>
+<p class="trecho">A EC 132/2023 criou o Fundo Nacional de Desenvolvimento Regional, com recursos da União destinados aos Estados e ao Distrito Federal. Esta nota estima a parcela do Espírito Santo no primeiro quinquênio de repasses, explicita a memória de cálculo e mostra o fechamento nacional por unidade da federação.</p>
+</main>
+<div class="veu" id="veu">
+<div class="card" role="dialog" aria-modal="true" aria-labelledby="ct">
+<span class="tag">Acesso por cadastro</span>
+<h2 id="ct">Continue lendo</h2>
+<p>Informe seu e-mail e receba um link de acesso pessoal. É gratuito, sem senha, e vale por 30 dias neste navegador.</p>
+<form id="f" autocomplete="on">
+<input id="e" type="email" name="email" placeholder="seu@email.com" aria-label="Seu e-mail" required>
+<input class="oculto" type="text" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
+<button id="b" type="submit">Receber link</button>
+</form>
+<p id="msg" role="status"></p>
+<a class="sair" href="/estudos/">&larr; Voltar à lista de estudos</a>
+<details><summary>Sobre o cadastro e este site</summary>
+<p class="peq">Seu e-mail é usado apenas para liberar o acesso e registrar quais estudos foram lidos. Para pedir a exclusão ou esclarecimentos, entre em contato pela <a href="/#contato">seção de contato</a>.</p>
+<p class="peq">Os estudos publicados neste site têm caráter técnico e analítico e não representam posicionamentos oficiais das instituições às quais o autor está vinculado. As estimativas apresentadas não constituem projeções oficiais. As fontes de informação, premissas e limitações metodológicas são identificadas em cada estudo.</p>
+</details>
+<noscript><p>É necessário habilitar JavaScript para acessar o estudo.</p></noscript>
+</div>
+</div>
+<script>
+(function(){
+var SLUG="fndr-es-2029-2033";
+var m=document.getElementById('msg'),f=document.getElementById('f'),b=document.getElementById('b');
+fetch('/api/estudo?slug='+encodeURIComponent(SLUG),{credentials:'same-origin',cache:'no-store'}).then(function(r){
+  if(r.status===200)return r.text().then(function(h){document.open();document.write(h);document.close();});
+}).catch(function(){});
+f.addEventListener('submit',function(ev){
+  ev.preventDefault();m.className='';m.textContent='Enviando…';b.disabled=true;
+  fetch('/api/acesso/solicitar',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',
+    body:JSON.stringify({email:f.email.value,site:f.site.value,slug:SLUG})})
+  .then(function(r){return r.json().catch(function(){return{}}).then(function(j){return{s:r.status,j:j}});})
+  .then(function(x){
+    if(x.s===200){f.style.display='none';m.textContent='Enviamos um link para '+f.email.value+'. Abra o e-mail e clique em "Abrir estudo". O link vale por 30 minutos. Confira também a caixa de spam.';}
+    else{b.disabled=false;m.className='erro';m.textContent=x.s===400?'E-mail inválido. Confira e tente de novo.':x.s===429?'Muitas tentativas. Tente de novo em alguns minutos.':'O cadastro está temporariamente indisponível. Tente mais tarde ou entre em contato pela seção de contato do site.';}
+  }).catch(function(){b.disabled=false;m.className='erro';m.textContent='Sem conexão. Tente novamente.';});
+});
+})();
+</script>
 </body>
 </html>
