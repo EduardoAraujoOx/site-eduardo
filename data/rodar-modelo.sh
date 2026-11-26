@@ -38,7 +38,6 @@ modelo() {
   run build-sensibilidade-painel.py     # aba Sensibilidade do painel (grava também em painelufir/data)
   run build-memoria-calculo.py
   run build-carga-implicita-uf.py
-  run build-divergencia-vs-nota-v22.py
   run build-simulacao-aliquota-es.py
   run build-simulacao-aliquota-es-longo-prazo.py
   # espelho do painel (painelufir/README.md)
@@ -63,8 +62,7 @@ artigo_pr() {
   run build-tabelas-artigo-pr.py
   run build-tabela-unica-pr.py
   run build-tabela-uf.py
-  # build-tabela-validacao-externa-pr.py precisa do caminho da nota tecnica do
-  # COMSEFAZ (docx) como 1o argumento e roda a parte.
+  # build-tabela-validacao-externa-pr.py depende de documento externo nao publico e foi retirado do fluxo publico.
 }
 
 case "$etapa" in

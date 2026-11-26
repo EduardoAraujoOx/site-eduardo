@@ -6,7 +6,7 @@ JS na Tabela 3 de estudos/reforma-tributaria-coeficiente.html.
 
 Estado: (ICMS bruto DCA - cota-parte declarada/25% teórico + FECOP) × deflator,
 média 2019-2026 (2026 ainda não fechado no DCA: tratamento em data/parametros-cpt-2026.json e data/cpt2026.py;
-o campo *_obs_2019_2025 traz a média só dos sete anos observados, igual à Nota Técnica nº 02/2026 da SEFAZ-ES),
+o campo *_obs_2019_2025 traz a média só dos sete anos observados, DCA 2019-2025),
 dividida pelo agregado nacional A_2025.
 Municípios (agregado por UF): (ISS bruto DCA + cota-parte) × deflator, mesma
 média e mesmo denominador.

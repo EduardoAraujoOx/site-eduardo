@@ -21,7 +21,7 @@ alimentação toda a zero ou toda a 0,4; encolhimento 0 a 1) somada ao erro de v
 Validação (leave-one-UF-out dentro da POF 2017-18): prediz a participação de cada UF no consumo observado a partir de
 (i) população, (ii) massa de renda, (iii) classes de renda com κ nacional, (iv) classes com κ regional encolhido. Mede o erro
 típico (RMSE em pp e erro relativo médio), que alimenta a incerteza do φ no modelo de projeção.
-Comparadores externos (não usados como alvo): Gobetti e Monteiro (2023), base IBS 2025 da nota técnica do COMSEFAZ.
+Comparador externo (não usado como alvo): Gobetti e Monteiro (2023), publicado pelo Ipea.
 
 Uso: python3 data/estima-phi-destino-robusto.py <pasta_pof> [--cache pasta]
   (o cache precisa de pof_uc.pkl e pof_uc_cat.pkl, gerados por estima-elasticidade-pof.py e teste-base-tributavel-pof.py;
@@ -61,23 +61,6 @@ def carrega_tb():
 def sh(d):
     s = float(sum(d.values()))
     return {k: 100.0 * v / s for k, v in d.items()}
-
-
-def parse_comsefaz():
-    L = (HERE / "referencias-externas" / "NT_COMSEFAZ_RefTributaria_v3.md").read_text(encoding="utf-8").split("\n")
-    i2 = next(i for i, x in enumerate(L) if x.startswith("Tabela 2 —"))
-    i3 = next(i for i, x in enumerate(L) if x.startswith("Tabela 3 —"))
-    rx = r"\| ([A-Z]{2}) \| ([\d,]+)% \| ([\d,]+)% \| ([\d,]+)% \| ([\d,]+)% \|"
-    t2, t3 = {}, {}
-    for ln in L[i2:i2 + 40]:
-        m = re.match(rx, ln)
-        if m:
-            t2[m.group(1)] = [float(x.replace(",", ".")) for x in m.groups()[1:]]
-    for ln in L[i3:i3 + 40]:
-        m = re.match(rx, ln)
-        if m:
-            t3[m.group(1)] = [float(x.replace(",", ".")) for x in m.groups()[1:]]
-    return t2, t3
 
 
 def main():
@@ -172,11 +155,9 @@ def main():
 
     # comparadores externos
     phi = json.loads((HERE / "phi-dest-pof-censo.json").read_text(encoding="utf-8"))["por_uf"]
-    t2, t3 = parse_comsefaz()
     ext = {"phi_atual_POFxCenso_bruto": {u: phi[u]["pof_censo_bruto_pct"] for u in ufs},
            "gobetti_2023": {u: phi[u]["gobetti_tabela1_2023_pct"] for u in ufs},
-           "comsefaz_base_IBS_2025": sh({u: t3[u][3] for u in ufs}),
-           "comsefaz_base_TRU_2018": sh({u: t2[u][3] for u in ufs})}
+           }
 
     def rmse(a, b):
         return round(float(np.sqrt(np.mean([(a[u] - b[u]) ** 2 for u in ufs]))), 3)
@@ -184,11 +165,8 @@ def main():
     comparacao = {n: {"rmse_pp_vs_composto": rmse(comp, v), "PR": round(v["PR"], 3)} for n, v in ext.items()}
     comparacao["composto"] = {"PR": round(comp["PR"], 3)}
     for r, v in rotas.items():
-        comparacao["rota_" + r] = {"PR": round(v["PR"], 3), "rmse_pp_vs_comsefaz_2025": rmse(v, ext["comsefaz_base_IBS_2025"]),
-                                   "rmse_pp_vs_gobetti": rmse(v, ext["gobetti_2023"])}
-    comparacao["composto"]["rmse_pp_vs_comsefaz_2025"] = rmse(comp, ext["comsefaz_base_IBS_2025"])
+        comparacao["rota_" + r] = {"PR": round(v["PR"], 3), "rmse_pp_vs_gobetti": rmse(v, ext["gobetti_2023"])}
     comparacao["composto"]["rmse_pp_vs_gobetti"] = rmse(comp, ext["gobetti_2023"])
-    comparacao["phi_atual_POFxCenso_bruto"]["rmse_pp_vs_comsefaz_2025"] = rmse(ext["phi_atual_POFxCenso_bruto"], ext["comsefaz_base_IBS_2025"])
     comparacao["phi_atual_POFxCenso_bruto"]["rmse_pp_vs_gobetti"] = rmse(ext["phi_atual_POFxCenso_bruto"], ext["gobetti_2023"])
 
     por_uf = {}

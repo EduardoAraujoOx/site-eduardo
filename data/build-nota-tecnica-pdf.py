@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Gera a Nota Técnica do Estudo 11 (série histórica e projeção do IBS total,
+Gera o texto completo (PDF) do Estudo 11 (série histórica e projeção do IBS total,
 Brasil, 2029-2033) em HTML print-ready, a partir de
 data/ibs-projecao-nacional.json e data/macro-parametros.json.
 
@@ -235,7 +235,7 @@ HTML = f"""<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Nota Técnica: Estudo 11, Série histórica e projeção do IBS total do Brasil, 2029-2033</title>
+<title>Estudo 11: Série histórica e projeção do IBS total do Brasil, 2029-2033</title>
 <style>
     @page {{ size: A4; margin: 22mm 18mm 20mm 18mm; }}
     * {{ box-sizing: border-box; }}
@@ -385,7 +385,7 @@ HTML = f"""<!DOCTYPE html>
 <body>
 
 <div class="cover">
-    <div class="tag">Nota Técnica &middot; Estudo 11</div>
+    <div class="tag">Estudo 11 &middot; Texto completo</div>
     <h1>Série histórica e projeção do IBS total do Brasil, 2029&ndash;2033</h1>
     <p class="subtitle">
         Estimativa do valor total do IBS nacional durante o quinquênio de transição da Reforma
@@ -407,7 +407,7 @@ HTML = f"""<!DOCTYPE html>
 
 <h2>1. Objetivo</h2>
 <p>
-    Esta nota técnica responde a uma pergunta objetiva: <strong>quanto será o valor total do
+    Este estudo responde a uma pergunta objetiva: <strong>quanto será o valor total do
     IBS (Imposto sobre Bens e Serviços) no Brasil, ano a ano, entre 2029 e 2033</strong>,
     o quinquênio de transição definido pela Reforma Tributária do consumo (EC 132/2023). A
     resposta exige combinar três elementos: (i) qual é a receita de referência (ICMS, ISS e FECOP)
@@ -453,8 +453,7 @@ HTML = f"""<!DOCTYPE html>
     Natureza, ISSQN") porque o código da conta no plano de contas do DCA mudou de esquema mais
     de uma vez entre 2013 e 2025.</li>
     <li><strong>FECOP, 2019&ndash;2025:</strong> {meta['fontes'].get('fecop_2019_2025', 'SICONFI/STN, DCA Anexo I-C')},
-    mesma fonte usada no coeficiente estadual do Estudo 06, validado contra a Nota Técnica
-    nº 02/2026. Zero em 2013&ndash;2018 (sem coleta equivalente via RREO); 2026 usa o valor de
+    mesma fonte usada no coeficiente estadual do Estudo 06. Zero em 2013&ndash;2018 (sem coleta equivalente via RREO); 2026 usa o valor de
     2025 como estimativa preliminar.</li>
 </ul>
 <p>
@@ -526,7 +525,7 @@ HTML = f"""<!DOCTYPE html>
     2029&ndash;2033, por dois motivos: (i) mesmo que o teto seja ultrapassado, a redução da
     alíquota só entra em vigor em 2035, dois anos depois do fim desta projeção; e (ii) o teto
     compara o sistema novo e o antigo por inteiro, somando o lado federal (CBS, Imposto Seletivo,
-    PIS/Cofins, IPI, IOF-seguros) ao lado subnacional (IBS, ICMS, ISS), enquanto esta nota técnica
+    PIS/Cofins, IPI, IOF-seguros) ao lado subnacional (IBS, ICMS, ISS), enquanto este estudo
     modela só o lado subnacional. Simular esse teto exigiria dados federais fora do escopo deste
     estudo. Por isso ele é citado aqui como contexto, mas não entra na conta acima.
 </p>
@@ -605,7 +604,7 @@ HTML = f"""<!DOCTYPE html>
     Total(a) = ICMS+ISS residual(a) + IBS bruto(a) = Receita<sub>projetada</sub>(a)
 </div>
 <p>
-    Esta nota técnica trabalha no agregado nacional, então não entra nos coeficientes que dizem
+    Este estudo trabalha no agregado nacional, então não entra nos coeficientes que dizem
     qual estado ou município recebe cada parte (&phi;<sup>neutro</sup>, &phi;<sup>CPT</sup>,
     &phi;<sup>dest</sup>): esses parâmetros determinam <em>como</em> a arrecadação é dividida entre
     estados e municípios, não o seu <em>tamanho total</em>, e continuam fora do escopo (ver
@@ -703,7 +702,7 @@ HTML = f"""<!DOCTYPE html>
 </ol>
 
 <div class="footer-note">
-    Nota técnica gerada automaticamente a partir de data/ibs-projecao-nacional.json e
+    Texto gerado automaticamente a partir de data/ibs-projecao-nacional.json e
     data/macro-parametros.json (repositório do site). Metodologia replicável: scripts de coleta
     e cálculo disponíveis em data/collect-icms-dca-2013-2018.py,
     data/collect-iss-dca-2013-2014.py, data/collect-iss-dca-2015-2018.py,

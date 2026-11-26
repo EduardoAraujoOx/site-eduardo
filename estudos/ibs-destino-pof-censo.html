@@ -142,11 +142,10 @@
         <p class="lead">
             O <a href="/estudos/icms-iss-ibs-atual-potencial.html">Estudo 07</a> mostrou que a estimativa de
             Gobetti e Monteiro (IPEA) para o coeficiente de destino do IBS por UF &mdash; usada em todo o
-            modelo de projeção deste site &mdash; não é um número fixo: a Tabela 1 do paper original (Carta
-            de Conjuntura 60, 2023, base 2022) e uma atualização mais recente dos mesmos autores, apresentada
-            à SEFAZ-ES em 2026, chegam a valores diferentes para o Espírito Santo (1,62% e 1,88% do total
-            nacional, respectivamente). Este Estudo 13 avança sobre essa pergunta construindo uma
-            <strong>terceira estimativa, independente e reprodutível</strong>: cruza a despesa de consumo
+            modelo de projeção deste site &mdash; depende do ano-base e da metodologia adotados: a
+            Tabela 1 do paper original (Carta de Conjuntura 60, 2023, base 2022) é uma fotografia de 2022.
+            Este Estudo 13 avança sobre essa pergunta construindo uma
+            <strong>estimativa independente e reprodutível</strong>: cruza a despesa de consumo
             média mensal familiar da Pesquisa de Orçamentos Familiares (POF 2017-2018, IBGE) com o número de
             domicílios de cada UF no Censo Demográfico 2022 (IBGE), sem depender de nenhum dado do próprio
             Gobetti e Monteiro para a distribuição espacial do consumo.
@@ -177,11 +176,8 @@
                     onde o consumo de bens e serviços efetivamente acontece &mdash; a variável central da
                     regra de destino do IBS. O <a href="/estudos/icms-iss-ibs-atual-potencial.html">Estudo
                     07</a> já havia testado essa estimativa contra a participação populacional de cada UF
-                    como proxy alternativa. Mas uma conversa recente com o próprio Sérgio Gobetti, numa
-                    apresentação à SEFAZ-ES, revelou que os autores já têm uma versão mais recente do
-                    cálculo (base 2025, não mais 2022), com valores sensivelmente diferentes dos publicados
-                    em 2023 &mdash; sem que a planilha ou a metodologia completa dessa atualização esteja
-                    disponível publicamente. Diante disso, faz sentido ter uma estimativa própria, construída
+                    como proxy alternativa. Como o ano-base da estimativa publicada é 2022 e a
+                    planilha de cálculo não é pública, faz sentido ter uma estimativa própria, construída
                     inteiramente a partir de dados públicos do IBGE, para servir de referência de robustez.
                 </p>
 
@@ -295,16 +291,6 @@
             </table>
         </div>
 
-        <div class="callout callout-es">
-            <strong>Nota sobre o Espírito Santo.</strong> Numa apresentação à SEFAZ-ES em 2026, Sérgio
-            Gobetti mostrou um valor de participação de 1,88% para o ES sob o rótulo "IBS hipotético 2025"
-            &mdash; mais alto do que as quatro estimativas desta tabela (1,62% a 1,74%). Esse número só está
-            disponível para o ES (não para as outras 26 UFs), então não entra na Tabela 2 acima; fica aqui
-            como referência de contexto. A diferença entre 1,62% (Tabela 1, 2023) e 1,88% (2025) mostra que a
-            própria estimativa dos autores mudou de forma não desprezível em três anos &mdash; mais um motivo
-            para ter uma estimativa própria e reprodutível como a desta página.
-        </div>
-
         <span class="section-label">Modelo anterior (Gobetti 2023 + cota-parte) x POF &times; Censo, bruto (modelo atual) &mdash; o quanto mudou?</span>
         <div class="chart-panel">
             <p class="chart-panel-title">Modelo anterior (eixo X) x POF &times; Censo, bruto (eixo Y), 27 UFs</p>
@@ -327,9 +313,10 @@
             <p>4. "Modelo anterior": φ<sup>dest</sup> total (estado mais agregado municipal) usado nos Estudos 06, 03, 11 e 12 até ago/2026, replicando a antiga <code>computeParams()</code> de <a href="/estudos/ibs-projecao-arrecadacao-br.html">estudos/ibs-projecao-arrecadacao-br.html</a>: coeficiente estadual de Gobetti e Monteiro (2023) mais 25% fixo de cota-parte municipal (CF art. 158, IV, "b"; LC 227/2026 arts. 118, §3º, e 128). Desde então, a coluna "POF x Censo, bruto" desta página passou a ser o insumo direto do modelo.</p>
             <p>5. "Gobetti, Tabela 1, 2023": participação de cada UF na própria Tabela 1 de Gobetti, S. W.; Monteiro, P. K. <em>Impactos redistributivos da reforma tributária: estimativas atualizadas.</em> Carta de Conjuntura n.&nbsp;60, Nota de Conjuntura 18. IPEA, 28 ago. 2023. Disponível em <a href="https://repositorio.ipea.gov.br/bitstreams/079492a6-d88a-42ac-bd75-127454c35f23/download" target="_blank" rel="noopener">repositorio.ipea.gov.br</a>. Mesma fonte usada no <a href="/estudos/icms-iss-ibs-atual-potencial.html">Estudo 07</a>.</p>
             <p>6. Gráfico de dispersão: cruza, para cada UF, "modelo anterior" (eixo X) com "POF x Censo, bruto" (eixo Y, o modelo atual). A correlação é o coeficiente de Pearson entre as duas séries; a segunda estatística é a proporção de UFs cuja estimativa POF x Censo fica a menos de 0,5 ponto percentual do modelo anterior. Calculados no navegador a partir dos dados de <code>data/phi-dest-pof-censo.json</code>.</p>
-            <p>7. "IBS hipotético 2025" (ES): valor apresentado por Sérgio Gobetti à SEFAZ-ES em 2026, relatado ao autor deste site; não é uma fonte publicada com metodologia disponível, e por isso não entra na Tabela 2 nem no gráfico de dispersão &mdash; fica só como referência de contexto para o Espírito Santo.</p>
         </div>
     </div>
+<!-- ressalva-editorial -->
+<aside class="ressalva-editorial" style="max-width:860px;margin:2rem auto 1rem;padding:0 1rem;font-size:.8rem;line-height:1.55;opacity:.75;text-align:center;color:inherit">Os estudos publicados neste site têm caráter técnico e analítico e não representam posicionamentos oficiais das instituições às quais o autor está vinculado. As estimativas apresentadas não constituem projeções oficiais. As fontes de informação, premissas e limitações metodológicas são identificadas em cada estudo. As estimativas foram produzidas mediante metodologia própria, fundamentada na legislação aplicável e em bases públicas de informação.</aside>
 
     <footer class="footer">
         Eduardo Reis Araújo · Políticas públicas orientadas por evidências

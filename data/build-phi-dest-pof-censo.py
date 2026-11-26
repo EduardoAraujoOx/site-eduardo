@@ -261,12 +261,6 @@ def main():
             "fino da legislacao por categoria."
         ),
         "metodo_phi_fam": "robusto (data/phi-dest-robusto.json)" if usa_robusto else "pof_censo_bruto",
-        "es_gobetti_2025_sefaz_referencia_pct": 1.88,
-        "es_gobetti_2025_sefaz_nota": (
-            "'IBS hipotetico 2025', apresentacao de Sergio Gobetti a SEFAZ-ES (2026) -- so "
-            "disponivel para o ES; nao e um dado por UF, por isso fica fora da tabela "
-            "principal, so como referencia de contexto."
-        ),
         "frac_estado_pct": frac_estado * 100,
         "frac_muni_pct": frac_muni * 100,
         "frac_estado_muni_metodo": (

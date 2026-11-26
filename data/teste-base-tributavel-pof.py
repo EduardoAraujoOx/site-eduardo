@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 TESTE (rota alternativa, não altera nenhum resultado publicado): base tributável sintética do IBS
-a partir dos microdados da POF 2017-18, no estilo da nota técnica do COMSEFAZ.
+a partir dos microdados da POF 2017-18.
 
 Ideia: em vez de ratear um IBS nacional por um coeficiente φ_UF (consumo), calcula-se uma base
 tributável por UF = Σ (consumo da categoria × peso legal da categoria), onde o peso é o fator pelo
@@ -15,10 +15,10 @@ Cenários:
        Cadastro de Produtos: alíquota zero / redução de 60% / cheia); aluguel imputado fora da base;
   S1a  S1 com alimentação em domicílio toda a 0,4 (limite superior da base alimentar);
   S1b  S1 com alimentação em domicílio toda a zero (limite inferior);
-  S2   pesos da Tabela 1 da nota técnica do COMSEFAZ (para replicar a Tabela 2 dela).
+  S2   pesos alternativos de categoria (sensibilidade).
 
 Comparações: φ atual do modelo (pof_censo_bruto_pct, Censo x POF), Gobetti 2023, e as colunas
-"Consumo POF" e "Base POF" da Tabela 2 da nota (microdados puros).
+Comparadores: φ atual e Gobetti e Monteiro (2023).
 
 Uso: python3 data/teste-base-tributavel-pof.py <pasta_pof> [--cache pasta]
 Saída: data/teste-base-tributavel-pof.json
@@ -149,21 +149,6 @@ def monta_uc(base):
     return g
 
 
-def parse_tabela2():
-    txt = (DATA / "referencias-externas" / "NT_COMSEFAZ_RefTributaria_v3.md").read_text(encoding="utf-8")
-    sec = txt.split("Tabela 2 —")[1].split("Fonte:")[0]
-    out = {}
-    for ln in sec.splitlines():
-        m = re.match(r"\|\s*([A-Z]{2})\s*\|(.*)\|\s*$", ln)
-        if m:
-            try:
-                v = [float(x.replace("%", "").replace(",", ".")) for x in m.group(2).split("|")]
-            except ValueError:
-                continue
-            out[m.group(1)] = {"renda": v[0], "consumo": v[1], "base": v[2], "tru": v[3]}
-    return out
-
-
 PESOS = {
     # alug_imput, alug_mon, cond, gas, transp_urb, gasolina, viagens, higiene, saude, educ, serv_pess,
     # apostas, alim_fora, zero, reduz, cheia, outros
@@ -179,7 +164,7 @@ PESOS = {
     "S1b": dict(alug_imput=0, alug_mon=0.3, condominio=0.5, gas=1, transp_urb=0, gasolina=1, viagens=1,
                 higiene=1, saude=0.4, educacao=0.4, serv_pessoais=1, apostas=0, alim_fora=0.6,
                 alim_zero=0, alim_reduz=0, alim_cheia=1, outros=1),
-    # Tabela 1 da nota: peso = 1 + ajuste (alimentação -0,60 vale para toda a alimentação)
+    # S2: peso = 1 + ajuste (alimentação -0,60 vale para toda a alimentação)
     "S2": dict(alug_imput=0, alug_mon=0.3, condominio=0.5, gas=0.7, transp_urb=0.2, gasolina=1.5,
                viagens=0.5, higiene=0.9, saude=0.4, educacao=0.4, serv_pessoais=0.5, apostas=1,
                alim_fora=0.4, alim_zero=0.4, alim_reduz=0.4, alim_cheia=0.4, outros=1),
@@ -198,7 +183,6 @@ def main():
     uc["uf"] = uc["UF"].astype(int).map(UFS)
 
     phi = json.loads((DATA / "phi-dest-pof-censo.json").read_text(encoding="utf-8"))["por_uf"]
-    t2 = parse_tabela2()
 
     def part(serie):
         s = serie.groupby(uc["uf"]).sum()
@@ -222,9 +206,6 @@ def main():
     ref = {
         "phi_atual_bruto": pd.Series({u: phi[u]["pof_censo_bruto_pct"] for u in ufs}),
         "gobetti_2023": pd.Series({u: phi[u]["gobetti_tabela1_2023_pct"] for u in ufs}),
-        "comsefaz_consumo_pof": pd.Series({u: t2[u]["consumo"] for u in ufs}),
-        "comsefaz_base_pof": pd.Series({u: t2[u]["base"] for u in ufs}),
-        "comsefaz_base_tru": pd.Series({u: t2[u]["tru"] for u in ufs}),
     }
 
     def dist(a, b):
@@ -248,8 +229,7 @@ def main():
                  for c in CATS}
 
     por_uf = {u: {n: {"microdados": round(float(shares[n][u]), 4), "pof_x_censo": round(float(shares_cens[n][u]), 4)}
-                  for n in PESOS} | {"phi_atual_bruto": round(float(ref["phi_atual_bruto"][u]), 4),
-                                     "comsefaz_base_pof": float(ref["comsefaz_base_pof"][u])}
+                  for n in PESOS} | {"phi_atual_bruto": round(float(ref["phi_atual_bruto"][u]), 4)}
               for u in ufs}
     saida = {"_meta": {
         "descricao": "Teste de base tributável sintética (POF 2017-18) - NAO alimenta nenhum resultado publicado",
@@ -267,7 +247,6 @@ def main():
     for n in PESOS:
         print(n, "vs φ atual (POFxCenso):", comp[n]["pof_x_censo"]["phi_atual_bruto"])
         print(n, "vs Gobetti:", comp[n]["pof_x_censo"]["gobetti_2023"])
-        print(n, "micro vs COMSEFAZ base POF:", comp[n]["microdados_puros"]["comsefaz_base_pof"])
     print(json.dumps(estab, ensure_ascii=False, indent=1))
 
 

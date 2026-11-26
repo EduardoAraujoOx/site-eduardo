@@ -169,8 +169,8 @@ que fica retida com o ente (φ^dest), não o IBS total do ente.
 
 ### Arts. 114-116 — critério histórico (transição)
 **[LITERAL — confirmado 11/ago/2026]** Definem o Coeficiente de Participação
-de Transição, base do `φ^CPT` usado em `coeficientes-uf.json`, validado
-contra a Nota Técnica nº 02/2026 (SEFAZ-ES). O ponto central, art. 115,
+de Transição, base do `φ^CPT` usado em `coeficientes-uf.json`, calculado
+a partir do DCA/Siconfi. O ponto central, art. 115,
 caput, incisos I e III:
 
 > I - para os Estados: a) a arrecadação com o ICMS, **após a aplicação do
@@ -638,11 +638,10 @@ regeneração e comparação bit a bit dos artefatos dependentes).
 
 **Pendência conhecida, não implementada (decisão do autor do site,
 set/2026): divergência de AM, GO e MT vs. Gobetti e Monteiro.** Uma
-apresentação do COMSEFAZ (2026, Tabela 8, "Média sem fundos" vs. "Média com
-fundos") indica que a LC 227/2026 exige somar de volta, à base do
+documento de terceiros (publicidade não confirmada; não reproduzido neste
+repositório) indica que a LC 227/2026 exige somar de volta, à base do
 coeficiente histórico desses três estados especificamente, valores de
-"fundos vinculados a diferimento/regime especial de ICMS" (médias 2019-2026:
-AM +R$ 3,16 bi, GO +R$ 2,14 bi, MT +R$ 0,11 bi). Investigação exaustiva no
+"fundos vinculados a diferimento/regime especial de ICMS" (valores omitidos). Investigação exaustiva no
 SICONFI (contas do DCA Anexo I-C, registro de entes, fundos reais como
 Fundeinfra/GOINFRA em GO e FTI/FMPES/FDH no AM) não encontrou esses valores
 de forma independentemente verificável nas fontes públicas. Decisão: manter
@@ -701,8 +700,7 @@ constante (0,47 nos 20% mais pobres a 0,89 na faixa 50-80%). Caso-base da simula
 (coincide com a tabela 1.1.1 publicada); sensibilidade 0,75-0,87.
 (2) Mediana de renda por município (Censo 2022, SIDRA 10295 var. 13534; coletor
 `collect-censo-2022-renda-mediana-municipios.py`) permite lognormal com média e mediana.
-(3) Compras por ente: `collect-compras-dca.py` (27 UFs, DCA I-D 2024-2025, média a preços de 2025); proxy bruta ~1,5-1,6x a
-base efetiva de Gobetti/COMSEFAZ. Auditoria: 3.3.90.39 (outros serviços PJ) é 52% da proxy;
+(3) Compras por ente: `collect-compras-dca.py` (27 UFs, DCA I-D 2024-2025, média a preços de 2025); proxy bruta. Auditoria: 3.3.90.39 (outros serviços PJ) é 52% da proxy;
 dois municípios de TO com valor negativo e 24 sem dado (imputados pela mediana per capita da UF,
 30 no total); outlier extremo Quinta do Sol/PR (95% da despesa em compras); elementos não
 incluídos: transferências a entidades privadas (3.3.50) (passagens, 3.3.90.33, e terceirização, 3.3.90.34, entraram depois; imputação final: 14 municípios, com a média 2024-2025).
@@ -741,8 +739,7 @@ na municipal. O IBS do ente contratante compõe a receita inicial (LC 227 art.
 106, III) e, portanto, a Receita-Base, sujeita aos arts. 109-111 e 118. Texto
 transcrito em `13_COMPRAS_GOVERNAMENTAIS_...md`; estudo acessível em
 `estudos/compras-governamentais-ibs.html` (Estudo 17). Dimensionamento nacional
-(Gobetti/COMSEFAZ, 2026): base R$ 533,8 bi (União 17%, Estados 28%, Municípios
-55%), alíquota efetiva 15,9%. **Ainda não incorporado às estimativas por ente.**
+próprio: ver Estudo 17. **Ainda não incorporado às estimativas por ente.**
 Leitura dos arts. 105-111/114-117 (out/2026): o IBS das compras entra na receita
 inicial e sofre as mesmas retenções (80%/90%/…/5%) e redistribuições (CPT, Seguro-
 Receita); logo o ajuste é no coeficiente de destino, sem mexer no bolo, no CPT nem
@@ -772,26 +769,26 @@ Correção do FCP **não implementada**, por decisão do autor.
 
 ### 7.1 Fundos do art. 115, I, "b" (LC 227/2026) e art. 350, II, "b" (LC 214/2025): verificação, 03/out/2026
 
-**Correção ao registro anterior (seção 6, "Pendência conhecida").** Os valores atribuídos ao COMSEFAZ (AM +3,16; GO +2,14; MT +0,11 bi) não são médias 2019-2026: são as médias 2021-2023 das contribuições, corrigidas pelo §3º, II do art. 115 (variação do ICMS da UF até 2023 e do ICMS+ISS nacional de 2023 a 2026). Fonte dos valores: Tabela 9 da Nota Técnica COMSEFAZ v3 (`data/referencias-externas/NT_COMSEFAZ_RefTributaria_v3.md`): AM 2.521/2.457/2.414; GO 1.508/1.718/1.863; MT 81/95/79 (R$ milhões, 2021/22/23). Reproduzidos aqui: AM R$ 3,2 bi; GO R$ 2,2 bi; MT R$ 0,11 bi.
+**Correção ao registro anterior (seção 6, "Pendência conhecida").** Os valores atribuídos a documento de terceiros não são médias 2019-2026: são médias 2021-2023 das contribuições, corrigidas pelo §3º, II do art. 115 (variação do ICMS da UF até 2023 e do ICMS+ISS nacional de 2023 a 2026). Só o valor do Amazonas é verificável no DCA/Siconfi (ver `data/fundos-art115-b.json`); os demais dependem de informação oficial.
 
 **Enquadramento por Estado (critério: fundo em funcionamento em 30/04/2023, contribuição como condição para diferimento, regime especial ou outro tratamento diferenciado de ICMS, e fora do art. 136 do ADCT).**
 
 | UF | Fundo | Base estadual | Verificação |
 |---|---|---|---|
 | GO | PROTEGE | Lei 14.469/2003 (criada em 16/07/2003), art. 9º, II-IV | Texto da lei lido: benefício ou incentivo fiscal condicionado à contribuição (até 15%; PRODUZIR e incentivos financeiros até 2%). Enquadra. |
-| MT | FUNDES (unificou FUNDEIC e FDR) | Lei 11.308/2021 | Só fontes secundárias; texto da lei não lido. "FUNDED" da nota não identificado. FETHAB (contribuições sobre commodities) excluído pelo art. 136 do ADCT. |
+| MT | FUNDES (unificou FUNDEIC e FDR) | Lei 11.308/2021 | Só fontes secundárias; texto da lei não lido. FETHAB (contribuições sobre commodities) excluído pelo art. 136 do ADCT. |
 | AM | FMPES | Lei 2.826/2003 e alterações | Existência confirmada; condicionalidade da contribuição não confirmada; valor verificado no DCA (conta RO1.2.2.x.99). |
-| RJ | FOT | Lei 8.645/2019 | Já contabilizado dentro do ICMS (nota, Tabela 9-A): não somar. |
+| RJ | FOT | Lei 8.645/2019 | Já contabilizado dentro do ICMS: não somar (a confirmar em fonte oficial). |
 
-**Risco de dupla contagem em GO (não resolvido).** O FECOP de GO no DCA (R$ mi) foi 1.043 (2019), 1.523 (2020), 2.148 (2021), 1.235 (2022), 414 (2023), 489 (2024) e 484 (2025), enquanto as contribuições condicionais do PROTEGE (Tabela 9) cresceram de 1.508 para 1.863 em 2021-2023. O PROTEGE é também o fundo de combate à pobreza de GO (adicional do art. 82 do ADCT, já incluído no modelo via FECOP). Se a linha FECOP de 2019-2022 incluir parte das contribuições condicionais, somá-las duplicaria. Pergunta à SEFAZ-GO: a conta RO1.1.1.4.50.2.0 inclui essas contribuições?
+**Risco de dupla contagem em GO (não resolvido).** O FECOP de GO no DCA (R$ mi) foi 1.043 (2019), 1.523 (2020), 2.148 (2021), 1.235 (2022), 414 (2023), 489 (2024) e 484 (2025), enquanto as contribuições condicionais do PROTEGE (valores de documento de terceiros, omitidos) cresceram em 2021-2023. O PROTEGE é também o fundo de combate à pobreza de GO (adicional do art. 82 do ADCT, já incluído no modelo via FECOP). Se a linha FECOP de 2019-2022 incluir parte das contribuições condicionais, somá-las duplicaria. Pergunta à SEFAZ-GO: a conta RO1.1.1.4.50.2.0 inclui essas contribuições?
 
-**Citação.** Enquadramento: art. 115, I, "b" e §3º (LC 227), art. 350, II, "b" (LC 214) e a lei estadual de cada fundo. Valores: DCA/SICONFI (AM) e Nota Técnica COMSEFAZ v3 (GO e MT), até os valores oficiais do CGIBS.
+**Citação.** Enquadramento: art. 115, I, "b" e §3º (LC 227), art. 350, II, "b" (LC 214) e a lei estadual de cada fundo. Valores: DCA/SICONFI (AM); GO e MT dependem de informação oficial, até os valores do CGIBS.
 
-**Efeito estimado na simulação (não implementado):** coeficiente histórico AM 1,357% para 1,659%, GO 2,314% para 2,511%; receita de AM em 2033 +R$ 3,6 bi, GO +R$ 2,3 bi; resultado relativo de 2033 praticamente inalterado; `frac_estado` +0,06 pp; Seguro-Receita de AM 2033 R$ 550 mi para 836 mi. Ver `data/auditoria-fundos-art115/`.
+**Efeito estimado na simulação (implementado só para o AM):** coeficiente histórico AM 1,357% para 1,659%; receita de AM em 2033 +R$ 3,6 bi; resultado relativo de 2033 praticamente inalterado; `frac_estado` +0,06 pp; Seguro-Receita de AM 2033 R$ 550 mi para 836 mi. Ver `data/auditoria-fundos-art115/`.
 
 ### 7.2 Implementação no modelo (out/2026): somente o Amazonas
 
-**Decisão do autor (03/out/2026):** incluir apenas o Amazonas; GO e MT ficam anotados como dependentes de informação oficial (Secretaria de Fazenda do Estado ou valores que o CGIBS divulgar). Motivo: só o valor do AM é verificável diretamente no SICONFI/STN (DCA Anexo I-C, conta "Outras Contribuições Econômicas": R$ 2.521, 2.456 e 2.414 milhões em 2021-2023). Os valores de GO (PROTEGE) e MT (FUNDES) constam apenas da Nota Técnica COMSEFAZ v3, preliminar, e não são localizáveis no SICONFI; em GO há ainda o risco de dupla contagem com a linha do adicional de ICMS (FECOP), a esclarecer.
+**Decisão do autor (03/out/2026):** incluir apenas o Amazonas; GO e MT ficam anotados como dependentes de informação oficial (Secretaria de Fazenda do Estado ou valores que o CGIBS divulgar). Motivo: só o valor do AM é verificável diretamente no SICONFI/STN (DCA Anexo I-C, conta "Outras Contribuições Econômicas": R$ 2.521, 2.456 e 2.414 milhões em 2021-2023). Os valores de GO (PROTEGE) e MT (FUNDES) não são localizáveis no SICONFI; em GO há ainda o risco de dupla contagem com a linha do adicional de ICMS (FECOP), a esclarecer.
 
 **Como está feito.**
 - Fonte e método: `data/fundos-art115-b.json` (inclui a seção `pendentes_informacao_oficial` com GO, MT, RJ e as demais UFs).
@@ -807,4 +804,4 @@ Correção do FCP **não implementada**, por decisão do autor.
 
 ## 8. Decisões de método, 05/out/2026: φ de destino robusto e 2026 no coeficiente histórico
 
-**Decisão do autor (05/out/2026):** (i) adotar o φ de destino robusto, média de três rotas sobre a base tributável (POF 2017-2018, Censo 2022 e PNAD Contínua), no lugar do consumo bruto da POF vezes domicílios; (ii) incluir 2026 no coeficiente histórico (art. 115 da LC 227/2026, exercícios de 2019 a 2026), estimado por nowcast do RREO de janeiro a agosto para o ICMS e repetindo 2025 para o ISS. A nota técnica do COMSEFAZ repete 2025 em 2026; em backtest (20 UFs, anos terminais 2020 a 2025), omitir 2026 erra 0,90% da participação, repetir 2025 erra 0,45% e o nowcast erra 0,24%. Para os municípios não há nowcast próprio (cota-parte pelo fator da UF, ISS repetindo 2025). Código: `data/estima-phi-destino-robusto.py`, `data/cpt2026.py`, `data/parametros-cpt-2026.json`. Detalhes e resultados: `materiais/phi-destino-robusto.md`. Não alterado: a fração estadual/municipal do destino (art. 361) segue a média de 2024-2025 (2026 ainda fica de fora desse cálculo). A Nota Técnica nº 02/2026 (SEFAZ-ES) permanece com sete exercícios observados e é reproduzida pelos campos `*_obs_2019_2025`.
+**Decisão do autor (05/out/2026):** (i) adotar o φ de destino robusto, média de três rotas sobre a base tributável (POF 2017-2018, Censo 2022 e PNAD Contínua), no lugar do consumo bruto da POF vezes domicílios; (ii) incluir 2026 no coeficiente histórico (art. 115 da LC 227/2026, exercícios de 2019 a 2026), estimado por nowcast do RREO de janeiro a agosto para o ICMS e repetindo 2025 para o ISS. Em backtest (20 UFs, anos terminais 2020 a 2025), omitir 2026 erra 0,90% da participação, repetir 2025 erra 0,45% e o nowcast erra 0,24%. Para os municípios não há nowcast próprio (cota-parte pelo fator da UF, ISS repetindo 2025). Código: `data/estima-phi-destino-robusto.py`, `data/cpt2026.py`, `data/parametros-cpt-2026.json`. Detalhes e resultados: `materiais/phi-destino-robusto.md`. Não alterado: a fração estadual/municipal do destino (art. 361) segue a média de 2024-2025 (2026 ainda fica de fora desse cálculo). Os campos `*_obs_2019_2025` guardam a média dos sete exercícios observados.

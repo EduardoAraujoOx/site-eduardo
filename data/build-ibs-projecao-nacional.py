@@ -13,8 +13,8 @@ Combina:
     data/collect-iss-dca-2013-2014.py). SICONFI não tem cobertura DCA
     antes de 2013. FECOP (Fundo de Combate à Pobreza) usa DCA
     (dca_fecop_br) para 2019-2025 — mesma fonte e mesma base usada em
-    data/build-coeficientes-uf.py para o coeficiente estadual validado
-    contra a Nota Técnica nº 02/2026; não há FECOP coletado para
+    data/build-coeficientes-uf.py para o coeficiente estadual;
+    não há FECOP coletado para
     2013-2018, tratado como zero nesses anos;
   - a trajetória de PIB real 2026-2033, construída a partir do PIB nominal
     de 2025 (BCB/SGS, ano-base, coincide com seu próprio valor real) e
@@ -299,7 +299,7 @@ def main():
             },
             "data_pesquisa_focus": macro["_meta"]["data_pesquisa_focus"],
             "premissas": [
-                "Razão bolo (ICMS+ISS+FECOP) / PIB mantida constante na média de 2024-2026 a partir de 2027. Esse período de referência não é uma escolha de modelagem: é o que os arts. 361 a 365 da LC 214/2025 (redação da LC 227/2026) usam para calibrar a alíquota de referência do IBS em cada ano da transição (2029-2033), a média da razão entre a receita de referência e o PIB nos anos de 2024 a 2026, fixada por resolução do Senado Federal. O FECOP (Fundo de Combate à Pobreza) é incluído na receita de referência porque a legislação da reforma o trata como parte da base de receita substituída pelo IBS nos estados que o cobram; sem essa parcela, a receita de referência ficaria subestimada em cerca de R$ 14 bi em 2025 (~1,4% do total) frente ao dataset validado de coeficientes por UF (data/coeficientes-uf.json, conferido contra a Nota Técnica nº 02/2026).",
+                "Razão bolo (ICMS+ISS+FECOP) / PIB mantida constante na média de 2024-2026 a partir de 2027. Esse período de referência não é uma escolha de modelagem: é o que os arts. 361 a 365 da LC 214/2025 (redação da LC 227/2026) usam para calibrar a alíquota de referência do IBS em cada ano da transição (2029-2033), a média da razão entre a receita de referência e o PIB nos anos de 2024 a 2026, fixada por resolução do Senado Federal. O FECOP (Fundo de Combate à Pobreza) é incluído na receita de referência porque a legislação da reforma o trata como parte da base de receita substituída pelo IBS nos estados que o cobram; sem essa parcela, a receita de referência ficaria subestimada em cerca de R$ 14 bi em 2025 (~1,4% do total) frente ao dataset de coeficientes por UF (data/coeficientes-uf.json).",
                 "O art. 130, §4º e §5º, do ADCT define um mecanismo distinto: o 'Teto de Referência', que compara a média 2029-2033 de CBS+Imposto Seletivo+IBS com a média 2012-2021 de IPI+ICMS+ISS+PIS/Cofins+IOF-seguros. Não altera os valores projetados aqui: mesmo se ultrapassado, a redução da alíquota só vale a partir de 2035 (fora desta projeção), e o teto exige dados federais (CBS, PIS/Cofins, IPI, IOF-seguros) fora do escopo deste estudo, que modela só o lado subnacional (ICMS/ISS/IBS).",
                 "2026 ainda não fechou: a razão desse ano usa o bolo do RREO (últimos 12 meses até abr/2026) sobre o PIB projetado pelo Focus, uma estimativa preliminar a ser substituída pelo dado fechado (DCA) quando disponível.",
                 "IBS bruto = bolo projetado × sa (fração já migrada para IBS no ADCT). Esse total se divide em quatro fatias: a fração alpha_a distribuída pelo critério histórico, e a fração (1-alpha_a) distribuída pelo critério destino, da qual se deduzem, nesta ordem (LC 227/2026, arts. 109-111 e 118 §§2º-4º), o Seguro-Receita (5%, ADCT art. 132, sobre o destino bruto) e só depois o CGIBS (art. 51 LC 227/2026, sobre a Receita-Base já líquida de Seguro-Receita) antes de chegar aos entes. alpha_a e a taxa do CGIBS variam a cada ano da transição (2029-2033) e são os mesmos parâmetros já publicados no Estudo 06.",

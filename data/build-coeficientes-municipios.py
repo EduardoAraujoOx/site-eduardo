@@ -24,7 +24,7 @@ contam como zero, mesma convenção do HTML, não são excluídos do denominador
 a de 2019-2026, com 2026 pelo RREO municipal (data/cpt2026.py; data/parametros-cpt-2026.json): ISS observado de
 set/2025 a ago/2026 e cota-parte = 2025 x crescimento de jan-ago, redistribuídos dentro de cada UF com os totais do nowcast;
 quem não tem o Anexo 03 do RREO mantém a posição relativa de 2025 no estado. O campo coeficiente_obs_2019_2025_pct traz a
-média só dos sete anos observados (igual à Nota Técnica nº 02/2026 da SEFAZ-ES).
+média só dos sete anos observados (DCA 2019-2025).
 
 Uso:
   python3 build-coeficientes-municipios.py
@@ -228,13 +228,8 @@ def main():
         "municipios": resultado,
         "validacao_soma_por_uf": validacao_uf,
         "pendencias": [
-            "Comparação ente a ente contra a Nota Técnica v22 feita em "
-            "data/build-divergencia-vs-nota-v22.py: 27/27 UFs e 79/79 municípios do ES "
-            "batem exatamente (diff = 0,0000pp) -- ver data/divergencia-vs-nota-v22.json.",
-            "MT segue como divergência conhecida não investigada -- confirmada por três "
-            "sinais independentes (DCA x RREO, Nota v22 x Sefaz-BA, e já citada no "
-            "briefing original); ver data/reconciliacao-dca-rreo.json e "
-            "data/raw/nota-v22/comparacao_sefaz_es_ba_ufs.csv.",
+            "MT segue como divergência conhecida não investigada (DCA x RREO); "
+            "ver data/reconciliacao-dca-rreo.json.",
         ],
     }
 
