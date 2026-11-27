@@ -1,6 +1,16 @@
 {
   "redirects": [
     {
+      "source": "/estudos",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/estudos/:path*",
+      "destination": "/",
+      "permanent": false
+    },
+    {
       "source": "/:path*",
       "has": [
         {
@@ -123,10 +133,5 @@
       ]
     }
   ],
-  "trailingSlash": true,
-  "functions": {
-    "api/estudo.js": {
-      "includeFiles": "_cifrado/**"
-    }
-  }
+  "trailingSlash": true
 }
