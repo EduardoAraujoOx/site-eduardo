@@ -7,8 +7,8 @@ de destino (dispersão entre as três rotas combinada com o erro de previsão do
 exclui cada UF; ver phi-dest-robusto.json). A variação de cada ano é calculada no navegador com a fórmula
 fechada do modelo, que reproduz a variação central do painel.
 
-Entradas: painelufir/data/painel-estados.json, coeficientes-uf.json, phi-dest-robusto.json.
-Saída: sensibilidade-uf.json (e cópia em painelufir/data/).
+Entradas: data/painel-estados.json, coeficientes-uf.json, phi-dest-robusto.json.
+Saída: data/sensibilidade-uf.json.
 """
 import json
 from pathlib import Path
@@ -37,6 +37,6 @@ res = {
             "incerteza_rel: incerteza relativa do coeficiente de destino da UF (um desvio-padrão).",
     "por_uf": out,
 }
-for dest in (D / "sensibilidade-uf.json", ROOT / "painelufir/data/sensibilidade-uf.json"):
+for dest in (D / "sensibilidade-uf.json",):
     json.dump(res, open(dest, "w"), ensure_ascii=False, separators=(",", ":"))
 print(len(out), "UFs; incerteza de", min(v["incerteza_rel"] for v in out.values()), "a", max(v["incerteza_rel"] for v in out.values()))

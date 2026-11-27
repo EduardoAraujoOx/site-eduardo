@@ -31,11 +31,11 @@ ROOT = HERE.parent
 OUT = HERE / "auditoria-pr-validacao" / "tabelas-artigo"
 ANOS = [2029, 2030, 2031, 2032, 2033]
 
-R = json.load(open(ROOT / "painelufir/data/resultados-consolidados-ibs.json"))["por_uf_estado"]["PR"]
+R = json.load(open(ROOT / "data/resultados-consolidados-ibs.json"))["por_uf_estado"]["PR"]
 F = json.load(open(HERE / "phi-dest-pof-censo.json"))
 frac_estado = F["frac_estado_pct"] / 100
 phi_uf = F["por_uf"]["PR"]
-N = {r["ano"]: r for r in json.load(open(ROOT / "painelufir/data/ibs-projecao-nacional.json"))["projecao"]}
+N = {r["ano"]: r for r in json.load(open(ROOT / "data/ibs-projecao-nacional.json"))["projecao"]}
 ref = {a: N[a]["icms_iss_residual"] + N[a]["ibs_bruto"] for a in N}
 c_neutro = R["contrafactual_por_ano"]["2033"] / ref[2033]
 c_own, _ = rcc.esferas_uf(phi_uf, False, frac_estado, 0)
