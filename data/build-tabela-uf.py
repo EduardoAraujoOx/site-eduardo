@@ -2,7 +2,7 @@
 """
 Tabela do artigo: receita estadual projetada por UF no cenário de destino pleno,
 2029-2033 (R$ bilhões, preços de 2025), com o Paraná destacado. Lê
-painelufir/data/resultados-consolidados-ibs.json (por_uf_estado, Estudo 15).
+data/resultados-consolidados-ibs.json (por_uf_estado, Estudo 15).
 
 Uso: python3 build-tabela-uf.py -> auditoria-pr-validacao/tabelas-artigo/tabela-receita-estadual-uf-2029-2033.docx
 """
@@ -16,7 +16,7 @@ from docx.oxml.ns import qn
 from docx.shared import Pt, Cm
 
 HERE = Path(__file__).parent
-SRC = HERE.parent / "painelufir" / "data" / "resultados-consolidados-ibs.json"
+SRC = HERE.parent / "data" / "resultados-consolidados-ibs.json"
 OUT = HERE / "auditoria-pr-validacao" / "tabelas-artigo"
 DESTAQUE = "PR"
 

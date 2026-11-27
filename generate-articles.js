@@ -49,6 +49,11 @@ function generateArticlePage(article) {
         html = html.split(placeholder).join(value);
     }
 
+    // Sem link externo, remove o bloco "Leia na publicação original"
+    if (!article.linkExterno) {
+        html = html.replace(/\n\s*<a href="[^"]*"[^>]*class="original-link"[\s\S]*?<\/a>/, '');
+    }
+
     return html;
 }
 

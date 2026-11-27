@@ -34,18 +34,12 @@ modelo() {
   run build-painel-estados.py
   run build-faixa-phi-dest.py          # confere contra painel-estados e resultados-consolidados
   run build-painel-municipios.py
-  run build-painel-seguro-receita.py   # aba Seguro-Receita do painel (grava também em painelufir/data)
-  run build-sensibilidade-painel.py     # aba Sensibilidade do painel (grava também em painelufir/data)
+  run build-painel-seguro-receita.py   # aba Seguro-Receita do painel
+  run build-sensibilidade-painel.py     # aba Sensibilidade do painel
   run build-memoria-calculo.py
   run build-carga-implicita-uf.py
   run build-simulacao-aliquota-es.py
   run build-simulacao-aliquota-es-longo-prazo.py
-  # espelho do painel (painelufir/README.md)
-  for f in resultados-consolidados-ibs ibs-projecao-nacional painel-estados faixa-phi-dest-estados ibs-projecao-longo-prazo seguro-receita-repasses-longo-prazo; do
-    cp "data/$f.json" "painelufir/data/$f.json"
-  done
-  cp -r data/painel-municipios/. painelufir/data/painel-municipios/
-  cp -r data/memoria-calculo/. painelufir/data/memoria-calculo/
 }
 
 planilhas() {

@@ -35,9 +35,9 @@ OUT.mkdir(parents=True, exist_ok=True)
 
 FINAL = HERE / "auditoria-pr-validacao" / "municipios-pr-final-auditado-latest.csv"
 OBS = HERE / "auditoria-dca-pr" / "observacoes-pr-latest.csv"
-PAINEL = ROOT / "painelufir" / "data" / "painel-municipios" / "PR.json"
-LP = ROOT / "painelufir" / "data" / "ibs-projecao-longo-prazo.json"
-SEG_LP = ROOT / "painelufir" / "data" / "seguro-receita-repasses-longo-prazo.json"
+PAINEL = ROOT / "data" / "painel-municipios" / "PR.json"
+LP = ROOT / "data" / "ibs-projecao-longo-prazo.json"
+SEG_LP = ROOT / "data" / "seguro-receita-repasses-longo-prazo.json"
 
 N_EXTREMOS = 10
 SALTO_MAX = 10.0
