@@ -56,20 +56,18 @@ h1{{font-size:1.45rem;line-height:1.28;margin:1rem 0 .5rem}}
   -webkit-mask-image:linear-gradient(#000 35%,transparent 95%);mask-image:linear-gradient(#000 35%,transparent 95%)}}
 .veu{{position:fixed;inset:0;z-index:10;background:rgba(8,10,14,.58);
   display:flex;align-items:flex-end;justify-content:center;padding:1rem;overflow:auto}}
-.card{{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:1rem 1.1rem .9rem;width:100%;max-width:520px;
+.card{{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:.95rem 1rem .8rem;width:100%;max-width:440px;
   box-shadow:0 12px 40px rgba(0,0,0,.35);margin-top:auto}}
 .tag{{display:inline-block;font:500 .68rem ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);border:1px solid var(--ac);padding:.15rem .5rem;border-radius:4px}}
-.card h2{{font-size:1.1rem;margin:.45rem 0 .2rem;line-height:1.3}}
-.card p{{margin:.1rem 0 .7rem;font-size:.93rem;line-height:1.5}}
+.card h2{{font-size:1.05rem;margin:0 0 .15rem;line-height:1.3}}
+.card p{{margin:.1rem 0 .6rem;font-size:.9rem;line-height:1.45;color:var(--mut)}}
 form{{display:flex;gap:.5rem;flex-wrap:wrap}}
-input[type=email]{{flex:1 1 200px;padding:.7rem .75rem;font-size:1rem;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--fg)}}
-button{{padding:.7rem 1.1rem;font-size:1rem;border:0;border-radius:6px;background:var(--ac);color:#fff;cursor:pointer}}
+input[type=email]{{flex:1 1 190px;padding:.65rem .7rem;font-size:1rem;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--fg)}}
+button{{padding:.65rem 1rem;font-size:1rem;border:0;border-radius:6px;background:var(--ac);color:#fff;cursor:pointer}}
 button[disabled]{{opacity:.6;cursor:default}}
 .oculto{{position:absolute;left:-9999px;height:0;width:0;overflow:hidden}}
-#msg{{min-height:1.3em;margin:.7rem 0 0;font-size:.92rem}}#msg.erro{{color:#b3261e}}
-.peq{{font-size:.78rem;color:var(--mut);margin:.5rem 0 0;line-height:1.45}}.peq a,.card a{{color:var(--ac)}}
-.sair{{display:inline-block;margin-top:.4rem;font-size:.9rem}}
-details{{margin-top:.5rem}}summary{{font-size:.82rem;color:var(--mut);cursor:pointer}}
+#msg{{margin:.45rem 0 0;font-size:.88rem;color:var(--fg)}}#msg:empty{{display:none}}#msg.erro{{color:#b3261e}}
+.peq{{font-size:.76rem!important;margin:.55rem 0 0!important}}.peq a,.card a{{color:var(--ac)}}
 </style>
 </head>
 <body>
@@ -81,20 +79,15 @@ details{{margin-top:.5rem}}summary{{font-size:.82rem;color:var(--mut);cursor:poi
 </main>
 <div class="veu" id="veu">
 <div class="card" role="dialog" aria-modal="true" aria-labelledby="ct">
-<span class="tag">Acesso por cadastro</span>
 <h2 id="ct">Continue lendo</h2>
-<p>Informe seu e-mail e receba um link de acesso pessoal. É gratuito, sem senha, e vale por 30 dias neste navegador.</p>
+<p>Receba um link de acesso no seu e-mail. Gratuito e sem senha.</p>
 <form id="f" autocomplete="on">
 <input id="e" type="email" name="email" placeholder="seu@email.com" aria-label="Seu e-mail" required>
 <input class="oculto" type="text" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
 <button id="b" type="submit">Receber link</button>
 </form>
 <p id="msg" role="status"></p>
-<a class="sair" href="/estudos/">&larr; Voltar à lista de estudos</a>
-<details><summary>Sobre o cadastro e este site</summary>
-<p class="peq">Seu e-mail é usado apenas para liberar o acesso e registrar quais estudos foram lidos. Para pedir a exclusão ou esclarecimentos, entre em contato pela <a href="/#contato">seção de contato</a>.</p>
-<p class="peq">{ressalva}</p>
-</details>
+<p class="peq">Usamos seu e-mail só para liberar o acesso. <a href="/estudos/">Voltar</a></p>
 <noscript><p>É necessário habilitar JavaScript para acessar o estudo.</p></noscript>
 </div>
 </div>
